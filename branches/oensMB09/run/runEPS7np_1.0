@@ -1,0 +1,1484 @@
+#!/bin/bash
+####################### DESCRIÇÃO DO SCRIPT ########################
+#                                                                  #
+# Este script destina-se a execução e avaliação automatizada do    #
+# EPS do CPTEC.                                                    #
+# Ele está dividido em em 4 seções, cada uma com uma determinada   #
+# tarefa. Estas tarefas são distribuidas dentro das seções na      #
+# de blocos de código.                                             #
+# Cada seção é precedida por uma breve descrição da tarefa reali-  #
+# zada e da sua estrutura de blocos.                               #
+# Apesar do tamanho do código, ele foi escrito de forma a facili-  #
+# tar a leitura.                                                   #
+#                                                                  #
+####################################################################
+
+
+############################# SEÇÃO I ##############################
+# Nesta seção os blocos são responsáveis por verificar os arquivos #
+# do EPS já gerados para não realizar um trabalho redundante.      #
+# Sua importância reside no fato de o tempo gasto de CPU no Tupã   #
+# estar sendo contabilizado.                                       #
+# Esta seção possui onze blocos de tarefa:                         #
+# BLOCO 01: inicializa variáveis comuns a todo processo;           #
+# BLOCO 02: verifica a existência dos arquivos gerados pelo pós    #
+# BLOCO 03: verifica a existência dos arquivos gerados pelo modelo #
+# BLOCO 04: verifica a existência dos arquivos gerados pelo perpntg#
+# BLOCO 05: verifica a existência dos arquivos gerados pelo ctrreco#
+# BLOCO 06: verifica a existência dos arquivos gerados pelo ctrmodg#
+# BLOCO 07: verifica a existência dos arquivos gerados pelo drpt   #
+# BLOCO 08: verifica a existência dos arquivos gerados pelo rdpt   #
+# BLOCO 09: verifica a existência dos arquivos gerados pelo recanl #
+# BLOCO 10: verifica a existência dos arquivos gerados pelo pré    #
+####################################################################
+
+
+
+#help#
+####################################################################
+# DESCRICAO: EXECUTA O EPS_AGCM DE FORMA SEMI-AUTOMATIZADA         #
+#                                                                  #
+# AUTOR: EDUARDO CHARLES VASCONCELLOS                              #
+#                                                                  #
+# EXEMPLO: runESP7_0.9 2011052300                                  #
+#                                                                  #
+# VERSAO BETA 0.9                                                  #
+# CRIADO EM 31/01/2012                                             #
+####################################################################
+#help#
+#==========================================================================
+#BLOCO 01 - INICIALIZAÇÃO
+
+#====Acionamento da ajuda (manual simplificado de operação do script)
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  exit 1   
+fi
+#===Fim
+
+VERSION="np_0.1"
+STARTTIME=`date +%s`                                                        #HORA DE INICIO DO PROCESSO                     
+
+#===Comandos uteis
+qstat="/opt/pbs/10.2.0.93147/bin/qstat"                                     #COMANDO QSTAT FUNCIONAL
+caldate="${HOME}/tools/caldate.3.0.2"                                         #COMANDO CALDATE
+#===Fim
+
+#===Definições do Ensemble
+LABELI=${1}                                                                 #CONDIÇÃO INICIAL DA PREVISÃO
+NFDAYS=15                                                                   #NÚMERO DE DIAS DE PREVISÃO
+FORECASTTIMESTEP=6                                                          #INTERVALO DE TEMPO ENTRE AS PREVISÕES
+LABELF=`${caldate} ${LABELI} + ${NFDAYS}d 'yyyymmddhh'`                     #HORARIO FINAL DE PREVISAO
+CTRTIMESTEP=3                                                               #INTERVALO DE TEMPO USADO NO CONTROLE
+CTRNFDAYS=2                                                                 #NÚMERO DE DIAS DE PREVISÃO
+LABELR=`${caldate} ${LABELI} + ${CTRNFDAYS}d 'yyyymmddhh'`                #PREVISAO DE CONTROLE
+TRC=126                                                                     #TRUNCAMENTO
+LV=28                                                                       #NUMERO DE NIVEIS
+NRPERT=7                                                                    #NUMERO DE PERTURBACOES RANDOMICAS
+PREFIXO="AVN"                                                               #PREFIXO DO CONTROLE
+export ANLTYPE=${PREFIXO}
+MEMBER=(01P 01N 02P 02N 03P 03N 04P 04N 05P 05N 06P 06N 07P 07N ${PREFIXO}) #MEMBROS DO ENSEMBLE
+NUMMEMB=${#MEMBER[*]}                                                       #NUMERO DE MEMBROS DO ENSEMBLE
+export MEMBER NUMMEMB
+SetLinear=FALSE
+HUMID=YES
+#===Fim
+
+#===Definições das variáveis utilizadas para regular o processamento no Tupã (PBS)
+export AUX_mppwidth=1
+export AUX_mppnppn=1
+export SDB_mppnppn=24
+export SDB_mppdepth=1
+export PRE_walltime=00:30:00
+export RECANL_walltime=00:15:00
+export RDPT_walltime=00:15:00
+export DRPT_walltime=00:30:00
+export CTRRECO_walltime=00:30:00
+export CTRMODG_walltime=00:10:00
+export CTRMODG_mppwidth=96
+export PERPNTG_SDB_walltime=00:10:00
+export PERPNTG_SDB_mppwidth=96
+export PERPNTG_AUX_walltime=00:30:00
+export MODEL_walltime=00:15:00
+export MODEL_mppwidth=168 #120
+export POS_walltime=00:15:00
+#===Fim
+
+#===Inicialização das variáveis de ambiente
+export CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesAGCM -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE} ${PREFIXO} > FILEENV.out
+rm FILEENV.out
+#===Fim
+
+#===Diretórios necessários ao processo
+DIRTOOLS="${HOME}/tools"                                                    #DIRETORIO DE FERRAMENTAS
+POSDATAOUT=${DK_suite2}/pos/dataout
+MODELDATAOUT=${DK_suite2}/model/dataout
+FITAEPS=/stornext/grupos/ensemble_g
+ONLINEEPS=/stornext/online1/ensemble_g
+FITAENSCLIMATE=${FITAEPS}/EFI/EnsClimatology_newpert
+ONLINEENSCLIMATE=${ONLINEEPS}/stornext/online1/ensemble_g/EFI/EnsClimatology_newpert
+#===Fim
+
+#RESUMO DE INICIALIZACAO
+echo "runEPS7${VERSION}" > runEPS7np_${LABELI}.out
+echo ${CASE} >> runEPS7np_${LABELI}.out
+echo "Condicao inicial da previsao     : ${LABELI}" >> runEPS7np_${LABELI}.out
+echo "Alcance da previsao              : ${LABELF}" >> runEPS7np_${LABELI}.out
+echo "Numero de dias de previsao       : ${NFDAYS}" >> runEPS7np_${LABELI}.out
+echo "Numero de perturbacoes randomicas: ${NRPERT}" >> runEPS7np_${LABELI}.out
+
+#FIM DO BLOCO 01
+#==========================================================================
+
+execute=8
+resetcount=0
+while [[ ${execute} -ne 0 ]]; do
+let resetcount=${resetcount}+1
+if [ ${resetcount} -gt 4 ]; then
+#  find ${HOME} -name "*${LABELI}*" > remove_${LABELI}.files
+#  find ${SUBMIT_HOME} -name "*${LABELI}*" >> remove_${LABELI}.files
+#  find ${WORK_HOME}/oens_newEOF/eof -name "*${LABELI}*" >> remove_${LABELI}.files
+#  find ${WORK_HOME}/oens_newEOF/recfct -name "*${LABELI}*" >> remove_${LABELI}.files
+#  find ${WORK_HOME}/oens_newEOF/rdpert -name "*${LABELI}*" >> remove_${LABELI}.files
+#  find ${WORK_HOME}/oens_newEOF/recanl -name "*${LABELI}*" >> remove_${LABELI}.files
+#  find ${WORK_HOME}/oens_newEOF/decanl -name "*${LABELI}*" >> remove_${LABELI}.files
+#  rm -r ${WORK_HOME}/oens_newEOF/model/dataout/${CASE}/${LABELI}
+#  rm -r ${WORK_HOME}/oens_newEOF/pos/dataout/${CASE}/${LABELI}
+#  for arq in `cat remove_${LABELI}.files`
+#  do
+#    rm -r ${arq} >> remove_${LABELI}.out 2>&1
+#  done
+#  if [ -s remove_${LABELI}.out ]; then rm remove_${LABELI}.out; fi
+#  if [ -s remove_${LABELI}.files ]; then rm remove_${LABELI}.files; fi
+  resetcount=0
+fi
+num=1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 02 - VERIFICA ARQUIVOS GERADOS PELO POS
+B02ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+echo -en "\r${LABELI}: calculando numero e volume de arqivos gerados pelo pós, por favor aguarde!"
+# O número de arquivos gerados pelo pós é igual ao número número de dias de previsão vezes 24 horas
+#dividido pelo intervalo de tempo entre as previsões mais o icn; mais o inz; vezes 2, devido a
+#presença de arquivos grb e ctl; vezes o número de membros do EPS.
+POSTEONUMFILESPERMEMBER=`expr \( \( ${NFDAYS} \* 24 / ${FORECASTTIMESTEP} \) \* 2 \) + 2`
+POSTEONUMFILES=`expr ${POSTEONUMFILESPERMEMBER} \* ${NUMMEMB}`
+
+# A verificação é executada em três diretórios: scratch2, stornext/online1 e stornext/grupos
+echo -en "\r                                                                                                         "
+echo -en "\r${LABELI}: verificando arqivos gerados pelo pós --- 0%"
+sc2posfiles=${POSDATAOUT}/${CASE}/${LABELI}          #DIRETÓRIO CONTENDO A SAÍDA DO PÓS
+onlineposfiles=${ONLINEENSCLIMATE}/${CASE}/${LABELI} #DIRETÓRIO CONTENDO A SAÍDA DO PÓS
+fitaposfiles=${FITAENSCLIMATE}/${CASE}/${LABELI}     #DIRETÓRIO CONTENDO A SAÍDA DO PÓS
+k=0
+if [[ -d ${onlineposfiles} ]]           #VERIFICA NO STORNEXT/ONLINE1
+then
+  NUMFILESONLINE=0
+  for ((i=0;i<${NUMMEMB};i++)); do
+    ls -1 ${onlineposfiles}/ > pos${MEMBER[$i]}online_ls.out 2>&1
+    icngrb=`more pos${MEMBER[$i]}online_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}${LABELI}P.icn.${CASE}.grb" | wc -l`
+    icnctl=`more pos${MEMBER[$i]}online_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}${LABELI}P.icn.${CASE}.ctl" | wc -l`
+    fctgrb=`more pos${MEMBER[$i]}online_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}" | grep "fct.${CASE}.grb" | wc -l`
+    fctctl=`more pos${MEMBER[$i]}online_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}" | grep "fct.${CASE}.ctl" | wc -l`
+    let MEMBERNUMFILES=${icngrb}+${icnctl}+${fctgrb}+${fctctl}
+    let k=${k}+1
+    echo -en "\r${LABELI}: verificando arqivos gerados pelo pós --- `echo "scale=1;100 * ${k} / ( ${NUMMEMB} * 3 )" | bc -l`%"
+    NUMFILESONLINE=`expr ${NUMFILESONLINE} + ${MEMBERNUMFILES}`
+    if [ ${MEMBERNUMFILES} -eq ${POSTEONUMFILESPERMEMBER} ]
+    then
+      execute_pos_member[$i]=0
+    else
+      execute_pos_member[$i]=1
+    fi
+    rm pos${MEMBER[$i]}online_ls.out
+  done
+elif [[ -d ${sc2posfiles} ]]           #VERIFICA NO SCRATCH2
+then
+  let k=${NUMMEMB}\*2
+  NUMFILESSC2=0
+  for ((i=0;i<${NUMMEMB};i++)); do
+    ls -1 ${sc2posfiles}/ > pos${MEMBER[$i]}sc2_ls.out 2>&1
+    icngrb=`more pos${MEMBER[$i]}sc2_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}${LABELI}P.icn.${CASE}.grb" | wc -l`
+    icnctl=`more pos${MEMBER[$i]}sc2_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}${LABELI}P.icn.${CASE}.ctl" | wc -l`
+    fctgrb=`more pos${MEMBER[$i]}sc2_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}" | grep "fct.${CASE}.grb" | wc -l`
+    fctctl=`more pos${MEMBER[$i]}sc2_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}" | grep "fct.${CASE}.ctl" | wc -l`
+    let MEMBERNUMFILES=${icngrb}+${icnctl}+${fctgrb}+${fctctl}
+    let k=${k}+1
+    echo -en "\r${LABELI}: verificando arqivos gerados pelo pós --- `echo "scale=1;100 * ${k} / ( ${NUMMEMB} * 3 )" | bc -l`%"
+    NUMFILESSC2=`expr ${NUMFILESSC2} + ${MEMBERNUMFILES}`
+    if [ ${MEMBERNUMFILES} -eq ${POSTEONUMFILESPERMEMBER} ]
+    then
+      execute_pos_member[$i]=0
+    else
+      execute_pos_member[$i]=1
+    fi
+    rm pos${MEMBER[$i]}sc2_ls.out
+  done
+elif [[ -d ${fitaposfiles} ]]           #VERIFICA NO STORNEXT/GRUPOS
+then
+  let k=${NUMMEMB}\*4
+  NUMFILESFITA=0
+  for ((i=0;i<${NUMMEMB};i++)); do
+    ls -1 ${fitaposfiles}/ > pos${MEMBER[$i]}fita_ls.out 2>&1
+    icngrb=`more pos${MEMBER[$i]}fita_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}${LABELI}P.icn.${CASE}.grb" | wc -l`
+    icnctl=`more pos${MEMBER[$i]}fita_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}${LABELI}P.icn.${CASE}.ctl" | wc -l`
+    fctgrb=`more pos${MEMBER[$i]}fita_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}" | grep "fct.${CASE}.grb" | wc -l`
+    fctctl=`more pos${MEMBER[$i]}fita_ls.out | grep "GPOS${MEMBER[$i]}${LABELI}" | grep "fct.${CASE}.ctl" | wc -l`
+    let MEMBERNUMFILES=${icngrb}+${icnctl}+${fctgrb}+${fctctl}
+    let k=${k}+1
+    echo -en "\r${LABELI}: verificando arqivos gerados pelo pós --- `echo "scale=1;100 * ${k} / ( ${NUMMEMB} * 3 )" | bc -l`%"
+    NUMFILESFITA=`expr ${NUMFILESFITA} + ${MEMBERNUMFILES}`
+    if [ ${MEMBERNUMFILES} -eq ${POSTEONUMFILESPERMEMBER} ]
+    then
+      execute_pos_member[$i]=0
+    else
+      execute_pos_member[$i]=1
+    fi
+    rm pos${MEMBER[$i]}fita_ls.out
+  done
+else
+  NUMFILESSC2=0
+  FILESSIZESC2=0
+  NUMFILESFITA=0
+  FILESSIZEFITA=0
+  NUMFILESONLINE=0
+  FILESSIZEONLINE=0
+  for ((i=0;i<${NUMMEMB};i++)); do execute_pos_member[$i]=1; done
+fi
+echo -en "\r${LABELI}: verificando arqivos gerados pelo pós --- `echo "scale=1;100 * 12 / 12" | bc -l`%"
+echo -en "\r${LABELI}: verificacao completa: existem arquivos gerados pelo pós"
+if [[ ${NUMFILESONLINE:=0} -eq ${POSTEONUMFILES} ]]
+then
+  echo " no online"
+  ONLINE_flag=1
+else
+  ONLINE_flag=0
+fi
+if [[ ${NUMFILESSC2:=0} -eq ${POSTEONUMFILES} ]]
+then
+  echo " no scratch2"
+  SC2_flag=1
+else
+  SC2_flag=0
+fi
+if [[ ${NUMFILESFITA:=0} -eq ${POSTEONUMFILES} ]]
+then
+  echo " na fita"
+  FITA_flag=1
+else
+  FITA_flag=0
+fi
+if [[ SC2_flag -eq 0 && FITA_flag -eq 0 && ONLINE_flag -eq 0 ]]
+then
+  echo -en "\r                                                                                                       "
+  echo -en "\r${LABELI}: verificacao completa: é necessário executar o pós"
+  execute_pos=1
+else
+  execute_pos=0
+fi
+echo "Fase ${FASE}: Pós" >> runEPS7np_${LABELI}.out
+echo -n "Faltam rodar:" >> runEPS7np_${LABELI}.out
+for ((i=0;i<${NUMMEMB};i++)); do
+  if [ ${execute_pos_member[$i]} -eq 1 ]; then echo -n " ${MEMBER[$i]}" >> runEPS7np_${LABELI}.out; fi
+done
+echo -e " \n" >> runEPS7np_${LABELI}.out
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B02ST} 4`
+#FIM DO BLOCO 02
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 03 - VERIFICA ARQUIVOS DO MODELO JÁ EXISTENTES
+B03ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_pos} -eq 0 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificação completa: não é necessário executar o modelo"
+  execute_model=0
+  for ((i=0;i<${NUMMEMB};i++)); do execute_model_member[$i]=0; done
+elif [ ${execute_pos} -eq 1 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificando arqivos do modelo --- 0%"
+  #O número de arquivos gerados pelo pós é igual ao número número de dias de previsão vezes 24 horas
+  #dividido pelo intervalo de tempo entre as previsões mais o icn; mais o inz; vezes 2, devido a
+  #presença de arquivos grb e ctl; mais o arquivo .files; vezes o número de membros do EPS.
+  MODELTEONUMFILESPERMEMBER=`expr \( \( \( ${NFDAYS} \* 24 / ${FORECASTTIMESTEP} \) + 2 \) \* 2 \) + 1`
+  MODELTEONUMFILES=`expr ${MODELTEONUMFILESPERMEMBER} \* ${NUMMEMB}`
+  sc2modelfiles=${MODELDATAOUT}/${CASE}/${LABELI}
+  NUMFILESSC2=0
+  k=0
+  for ((i=0;i<${NUMMEMB};i++)); do
+    if [ ${execute_pos_member[$i]} -eq 0 ]
+    then
+      NUMFILESSC2=`expr ${NUMFILESSC2} + ${MODELTEONUMFILESPERMEMBER}`
+      execute_model_member[$i]=0
+      let k=${k}+2
+      echo -en "\r${LABELI}: verificando arqivos gerados pelo modelo --- `echo "scale=1;100 * ${k} / ( ${NUMMEMB} * 2 )" | bc -l`%"
+    elif [ ${execute_pos_member[$i]} -eq 1 ]
+    then
+      ls -1 ${sc2modelfiles}/ > model${MEMBER[$i]}sc2_ls.out 2>&1
+      icn=`more model${MEMBER[$i]}sc2_ls.out | grep "GFCT${MEMBER[$i]}${LABELI}" | grep ".icn.${CASE}" | wc -l`
+      inz=`more model${MEMBER[$i]}sc2_ls.out | grep "GFCT${MEMBER[$i]}${LABELI}" | grep ".inz.${CASE}" | wc -l`
+      dic=`more model${MEMBER[$i]}sc2_ls.out | grep "GFCT${MEMBER[$i]}${LABELI}" | grep ".dic.${CASE}" | wc -l`
+      din=`more model${MEMBER[$i]}sc2_ls.out | grep "GFCT${MEMBER[$i]}${LABELI}" | grep ".din.${CASE}" | wc -l`
+      dir=`more model${MEMBER[$i]}sc2_ls.out | grep "GFCT${MEMBER[$i]}${LABELI}" | grep ".dir.${CASE}" | wc -l`
+      fct=`more model${MEMBER[$i]}sc2_ls.out | grep "GFCT${MEMBER[$i]}${LABELI}" | grep ".fct.${CASE}" | wc -l`
+      let MEMBERNUMFILES=${icn}+${inz}+${dic}+${din}+${dir}+${fct}
+      let k=${k}+1
+      echo -en "\r${LABELI}: verificando arqivos gerados pelo modelo --- `echo "scale=1;100 * ${k} / ( ${NUMMEMB} * 2 )" | bc -l`%"
+      NUMFILESSC2=`expr ${NUMFILESSC2} + ${MEMBERNUMFILES}`
+      if [ ${MEMBERNUMFILES} -eq ${MODELTEONUMFILESPERMEMBER} ]
+      then
+        execute_model_member[$i]=0
+      else
+        execute_model_member[$i]=1
+      fi
+      rm model${MEMBER[$i]}sc2_ls.out
+    fi
+  done
+  echo -en "\r${LABELI}: verificacao completa:"
+  if [[ ${NUMFILESSC2} -eq ${MODELTEONUMFILES} ]]
+  then
+    echo -n " existem arquivos gerados pelo modelo no scratch2"
+    execute_model=0
+  else
+    echo -n " é necessário executar o modelo"
+    execute_model=1
+  fi
+  echo "Fase ${FASE}: Modelo" >> runEPS7np_${LABELI}.out
+  echo -n "Faltam rodar:" >> runEPS7np_${LABELI}.out
+  for ((i=0;i<${NUMMEMB};i++)); do
+    if [ ${execute_model_member[$i]} -eq 1 ]; then echo -n " ${MEMBER[$i]}" >> runEPS7np_${LABELI}.out; fi
+  done
+  echo -e " \n" >> runEPS7np_${LABELI}.out
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B03ST} 4`
+#FIM DO BLOCO 03
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 04 - VERIFICA ARQUIVOS GERADOS PELO perpntg
+B04ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_model} -eq 0 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificação completa: não é necessário executar o perpntg"
+  execute_perpntg=0                #CONTROLA SE O PERPNTG SERÁ OU NÃO EXECUTADO. OS DEMAIS MEMBRO DO VETOR CONTROLAM QUAIS MEMBROS EXECUTAR
+  for ((i=0;i<${NRPERT};i++)); do execute_perpntg_deco[$i]=0; execute_perpntg_model[$i]=0; execute_perpntg_recfct[$i]=0; execute_perpntg_eofs[$i]=0; execute_perpntg_deco[$i]=0; done
+elif [ ${execute_model} -eq 1 ]
+then
+  #=========== VERIFICANDO PERTURBAÇÕES N E P ===========
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificando os arquivos gerados pelo perpntg -- 0%"
+  #O número de arquivos gerados pelo pós é igual ao número número de dias de previsão vezes 24 horas
+  #dividido pelo intervalo de tempo entre as previsões, vezes o número de perturbações randômicas.
+  RECFCTTEONUMFILESPERMEMBER=`expr ${CTRNFDAYS} \* 24 / ${CTRTIMESTEP}`
+  RECFCTTEONUMFILES=`expr ${RECFCTTEONUMFILESPERMEMBER} \* ${NRPERT}`
+  sc2eofsfiles=${DK_suite2}/eof/dataout/${CASE}/
+  sc2recfctfiles=${DK_suite2}/recfct/dataout/${CASE}/
+  execute_perpntg=0                #CONTROLA SE O PERPNTG SERÁ OU NÃO EXECUTADO. OS DEMAIS MEMBRO DO VETOR CONTROLAM QUAIS MEMBROS EXECUTAR
+  k=0
+  for ((i=0;i<${NRPERT};i++))
+  do
+    let p=${i}+1
+    if [[ ${execute_model_member[$k]} -eq 0 && ${execute_model_member[`expr ${k} + 1`]} -eq 0 ]]
+    then
+      execute_perpntg_deco[$i]=0 #inativo
+    elif [[ (! -s ${IOPERM}/GANL0${p}N${LABELI}S.unf.${CASE}) || (! -s ${IOPERM}/GANL0${p}P${LABELI}S.unf.${CASE}) ]]
+    then
+      execute_perpntg_deco[$i]=1 #ATIVO
+      execute_perpntg=1          #ativo
+    else
+      execute_perpntg_deco[$i]=0 #INATIVO
+    fi
+    echo -en "\r${LABELI}: verificando arqivos gerados pelo perpentg --- `echo "scale=1;100 * ${p} / (${NRPERT} * 4)" | bc -l`%"
+    let k=${k}+2
+  done
+  #=========== VERIFICANDO RODADAS DOS EOFS PARA O PERPNTG ===========#
+  if [ ${execute_perpntg} -eq 1 ]; then
+    for ((i=0;i<${NRPERT};i++))
+    do
+      let p=${i}+1
+      if [ ${execute_perpntg_deco[$i]} -eq 1 ]; then
+        ls -1 ${sc2eofsfiles}/ > eofs0${p}sc2_ls.out 2>&1
+        eofhn=`more eofs0${p}sc2_ls.out | grep "${LABELI}" | grep "hn0${p}" | wc -l`
+        eofhs=`more eofs0${p}sc2_ls.out | grep "${LABELI}" | grep "hs0${p}" | wc -l`
+        eofsan=`more eofs0${p}sc2_ls.out | grep "${LABELI}" | grep "san0${p}" | wc -l`
+        eofsas=`more eofs0${p}sc2_ls.out | grep "${LABELI}" | grep "sas0${p}" | wc -l`
+        eoftr=`more eofs0${p}sc2_ls.out | grep "${LABELI}" | grep "tr0${p}" | wc -l`
+        let NUMFILES=${eofhn}+${eofhs}+${eofsan}+${eofsas}+${eoftr}
+        if [ ${NUMFILES} -eq 80 ]; then
+          execute_perpntg_eofs[$i]=0  #INATIVO
+        else
+          execute_perpntg_eofs[$i]=1  #ATIVO
+        fi
+        rm eofs0${p}sc2_ls.out
+      elif [ ${execute_perpntg_deco[$i]} -eq 0 ]; then
+        execute_perpntg_recfct[$i]=0    #INATIVO
+      fi
+      echo -en "\r${LABELI}: verificando arqivos gerados pelo perpentg --- `echo "scale=1;100 * (${p} + ${NRPERT}) / (${NRPERT} * 4)" | bc -l`%"
+    done
+  fi
+  #=========== VERIFICANDO RODADAS DO RECFCT PARA O PERPNTG ===========#
+  if [ ${execute_perpntg} -eq 1 ]; then
+    for ((i=0;i<${NRPERT};i++))
+    do
+      let p=${i}+1
+      if [ ${execute_perpntg_deco[$i]} -eq 1 ]; then
+        ls -1 ${sc2recfctfiles}/ > recfct0${p}Rsc2_ls.out 2>&1
+        MEMBERNUMFILES=`more recfct0${p}Rsc2_ls.out | grep "GFCT0${p}R${LABELI}" | grep "fct.${CASE}" | wc -l`
+        NUMFILESSC2=`expr ${NUMFILESSC2} + ${MEMBERNUMFILES}`
+        if [ ${MEMBERNUMFILES} -eq ${RECFCTTEONUMFILESPERMEMBER} ]; then
+          execute_perpntg_recfct[$i]=0  #INATIVO
+        else
+          execute_perpntg_recfct[$i]=1  #ATIVO
+        fi
+        rm recfct0${p}Rsc2_ls.out
+      elif [ ${execute_perpntg_deco[$i]} -eq 0 ]; then
+        execute_perpntg_recfct[$i]=0    #INATIVO
+      fi
+      echo -en "\r${LABELI}: verificando arqivos gerados pelo perpentg --- `echo "scale=1;100 * (${p} + ${NRPERT} * 2) / (${NRPERT} * 4)" | bc -l`%"
+    done
+  fi
+  #=========== VERIFICANDO RODADAS DO MODELO PARA O PERPNTG ===========
+  if [ ${execute_perpntg} -eq 1 ]
+  then
+    for ((i=0;i<${NRPERT};i++))
+    do
+      let p=${i}+1
+      if [ ${execute_perpntg_recfct[$i]} -eq 1 ]; then
+        #NÚMERO DE ARQUIVOS CALCULADOS TEORICAMENTE: alcance da rodada dividido pelo intervalo de tempo entre a previsões
+        TEONUMFILES=`expr ${CTRNFDAYS} \* 24 / 3`
+        error_flag=0
+        ls -1 ${DK_suite2}/model/dataout/${CASE}/${LABELI}/ > perpntg_ls.out 2>&1
+        REALNUMFILES=`more perpntg_ls.out | grep "GFCT0${p}R${LABELI}" | grep ".fct.${CASE}" | wc -l`
+        if [ ${REALNUMFILES} -eq ${TEONUMFILES} ]
+        then
+          execute_perpntg_model[$i]=0  #INATIVO
+        else
+          execute_perpntg_model[$i]=1  #ATIVO
+        fi
+        rm perpntg_ls.out
+      elif [ ${execute_perpntg_recfct[$i]} -eq 0 ]; then
+        execute_perpntg_model[$i]=0    #INATIVO
+      fi
+      echo -en "\r${LABELI}: verificando arqivos gerados pelo perpentg --- `echo "scale=1;100 * (${p} + ${NRPERT} * 3) / (${NRPERT} * 4)" | bc -l`%"
+    done
+  elif [ ${execute_perpntg} -eq 0 ]
+  then
+    echo -en "\r${LABELI}: verificando arqivos gerados pelo perpentg --- 100%"
+  fi
+  #=========== IMPRIME RESULTADO DA ANÁLISE DO PERPNTG NA TELA ===========#
+  if [ ${execute_perpntg} -eq 1 ]
+  then
+    echo -en "\r${LABELI}: verificação completa: é necessário executar o perpntg"
+  elif [ ${execute_perpntg} -eq 0 ]
+  then
+    echo -en "\r${LABELI}: verificação completa: não é necessário executar o perpntg"
+  fi
+  echo "Fase ${FASE}: Perpntg" >> runEPS7np_${LABELI}.out
+  echo "Faltam rodar: " >> runEPS7np_${LABELI}.out
+  echo -n "Deco   -> " >> runEPS7np_${LABELI}.out
+  for ((i=0;i<${NRPERT};i++)); do
+    let p=${i}+1
+    if [ ${execute_perpntg_deco[$i]:=0} -eq 1 ]; then echo -n " 0${p}R" >> runEPS7np_${LABELI}.out; fi
+  done
+  echo -en "\nEOF    -> " >> runEPS7np_${LABELI}.out
+  for ((i=0;i<${NRPERT};i++)); do
+    let p=${i}+1
+    if [ ${execute_perpntg_eofs[$i]:=0} -eq 1 ]; then echo -n " 0${p}R" >> runEPS7np_${LABELI}.out; fi
+  done
+  echo -en "\nRecfct -> " >> runEPS7np_${LABELI}.out
+  for ((i=0;i<${NRPERT};i++)); do
+    let p=${i}+1
+    if [ ${execute_perpntg_recfct[$i]:=0} -eq 1 ]; then echo -n " 0${p}R" >> runEPS7np_${LABELI}.out; fi
+  done
+  echo -en "\nModelo -> " >> runEPS7np_${LABELI}.out
+  for ((i=0;i<${NRPERT};i++)); do
+    let p=${i}+1
+    if [ ${execute_perpntg_model[$i]:=0} -eq 1 ]; then echo -n " 0${p}R" >> runEPS7np_${LABELI}.out; fi
+  done
+  echo -e " \n" >> runEPS7np_${LABELI}.out
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B04ST} 4`
+#FIM DO BLOCO 04
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 05 - VERIFICA ARQUIVOS GERADOS PELO CTRRECO
+B05ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_perpntg} -eq 0 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificação completa: não é necessário executar o ctrreco"
+  execute_ctrreco=0
+elif [ ${execute_perpntg} -eq 1 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificando arquivos gerados pelo ctrreco"
+  #NÚMERO DE ARQUIVOS CALCULADOS TEORICAMENTE: alcance da rodada dividido pelo intervalo de tempo entre a previsões
+  TEONUMFILES=`expr ${CTRNFDAYS} \* 24 / 3`
+  error_flag=0
+  ls -l ${DK_suite2}/recfct/dataout/${CASE}/GFCTCTR${LABELI}*R.fct* > ctrreco_ls.out 2>&1 || error_flag=1
+  if [ ${error_flag} -ne 1 ]
+  then
+    REALNUMFILES=`more ctrreco_ls.out | wc -l`
+  else
+    REALNUMFILES=0
+  fi
+
+  if [ ${REALNUMFILES} -eq ${TEONUMFILES} ]
+  then
+    echo -en "\r                                                                                                      "
+    echo -en "\r${LABELI}: verificação completa: não é necessário executar o ctrreco"
+    execute_ctrreco=0
+    echo -e "Fase ${FASE}: ctrreco Ok! ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados.\n" >> runEPS7np_${LABELI}.out
+  else
+    echo -en "\r                                                                                                       "
+    echo -en "\r${LABELI}: verificação completa: é necessário executar o ctrreco"
+    execute_ctrreco=1
+    echo -e "Fase ${FASE}: ctrreco não gerou todos os arquivos; somente ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados!\n" >> runEPS7np_${LABELI}.out
+  fi
+  rm ctrreco_ls.out
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B05ST} 4`
+#FIM DO BLOCO 05
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 06 - VERIFICA ARQUIVOS GERADOS PELO CTRMODGPRO
+B06ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_ctrreco} -eq 0 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificação completa: não é necessário executar o ctrmodgpro"
+  execute_ctrmodgpro=0
+elif [ ${execute_ctrreco} -eq 1 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificando arquivos gerados pelo ctrmodgpro"
+  #NÚMERO DE ARQUIVOS CALCULADOS TEORICAMENTE: alcance da rodada dividido pelo intervalo de tempo entre a previsões
+  TEONUMFILES=`expr ${CTRNFDAYS} \* 24 / 3`
+  error_flag=0
+  ls -l ${DK_suite2}/model/dataout/${CASE}/${LABELI}/GFCTCTR${LABELI}*F.fct* > ctrmodgpro_ls.out 2>&1 || error_flag=1
+  if [ ${error_flag} -ne 1 ]
+  then
+    REALNUMFILES=`more ctrmodgpro_ls.out | wc -l`
+  else
+    REALNUMFILES=0
+  fi
+
+  if [ ${REALNUMFILES} -eq ${TEONUMFILES} ]
+  then
+    echo -en "\r${LABELI}: verificação completa: não é necessário executar o ctrmodgpro"
+    execute_ctrmodgpro=0
+    echo -e "Fase ${FASE}: ctrmodgpro Ok! ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados.\n" >> runEPS7np_${LABELI}.out
+  else
+    echo -en "\r${LABELI}: verificação completa: é necessário executar o ctrmodgpro"
+    execute_ctrmodgpro=1
+    echo -e "Fase ${FASE}: ctrmodgpro não gerou todos os arquivos; somente ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados!\n" >> runEPS7np_${LABELI}.out
+  fi
+  rm ctrmodgpro_ls.out
+  
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B06ST} 4`
+#FIM DO BLOCO 06
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 07 - VERIFICA ARQUIVOS GERADOS PELO DRPT
+B07ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_perpntg} -eq 0 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificação completa: não é necessário executar o drpt"
+  execute_drpt=0
+elif [ ${execute_perpntg} -eq 1 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificando arquivos gerados pelo drpt"
+  #NÚMERO DE ARQUIVOS CALCULADOS TEORICAMENTE: igual ao número de perturbações randômicas
+  TEONUMFILES=${NRPERT}
+  error_flag=0
+  ls -l ${DK_suite}/model/datain/GANL0*R${LABELI}S.unf.${CASE} > drpt_ls.out 2>&1 || error_flag=1
+  if [ ${error_flag} -ne 1 ]
+  then
+    REALNUMFILES=`more drpt_ls.out | wc -l`
+  else
+    REALNUMFILES=0
+  fi
+
+  if [ ${REALNUMFILES} -eq ${TEONUMFILES} ]
+  then
+    echo -en "\r${LABELI}: verificação completa: não é necessário executar o drpt"
+    execute_drpt=0
+    echo -e "Fase ${FASE}: drpt Ok! ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados.\n" >> runEPS7np_${LABELI}.out
+  else
+    echo -en "\r${LABELI}: verificação completa: é necessário executar o drpt"
+    execute_drpt=1
+    echo -e "Fase ${FASE}: drpt não gerou todos os arquivos; somente ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados!\n" >> runEPS7np_${LABELI}.out
+  fi
+  rm drpt_ls.out
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B07ST} 4`
+#FIM DO BLOCO 07
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 08 - VERIFICA ARQUIVOS GERADOS PELO RDPT
+B08ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_drpt} -eq 0 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificação completa: não é necessário executar o rdpt"
+  execute_rdpt=0
+elif [ ${execute_drpt} -eq 1 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificando arquivos gerados pelo rdpt"
+  #NÚMERO DE ARQUIVOS CALCULADOS TEORICAMENTE: igual ao número de perturbações randômicas
+  TEONUMFILES=${NRPERT}
+  error_flag=0
+  ls -l ${DK_suite2}/rdpert/dataout/${CASE}/GANL0*R${LABELI}R.unf.${CASE} > rdpt_ls.out 2>&1 || error_flag=1
+  if [ ${error_flag} -ne 1 ]
+  then
+    REALNUMFILES=`more rdpt_ls.out | wc -l`
+  else
+    REALNUMFILES=0
+  fi
+
+  if [ ${REALNUMFILES} -eq ${TEONUMFILES} ]
+  then
+    echo -en "\r${LABELI}: verificação completa: não é necessário executar o rdpt"
+    execute_rdpt=0
+    echo -e "Fase ${FASE}: rdpt Ok! ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados.\n" >> runEPS7np_${LABELI}.out
+  else
+    echo -en "\r${LABELI}: verificação completa: é necessário executar o rdpt"
+    execute_rdpt=1
+    echo -e "Fase ${FASE}: rdpt não gerou todos os arquivos; somente ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados!\n" >> runEPS7np_${LABELI}.out
+  fi
+  rm rdpt_ls.out
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B08ST} 4`
+#FIM DO BLOCO 08
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 09 - VERIFICA ARQUIVOS GERADOS PELO RECANL
+B09ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [[ ${execute_rdpt} -eq 0 && ${execute_perpntg} -eq 0 ]]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificação completa: não é necessário executar o recanl"
+  execute_recanl=0
+elif [[ ${execute_rdpt} -eq 1 || ${execute_perpntg} -eq 1 ]]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificando arquivos gerados pelo recanl"
+  #NÚMERO DE ARQUIVOS CALCULADOS TEORICAMENTE
+  TEONUMFILES=1
+  error_flag=0
+  ls -l ${DK_suite2}/recanl/dataout/${CASE}/GANL${PREFIXO}${LABELI}R.unf.${CASE} > recanl_ls.out 2>&1 || error_flag=1
+  if [ ${error_flag} -ne 1 ]
+  then
+    REALNUMFILES=`more recanl_ls.out | wc -l`
+  else
+    REALNUMFILES=0
+  fi
+
+  if [ ${REALNUMFILES} -eq ${TEONUMFILES} ]
+  then
+    echo -en "\r${LABELI}: verificação completa: não é necessário executar o recanl"
+    execute_recanl=0
+    echo -e "Fase ${FASE}: recanl Ok! ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados.\n" >> runEPS7np_${LABELI}.out
+  else
+    echo -en "\r${LABELI}: verificação completa: é necessário executar o recanl"
+    execute_recanl=1
+    echo -e "Fase ${FASE}: recanl não gerou todos os arquivos; somente ${REALNUMFILES} de ${TEONUMFILES} arquivos foram gerados!\n" >> runEPS7np_${LABELI}.out
+  fi
+  rm recanl_ls.out
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B09ST} 4`
+#FIM DO BLOCO 09
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 10 - VERIFICA ARQUIVOS GERADOS PLEO PRE
+B010ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [[ ${execute_recanl} -eq 0 && ${execute_model} -eq 0 && ${execute_ctrmodgpro} -eq 0 ]]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificação completa: não é necessário executar o pré"
+  execute_pre=0
+elif [[ ${execute_recanl} -eq 1 || ${execute_model} -eq 1 || ${execute_ctrmodgpro} -eq 1 ]]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- 0%"
+  echo "Fase ${FASE}: Pré" >> runEPS7np_${LABELI}.out
+  RESOUT=`echo ${TRC} | awk '{print $1/1}'`
+  if [ $RESOUT = 21 ]; then
+    IM=64
+    JM=32
+  elif [ $RESOUT = 31 ]; then
+    IM=96
+    JM=48
+  elif [ $RESOUT = 42 ]; then
+    IM=128
+    JM=64
+  elif [ $RESOUT = 62 ]; then
+    IM=192
+    JM=96
+  elif [ $RESOUT = 106 ]; then
+    IM=320
+    JM=160
+  elif [ $RESOUT = 126 ]; then
+    IM=384
+    JM=192
+  elif [ $RESOUT = 133 ]; then
+    IM=400
+    JM=200
+  elif [ $RESOUT = 159 ]; then
+    IM=480
+    JM=240
+  elif [ $RESOUT = 170 ]; then
+    IM=512
+    JM=256
+  elif [ $RESOUT = 213 ]; then
+    IM=640
+    JM=320
+  elif [ $RESOUT = 213 ]; then
+    IM=640
+    JM=320
+  elif [ $RESOUT = 254 ]; then
+    IM=768
+    JM=384
+  elif [ $RESOUT = 299 ]; then
+    IM=900
+    JM=450
+  elif [ $RESOUT = 319 ]; then
+    IM=960
+    JM=480
+  elif [ $RESOUT = 341 ]; then
+    IM=1024
+    JM=512
+  elif [ $RESOUT = 382 ]; then
+    IM=1152
+    JM=576
+  elif [ $RESOUT = 511 ]; then
+    IM=1536
+    JM=768
+  elif [ $RESOUT = 533 ]; then
+    IM=1600
+    JM=800
+  elif [ $RESOUT = 666 ]; then
+    IM=2000
+    JM=1000
+  elif [ $RESOUT = 863 ]; then
+    IM=2592
+    JM=1296
+  elif [ $RESOUT = 1279 ]; then
+    IM=3840
+    JM=1920
+  fi
+  sufixo=`echo ${JM} |awk '{ printf("%5.5d\n",$1)  }' `
+  dirdata=${DK_suite}
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 1 / 20" | bc -l`%"
+  execute_pre=0
+  file_out=${dirdata}/pre/dataout/LandSeaMaskNavy.G${sufixo}.dat
+  if [ ! -s ${file_out} ]; then
+    export LandSeaMask=1 ; execute_pre=1
+    echo "LandSeaMask                X" >> runEPS7np_${LABELI}.out
+  else
+    export LandSeaMask=0
+    echo "LandSeaMask                Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 2 / 20" | bc -l`%"
+  file_out=${dirdata}/model/datain/GANL${ANLTYPE}${LABELI}S.unf.${CASE}
+  if [ ! -s ${file_out} ]; then
+    export Chopping=1 ; execute_pre=1
+    echo "Chopping                   X" >> runEPS7np_${LABELI}.out
+  else
+    export Chopping=0
+    echo "Chopping                   Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 4 / 20" | bc -l`%"
+  file_out=${dirdata}/pre/dataout/Topography.G${sufixo}
+  file_out2=${dirdata}/model/datain/TopoVariance.G${sufixo}
+  if [[ ! -s ${file_out} || ! -s ${file_out2} ]]; then
+    export VarTopo=1 ; execute_pre=1
+    export TopoSpectral=1
+    echo "VarTopo                    X" >> runEPS7np_${LABELI}.out
+    echo "TopoSpectral               X" >> runEPS7np_${LABELI}.out
+  else
+    export VarTopo=0
+    export TopoSpectral=0
+    echo "VarTopo                    Ok" >> runEPS7np_${LABELI}.out
+    echo "TopoSpectral               Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 5 / 20" | bc -l`%"
+  file_out=${dirdata}/pre/dataout/VegetationMaskClima.dat
+  if [ ! -s ${file_out} ]; then
+    export VegetationMaskSSiB=1 ; execute_pre=1
+    echo "VegetationMaskSSiB         X" >> runEPS7np_${LABELI}.out
+  else
+    export VegetationMaskSSiB=0
+    echo "VegetationMaskSSiB         Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 6 / 20" | bc -l`%"
+  file_out=${dirdata}/model/datain/VegetationMask.G${sufixo}
+  if [ ! -s ${file_out} ]; then
+    export VegetationMask=1 ; execute_pre=1
+    echo "VegetationMask             X" >> runEPS7np_${LABELI}.out
+  else
+    export VegetationMask=0
+    echo "VegetationMask             Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 7 / 20" | bc -l`%"
+  file_out=${dirdata}/model/datain/AlbedoSSiB
+  file_out2=${dirdata}/model/datain/VegetationSSiB
+  if [[ ! -s ${file_out} || ! -s ${file_out2} ]]; then
+    export VegetationAlbedoSSiB=1 ; execute_pre=1
+    echo "VegetationAlbedoSSiB       X" >> runEPS7np_${LABELI}.out
+  else
+    export VegetationAlbedoSSiB=0
+    echo "VegetationAlbedoSSiB       Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 8 / 20" | bc -l`%"
+  file_out=${dirdata}/pre/dataout/DeepSoilTemperatureClima.dat
+  if [ ! -s ${file_out} ]; then
+    export DeepSoilTemperatureClima=1 ; execute_pre=1
+    echo "DeepSoilTemperatureClima   X" >> runEPS7np_${LABELI}.out
+  else
+    export DeepSoilTemperatureClima=0
+    echo "DeepSoilTemperatureClima   Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 9 / 20" | bc -l`%"
+  file_out=${dirdata}/model/datain/DeepSoilTemperature.G${sufixo}
+  if [ ! -s ${file_out} ]; then
+    export DeepSoilTemperature=1 ; execute_pre=1
+    echo "DeepSoilTemperature        X" >> runEPS7np_${LABELI}.out
+  else
+    export DeepSoilTemperature=0
+    echo "DeepSoilTemperature        Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 10 / 20" | bc -l`%"
+  file_out=${dirdata}/pre/dataout/RoughnessLengthClima.dat
+  if [ ! -s ${file_out} ]; then
+    export RoughnessLengthClima=1 ; execute_pre=1
+    echo "RoughnessLengthClima       X" >> runEPS7np_${LABELI}.out
+  else
+    export RoughnessLengthClima=0
+    echo "RoughnessLengthClima       Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 11 / 20" | bc -l`%"
+  file_out=${dirdata}/model/datain/RoughnessLength.G${sufixo}
+  if [ ! -s ${file_out} ]; then
+    export RoughnessLength=1 ; execute_pre=1
+    echo "RoughnessLength            X" >> runEPS7np_${LABELI}.out
+  else
+    export RoughnessLength=0
+    echo "RoughnessLength            Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 12 / 20" | bc -l`%"
+  file_out=${dirdata}/pre/dataout/SoilMoistureClima.dat
+  if [ ! -s ${file_out} ]; then
+    export SoilMoistureClima=1 ; execute_pre=1
+    echo "SoilMoistureClima          X" >> runEPS7np_${LABELI}.out
+  else
+    export SoilMoistureClima=0
+    echo "SoilMoistureClima          Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 13/ 20" | bc -l`%"
+  file_out=${dirdata}/model/datain/SoilMoisture.G${sufixo}
+  if [ ! -s ${file_out} ]; then
+    export SoilMoisture=1 ; execute_pre=1
+    echo "SoilMoisture               X" >> runEPS7np_${LABELI}.out
+  else
+    export SoilMoisture=0
+    echo "SoilMoisture               Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 14 / 20" | bc -l`%"
+  file_out=${dirdata}/pre/dataout/AlbedoClima.dat
+  if [ ! -s ${file_out} ]; then
+    export AlbedoClima=1 ; execute_pre=1
+    echo "AlbedoClima                X" >> runEPS7np_${LABELI}.out
+  else
+    export AlbedoClima=0
+    echo "AlbedoClima                Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 15 / 20" | bc -l`%"
+  file_out=${dirdata}/pre/dataout/Albedo.G${sufixo}
+  if [ ! -s ${file_out} ]; then
+    export Albedo=1 ; execute_pre=1
+    echo "Albedo                     X" >> runEPS7np_${LABELI}.out
+  else
+    export Albedo=0
+    echo "Albedo                     Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 16 / 20" | bc -l`%"
+  file_out=${dirdata}/model/datain/Snow${LABELI}S.unf.G${sufixo}
+  if [ ! -s ${file_out} ]; then
+    export SnowClima=1 ; execute_pre=1
+    echo "SnowClima                  X" >> runEPS7np_${LABELI}.out
+  else
+    export SnowClima=0
+    echo "SnowClima                  Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 17 / 20" | bc -l`%"
+  datt=`echo ${LABELI} |cut -c 1-8`
+  file_out=${dirdata}/model/datain/SSTClima$datt.G${sufixo}
+  if [ ! -s ${file_out} ]; then
+    export SSTClima=1 ; execute_pre=1
+    echo "SSTClima                   X" >> runEPS7np_${LABELI}.out
+  else
+    export SSTClima=0
+    echo "SSTClima                   Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 18 / 20" | bc -l`%"
+  datt=`echo ${LABELI} |cut -c 1-8`
+  file_out=${dirdata}/pre/dataout/SSTWeekly.$datt
+  if [[ ! -s ${file_out} || ${SSTClima} -eq 1 ]] ; then
+    export SSTWeeklyNCEP=1 ; execute_pre=1
+    echo "SSTWeeklyNCEP              X" >> runEPS7np_${LABELI}.out
+  else
+    export SSTWeeklyNCEP=0
+    echo "SSTWeeklyNCEP              Ok" >> runEPS7np_${LABELI}.out
+  fi
+  echo -en "\r${LABELI}: verificando arqivos gerados pelo pré --- `echo "scale=1;100 * 19 / 20" | bc -l`%"
+  datt=`echo ${LABELI} |cut -c 1-8`
+  file_out=${dirdata}/model/datain/SSTWeekly$datt.G${sufixo}
+  if [[ ! -s ${file_out} || ${SSTClima} -eq 1 ]] ; then
+    export SSTWeekly=1 ; execute_pre=1
+    echo -e "SSTWeekly                  X\n" >> runEPS7np_${LABELI}.out
+  else
+    export SSTWeekly=0
+    echo -e "SSTWeekly                  Ok\n" >> runEPS7np_${LABELI}.out
+  fi
+  if [ ${execute_pre} -eq 1 ]
+  then
+    echo -en "\r${LABELI}: verificação completa: é necessário rodar o pré"
+  elif [ ${execute_pre} -eq 0 ]
+  then
+    echo -en "\r${LABELI}: verificação completa: não é necessário rodar o pré"
+  fi
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B10ST} 4`
+#FIM DO BLOCO 10
+#==========================================================================
+
+
+############################ SEÇÃO II ##############################
+# Nesta seção os blocos são responsáveis por preparar o ambiente   #
+# para execução dos diversos códigos fortran envolvidos na rodada  #
+# do EPS do CPTEC.                                                 #
+# Esta seção possui dois blocos de tarefa:                         #
+# BLOCO 11: inicializa o ambiente para execução do processo;       #
+# BLOCO 12: copia arquivos necessários a execução do pré;          #
+####################################################################
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 11 - COPIA ARQUIVOS sst E SAnl PARA RODAR O PRÉ-PROCESSAMENTO
+B011ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_pre} -eq 0 ]
+then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: preparação do pré concluída"
+elif [ ${execute_pre} -eq 1 ]
+then
+  echo "Fase ${FASE}: Copiando arquivos GANL para execução do pré" >> runEPS7np_${LABELI}.out
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: Verificando arquivos sst e SAnl, aguarde"
+  if [ ! -d ${DK_suite}/pre/datain/ ]; then mkdir -p ${DK_suite}/pre/datain/; fi
+  year=`awk 'BEGIN {print substr("'${LABELI}'",1,4)}'`
+  month=`awk 'BEGIN {print substr("'${LABELI}'",5,2)}'` ; month=`expr ${month} / 1`
+  day=`awk 'BEGIN {print substr("'${LABELI}'",7,2)}'` ; day=`expr ${day} / 1`
+  hour=`awk 'BEGIN {print substr("'${LABELI}'",9,2)}'`
+  dirfile10=${ONLINEEPS}/gblav/${year}
+  dirfile11=${FITAEPS}/gblav/${year}
+  dirfile12=/stornext/oper/tempo/externos/Download/NCEP/${year}`printf "%2.2d" ${month}`/`printf "%2.2d" ${day}`${hour}
+  file1="gblav.T`printf "%2.2d" ${hour}`Z.SAnl.${LABELI}"
+  dirfile20=${ONLINEEPS}/sst/${year}
+  dirfile21=${FITAEPS}/sst/${year}
+  dirfile22=/stornext/oper/tempo/externos/Download/NCEP/${year}`printf "%2.2d" ${month}`/`printf "%2.2d" ${day}`${hour}
+  file2="gdas1.T00Z.sstgrb.${year}`printf "%2.2d" ${month}``printf "%2.2d" ${day}`${hour}"
+  file3="gdas1.T00Z.sstgrb2.${year}`printf "%2.2d" ${month}``printf "%2.2d" ${day}`${hour}"
+  file4="gdas1.T${hour}Z.sstgrb.${year}`printf "%2.2d" ${month}``printf "%2.2d" ${day}`${hour}"
+  file5="gdas1.T00Z.sstgrb.${year}`printf "%2.2d" ${month}``printf "%2.2d" ${day}`00"
+  exit_flag=0
+  k=0
+  echo -en "\r                                                                                          "
+  echo -en "\r${LABELI}: preparação do pré concluída com sucesso"
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B11ST} 4`
+#FIM DO BLOCO 11
+#==========================================================================
+
+
+############################ SEÇÃO III #############################
+# Nesta seção os blocos são responsáveis por submeter e monitorar  #
+# os códigos fortran do EPS submetidos no Tupã. Em geral os códi-  #
+# gos são submetidos diretamente deste scrip. Contudo, devido ao   #
+# número elevado de processos envolvidos no pré foi optei por cha- #
+# mar os scripts do pre e não submeter os códigos diretamente.     #
+# Esta seção possui um bloco de tarefa:                            #
+# BLOCO 12: inicializa variáveis comuns a todo processo;           #
+####################################################################
+#rm *.${LABELI}.JOBID; exit 0
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 12 - EXECUTA O PRÉ
+B12ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_pre} -eq 0 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: execução do pré concluída"
+elif [ ${execute_pre} -eq 1 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: ./runPre ${TRC} ${LV} ${LABELI} ${PREFIXO} 2"
+  ./runPre ${TRC} ${LV} ${LABELI} ${PREFIXO} 2 > runPre.out 2>&1
+  sleep 5
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B12ST} 4`
+#FIM DO BLOCO 12
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 13 - EXECUTA O RECANL
+B13ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_recanl} -eq 0 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: execução do recanl concluída"
+elif [ ${execute_recanl} -eq 1 ]; then
+  echo -en "\r${LABELI}: ./runrecanl.bash run ${TRC} ${LV} ANL${ANLTYPE} ${LABELI} ${LABELF}"
+  export it=1
+  ./runrecanl.bash run ${TRC} ${LV} ANL${ANLTYPE} ${LABELI} ${LABELF} > runrecanl.out 2>&1
+  echo -n " (`cat recanl.${LABELI}.JOBID`)"
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B13ST} 4`
+#FIM DO BLOCO 13
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 14 - EXECUTA O RDPT
+B14ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_rdpt} -eq 0 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: execução do rdpt concluída"
+elif [ ${execute_rdpt} -eq 1 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: ./runrdpt.bash run ${NRPERT} ${TRC} ${LV} ${LABELI} YES ${ANLTYPE}"
+  if [ ${execute_recanl} -ne 0 ]; then
+    export it=2
+    export FIRST=`cat recanl.${LABELI}.JOBID`
+  else
+    export it=1
+    export FIRST='     '
+  fi
+  ./runrdpt.bash run ${NRPERT} ${TRC} ${LV} ${LABELI} YES ${ANLTYPE} > runrdpt.out 2>&1
+  echo -n " (`cat rdpt.${LABELI}.JOBID`)"
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B14ST} 4`
+#FIM DO BLOCO 14
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 15 - EXECUTA O DRPT
+B15ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_drpt} -eq 0 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: execução do drpt concluída"
+elif [ ${execute_drpt} -eq 1 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: ./rundrpt.bash run ${NRPERT} ${TRC} ${LV} ${LABELI} YES ${ANLTYPE} hold"
+  if [ ${execute_rdpt} -ne 0 ]; then
+    export it=2
+    export FIRST=`cat rdpt.${LABELI}.JOBID`
+  else
+    export it=1
+    export FIRST='     '
+  fi
+  ./rundrpt.bash run ${NRPERT} ${TRC} ${LV} ${LABELI} YES ${ANLTYPE} > rundrpt.out 2>&1
+  echo -n " (`cat drpt.${LABELI}.JOBID`)"
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B15ST} 4`
+#FIM DO BLOCO 15
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 16 - EXECUTA O CTRMODGPRO
+B16ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_ctrmodgpro} -eq 0 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: execução do ctrmodgpro concluída"
+elif [ ${execute_ctrmodgpro} -eq 1 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: ./runctrmodgpro.bash ${CTRMODG_mppwidth} 24 EPSedu_R ${TRC} ${LV} ${LABELI} ${LABELR} CTR ${ANLTYPE}"
+  if [ ${execute_drpt} -ne 0 ]; then
+    export it=2
+    export FIRST=`cat drpt.${LABELI}.JOBID`
+  else
+    export it=1
+    export FIRST='     '
+  fi
+  ./runctrmodgpro.bash ${CTRMODG_mppwidth} 24 CTR_edu ${TRC} ${LV} ${LABELI} ${LABELR} CTR ${ANLTYPE} > runctrmodgpro.out 2>&1
+  echo -n " (`cat ctrmodgpro.${LABELI}.JOBID`)"
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B16ST} 4`
+#FIM DO BLOCO 16
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 17 - CTRRECO
+B17ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_ctrreco} -eq 0 ]; then
+  echo -en "\r                                                                                                   "
+  echo -en "\r${LABELI}: execução do ctrreco concluída"
+elif [ ${execute_ctrreco} -eq 1 ]; then
+  echo -en "\r                                                                                                   "
+  echo -en "\r${LABELI}: ./runctrreco.bash run ${TRC} ${LV} ${LABELI} CTR"
+  if [ ${execute_ctrmodgpro} -ne 0 ]; then
+    export ZERO=`cat ctrmodgpro.${LABELI}.JOBID`
+  fi
+  export FIRST='    '
+  ./runctrreco.bash run ${TRC} ${LV} ${LABELI} CTR > runctrreco.out 2>&1
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B17ST} 4`
+#FIM DO BLOCO 17
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 18 - EXECUTA O PERPNTG
+B18ST=`date +%s`                                     #HORA DE INICIO DO PROCESSO
+if [ ${execute_perpntg} -eq 0 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: execução do perpntg concluída"
+elif [ ${execute_perpntg} -eq 1 ]; then
+  for ((i=0;i<${NRPERT};i++)); do
+    let p=${i}+1
+    if [ ${execute_perpntg_deco[$i]} -ne 0 ]; then
+      echo -en "\r                                                                                                "
+      echo -en "\r${LABELI}: ./runperpntg.bash run 126 28 0${p} R ${LABELI} ${LABELR} ${NFDAYS} YES ${NRPERT} sstwky"
+      if [ ! -s ${SOPERM}/model/datain/GANL0${p}R${LABELI}S.unf.${CASE} ]; then
+        export ZERO=`cat drpt.${LABELI}.JOBID`:`cat ctrmodgpro.${LABELI}.JOBID`:`cat ctrreco.${LABELI}.JOBID`
+        export it=2
+      else
+        export ZERO='   '
+        export it=1
+      fi
+      ./runperpntg2.bash run 126 28 0${p} R ${LABELI} ${LABELR} ${NFDAYS} YES ${NRPERT} sstwky > runperpntg.0${p}R.out 2>&1
+    fi
+  done
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B18ST} 4`
+#FIM DO BLOCO 18
+#==========================================================================
+
+#echo ${execute_model_member[*]}; echo ${execute_pos_member[*]}; exit 0
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 19 - EXECUTA O MODELO
+B19ST=`date +%s`                          #HORA DE INICIO DO PROCESSO
+if [ ${execute_model} -eq 0 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: execução do modelo concluída"
+elif [ ${execute_model} -eq 1 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: aguardando conclusão do perpntg -> 0r | 0q | 0h | ganl=00"
+  user=`who i am | awk '{print $1}'`
+  if [ ${execute_perpntg} -ne 0 ]; then 
+    sleep 65
+    modelrun=`qstat | grep ${user} | grep "ENSMODEL" | grep "R ${QUEUE}*" | wc -l`
+    perrecorun=`${qstat} @aux20 | grep ${user} | grep "ENSPERRECO" | grep "R ${AUX_QUEUE}" | wc -l`
+    recfctrun=`${qstat} @aux20 | grep ${user} | grep "ENSRECFCT" | grep "R ${AUX_QUEUE}" | wc -l`
+    eofrun=`${qstat} @aux20 | grep ${user} | grep "ENSEOFS" | grep "R ${AUX_QUEUE}" | wc -l`
+    decorun=`${qstat} @aux20 | grep ${user} | grep "ENSDECO" | grep "R ${AUX_QUEUE}" | wc -l`
+    modelqueue=`qstat | grep ${user} | grep "ENSMODEL" | grep "Q ${QUEUE}*" | wc -l`
+    perrecoqueue=`${qstat} @aux20 | grep ${user} | grep "ENSPERRECO" | grep "Q ${AUX_QUEUE}" | wc -l`
+    recfctqueue=`${qstat} @aux20 | grep ${user} | grep "ENSRECFCT" | grep "Q ${AUX_QUEUE}" | wc -l`
+    eofqueue=`${qstat} @aux20 | grep ${user} | grep "ENSEOFS" | grep "Q ${AUX_QUEUE}" | wc -l`
+    decoqueu=`${qstat} @aux20 | grep ${user} | grep "ENSDECO" | grep "Q ${AUX_QUEUE}" | wc -l`
+    modelhold=`qstat | grep ${user} | grep "ENSMODEL" | grep "H ${QUEUE}*" | wc -l`
+    perrecohold=`${qstat} @aux20 | grep ${user} | grep "ENSPERRECO" | grep "H ${AUX_QUEUE}" | wc -l`
+    recfcthold=`${qstat} @aux20 | grep ${user} | grep "ENSRECFCT" | grep "H ${AUX_QUEUE}" | wc -l`
+    eofhold=`${qstat} @aux20 | grep ${user} | grep "ENSEOFS" | grep "H ${AUX_QUEUE}" | wc -l`
+    decohold=`${qstat} @aux20 | grep ${user} | grep "ENSDECO" | grep "H ${AUX_QUEUE}" | wc -l`
+    let run=${modelrun}+${perrecorun}+${recfctrun}+${eofrun}+${decorun}
+    let queue=${modelqueue}+${perrecoqueue}+${recfctqueue}+${eofqueue}+${decoqueu}
+    let hold=${modelhold}+${perrecohold}+${recfcthold}+${eofhold}+${decohold}
+    let prqh=${run}+${queue}+${hold}
+  else
+    run=0
+    queue=0
+    hold=0
+    let prqh=${run}+${queue}+${hold}
+  fi
+  echo -en "\r${LABELI}: aguardando conclusão do perpntg -> ${run}r | ${queue}q | ${hold}h | ganl=00"
+  count=0
+  count2=0
+  count2exit=0
+  exit_flag=0
+  while [ ${exit_flag} -eq 0 ]; do
+    modelrun=`qstat | grep ${user} | grep "ENSMODEL" | grep "R ${QUEUE}*" | wc -l`
+    perrecorun=`${qstat} @aux20 | grep ${user} | grep "ENSPERRECO" | grep "R ${AUX_QUEUE}" | wc -l`
+    recfctrun=`${qstat} @aux20 | grep ${user} | grep "ENSRECFCT" | grep "R ${AUX_QUEUE}" | wc -l`
+    eofrun=`${qstat} @aux20 | grep ${user} | grep "ENSEOF" | grep "R ${AUX_QUEUE}" | wc -l`
+    decorun=`${qstat} @aux20 | grep ${user} | grep "ENSDECO" | grep "R ${AUX_QUEUE}" | wc -l`
+    modelqueue=`qstat | grep ${user} | grep "ENSMODEL" | grep "Q ${QUEUE}*" | wc -l`
+    perrecoqueue=`${qstat} @aux20 | grep ${user} | grep "ENSPERRECO" | grep "Q ${AUX_QUEUE}" | wc -l`
+    recfctqueue=`${qstat} @aux20 | grep ${user} | grep "ENSRECFCT" | grep "Q ${AUX_QUEUE}" | wc -l`
+    eofqueue=`${qstat} @aux20 | grep ${user} | grep "ENSEOF" | grep "Q ${AUX_QUEUE}" | wc -l`
+    decoqueu=`${qstat} @aux20 | grep ${user} | grep "ENSDECO" | grep "Q ${AUX_QUEUE}" | wc -l`
+    modelhold=`qstat | grep ${user} | grep "ENSMODEL" | grep "H ${QUEUE}*" | wc -l`
+    perrecohold=`${qstat} @aux20 | grep ${user} | grep "ENSPERRECO" | grep "H ${AUX_QUEUE}" | wc -l`
+    recfcthold=`${qstat} @aux20 | grep ${user} | grep "ENSRECFCT" | grep "H ${AUX_QUEUE}" | wc -l`
+    eofhold=`${qstat} @aux20 | grep ${user} | grep "ENSEOF" | grep "H ${AUX_QUEUE}" | wc -l`
+    decohold=`${qstat} @aux20 | grep ${user} | grep "ENSDECO" | grep "H ${AUX_QUEUE}" | wc -l`
+    let run=${modelrun}+${perrecorun}+${recfctrun}+${eofrun}+${decorun}
+    let queue=${modelqueue}+${perrecoqueue}+${recfctqueue}+${eofqueue}+${decoqueu}
+    let hold=${modelhold}+${perrecohold}+${recfcthold}+${eofhold}+${decohold}
+    let prqh=${run}+${queue}+${hold}
+    let prq=${run}+${queue}
+    ganl=0
+    if [ ${prqh} -eq 0 ]; then
+      for ((i=0;i<${NUMMEMB};i++)); do
+        if [ -s ${IOPERM}/GANL${MEMBER[$i]}${LABELI}S.unf.${CASE} ]; then let ganl=${ganl}+1; fi
+      done
+      if [[ ${ganl} -lt ${NUMMEMB} && ${resetcount} -lt 3 ]]; then
+        execute_model=0
+        execute_pos=0
+      fi
+      exit_flag=1
+    else
+      ganl=??
+    fi
+    if [[ ${prq} -eq 0 && ${hold} -gt 0 ]]; then
+      let count2exit=${count2exit}+1
+    fi
+    if [ ${count2exit} -gt 120 ]; then
+      sdb=0
+      aux=0
+      qstat | grep ${user} | grep "H ${QUEUE}" | awk '{print $1}' > sdbjobs.hold
+      ${qstat} @aux20 | grep ${user} | grep "H ${AUX_QUEUE}" | awk '{print $1}' > auxjobs.hold
+      for job in `cat sdbjobs.hold`; do
+        qdel ${job}
+      done
+      for job in `cat auxjobs.hold`; do
+        qdel ${job}4
+      done
+      if [ -s sdbjobs.hold ]; then rm sdbjobs.hold;fi
+      if [ -s auxjobs.hold ]; then rm auxjobs.hold;fi
+      execute_model=0
+      execute_pos=0
+      exit_flag=1
+    fi
+    sleep 5
+    let count2=${count2}+1
+    if [ ${count2} -gt 240 ]; then
+      exit_flag=1
+    fi
+    echo -en "\r                                                                                                "
+    echo -en "\r${LABELI}: aguardando conclusão do perpntg -> ${run}r | ${queue}q | ${hold}h | ganl=${ganl}"
+  done
+  echo -en "\r                                                                                                  "
+  for ((i=0;i<${NUMMEMB};i++)); do
+    if [[ ${execute_model_member[$i]} -ne 0 && -s ${IOPERM}/GANL${MEMBER[$i]}${LABELI}S.unf.${CASE} ]]; then
+      export it=1
+      export FIRST='     '
+      echo -en "\r${LABELI}: executando runModel ${MODEL_mppwidth} 24 1 EPSMODEL_${MEMBER[$i]} ${TRC} ${LV} ${LABELI} ${LABELF} ${MEMBER[$i]}"
+      nohup ./runModel ${MODEL_mppwidth} 24 1 EPSMODEL_${MEMBER[$i]} ${TRC} ${LV} ${LABELI} ${LABELF} ${MEMBER[$i]} >& runModel.${MEMBER[$i]}.out&
+      sleep 5
+    fi
+  done
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B19ST} 4`
+#FIM DO BLOCO 19
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+#==========================================================================
+#BLOCO 20 - EXECUTA O PÓS
+B20ST=`date +%s`                          #HORA DE INICIO DO PROCESSO
+if [ ${execute_pos} -eq 0 ]; then
+  echo -en "\r                                                                                                "
+  echo -en "\r${LABELI}: execução do pós concluída"
+
+elif [ ${execute_pos} -eq 1 ]; then
+  for ((i=0;i<${NUMMEMB};i++)); do
+    if [ ${execute_pos_member[$i]} -ne 0 ]; then
+      echo -en "\r                                                                                                "
+      echo -en "\r${LABELI}: executando runPos 1 24 EPSPOS_${MEMBER[$i]} ${TRC} ${LV} ${LABELI} ${LABELF} ${MEMBER[${i}]}"
+      if [[ ${execute_model_member[$i]} -ne 0 && -s ${IOPERM}/GANL${MEMBER[$i]}${LABELI}S.unf.${CASE} && -s model.${MEMBER[$i]}.${LABELI}.JOBID ]]; then
+        export it=2
+        export FIRST=`cat model.${MEMBER[$i]}.${LABELI}.JOBID`
+        nohup ./runPos 1 1 EPSPOS_${MEMBER[$i]} ${TRC} ${LV} ${LABELI} ${LABELF} ${MEMBER[${i}]} >& runPos.${MEMBER[$i]}.out&
+      elif [[ (${execute_model_member[$i]} -ne 0 && -s ${IOPERM}/GANL${MEMBER[$i]}${LABELI}S.unf.${CASE}) || ${execute_model_member[$i]} -eq 0 ]]; then
+        export it=1
+        export FIRST='     '
+        nohup ./runPos 1 1 EPSPOS_${MEMBER[$i]} ${TRC} ${LV} ${LABELI} ${LABELF} ${MEMBER[${i}]} >& runPos.${MEMBER[$i]}.out&
+      fi
+    fi
+  done
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B20ST} 4`
+#FIM DO BLOCO 20
+#==========================================================================
+
+let num=${num}+1
+FASE=`printf "%2.2d" ${num}`
+let execute=${execute_pre}+${execute_recanl}+${execute_rdpt}+${execute_drpt}+${execute_ctrmodgpro}+${execute_ctrreco}+${execute_perpntg}+${execute_model}+${execute_pos}
+#==========================================================================
+#BLOCO 21 - MONITORA PROCESSOS NO TUPÃ (SDB E AUX)
+B21ST=`date +%s`                          #HORA DE INICIO DO PROCESSO
+if [ ${execute} -ne 0 ]; then
+  user=`who i am | awk '{print $1}'`
+  echo -en "\r                                                                                                  "
+  echo -en "\r${LABELI}: Verificando jobs: 0r | 0q | 0h"
+  sdbrun=`qstat | grep ${user} | grep "R ${QUEUE}*" | wc -l`
+  auxrun=`${qstat} @aux20 | grep ${user} | grep "R ${AUX_QUEUE}" | wc -l`
+  let prun=${sdbrun}+${auxrun}
+  sdbqueue=`qstat | grep ${user} | grep "Q ${QUEUE}*" | wc -l`
+  auxqueue=`${qstat} @aux20 | grep ${user} | grep "Q ${AUX_QUEUE}" | wc -l`
+  let pqueue=${sdbqueue}+${auxqueue}
+  sdbhold=`qstat | grep ${user} | grep "H ${QUEUE}*" | wc -l`
+  auxhold=`${qstat} @aux20 | grep ${user} | grep "H ${AUX_QUEUE}" | wc -l`
+  let phold=${sdbhold}+${auxhold}
+  echo -en "\r${LABELI}: Verificando jobs: ${prun}r | ${pqueue}q | ${phold}h"
+  if [[ ${prun} -eq 0 && ${pqueue} -eq 0 && ${phold} -ne 0 ]]; then
+    for job in `qstat | grep ${user} | awk '{print $1}'`
+    do
+      qdel ${job}
+    done
+    for job in `${qstat} @aux20 | grep ${user} | awk '{print $1}'`
+    do
+      qdel ${job}4
+    done
+  fi
+  #=== TEMPO NECESSÁRIO PARA ATUALIZAÇÃO DO QSTAT ===#
+  echo -en "\r                                                                                              "
+  echo -en "\r${LABELI}: sdb: 0r/0q/0h | aux: 0r/0q/0h |`${DIRTOOLS}/TimeStep.1.1 ${B02ST} 4`|"
+  for ((i=1;i<=13;i++)); do
+    sleep 5
+    sdbrun=`qstat | grep ${user} | grep "R ${QUEUE}*" | wc -l`; sdbrun=`printf %2.2d ${sdbrun}`
+    auxrun=`${qstat} @aux20 | grep ${user} | grep "R ${AUX_QUEUE}" | wc -l`; auxrun=`printf %2.2d ${auxrun}`
+    sdbqueue=`qstat | grep ${user} | grep "Q ${QUEUE}*" | wc -l`; sdbqueue=`printf %2.2d ${sdbqueue}`
+    auxqueue=`${qstat} @aux20 | grep ${user} | grep "Q ${AUX_QUEUE}" | wc -l`; auxqueue=`printf %2.2d ${auxqueue}`
+    sdbhold=`qstat | grep ${user} | grep "H ${QUEUE}*" | wc -l`; sdbhold=`printf %2.2d ${sdbhold}`
+    auxhold=`${qstat} @aux20 | grep ${user} | grep "H ${AUX_QUEUE}" | wc -l`; auxhold=`printf %2.2d ${auxhold}`
+    echo -en "\r${LABELI}: sdb: ${sdbrun}r/${sdbqueue}q/${sdbhold}h | aux: ${auxrun}r/${auxqueue}q/${auxhold}h |`${DIRTOOLS}/TimeStep.1.1 ${B02ST} 4`|"
+  done
+  sdbrun=`qstat | grep ${user} | grep "R ${QUEUE}*" | wc -l`
+  auxrun=`${qstat} @aux20 | grep ${user} | grep "R ${AUX_QUEUE}" | wc -l`
+  sdbqueue=`qstat | grep ${user} | grep "Q ${QUEUE}*" | wc -l`
+  auxqueue=`${qstat} @aux20 | grep ${user} | grep "Q ${AUX_QUEUE}" | wc -l`
+  sdbhold=`qstat | grep ${user} | grep "H ${QUEUE}*" | wc -l`
+  auxhold=`${qstat} @aux20 | grep ${user} | grep "H ${AUX_QUEUE}" | wc -l`
+  let aux=${auxrun}+${auxqueue}+${auxhold}
+  let sdb=${sdbrun}+${sdbqueue}+${sdbhold}
+  sdbrun=`printf %2.2d ${sdbrun}`
+  auxrun=`printf %2.2d ${auxrun}`
+  sdbqueue=`printf %2.2d ${sdbqueue}`
+  auxqueue=`printf %2.2d ${auxqueue}`
+  sdbhold=`printf %2.2d ${sdbhold}`
+  auxhold=`printf %2.2d ${auxhold}`
+  echo -en "\r${LABELI}: sdb: ${sdbrun}r/${sdbqueue}q/${sdbhold}h | aux: ${auxrun}r/${auxqueue}q/${auxhold}h |`${DIRTOOLS}/TimeStep.1.1 ${B02ST} 4`|"
+  count2exit=0
+  while [[ ${aux} -ne 0 || ${sdb} -ne 0 ]]; do
+    sleep 20
+    sdbrun=`qstat | grep ${user} | grep "R ${QUEUE}*" | wc -l`
+    auxrun=`${qstat} @aux20 | grep ${user} | grep "R ${AUX_QUEUE}" | wc -l`
+    sdbqueue=`qstat | grep ${user} | grep "Q ${QUEUE}*" | wc -l`
+    auxqueue=`${qstat} @aux20 | grep ${user} | grep "Q ${AUX_QUEUE}" | wc -l`
+    sdbhold=`qstat | grep ${user} | grep "H ${QUEUE}*" | wc -l`
+    auxhold=`${qstat} @aux20 | grep ${user} | grep "H ${AUX_QUEUE}" | wc -l`
+    let aux=${auxrun}+${auxqueue}+${auxhold}
+    let sdb=${sdbrun}+${sdbqueue}+${sdbhold}
+    let rq=${sdbrun}+${sdbqueue}+${auxrun}+${auxqueue}
+    let h=${sdbhold}+${auxhold}
+    sdbrun=`printf %2.2d ${sdbrun}`
+    auxrun=`printf %2.2d ${auxrun}`
+    sdbqueue=`printf %2.2d ${sdbqueue}`
+    auxqueue=`printf %2.2d ${auxqueue}`
+    sdbhold=`printf %2.2d ${sdbhold}`
+    auxhold=`printf %2.2d ${auxhold}`
+    echo -en "\r${LABELI}: sdb: ${sdbrun}r/${sdbqueue}q/${sdbhold}h | aux: ${auxrun}r/${auxqueue}q/${auxhold}h |`${DIRTOOLS}/TimeStep.1.1 ${B02ST} 4`|"
+    if [[ ${rq} -eq 0 && ${h} -gt 0 ]]; then
+      let count2exit=${count2exit}+1
+    fi
+    if [ ${count2exit} -gt 15 ]; then
+      sdb=0
+      aux=0
+      qstat | grep ${user} | grep "H ${QUEUE}" | awk '{print $1}' > sdbjobs.hold
+      ${qstat} @aux20 | grep ${user} | grep "H ${AUX_QUEUE}" | awk '{print $1}' > auxjobs.hold
+      for job in `cat sdbjobs.hold`; do
+        qdel ${job}
+      done
+      for job in `cat auxjobs.hold`; do
+        qdel ${job}4
+      done
+      if [ -s sdbjobs.hold ]; then rm sdbjobs.hold;fi
+      if [ -s auxjobs.hold ]; then rm auxjobs.hold;fi
+    fi
+  done
+fi
+FTD[`expr ${FASE} / 1`]=`${DIRTOOLS}/TimeStep.1.1 ${B21ST} 4`
+#FIM DO BLOCO 21
+#==========================================================================
+
+let execute=${execute_pre}+${execute_recanl}+${execute_rdpt}+${execute_drpt}+${execute_ctrmodgpro}+${execute_ctrreco}+${execute_perpntg}+${execute_model}+${execute_pos}
+echo -en "\r                                                                                              "
+done
+
+rm runPre.out > runEPS7_rm_${LABELI}.out 2>&1
+rm set*${LABELI}* >> runEPS7_rm_${LABELI}.out 2>&1
+rm runrecanl.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm ${DK_suite}/recanl/output/set*${LABELI}* >> runEPS7_rm_${LABELI}.out 2>&1
+rm runrdpt.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm ${DK_suite}/rdpert/output/set*${LABELI}* >> runEPS7_rm_${LABELI}.out 2>&1
+rm rundrpt.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm runctrmodgpro.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm ${DK_suite}/model/exec/setout/Out.model_CTRL.${LABELI}*.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm runctrmodgpro.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm runctrreco.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm runperpntg.0*R.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm runModel.*.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm runPos.*.out >> runEPS7_rm_${LABELI}.out 2>&1
+rm *${LABELI}.JOBID >> runEPS7_rm_${LABELI}.out 2>&1
+if [ -a runEPS7_rm_${LABELI}.out ]; then rm runEPS7_rm_${LABELI}.out; fi

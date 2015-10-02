@@ -1,0 +1,40 @@
+#!/bin/ksh -x
+#***********************************************#
+#                                               #
+#     Name:     fftpln.scr                      #
+#                                               #
+#     Function: This script file is used        #
+#               to generate a library for       #
+#               FFT and Legendre Transform.     #
+#                                               #
+#     Date:        February 11th, 1998.         #
+#     Last change: February 11th, 1998.         #
+#                                               #
+#***********************************************#
+#
+echo 'FFTPln Library  -x-  RUNNING ...'
+#
+#    Set directories:
+#
+source=$OPERMOD/fftpln/source
+EXT=${TRUNC}${LEV}
+DIR=${SOPERMOD}/fftpln/lib/${EXT};mkdir -p ${DIR}
+
+#
+#   Execute makefile to compile:
+#
+echo $COMPILE
+cd $source
+#
+if [ "$COMPILE" = "clean" ]
+then
+#
+#  Remove old library
+#
+make -f fftpln.mk clean
+fi
+#
+#  Compile the sources:
+#
+make -f fftpln.mk
+#

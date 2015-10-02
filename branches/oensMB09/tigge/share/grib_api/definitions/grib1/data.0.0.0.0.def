@@ -1,0 +1,39 @@
+# For grib1 -> grib2
+constant dataRepresentationTemplateNumber = 0;
+
+position offsetBeforeData;
+
+if(bitmapPresent) {
+  # For grib1 -> grib2
+  constant bitMapIndicator = 0;
+
+  meta codedValues data_g1simple_packing(
+     section4Length,
+     offsetBeforeData,
+     offsetSection4,
+     nbp,
+     referenceValue,
+     binaryScaleFactor,
+     decimalScaleFactor,
+     halfByte
+  ) : read_only;
+  meta values data_apply_bitmap(codedValues,bitmap,missingValue);
+
+} else {
+
+  # For grib1 -> grib2
+  constant bitMapIndicator = 255;
+
+  meta values data_g1simple_packing(
+    section4Length,
+    offsetBeforeData,
+    offsetSection4,
+    nbp,
+    referenceValue,
+    binaryScaleFactor,
+    decimalScaleFactor,
+    halfByte
+  );
+
+}
+

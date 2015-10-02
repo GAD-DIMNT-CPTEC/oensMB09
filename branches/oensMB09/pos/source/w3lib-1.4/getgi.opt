@@ -1,0 +1,53 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  getgi.f
+       !        File                  :  getgi.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    2.       
+    2.       subroutine getgi( lugi, mnum, mbuf, cbuf, nlen, nnum, iret )
+    2.       t$1 = mbuf
+   61.       t$4 = _zla( 0, mbuf )
+   64.       nlen = 0
+   65.       nnum = 0
+   66.       iret = 3
+   67.       call baread( lugi, 0, 162, lhead,  _substr(chead,1,162) )
+   68.       if ( lhead == 162 ) then
+   68.          if (  _substr(chead,42,6) == 'GB1IX1' ) then
+   69.             t$5 = _fread( _clist( 0, 1, 3,  _substr(chead,82,81), ios, Null_Arg, t$3,  _substr(t$2,1,16), Null_Arg, Null_Arg, Null_Arg, 0x2000200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (&)$_IOitem_P0(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+   69.             nskp = $_IOitem_P0(0)
+   69.             nlen = $_IOitem_P0(1)
+   69.             nnum = $_IOitem_P0(2)
+   70.             if ( ios == 0 ) then
+   72.                nnum = nnum + -mnum
+   73.                nbuf = nlen * nnum
+   74.                iret = 0
+   71.                nskp = nskp + nlen * mnum
+   75.                if ( nlen * nnum > mbuf ) then
+   76.                   nnum = mbuf / nlen
+   77.                   nbuf = nlen * nnum
+   78.                   iret = 1
+   78.                endif
+   80.                if ( nlen * nnum > 0 ) then
+   81.                   call baread( lugi, nskp, nbuf, lbuf,  _substr(cbuf(1),1,1) )
+   82.                   if ( lbuf + -nbuf /= 0 ) then
+   82.                      iret = 2
+   82.                   endif
+   82.                endif
+   82.             endif
+   82.          endif
+   82.       endif
+   88.       return
+   88.       end
+   88.       

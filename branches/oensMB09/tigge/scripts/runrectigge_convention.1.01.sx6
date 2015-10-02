@@ -1,0 +1,166 @@
+#!/bin/ksh
+
+. ../../run/config.sx6
+
+LABELI=$1
+LABELF=$2
+PREFX=$3
+REQ=$4
+LABELS=`echo $LABELI | cut -c 1-8`
+GRADS=/usr/local/grads/bin
+
+typeset -RZ4 HOR
+typeset -RZ3 nnn
+typeset -RZ4 llll
+
+mkdir -p ${ROPERM}/pos/dataout/T${TRC}L${LV}/${PREFX}
+
+REQ=`awk 'BEGIN {print toupper("'$REQ'")}'`
+cd ${ROPERM}/pos/dataout/T${TRC}L${LV}
+
+ARQLST=GPOS${PREFX}${LABELI}${LABELF}${REQ}.fct.T${TRC}L${LV}.lst
+rm -f  $ARQLST cptec.*.${LABELI}.grb
+
+ls -ltr GPOS${PREFX}${LABELI}*grb | awk '{print $9}' > ${ARQLST}
+
+set -A hh 00 12
+i=0
+HORo=0
+
+# PEGA TODOS OS ARQUIVOS DO .lst PARA RECORTE
+for arq in `cat ${ARQLST}`
+do
+HORo=`echo $arq | cut -c 18-25`
+HORa=${hh[$i]}
+TEMP=`echo $LABELF | cut -c 1-8`
+if [ ${HORo} -eq ${TEMP} ]
+then
+        HORa=00
+fi
+MM=`echo $LABELI | cut -c 5-6`
+MMe=`echo $HORo | cut -c 5-6`
+if [ $MM -eq $MMe ]
+then
+      MMa=$HORo
+      HOR=`echo "($HORo-$LABELS)*24+$HORa" | bc -l`
+else
+      DDe=`echo $HORo | cut -c 7-8`
+      HOR=`echo "($MMa-$LABELS+$DDe)*24+$HORa" | bc -l`
+fi
+
+# VERIFICA VARIAVEIS E NIVEIS DE CADA REGISTRO
+${GRADS}/wgrib -s $arq |cut -d: -f1,4,5 | awk '{print $1}' > .temp${PREFX}.txt
+
+# CRIA TABELAS DE CONVERSAO
+# VARIAVEIS
+cat > .tab1${PREFX} << EOF
+4LFTX    orog 1
+LAND     lsm  1
+MCONV    sp   1
+PROBN    uves
+CPOFP    vves
+PRMSL    msl  1
+var188   tems
+BMIXL    umrs
+PWAT     agpl
+LTNG     tsfc
+APCP     tp   1
+ACPCP    prcv
+TCDC     tcc  1
+NLWRT    role
+TSLSA    mask
+UGRD     u    8
+VGRD     v    8
+VVEL     omeg
+RELD     divg
+RELV     vort
+STRM     fcor
+VPOT     potv
+HGT      gh   9
+TMP      t    8
+RH       umrl
+SPFH     q    8
+LPSY     sm   1
+SRWEQ    sf   1
+SSRUN    stmt
+VPTMP    tcas
+SWHR     psmt
+var240   mkmt
+FRICV    tvmt
+tgsc     tgsc
+EOF
+# FIM TABELA
+for varlev in `cat .temp${PREFX}.txt`
+do
+        REC=`echo $varlev | cut -d: -f1` # RECORD
+        VAR=`echo $varlev | cut -d: -f2` # VARIAVEL CORRESPONDENTE AO RECORD
+        LEV=`echo $varlev | cut -d: -f3` # NIVEL CORRESPONDENTE AO RECORD
+        
+        if [ $PREFX = "AVN" ]
+        then
+            nnn=000
+            tt=cf
+        else
+            tt=pf
+            NP=`echo $PREFX | cut -c 3`
+            NUMM=`echo $PREFX | cut -c 1-2`
+            if [ $NP = "P" ]
+            then
+                  let nnn=$NUMM+7
+            else
+                  let nnn=$NUMM
+            fi
+        fi
+        if [ \( $LEV -gt 0 \) -a \( $LEV -lt 1001 \) ]
+        then
+            ll=pl
+            llll=$LEV
+        else
+            ll=sl
+            llll=0000
+        fi      
+
+echo "z_tigge_c_SBSJ_${LABELI}0000_glob_prod_${tt}_${ll}_${HOR}_${nnn}_${llll}_${VAR}.grib"
+# PASSA O NOME DA VARIAVEL DO NCEP PARA CPTEC
+        a=$VAR
+        VAR=`grep -i \^$VAR .tab1${PREFX} | awk '{print $2}'`
+        ARQOUT=${ROPERM}/pos/dataout/T${TRC}L${LV}/z_tigge_c_SBSJ_${LABELI}0000_glob_prod_${tt}_${ll}_${HOR}_${nnn}_${llll}_${VAR}.grib
+        DIROUT=`dirname $ARQOUT`
+        mkdir -p $DIROUT
+# GERA RECORTES UTILIZANDO O wgrib
+        if [ ! -z $VAR ]    #1
+        then
+#        if [ \( $VAR = "zgeo" \) -a \( $LEV = "50" \) ]
+#        then
+                ${GRADS}/wgrib -4yr $arq -d ${REC} -grib -o ${ARQOUT}
+#        else
+#                 VAR=`grep -i $VAR .tab1${PREFX} | awk '{print $2}'`
+#                 ARQOUT=${ROPERM}/pos/dataout/T${TRC}L${LV}/z_tigge_c_SBSJ_${LABELI}0000_glob_prod_${tt}_${ll}_${HOR}_${nnn}_${llll}_${VAR}.grib
+#                 echo RECORD $REC: $VAR-$LEV
+#                 ${GRADS}/wgrib -4yr $arq -d ${REC} -grib -o ${ARQOUT}
+#        fi
+        ARQOUTS=`basename ${ARQOUT}`
+        fi                  #1
+#        set -x
+#        scp -i ~/.ssh/id_rsa ${ARQOUT} ldm@mopora:/home2/ldm/data/iddftp/TIGGE
+#        sleep 0.52
+#        ssh mopora -l ldm -i ~/.ssh/id_rsa "pqinsert -v -f SPARE -l /home2/ldm/logs/oenstigge.log -p ${ARQOUTS} /home2/ldm/data/iddftp/TIGGE/${ARQOUTS}"
+#        set +x
+
+done
+
+if [ $i -eq 0 ]
+then
+        i=1
+else
+        i=0
+fi
+
+done
+
+# APAGA ARQUIVOS ANTIGOS
+LABELR=`date -d "$LABELS 1 day ago" +"%Y%m%d"`
+find ${ROPERM}/pos/dataout/T${TRC}L${LV} -name "*$LABELR*" -exec rm -f {} \;
+find ${ROPERM}/model/dataout/T${TRC}L${LV} -name "*$LABELR*" -exec rm -f {} \;
+
+exit 0

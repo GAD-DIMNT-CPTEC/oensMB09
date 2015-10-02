@@ -1,0 +1,26 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+slp=$(echo "%FAMILY1%*10" | bc -l)
+sleep $slp
+
+NUM=%FAMILY1%
+PT=R
+TRC=$(echo %TRC% | cut -c 2-4)
+LV=$(echo %LV% | cut -c 2-3)
+LABELI=$SMSDATEHH
+LABELF=$(date -d "$SMSDATE $HH:00 36 hours" +"%%Y%%m%%d%%H")
+
+sleep %FAMILY1%
+
+echo "./runperpntg.bash ${COMPILE} ${TRC} ${LV} %FAMILY1% ${PT} ${LABELI} ${LABELF} ${NFDAYS} ${HUMID} ${NPERT} sstwkl "
+#./runperpntg.bash ${COMPILE} ${TRC} ${LV} %FAMILY1% ${PT} ${LABELI} ${LABELF} ${NFDAYS} ${HUMID} ${NPERT} sstwkl
+./runperpntg2.bash %RESOL% %FAMILY1%${PT} YES ${LABELI} sstwkl # Este script gera as analises N e P.
+
+echo "Verificando Arquivos: GANL%FAMILY1%[NP]${LABELI}"
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC1_suite}/model/datain/ GANL%FAMILY1%N${LABELI}S.*%RESOL% 7413924
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC1_suite}/model/datain/ GANL%FAMILY1%P${LABELI}S.*%RESOL% 7413924
+
+%include <tail.h>

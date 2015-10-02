@@ -1,0 +1,229 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  GaussRep.f90
+       !        File                  :  GaussRep.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   23.       
+   23.       subroutine creategaussrep
+   30.       glat%header%a_contig = 1
+   30.       glat%dim_1%LB = 1
+   30.       glat%dim_1%EX = _zla( 0, jmax )
+   30.       glat%dim_1%SM = 1
+   30.       $_allo_P9(0) = 0x1000000000001L
+   30.       $_allo_P9(1) = loc( glat )
+   30.       call __allocate( $_allo_P9, 0, 0, _fcd( 0, 0 ) )
+   31.       colrad%header%a_contig = 1
+   31.       colrad%dim_1%LB = 1
+   31.       colrad%dim_1%EX = _zla( 0, jmaxhf )
+   31.       colrad%dim_1%SM = 1
+   31.       $_allo_P10(0) = 0x1000000000001L
+   31.       $_allo_P10(1) = loc( colrad )
+   31.       call __allocate( $_allo_P10, 0, 0, _fcd( 0, 0 ) )
+   32.       rcs2%header%a_contig = 1
+   32.       rcs2%dim_1%LB = 1
+   32.       rcs2%dim_1%EX = _zla( 0, jmaxhf )
+   32.       rcs2%dim_1%SM = 1
+   32.       $_allo_P11(0) = 0x1000000000001L
+   32.       $_allo_P11(1) = loc( rcs2 )
+   32.       call __allocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+   33.       wgt%header%a_contig = 1
+   33.       wgt%dim_1%LB = 1
+   33.       wgt%dim_1%EX = _zla( 0, jmaxhf )
+   33.       wgt%dim_1%SM = 1
+   33.       $_allo_P12(0) = 0x1000000000001L
+   33.       $_allo_P12(1) = loc( wgt )
+   33.       call __allocate( $_allo_P12, 0, 0, _fcd( 0, 0 ) )
+   35.       $scale_S19 = ( 2.0 * 1.0/( real( jmax, 8 ) * real( jmax, 8 ) ) )
+   35.       $dgcolin_S0 = ( 7.8539816339744828e-1 * 1.0/( real( jmax, 8 ) ) )
+   35.       $gcol_S1 = 0.0
+   35.       if ( jmaxhf > 0 ) then
+   35.          if ( -2 + jmax >= 0 ) then
+   35.             $I_L35_38 = 0
+   35.             do
+   35.                $dgcol_S6 = $dgcolin_S0
+   35.                do
+   35.                   $Flat_S2 = cos( $gcol_S1 )
+   35.                   $y1_S4 = 1.0
+   35.                   $y2_S3 = $Flat_S2
+   35.                   $I_L35_30 = 0
+   35. !dir$ unroll 4
+   35.                   do
+   35.                      y3 = -$y1_S4 + -( ( ( $Flat_S2 * $y2_S3 ) + -$y1_S4 ) * 1.0/( real( 2 + $I_L35_30, 8 ) ) ) + 2.0 * ( $Flat_S2 * $y2_S3 )
+   35.                      $y1_S4 = $y2_S3
+   35.                      $y2_S3 = y3
+   35.                      $I_L35_30 = 1 + $I_L35_30
+   35.                      if ( $I_L35_30 >= -1 + jmax ) exit
+   35.                   enddo
+   35.                   do
+   35.                      $p1_S11 = y3
+   35.                      $gcol_S1 = $gcol_S1 + $dgcol_S6
+   35.                      $Flat_S7 = cos( $gcol_S1 )
+   35.                      $y1_S9 = 1.0
+   35.                      $y2_S8 = $Flat_S7
+   35.                      $I_L35_32 = 0
+   35. !dir$ unroll 4
+   35.                      do
+   35.                         y3 = -$y1_S9 + -( ( ( $Flat_S7 * $y2_S8 ) + -$y1_S9 ) * 1.0/( real( 2 + $I_L35_32, 8 ) ) ) + 2.0 * ( $Flat_S7 * $y2_S8 )
+   35.                         $y1_S9 = $y2_S8
+   35.                         $y2_S8 = y3
+   35.                         $I_L35_32 = 1 + $I_L35_32
+   35.                         if ( $I_L35_32 >= -1 + jmax ) exit
+   35.                      enddo
+   35.                      if ( sign( 1.0, $p1_S11 ) /= sign( 1.0, y3 ) ) exit
+   35.                   enddo
+   35.                   if ( $dgcol_S6 <= 2.2204460492503131e-14 ) goto 10
+   35.                   $gcol_S1 = $gcol_S1 + -$dgcol_S6
+   35.                enddo
+   35.    10          continue
+   35.                (colrad%base_addr)(1 + $I_L35_38, 0) = $gcol_S1
+   35.                $Flat_S13 = cos( $gcol_S1 )
+   35.                $y1_S15 = 1.0
+   35.                $y2_S14 = $Flat_S13
+   35.                if ( -3 + jmax >= 0 ) then
+   35.                   $I_L35_34 = 0
+   35. !dir$ unroll 4
+   35.                   do
+   35.                      y3 = -$y1_S15 + -( ( ( $Flat_S13 * $y2_S14 ) + -$y1_S15 ) * 1.0/( real( 2 + $I_L35_34, 8 ) ) ) + 2.0 * ( $Flat_S13 * $y2_S14 )
+   35.                      $y1_S15 = $y2_S14
+   35.                      $y2_S14 = y3
+   35.                      $I_L35_34 = 1 + $I_L35_34
+   35.                      if ( $I_L35_34 >= -2 + jmax ) exit
+   35.                   enddo
+   35.                endif
+   35.                $Coss_P8 = coss( $gcol_S1 )
+   35.                (wgt%base_addr)(1 + $I_L35_38, 0) = ( $scale_S19 * 1.0/( y3 * y3 ) * ( 1.0 + -( real( $Coss_P8, 8 ) * real( $Coss_P8, 8 ) ) ) )
+   35.                (rcs2%base_addr)(1 + $I_L35_38, 0) = 1.0/( cimag( $Coss_P8 ) * cimag( $Coss_P8 ) )
+   35.                $I_L35_38 = 1 + $I_L35_38
+   35.                if ( $I_L35_38 >= jmaxhf ) exit
+   35.             enddo
+   35.          else
+   35.             do
+   35.             enddo
+   35.          endif
+   37.          $I_L37_36 = 0
+   37. !dir$ unroll 4
+   37.          do
+   38.             (glat%base_addr)(1 + $I_L37_36, 0) = 90.0 + -57.295779513082323 * (colrad%base_addr)(1 + $I_L37_36, 0)
+   39.             (glat%base_addr)(jmax + -$I_L37_36, 0) = -(glat%base_addr)(1 + $I_L37_36, 0)
+   40.             $I_L37_36 = 1 + $I_L37_36
+   37.             if ( $I_L37_36 >= jmaxhf ) exit
+   37.          enddo
+   37.       endif
+   42.       return
+   42.       end
+   42.       
+   45.       
+   45.       subroutine glats
+   57.       $scale_S19 = ( 2.0 * 1.0/( real( jmax, 8 ) * real( jmax, 8 ) ) )
+   58.       $dgcolin_S0 = ( 7.8539816339744828e-1 * 1.0/( real( jmax, 8 ) ) )
+   59.       $gcol_S1 = 0.0
+   60.       if ( jmaxhf > 0 ) then
+   77.          $SC_rcs2_I4 = rcs2%dim_1%EX
+   77.          $SC_rcs2_I5 = rcs2%dim_1%LB
+   76.          $SC_wgt_I2 = wgt%dim_1%EX
+   76.          $SC_wgt_I3 = wgt%dim_1%LB
+   74.          $SC_colrad_I0 = colrad%dim_1%EX
+   74.          $SC_colrad_I1 = colrad%dim_1%LB
+   63.          if ( -2 + jmax >= 0 ) then
+   60.             $I_L60_30 = 0
+   60.             do
+   61.                $dgcol_S6 = $dgcolin_S0
+   61.                do
+   63.                   $Flat_S2 = cos( $gcol_S1 )
+   63.                   $y1_S4 = 1.0
+   63.                   $y2_S3 = $Flat_S2
+   63.                   $I_L63_24 = 0
+   63. !dir$ unroll 4
+   63.                   do
+   63.                      y3 = -$y1_S4 + -( ( ( $Flat_S2 * $y2_S3 ) + -$y1_S4 ) * 1.0/( real( 2 + $I_L63_24, 8 ) ) ) + 2.0 * ( $Flat_S2 * $y2_S3 )
+   63.                      $y1_S4 = $y2_S3
+   63.                      $y2_S3 = y3
+   63.                      $I_L63_24 = 1 + $I_L63_24
+   63.                      if ( $I_L63_24 >= -1 + jmax ) exit
+   63.                   enddo
+   63.                   do
+   65.                      $p1_S11 = y3
+   66.                      $gcol_S1 = $gcol_S1 + $dgcol_S6
+   67.                      $Flat_S7 = cos( $gcol_S1 )
+   67.                      $y1_S9 = 1.0
+   67.                      $y2_S8 = $Flat_S7
+   67.                      $I_L67_26 = 0
+   67. !dir$ unroll 4
+   67.                      do
+   67.                         y3 = -$y1_S9 + -( ( ( $Flat_S7 * $y2_S8 ) + -$y1_S9 ) * 1.0/( real( 2 + $I_L67_26, 8 ) ) ) + 2.0 * ( $Flat_S7 * $y2_S8 )
+   67.                         $y1_S9 = $y2_S8
+   67.                         $y2_S8 = y3
+   67.                         $I_L67_26 = 1 + $I_L67_26
+   67.                         if ( $I_L67_26 >= -1 + jmax ) exit
+   67.                      enddo
+   67.                      if ( sign( 1.0, $p1_S11 ) /= sign( 1.0, y3 ) ) exit
+   67.                   enddo
+   70.                   if ( $dgcol_S6 <= 2.2204460492503131e-14 ) goto 10
+   71.                   $gcol_S1 = $gcol_S1 + -$dgcol_S6
+   71.                enddo
+   71.    10          continue
+   74.                (colrad%base_addr)(1 + $I_L60_30, 0) = $gcol_S1
+   75.                $Flat_S13 = cos( $gcol_S1 )
+   75.                $y1_S15 = 1.0
+   75.                $y2_S14 = $Flat_S13
+   75.                if ( -3 + jmax >= 0 ) then
+   75.                   $I_L75_28 = 0
+   75. !dir$ unroll 4
+   75.                   do
+   75.                      y3 = -$y1_S15 + -( ( ( $Flat_S13 * $y2_S14 ) + -$y1_S15 ) * 1.0/( real( 2 + $I_L75_28, 8 ) ) ) + 2.0 * ( $Flat_S13 * $y2_S14 )
+   75.                      $y1_S15 = $y2_S14
+   75.                      $y2_S14 = y3
+   75.                      $I_L75_28 = 1 + $I_L75_28
+   75.                      if ( $I_L75_28 >= -2 + jmax ) exit
+   75.                   enddo
+   75.                endif
+   76.                $Coss_P8 = coss( $gcol_S1 )
+   76.                (wgt%base_addr)(1 + $I_L60_30, 0) = ( $scale_S19 * 1.0/( y3 * y3 ) * ( 1.0 + -( real( $Coss_P8, 8 ) * real( $Coss_P8, 8 ) ) ) )
+   77.                (rcs2%base_addr)(1 + $I_L60_30, 0) = 1.0/( cimag( $Coss_P8 ) * cimag( $Coss_P8 ) )
+   78.                $I_L60_30 = 1 + $I_L60_30
+   75.                if ( $I_L60_30 >= jmaxhf ) exit
+   75.             enddo
+   75.          else
+   75.             do
+   64.             enddo
+   64.          endif
+   64.       endif
+   80.       return
+   80.       end
+   80.       
+   83.       
+   83.       subroutine legendrepolynomial( n, colatitude, pln )
+   98.       $Flat_S0 = cos( colatitude )
+   99.       $y1_S2 = 1.0
+  100.       $y2_S1 = $Flat_S0
+  101.       if ( -2 + n >= 0 ) then
+  101.          $I_L101_4 = 0
+  101. !dir$ unroll 4
+  101.          do
+  103.             y3 = -$y1_S2 + -( ( ( $Flat_S0 * $y2_S1 ) + -$y1_S2 ) * 1.0/( real( 2 + $I_L101_4, 8 ) ) ) + 2.0 * ( $Flat_S0 * $y2_S1 )
+  104.             $y1_S2 = $y2_S1
+  105.             $y2_S1 = y3
+  106.             $I_L101_4 = 1 + $I_L101_4
+  101.             if ( $I_L101_4 >= -1 + n ) exit
+  101.          enddo
+  101.       endif
+  107.       pln = y3
+  109.       return
+  109.       end
+  109.       
+   15.       
+   15.       module gaussrep
+   15.       end
+   15.       

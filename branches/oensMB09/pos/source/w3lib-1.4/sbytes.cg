@@ -1,0 +1,128 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  sbytes.f
+       !        File                  :  sbytes.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    1.       
+    1.       subroutine sbytes( iout, in, iskip, nbyte, nskip, n )
+    1.       $CARG_iskip_I0 = 0[loc( iskip ),0]
+    1.       $CARG_nbyte_I1 = 0[loc( nbyte ),0]
+    1.       $CARG_nskip_I2 = 0[loc( nskip ),0]
+    1.       $CARG_n_I3 = 0[loc( n ),0]
+   41.       $LCS_32_0 = 32 - $CARG_nbyte_I1
+   41.       $CS_i_0 = loc( i )
+   41.       4[$CS_i_0,0] = $LCS_32_0
+   42.       if ( $LCS_32_0 >= 0 ) then
+   43.          if ( or( 32 - $CARG_nbyte_I1, -1 + $CARG_nbyte_I1 ) < 0 ) then
+   43.             $LB_Y0 = 1
+   43.             $UB_Y1 = 32
+   43.             $Subscript_Y5 = $CARG_nbyte_I1
+   43.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+   43.          endif
+   43.          $LCS_masks_6 = loc( masks )
+   43.          $MR_mask_12 = -1[$LCS_masks_6,$CARG_nbyte_I1]
+   43.          18[$CS_i_0,0] = $MR_mask_12
+   47.          $LCS_5 = _rsh( $CARG_iskip_I0, 5 )
+   47.          8[$CS_i_0,0] = $LCS_5
+   51.          $LCS_CARG_iskip_4 = $CARG_iskip_I0 - and( -32, $CARG_iskip_I0 + _rsh( _ash( $CARG_iskip_I0, 4 ), 27 ) )
+   51.          6[$CS_i_0,0] = $LCS_CARG_iskip_4
+   55.          $LCS_2 = $CARG_nbyte_I1 + $CARG_nskip_I2
+   55.          10[$CS_i_0,0] = $LCS_2
+   59.          $LCS_PRT_3 = $LCS_2 + _rsh( _ash( $LCS_2, 4 ), 27 )
+   59.          $LCS_7 = _ash( $LCS_PRT_3, 5 )
+   59.          14[$CS_i_0,0] = $LCS_7
+   63.          $LCS_PRT_8 = $LCS_2 - and( -32, $LCS_PRT_3 )
+   63.          2[$CS_i_0,0] = $LCS_PRT_8
+   65.          0[$CS_i_0,0] = 1
+   65.          if ( $CARG_n_I3 > 0 ) then
+   65.             $I_L65_S1 = 0
+   83.             $itemp_S10 = 12[$CS_i_0,0]
+   80.             $msk_S7 = 22[$CS_i_0,0]
+   67.             $ii_S2 = $LCS_CARG_iskip_4
+   88.             $index_S3 = $LCS_5
+   83.             $LIS_E5 = ( 64 - $CARG_nbyte_I1 )
+   67.             $LIS_E1 = ( 32 - $CARG_nbyte_I1 )
+   98.             $LIS_E0 = $CARG_n_I3
+   98.             do
+   66.                $SC_j_I5 = and( $MR_mask_12, 0[loc( in ),$I_L65_S1] )
+   67.                $LCS_9 = $LIS_E1 - $ii_S2
+   71.                if ( $LCS_9 > 0 ) then
+   72.                   $LCS_10 = abs( $LCS_9 )
+   72.                   $LCS_12 = $LCS_9 > 0
+   72.                   $LCS_11 = cvmg( lshift( $MR_mask_12, $LCS_10 ), rshift( $MR_mask_12, $LCS_10 ), $LCS_12 )
+   72.                   $msk_S7 = $LCS_11
+   73.                   $LCS_index_13 = $index_S3
+   73.                   $LCS_iout_14 = loc( iout )
+   73.                   $MR_iout_S4 = 0[$LCS_iout_14,$LCS_index_13]
+   73.                   $MR_iout_S5 = or( notand( $LCS_11, $MR_iout_S4 ), cvmg( lshift( $SC_j_I5, $LCS_10 ), rshift( $SC_j_I5, $LCS_10 ), $LCS_12 ) )
+   73.                   0[$LCS_iout_14,$LCS_index_13] = $MR_iout_S5
+   78.                else if ( $LIS_E1 - $ii_S2 < 0 ) then
+   79.                   if ( or( $ii_S2, 31 - $ii_S2 ) < 0 ) then
+   79.                      $LB_Y0 = 1
+   79.                      $UB_Y1 = 32
+   79.                      $Subscript_Y5 = 32 - $ii_S2
+   79.                      _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+   79.                   endif
+   79.                   $msk_S7 = 31[$LCS_masks_6,-$ii_S2]
+   80.                   $LCS_index_17 = $index_S3
+   80.                   $LCS_iout_18 = loc( iout )
+   80.                   $MR_iout_S6 = 0[$LCS_iout_18,$LCS_index_17]
+   80.                   $LCS_16 = $LIS_E1 - $ii_S2
+   80.                   $LCS_15 = abs( $LCS_16 )
+   80.                   $MR_iout_S8 = or( notand( $msk_S7, $MR_iout_S6 ), cvmg( lshift( $SC_j_I5, $LCS_15 ), rshift( $SC_j_I5, $LCS_15 ), $LCS_16 > 0 ) )
+   80.                   0[$LCS_iout_18,$LCS_index_17] = $MR_iout_S8
+   82.                   $LCS_19 = $CARG_nbyte_I1 + $ii_S2
+   82.                   if ( or( -32 + $LCS_19, 63 - $LCS_19 ) < 0 ) then
+   82.                      $LB_Y0 = 1
+   82.                      $UB_Y1 = 32
+   82.                      $Subscript_Y5 = $LIS_E5 - $ii_S2
+   82.                      _bounds_error( $_File_Y40, $Line_Y48, $_Name_Y47, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y49 )
+   82.                   endif
+   82.                   $LCS_iout_22 = loc( iout )
+   82.                   $MR_iout_S9 = 1[$LCS_iout_22,$index_S3]
+   82.                   $itemp_S10 = and( $MR_iout_S9, 63[$LCS_masks_6,-( $CARG_nbyte_I1 + $ii_S2 )] )
+   83.                   $LCS_21 = $LIS_E5 - $ii_S2
+   83.                   $LCS_20 = abs( $LCS_21 )
+   83.                   $MR_iout_S11 = or( $itemp_S10, cvmg( lshift( $SC_j_I5, $LCS_20 ), rshift( $SC_j_I5, $LCS_20 ), $LCS_21 > 0 ) )
+   83.                   1[$LCS_iout_22,$index_S3] = $MR_iout_S11
+   83.                else
+   88.                   $LCS_index_23 = $index_S3
+   88.                   $LCS_iout_24 = loc( iout )
+   88.                   $MR_iout_S12 = 0[$LCS_iout_24,$LCS_index_23]
+   88.                   $MR_iout_S13 = or( $SC_j_I5, notand( $MR_mask_12, $MR_iout_S12 ) )
+   88.                   0[$LCS_iout_24,$LCS_index_23] = $MR_iout_S13
+   88.                endif
+   91.                $ii_S2 = $LCS_PRT_8 + $ii_S2
+   92.                $index_S3 = $LCS_7 + $index_S3
+   93.                if ( $ii_S2 >= 32 ) then
+   94.                   $ii_S2 = -32 + $ii_S2
+   95.                   $index_S3 = 1 + $index_S3
+   95.                endif
+   98.                $I_L65_S1 = 1 + $I_L65_S1
+   96.                if ( $I_L65_S1 >= $LIS_E0 ) exit
+   96.             enddo
+   82.             $LCS_i_25 = loc( i )
+   82.             12[$LCS_i_25,0] = $itemp_S10
+   72.             22[$LCS_i_25,0] = $msk_S7
+   67.             20[$LCS_i_25,0] = $LCS_9
+   66.             16[$LCS_i_25,0] = $SC_j_I5
+   91.             6[$LCS_i_25,0] = $ii_S2
+   92.             8[$LCS_i_25,0] = $index_S3
+   98.             0[$LCS_i_25,0] = ( 1 + $CARG_n_I3 )
+   98.          endif
+   98.       endif
+  101.       return
+  101.       end
+  101.       

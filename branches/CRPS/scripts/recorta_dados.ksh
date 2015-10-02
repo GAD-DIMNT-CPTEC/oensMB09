@@ -1,0 +1,1 @@
+../dados_recortados/recorta_dados.ksh

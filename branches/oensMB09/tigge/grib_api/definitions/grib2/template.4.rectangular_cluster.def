@@ -1,0 +1,64 @@
+# Copyright 2005-2007 ECMWF
+#
+# Licensed under the GNU Lesser General Public License which
+# incorporates the terms and conditions of version 3 of the GNU
+# General Public License.
+# See LICENSE and gpl-3.0.txt for details.
+
+label "Rectangular cluster";
+
+#  Cluster identifier
+unsigned[1] clusterIdentifier : dump ;
+
+#  Number of cluster to which the high resolution control belongs
+unsigned[1]  NH : dump;
+alias NH=numberOfClusterToWhichTheHighResolutionControlBelongs;
+
+#  Number of cluster to which the low resolution control belongs
+unsigned[1] NL : dump ;
+alias NL=numberOfClusterToWhichTheLowResolutionControlBelongs;
+
+#  Total number of clusters
+unsigned[1] totalNumberOfClusters : dump ;
+
+#  Clustering method
+codetable[1] clusteringMethod ('4.8.table',masterDir,localDir) : dump;
+
+#  Northern latitude of cluster domain
+unsigned[4] northernLatitudeOfClusterDomain : dump ;
+
+#  Southern latitude of cluster domain
+unsigned[4] southernLatitudeOfClusterDomain : dump ;
+
+#  Eastern longitude of cluster domain
+unsigned[4] easternLongitudeOfClusterDomain  : dump;
+
+#  Western longitude of cluster domain
+unsigned[4] westernLongitudeOfClusterDomain : dump ;
+
+#  NC - Number of forecasts in the cluster
+unsigned[1] numberOfForecastsInTheCluster : dump ;
+
+alias NC  = numberOfForecastsInTheCluster;
+#  Scale factor of standard deviation in the cluster
+unsigned[1] scaleFactorOfStandardDeviation : edition_specific ;
+alias scaleFactorOfStandardDeviationInTheCluster=scaleFactorOfStandardDeviation;
+
+#  Scaled value of standard deviation in the cluster
+unsigned[4] scaledValueOfStandardDeviation : dump ;
+alias scaledValueOfStandardDeviationInTheCluster=scaledValueOfStandardDeviation;
+
+#  Scale factor of distance of the cluster from ensemble mean
+unsigned[1] scaleFactorOfDistanceFromEnsembleMean : dump ;
+alias scaleFactorOfDistanceOfTheClusterFromEnsembleMean=scaleFactorOfDistanceFromEnsembleMean;
+
+#  Scaled value of distance of the cluster from ensemble mean
+unsigned[4] scaledValueOfDistanceFromEnsembleMean : dump ;
+alias scaledValueOfDistanceOfTheClusterFromEnsembleMean=scaledValueOfDistanceFromEnsembleMean;
+# List is not defined here, because it has to be after the
+# statistical processing
+
+# Octets 69-(68+NC) : List of NC ensemble forecast numbers
+# (NC is given in octet 58)
+# ????          list_of_nc_ensemble_forecast_numbers
+

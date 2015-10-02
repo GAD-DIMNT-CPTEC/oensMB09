@@ -1,0 +1,53 @@
+#!/bin/bash -x
+#PBS -W umask=026
+#PBS -o /scratchout/oper/io/oensMB09/out_err/TQ0126L028/2014100100/mapas.out
+#PBS -e /scratchout/oper/io/oensMB09/out_err/TQ0126L028/2014100100/mapas.err
+#PBS -lselect=1:ncpus=1
+#PBS -q oper.q
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N TQ0126L028
+
+umask 026
+ti=$(date +"%s %Y/%m/%d %H:%M:%S") # TEMPO INICIAL
+
+cd /stornext/home/io/oensMB09/produtos/mapas/scripts
+echo run /stornext/home/io/oensMB09/produtos/mapas/scripts/Mapa1.sx6.gs
+echo 2014100100 2014093012 1 7 /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014093012/GPOSNMC2014093012.ctl
+ 
+/stornext/home/modoper/bin/grads-2.0.a9.oga/grads -bp << EOF
+run /stornext/home/io/oensMB09/produtos/mapas/scripts/Mapa1.sx6.gs
+2014100100 2014093012 1 7 /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014093012/GPOSNMC2014093012.ctl
+EOF
+mkdir -p  /scratchout/oper/io/oensMB09/produtos/mapas/TQ0126L028/2014100100/
+mv *png /scratchout/oper/io/oensMB09/produtos/mapas/TQ0126L028/2014100100/
+
+/stornext/home/modoper/bin/grads-2.0.a9.oga/grads -bp  << EOF
+run Mapa1.sx6.gs
+2014100100 2014093012 2 7 /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014093012/GPOSNMC2014093012.ctl
+EOF
+mv *png /scratchout/oper/io/oensMB09/produtos/mapas/TQ0126L028/2014100100/
+
+/stornext/home/modoper/bin/grads-2.0.a9.oga/grads -bl  << EOF
+run Mapa1.sx6.gs
+2014100100 2014093012 3 7 /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014093012/GPOSNMC2014093012.ctl
+EOF
+mv *png /scratchout/oper/io/oensMB09/produtos/mapas/TQ0126L028/2014100100/
+
+/stornext/home/modoper/bin/grads-2.0.a9.oga/grads -bp  << EOF
+run Mapa1.sx6.gs
+2014100100 2014093012 4 7 /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014093012/GPOSNMC2014093012.ctl
+EOF
+mv *png /scratchout/oper/io/oensMB09/produtos/mapas/TQ0126L028/2014100100/
+
+/stornext/home/modoper/bin/grads-2.0.a9.oga/grads -bp << EOF
+run Mapa2.sx6.gs
+2014100100 4 7  /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl  /scratchout/oper/io/oensMB09/pos/dataout/TQ0126L028/2014100100/GPOSNMC2014100100.ctl
+quit
+EOF
+mv *png /scratchout/oper/io/oensMB09/produtos/mapas/TQ0126L028/2014100100/
+
+rm -f /stornext/home/io/oensMB09/produtos/mapas/scripts/gpos* 
+      /stornext/home/io/oensMB09/produtos/mapas/scripts/GPOS*
+mkdir -p /scratchin/oper/io/CRNG/controle/tempo/oensMB09/TQ0126L028/201410
+date +"/stornext/home/io/oensMB09/run/runMap @ aux 1 @ ini $ti @ fim %s %Y/%m/%d %H:%M:%S" >> /scratchin/oper/io/CRNG/controle/tempo/oensMB09/TQ0126L028/201410/0100.txt

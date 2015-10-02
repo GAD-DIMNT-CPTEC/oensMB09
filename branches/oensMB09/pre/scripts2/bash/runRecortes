@@ -1,0 +1,366 @@
+#!/bin/bash -x
+#help#
+#************************************************************************************#
+#                                                                                    #
+# script to run CPTEC Post-processing on PC Clusters under MPI Scali                 #
+# and Sun Grid Engine without OpenMP                                                 #
+#                                                                                    #
+# assumptions: assume present but NOT at the same directory:                         #
+#              $FEXE/PostGrib (Post-processing Executable file)                      #
+#              $FSCR/POSTIN-GRIB (Post-processing input Namelist file)               #
+#                                                                                    #
+# usage: run_post_UNA.sh cpu_mpi  cpu_node name TRC LV LABELI LABELF hold            #
+# where:                                                                             #
+# cpu_mpi: integer, the desired number of mpi processes                              #
+# cpu_node: integer, the desired number of mpi processes per shared memory node      #
+#                                                                                    #
+#     Name:           runrecortes.ksh                                                #
+#                                                                                    #
+#     Function:       This script runs the task to get a subdomain	             #
+#                     from the GRIB data                		             #
+#                                                                                    #
+#     Valid Arguments for runrecortes.ksh                                            #
+#     runRecortes cpu_mpi  cpu_node name  TRC LV LABELI LABELF hold                  #
+#                                                                                    #
+#     First   : LABELI: initial forecasting label                                    #
+#     First   : LABELF:   final forecasting label                                    #
+#     Third   :    TRC: three-digit triangular truncation                            #
+#     Forth   :     LV: two-digit number of vertical sigma-layers                    #
+#                                                                                    #
+#               LABELx : yyyymmddhh                                                  #
+#                        yyyy = four digit year                                      #
+#                          mm = two digit month                                      #
+#                          dd = two digit day                                        #
+#                          hh = two digit hour                                       #
+#************************************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  exit 1
+else
+  TRC=`echo $4 | awk '{print $1/1}'` 
+fi
+if [ -z "${5}" ]
+then
+  echo "LV is not set" 
+  exit 2
+else
+  LV=`echo $5 | awk '{print $1/1}'`  
+fi
+if [ -z "$6" ]; then
+      print "LABELI is not set (yyyymmddhh)"
+      exit 1
+else
+      LABELI=$6 ; export LABELI
+fi
+
+if [ -z "$7" ]; then
+      print "LABELF is not set (yyyymmddhh)"
+      exit 2
+else
+      LABELF=$7 ; export LABELF
+fi
+
+if [ "$#" == 8 ]
+then hold="-sync y"
+else hold=
+fi
+
+#
+# SETTING THE APPROPRIATED ENVIRONMENT
+#
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesMCGA -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE}
+cd ${HOME_suite}/run
+
+RESOL=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+NIVEL=`echo ${LV}  |awk '{ printf("L%3.3d\n",$1)  }' `
+
+if [ -z "${PREFXO}" ] ;then
+export GPOS=GPOSNMC
+else
+export GPOS=GPOS"${PREFXO}" 
+fi 
+
+MODELID=cptec002
+HSTMAQ=`hostname`
+MAQUI=`hostname -s`
+QUEUE=global.q
+RUNTM=`date +'%Y%m%d%T'`
+export RESOL NIVEL CASE MAQUI MODELID HSTMAQ RUNTM
+#
+#   Set directories and remote machines
+#
+#   DIRBASE is the root for T213 directories structure; 
+#   SCRIPTFILEPATH is the script file that submits executable (with path)
+
+DIRBASE=${HOME_suite};mkdir -p ${HOME_suite}/run/setout
+SCRIPTFILEPATH=${DIRBASE}/run/recort${RESOL}${NIVEL}.${MAQUI}
+
+cpu_mpi=${1};  if [[ -z "${1}"  ]]; then cpu_mpi=1 ; fi
+cpu_node=${2}; if [[ -z "${2}"  ]]; then cpu_node=1; fi
+export cpu_mpi cpu_node
+export RES=$3
+
+# total cpus and nodes
+
+num=$(($cpu_mpi+$cpu_node-1))
+fra=$(($num/$cpu_node))
+cpu_tot=$(($fra*$cpu_node))
+echo fila=mpi-npn${cpu_node} total cpus=${cpu_tot}
+
+
+yyyymmdd=`awk 'BEGIN { print substr('$LABELI',1,8) }'`
+hh=`awk 'BEGIN { print substr('$LABELI',9,2) }'`
+
+
+export DATAINDIR=${DK_suite}/pos/dataout/${CASE}/${yyyymmdd}${hh}
+export RECDATAOUT=${DK_suite}/recortes/${CASE}/${yyyymmdd}${hh};mkdir -p ${RECDATAOUT}
+nhoras=${NDFCT0012}
+
+if [ "${hh}" -eq "06" -o "${hh}" -eq "18" ]; then
+    nhoras=${NDFCT0618}
+fi
+
+LABELF=`${caldate} ${LABELI} + ${nhoras} 'yyyymmddhh'`
+
+rm -f ${RECDATAOUT}/G*${LABELI}2*.ctl
+rm -f ${RECDATAOUT}/G*${LABELI}2*.gmp
+rm -f ${RECDATAOUT}/G*${LABELI}2*.ctl
+rm -f ${RECDATAOUT}/G*${LABELI}2*.idx
+
+unset noclobber
+
+echo ${SCRIPTFILEPATH}
+cat <<EOT>${SCRIPTFILEPATH}
+#!/bin/bash  -x
+#$ -q ${QUEUE}
+#$ -pe mpi-npn${cpu_node} ${cpu_tot}
+#$ -o una1:${HOME_suite}/run/setout/Out.Recort.${LABELI}.${tmstp}.%s.MPI${cpu_mpi}.out
+#$ -j y 
+#$ -V
+#$ -S /bin/bash
+#$ -N $RES
+#
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesMCGA -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE}
+
+unset noclobber
+
+####--- Configuracoes para enviar os GAMRAMS para a UNA ---###
+#. ${HOME}/tempo/global/MCGATQ0213L042/run/configenv_extern.ksh
+#
+# A copia abaixo evita problemas com maiusculas/minusculas contidas
+# no caminho ate a cptec.table
+#
+cp ${HOME_suite}/utils/cptec.table ${DATAINDIR}
+cd ${DATAINDIR}
+
+while [ ! -s ${RECDATAOUT}/GPOSUSP${LABELI}${LABELF}P.fct.$CASE.grb -o ! -s ${RECDATAOUT}/GAMRAMS${LABELI}${LABELF}P.fct.$CASE.grb ]; do
+    ii=1
+    for recortes in \`cat ${HOME_suite}/run/especificacoes_do_recorte.${CASE}.txt | awk '{print $1}'\`; do
+        xname=\`head -\$ii ${HOME_suite}/run/especificacoes_do_recorte.${CASE}.txt | tail -1\`
+        c1=\`echo \$xname | cut -f1 -d":"\`; c2=\`echo \$xname | cut -f2 -d":"\`; c3=\`echo \$xname | cut -f3 -d":"\` 
+        c4=\`echo \$xname | cut -f4 -d":"\`; c5=\`echo \$xname | cut -f5 -d":"\`; c6=\`echo \$xname | cut -f6 -d":"\` 
+        c7=\`echo \$xname | cut -f7 -d":"\`; c8=\`echo \$xname | cut -f8 -d":"\`; c9=\`echo \$xname | cut -f9 -d":"\`  
+        tl1=' SECTOR: ';tl2=' FILE';tit=\$c2\$tl1\$c3\$tl2
+        for narq in \`ls ${GPOS}${LABELI}*.fct.$CASE.idx ${GPOS}${LABELI}*.fgs.$CASE.idx ${GPOS}${LABELI}*.icn.$CASE.idx\` ; do
+            dataarq=\`basename \$narq| cut -c 18-27\`
+            if [ ! -s ${RECDATAOUT}/GPOSUSP${LABELI}\${dataarq}P.???.$CASE.grb -o ! -s ${RECDATAOUT}/GAMRAMS${LABELI}\${dataarq}P.???.$CASE.grb ]; then
+                narqin=\`echo \$narq | sed s@".idx"@".ctl"@g\`
+                butctl=\${narqin%*.ctl}
+                butgposavn=\${narqin#${GPOS}*}
+                butgposavn=\${butgposavn%*.ctl}
+
+                narquppcas=G\${c1}\${butgposavn}
+                narqlowcas=\`awk 'BEGIN {print tolower("'\$narquppcas'")}' | cut -c 1-43\`
+                echo \$narquppcas
+                echo \$narqlowcas
+
+
+                op="-i \$narqin -o \$narqlowcas -center $MODELID -format grads_grib -grid gaussian -lat \$c6 \$c7 -levs \$c8 -lon \$c4 \$c5 -table cptec.table -v -vars \$c9 -title \$tit"
+
+                ${DIRGRADS}/lats4d \$op
+                #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+                #
+                # IF para corrigir o CTL porque o lats nao o produz
+                # corretamente no caso de um recorte com dominio global
+                #
+                if [ G\${c1} == "GDSAGLB" ]; then
+                    # Correcting the wrong line in the CTL
+cat << EOF > `echo ${HOME_suite}`/run/exscript
+40
+d
+i
+ 85.647  86.208  86.769  87.331  87.892  88.453  89.013  89.570
+zdef 17 levels
+.
+41,43j
+wq
+EOF
+                    ex - \${narqlowcas}.ctl < `echo ${HOME_suite}`/run/exscript
+                    # Mapping the GRIB data
+                    ${DIRGRADS}/gribmap -i \${narqlowcas}.ctl
+                fi
+                if [ G\${c1} == "GPOSUSP" ]; then
+                    # Correcting the wrong line in the CTL
+cat << EOF > `echo ${HOME_suite}`/run/exscript
+40
+d
+i
+ 85.647  86.208  86.769  87.331  87.892  88.453  89.013  89.570
+zdef 1 levels 1000
+.
+wq
+EOF
+                    ex - \${narqlowcas}.ctl < `echo ${HOME_suite}`/run/exscript
+                    # Mapping the GRIB data
+                    ${DIRGRADS}/gribmap -i \${narqlowcas}.ctl
+                fi
+
+                #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+                # Substitui as letras minusculas por letras maiusculas dentro do ctl
+                # Salva as substituicoes em um arquivo temporario e depois muda o nome deste
+                # para o nome definitivo
+                # Por exemplo:
+                # substitui gposavn20050217002005021700p.icn.t213l42 por GPOSAVN20050217002005021700P.icn.T213L42
+                #
+                cat \${narqlowcas}.ctl | sed "s/\${narqlowcas}.grb/\${narquppcas}.grb/g" > ctl.tmp
+                nameg=\`echo \${narquppcas} | cut -c 1-43\`
+                cat ctl.tmp | sed "s/\${narqlowcas}/\${nameg}/g" > ctl2.tmp
+
+                mv ctl2.tmp ${RECDATAOUT}/\${nameg}.ctl
+                rm -f ctl.tmp
+                rm -f \${narqlowcas}.ctl
+                #
+                # Troca o nome dos arquivos .gmp e .grb, substituindo letras minusculas por maiusculas
+                #
+                mv \$narqlowcas.gmp ${RECDATAOUT}/\$nameg.gmp
+                mv \$narqlowcas.grb ${RECDATAOUT}/\$nameg.grb
+                #
+                #pass=\`cat $HOME/.config/modoper.una | head -2 | tail -1\`
+                #
+                #scp -B ${HOME}/tempo/global/T213L42/run/flag_nao_remover.txt modoper@${MAQ_una}:/tmp/lixo.txt 2>/dev/null
+                #if [ $? -eq 0 ]; then
+                #    ssh -l modoper ${MAQ_una} "mkdir -p ${DIROUT_una}/from_turi/GAMRAMS/${LABELI}"
+                #    scp ${RECDATAOUT}/GAMRAMS${LABELI}${dataarq}P.???.$CASE.grb modoper@${MAQ_una}:${DIROUT_una}/from_turi/GAMRAMS/${LABELI}
+                #fi
+
+
+            else
+                echo "Jah foi gerado o arquivo ${RECDATAOUT}/GPOSUSP${LABELI}\${dataarq}P.fct.$CASE.grb"
+    
+            fi #--- if test ! -s ${RECDATAOUT}/GPOSUSP${LABELI}$dataarqP.fct.$CASE.grb; then
+
+           echo \${xname} \${ii}
+        done
+        #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        ii=\`expr \$ii + 1\`
+    done
+done #--- while [ ! -s ${RECDATAOUT}/GPOSUSP${LABELI}${LABELF}P.fct.$CASE.grb ]; do
+
+#rm -f ${DATAINDIR}/cptec.table
+
+LABELS=`echo $LABELI | cut -c 1-8`
+
+cd ${DATAINDIR}
+
+#+-+-+-+++-+-+-++-+-+-++-+-+-+-+-+-++-+-+-+++-+-+-++-+-+-++-+-+-+-+-+-++-+-+-++-+-+-++-+-+-++-+-+-++-+-+-+
+#
+# Recortes para insercao no LDM
+#
+echo "user iddftp mssftp." > moingobe.ftp
+echo "prompt\nbin\ncd /home/iddftp/T213/" >> moingobe.ftp
+echo "lcd /gfs/dk20/modoper/tempo/global/T213L42/grib/$LABELS" >> moingobe.ftp
+
+j=0
+#set -A VARS psnm zgeo uvel vvel temp prec umrs
+VARS=( psnm zgeo uvel vvel temp prec umrs )
+echo \${VARS[0]}
+
+
+while [ \${j} -lt 07 ] ; do
+
+echo \$j - \${VARS[\$j]}
+
+hor=0000
+i=1
+
+while [ \${i} -lt 16 ] ; do
+      echo "Criando arquivo: \$hor -> Data: ${LABELF}"
+      FILE=cptglb${LABELI}.\${VARS[\${j}]}.pgrbf\${hor}
+      if [ \${i} -ne 1 ]; then
+           /usr/local/grads/bin/lats4d -i ${GPOS}${LABELI}${LABELF}P.fct.$CASE.ctl -o \${FILE} -format "grads_grib" -grid "gaussian" -vars "\${VARS[\$j]}"
+cat << EOF > `echo ${HOME_suite}`/run/exscript
+40
+d
+i
+ 85.647  86.208  86.769  87.331  87.892  88.453  89.013  89.570
+zdef 1 levels 1013
+.
+wq
+EOF
+ex -s ${DATAINDIR}/\${FILE}.ctl < `echo ${HOME_suite}`/run/exscript
+
+           echo "put \${FILE}.grb" >> moingobe.ftp
+           echo "\${FILE}.grb" >> moingobe.lst
+     else
+           /usr/local/grads/bin/lats4d -i ${GPOS}${LABELI}${LABELF}P.icn.$CASE.ctl -o \${FILE} -format "grads_grib" -grid "gaussian" -vars "\${VARS[\$j]}"
+           echo "put \${FILE}.grb" >> moingobe.ftp
+           echo "\${FILE}.grb" >> moingobe.lst
+cat << EOF > `echo ${HOME_suite}`/run/exscript
+40
+d
+i
+ 85.647  86.208  86.769  87.331  87.892  88.453  89.013  89.570
+zdef 1 levels 1013
+.
+wq
+EOF
+ex -s ${DATAINDIR}/\${FILE}.ctl < `echo ${HOME_suite}`/run/exscript
+
+     fi
+         hor=\`expr \${hor} + 12\`
+     if [ \${hor} -lt 10 ] ; then
+           hor=000\${hor}
+     else
+           if [ \${hor} -lt 100 ] ; then
+                 hor=00\${hor}
+           else
+                 hor=0\${hor}
+           fi
+     fi
+let i=\${i}+1
+done
+
+let j=\${j}+1
+done
+
+DATE=`echo ${LABELI} | cut -c 1-8`
+LABELR=`date -d "${DATE} 3 days ago" +"%Y%m%d"`
+echo "mdel cptglb${LABELR}*" >> moingobe.ftp
+
+echo "dir\nquit" >> moingobe.ftp
+#+-+-+-+++-+-+-++-+-+-++-+-+-+-+-+-++-+-+-+++-+-+-++-+-+-++-+-+-+-+-+-++-+-+-++-+-+-++-+-+-++-+-+-++-+-+-+
+
+exit 0
+
+
+EOT
+
+#
+#   End script generation. Then change permission to executable
+#
+chmod 700 ${SCRIPTFILEPATH}
+qsub ${hold} ${SCRIPTFILEPATH}

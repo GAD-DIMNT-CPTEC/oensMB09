@@ -1,0 +1,26 @@
+# START grib1::section
+# SECTION 3, Bit-map section
+#  Length of section
+# (octets)
+position offsetSection3;
+length[3] section3Length ;
+
+#  Number of unused bits at end of Section 3
+unsigned[1] numberOfUnusedBitsAtEndOfSection3 = 0: read_only;
+
+#  Table reference:
+unsigned[2] tableReference = 0;
+
+position offsetBeforeBitmap;
+meta bitmap g1bitmap( tableReference,
+                    missingValue,
+                    offsetSection3,
+                    section3Length,
+                    numberOfUnusedBitsAtEndOfSection3) : read_only;
+
+position offsetAfterBitmap;
+
+# END   grib1::section
+
+padtoeven padding_sec3_1(offsetSection3,section3Length);
+section_padding section3Padding;

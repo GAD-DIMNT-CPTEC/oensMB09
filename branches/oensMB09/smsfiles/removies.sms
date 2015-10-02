@@ -1,0 +1,42 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+cd ${HOME_suite}/run
+
+OUTPUTFILEPATH=${SC2_suite}/out_err/${CASE}/${LABELI}; mkdir -p $OUTPUTFILEPATH
+tmstp=$(date +"%%s")
+cat << EOF > setremovies${LABELI}.%RESOL%.bash
+#PBS -W umask=026
+#PBS -o aux20-eth4:${OUTPUTFILEPATH}/setremovies.${LABELI}.${tmstp}.out
+#PBS -e aux20-eth4:${OUTPUTFILEPATH}/setremovies.${LABELI}.${tmstp}.err
+#PBS -q $QUEUE3
+#PBS -S /bin/bash
+#PBS -lselect=1:ncpus=1
+#PBS -N removies
+
+cd ${HOME_suite}/produtos/removies/scripts/
+echo ./removies_t126L28_ense_cal_fixBfctg_operacao_mend.ksh ${LABELI} 360 000 012 30 096 ${TRC} ${LV}
+./removies_t126L28_ense_cal_fixBfctg_operacao_mend.ksh ${LABELI} 360 000 012 30 096 ${TRC} ${LV}
+
+cd ${HOME_suite}/run/
+echo runrmvgif.bash run${TRC} ${LV} ${LABELI} 04 07 ENM
+runrmvgif.bash run${TRC} ${LV} ${LABELI} 04 07 ENM
+exit 0
+EOF
+
+export PBS_SERVER=aux20-eth4
+JID=$(qsub setremovies${LABELI}.%RESOL%.bash | awk -F "." '{print $1}')
+it=2
+while [ ${it} -gt 0 ];do
+	it=`qstat | grep $JID | wc -l`
+	sleep 3
+done
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/removies/dataout/%RESOL%/${LABELI}/ 2 0
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/removies/dataout/%RESOL%/${LABELI}/ 2 0
+
+%include <tail.h>

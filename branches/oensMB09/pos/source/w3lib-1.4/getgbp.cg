@@ -1,0 +1,62 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  getgbp.f
+       !        File                  :  getgbp.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    2.       
+    2.       subroutine getgbp( lugb, lugi, jg, j, jpds, jgds, kg, k, kpds, kgds, g, iret )
+    2.       $CARG_lugb_I0 = 0[loc( lugb ),0]
+    2.       $CARG_lugi_I1 = 0[loc( lugi ),0]
+    2.       $CARG_j_I3 = 0[loc( j ),0]
+  192.       if ( $CARG_lugi_I1 <= 0 ) then
+    2.          goto 10
+  192.       else if ( $CARG_j_I3 >= 0 ) then
+  192.          $lux_S0 = lux
+  192.          if ( $lux_S0 - $CARG_lugi_I1 /= 0 ) then
+  192.             goto 40
+  192.          else
+  192.    10       continue
+  195.             if ( $CARG_lugi_I1 > 0 ) then
+  195.                goto 20
+  195.             else if ( $CARG_j_I3 >= 0 ) then
+  195.                $lux_S2 = lux
+  195.                if ( $CARG_lugb_I0 - $lux_S2 /= 0 ) then
+  195.                   goto 30
+  195.                else
+  195.    20             continue
+  199.                   jj = $CARG_j_I3
+  199.                endif
+  199.             else
+  199.    30          continue
+  196.                lux = $CARG_lugb_I0
+  197.                $jj_S3 = min( $CARG_j_I3, -1 - $CARG_j_I3 )
+  197.                jj = $jj_S3
+  197.             endif
+  197.          endif
+  197.       else
+  197.    40    continue
+  193.          lux = $CARG_lugi_I1
+  194.          $jj_S1 = min( $CARG_j_I3, -1 - $CARG_j_I3 )
+  194.          jj = $jj_S1
+  194.       endif
+  203.       $LCS_mnum_0 = loc( mnum )
+  203.       $Con_P6 = 262144
+  203.       call getgbmp( 0[loc( lugb ),0], 0[loc( lugi ),0], 0[loc( jg ),0], jj, 0[loc( jpds ),0], 0[loc( jgds ),0], $Con_P6, substr[cbuf,0:1], 2[$LCS_mnum_0,0], 4[$LCS_mnum_0,0], 0[$LCS_mnum_0,0], 0[loc( kg ),0], 0[loc( k ),0], 0[loc( kpds ),0], 0[loc( kgds ),0], substr[g,0:1], 0[loc( iret ),0] )
+  206.       if ( 0[loc( iret ),0] == 96 ) then
+  206.          lux = 0
+  206.       endif
+  209.       return
+  209.       end
+  209.       

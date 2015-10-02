@@ -1,0 +1,370 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        Notice - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Prec_LrgScl.f90
+       !        File                  :  Prec_LrgScl.opt
+       !        Network               :  Gemini interconnect
+       !        Target                :  X86, 64-bit, sse3
+       !        
+   36.       
+   36.       subroutine initlrgscl
+   39.       rlocp = 2508.4610790364322
+   41.       rgrav = 1.020408163265306e-1
+   42.       rlrv = -5452.7691736782708
+   43.       $const_S0 = 6.110000000000001e-1 * _expn( -( -5452.7691736782708 * 1.0/tbase ) )
+   44.       const1 = 6.22e-1 * $const_S0
+   45.       const2 = -3.78e-1 * $const_S0
+   46.       xx1 = -13678059.245141592
+   47.       return
+   47.       end
+   47.       
+   59.       
+   59.       subroutine lrgscl( geshem, tf, qs, qf, ps, del, sl, dt, mlrg, latco, ncols, kmax )
+   59.       t$3 = ncols
+  143.       t$13 = _zla( 0, ncols )
+   59.       t$4 = kmax
+   59.       t$14 = _zla( 0, ncols )
+  144.       t$15 = _zla( 0, kmax )
+   59.       t$16 = _zla( 0, ncols ) * _zla( 0, kmax )
+   59.       t$17 = 2 * _zla( 0, ncols )
+  159.       t$20 = 16 * _zla( 0, ncols )
+  155.       t$21 = 16 * _zla( 0, ncols )
+  155.       t$23 = 16 * _zla( 0, ncols ) + _zla( 0, ncols ) * _zla( 0, kmax ) * 8
+  158.       t$24 = 16 * _zla( 0, ncols ) + _zla( 0, ncols ) * _zla( 0, kmax ) * 8
+  158.       t$26 = _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 24 * _zla( 0, ncols )
+  157.       t$27 = _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 24 * _zla( 0, ncols )
+  157.       t$29 = _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 32 * _zla( 0, ncols )
+  154.       t$30 = _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 32 * _zla( 0, ncols )
+  154.       t$32 = _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 48 * _zla( 0, ncols )
+  160.       t$33 = _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 48 * _zla( 0, ncols )
+  160.       t$35 = 48 * _zla( 0, ncols ) + _zla( 0, ncols ) * _zla( 0, kmax ) * 16
+  156.       t$36 = 48 * _zla( 0, ncols ) + _zla( 0, ncols ) * _zla( 0, kmax ) * 16
+  156.       t$38 = _zla( 0, ncols ) * _zla( 0, kmax ) * 16 + 56 * _zla( 0, ncols )
+  161.       t$39 = _zla( 0, ncols ) * _zla( 0, kmax ) * 16 + 56 * _zla( 0, ncols )
+  161.       t$41 = 56 * _zla( 0, ncols ) + _zla( 0, ncols ) * _zla( 0, kmax ) * 24
+   59.       t$18 = int( _alloc( 56 * _zla( 0, ncols ) + _zla( 0, ncols ) * _zla( 0, kmax ) * 24 ), 8 )
+  159.       t$19 = t$18
+  155.       t$22 = t$18 + 16 * _zla( 0, ncols )
+  158.       t$25 = t$18 + 16 * _zla( 0, ncols ) + _zla( 0, ncols ) * _zla( 0, kmax ) * 8
+  157.       t$28 = t$18 + _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 24 * _zla( 0, ncols )
+  154.       t$31 = t$18 + _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 32 * _zla( 0, ncols )
+  160.       t$34 = t$18 + _zla( 0, ncols ) * _zla( 0, kmax ) * 8 + 48 * _zla( 0, ncols )
+  156.       t$37 = t$18 + 48 * _zla( 0, ncols ) + _zla( 0, ncols ) * _zla( 0, kmax ) * 16
+  161.       t$40 = t$18 + _zla( 0, ncols ) * _zla( 0, kmax ) * 16 + 56 * _zla( 0, ncols )
+  171.       $dtsqrt_S8 = _sqrt( dt )
+  173.       if ( kmax > 0 ) then
+  174.          if ( ncols > 0 ) then
+  173.             $I_L173_134 = 0
+  173.             if ( kmax >= 4 ) then
+  173.                $I_L173_147 = 0
+  173. !dir$ blocking_size( 0, 0 )
+  173.                do
+  174.                   $SCA_sl#1_U0 = sl(1 + 4 * $I_L173_147)
+  174.                   $SCA_del#1_U4 = del(1 + 4 * $I_L173_147)
+  174.                   $SCA_sl#2_U1 = sl(2 + 4 * $I_L173_147)
+  174.                   $SCA_del#2_U5 = del(2 + 4 * $I_L173_147)
+  174.                   $SCA_sl#3_U2 = sl(3 + 4 * $I_L173_147)
+  174.                   $SCA_del#3_U6 = del(3 + 4 * $I_L173_147)
+  174.                   $SCA_sl#4_U3 = sl(4 + 4 * $I_L173_147)
+  174.                   $SCA_del#4_U7 = del(4 + 4 * $I_L173_147)
+  174.                   $I_L174_110 = 0
+  174. !dir$ ivdep
+  174. !dir$ blocking_size( 0, 0 )
+  174.                   do
+  175.                      q(1 + $I_L174_110, 1 + 4 * $I_L173_147) = qf(1 + $I_L174_110, 1 + 4 * $I_L173_147)
+  176.                      t(1 + $I_L174_110, 1 + 4 * $I_L173_147) = tf(1 + $I_L174_110, 1 + 4 * $I_L173_147)
+  177.                      $qs_WR0_R0 = _expn( ( rlrv * 1.0/tf(1 + $I_L174_110, 1 + 4 * $I_L173_147) ) )
+  178.                      $qs_WR0_R0 = ( const1 * $qs_WR0_R0 * 1.0/( $SCA_sl#1_U0 * ps(1 + $I_L174_110) + const2 * $qs_WR0_R0 ) )
+  178.                      qs(1 + $I_L174_110, 1 + 4 * $I_L173_147) = $qs_WR0_R0
+  179.                      dpovg(1 + $I_L174_110, 1 + 4 * $I_L173_147) = ( $SCA_del#1_U4 * rgrav ) * ps(1 + $I_L174_110)
+  175.                      q(1 + $I_L174_110, 2 + 4 * $I_L173_147) = qf(1 + $I_L174_110, 2 + 4 * $I_L173_147)
+  176.                      t(1 + $I_L174_110, 2 + 4 * $I_L173_147) = tf(1 + $I_L174_110, 2 + 4 * $I_L173_147)
+  177.                      $qs_WR0_R0 = _expn( ( rlrv * 1.0/tf(1 + $I_L174_110, 2 + 4 * $I_L173_147) ) )
+  178.                      $qs_WR0_R0 = ( const1 * $qs_WR0_R0 * 1.0/( $SCA_sl#2_U1 * ps(1 + $I_L174_110) + const2 * $qs_WR0_R0 ) )
+  178.                      qs(1 + $I_L174_110, 2 + 4 * $I_L173_147) = $qs_WR0_R0
+  179.                      dpovg(1 + $I_L174_110, 2 + 4 * $I_L173_147) = ( $SCA_del#2_U5 * rgrav ) * ps(1 + $I_L174_110)
+  175.                      q(1 + $I_L174_110, 3 + 4 * $I_L173_147) = qf(1 + $I_L174_110, 3 + 4 * $I_L173_147)
+  176.                      t(1 + $I_L174_110, 3 + 4 * $I_L173_147) = tf(1 + $I_L174_110, 3 + 4 * $I_L173_147)
+  177.                      $qs_WR0_R0 = _expn( ( rlrv * 1.0/tf(1 + $I_L174_110, 3 + 4 * $I_L173_147) ) )
+  178.                      $qs_WR0_R0 = ( const1 * $qs_WR0_R0 * 1.0/( $SCA_sl#3_U2 * ps(1 + $I_L174_110) + const2 * $qs_WR0_R0 ) )
+  178.                      qs(1 + $I_L174_110, 3 + 4 * $I_L173_147) = $qs_WR0_R0
+  179.                      dpovg(1 + $I_L174_110, 3 + 4 * $I_L173_147) = ( $SCA_del#3_U6 * rgrav ) * ps(1 + $I_L174_110)
+  175.                      q(1 + $I_L174_110, 4 + 4 * $I_L173_147) = qf(1 + $I_L174_110, 4 + 4 * $I_L173_147)
+  176.                      t(1 + $I_L174_110, 4 + 4 * $I_L173_147) = tf(1 + $I_L174_110, 4 + 4 * $I_L173_147)
+  177.                      $qs_WR0_R0 = _expn( ( rlrv * 1.0/tf(1 + $I_L174_110, 4 + 4 * $I_L173_147) ) )
+  178.                      $qs_WR0_R0 = ( const1 * $qs_WR0_R0 * 1.0/( $SCA_sl#4_U3 * ps(1 + $I_L174_110) + const2 * $qs_WR0_R0 ) )
+  178.                      qs(1 + $I_L174_110, 4 + 4 * $I_L173_147) = $qs_WR0_R0
+  179.                      dpovg(1 + $I_L174_110, 4 + 4 * $I_L173_147) = ( $SCA_del#4_U7 * rgrav ) * ps(1 + $I_L174_110)
+  180.                      $I_L174_110 = 1 + $I_L174_110
+  174.                      if ( $I_L174_110 >= ncols ) exit
+  174.                   enddo
+  181.                   $I_L173_147 = 1 + $I_L173_147
+  180.                   if ( $I_L173_147 >= _rsh( kmax, 2 ) ) exit
+  180.                enddo
+  181.                $I_L173_134 = and( 0xfffffffffffffffcUL, kmax )
+  181.             endif
+  173.             if ( $I_L173_134 < kmax ) then
+  173.                $I_L173_144 = 0
+  173. !dir$ blocking_size( 0, 0 )
+  173.                do
+  174.                   $SCA_sl_I0 = sl($I_L173_134 + $I_L173_144 + 1)
+  174.                   $SCA_del_I1 = del($I_L173_134 + $I_L173_144 + 1)
+  174.                   $I_L174_110 = 0
+  174. !dir$ ivdep
+  174. !dir$ blocking_size( 0, 0 )
+  174.                   do
+  175.                      q(1 + $I_L174_110, $I_L173_134 + $I_L173_144 + 1) = qf(1 + $I_L174_110, $I_L173_134 + $I_L173_144 + 1)
+  176.                      t(1 + $I_L174_110, $I_L173_134 + $I_L173_144 + 1) = tf(1 + $I_L174_110, $I_L173_134 + $I_L173_144 + 1)
+  177.                      $qs_WR0_R0 = _expn( ( rlrv * 1.0/tf(1 + $I_L174_110, $I_L173_134 + $I_L173_144 + 1) ) )
+  178.                      $qs_WR0_R0 = ( const1 * $qs_WR0_R0 * 1.0/( $SCA_sl_I0 * ps(1 + $I_L174_110) + const2 * $qs_WR0_R0 ) )
+  178.                      qs(1 + $I_L174_110, $I_L173_134 + $I_L173_144 + 1) = $qs_WR0_R0
+  179.                      dpovg(1 + $I_L174_110, $I_L173_134 + $I_L173_144 + 1) = ( $SCA_del_I1 * rgrav ) * ps(1 + $I_L174_110)
+  180.                      $I_L174_110 = 1 + $I_L174_110
+  174.                      if ( $I_L174_110 >= ncols ) exit
+  174.                   enddo
+  181.                   $I_L173_144 = 1 + $I_L173_144
+  180.                   if ( $I_L173_144 >= kmax + -$I_L173_134 ) exit
+  180.                enddo
+  180.             endif
+  180.          endif
+  180.       endif
+  183.       $F_A33 = ncols
+  183.       if ( ncols > 0 ) then
+  183.          $I_L183_138 = 0
+  183.          do
+  183.             $I_L183_128 = 0
+  183. !dir$ ivdep
+  183.             do
+  183.                prec(1 + $I_L183_128, 1 + $I_L183_138) = 0.0
+  183.                $I_L183_128 = 1 + $I_L183_128
+  183.                if ( $I_L183_128 >= $F_A33 ) exit
+  183.             enddo
+  183.             $I_L183_138 = 1 + $I_L183_138
+  183.             if ( $I_L183_138 >= 2 ) exit
+  183.          enddo
+  183.       endif
+  187.       $rhsat_S7 = 8.0000000000000004e-1
+  189.       if ( kmax > 0 ) then
+  189.          $I_L189_142 = 0
+  189.          do
+  191.             if ( kmax + -$I_L189_142 + -1 == 0 ) then
+  191.                $rhsat_S7 = 9.0000000000000002e-1
+  191.             endif
+  192.             if ( ncols > 0 ) then
+  192.                $I_L192_112 = 0
+  192. !dir$ ivdep
+  192.                do
+  193.                   $super_WR0_R1 = qf(1 + $I_L192_112, kmax + -$I_L189_142) + -qs(1 + $I_L192_112, kmax + -$I_L189_142)
+  193.                   super(1 + $I_L192_112) = $super_WR0_R1
+  198.                   $qcond_S4 = ( max( 0.0, $super_WR0_R1 ) * 1.0/( 1.0 + -( xx1 * qs(1 + $I_L192_112, kmax + -$I_L189_142) * 1.0/( tf(1 + $I_L192_112, kmax + -$I_L189_142) * tf(1 + $I_L192_112, kmax + -$I_L189_142) ) ) ) )
+  200.                   tf(1 + $I_L192_112, kmax + -$I_L189_142) = tf(1 + $I_L192_112, kmax + -$I_L189_142) + rlocp * ( max( 0.0, $qcond_S4 ) )
+  201.                   qf(1 + $I_L192_112, kmax + -$I_L189_142) = qf(1 + $I_L192_112, kmax + -$I_L189_142) + -( max( 0.0, $qcond_S4 ) )
+  202.                   prec(1 + $I_L192_112, 1) = prec(1 + $I_L192_112, 1) + ( max( 0.0, $qcond_S4 ) ) * dpovg(1 + $I_L192_112, kmax + -$I_L189_142)
+  203.                   $I_L192_112 = 1 + $I_L192_112
+  192.                   if ( $I_L192_112 >= ncols ) exit
+  192.                enddo
+  192.             endif
+  207.             $F_A34 = ncols
+  207.             if ( ncols > 0 ) then
+  207.                $I_L207_130 = 0
+  207. !dir$ ivdep
+  207.                do
+  207.                   evap(1 + $I_L207_130) = 0.0
+  207.                   $I_L207_130 = 1 + $I_L207_130
+  207.                   if ( $I_L207_130 >= $F_A34 ) exit
+  207.                enddo
+  208.                $I_L208_114 = 0
+  208. !dir$ ivdep
+  208.                do
+  209.                   if ( super(1 + $I_L208_114) <= 0.0 ) then
+  209.                      if ( prec(1 + $I_L208_114, 1) > 0.0 ) then
+  210.                         evap(1 + $I_L208_114) = $rhsat_S7 * qs(1 + $I_L208_114, kmax + -$I_L189_142) + -qf(1 + $I_L208_114, kmax + -$I_L189_142)
+  210.                      endif
+  210.                   endif
+  212.                   fact(1 + $I_L208_114) = _sqrt( prec(1 + $I_L208_114, 1) ) * $dtsqrt_S8 * 3.2000000000000001e-1
+  213.                   $I_L208_114 = 1 + $I_L208_114
+  211.                   if ( $I_L208_114 >= ncols ) exit
+  211.                enddo
+  211.             endif
+  215.             $F_A35 = ncols
+  215.             if ( ncols > 0 ) then
+  215.                $I_L215_140 = 0
+  215.                do
+  215.                   $I_L215_132 = 0
+  215. !dir$ ivdep
+  215.                   do
+  215.                      amtevp(1 + $I_L215_132, 1 + $I_L215_140) = 0.0
+  215.                      $I_L215_132 = 1 + $I_L215_132
+  215.                      if ( $I_L215_132 >= $F_A35 ) exit
+  215.                   enddo
+  215.                   $I_L215_140 = 1 + $I_L215_140
+  215.                   if ( $I_L215_140 >= 2 ) exit
+  215.                enddo
+  217.                $I_L217_116 = 0
+  217. !dir$ ivdep
+  217.                do
+  218.                   if ( evap(1 + $I_L217_116) > 0.0 ) then
+  219.                      amtevp(1 + $I_L217_116, 2) = fact(1 + $I_L217_116) * evap(1 + $I_L217_116)
+  220.                      prec(1 + $I_L217_116, 2) = ( prec(1 + $I_L217_116, 1) * 1.0/dpovg(1 + $I_L217_116, kmax + -$I_L189_142) )
+  220.                   endif
+  222.                   $LD_SPLT_P1 = amtevp(1 + $I_L217_116, 2)
+  222.                   $LD_SPLT_P2 = prec(1 + $I_L217_116, 2)
+  222.                   amtevp(1 + $I_L217_116, 1) = min( $LD_SPLT_P1, $LD_SPLT_P2 )
+  226.                   $qevap_S10 = ( max( 0.0, ( min( $LD_SPLT_P1, $LD_SPLT_P2 ) ) ) * 1.0/( 1.0 + -( xx1 * qs(1 + $I_L217_116, kmax + -$I_L189_142) * 1.0/( tf(1 + $I_L217_116, kmax + -$I_L189_142) * tf(1 + $I_L217_116, kmax + -$I_L189_142) ) ) ) )
+  228.                   tf(1 + $I_L217_116, kmax + -$I_L189_142) = tf(1 + $I_L217_116, kmax + -$I_L189_142) + -( rlocp * $qevap_S10 )
+  229.                   qf(1 + $I_L217_116, kmax + -$I_L189_142) = qf(1 + $I_L217_116, kmax + -$I_L189_142) + $qevap_S10
+  231.                   prec(1 + $I_L217_116, 1) = max( 0.0, prec(1 + $I_L217_116, 1) + -( $qevap_S10 * dpovg(1 + $I_L217_116, kmax + -$I_L189_142) ) )
+  232.                   $I_L217_116 = 1 + $I_L217_116
+  221.                   if ( $I_L217_116 >= ncols ) exit
+  221.                enddo
+  221.             endif
+  234.             $I_L189_142 = 1 + $I_L189_142
+  232.             if ( $I_L189_142 >= kmax ) exit
+  232.          enddo
+  232.       endif
+  238.       if ( mlrg == 1 ) then
+  242.          if ( ncols > 0 ) then
+  242.             $I_L242_136 = 0
+  242.             do
+  243.                if ( prec(1 + $I_L242_136, 1) > 0.0 ) then
+  244.                   $Unit_temp_O0 = nfprt
+  244.                   _fwrite( _clist( 0, 0, 2, $Unit_temp_O0, Null_Arg, Null_Arg, t$12,  _substr(t$11,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  244.                   $Unit_temp_O1 = nfprt
+  244.                   $_IOitem_P0(0) = ( 1 + $I_L242_136 )
+  244.                   $_IOitem_P0(1) = latco
+  244.                   _fwrite( _clist( 0, 0, 0, $Unit_temp_O1, Null_Arg, Null_Arg, t$12,  _substr(t$11,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P0(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+  244.                   if ( kmax > 0 ) then
+  244.                      $I_L244_118 = 0
+  244.                      do
+  244.                         if ( ( 1 + $I_L242_136 ) <= 0 .or. ( 1 + $I_L242_136 ) > t$3 ) then
+  244.                             _substr(t$67,1,16) = 'Prec_LrgScl.f90'
+  244.                             _substr(t$68,1,4) = 'T'
+  244.                            t$69 = 1 + $I_L242_136
+  244.                            call _bounds_error(  _substr(t$67,1,16), 244,  _substr(t$68,1,2), 1, 1, t$3, t$69, t$66 )
+  244.                         endif
+  244.                         if ( ( 1 + $I_L244_118 ) <= 0 .or. ( 1 + $I_L244_118 ) > t$4 ) then
+  244.                             _substr(t$71,1,16) = 'Prec_LrgScl.f90'
+  244.                             _substr(t$72,1,4) = 'T'
+  244.                            t$73 = 1 + $I_L244_118
+  244.                            call _bounds_error(  _substr(t$71,1,16), 244,  _substr(t$72,1,2), 2, 1, t$4, t$73, t$70 )
+  244.                         endif
+  244.                         $Unit_temp_O2 = nfprt
+  244.                         $IOitem_O13 = t(1 + $I_L242_136, 1 + $I_L244_118)
+  244.                         _fwrite( _clist( 0, 0, 0, $Unit_temp_O2, Null_Arg, Null_Arg, t$12,  _substr(t$11,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O13, 0x804060300000000L ) ) )
+  244.                         $I_L244_118 = 1 + $I_L244_118
+  244.                         if ( $I_L244_118 >= kmax ) exit
+  244.                      enddo
+  244.                   endif
+  244.                   $Unit_temp_O3 = nfprt
+  244.                   _fwrite( _clist( 0, 0, 1, $Unit_temp_O3, Null_Arg, Null_Arg, t$12,  _substr(t$11,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  245.                   $Unit_temp_O4 = nfprt
+  245.                   _fwrite( _clist( 0, 0, 2, $Unit_temp_O4, Null_Arg, Null_Arg, t$10,  _substr(t$9,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  245.                   if ( kmax > 0 ) then
+  245.                      $I_L245_120 = 0
+  245.                      do
+  245.                         if ( ( 1 + $I_L242_136 ) <= 0 .or. ( 1 + $I_L242_136 ) > t$3 ) then
+  245.                             _substr(t$78,1,16) = 'Prec_LrgScl.f90'
+  245.                             _substr(t$79,1,4) = 'TF'
+  245.                            t$69 = 1 + $I_L242_136
+  245.                            call _bounds_error(  _substr(t$78,1,16), 245,  _substr(t$79,1,3), 1, 1, t$3, t$69, t$77 )
+  245.                         endif
+  245.                         if ( ( 1 + $I_L245_120 ) <= 0 .or. ( 1 + $I_L245_120 ) > t$4 ) then
+  245.                             _substr(t$81,1,16) = 'Prec_LrgScl.f90'
+  245.                             _substr(t$82,1,4) = 'TF'
+  245.                            t$73 = 1 + $I_L245_120
+  245.                            call _bounds_error(  _substr(t$81,1,16), 245,  _substr(t$82,1,3), 2, 1, t$4, t$73, t$80 )
+  245.                         endif
+  245.                         $Unit_temp_O5 = nfprt
+  245.                         $IOitem_O14 = tf(1 + $I_L242_136, 1 + $I_L245_120)
+  245.                         _fwrite( _clist( 0, 0, 0, $Unit_temp_O5, Null_Arg, Null_Arg, t$10,  _substr(t$9,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O14, 0x804060300000000L ) ) )
+  245.                         $I_L245_120 = 1 + $I_L245_120
+  245.                         if ( $I_L245_120 >= kmax ) exit
+  245.                      enddo
+  245.                   endif
+  245.                   $Unit_temp_O6 = nfprt
+  245.                   _fwrite( _clist( 0, 0, 1, $Unit_temp_O6, Null_Arg, Null_Arg, t$10,  _substr(t$9,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  246.                   $Unit_temp_O7 = nfprt
+  246.                   _fwrite( _clist( 0, 0, 2, $Unit_temp_O7, Null_Arg, Null_Arg, t$8,  _substr(t$7,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  246.                   if ( kmax > 0 ) then
+  246.                      $I_L246_122 = 0
+  246.                      do
+  246.                         if ( ( 1 + $I_L242_136 ) <= 0 .or. ( 1 + $I_L242_136 ) > t$3 ) then
+  246.                             _substr(t$87,1,16) = 'Prec_LrgScl.f90'
+  246.                             _substr(t$88,1,4) = 'Q'
+  246.                            t$69 = 1 + $I_L242_136
+  246.                            call _bounds_error(  _substr(t$87,1,16), 246,  _substr(t$88,1,2), 1, 1, t$3, t$69, t$86 )
+  246.                         endif
+  246.                         if ( ( 1 + $I_L246_122 ) <= 0 .or. ( 1 + $I_L246_122 ) > t$4 ) then
+  246.                             _substr(t$90,1,16) = 'Prec_LrgScl.f90'
+  246.                             _substr(t$91,1,4) = 'Q'
+  246.                            t$73 = 1 + $I_L246_122
+  246.                            call _bounds_error(  _substr(t$90,1,16), 246,  _substr(t$91,1,2), 2, 1, t$4, t$73, t$89 )
+  246.                         endif
+  246.                         $Unit_temp_O8 = nfprt
+  246.                         $IOitem_O15 = q(1 + $I_L242_136, 1 + $I_L246_122)
+  246.                         _fwrite( _clist( 0, 0, 0, $Unit_temp_O8, Null_Arg, Null_Arg, t$8,  _substr(t$7,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O15, 0x804060300000000L ) ) )
+  246.                         $I_L246_122 = 1 + $I_L246_122
+  246.                         if ( $I_L246_122 >= kmax ) exit
+  246.                      enddo
+  246.                   endif
+  246.                   $Unit_temp_O9 = nfprt
+  246.                   _fwrite( _clist( 0, 0, 1, $Unit_temp_O9, Null_Arg, Null_Arg, t$8,  _substr(t$7,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  247.                   $Unit_temp_O10 = nfprt
+  247.                   _fwrite( _clist( 0, 0, 2, $Unit_temp_O10, Null_Arg, Null_Arg, t$6,  _substr(t$5,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  247.                   if ( kmax > 0 ) then
+  247.                      $I_L247_124 = 0
+  247.                      do
+  247.                         if ( ( 1 + $I_L242_136 ) <= 0 .or. ( 1 + $I_L242_136 ) > t$3 ) then
+  247.                             _substr(t$96,1,16) = 'Prec_LrgScl.f90'
+  247.                             _substr(t$97,1,4) = 'QF'
+  247.                            t$69 = 1 + $I_L242_136
+  247.                            call _bounds_error(  _substr(t$96,1,16), 247,  _substr(t$97,1,3), 1, 1, t$3, t$69, t$95 )
+  247.                         endif
+  247.                         if ( ( 1 + $I_L247_124 ) <= 0 .or. ( 1 + $I_L247_124 ) > t$4 ) then
+  247.                             _substr(t$99,1,16) = 'Prec_LrgScl.f90'
+  247.                             _substr(t$100,1,4) = 'QF'
+  247.                            t$73 = 1 + $I_L247_124
+  247.                            call _bounds_error(  _substr(t$99,1,16), 247,  _substr(t$100,1,3), 2, 1, t$4, t$73, t$98 )
+  247.                         endif
+  247.                         $Unit_temp_O11 = nfprt
+  247.                         $IOitem_O16 = qf(1 + $I_L242_136, 1 + $I_L247_124)
+  247.                         _fwrite( _clist( 0, 0, 0, $Unit_temp_O11, Null_Arg, Null_Arg, t$6,  _substr(t$5,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O16, 0x804060300000000L ) ) )
+  247.                         $I_L247_124 = 1 + $I_L247_124
+  247.                         if ( $I_L247_124 >= kmax ) exit
+  247.                      enddo
+  247.                   endif
+  247.                   $Unit_temp_O12 = nfprt
+  247.                   _fwrite( _clist( 0, 0, 1, $Unit_temp_O12, Null_Arg, Null_Arg, t$6,  _substr(t$5,1,32), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  247.                endif
+  249.                $I_L242_136 = 1 + $I_L242_136
+  248.                if ( $I_L242_136 >= ncols ) exit
+  248.             enddo
+  248.          endif
+  248.       endif
+  253.       if ( ncols > 0 ) then
+  253.          $I_L253_126 = 0
+  253. !dir$ ivdep
+  253.          do
+  254.             geshem(1 + $I_L253_126) = geshem(1 + $I_L253_126) + 5.0e-1 * prec(1 + $I_L253_126, 1)
+  255.             $I_L253_126 = 1 + $I_L253_126
+  253.             if ( $I_L253_126 >= ncols ) exit
+  253.          enddo
+  253.       endif
+   59.       _free( t$18 )
+  260.       return
+  260.       end
+  260.       
+    6.       
+    6.       module lrgsclprec
+  263.       return
+  263.       end
+  263.       

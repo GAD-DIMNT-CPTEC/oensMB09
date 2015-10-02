@@ -1,0 +1,166 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  w3tagb.f
+       !        File                  :  w3tagb.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    1.       
+    1.       subroutine w3tagb( prog, kyr, jd, lf, org )
+    1.       $CARG_kyr_I0 = 0[loc( kyr ),0]
+    1.       $CARG_jd_I1 = 0[loc( jd ),0]
+    1.       $CARG_lf_I2 = 0[loc( lf ),0]
+   79.       call start
+   82.       $LCS_ddate_0 = loc( ddate )
+   82.       $LCS_2 = 1000.0 * real( $CARG_kyr_I0 )
+   82.       6[$LCS_ddate_0,0] = $LCS_2
+   83.       $LCS_CARG_jd_1 = real( $CARG_jd_I1 )
+   83.       2[$LCS_ddate_0,0] = $LCS_CARG_jd_1
+   85.       $LCS_3 = 9.9999998e-3 * real( $CARG_lf_I2 )
+   85.       4[$LCS_ddate_0,0] = $LCS_3
+   86.       0[$LCS_ddate_0,0] = $LCS_CARG_jd_1 + $LCS_2 + $LCS_3
+   87.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O0 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O1 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O2 ) ) )
+   89.       $_StackIolist_O5 = $_StaticIolist_O4
+   89.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O5 ),0].L ) ), 8 ),0].L = loc( substr[prog,0:_len( prog )] )
+   89.       $CS_ddate_0 = loc( ddate )
+   89.       0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O5 ),0].L ) ), 8 ),0].L = loc( 0[$CS_ddate_0,0] )
+   89.       0[int( pointer to c_union Pointer_union( loc( 11[loc( $_StackIolist_O5 ),0].L ) ), 8 ),0].L = loc( substr[org,0:_len( org )] )
+   89.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O3 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O5 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O2 ) ) )
+   93.       call w3locdat( 0[loc( idat ),0] )
+   94.       $LCS_ddate_4 = loc( ddate )
+   94.       $CS_idat_1 = loc( idat )
+   94.       call w3doxdat( 0[$CS_idat_1,0], 10[$LCS_ddate_4,0], 12[$LCS_ddate_4,0], 8[$LCS_ddate_4,0] )
+   95.       $MR_idat_S0 = 1[loc( idat ),0]
+   95.       if ( ( $MR_idat_S0 <= 0 .or. $MR_idat_S0 > 12 ) /= .false. ) then
+   95.          substr[t$16,0:9] = 'w3tagb.f'
+   95.          substr[t$17,0:5] = 'JMON'
+   95.          t$18 = $MR_idat_S0
+   95.          $Con_P31 = 95
+   95.          $Con_P32 = 1
+   95.          $Con_P33 = 1
+   95.          $Con_P34 = 12
+   95.          call _bounds_error( substr[t$16,0:9], $Con_P31, substr[t$17,0:5], $Con_P32, $Con_P33, $Con_P34, t$18, 0[loc( t$15 ),0].L )
+   95.       endif
+   96.       $MR_jdow_S1 = 10[$CS_ddate_0,0]
+   96.       if ( ( $MR_jdow_S1 <= 0 .or. $MR_jdow_S1 > 7 ) /= .false. ) then
+   96.          substr[t$20,0:9] = 'w3tagb.f'
+   96.          substr[t$21,0:5] = 'DAYW'
+   96.          t$22 = $MR_jdow_S1
+   96.          $Con_P31 = 96
+   96.          $Con_P32 = 1
+   96.          $Con_P33 = 1
+   96.          $Con_P34 = 7
+   96.          call _bounds_error( substr[t$20,0:9], $Con_P31, substr[t$21,0:5], $Con_P32, $Con_P33, $Con_P34, t$22, 0[loc( t$19 ),0].L )
+   96.       endif
+   95.       $LCS_idat_5 = loc( idat )
+   95.       0[loc( $_IOitem_P0 ),0] = 2[$LCS_idat_5,0]
+   95.       1[loc( $_IOitem_P0 ),0] = 0[$LCS_idat_5,0]
+   95.       2[loc( $_IOitem_P0 ),0] = 4[$LCS_idat_5,0]
+   95.       3[loc( $_IOitem_P0 ),0] = 5[$LCS_idat_5,0]
+   95.       4[loc( $_IOitem_P0 ),0] = 6[$LCS_idat_5,0]
+   95.       5[loc( $_IOitem_P0 ),0] = 7[$LCS_idat_5,0]
+   95.       $LCS_ddate_7 = loc( ddate )
+   95.       6[loc( $_IOitem_P0 ),0] = 12[$LCS_ddate_7,0]
+   95.       $_StackIolist_O8 = $_StaticIolist_O7
+   95.       $MR_idat_S2 = 1[$LCS_idat_5,0]
+   95.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O8 ),0].L ) ), 8 ),0].L = loc( substr[jmon,-3 + 3 * $MR_idat_S2:3] )
+   95.       $_StackDv_P1 = $_StaticDV_P2
+   95.       $LCS_IOitem_6 = loc( 0[loc( $_IOitem_P0 ),0] )
+   95.       0[loc( $_StackDv_P1 ),0].L = pointer to array[1] of integer( $LCS_IOitem_6 )
+   95.       1[loc( $_StackDv_P1 ),0].L = 32
+   95.       2[loc( $_StackDv_P1 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P1 ),0].L )
+   95.       23[loc( $_StackDv_P1 )].B = 1
+   95.       4[loc( $_StackDv_P1 ),0].L = int( $LCS_IOitem_6, 8 )
+   95.       5[loc( $_StackDv_P1 ),0].L = 32
+   95.       21[loc( $_StackDv_P1 )].B = 0
+   95.       6[loc( $_StackDv_P1 ),0] = 0
+   95.       6[loc( $_StackDv_P1 ),0].L = 1
+   95.       7[loc( $_StackDv_P1 ),0].L = 7
+   95.       8[loc( $_StackDv_P1 ),0].L = 1
+   95.       6[loc( $_StackIolist_O8 ),0].L = int( loc( $_StackDv_P1 ), 8 )
+   95.       $MR_jdow_S3 = 10[$LCS_ddate_7,0]
+   95.       0[int( pointer to c_union Pointer_union( loc( 11[loc( $_StackIolist_O8 ),0].L ) ), 8 ),0].L = loc( substr[dayw,-3 + 3 * $MR_jdow_S3:3] )
+   95.       0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O8 ),0].L ) ), 8 ),0].L = loc( 8[$LCS_ddate_7,0] )
+   95.       2[loc( $_StackDv_P1 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P1 ),0].L ) )
+   95.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O6 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O8 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O2 ) ) )
+  119.       return
+  119.       end
+  119.       
+    1.       
+    1.       subroutine w3tage( prog )
+  103.       call w3locdat( 0[loc( idat ),0] )
+  104.       $LCS_ddate_0 = loc( ddate )
+  104.       $CS_idat_0 = loc( idat )
+  104.       call w3doxdat( 0[$CS_idat_0,0], 10[$LCS_ddate_0,0], 12[$LCS_ddate_0,0], 8[$LCS_ddate_0,0] )
+  105.       $MR_idat_S0 = 1[loc( idat ),0]
+  105.       if ( ( $MR_idat_S0 <= 0 .or. $MR_idat_S0 > 12 ) /= .false. ) then
+  105.          substr[t$24,0:9] = 'w3tagb.f'
+  105.          substr[t$25,0:5] = 'JMON'
+  105.          t$18 = $MR_idat_S0
+  105.          $Con_P23 = 105
+  105.          $Con_P24 = 1
+  105.          $Con_P25 = 1
+  105.          $Con_P26 = 12
+  105.          call _bounds_error( substr[t$24,0:9], $Con_P23, substr[t$25,0:5], $Con_P24, $Con_P25, $Con_P26, t$18, 0[loc( t$23 ),0].L )
+  105.       endif
+  106.       $CS_ddate_1 = loc( ddate )
+  106.       $MR_jdow_S1 = 10[$CS_ddate_1,0]
+  106.       if ( ( $MR_jdow_S1 <= 0 .or. $MR_jdow_S1 > 7 ) /= .false. ) then
+  106.          substr[t$27,0:9] = 'w3tagb.f'
+  106.          substr[t$28,0:5] = 'DAYW'
+  106.          t$22 = $MR_jdow_S1
+  106.          $Con_P23 = 106
+  106.          $Con_P24 = 1
+  106.          $Con_P25 = 1
+  106.          $Con_P26 = 7
+  106.          call _bounds_error( substr[t$27,0:9], $Con_P23, substr[t$28,0:5], $Con_P24, $Con_P25, $Con_P26, t$22, 0[loc( t$26 ),0].L )
+  106.       endif
+  105.       $LCS_idat_1 = loc( idat )
+  105.       0[loc( $_IOitem_P0 ),0] = 2[$LCS_idat_1,0]
+  105.       1[loc( $_IOitem_P0 ),0] = 0[$LCS_idat_1,0]
+  105.       2[loc( $_IOitem_P0 ),0] = 4[$LCS_idat_1,0]
+  105.       3[loc( $_IOitem_P0 ),0] = 5[$LCS_idat_1,0]
+  105.       4[loc( $_IOitem_P0 ),0] = 6[$LCS_idat_1,0]
+  105.       5[loc( $_IOitem_P0 ),0] = 7[$LCS_idat_1,0]
+  105.       $LCS_ddate_3 = loc( ddate )
+  105.       6[loc( $_IOitem_P0 ),0] = 12[$LCS_ddate_3,0]
+  105.       $_StackIolist_O2 = $_StaticIolist_O1
+  105.       $MR_idat_S2 = 1[$LCS_idat_1,0]
+  105.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O2 ),0].L ) ), 8 ),0].L = loc( substr[jmon,-3 + 3 * $MR_idat_S2:3] )
+  105.       $_StackDv_P1 = $_StaticDV_P2
+  105.       $LCS_IOitem_2 = loc( 0[loc( $_IOitem_P0 ),0] )
+  105.       0[loc( $_StackDv_P1 ),0].L = pointer to array[1] of integer( $LCS_IOitem_2 )
+  105.       1[loc( $_StackDv_P1 ),0].L = 32
+  105.       2[loc( $_StackDv_P1 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P1 ),0].L )
+  105.       23[loc( $_StackDv_P1 )].B = 1
+  105.       4[loc( $_StackDv_P1 ),0].L = int( $LCS_IOitem_2, 8 )
+  105.       5[loc( $_StackDv_P1 ),0].L = 32
+  105.       21[loc( $_StackDv_P1 )].B = 0
+  105.       6[loc( $_StackDv_P1 ),0] = 0
+  105.       6[loc( $_StackDv_P1 ),0].L = 1
+  105.       7[loc( $_StackDv_P1 ),0].L = 7
+  105.       8[loc( $_StackDv_P1 ),0].L = 1
+  105.       6[loc( $_StackIolist_O2 ),0].L = int( loc( $_StackDv_P1 ), 8 )
+  105.       $MR_jdow_S3 = 10[$LCS_ddate_3,0]
+  105.       0[int( pointer to c_union Pointer_union( loc( 11[loc( $_StackIolist_O2 ),0].L ) ), 8 ),0].L = loc( substr[dayw,-3 + 3 * $MR_jdow_S3:3] )
+  105.       0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O2 ),0].L ) ), 8 ),0].L = loc( 8[$LCS_ddate_3,0] )
+  105.       2[loc( $_StackDv_P1 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P1 ),0].L ) )
+  105.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O0 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O2 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O3 ) ) )
+  109.       $_StackIolist_O6 = $_StaticIolist_O5
+  109.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O6 ),0].L ) ), 8 ),0].L = loc( substr[prog,0:_len( prog )] )
+  109.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O4 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O6 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O3 ) ) )
+  113.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O7 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O8 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O3 ) ) )
+  116.       call summary
+  119.       return
+  119.       end
+  119.       

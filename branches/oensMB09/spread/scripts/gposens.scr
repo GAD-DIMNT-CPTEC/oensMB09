@@ -1,0 +1,208 @@
+#!/bin/ksh 
+#help#
+#**********************************************************#
+#                                                          #
+#     Name:           gposens.scr                          #
+#                                                          #
+#     Function:       This script plots the ensemble mean  #
+#                     and spread of members of the         #
+#                     ensemble.                            #
+#                     It runs in K shell.                  #
+#                                                          #
+#     Date:           January   24th, 2002.                #
+#     Last change:    August    16th, 2002.                #
+#                                                          #
+#     Valid Arguments for gposens.scr                      #
+#                                                          #
+#     First :         : help or                            #
+#     First : TRC     : horizontal resolution              #
+#    Second : LV      : vertical resolution                #
+#     Third : LABELI  : initial forecasting label          #
+#    Fourth : NFDAYS  : number of forecast days            #
+#                                                          #
+#             LABELx : yyyymmddhh                          #
+#                      yyyy = four digit year              #
+#                        mm = two digit month              #
+#                        dd = two digit day                #
+#                        hh = two digit hour               #
+#                                                          #
+#**********************************************************#
+#help#
+#
+#       Help:
+#
+. ../../include/config.sx6
+#
+#       Test of Valid Arguments
+#
+LABELI=$1
+LABELS=`echo $LABELI | cut -c 1-8`
+HH=`echo $LABELI | cut -c 9-10`
+LABELF=`date -d "$LABELS ${NFDAYS} days" +"%Y%m%d${HH}"`
+NMEMBR=`echo "$NPERT*2+1" | bc -l`
+
+RESOL=T${TRC}L${LV}
+TRC=T${TRC}
+
+#
+# Set directories
+#
+
+YY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+echo 'LABELI='${LABELI}
+
+DIRSCR=$OPERM/spread/scripts
+DIRSPR=${ROPERM}/spread/dataout/${TRC}L${LV}
+#DIRCTL=/rede/bangu_samfs_modoper3/tempo/global/oens/nmc/${RESOL}/ENSMED/${YY}/${MM}/${DD}
+DIRCTL=${ROPERM}/ensmed/dataout/${TRC}L${LV}
+DIRGIF=${ROPERM}/spread/gif
+
+if [ ! -d ${DIRGIF} ]
+then
+mkdir ${DIRGIF}
+else
+echo "${DIRGIF} has already been created"
+fi
+
+#
+# Create files which contains the ctl's and the cluster list
+#
+
+cd ${DIRSCR}
+
+rm -f filefctENM${LABELI}.${TRC}
+rm -f filespr${LABELI}.${TRC}
+
+
+let NHOURS=24*NFDAYS
+NCTLS=0
+TIM=0
+while [ ${TIM} -le ${NHOURS} ]
+do
+
+   LABELF=`${CALDATE} ${LABELI} + ${TIM}h yyyymmddhh`
+   echo 'LABELF='${LABELF}
+
+   if [ ${TIM} -eq 0 ]
+   then
+      TYPE='P.icn'
+   else
+      TYPE='P.fct'
+   fi
+
+   if [ -s ${DIRCTL}/GPOSENM${LABELI}${LABELF}${TYPE}.${RESOL}.ctl ]
+   then
+cat <<EOT>> filefctENM${LABELI}.${TRC}
+${DIRCTL}/GPOSENM${LABELI}${LABELF}${TYPE}.${RESOL}.ctl
+EOT
+   else
+      echo "${DIRCTL}/GPOSENM${LABELI}${LABELF}${TYPE}.${RESOL}.ctl does not exist"
+      exit
+   fi
+
+   if [ -s ${DIRSPR}/spread${LABELI}${LABELF}.${RESOL}.ctl ]
+   then  
+cat <<EOT>> filespr${LABELI}.${TRC}
+${DIRSPR}/spread${LABELI}${LABELF}.${RESOL}.ctl
+EOT
+   else
+      echo "${DIRSPR}/spread${LABELI}${LABELF}.${RESOL}.ctl does not exist"
+      exit
+   fi
+
+   let NCTLS=NCTLS+1
+   let TIM=TIM+6
+done
+
+echo "NCTLS="${NCTLS}
+
+#
+# Plot figures
+#
+
+echo "grads -lbc run gposens.gs ${TRC} ${LABELI} ${NCTLS} ${RESOL}"
+/usr/local/grads/bin/gradsc -lbc << EOT
+run gposens.gs
+${TRC} ${LABELI} ${NCTLS} ${RESOL} ${DIRGIF}
+EOT
+
+#
+# Remove temporary files
+#
+
+rm -f filefctENM${LABELI}.${TRC}
+rm -f filespr${LABELI}.${TRC}
+
+#
+# Remove old gifs at local machine
+#
+
+#AMM LABELR9 =`caldate.3.0.2 ${LABELI} - 9d yyyymmddhh`
+#AMM LABELR10=`caldate.3.0.2 ${LABELI} - 10d yyyymmddhh`
+#AMM LABELR11=`caldate.3.0.2 ${LABELI} - 11d yyyymmddhh`
+#AMM echo "LABELR9 ="${LABELR9}   
+#AMM echo "LABELR10="${LABELR10}   
+#AMM echo "LABELR11="${LABELR11}   
+
+#AMM rm -f ${DIRGIF}/geop250${LABELR11}*
+#AMM rm -f ${DIRGIF}/geop500${LABELR11}*
+#AMM rm -f ${DIRGIF}/temp850${LABELR11}*
+#AMM rm -f ${DIRGIF}/psnm${LABELR11}*
+
+#AMM rm -f ${DIRGIF}/geop250${LABELR10}*
+#AMM rm -f ${DIRGIF}/geop500${LABELR10}*
+#AMM rm -f ${DIRGIF}/temp850${LABELR10}*
+#AMM rm -f ${DIRGIF}/psnm${LABELR10}*
+
+#AMM rm -f ${DIRGIF}/geop250${LABELR9}*
+#AMM rm -f ${DIRGIF}/geop500${LABELR9}*
+#AMM rm -f ${DIRGIF}/temp850${LABELR9}*
+#AMM rm -f ${DIRGIF}/psnm${LABELR9}*
+
+#
+# Remove old gifs and put new ones on the external machine
+#
+
+#AMM LABELR4=`caldate.3.0.2 ${LABELI} - 4d yyyymmddhh`
+#AMM LABELR5=`caldate.3.0.2 ${LABELI} - 5d yyyymmddhh`
+#AMM LABELR6=`caldate.3.0.2 ${LABELI} - 6d yyyymmddhh`
+#AMM echo "LABELR4="${LABELR4}   
+#AMM echo "LABELR5="${LABELR5}   
+#AMM echo "LABELR6="${LABELR6}   
+
+#AMM rm -f putgif.${LABELI}.${TRC}
+#AMM cat << EOT >> putgif.${LABELI}.${TRC}
+#AMM user pnt &arun/a*
+#AMM bin 
+#AMM cd /web1/ftp/pub/produtos/ensemble/SPREAD
+#AMM mdelete geop250${LABELR6}*
+#AMM mdelete geop500${LABELR6}*
+#AMM mdelete temp850${LABELR6}*
+#AMM mdelete psnm${LABELR6}*
+#AMM mdelete geop250${LABELR5}*
+#AMM mdelete geop500${LABELR5}*
+#AMM mdelete temp850${LABELR5}*
+#AMM mdelete psnm${LABELR5}*
+#AMM mdelete geop250${LABELR4}*
+#AMM mdelete geop500${LABELR4}*
+#AMM mdelete temp850${LABELR4}*
+#AMM mdelete psnm${LABELR4}*
+#AMM lcd $DIRGIF
+#AMM mput geop250${LABELI}*
+#AMM mput geop500${LABELI}*
+#AMM mput temp850${LABELI}*
+#AMM mput psnm${LABELI}*
+#AMM quit
+#AMM EOT
+#AMM 
+#AMM echo "ftp -in tucupi < putgif.${LABELI}.${TRC}"
+#AMM ftp -in tucupi < putgif.${LABELI}.${TRC}
+#AMM rm -f putgif.${LABELI}.${TRC}
+#AMM 
+
+exit
+
+

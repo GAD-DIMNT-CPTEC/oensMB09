@@ -1,0 +1,43 @@
+%include <head.h>
+%include <date.h>
+
+sleep 10
+
+if [ %FAMILY1% = "NMC" ]; then
+	PREFX=NMC
+#   NFDAYS=16
+#   LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%%Y%%m%%d%%H")
+else
+	PREFX=$(echo %FAMILY% | cut -d/ -f4-5 | sed -e s@/@""@g)
+	nproc=24
+fi
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% ${PREFX}
+LABELI=$SMSDATEHH
+
+if [ %TASK% = "POS" ]; then
+	exec=runPos
+   sd=1908090152
+   sd=2365903000
+   dirv=pos
+else
+	exec=runPosEta
+   sd=4668589088
+   dirv=poseta
+fi
+
+sleep 600
+echo ./${exec} 1 1 Pos${PREFX}%TASK% $TRC $LV ${LABELI} ${LABELF} ${PREFX} 3600
+./${exec} 1 1 Pos${PREFX}%TASK% $TRC $LV ${LABELI} ${LABELF} ${PREFX} 3600
+sleep 600
+
+echo "Verificando Arquivos: GPOS${PREFX}${LABELI}"
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/$dirv/dataout/%RESOL%/${LABELI}/ ${PREFX} $sd
+
+#sleep 2000
+#if [ "%TASK%" = "ETA" -a 0$(echo %FAMILY% | grep 07 | wc -l)  -gt 0 ]; then
+#	./runcluster.bash ${LABELI} NMC $TRC $LV
+#fi
+
+%include <tail.h>
