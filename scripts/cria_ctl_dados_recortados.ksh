@@ -1,0 +1,1 @@
+../dados_recortados/cria_ctl_dados_recortados.ksh
