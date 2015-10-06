@@ -35,13 +35,13 @@
 # Observacoes:
 # ------------
 # - CRPSS = Continous Rank Proability Skill Score;
-# -- CRPSS = 1 - CRPSS_prev/CRPSS_ref (Cunningham et al., 2015)
+# -- CRPSS = 1 - CRPSS_prev/CRPSS_ref (Cunningham et al., 2014)
 # - A principio, os arquivos com os membros a serem abertos foram anteriormente recortados para conter apenas as variaveis de interesse: psnm, z500 e t850.
 # - O CPRP e calculado para o ensemble de cada data considerada, e.g.:
 # -- para o ensemble da data 2015030300 (considerando uma previsao de 24h), temos o seguinte: {EPS 2015030300: 01N 01P 02N 02P 03N 03P ... 07N 07P NMC}, onde:
-#    N: indica o membro nao perturbado, P o membro perturbado e NMC o membro controle
+#    N: indica a perturbacao subtraida, P perturbacao somada e NMC o membro controle
 # -- para este ensemble, e atribuido apenas um valor do CRPS referente a previsao de 24h
-# -- a serie que e mostrada no grafico da curva do CRPS e formada, portanto, pelo CRPS das previsoes de 24 a 360h partindo-se da previsao inicial
+# -- a serie que e mostrada no grafico da curva do CRPS e formada portanto, pelo CRPS das previsoes de 24 a 360h partindo-se da previsao inicial
 
 # Todo:
 # -----
@@ -55,6 +55,7 @@
 # 12/08/2015 - pequenas adequacoes para que o script funcione com os dados no scratchin e online e documentacao inicial
 # 13/08/2015 - pequenas melhorias em algumas partes do script
 # 14/08/2015 - modificada a forma como sao atribuidos os nomes dos meses e mais documentacao
+# 06/10/2015 - correcoes nas informacoes contidas no cabecalho do script
 
 #export GASCRP=/stornext/home/chris.castro/GrADS/lib
 export GASCRP=${PWD}/grads_libs
