@@ -1,5 +1,4 @@
-F90 = pgf90
-F90 = gfortran
+F90 = ftn
 CMD = ../exec/CRPS.exe
 OBJM = SubDomain.f90 WGT2D.f SORTMM.f crps.f90 ClimateInterp.f90 prob.f90 Main.f90
 OBJS = SubDomain.o WGT2D.o SORTMM.o crps.o ClimateInterp.o prob.o Main.o
@@ -16,4 +15,4 @@ $(CMD):	$(OBJS)
 %.o: %.f90
 	$(F90) -ffree-form -c $<
 clean: 
-	-rm -f *.[omjl]
+	-rm -f *.[omjl] *.mod ../exec/*.exe
