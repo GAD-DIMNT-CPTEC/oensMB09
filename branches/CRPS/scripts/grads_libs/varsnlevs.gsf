@@ -1,0 +1,24 @@
+function varslevs(numfile)
+'q file 'numfile
+_varidx=0
+lines=1
+while(1)
+   lin=sublin(result,lines)
+   if(subwrd(lin,1)="Number"&subwrd(lin,2)="of"&subwrd(lin,3)='Variables')
+      _varidx=1
+      _nvar=subwrd(lin,5)
+      say "Number of variables found: "_nvar
+   else
+      if(_varidx>=1)
+         _.var._varidx=subwrd(lin,1)
+         _.lev._varidx=subwrd(lin,2)
+         if(_.lev._varidx=0);_.lev._varidx=1;endif; 
+         say "Variable "_.var._varidx" defined at "_.lev._varidx" level(s)"
+         if(_varidx=_nvar);return;endif;
+         _varidx=_varidx+1   
+      endif
+   endif   
+   lines=lines+1
+endwhile
+return
+

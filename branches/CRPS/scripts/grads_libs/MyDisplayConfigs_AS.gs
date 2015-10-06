@@ -1,0 +1,10 @@
+'set map 1 1 7' 
+'set parea 1.0 10.5 0.5 8.0'
+'set xlopts 1 6 .21'
+'set xlint 15'
+'set ylopts 1 6 .21'
+'set ylint 15'
+'set clopts 1 4 .15'
+'set ccolor 1'
+'set cthick 4'
+

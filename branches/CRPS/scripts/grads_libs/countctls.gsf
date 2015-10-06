@@ -1,0 +1,14 @@
+function countctls()
+ctl=0
+while (ctl<=100)
+ctl=ctl+1
+'q file 'ctl
+linha1=sublin(result,1)
+palavra1=subwrd(linha1,1)
+if (palavra1='QUERY')
+_lastctl=ctl-1
+break
+endif
+endwhile
+say 'Last ctl file : '_lastctl
+return
