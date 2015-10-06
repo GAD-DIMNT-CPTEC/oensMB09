@@ -1,0 +1,34 @@
+***************************************************************************************
+function nxm(args)
+* args are: row, column, No. of rows, No. of columns
+
+* Firt two aguments are row  & column relative position
+r = subwrd(args,1);    c = subwrd(args,2)
+
+* Third and fourth arguments are total No. of rows & columns in the page
+nrow = subwrd(args,3); ncol = subwrd(args,4)
+
+* calculate page size atributes
+      'q gxinfo'
+      lin = sublin(result,2)
+      xl = subwrd(lin,4)
+      yl = subwrd(lin,6)
+      xi = 0.1
+      xf = xl - 0.1
+      pw = xf - xi
+      dx = pw/ncol
+      yi = 0.1
+      yf = yl - 0.1
+      ph = yf - yi
+      dy = ph/nrow
+
+* Calculate actual x-y corners of the subframe
+      x1 = xi + (c-1) * dx;    x2 = xi + c * dx
+      y1 = yi + (nrow-r) * dy; y2 = yi + (nrow-r+1) * dy
+
+      setpage = x1' 'x2' 'y1' 'y2
+say 'set parea 'setpage
+'set parea 'setpage
+return
+***************************************************************************************
+

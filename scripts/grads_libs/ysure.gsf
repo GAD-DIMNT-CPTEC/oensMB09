@@ -1,0 +1,14 @@
+function ysure()
+*
+* Ensure y-coordinates are integers.
+*
+qdims()
+_ys_old=_ys
+_ye_old=_ye
+if(math_int(_ys)!=_ys | math_int(_ye)!=_ye)
+   ys_new=math_nint(_ys)
+   ye_new=math_nint(_ye)
+   'set y 'ys_new' 'ye_new
+   qdims()
+endif
+return

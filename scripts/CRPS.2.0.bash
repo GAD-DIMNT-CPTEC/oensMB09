@@ -47,7 +47,7 @@
 # -----
 # - Melhorar algumas partes do script
 # - Entender o conteudo de cada um dos arquivos gerados
-# - Para que serve o diretorio no namelist /Users/christopher/EPS/CRPS/datain/MonthlyClimatology/
+# - Entender a funcao e o uso do diretorio no namelist /Users/christopher/EPS/CRPS/datain/MonthlyClimatology/
 
 # Historico:
 # ----------
@@ -56,7 +56,8 @@
 # 13/08/2015 - pequenas melhorias em algumas partes do script
 # 14/08/2015 - modificada a forma como sao atribuidos os nomes dos meses e mais documentacao
 
-export GASCRP=/stornext/home/chris.castro/GrADS/lib
+#export GASCRP=/stornext/home/chris.castro/GrADS/lib
+export GASCRP=${PWD}/grads_libs
 
 case "${#1}" in
 10)
