@@ -2,36 +2,31 @@
 
 #set -o xtrace
 
-# Este script tem por finalidade executar o CRPS para um determinado periodo
-# e para todas as previsoes ate 15 dias.
-#
-# Historico: 20/08/2015 - First crack (cfbastarz)
-
 inctime=${HOME}/bin/inctime
 
-datai=2015030300
-dataf=2015033112
+datai=2014111712
+dataf=2015022812
+
+var=psnm
+lev=1000
+
+set -A Lags `echo $(seq 24 24 360)` 
 
 data=${datai}
 
-set -A Horarios `echo $(seq 24 24 360)`
-
 while [ ${data} -le ${dataf} ]
 do
-
-  for hora in ${Horarios[@]}
+  for lag in ${Lags[@]}
   do
+    print "${data} - ${lag}"
 
-    print "${data} ${hora}"
+    ./CRPS.2.1.bash ${data} ${lag}h ${var} ${lev} > saida_crps_${data}_${lag}h.txt
 
-    ${PWD}/CRPS.2.0.bash ${data} ${hora}h
+    tail -4 saida_crps_${data}_${lag}h.txt > crps_${data}_${lag}h.txt
 
   done
-
   print ""
-
   data=`${inctime} ${data} +12hr %y4%m2%d2%h2`
-
 done
 
 exit 0
