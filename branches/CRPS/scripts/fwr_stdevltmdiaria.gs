@@ -1,1 +1,0 @@
-aux/fwr_stdevltmdiaria.gs

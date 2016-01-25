@@ -1,1 +1,0 @@
-aux/fwr.ExtractICfromEPS.ECMWF.IEEEOutput.Regrid2_1.5x1.5.gs

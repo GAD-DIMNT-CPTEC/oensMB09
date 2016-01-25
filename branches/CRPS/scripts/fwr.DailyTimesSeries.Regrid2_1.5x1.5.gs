@@ -1,1 +1,0 @@
-aux/fwr.DailyTimesSeries.Regrid2_1.5x1.5.gs
