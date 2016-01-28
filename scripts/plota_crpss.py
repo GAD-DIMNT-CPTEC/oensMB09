@@ -22,16 +22,18 @@ Modulos utilizados:
 datetime: permite a manipulacao de datas e formatos;
 timedelta: permite operacoes com datas;
 struct: permite ler dados binarios;
-numpy: permite manipulacoes matematicas em geral;
+numpy: permite calculos matematicos;
 matplotlib: permite plotar arrays 1D/2D
+seaborn: permite customizar os plots (opcional)
 """
 from datetime import datetime, timedelta
 import struct
 import numpy as np
 import matplotlib.pyplot as plt
+#import seaborn as sns
 
 """
-Altera as opcoes abaixo conforme o caso:
+Altere as opcoes abaixo conforme o caso:
 """
 
 # Tipo de figura:
@@ -147,9 +149,9 @@ for hprev in h_prev:
 
       a_somaf = 'a_somaf' + str(hprev)
       eval(a_somaf).append(somaf)
-      if (date == datee):
-        print('')
-        print('a_somaf' + str(hprev) + ' = ', eval(a_somaf))
+#      if (date == datee):
+#        print('')
+#        print('a_somaf' + str(hprev) + ' = ', eval(a_somaf))
 
       somac = 'somac' + str(hprev)
       somacc = somacc + crpsc
@@ -218,7 +220,7 @@ for val_f in crps[0]:
 print('')
 print('crpss = ', crpss)
 
-print(crpsc1)
+#print(crpsc1)
 
 """
 Figura CRPSS:
@@ -226,7 +228,16 @@ Figura CRPSS:
 
 fig, ax = plt.subplots()
 
-plt.plot(crpss, 'ro-', linewidth='2')
+#sns.set_style('white')
+#sns.despine()
+
+plt.plot(crpss, 'o-', color='#2C99C6', linewidth='3', markersize='10', label=str(n_exp))
+#plt.legend()
+
+#plt.plot('text', usetex=True)
+#plt.plot('font', family='serif')
+#plt.plot('xtick', labelsize='x-small')
+#plt.plot('ytick', labelsize='x-small')
 
 plt.title(title)
 
@@ -244,6 +255,7 @@ plt.axhline(0, color='black')
 
 plt.show()
 
-filename = 'crpss_decjanfev_20142015_' + n_var + '_' + n_reg +'_' + h_sin  + 'Z.' + f_type + '_' + n_exp
+filename = 'crpss_decjanfev_20142015_' + n_var + '_' + n_reg +'_' + h_sin  + 'Z_' + n_exp + '.' + f_type
 fig.savefig(filename, bbox_inches='tight')
+
 plt.close()
