@@ -1,27 +1,45 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 
-# Objetivo:
-# Este script le diretamente os arquivos
-# CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads
-# para plotar a curva do CRPSS.
+"""
+Objetivo:
+Este script le diretamente os arquivos
+CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads
+para plotar a curva do CRPSS.
 
-# Estrutura do arquivo CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads:
-# TODO
+Estrutura do arquivo CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads:
+TODO
 
-# carlos.frederico@cptec.inpe.br, 26/01/2015
+Uso:
+./plota_crpss.py
+
+carlos.frederico@cptec.inpe.br, 26/01/2015
+"""
 
 # -*- coding: latin-1 -*-
 
-# Modulos utilizados:
-# datetime: permite a manipulacao de datas e formatos;
-# timedelta: permite operacoes com datas;
-# struct: permite ler dados binarios;
-# numpy: permite manipulacoes matematicas em geral;
-# matplotlib: permite plotar arrays 1D/2D
+"""
+Modulos utilizados:
+datetime: permite a manipulacao de datas e formatos;
+timedelta: permite operacoes com datas;
+struct: permite ler dados binarios;
+numpy: permite manipulacoes matematicas em geral;
+matplotlib: permite plotar arrays 1D/2D
+"""
 from datetime import datetime, timedelta
 import struct
 import numpy as np
 import matplotlib.pyplot as plt
+
+"""
+Altera as opcoes abaixo conforme o caso:
+"""
+
+# Tipo de figura:
+f_type = 'pdf'
+
+# Datas:
+yyyymmddB = '20141201'
+yyyymmddE = '20150227'
 
 # Variavel:
 n_var = 't850'
@@ -29,175 +47,190 @@ n_var = 't850'
 # Regiao:
 n_reg = 'hs'
 
-# Horario Sinotico:
+# Horario sinotico:
 h_sin = '12'
 
-# Caminho dos dados a serem lidos:
-d_name = '/home/carlos/Documents/INPE2016/GDAD/SPCON/CRPS/python/crps_' + n_var + '_' + n_reg + '_' + h_sin  + '/dataout/'
+# Nome do experimento:
+n_exp = 'oensMB09_mcgav4.0'
 
-# Data inicial:
-dateb = datetime.strptime('2014120112', '%Y%m%d%H')
+# Titulo da figura:
+title = 'CRPSS DEC/JAN/FEB - 2014/2015\n' + n_var.upper() + ' ' + h_sin  + 'Z' + ' ' + n_reg.upper() + ' Exp. ' + n_exp
 
-# Data final:
-datee = datetime.strptime('2015022712', '%Y%m%d%H')
+# Diretorio onde estao os arquivos com o nome CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads:
+d_name = '/home/carlos/Documents/INPE2016/GDAD/SPCON/CRPS/python/crps_' + n_var + '_' + n_reg + '_' + h_sin  + '/scripts/python/scripts/crps_dataout/' + n_exp + '/crps_' + n_var + '_' + n_reg + '_' + h_sin + '/dataout/'
 
-# Incremento da data (24 horas):
+#d_name = '/home/carlos/Documents/INPE2016/GDAD/SPCON/CRPS/python/crps_' + n_var + '_' + n_reg + '_' + h_sin  + '/dataout/'
+
+"""
+Nao alterar nada a partir desta linha!
+"""
+
+dateb = datetime.strptime(str(yyyymmddB) + str(h_sin), '%Y%m%d%H')
+datee = datetime.strptime(str(yyyymmddE) + str(h_sin), '%Y%m%d%H')
+
 delta = 24
 
-# date e a data dentro do loop:
-date = dateb
-
-# Vetor com os horarios das previsoes (para cada data, serao abertos 15 arquivos):
-#h_prev = [24, 48, 72, 96, 120, 144, 168, 192, 216, 240, 264, 288, 312, 336, 360]
 h_prev = np.arange(24, 384, 24)
 
-# Inicializa o contador soma para cada um dos horarios de previsao:
+cont1 = 0
+
+crps_f = []
+crps_c = []
+crps = [[] for i in range(2)]
+
 for hprev in h_prev:
+
+  cont2 = 0
+
+  date = dateb
+
+  somaff = 0
+  somacc = 0
+
   somaf = 'somaf' + str(hprev)
   a_somaf = 'a_somaf' + str(hprev)
   vars()[somaf] = 0
   vars()[a_somaf] = []
 
-# Inicializa o array somaf que ira conter todos os somaf* dos horarios de previsao:
-#somaf = []
+  somac = 'somac' + str(hprev)
+  a_somac = 'a_somac' + str(hprev)
+  vars()[somac] = 0
+  vars()[a_somac] = []
 
-# Inicializa o contador:
-cont = 0
+  mediaf = 'mediaf' + str(hprev)
+  vars()[mediaf] = 0
 
-# Loop sobre as datas de inicio e fim:
-while (date <= datee):
+  mediac = 'mediac' + str(hprev)
+  vars()[mediac] = 0
 
-  # Formata a data (YYYYMMDDHH):
-  f_date = date.strftime('%Y%m%d%H')
+  contf = 'contf' + str(hprev)
+  vars()[contf] = 0
 
-  # Loop sobre os horarios sinoticos:
-  for hprev in h_prev:
-    
-    # Nome do arquivo a ser aberto:
+  # contff = nome do contador (string)
+  # contf = valor do contador (integer)
+  contff = contf
+
+  while (date <= datee):
+
+    contf = str(cont2)
+
+    f_date = date.strftime('%Y%m%d%H')
+
+#    print(f_date, hprev, cont1, cont2, contff, eval(contf))
+
     f_name = 'CRPS4CPTECEPS.' + str(hprev) + 'hForecastFor' + str(f_date) + '.aave.grads'
 
-    # Caminho + nome do arquivo:
     file = d_name + f_name
 
-    # Imprime o nome do arquivo:
-    print('open', f_name)
+#    print('')
+#    print('- File', f_name)
 
-    # Abre o arquivo referente a cada uma das datas:
     with open (file, 'rb') as f:
-
-      # Le todo o conteudo do arquivo:
+    
       r_data = f.read()
 
-      # Transforma os bytes (ascii) lidos para um type do tipo "float";
-      # Sao 6 floats, sendo que apenas dois deles sao necessarios:
       u_data = struct.unpack('6f', r_data)
- 
-      # A informacao do crpsf esta na posicao 2 (no python, inicia-se em 0):
-      crpsf = u_data[1]
 
-      # A informacao do crpsc esta na posicao 5 (no python, e a posicao 4):
+      crpsf = u_data[1]
       crpsc = u_data[4]
 
-      # Armazena o crpsc do primeiro arquivo:
-      if cont == 0:
+      if cont1 == 0:
         crpsc1 = u_data[4]
 
-      if hprev == 24:
-        somaf24 = somaf24 + crpsf
-        a_somaf24.append(somaf24)
-      elif hprev == 48:
-        somaf48 = somaf48 + crpsf
-        a_somaf48.append(somaf48)
-      elif hprev == 72:
-        somaf72 = somaf72 + crpsf
-        a_somaf72.append(somaf72)
-      elif hprev == 96:
-        somaf96 = somaf96 + crpsf
-        a_somaf96.append(somaf96)
-      elif hprev == 120:
-        somaf120 = somaf120 + crpsf
-        a_somaf120.append(somaf120)
-      elif hprev == 144:
-        somaf144 = somaf144 + crpsf
-        a_somaf144.append(somaf144)
-      elif hprev == 168:
-        somaf168 = somaf168 + crpsf
-        a_somaf168.append(somaf168)
-      elif hprev == 192:
-        somaf192 = somaf192 + crpsf
-        a_somaf192.append(somaf192)
-      elif hprev == 216:
-        somaf216 = somaf216 + crpsf
-        a_somaf216.append(somaf216)
-      elif hprev == 240:
-        somaf240 = somaf240 + crpsf
-        a_somaf240.append(somaf240)
-      elif hprev == 264:
-        somaf264 = somaf264 + crpsf
-        a_somaf264.append(somaf264)
-      elif hprev == 288:
-        somaf288 = somaf288 + crpsf
-        a_somaf288.append(somaf288)
-      elif hprev == 312:
-        somaf312 = somaf312 + crpsf
-        a_somaf312.append(somaf312)
-      elif hprev == 336:
-        somaf336 = somaf336 + crpsf
-        a_somaf336.append(somaf336)
-      elif hprev == 360:
-        somaf360 = somaf360 + crpsf
-        a_somaf360.append(somaf360)
-      else:
-        print('Erro soma')
+      somaf = 'somaf' + str(hprev)
+      somaff = somaff + crpsf
+      somaf = str(somaff)
 
-      # Imprime na tela as informacoes lidas:
-      print('crpsf =',crpsf)
-      print('crpsc =',crpsc)
+#      print('crpsf = ', crpsf)
+#      print('somaf = ', somaf)
+#      print(somaff + crpsf)
 
-      # Atualiza o contador:
-      cont = cont + 1
+      a_somaf = 'a_somaf' + str(hprev)
+      eval(a_somaf).append(somaf)
+      if (date == datee):
+        print('')
+        print('a_somaf' + str(hprev) + ' = ', eval(a_somaf))
 
-    # Pula uma linha:
-    print('')
+      somac = 'somac' + str(hprev)
+      somacc = somacc + crpsc
+      somac = str(somacc)
 
-  # Atualiza a data do loop:
-  date = date + timedelta(hours=delta)
+#      print('crpsc = ', crpsc)
+#      print('somac = ', somac)
+#      print(somacc + crpsc)
 
-# Imprime a quantidade total dos arquivos lidos:
-print('Total:', cont)
+      a_somac = 'a_somac' + str(hprev)
+      eval(a_somac).append(somac)
+#      if (date == datee):
+#        print('')
+#        print('a_somac' + str(hprev) + ' = ', eval(a_somac))
 
-# Medias referentes as somas a_somaf* calculadas:
-mediaf24 = somaf24 / 90
-mediaf48 = somaf48 / 90
-mediaf72 = somaf72 / 90
-mediaf96 = somaf96 / 90
-mediaf120 = somaf120 / 90
-mediaf144 = somaf144 / 90
-mediaf168 = somaf168 / 90
-mediaf192 = somaf192 / 90
-mediaf216 = somaf216 / 90
-mediaf240 = somaf240 / 90
-mediaf264 = somaf264 / 90
-mediaf288 = somaf288 / 90
-mediaf312 = somaf312 / 90
-mediaf336 = somaf336 / 90
-mediaf360 = somaf360 / 90
+#      print('* crpsf =',crpsf)
+#      print('* crpsc =',crpsc)
 
-crps = [mediaf24, mediaf48, mediaf72, mediaf96, mediaf120, mediaf144, mediaf168, mediaf192, mediaf216, mediaf240, mediaf264, mediaf288, mediaf312, mediaf336, mediaf360]
+    date = date + timedelta(hours=delta)
 
-# Calcula o crpss (skill score) para cada um dos valores armazenados nos arrays a_soamf*:
+    cont1 += 1
+    cont2 += 1
+
+#  print('> Forecast files read for ' + str(hprev) + 'h :', cont2)
+#  print ('')
+
+  mediaff = somaff / int(contf)
+#  print(mediaf, somaf, contf, mediaff)
+  crps_f.append(mediaff)
+
+  mediacc = somacc / int(contf)
+  crps_c.append(mediacc)
+
+  crps[0].append(mediaff)
+  crps[1].append(mediacc)
+
+#print('')
+#print('>> Total:', cont1)
+
+print('')
+print('crps_f = ', crps_f)
+print('')
+print('crps_c = ', crps_c)
+print('')
+print('crps = ', crps)
+
+"""
+Calculo CRPSS:
+"""
+
 crpss = []
-for val in crps:
-  crpss_val = 1 - (val / crpsc1)
+
+#for val in crps:
+#  crpss_val = 1 - (val / crpsc1)
+#  crpss.append(crpss_val)
+
+#for val_f in crps[0]:
+#  for val_c in crps[1]:
+#    crpss_val = 1 - (val_f / val_c)
+#  crpss.append(crpss_val)
+
+for val_f in crps[0]:
+  crpss_val = 1 - (val_f / crpsc1)
   crpss.append(crpss_val)
+
+print('')
+print('crpss = ', crpss)
+
+print(crpsc1)
+
+"""
+Figura CRPSS:
+"""
 
 fig, ax = plt.subplots()
 
 plt.plot(crpss, 'ro-', linewidth='2')
 
-plt.title('CRPSS DEC/JAN/FEB - 2014/2015\n' + n_var.upper() + ' ' + h_sin  + 'Z' + ' ' + n_reg.upper())
+plt.title(title)
 
-plt.ylabel('CRPSS (CRPS Score)')
+plt.ylabel('Score')
 plt.yticks([-0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
 plt.ylim([-0.2,1])
 
@@ -211,10 +244,6 @@ plt.axhline(0, color='black')
 
 plt.show()
 
-filename = 'crpss_decjanfev_20142015_' + n_var + '_' + n_reg +'_' + h_sin  + 'Z.pdf'
+filename = 'crpss_decjanfev_20142015_' + n_var + '_' + n_reg +'_' + h_sin  + 'Z.' + f_type + '_' + n_exp
 fig.savefig(filename, bbox_inches='tight')
 plt.close()
-
-
-
-
