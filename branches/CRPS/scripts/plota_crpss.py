@@ -232,7 +232,7 @@ fig, ax = plt.subplots()
 #sns.despine()
 
 plt.plot(crpss, 'o-', color='#2C99C6', linewidth='3', markersize='10', label=str(n_exp))
-#plt.legend()
+plt.legend(loc='best')
 
 #plt.plot('text', usetex=True)
 #plt.plot('font', family='serif')
@@ -251,7 +251,7 @@ ax.set_xticklabels(xlabels)
 plt.xticks(range(len(crpss)))
 
 plt.grid(True)
-plt.axhline(0, color='black')
+plt.axhline(0, color='#999999')
 
 plt.show()
 
