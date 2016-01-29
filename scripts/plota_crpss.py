@@ -25,12 +25,14 @@ struct: permite ler dados binarios;
 numpy: permite calculos matematicos;
 matplotlib: permite plotar arrays 1D/2D
 seaborn: permite customizar os plots (opcional)
+sys: permite utilizar funcoes do SO, incluindo argumentos da linha de comando
+pickle: permite salvar/ler listas
 """
+
 from datetime import datetime, timedelta
 import struct
 import numpy as np
 import matplotlib.pyplot as plt
-#import seaborn as sns
 
 """
 Altere as opcoes abaixo conforme o caso:
@@ -44,15 +46,19 @@ yyyymmddB = '20141201'
 yyyymmddE = '20150227'
 
 # Variavel:
+#n_var = ['psnm', 't850']
 n_var = 't850'
 
 # Regiao:
+#n_reg = ['hn', 'tr', hs']
 n_reg = 'hs'
 
 # Horario sinotico:
+#h_sin = ['00', '12']
 h_sin = '12'
 
 # Nome do experimento:
+#n_exp = ['oensMB09_mcgav4.0', 'oensMB09', 'oensMCGA']
 n_exp = 'oensMB09_mcgav4.0'
 
 # Titulo da figura:
@@ -61,201 +67,169 @@ title = 'CRPSS DEC/JAN/FEB - 2014/2015\n' + n_var.upper() + ' ' + h_sin  + 'Z' +
 # Diretorio onde estao os arquivos com o nome CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads:
 d_name = '/home/carlos/Documents/INPE2016/GDAD/SPCON/CRPS/python/crps_' + n_var + '_' + n_reg + '_' + h_sin  + '/scripts/python/scripts/crps_dataout/' + n_exp + '/crps_' + n_var + '_' + n_reg + '_' + h_sin + '/dataout/'
 
-#d_name = '/home/carlos/Documents/INPE2016/GDAD/SPCON/CRPS/python/crps_' + n_var + '_' + n_reg + '_' + h_sin  + '/dataout/'
-
 """
 Nao alterar nada a partir desta linha!
 """
 
-dateb = datetime.strptime(str(yyyymmddB) + str(h_sin), '%Y%m%d%H')
-datee = datetime.strptime(str(yyyymmddE) + str(h_sin), '%Y%m%d%H')
+def assembly_crps_lists():
+  dateb = datetime.strptime(str(yyyymmddB) + str(h_sin), '%Y%m%d%H')
+  datee = datetime.strptime(str(yyyymmddE) + str(h_sin), '%Y%m%d%H')
 
-delta = 24
+  delta = 24
 
-h_prev = np.arange(24, 384, 24)
+  h_prev = np.arange(24, 384, 24)
 
-cont1 = 0
+  cont1 = 0
 
-crps_f = []
-crps_c = []
-crps = [[] for i in range(2)]
+  global crps
 
-for hprev in h_prev:
+  crps_f = []
+  crps_c = []
+  crps = [[] for i in range(2)]
 
-  cont2 = 0
+  for hprev in h_prev:
 
-  date = dateb
+    cont2 = 0
 
-  somaff = 0
-  somacc = 0
+    date = dateb
 
-  somaf = 'somaf' + str(hprev)
-  a_somaf = 'a_somaf' + str(hprev)
-  vars()[somaf] = 0
-  vars()[a_somaf] = []
+    somaff = 0
+    somacc = 0
 
-  somac = 'somac' + str(hprev)
-  a_somac = 'a_somac' + str(hprev)
-  vars()[somac] = 0
-  vars()[a_somac] = []
+    somaf = 'somaf' + str(hprev)
+    a_somaf = 'a_somaf' + str(hprev)
+    vars()[somaf] = 0
+    vars()[a_somaf] = []
 
-  mediaf = 'mediaf' + str(hprev)
-  vars()[mediaf] = 0
+    somac = 'somac' + str(hprev)
+    a_somac = 'a_somac' + str(hprev)
+    vars()[somac] = 0
+    vars()[a_somac] = []
 
-  mediac = 'mediac' + str(hprev)
-  vars()[mediac] = 0
+    mediaf = 'mediaf' + str(hprev)
+    vars()[mediaf] = 0
 
-  contf = 'contf' + str(hprev)
-  vars()[contf] = 0
+    mediac = 'mediac' + str(hprev)
+    vars()[mediac] = 0
 
-  # contff = nome do contador (string)
-  # contf = valor do contador (integer)
-  contff = contf
+    contf = 'contf' + str(hprev)
+    vars()[contf] = 0
 
-  while (date <= datee):
+    contff = contf
 
-    contf = str(cont2)
+    while (date <= datee):
 
-    f_date = date.strftime('%Y%m%d%H')
+      contf = str(cont2)
 
-#    print(f_date, hprev, cont1, cont2, contff, eval(contf))
+      f_date = date.strftime('%Y%m%d%H')
 
-    f_name = 'CRPS4CPTECEPS.' + str(hprev) + 'hForecastFor' + str(f_date) + '.aave.grads'
+      f_name = 'CRPS4CPTECEPS.' + str(hprev) + 'hForecastFor' + str(f_date) + '.aave.grads'
 
-    file = d_name + f_name
+      file = d_name + f_name
 
-#    print('')
-#    print('- File', f_name)
-
-    with open (file, 'rb') as f:
+      with open (file, 'rb') as f:
     
-      r_data = f.read()
+        r_data = f.read()
 
-      u_data = struct.unpack('6f', r_data)
+        u_data = struct.unpack('6f', r_data)
 
-      crpsf = u_data[1]
-      crpsc = u_data[4]
+        crpsf = u_data[1]
+        crpsc = u_data[4]
 
-      if cont1 == 0:
-        crpsc1 = u_data[4]
+        global crpsc1
 
-      somaf = 'somaf' + str(hprev)
-      somaff = somaff + crpsf
-      somaf = str(somaff)
+        if cont1 == 0:
+          crpsc1 = u_data[4]
 
-#      print('crpsf = ', crpsf)
-#      print('somaf = ', somaf)
-#      print(somaff + crpsf)
+        somaf = 'somaf' + str(hprev)
+        somaff = somaff + crpsf
+        somaf = str(somaff)
 
-      a_somaf = 'a_somaf' + str(hprev)
-      eval(a_somaf).append(somaf)
-#      if (date == datee):
-#        print('')
-#        print('a_somaf' + str(hprev) + ' = ', eval(a_somaf))
+        a_somaf = 'a_somaf' + str(hprev)
+        eval(a_somaf).append(somaf)
 
-      somac = 'somac' + str(hprev)
-      somacc = somacc + crpsc
-      somac = str(somacc)
+        somac = 'somac' + str(hprev)
+        somacc = somacc + crpsc
+        somac = str(somacc)
 
-#      print('crpsc = ', crpsc)
-#      print('somac = ', somac)
-#      print(somacc + crpsc)
+        a_somac = 'a_somac' + str(hprev)
+        eval(a_somac).append(somac)
 
-      a_somac = 'a_somac' + str(hprev)
-      eval(a_somac).append(somac)
-#      if (date == datee):
-#        print('')
-#        print('a_somac' + str(hprev) + ' = ', eval(a_somac))
+      date = date + timedelta(hours=delta)
 
-#      print('* crpsf =',crpsf)
-#      print('* crpsc =',crpsc)
+      cont1 += 1
+      cont2 += 1
 
-    date = date + timedelta(hours=delta)
+    mediaff = somaff / int(contf)
+    crps_f.append(mediaff)
 
-    cont1 += 1
-    cont2 += 1
+    mediacc = somacc / int(contf)
+    crps_c.append(mediacc)
 
-#  print('> Forecast files read for ' + str(hprev) + 'h :', cont2)
-#  print ('')
+    crps[0].append(mediaff)
+    crps[1].append(mediacc)
 
-  mediaff = somaff / int(contf)
-#  print(mediaf, somaf, contf, mediaff)
-  crps_f.append(mediaff)
-
-  mediacc = somacc / int(contf)
-  crps_c.append(mediacc)
-
-  crps[0].append(mediaff)
-  crps[1].append(mediacc)
-
-#print('')
-#print('>> Total:', cont1)
-
-print('')
-print('crps_f = ', crps_f)
-print('')
-print('crps_c = ', crps_c)
-print('')
-print('crps = ', crps)
+  print('')
+  print('crps_f = ', crps_f)
+  print('')
+  print('crps_c = ', crps_c)
+  print('')
+  print('crps = ', crps)
 
 """
 Calculo CRPSS:
 """
 
-crpss = []
+def calc_crpss(crps, crpsc1):
+  global crpss
+  crpss = []
 
-#for val in crps:
-#  crpss_val = 1 - (val / crpsc1)
-#  crpss.append(crpss_val)
+#  for val_f in crps[0]:
+  for val_f in crps:
+    crpss_val = 1 - (val_f / crpsc1)
+    crpss.append(crpss_val)
 
-#for val_f in crps[0]:
-#  for val_c in crps[1]:
-#    crpss_val = 1 - (val_f / val_c)
-#  crpss.append(crpss_val)
-
-for val_f in crps[0]:
-  crpss_val = 1 - (val_f / crpsc1)
-  crpss.append(crpss_val)
-
-print('')
-print('crpss = ', crpss)
-
-#print(crpsc1)
+  print('')
+  print('crpss = ', crpss)
 
 """
 Figura CRPSS:
 """
 
-fig, ax = plt.subplots()
+def plot_crpss(crpss):
+  fig, ax = plt.subplots()
 
-#sns.set_style('white')
-#sns.despine()
+  plt.plot(crpss, 'o-', color='#2C99C6', linewidth='3', markersize='10', label=str(n_exp))
+  plt.legend(loc='best')
 
-plt.plot(crpss, 'o-', color='#2C99C6', linewidth='3', markersize='10', label=str(n_exp))
-plt.legend(loc='best')
+  plt.title(title)
 
-#plt.plot('text', usetex=True)
-#plt.plot('font', family='serif')
-#plt.plot('xtick', labelsize='x-small')
-#plt.plot('ytick', labelsize='x-small')
+  plt.ylabel('Score')
+  plt.yticks([-0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+  plt.ylim([-0.2,1])
 
-plt.title(title)
+  plt.xlabel('Forecast Days')
+  xlabels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+  ax.set_xticklabels(xlabels)
+  plt.xticks(range(len(crpss)))
 
-plt.ylabel('Score')
-plt.yticks([-0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-plt.ylim([-0.2,1])
+  plt.grid(True)
+  plt.axhline(0, color='#999999')
 
-plt.xlabel('Forecast Days')
-xlabels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-ax.set_xticklabels(xlabels)
-plt.xticks(range(len(crpss)))
+  plt.show()
 
-plt.grid(True)
-plt.axhline(0, color='#999999')
+  filename = 'crpss_decjanfev_20142015_' + n_var + '_' + n_reg +'_' + h_sin  + 'Z_' + n_exp + '.' + f_type
+  fig.savefig(filename, bbox_inches='tight')
 
-plt.show()
+  plt.close()
 
-filename = 'crpss_decjanfev_20142015_' + n_var + '_' + n_reg +'_' + h_sin  + 'Z_' + n_exp + '.' + f_type
-fig.savefig(filename, bbox_inches='tight')
+"""
+Chamada das Funcoes:
+"""
 
-plt.close()
+def main():
+  assembly_crps_lists()
+  calc_crpss(crps[0], crpsc1)
+  plot_crpss(crpss)
+
+main()
