@@ -30,7 +30,9 @@ from datetime import datetime, timedelta
 import struct
 import numpy as np
 import matplotlib.pyplot as plt
-from decimal import Decimal
+from decimal import *
+
+getcontext().prec = 16 # Limita todas as operacoes ate a 16 casa decimal 
 
 """
 Altere as opcoes abaixo conforme o caso:
@@ -48,7 +50,7 @@ yyyymmddE = '20150227'
 
 # Variavel:
 #n_var = ['psnm', 't850']
-n_var = 't850'
+n_var = 'psnm'
 
 # Regiao:
 #n_reg = ['hn', 'tr', hs']
@@ -153,13 +155,21 @@ def assembly_crps_lists(nexp):
         # Como e um array lido com 6 posicoes, a posicao 2 (no python, 1)
         # contem o crps da previsao (crpsf) e a posicao 5 (no python, 4) contem
         # o crps da climarologia (crpsc)
-        crpsf = u_data[1]
-        crpsc = u_data[4]
+#        crpsf = u_data[1]
+#        crpsc = u_data[4]
+
+        crpsf_o = u_data[1]
+        crpsc_o = u_data[4]
+
+        crpsf = Decimal(crpsf_o)
+        crpsc = Decimal(crpsc_o)
 
         global crpsc1 # crpsc1 e o crps da climatologia do primeiro arquivo lido, e utilizado em outros escopos
 
         if cont1 == 0:
-          crpsc1 = u_data[4]
+#          crpsc1 = u_data[4]
+          crpsc1_o = u_data[4]
+          crpsc1 = Decimal(crpsc1_o)
 
         somaf = 'somaf' + str(hprev) # somaf24 e apenas o nome do array
         somaff = somaff + crpsf # somaff contem os valores lidos
@@ -237,6 +247,8 @@ Figura CRPSS:
 
 def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
 
+  getcontext().prec = 1 # Forca os valores a serem alocados como rotulos no eixo y a possuirem apenas uma casa decimal
+
   fig = plt.figure()
   ax = fig.add_subplot(111)
 
@@ -281,15 +293,23 @@ def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
 
   print('')
 
-  maxval = max(maxvals)
-#  maxval = "{:10.4f}".format(max(maxvals))
-#  maxval = "{0:.4e}".format(max(maxvals))
+  maxval_o = max(maxvals)
+  maxval = Decimal(maxval_o)
   print('Max:',maxval)
 
-  minval = min(minvals)
-#  minval = "{:10.4f}".format(min(minvals))
-#  minval = "{0:.4e}".format(min(minvals))
+  maxval2 = "{:.1f}".format(1.1)
+  maxval3 = Decimal(maxval2)
+
+  minval_o = min(minvals)
+  minval = Decimal(minval_o)
   print('Min:',minval)
+
+  # Forca o valor minimo encontrado a possuir apenas 1 casa decimal (neste caso, arredonta)
+  minval2 = "{:.1f}".format(minval)
+  minval3 = Decimal(minval2)
+
+  print(maxval3)
+  print(minval3)
 
   # Plota uma curva para cada item dentro do array n_exp
   for i in range(len(n_exp)):
@@ -306,14 +326,21 @@ def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
   # Titulo
   plt.title(title, fontsize='16', **font)
 
+  incr = "{:.1f}".format(0.1) # Valor do incremento no eixo y
+  incr2 = Decimal(incr)
+
+  print(incr2)
+
   # Eixo y
   plt.ylabel('Score', fontsize='14', **font)
-  y = np.arange(-0.2, 1.1, 0.1)
-#  y = np.arange(float(minval)-0.1, 1.01, 0.1)
+  y = np.arange(minval3, maxval3, incr2)
   ylabels = []
   for i in y:
+    print(i)
     ylabels.append(i)
   plt.yticks(y, ylabels, fontsize='12', **font)
+
+  print(ylabels)
 
   # Eixo x
   plt.xlabel('Forecast Days', fontsize='14', **font)
