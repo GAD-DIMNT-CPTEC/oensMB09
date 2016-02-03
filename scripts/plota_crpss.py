@@ -36,7 +36,7 @@ Altere as opcoes abaixo conforme o caso:
 """
 
 # Tipo de figura:
-f_type = 'png'
+f_type = 'pdf'
 
 # Salvar figura?
 save_fig = 'True'
@@ -47,15 +47,15 @@ yyyymmddE = '20150227'
 
 # Variavel:
 #n_var = ['psnm', 't850']
-n_var = 'psnm'
+n_var = 't850'
 
 # Regiao:
 #n_reg = ['hn', 'tr', hs']
-n_reg = 'hn'
+n_reg = 'hs'
 
 # Horario sinotico:
 #h_sin = ['00', '12']
-h_sin = '12'
+h_sin = '00'
 
 # Nome do experimento:
 n_exp = ['oensMB09_mcgav4.0', 'oensMB09', 'oensMCGA']
@@ -245,7 +245,7 @@ def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
   font = {'fontname':'Serif', 'color':'#303030'}
 
   # Cor do fundo
-  ax.set_axis_bgcolor('#F0F0F0')
+  ax.set_axis_bgcolor('#FFFFFF')
 
   # Cores das bordas
   ax.spines['top'].set_color('#545454')
@@ -295,40 +295,40 @@ def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
   # Plota uma curva para cada item dentro do array n_exp
   for i in range(len(n_exp)):
     exp_n = n_exp[i]
-    plt.plot(crpss_crpss_exps[i][0], 'o-', color=colors[i], linewidth='4', markersize='8', label=str(exp_n), zorder=i+2)
+    plt.plot(crpss_crpss_exps[i][0], 'o-', color=colors[i], linewidth='4', markersize='8', label=str(exp_n), zorder=i+4)
 
   # Legenda
   leg = plt.legend(loc='best', fancybox=True, framealpha=1)
   leg.get_frame().set_edgecolor('#545454')
-  leg.get_frame().set_facecolor('#F0F0F0')
+  leg.get_frame().set_facecolor('#FFFFFF')
   ltxt  = leg.get_texts()
-  plt.setp(ltxt, fontsize='11', **font) 
+  plt.setp(ltxt, fontsize='12', **font) 
 
   # Titulo
-  plt.title(title, fontsize='16', **font)
+  plt.title(title, fontsize='18', **font)
 
   incr = round(0.1,1)
 
   maxval = round(1.0,1)
 
   # Eixo y
-  plt.ylabel('Score', fontsize='14', **font)
   y = np.arange(minval, maxval, 0.1)
-  plt.yticks(np.arange(min(y)-0.1, 1.1, 0.1)) # 0.1 esta sendo subtraido para sobrar um pouco de espaco no grafico
-  ax.set_ylim([min(y)-0.1,1.0]) # Forca os limites maximo e minimo do eixo
+  ax.set_ylim([min(y)-0.1,maxval]) # Forca os limites maximo e minimo do eixo
+  plt.yticks(np.arange(min(y)-0.1, maxval+0.1, 0.1), fontsize='14', **font) # 0.1 esta sendo subtraido para sobrar um pouco de espaco no grafico
+  plt.ylabel('Score', fontsize='16', **font)
 
   # Eixo x
-  plt.xlabel('Forecast Days', fontsize='14', **font)
   x = np.arange(0, 15, 1)
   xlabels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
-  plt.xticks(x, xlabels, fontsize='12', **font)
+  plt.xticks(x, xlabels, fontsize='14', **font)
+  plt.xlabel('Forecast Days', fontsize='16', **font)
 
   # Grade
   plt.grid(True)
-  ax.grid(which='major', linestyle=':', color='#8C8C8C', zorder=0)
+  ax.grid(which='major', linestyle=':', color='#8C8C8C', zorder=1)
 
   # Curva na origem
-  plt.axhline(0, color='#000000', zorder=1)
+  plt.axhline(0, color='#000000', zorder=2)
 
   # Mostra a figura
   plt.show()
