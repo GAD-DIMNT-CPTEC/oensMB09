@@ -1,0 +1,54 @@
+#!/bin/ksh -x
+#
+#********************************************************#
+#                                                        #
+#     Name:     deceof.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               the decomposition of a global model      #
+#               initial conditions.                      #
+#                                                        #
+#     Date:        February 11th, 1998.                  #
+#     Last change: August   14th, 2000.                  #
+#                                                        #
+#********************************************************#
+#
+echo 'Decomposition  -x-  RUNNING ...'
+#
+#    Set directories:
+#
+source=${HOME_suite}/deceof/source
+bin=${SC1_suite}/deceof/bin/${TRUNC}${LEV};  mkdir -p ${bin}
+input=${SC1_suite}/deceof/datain;  mkdir -p ${input}
+out=${SC1_suite}/deceof/output;  mkdir -p ${out}
+#
+#   Check if the makefile will compile:
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f deceof.mk
+exit
+  fi
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f deceof.mk clean
+make -f deceof.mk
+exit
+  fi
+#
+cd ${bin}
+cp -v deceof.${TRUNC}${LEV} deceof.${NUM}.${LABELI}.${TRUNC}${LEV}
+#
+./deceof.${NUM}.${LABELI}.${TRUNC}${LEV} < ${input}/deceof${NUM}${LABELI}.nml > ${out}/deceof.${NUM}.${LABELI}.${HOUR}.${TRUNC}${LEV}
+#
