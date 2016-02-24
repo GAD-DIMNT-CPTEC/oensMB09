@@ -1,0 +1,55 @@
+#!/bin/ksh -x
+#********************************************************#
+#                                                        #
+#     Name:     eofpres.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               the temperature eof                      #
+#                                                        #
+#     Date:        February 11th, 1998.                  #
+#     Last change: October  03th, 2011.                  #
+#                                                        #
+#********************************************************#
+#
+echo "EOFT           -x-  RUNNING ..."
+#    Set directories:
+#
+source=$HOME_suite/eofpres/source
+bin=$SC1_suite/eof/bin/$TRUNC$LEV;mkdir -p ${bin}
+#AMM input=$ROPERMOD/eof/datain;mkdir -p ${input}
+#AMM out=$OPERMOD/dataout;mkdir -p ${out}
+inp=$SC1_suite/eof/datain;mkdir -p ${inp}
+outp=$SC1_suite/eofpres/output;mkdir -p ${outp}
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f eofpres.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f eofpres.mk clean
+make -f eofpres.mk
+exit
+  fi
+#
+cd $bin
+cp -v eofpres.$TRUNC$LEV eofpres.$TRUNC$LEV.${NUM}${LABELI}
+#
+echo "./eofpres.$TRUNC$LEV.${NUM}${LABELI} < $inp/eofpres${REGE}${NUM}${LABELI}.nml > $outp/eofpres.$LABELI.$HOUR.$TRUNC$LEV"
+./eofpres.$TRUNC$LEV.${NUM}${LABELI} < $inp/eofpres${REGE}${NUM}${LABELI}.nml > $outp/eofpres${REGE}.$LABELI.$HOUR.$TRUNC$LEV
+#
+#
