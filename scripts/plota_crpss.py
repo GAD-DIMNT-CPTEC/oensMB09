@@ -3,9 +3,11 @@
 
 """
 Objetivo:
+- Calcular o Skill do CRPS e plotar a curva do CRPSS;
 - Este script le diretamente os arquivos
   CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads
-  para plotar a curva do CRPSS.
+  para plotar a curva do CRPSS;
+- Dispensa o uso do GrADS.
 
 Estrutura do arquivo CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads:
 - Binario sequencial padrao fortran;
@@ -13,6 +15,18 @@ Estrutura do arquivo CRPS4CPTECEPS.%f2hForecastFor2015022712.aave.grads:
 
 Uso:
 ./plota_crpss.py
+
+Dependencias:
+- Distribuicao python (v>2.5) com matplotlib e numpy;
+- Recomenda-se o uso da distribuicao Anaconda (e possivel instalar na Tupa).
+
+Revisoes:
+- 26/01/2016: primeira versao (cfbastarz)
+- 05/04/2016: melhorias nos comentarios (cfbastarz)
+
+Todo:
+- Criar funcao para plotar as CDFs dos membros do conjunto;
+- Melhorar a forma de se atribuir os rotulos do eixo x na figura do CRPSS (lista xlabels);
 
 carlos.frederico@cptec.inpe.br, 26/01/2015
 """
@@ -36,6 +50,9 @@ Altere as opcoes abaixo conforme o caso:
 """
 
 # Tipo de figura:
+#f_type = 'jpg'
+#f_type = 'png'
+#f_type = 'eps'
 f_type = 'pdf'
 
 # Salvar figura?
@@ -57,7 +74,7 @@ n_reg = 'hs'
 #h_sin = ['00', '12']
 h_sin = '00'
 
-# Nome do experimento:
+# Nome(s) do(s) experimento(s):
 n_exp = ['oensMB09_mcgav4.0', 'oensMB09', 'oensMCGA']
 #n_exp = ['oensMB09_mcgav4.0', 'oensMB09']
 #n_exp = ['oensMB09_mcgav4.0']
@@ -72,11 +89,17 @@ d_root = '/home/carlos/Documents/INPE2016/GDAD/SPCON/CRPS/tupa_dataout/'
 Nao alterar nada a partir desta linha!
 """
 
+# A seguir estao as definicoes de varias funcoes utilizadas no programa;
+# A ordem das chamadas e feita pela funcao main, ao final do programa.
+
+# A funcao a seguir monta as listas com os valores de crpsf e crpsc lidos
+# dos arquivos binarios associados a cada experimento.
 def assembly_crps_lists(nexp):
   n_exp = nexp
 
   d_name = d_root + n_exp  + '/crps_' + n_var + '_' + n_reg + '_' + h_sin + '/dataout/' 
 
+  # Formata as datas
   dateb = datetime.strptime(str(yyyymmddB) + str(h_sin), '%Y%m%d%H')
   datee = datetime.strptime(str(yyyymmddE) + str(h_sin), '%Y%m%d%H')
 
@@ -104,7 +127,7 @@ def assembly_crps_lists(nexp):
 
     date = dateb # date e a data dentro do loop das previsoes
 
-    # Variaveis em que sera acumulados os crps das previsoes para cada horario
+    # Variaveis em que serao acumulados os crps das previsoes para cada horario
     somaff = 0
     somacc = 0
 
@@ -179,7 +202,7 @@ def assembly_crps_lists(nexp):
       cont1 += 1
       cont2 += 1
 
-    mediaff = somaff / int(contf) # Calcula a media com as somas (o contados representa o numero de arquivos abertos)
+    mediaff = somaff / int(contf) # Calcula a media com as somas (o contador representa o numero de arquivos abertos)
     crps_f.append(mediaff) # Inclui as medias lidas (mediaff) no array crps_f
 
     mediacc = somacc / int(contf)
@@ -202,17 +225,20 @@ def assembly_crps_lists(nexp):
 Calculo CRPSS:
 """
 
+# A funcao a seguir calcula o skill do CRPS com base nos valores do crpsf e crpsc lidos
 def calc_crpss(crps, crpsc1, crps_nexp, crps_nexp_vals, nexp, cont_nexps):
   global crpss, crpss_exp, n_crpss_exp
 
-  crpss = []
-  crpss_exp = []
+  # Cria as listas crpss e crpss_exp
+  crpss = [] # contem todos os valores de crpss calculados
+  crpss_exp = [] # representa o nome da lista com os crpss do experimento
 
-  n_crpss_exp = 'crpss-' + str(nexp)
+  n_crpss_exp = 'crpss-' + str(nexp) # acrescenta o prefixo crpss a variavel nexp (nome do experimento)
 
+  # Calcula o crpss (crpss = 1 - crpsf / crpsc) e apenda o valor na lista crpss
   for val_f in crps:
-    crpss_val = 1 - (val_f / crpsc1)
-    crpss.append(crpss_val)
+    crpss_val = 1 - (val_f / crpsc1) # calcula o crpss
+    crpss.append(crpss_val) # apenda o valor
 
   crpss_exp = crpss
 
@@ -234,6 +260,7 @@ def calc_crpss(crps, crpsc1, crps_nexp, crps_nexp_vals, nexp, cont_nexps):
 Figura CRPSS:
 """
 
+# A funcao a seguir plota a curva do CRPSS a partir das listas montadas
 def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
 
   fig = plt.figure() # Define o objeto fig (figura)
@@ -269,16 +296,17 @@ def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
   minvals = []
 
   print('')
-  
+ 
+  # Define o limite inferior do exio y (valores do crpss) entre os experimentos envolvidos 
   for i in range(len(n_exp)):
     minv = min(crpss_crpss_exps[i][0])
-    minvals.append(minv)
+    minvals.append(minv) # apenda os valores minimos de todos os experimentos em uma lista (minv)
     print(minv)
 
   print('')
 
-  min_val_o = min(minvals)
-  minval = round(min_val_o,1)
+  min_val_o = min(minvals) # decide qual o valor minimo dentro da lista montada
+  minval = round(min_val_o,1) # arredonda o valor (cuidado aqui!)
   print('Min:',minval)
 
   print('')
@@ -319,6 +347,7 @@ def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
 
   # Eixo x
   x = np.arange(0, 15, 1)
+  # Alterar aqui caso o numero de dias de previsoes seja diferente de 15
   xlabels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
   plt.xticks(x, xlabels, fontsize='14', **font)
   plt.xlabel('Forecast Days', fontsize='16', **font)
@@ -346,6 +375,7 @@ def plot_crpss(crps_nexp, crps_nexp_vals, crpss_crpss_exps):
 Chamada das Funcoes:
 """
 
+# A funcao a seguir as funcoes em sequencia
 def main():
   global cont_nexps, crpss_crpss_exps
 
