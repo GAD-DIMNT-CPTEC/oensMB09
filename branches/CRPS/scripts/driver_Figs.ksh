@@ -2,24 +2,44 @@
 
 # set -o xtrace
 
+# Objetivo:
+# Plotar a curva do CRPSS utilizando o Grads.
+# Este script plota tambem a CDF dos membros
+#
+# Dependencias:
+# Executar o script plotgraph.T126L28.bash antes
+#
+# Historico:
+# XX/XX/XXXX - Versao original script GrADS (Christopher et al.)
+# XX/09/2015 - Adaptacao e simplificados (cfbastarz)
+
+# Escolha da variavel e regiao de interesse
 var=PSNM
 reg=HN
 
+# Lags e o array com os lags de 24 a 360, em intervalos de 24
 set -A Lags `echo $(seq 24 24 360)`
+
+# A rigor, plota-se a curva do CRPS para as 12Z
 set -A HSinoticos 12
 
+# Loop sobre os lags
 for lag in ${Lags[@]}
 do
-
+  # Loop sobre os horarios sinoticos
   for hsin in ${HSinoticos[@]}
   do
-
+    # Monta o nome do script GrADS
     nome_script="Figs-driven-${hsin}Z${lag}h.gs"
 
+    # Nome do arquivo que sera aberto pelo GrADS
     arquivo="'exec crpsfilesin.aave-decjanfev${hsin}z-lag${lag}h.txt'"
+    # Titulo da figura (atencao ao periodo de avaliacao)
     titulo="'draw title CRPSS DEC/JAN/FEV - 2014/2015\${var} ${reg} ${hsin}Z, lag: ${lag}h'"
+    # Nome da figura salva (atencao ao periodo de avaliacao)
     imprime="'printim crpss_decjanfev_20142015_${var}_${reg}_${hsin}Z_lag${lag}h.png'"
 
+# Monta o script do GrADS
 cat << EOF > ${nome_script}
 rc=gsfallow("on")
 'reinit'
@@ -115,6 +135,7 @@ ${imprime}
 'quit'
 EOF
 
+    # Executa o GrADS e gera as figuras
     nohup grads -blc "run ${nome_script}" > ${hsin}Z${lag}h.log &
 
   done
