@@ -1,8 +1,9 @@
 #! /bin/ksh 
-#
+
 #set -o xtrace
-#
-# Este script extrai as seguintes variaveis do EPS T126L28 MB09 (201503):
+
+# Objetivo:
+# Este script extrai as seguintes variaveis do EPS T126L28 MB09/MCGA (201503):
 # - z500;
 # - t850;
 # - psnm.
@@ -12,8 +13,15 @@
 # Uso (exemplo):
 # $ ./recorta_dados.ksh 2015030100 2015033000
 #
+# Dependencias:
+# - inctime ou caldate
+#
 # Historico:
 # 13/08/2015 - First crack (cfbastarz)
+# 06/10/2015 - Modificacoes para leituras dos dados no online1 (cfbastarz);
+#              alterada a forma como o lats4d e executado (cfbastarz);
+#              apenas T850 e extraida e apenas as previsoes de 00 e 12 sao lidas (cfbastarz).
+# 05/04/2016 - Comentarios adicionais e limpeza (cfbastarz)
 
 inctime=${HOME}/bin/inctime
 
@@ -23,18 +31,25 @@ then
   exit 1
 fi
 
+# Datas de inicio e fim
 datai=${1}
 dataf=${2}
 
-#datain=/stornext/online1/ensemble_g/oens_new/oensMB09
-datain=/stornext/online17/pnt/preoper/tempo/oensMB09
-dataout=/scratchin/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados
-dataout1=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados
+# Define a variavel
+var=t850
+
+# Diretorios de leitura (das saida do modelo - conjunto) e escrita (dos dados recortados)
+datain=/stornext/online1/ensemble_g/carlos/spcon_mb09_tq126l28_mcgav4.0_namelist_novo/backup_previsoes_pos_eof_oensMB09_mcga-v4.0
+dataout=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados_oens_MB09_mcga-v4.0-novo_namelist-${var}
+
 
 data=${datai}
 
+# Array com os nomes dos membros do conjunto (ajustar conforme necessario)
 set -A Membros 01N 01P 02N 02P 03N 03P 04N 04P 05N 05P 06N 06P 07N 07P NMC
+#set -A Membros 01n 01p 02n 02p 03n 03p 04n 04p 05n 05p 06n 06p 07n 07p ctrl
 
+# Loop sobre as datas
 while [ ${data} -le ${dataf} ]
 do
 
@@ -47,44 +62,74 @@ do
   datafct=`${inctime} ${data} +6hr %y4%m2%d2%h2`
 
   data_dataout=${dataout}/${data}
-  dataout2=${dataout1}/${data}
 
-  mkdir -p ${dataout2}
+  mkdir -p ${dataout}
 
-#  if [ ! -d ${data_dataout} ]; then mkdir -p ${data_dataout}; fi
+  if [ ! -d ${data_dataout} ]; then mkdir -p ${data_dataout}; fi
 
   cd ${data_dataout}
 
-  for membro in ${Membros[@]}
-  do
-
-    dataa=`${inctime} ${data} +6hr %y4%m2%d2%h2`
-    dataff=`${inctime} ${dataf} +348hr %y4%m2%d2%h2`
-
-    lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${data}P.icn.TQ0126L028 -o ${dataout2}/GBRM${membro}${data}${data}-psnm -levs 1000 -vars psnm -format sequential
-    lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${data}P.icn.TQ0126L028 -o ${dataout2}/GBRM${membro}${data}${data}-z500 -levs 500 -vars zgeo -format sequential
-    lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${data}P.icn.TQ0126L028 -o ${dataout2}/GBRM${membro}${data}${data}-t850 -levs 850 -vars temp -format sequential
-    cat ${dataout2}/GBRM${membro}${data}${data}-psnm.bin ${dataout2}/GBRM${membro}${data}${data}-z500.bin ${dataout2}/GBRM${membro}${data}${data}-t850.bin  > ${dataout2}/GBRM${membro}${data}${data}.grads
-
-    while [ ${dataa} -le ${dataff} ]
+    # Loop sobre os membros
+    for membro in ${Membros[@]}
     do
 
-      lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${dataa}P.fct.TQ0126L028 -o ${dataout2}/GBRM${membro}${data}${dataa}-psnm -levs 1000 -vars psnm -format sequential
-      lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${dataa}P.fct.TQ0126L028 -o ${dataout2}/GBRM${membro}${data}${dataa}-z500 -levs 500 -vars zgeo -format sequential
-      lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${dataa}P.fct.TQ0126L028 -o ${dataout2}/GBRM${membro}${data}${dataa}-t850 -levs 850 -vars temp -format sequential
-      cat ${dataout2}/GBRM${membro}${data}${dataa}-psnm.bin ${dataout2}/GBRM${membro}${data}${dataa}-z500.bin ${dataout2}/GBRM${membro}${data}${dataa}-t850.bin  > ${dataout2}/GBRM${membro}${data}${dataa}.grads
+      # Define os prefixos e troca maisculas por minusculas, caso necessario
+      if [ ${membro} = "ctrl" ]
+      then
+        membrof="NMC"
+      else
+        membrof=`echo ${membro} | tr "n p" "N P"`
+      fi
 
-      dataa=`${inctime} ${dataa} +6hr %y4%m2%d2%h2`
+#      membrof=${membro}
 
-    done
+      # Calcula as datas da analise e previsao
+      dataa=`${inctime} ${data} +6hr %y4%m2%d2%h2`
+      dataff=`${inctime} ${dataf} +360hr %y4%m2%d2%h2`
 
-    print ""
+      # Verifica se o arquivo recortado ja nao existe
+      if [ ! -e ${data_dataout}/GBRM${membrof}${data}${data}.grads.bin ]
+      then
 
+        # Recorta as analises
+        if [ ${var} == "t850" ]
+        then
+          nohup lats4d.sh -v -i ${datain}/${YYYYMM}${DDHH}/${membro}/GPOS${membrof}${data}${data}P.icn.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${data}.grads -levs 850 -vars temp -format sequential > rec_icn_t850_${membro}${data}.log &
+        else
+          nohup lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/pos/${membro}/GPOS${membrof}${data}${data}P.icn.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${data}.grads -vars psnm -format sequential > rec_icn_psnm_${membro}${data}.log &
+        fi
+
+      fi
+
+      # Loop sobre os arquivos de previsao
+      while [ ${dataa} -le ${dataff} ]
+      do
+ 
+        # Verifica se o arquivo recortado ja nao existe 
+        if [ ! -e ${data_dataout}/GBRM${membrof}${data}${dataa}.grads.bin ]
+        then
+
+          # Recorta as previsoes
+          if [ ${var} == "t850" ]
+          then
+            nohup lats4d.sh -v -i ${datain}/${YYYYMM}${DDHH}/${membro}/GPOS${membrof}${data}${dataa}P.fct.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${dataa}.grads -levs 850 -vars temp -format sequential > rec_fct_t850_${membro}${data}.log &
+          else
+            nohup lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${dataa}P.fct.TQ0126L028 -o ${data_dataout}/GBRM${membro}${data}${dataa}.grads -vars psnm -format sequential > rec_fct_psnm_${membro}${data}.log &
+          fi
+
+        fi
+
+        # Incrementa a data do loop das previsoes
+        dataa=`${inctime} ${dataa} +6hr %y4%m2%d2%h2`
+  
+      done
+ 
   done
 
   cd ${dataout}
 
-  data=`${inctime} ${data} +6hr %y4%m2%d2%h2`
+  # Incrementa a data do loop principal
+  data=`${inctime} ${data} +12hr %y4%m2%d2%h2`
 
 done
 

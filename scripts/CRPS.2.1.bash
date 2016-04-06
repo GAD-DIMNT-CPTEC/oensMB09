@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #
 # Function: to run the process to calculate the CRPS 
 #
@@ -9,53 +10,57 @@
 # period availabel: December 16, 2008 to February 28, 2009
 #
 
+# CFB 
 # Algoritimo:
-# -----------
-# 1) Extracao da variavel T850 da condicao inicial do controle (script fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5.gs)
+# 1) Extracao da variavel T850 (ou PSNM) da condicao inicial do membro controle (script fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5.gs)
 # - Sao escritos os seguintes arquivos:
 # -- CPTEC.${VARCRPS}.2015030300.ctl
 # -- CPTEC.${VARCRPS}.2015030300.grads
-# -- epsfilesin.24h.tmp
-# -- epsfilesin.24h.txt
+# -- epsfilesin.24h.tmp (contem uma lista com os arquivos a serem abertos)
+# -- epsfilesin.24h.txt (contem uma lista de comando do GrADS para abrir os arquivos)
 #
-# 2) Recorte do subdominio (TR, HS ou HN) da variavel T850 da condicao inicial (script fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5.gs)
+# 2) Recorte do subdominio (TR, HS ou HN) da variavel da condicao inicial (script fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5.gs)
 # - Sao escritos os seguintes arquivos:
-# -- SDAnalise.ctl
-# -- SDAnalise.grads
+# -- SDAnalise.ctl 
+# -- SDAnalise.grads (representa a referencia)
 # -- wght.grads
+# Obs.: Na realidade, este script recupera as "observacoes" que serao usadas no calculo da CDF utilizada pelo CRPS
 #
-# 3) Calculo do CRPS (e do CRPSS) utilizando o campo de T850 (isto por enquanto esta fixo no script):
+# 3) Calculo do CRPS (e do CRPSS) utilizando da variavel de interesse:
 # - Sao escritos os seguintes arquivos:
 # -- CRPSC4CPTECEPS.48hForecastFor2015030300.grads
 # -- CRPS4CPTECEPS.48hForecastFor2015030300.grads
 # -- CRPS4CPTECEPS.48hForecastFor2015030300.aave.grads
 # -- CRPS4CPTECEPS.48hForecastFor2015030300.aave.ctl
 # -- CRPS4CPTECEPS.48hForecastFor2015030300.txt
-
-# Observacoes:
-# ------------
+# Obs.: No final deste processo, e necessario criar um template para abrir os arquivos
+# de CRPS dos lags (estes templates nao sao criados automaticamente)
+#
+# Observacoes Importantes:
 # - CRPSS = Continous Rank Proability Skill Score;
 # -- CRPSS = 1 - CRPSS_prev/CRPSS_ref (Cunningham et al., 2014)
 # - A principio, os arquivos com os membros a serem abertos foram anteriormente recortados para conter apenas as variaveis de interesse: psnm, z500 e t850.
-# - O CPRP e calculado para o ensemble de cada data considerada, e.g.:
+# - O CPRS e calculado para o ensemble de cada data considerada, e.g.:
 # -- para o ensemble da data 2015030300 (considerando uma previsao de 24h), temos o seguinte: {EPS 2015030300: 01N 01P 02N 02P 03N 03P ... 07N 07P NMC}, onde:
-#    N: indica a perturbacao subtraida, P perturbacao somada e NMC o membro controle
+# N: indica a perturbacao subtraida, P perturbacao somada e NMC o membro controle;
 # -- para este ensemble, e atribuido apenas um valor do CRPS referente a previsao de 24h
-# -- a serie que e mostrada no grafico da curva do CRPS e formada portanto, pelo CRPS das previsoes de 24 a 360h partindo-se da previsao inicial
-
+# -- a serie que e mostrada no grafico da curva do CRPSS e formada portanto, pelo CRPS das previsoes de 24 a 360h partindo-se da previsao inicial
+#
 # Todo:
-# -----
-# - Melhorar algumas partes do script
-# - Entender o conteudo de cada um dos arquivos gerados
-# - Entender a funcao e o uso do diretorio no namelist /Users/christopher/EPS/CRPS/datain/MonthlyClimatology/
-
+# - Refazer este script;
+# - Criar os templates para abrir os arquivos com os CRPS dos lags;
+#
 # Historico:
-# ----------
 # XX/XX/XXXX - First crack (Christopher et al.)
 # 12/08/2015 - pequenas adequacoes para que o script funcione com os dados no scratchin e online e documentacao inicial
-# 13/08/2015 - pequenas melhorias em algumas partes do script
+# 13/08/2015 - modificacoes em algumas partes do script
 # 14/08/2015 - modificada a forma como sao atribuidos os nomes dos meses e mais documentacao
 # 06/10/2015 - correcoes nas informacoes contidas no cabecalho do script
+# 05/04/2016 - mellhorada a documentacao, limpeza e mais melhorias
+#
+# Dependencias:
+# - caldate ou inctime
+# CFB
 
 case "${#1}" in
 10)
@@ -65,16 +70,26 @@ fctlag=${2}
 VARCRPS=${3}
 VARLEV=${4}
 
+# Prefixo dos arquivos de CRPS a serem criados
 OBSTYPE="CPT"
+# Diretorio com os dados de previsao do experimento de interesse
 DATAINDIR=/stornext/online1/ensemble_g/oens_new/oensMB09
-DATAINDIR2=/stornext/online1/ensemble_g/novos_dados_recortados/psnm-oens_MB09
-DATAOUTDIR=/scratchin/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/crps_psml_hn_12/output
 
+# Diretorio com os dados recortados para a veriavel do experimento de interesse
+# Para mais informacoes sobre o recorte dos dados veja o script recorta_dados/recorta_dados.ksh
+DATAINDIR2=/stornext/online1/ensemble_g/novos_dados_recortados/psnm-oens_MB09
+
+# Define o diretorio onde estara a climatologia (ERA Interim, 1.5 graus)
+# Atencao para o nome da variavel de interesse
+dirclm="/stornext/online1/ensemble_g/ERAinterim1.5/psml/",
+
+# Manipulacao das datas
 yyyytgt=`echo $targetdate | cut -c 1-4`
 mmtgt=`echo $targetdate | cut -c 5-6`
 ddtgt=`echo $targetdate | cut -c 7-8`
 hhtgt=`echo $targetdate | cut -c 9-10`
 
+# Define do nome do mes de acordo com a data inicial
 if [ ${mmtgt} -eq "01" ]; then MMM="JAN"; fi
 if [ ${mmtgt} -eq "02" ]; then MMM="FEB"; fi
 if [ ${mmtgt} -eq "03" ]; then MMM="MAR"; fi
@@ -82,32 +97,21 @@ if [ ${mmtgt} -eq "04" ]; then MMM="APR"; fi
 if [ ${mmtgt} -eq "05" ]; then MMM="MAY"; fi
 if [ ${mmtgt} -eq "06" ]; then MMM="JUN"; fi
 if [ ${mmtgt} -eq "07" ]; then MMM="JUL"; fi
-if [ ${mmtgt} -eq "08" ]; then MMM="AGO"; fi
+if [ ${mmtgt} -eq "08" ]; then MMM="AUG"; fi
 if [ ${mmtgt} -eq "09" ]; then MMM="SEP"; fi
 if [ ${mmtgt} -eq "10" ]; then MMM="OCT"; fi
 if [ ${mmtgt} -eq "11" ]; then MMM="NOV"; fi
 if [ ${mmtgt} -eq "12" ]; then MMM="DEC"; fi
 
-#
 # GET THE ANALYSIS FILE FROM CPTEC CONTROL RUN
-#
 if [ "${OBSTYPE}" == "CPT" ]
 then
   if [ ! -s ../datain/CPTEC.${VARCRPS}.${targetdate}.grads ]
   then
-#   if [ ! -s ${DATAINDIR}/../comvies/${yyyytgt}${mmtgt}${ddtgt}${hhtgt}/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.idx ]; then
     if [ ! -s ${DATAINDIR}/${yyyytgt}${mmtgt}${ddtgt}${hhtgt}/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.idx ]
-#    if [ ! -s ${DATAINDIR}/${yyyytgt}${mmtgt}/${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.idx ]
     then
-#      gribmap -i ${DATAINDIR}/../comvies/${yyyytgt}${mmtgt}${ddtgt}${hhtgt}/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl
-#      gribmap -i ${DATAINDIR}/${yyyytgt}${mmtgt}${ddtgt}${hhtgt}/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl
-#      gribmap -i /scratchout/grupos/assim_dados/home/carlos.bastarz/tmp/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl
       gribmap -i ${DATAINDIR}/${yyyytgt}${mmtgt}/${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl
     fi
-#   grads -blc "run fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5.gs ${targetdate} \
-#   ${DATAINDIR}/../comvies/${yyyytgt}${mmtgt}${ddtgt}${hhtgt}/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl"
-#    grads -blc "run fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5.gs ${targetdate} ${DATAINDIR}/${yyyytgt}${mmtgt}${ddtgt}${hhtgt}/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl"
-#    grads -blc "run fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5.gs ${targetdate} /scratchout/grupos/assim_dados/home/carlos.bastarz/tmp/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl"
     grads -blc "run fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5_variable.gs ${targetdate} ${DATAINDIR}/${yyyytgt}${mmtgt}/${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl ${VARCRPS} ${VARLEV}"
   fi
 else
@@ -116,8 +120,11 @@ fi
 
 rm -f ../datain/epsfilesin.${fctlag}.tmp; touch ../datain/epsfilesin.${fctlag}.tmp;
 
+# Incremento da data (depende do script caldate)
 icdate=`${HOME}/scripts/caldate.3.1.2 ${targetdate} - ${fctlag} "yyyymmddhh"`
 
+# Loop sobre os membros do ensemble (incluindo o controle)
+# Aqui sera formada a lista com os nomes dos arquivos a serem abertos pelo GrADS
 for memb in 01N 01P 02N 02P 03N 03P 04N 04P 05N 05P 06N 06P 07N 07P NMC
 do
   yyyyic=`echo $icdate | cut -c 1-4`
@@ -127,18 +134,25 @@ do
   ls ${DATAINDIR2}/${yyyyic}${mmic}${ddic}${hhic}/GBRM${memb}${yyyyic}${mmic}${ddic}${hhic}${targetdate}.ctl >> ../datain/epsfilesin.${fctlag}.tmp
 done
 
+# Apara o arquivo ../datain/epsfilesin.${fctlag}.txt (vai criar um novo)
 rm -f ../datain/epsfilesin.${fctlag}.txt
 
+# Acrescenta o comando open na frente dos nomes dos arquivos na lista criada
 awk '{print "open " $1}' ../datain/epsfilesin.${fctlag}.tmp > ../datain/epsfilesin.${fctlag}.txt
 
+# Define a variavel vargrads (vargrads = temp850 ou vargrads = psnm)
 if [ ${VARCRPS} = "temp" ]; then
    vargrads=${VARCRPS:0:1}${VARLEV}
 else
    vargrads=${VARCRPS}
 fi
 
+# Executa o GrADS lendo os arquivos da lida gerada e escreve os arquivos 
+# ../datain/CPTECEPS.'fctlag'ForecastFor'datei'.15Members.grads'
+# Estes arquivos contem os campos de interesse de todos os membros interpolados na grade da climatologia (verificar)
 grads -blc "run fwr.ExtractVariablefromEPS.BRM.IEEEOutput.Regrid2_1.5x1.5_variable.gs ${targetdate} ${fctlag} ${vargrads}"
 
+# Cria o descritor para o arquivo gerado (atencao ao nome da variavel e nivel)
 cat <<EOFCTL2 > ../datain/CPTECEPS.${fctlag}ForecastFor${targetdate}.15Members.ctl
 DSET ^CPTECEPS.${fctlag}ForecastFor${targetdate}.15Members.grads
 UNDEF -9.99e+08
@@ -163,14 +177,15 @@ M07N 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
 M07P 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
 MAVN 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
 ENDVARS
-
 EOFCTL2
 
 REFFCT="EQPROBBIN"
 REFFCT="CLIMRECOR"
 
+# Define o dominio de interesse
 DOMAIN="HN"
 
+# Com base no dominio de interesse, define os limites da regiao
 if [ "${DOMAIN}" == "HN" ]
 then
   LA1=74
@@ -194,8 +209,8 @@ else
   exit 1
 fi
 
+# Apaga o namelist do CRPS (vai criar um novo)
 rm -f ../datain/CRPS.nml
-dirclm="/stornext/online1/ensemble_g/ERAinterim1.5/psml/",
 
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 #
@@ -207,7 +222,6 @@ cat <<EOFNML2 > ../datain/CRPS.nml
 &PARAM
 ANLDATE="${targetdate}",
 Month="${MMM}",
-!dirclm="/Users/christopher/EPS/CRPS/datain/MonthlyClimatology/ ",
 dirclm="${dirclm} ",
 FCTLAG="${fctlag}",
 ObsType="${OBSTYPE}",
@@ -220,12 +234,13 @@ LON2=${LO2},
 &FILES
 ObsFile="../datain/CPTEC.${VARCRPS}.${targetdate}.grads ",
 EPSFctFiles="../datain/CPTECEPS.${fctlag}ForecastFor${targetdate}.15Members.grads ",
-ClimateRecordFile="/stornext/online1/ensemble_g/ERAinterim1.5/psml/ERA40.DailyTimeSeries.1979-2001.${mmtgt}${ddtgt}${hhtgt}.grads ",
+ClimateRecordFile="${dirclm}/ERA40.DailyTimeSeries.1979-2001.${mmtgt}${ddtgt}${hhtgt}.grads ",
 /
 EOFNML2
 fi
 #-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+# Executa o CRPS
 cd ../exec; ./CRPS.exe < ../datain/CRPS.nml
 
 ;;

@@ -1,96 +1,132 @@
 #! /bin/ksh
 
 #set -o xtrace
-#
-# Este script cria os arquivos descritores dos dados "recortados" para os camos abaixo 
+
+# Objetivo:
+# Este script cria os arquivos descritores dos dados "recortados" para os campos abaixo 
 # do EPS T126L28 MB09 (201503):
 # - z500;
 # - t850;
 # - psnm.
+#
 # Este "recorte" e feito porque o script utilizado para calcular o CRPS
 # precisa ler uma lista com os arquivos dos membros do EPS a serem abertos.
 #
 # Uso (exemplo):
 # $ ./cria_ctl_dados_recortados.ksh 2015030100 2015033000
 #
+# Dependencias:
+# - inctime ou caldate
+# - o script recorta_dados.ksh precisa ser executado antes
+#
 # Historico:
 # 17/08/2015 - First crack (cfbastarz)
-
+# 07/10/2015 - Removidas variaveis psnm e z500
+# 12/11/2015 - Corrigidos alguns bugs e substituido o comando \
+#              find pelo ls (cfbastarz)
+# 05/04/2016 - Comentarios e limpeza (cfbastarz)
 
 inctime=${HOME}/bin/inctime
 
 if [ $# -ne "2" ]
 then
-  print "Use: ./cria_ctl_dados_recortados.ksh YYYYMMDDHH YYYYMMDDHH"
+  echo "Use: ./cria_ctl_dados_recortados.ksh YYYYMMDDHH YYYYMMDDHH"
   exit 1
 fi
 
+# Datas de inicio e fim
 datai=${1}
-datao=${2}
+dataf=${2}
 
+# Define a variavel
+var=t850
 
-#hora=`echo ${datai} | cut -c 9-10`
-#echo ${hora}
-#
-#if [ ${hora} -ne "00" ] #-o ${hora} -ne "12" ]
-#then
-#  print "Hora deve ser 00 ou 12"
-#  exit 2
-#fi
+# Diretorios de leitura das saidas do modelo (conjunto) e escrita dos dados recortados
+# Atencao para as variaveis e experimentos
+dataout=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados_oens_MB09_mcga-v4.0-novo_namelist-${var}
 
 data=${datai}
 
-while [ ${data} -le ${datao} ]
+# Loop sobre as datas
+while [ ${data} -le ${dataf} ]
 do
 
-  print ${data}
+  echo "${data}"
 
-for arquivo in `find /scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados/${data} -name "*.grads"`
-do
+  cont=0
 
-  diretorio=`dirname ${arquivo}`
-  nome=`echo ${arquivo} | awk -F "/" '{print $12}'`
+  # Lista todos os arquivos .bin (binarios, com os recortes de interesse)
+  for arquivo in `ls ${dataout}/${data}/*.grads.bin`
+  do
 
-  nomectl=`echo ${nome} | awk -F "." '{print $1}'`
+    echo "${arquivo}"
 
-  dataanl=`echo ${nome} | cut -c 8-17`
-  datafct=`echo ${nome} | cut -c 18-27`
+    diretorio=`dirname ${arquivo}`
+    nome=`echo ${arquivo} | awk -F "/" '{print $12}'`
 
-  anoanl=`echo ${dataanl} | cut -c 1-4`
-  mesanl=`echo ${dataanl} | cut -c 5-6`
-  diaanl=`echo ${dataanl} | cut -c 7-8`
-  hsnanl=`echo ${dataanl} | cut -c 9-10`
+    # Define o nome do arquivo descritor
+    nomectl=`echo ${nome} | awk -F "." '{print $1}'`
 
-  anofct=`echo ${datafct} | cut -c 1-4`
-  mesfct=`echo ${datafct} | cut -c 5-6`
-  diafct=`echo ${datafct} | cut -c 7-8`
-  hsnfct=`echo ${datafct} | cut -c 9-10`
+    # Se o arquivo descritor ja nao existir, cria
+    if [ ! -e "${diretorio}/${nomectl}.ctl" ]
+    then
 
-  # Calculo do numero de horas entre dataanl e datafct:
-  # (diafct - diaanl) * 24 + (hsnfct - hsnanl)
-  difdia=$(expr ${diafct} - ${diaanl})
-  diadiahoras=$(expr ${difdia} \* 24)
+      dataanl=`echo ${nome} | cut -c 8-17`
+      datafct=`echo ${nome} | cut -c 18-27`
 
-  difhora=$(expr ${hsnfct} - ${hsnanl})
+      anoanl=`echo ${dataanl} | cut -c 1-4`
+      mesanl=`echo ${dataanl} | cut -c 5-6`
+      diaanl=`echo ${dataanl} | cut -c 7-8`
+      hsnanl=`echo ${dataanl} | cut -c 9-10`
 
-  horasfctanl=$(expr ${diadiahoras} + ${difhora})
+      anofct=`echo ${datafct} | cut -c 1-4`
+      mesfct=`echo ${datafct} | cut -c 5-6`
+      diafct=`echo ${datafct} | cut -c 7-8`
+      hsnfct=`echo ${datafct} | cut -c 9-10`
 
-  if [ ${mesanl} -eq "01" ]; then mesfmt="JAN"; fi
-  if [ ${mesanl} -eq "02" ]; then mesfmt="FEB"; fi
-  if [ ${mesanl} -eq "03" ]; then mesfmt="MAR"; fi
-  if [ ${mesanl} -eq "04" ]; then mesfmt="APR"; fi
-  if [ ${mesanl} -eq "05" ]; then mesfmt="MAY"; fi
-  if [ ${mesanl} -eq "06" ]; then mesfmt="JUN"; fi
-  if [ ${mesanl} -eq "07" ]; then mesfmt="JUL"; fi
-  if [ ${mesanl} -eq "08" ]; then mesfmt="AGO"; fi
-  if [ ${mesanl} -eq "09" ]; then mesfmt="SEP"; fi
-  if [ ${mesanl} -eq "10" ]; then mesfmt="OCT"; fi
-  if [ ${mesanl} -eq "11" ]; then mesfmt="NOV"; fi
-  if [ ${mesanl} -eq "12" ]; then mesfmt="DEC"; fi
+      # Calculo do numero de horas entre dataanl e datafct:
+      # (diafct - diaanl) * 24 + (hsnfct - hsnanl)
+      difdia=$(expr ${diafct} - ${diaanl})
+      diadiahoras=$(expr ${difdia} \* 24)
 
-  datafmt=${hsnanl}Z${diaanl}${mesfmt}${anoanl}
+      difhora=$(expr ${hsnfct} - ${hsnanl})
 
-cat << EOF > ${diretorio}/${nomectl}.ctl
+      horasfctanl=$(expr ${diadiahoras} + ${difhora})
+
+      # Com base no mes, define o nome
+      if [ ${mesanl} -eq "01" ]; then mesfmt="JAN"; fi
+      if [ ${mesanl} -eq "02" ]; then mesfmt="FEB"; fi
+      if [ ${mesanl} -eq "03" ]; then mesfmt="MAR"; fi
+      if [ ${mesanl} -eq "04" ]; then mesfmt="APR"; fi
+      if [ ${mesanl} -eq "05" ]; then mesfmt="MAY"; fi
+      if [ ${mesanl} -eq "06" ]; then mesfmt="JUN"; fi
+      if [ ${mesanl} -eq "07" ]; then mesfmt="JUL"; fi
+      if [ ${mesanl} -eq "08" ]; then mesfmt="AUG"; fi
+      if [ ${mesanl} -eq "09" ]; then mesfmt="SEP"; fi
+      if [ ${mesanl} -eq "10" ]; then mesfmt="OCT"; fi
+      if [ ${mesanl} -eq "11" ]; then mesfmt="NOV"; fi
+      if [ ${mesanl} -eq "12" ]; then mesfmt="DEC"; fi
+    
+      # Monta a data formatada (eg., 00Z10JAN2013)
+      datafmt=${hsnanl}Z${diaanl}${mesfmt}${anoanl}
+    
+      # Ajusta o valor da quantidade de horas de previsao
+      if [ ${horasfctanl} -lt 0 ]; then horasfctanl=`echo ${horasfctanl} | awk -F "-" '{print $2}'`; fi
+
+      if [ ${horasfctanl} -eq 0 ]; then horasfctanl=6; fi
+    
+      echo "${datafct} - ${dataanl} = ${horasfctanl}"
+
+      # De acordo com a variavel, define a descricao e numero de niveis (sempre 1)
+      if [ ${var} == "t850" ]
+      then  
+        descvar="t850 1 99 Temperatura do Ar em 850hPa"
+      else
+        descvar="psnm 1 99 Pressao ao Nivel Medio do Mar"
+      fi
+
+# Monta o arquivo descritor (modificar conforme necessario)
+cat << EOF > ${diretorio}/${nomectl}.ctl 
 DSET ^${nome}
 TITLE Previsoes de ${dataanl} para ${datafct} com remocao de vies
 OPTIONS sequential
@@ -123,16 +159,24 @@ YDEF 192 levels
   82.75173  83.68657  84.62133  85.55596  86.49037  87.42430  88.35700  89.28423
 ZDEF 1 LINEAR 1000 1
 TDEF 1 LINEAR ${datafmt} ${horasfctanl}hr
-VARS 3
-psnm 1 99 Pressao ao nivel medio do mar
-z500 1 99 Pressao ao nivel medio do mar
-t850 1 99 Pressao ao nivel medio do mar
+VARS 1
+${descvar}
 ENDVARS
 EOF
 
-done
+    # Atualiza o contador
+    cont=$((${cont}+1))
 
-  data=`${inctime} ${data} +12h %y4%m2%d2%h2`
+    fi
+
+  done
+
+  echo "Total: ${cont}"
+
+  # Atualiza a data
+  data=`${inctime} ${data} +12h %y4%m2%d2%h2` 
+
+  echo ""
 
 done
 

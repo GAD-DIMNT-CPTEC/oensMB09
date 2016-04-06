@@ -1,15 +1,14 @@
 Utilizacao do script CRPS.2.0.bash para o calculo do CRPS:
 
-$ ./CRPS.2.0.bash 2008122000 24h
+$ ./CRPS.2.1.bash 2008122000 24h
 
 Observacoes:
-- Ler o cabecalho do script principal CRPS.2.0.bash
+- Antes de executar o programa do CRPS, verificar a necessidade de se "recortar" os dados (existe a dependencia do Lats4D do GrADS - deve estar instalado e funcionando na maquina);
+- Caso seja necessario preparar os dados antes, verificar as informacoes na pasta recorta_dados;
+- Ler o cabecalho do script principal CRPS.2.0.bash;
+- E necessario antes exportar a variavel GASCRP:
+$ export GASCRP=${PWD}/grads_libs
 - A principio, e necessario alterar a data da analise, o lag e a variavel de interesse. O exemplo acima avalia apenas a temperatura do ar em 850hPa para 2008122000 utilizando as previsoes de 24h;
-- O script call_CRPS.1.0.5_modificado.bash faz o trabalho de "atualizar os lags", mas este script pode ser refeito de forma mais simples.
+- O script ciclo_CRPS.ksh faz o loop entre duas datas e os lags indicados.
 
-Todo:
-- Coletar as analises dos membros nao perturbados para calcular o CRPS para um periodo completo;
-- Plotar a curva do CRPS (preciso de um periodo de pelo menos alguns dias);
-- Documentar a funcao de cada um dos scripts do GrADS envolvidos no processo;
-
-Ultima atualizacao: carlos.frederico@cptec.inpe.br (06/10/2015)
+Ultima atualizacao: carlos.frederico@cptec.inpe.br (05/04/2016)
