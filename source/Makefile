@@ -1,7 +1,7 @@
 F90 = ftn
 CMD = ../exec/CRPS.exe
-OBJM = SubDomain.f90 WGT2D.f SORTMM.f crps.f90 ClimateInterp.f90 prob.f90 Main.f90
-OBJS = SubDomain.o WGT2D.o SORTMM.o crps.o ClimateInterp.o prob.o Main.o
+OBJM = SubDomain.f90 WGT2D.f SORTMM.f crps.f90 ClimateInterp.f90 prob.f90 TALAGR.f DIST.f Main.f90
+OBJS = SubDomain.o WGT2D.o SORTMM.o crps.o ClimateInterp.o prob.o TALAGR.o DIST.o Main.o
 
 all:	$(CMD)
 

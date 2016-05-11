@@ -1,4 +1,5 @@
-      subroutine talagr(n,m,en,ve,ital,irel,ave,xmed,sprd,rmsa)
+      subroutine talagr(n,m,en,ve,ital,irel,ave,xmed,sprd,
+     *rmsa,anldate,fctlag)
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C                                                                            C
 C     USAGE: TO CALCULATE TALAGRAND HISTOGRAM FOR ENSEMBLE FORECASTS         C
@@ -23,12 +24,21 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c--------+----------+----------+----------+----------+----------+----------+--
       dimension en(n),em(m),enb(m,2),ena(m,3)
       dimension ital(m+1),irel(m)
+      character anldate*10,fctlag*4
+
+      integer jj, sumital !CFB: jj e um contador; 
+!                               sumital e o valor da soma de todos os "1s" para cada coluna de ital
+      real rank
+
       irel = 0
       ital = 0
       ave  = 0.0      
       xmed = 0.0             
       sprd = 0.0        
       rmsa = 0.0        
+!CFB
+      sumital = 0
+!CFB
       do i = 1, m
        if (en(i).eq.-9999.99) goto 999
        em(i) = en(i)
@@ -39,22 +49,25 @@ c--------+----------+----------+----------+----------+----------+----------+--
        enb(i,2)=em(i)
        ena(i,1)=i
        ena(i,2)=em(i)
-       ital(i)=0
+       ital(i)=0 !CFB: o array ital inteiro e inicializado com zeros
 c ----
 c calculate the average
 c ----
        ave=ave+em(i)/float(m)
       enddo
+
 c ----
 c to calculate the spread
 c ----
       do i=1,m
        sprd=sprd+(em(i)-ave)*(em(i)-ave)
       enddo
+
 c ----
 c to calculate the root mean square error for analysis and ensemble ave
 c ----
       rmsa=(ve-ave)*(ve-ave)
+
 c ----
 c to order data
 c ----
@@ -82,13 +95,23 @@ c ----
 c ----
 c to calculate the talagrand histogram
 c ----
+! CFB
+! Calcular o histograma = quantificar quantas vezes a referencia esta dentro
+! de cada bin;
+! No final, a matrix ital contera 16 colunas (bins) (para o caso do SCON global do CPTEC
+! com 15 membros);
+! Para cada bin, havera 11520 valores que podem ser somados e a partir
+! dos quais, a frequencia relativa podera ser calculada;
+! O que pode ser plotado no Talagrand histogram,
+! sao as frequencias relativas em cada bin.
+! CFB
       do i=1,m
-       if(ve.le.ena(i,2)) then
+       if(ve.le.ena(i,2)) then 
         ital(i)=1
         goto 200
        endif
       enddo
-      ital(m+1)=1
+      ital(m+1)=1 
  200  continue
 c ----
 c to calculate the median
@@ -99,8 +122,16 @@ c ----
       else
        xmed=(ena(im,2)+ena(im+1,2))/2.
       endif
+
+!CFB
+      open(118,
+     &file='../rankhist/RANKHIST4CPTECEPS.'//TRIM(FCTLAG)//'ForecastFor'
+     &//ANLDATE//'.txt',
+     &FORM='FORMATTED',STATUS='UNKNOWN')
+      write(118,'(16I3)') ital
+!CFB
+
  999  continue
 
       return
       end
-

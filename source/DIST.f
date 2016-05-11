@@ -31,13 +31,20 @@ c
 c   Fortran 77 on IBMSP 
 c
 C--------+---------+---------+---------+---------+----------+---------+--
-      subroutine dist(fcst,fanl,clim,wght,len,ib,im)
+!CFB
+!      subroutine dist(fcst,fanl,clim,wght,len,ib,im)
+      subroutine dist(fcst,fanl,clim,wght,len,ib,im,ANLDATE,FCTLAG)
+!CFB
       parameter (mxlen=10512)             
       dimension fcst(mxlen,im),fanl(mxlen),clim(mxlen,ib+1)
       dimension wght(mxlen)
       dimension fst(im)
       dimension fit(im+1),it(im+1)
       dimension fir(im),ir(im)
+
+!CFB
+      character anldate*10,fctlag*4
+!CFB
 
       common /vscore/ infow(500),probs(500),dists(500)
 
@@ -70,7 +77,10 @@ c ----
         endif
        enddo
        anl      = fanl(nxy)
-       call talagr(im,im,fst,anl,it,ir,ave,xmed,sprd,rmsa)
+!CFB
+!       call talagr(im,im,fst,anl,it,ir,ave,xmed,sprd,rmsa)
+      call talagr(im,im,fst,anl,it,ir,ave,xmed,sprd,rmsa,anldate,fctlag)
+!CFB
        do ii = 1, imp1
         fit(ii) = fit(ii) + it(ii)*wfac  
        enddo
