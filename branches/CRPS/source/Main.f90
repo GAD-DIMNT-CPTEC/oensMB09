@@ -207,7 +207,12 @@ Program Main
       STOP "BAD OPTION FOR REFERENCE FORECAST (RefFct)"
    ENDIF
 
-   CALL PROB(SDEPSForecasts,SDAnalise,SDClim,wght,Lenght,IB,NMembers,SCRF,ANLDATE,FCTLAG)
+!CFB - Nesta versao do codigo, apenas uma ou outra chamada devera ser utilizada:
+!CRPS
+!   CALL PROB(SDEPSForecasts,SDAnalise,SDClim,wght,Lenght,IB,NMembers,SCRF,ANLDATE,FCTLAG)
+!RANK HISTOGRAM
+   CALL DIST(SDEPSForecasts,SDAnalise,SDClim,wght,Lenght,IB,NMembers,ANLDATE,FCTLAG)
+!CFB
 
 End Program Main
 
