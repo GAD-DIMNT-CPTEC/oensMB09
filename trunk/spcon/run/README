@@ -1,0 +1,50 @@
+Procedimentos iniciais para a realização da suíte SPCON com os novos scripts:
+
+1) Realização do pré-processamento da primeira análise controle:
+$ ./runPre 126 28 2012123118 NMC 1 T F 574 64
+
+2) Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle):
+$ ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 CTR 2
+
+3) Recomposição dos coeficientes espectrais da análise para ponto de grade:
+$ ./run_recanl.ksh TQ0126L028 SMT ANLSMT 2012123118
+
+4) Gera e soma as perturbações randômicas à análise controle:
+$ ./run_rdpert.ksh TQ0126L028 SMT YES 2012123118 7
+
+5) Decomposição das análises perturbadas em ponto de grade para coeficientes espectrais:
+$ ./run_decanl.ksh TQ0126L028 SMT YES 2012123118 7
+
+6) Realização das previsões a partir das análises perturbadas para uso na análise de EOF:
+$ ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 R
+
+7) Recomposição para ponto de grade das previsões realizadas a partir da análise controle:
+$ ./run_recfct.ksh TQ0126L028 CTR 2012123118
+
+8) Recomposição para ponto de grade das previsões realizadas a partir das análises perturbadas randomicamente:
+$ ./run_recfct.ksh TQ0126L028 7 2012123118
+
+9) Realização da análise de EOF para gerar as perturbações ótimas a serem utilizadas na composição final dos membros do conjunto:
+$ ./run_eof.ksh TQ0126L028 7 YES 2012123118
+
+10) Composição do arquivo de análise a partir das perturbações EOF:
+# module swap tupa2 aux
+$ ./run_deceof.bash TQ0126L028 EOF YES 2012123118 7
+
+11) Realização das previsões a partir do conjunto de análises com perturbações ótimas (análises prefixo N - 15 dias 6/6h):
+# module swap aux tupa2
+$ ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 N
+
+12) Realização das previsões a partir do conjunto de análises com perturbações ótimas (análises prefixo P - 15 dias 6/6h):
+$ ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 P
+
+13) Realização do pós-processamento do conjunto de previsões realizado a partir do conjunto de análises com perturbações ótimas (análises prefixo N):
+$ ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 2 7 N
+
+13) Realização do pós-processamento do conjunto de previsões realizado a partir do conjunto de análises com perturbações ótimas (análises prefixo P):
+$ ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 2 7 P
+
+TODO:
+- script para fazer a realização cíclica do ensemble.
+
+Última atualização: carlos.frederico@cptec.inpe.br (28/07/2017)
