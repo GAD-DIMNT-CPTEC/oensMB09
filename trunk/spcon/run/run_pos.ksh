@@ -258,4 +258,12 @@ qsub ${SCRIPTFILEPATH}
 until [ -e ${MONITORFILE} ]; do sleep 1s; done
 rm ${MONITORFILE}
 
+for arqctl in $(find ${DATAOUT}/../ -name "*.ctl")
+do
+
+/opt/grads/2.0.a9/bin/gribmap -i ${arqctl} >&- 2>&-  &
+
+done
+
+
 exit 0
