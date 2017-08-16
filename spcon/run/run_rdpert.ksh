@@ -1,33 +1,61 @@
 #! /bin/ksh
-
-set -o xtrace
-
-#./run_rdpert.ksh TQ0126L028 NMC YES 2012111200 7
-
-#help#
-#*******************************************************************#
-#                                                                   #
-#                                                                   #
-#*******************************************************************#
-#help#
-
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
 #
-#  Help
+# !DESCRIPTION:
+# Script para a gerar um conjunto inicial de n análises randomicamente
+# perturbadas a partir da análise controle do Sistema de Previsão por 
+# Conjunto Global (SPCON) do CPTEC.
 #
+# !INTERFACE:
+#      ./run_rdpert.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
+#                                
+#            <opcao2> prefixo   -> prefixo que identifica o tipo de
+#                                  análise
+#
+#            <opcao3> data      -> data da análise corrente 
+#
+#            <opcao4> moist_opt -> opção lógica (YES/NO) para
+#                                  perturbar ou não a umidade
+#
+#            <opcao5> membro    -> tamanho do conjunto 
+#            
+#  Uso/Exemplos: ./run_rdpert.ksh TQ0126L028 NMC YES 2012111200 7
+#                (perturba randomicamente um conjunto inicial de 7
+#                membros a partir de uma análise controle na resolução
+#                TQ0126L028; inclui a perturbação da umidade)
+# 
+# !REVISION HISTORY:
+#
+# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
+# Descomentar para debugar
+#set -o xtrace
+
+# Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]
 then
-  cat < $0 | sed -n '/^#help#/,/^#help#/p'
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-#
-#  Set directories
-#
-
+# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
-
 export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 . ${FILEENV} ${1} ${2}
@@ -40,6 +68,7 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+# Verificação dos argumentos de entrada
 if [ -z "${2}" ]
 then
   echo "PERT: NMC, AVN CTR 01N" 
@@ -68,10 +97,7 @@ else
   NPERT=${5}
 fi
 
-#
-#  Set machine, Run time and Extention
-#
-
+# Variáveis utilizadas no script de submissão
 HSTMAQ=$(hostname)
 
 RUNTM=$(date +'%Y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
@@ -88,6 +114,7 @@ cd ${HOME_suite}/run
 
 mkdir -p ${DK_suite}/rdpert/output
 
+# Script de submissão
 SCRIPTSFILE=setrdpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 MONITORID=${RANDOM}
@@ -303,10 +330,7 @@ cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 touch ${DK_suite}/rdpert/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
-#
-#   Change mode to be executable
-#
-
+# Submete o script e aguarda o fim da execução
 chmod +x ${SCRIPTSFILE} 
 
 qsub ${SCRIPTSFILE}

@@ -1,25 +1,56 @@
 # !/bin/ksh
-
-#./run_eof.ksh TQ0126L028 7 YES 2012123118
-
-set -o xtrace
-
-#help#
-#********************************************************************#
-#                                                                    #
-#                                                                    #
-#********************************************************************#
-#help#
-
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
 #
-#  Help
+# !DESCRIPTION:
+# Script para calcular as EOFs a partir da série de diferenças entre
+# as previsões controle e as previsões geradas a partir do conjunto de
+# análises perturbadas randomicamente para o Sistema de 
+# Previsão por Conjunto Global (SPCON) do CPTEC.
 #
+# !INTERFACE:
+#      ./run_eof.ksh <opcao1> <opcao2> <opcao3> <opcao4>
+#
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
+#                                
+#            <opcao2> membro    -> tamanho do conjunto 
+#
+#            <opcao3> moist_opt -> opção lógica (YES/NO) para
+#                                  perturbar ou não a umidade
+#            <opcao4> data      -> data da análise corrente 
+#            
+#  Uso/Exemplos: ./run_eof.ksh TQ0126L028 7 YES 2012123118
+#                (calcular as perturbações por EOF a partir de um
+#                conjunto de 7 análises peturbadas randomicamente 
+#                válidas às 2012123118 na resolução TQ0126L028)
+# 
+# !REVISION HISTORY:
+#
+# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
+# Descomentar para debugar
+#set -o xtrace
+
+# Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]
 then
-  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
+
+# Verificação dos argumentos de entrada
 if [ -z "${1}" ]
 then
   echo "TRCLV is not set"
@@ -49,6 +80,7 @@ else
   LABELI=${4}
 fi
 
+# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
@@ -63,24 +95,18 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
-#export NMEM=${PREFIC:0:2}
-#export PT=${PREFIC:2:1}
-#export NMEMPERT=${NPERT}
-
-#export NMEM PT
 LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%Y%m%d%H")
 export LABELI LABELF NFDAYS
-#NIVELP=K15
-
-#find ${DK_suite}/model/dataout/${TRCLV}/${LABELI} -name "GFCT${NMEM}${PT}${LABELI}*" -print -exec rm -f {} \;
 
 cd ${HOME_suite}/run
 
+# Variáveis utilizadas no script de submissão
 export PBS_SERVER=aux20-eth4
 mkdir -p ${DK_suite}/model/exec/setout
 
 export MAQUI=$(hostname -s)
 
+# Script de submissão
 SCRIPTSFILE=set${NMEM}perpntg.${TRCLV}.${LABELI}.${MAQUI}
 
 MONITORID=${RANDOM}
@@ -590,6 +616,7 @@ done
 touch ${DK_suite}/eof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
+# Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 qsub ${HOME_suite}/run/${SCRIPTSFILE}

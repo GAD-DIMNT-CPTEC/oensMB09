@@ -1,35 +1,59 @@
 # !/bin/ksh
-
-#./run_recfct.ksh TQ0126L028 CTR 2012123118
-#./run_recfct.ksh TQ0126L028 7 2012123118
-
-set -o xtrace
-
-#help#
-#*******************************************************************#
-#                                                                   #
-#                                                                   #
-#*******************************************************************#
-#help#
-
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
 #
-#  Help
+# !DESCRIPTION:
+# Script para a recomposição dos coeficientes espectrais para ponto de
+# grade das previsões do Sistema de Previsão por Conjunto Global 
+# (SPCON) do CPTEC.
 #
+# !INTERFACE:
+#      ./run_recfct.ksh <opcao1> <opcao2> <opcao3> 
+#
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
+#                                
+#            <opcao2> membro    -> membro controle ou tamanho do
+#                                  conjunto
+#
+#            <opcao3> data      -> data da análise corrente (a partir
+#                                  da qual as previsões foram feitas)
+#            
+#  Uso/Exemplos: ./run_recfct.ksh TQ0126L028 CTR 2012123118
+#                (recompõe os coeficientes espectrais das previsões
+#                feitas a partir da análise controle das 2012123118
+#                na resolução TQ0126L028)
+#                ./run_recfct.ksh TQ0126L028 7 2012123118
+#                (recompõe os coeficientes espectrais do conjunto de 7
+#                membros das previsões feitas a partir da análise
+#                das 2012123118 na resolução TQ0126L028)
+# 
+# !REVISION HISTORY:
+#
+# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
+# Descomentar para debugar
+#set -o xtrace
+
+# Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]
 then
-  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-#
-#  Set directories
-#
-#  HOME_suite - HOME DA SUITE
-#  DK_suite - /scratchin
-#  DK_suite - /scratchout
-#
-
+# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
@@ -38,6 +62,7 @@ export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 cd ${HOME_suite}/run
 
+# Verificação dos argumentos de entrada
 if [ -z "${1}" ]
 then
   echo "First argument is not set: TRCLV"
@@ -71,6 +96,8 @@ fi
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 
+# Informações da grade 
+# Obs: está fixo para o TQ0126L028
 export MR=126
 export IR=384
 export JR=192
@@ -83,19 +110,14 @@ export LR=11
 export KR=42
 export LR=11
 
-#
-#  Set machine, Run time and Extention
-#
-
+# Variáveis utilizadas no script de submissão
 HSTMAQ=$(hostname)
 RUNTM=$(date +'%y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
-export PBS_SERVER=aux20-eth4
 mkdir -p ${DK_suite}/recfct/output
 
-##################################################################################
-
+# Opções específicas para o conjunto de membros ou apenas o controle
 if [ ${PREFIC} != CTR ]
 then
   export PBSDIRECTIVE="#PBS -J 1-${NMEM}"
@@ -112,6 +134,7 @@ MONITORID=${RANDOM}
 export PBS_SERVER=aux20-eth4
 RUNTM=$(date +"%s")
 
+# Script de submissão
 SCRIPTSFILE=setrecfct${TYPES}.${TRCLV}.${LABELI}${LABELF}.${PBS_SERVER}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -245,10 +268,7 @@ done
 touch ${DK_suite}/recfct/bin/\${TRCLV}/monitor.${MONITORID}
 EOT0
 
-#
-#  Change mode to be executable
-#
-
+# Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 qsub ${SCRIPTSFILE}
