@@ -1,28 +1,77 @@
 #! /bin/ksh 
-
-set -o xtrace
-
-# Membro controle:
-#./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 CTR 2
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
 #
-# Demais membros:
-# - previsoes a partir das analises perturbadas randomicamente:
-#./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 R
-# - previsoes a partir das analises perturbadas por EOF (subtraidas):
-#./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 N
-# - previsoes a partir das analises perturbadas por EOF (somadas):
-#./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 P
-
+# !DESCRIPTION:
+# Script para submeter o modelo atmosférico para a integração das
+# análises do Sistema de Previsão por Conjunto Global (SPCON) do CPTEC.
 #
-# Help
+# !INTERFACE:
+#      ./run_model.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#                      <opcao6> <opcao7> <opcao8> <opcao9>
 #
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> num_proc  -> número de processadores
+#            
+#            <opcao2> num_nos   -> número de cores por nó
+#            
+#            <opcao3> num_omp   -> número de processos omp por
+#                                  processo mpi
+#
+#            <opcao4> resolucao -> resolução espectral do modelo
+#                                
+#            <opcao5> prefixo   -> prefixo que identifica o tipo de
+#                                  análise
+#
+#            <opcao6> data      -> data da análise corrente 
+#
+#            <opcao7> membro    -> membro controle ou tamanho 
+#                                  do conjunto
+#            
+#            <opcao8> init      -> tipo de inicialização 
+#
+#            <opcao9> perturb   -> tipo de perturbação (dependendo
+#                                  do valor da opção 8, não é necessário
+#                                  indicar a opção 9)
+#            
+#  Uso/Exemplos: 
+# 
+#  Membro controle:
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 CTR 2
+# 2012123118 na resolução TQ0126L028)
+# 
+#  Demais membros:
+#  - previsoes a partir das analises perturbadas randomicamente:
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 R
+#  - previsoes a partir das analises perturbadas por EOF (subtraidas):
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 N
+#  - previsoes a partir das analises perturbadas por EOF (somadas):
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 P
+#
+# !REVISION HISTORY:
+#
+# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
-#help#
-#*********************************************************************************#
-#                                                                                 #
-#                                                                                 #
-#*********************************************************************************#
-#help#
+# Descomentar para debugar
+#set -o xtrace
+
+# Menu de opções/ajuda
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
+  exit 0
+fi
 
 cria_namelist() {
 
@@ -52,11 +101,7 @@ echo "Namelist criado em: ${23}/MODELIN"
 
 }
 
-if [ "${1}" = "help" -o -z "${1}" ]
-then
-  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
-  exit 1
-fi
+# Verificação dos argumentos de entrada
 if [ -z "${1}" ]
 then
   echo "MPPWIDTH is not set" 
@@ -120,6 +165,7 @@ else
   export ANLPERT=${9}  
 fi
 
+# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
@@ -168,6 +214,7 @@ export GAUSSGIVEN=".TRUE."
 
 export PATHIN=${DK_suite}/model/datain
 
+# Variáveis utilizadas no script de submissão
 if [ ${ANLTYPE} == CTR ]
 then
 
@@ -234,6 +281,7 @@ else
   export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLTYPE}"
 fi
 
+# Script de submissão
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
 ${PBSOUTFILE}
@@ -273,6 +321,7 @@ date
 touch ${MONITORFILE}
 EOF0
 
+# Submete o script e aguarda o fim da execução
 chmod +x ${SCRIPTFILEPATH}
 
 qsub ${SCRIPTFILEPATH}

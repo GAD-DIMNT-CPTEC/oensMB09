@@ -12,16 +12,16 @@
 #      ./run_cycle.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5> 
 #
 # !INPUT PARAMETERS:
-#  Opcoes..: <opcao1> YYYYMMDDHH -> data da primeira análise
+#  Opcoes..: <opcao1> datai     -> data da primeira análise
 #                                
-#            <opcao2> YYYYMMDDHH -> data da última análise
+#            <opcao2> dataf     -> data da última análise
 #
-#            <opcao3> moist_opt  -> opção lógica (YES/NO) para
-#                                   perturbar ou não a umidade
+#            <opcao3> moist_opt -> opção lógica (YES/NO) para
+#                                  perturbar ou não a umidade
 #            
-#            <opcao4> fcth       -> intervalo entre as análises
+#            <opcao4> fcth      -> intervalo entre as análises
 #
-#            <opcao5> num_pert   -> número de perturbações
+#            <opcao5> num_pert  -> número de perturbações
 #
 #  Uso/Exemplos: ./run_cycle.ksh 
 #                (realiza o testcase padrão)
@@ -80,8 +80,8 @@ model_res=TQ0126L028
 if [ ${#} -eq 0 ]
 then
 
-  datai=2013010200
-  dataf=2013010212
+  datai=2013010100
+  dataf=2013010112
   
   moist_opt=YES
 
@@ -108,14 +108,14 @@ else
 
   if [ -z ${1} ]
   then
-    datai=2013010200
+    datai=2013010100
   else
     datai=${1}
   fi
 
   if [ -z ${2} ]
   then
-   dataf=2013010212
+   dataf=2013010112
   else
    dataf=${2}
   fi

@@ -1,33 +1,61 @@
 #! /bin/ksh
-
-set -o xtrace
-
-# ./run_deceof.bash TQ0126L028 EOF YES 2012123118 7
-
-#help#
-#*******************************************************************#
-#                                                                   #
-#*******************************************************************#
-#help#
-
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
 #
-#  Help:
+# !DESCRIPTION:
+# Script para a decomposição em coeficientes espectrais das análises
+# perturbadas por EOF em ponto de grade para o Sistema de Previsão por 
+# Conjunto Global (SPCON) do CPTEC.
 #
+# !INTERFACE:
+#      ./run_deceof.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
+#                                
+#            <opcao2> prefixo   -> prefixo que identifica o tipo de
+#                                  análise
+#
+#            <opcao3> moist_opt -> opção lógica (YES/NO) para
+#                                  perturbar ou não a umidade
+#
+#            <opcao4> data      -> data da análise corrente (a partir
+#                                  da qual as previsões foram feitas)
+#
+#            <opcao5> membro    -> tamanho do conjunto
+#
+#  Uso/Exemplos: ./run_deceof.bash TQ0126L028 EOF YES 2012123118 7
+#                (decompõe o conjunto de 7+7 análises perturbadas por EOF
+#                válidas para 2012123118 na resolução TQ0126L028; serão
+#                criadas 7 análises com o sufixo N e 7 análises com o
+#                sufixo P)
+#
+# !REVISION HISTORY:
+#
+# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
+# Descomentar para debugar
+#set -o xtrace
+
+# Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]
 then
-  cat < $0 | sed -n '/^#help#/,/^#help#/p'
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-#
-#  Set directories
-#
-#  HOME_suite - HOME DA SUITE
-#  DK_suite - /scratchin
-#  DK_suite - /scratchout
-#
-
+# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
@@ -42,6 +70,7 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+# Verificação dos argumentos de entrada
 if [ -z "${2}" ]
 then
   echo "PERT: NMC, AVN CTR 01N"
@@ -74,10 +103,10 @@ else
   NPERT=${5}
 fi
 
-#export NUM=${PREFIC:0:2}
-#export PT=${PREFIC:2:1}
 export NUMPERT=${NPERT}
 
+# Informações da grade 
+# Obs: está fixo para o TQ0126L028
 export MR=126  
 export IR=384  
 export JR=192 
@@ -96,13 +125,14 @@ MQHN=1; MQTR=1; MQHS=1; MQSAN=1; MQSAS=1
 MUHN=1; MUTR=1; MUHS=1; MUSAN=1; MUSAS=1
 MVHN=1; MVTR=1; MVHS=1; MVSAN=1; MVSAS=1
 
+# Variáveis utilizadas no script de submissão
 export PBS_SERVER=aux20-eth4
 
 cd ${HOME_suite}/run
 
 RUNTM=$(date +"%s")
 
-#SCRIPTSFILES=setdeco${PERR}${RESOL}${NIVEL}.${LABELI}
+# Script de submissão
 SCRIPTSFILES=setdec${2}.${RESOL}.${LABELI}.${MAQUI}
 
 MONITORID=${RANDOM}
@@ -424,10 +454,7 @@ cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 touch ${DK_suite}/deceof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
-#
-#   Change mode to be executable
-#
-
+# Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 qsub ${SCRIPTSFILES}

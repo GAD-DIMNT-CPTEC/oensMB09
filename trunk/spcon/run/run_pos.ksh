@@ -1,28 +1,71 @@
 #! /bin/ksh 
-
-set -o xtrace
-
-# Membro controle:
-#./run_pos.ksh 48 24 1 TQ0126L028 2012123118 CTR 2
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
 #
-# Demais membros:
-# - pos-processamento das previsoes geradas a partir das analises perturbadas randomicamente:
-#./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 R
-# - pos-processamento das previsoes geradas a partir das analises perturbadas por EOF (subtraidas):
-#./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 N
-# - pos-processamento das previsoes geradas a partir das analises perturbadas por EOF (somadas):
-#./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 P
-
+# !DESCRIPTION:
+# Script para submeter o pós-processamento das previsões do modelo 
+# atmosférico para a integração das análises do Sistema de Previsão 
+# por Conjunto Global (SPCON) do CPTEC.
 #
-# Help
+# !INTERFACE:
+#      ./run_pos.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#                    <opcao6> <opcao7>
 #
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> num_proc  -> número de processadores
+#            
+#            <opcao2> num_nos   -> número de cores por nó
+#            
+#            <opcao3> num_omp   -> número de processos omp por
+#                                  processo mpi
+#
+#            <opcao4> resolucao -> resolução espectral do modelo
+#                                
+#            <opcao5> data      -> data da análise corrente 
+#
+#            <opcao6> membro    -> membro controle ou tamanho 
+#                                  do conjunto
+#
+#            <opcao7> sufixo    -> sufixo que identifica o tipo de
+#                                  análise
+#            
+#  Uso/Exemplos: 
+# 
+#  Membro controle:
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 CTR 2
+# 
+#  Demais membros:
+#  - pos-processamento das previsoes geradas a partir das analises perturbadas randomicamente:
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 R
+#  - pos-processamento das previsoes geradas a partir das analises perturbadas por EOF (subtraidas):
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 N
+#  - pos-processamento das previsoes geradas a partir das analises perturbadas por EOF (somadas):
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 P
+#
+# !REVISION HISTORY:
+#
+# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
-#help#
-#*********************************************************************************#
-#                                                                                 #
-#                                                                                 #
-#*********************************************************************************#
-#help#
+# Descomentar para debugar
+#set -o xtrace
+
+# Menu de opções/ajuda
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
+  exit 0
+fi
 
 cria_namelist() {
 
@@ -44,11 +87,7 @@ echo "Namelist criado em: ${14}/POSTIN-GRIB"
 
 }
 
-if [ "${1}" = "help" -o -z "${1}" ]
-then
-  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
-  exit 1
-fi
+# Verificação dos argumentos de entrada
 if [ -z "${1}" ]
 then
   echo "MPPWIDTH is not set" 
@@ -110,6 +149,7 @@ else
   fi
 fi
 
+# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
@@ -148,6 +188,7 @@ export REQTB="p"
 export REGINT=".FALSE."
 export RESPOS="-0.50000"
 
+# Variáveis utilizadas no script de submissão
 if [ ${ANLTYPE} == CTR ]
 then
 
@@ -216,6 +257,7 @@ fi
 
 PBSServer='eslogin'
 
+# Script de submissão
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
 ${PBSOUTFILE}
@@ -251,6 +293,7 @@ date
 touch ${MONITORFILE}
 EOF0
 
+# Submete o script e aguarda o fim da execução
 chmod +x ${SCRIPTFILEPATH}
 
 qsub ${SCRIPTFILEPATH}
@@ -261,7 +304,7 @@ rm ${MONITORFILE}
 for arqctl in $(find ${DATAOUT}/../ -name "*.ctl")
 do
 
-/opt/grads/2.0.a9/bin/gribmap -i ${arqctl} >&- 2>&-  &
+/opt/grads/2.0.a9/bin/gribmap -i ${arqctl}
 
 done
 

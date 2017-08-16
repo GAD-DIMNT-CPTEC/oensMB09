@@ -1,37 +1,57 @@
 #! /bin/ksh
-
-set -o xtrace
-
-#./run_recanl.ksh TQ0126L028 NMC ANLNMC 2012111200
-
-#help#
-#*******************************************************************#
-#                                                                   #
-#                                                                   #
-#*******************************************************************#
-#help#
-
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
 #
-#  Help
+# !DESCRIPTION:
+# Script para a recomposição dos coeficientes espectrais para ponto de
+# grade das análises do Sistema de Previsão por Conjunto Global (SPCON) 
+# do CPTEC.
 #
+# !INTERFACE:
+#      ./run_recanl.ksh <opcao1> <opcao2> <opcao3> <opcao4>
+#
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
+#                                
+#            <opcao2> pref_anl  -> prefixo que identifica o tipo
+#                                   de análise
+#
+#            <opcao3> pref_nome -> prefixo do arquivo de análise
+# 
+#            <opcao4> data      -> data da análise corrente
+#           
+#  Uso/Exemplos: ./run_recanl.ksh TQ0126L028 SMT ANLSMT 2012123118
+#                (recompõe os coeficientes espectrais da análise
+#                das 2012123118 na resolução TQ0126L028)
+#
+# !REVISION HISTORY:
+#
+# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
+# Descomentar para debugar
+#set -o xtrace
+
+# Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]
 then
-  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-#
-#  Set directories
-#
-#  HOME_suite - HOME DA SUITE
-#  DK_suite - /scratchin
-#  DK_suite - /scratchout
-#
-
+# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
-
 export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 . ${FILEENV} ${1} ${2}
@@ -44,6 +64,7 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+# Verificação dos argumentos de entrada
 if [ -z "${3}" ]
 then
   echo "Fourth argument is not set: TYPES"
@@ -60,10 +81,7 @@ fi
 
 bin=${DK_suite}/recanl/bin/${RESOL}${NIVEL}; mkdir -p ${bin}
 
-#
-# Set machine, Run time and Extention
-#
-
+# Variáveis utilizadas no script de submissão
 HSTMAQ=$(hostname)
 
 RUNTM=$(date +'%y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
@@ -211,10 +229,7 @@ echo "./recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.o
 touch \${bin}/monitor.t
 EOT0
 
-#
-#  Change mode to be executable
-#
-
+# Submete o script e aguarda o fim da execução
 chmod +x setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 qsub setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
