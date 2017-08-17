@@ -10,7 +10,7 @@
 #
 # !INTERFACE:
 #      ./run_model.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
-#                      <opcao6> <opcao7> <opcao8> <opcao9>
+#                      <opcao6> <opcao7> <opcao8> <opcao9> <opcao10>
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> num_proc  -> número de processadores
@@ -25,14 +25,16 @@
 #            <opcao5> prefixo   -> prefixo que identifica o tipo de
 #                                  análise
 #
-#            <opcao6> data      -> data da análise corrente 
+#            <opcao6> datai     -> data da análise corrente 
 #
-#            <opcao7> membro    -> membro controle ou tamanho 
+#            <opcao7> dataf     -> data da previsão final
+#
+#            <opcao8> membro    -> membro controle ou tamanho 
 #                                  do conjunto
 #            
-#            <opcao8> init      -> tipo de inicialização 
+#            <opcao9> init      -> tipo de inicialização 
 #
-#            <opcao9> perturb   -> tipo de perturbação (dependendo
+#            <opcao10> perturb  -> tipo de perturbação (dependendo
 #                                  do valor da opção 8, não é necessário
 #                                  indicar a opção 9)
 #            
@@ -54,6 +56,7 @@
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 17 Agosto de 2017 - C. F. Bastarz - Inclusão da opção <dataf>
 #
 # !REMARKS:
 #
@@ -64,7 +67,7 @@
 #BOC
 
 # Descomentar para debugar
-#set -o xtrace
+set -o xtrace
 
 # Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]
@@ -97,7 +100,7 @@ sed  -e "s;#TRUNC#;${1};g" \
      -e "s;#INITLZ#;${20};g" \
      ${21}/MODELIN.template > ${22}/MODELIN
 
-echo "Namelist criado em: ${23}/MODELIN"
+echo "Namelist criado em: ${22}/MODELIN"
 
 }
 
@@ -146,23 +149,30 @@ else
 fi
 if [ -z "${7}" ]
 then
+  echo "LABELF is not set" 
+  exit 3
+else
+  export LABELF=${7} 
+fi
+if [ -z "${8}" ]
+then
   echo "ANLTYPE is not set" 
   exit 3
 else
-  export ANLTYPE=${7}  
+  export ANLTYPE=${8}  
 fi
-if [ -z "${8}" ]
+if [ -z "${9}" ]
 then
   echo "INITLZ is not set" 
   exit 3
 else
-  export INITLZ=${8}  
+  export INITLZ=${9}  
 fi
-if [ -z "${9}" ]
+if [ -z "${10}" ]
 then
   echo "ANLPERT is not set" 
 else
-  export ANLPERT=${9}  
+  export ANLPERT=${10}  
 fi
 
 # Diretórios principais
@@ -180,18 +190,9 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
-# Se for a previsao controle, integra o modelo por NFDAYS;
-# Se nao for a previsao controle, integra o modelo por 48 horas
-# (revisar)
-#if [ $(echo ${ANLTYPE} | grep R | wc -l) -eq 0 ]
-#then
-#  LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%Y%m%d%H")
-#else
-LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 48 hours" +"%Y%m%d%H")   
-#fi
-
-export INCTIME=${HOME}/bin/inctime
-
+# Se a previsão for a controle para a perturbação, integra o modelo por apenas 48 horas;
+# Se a previsão for a controle final, integra o modelo por 360 horas (15 dias);
+# Se a previsão for a partir do conjunto de perturbações por EOF, integra o modelo por 360 horas (15 dias).
 export LABELW=${LABELF}
 
 export TIMESTEP=600
@@ -215,7 +216,7 @@ export GAUSSGIVEN=".TRUE."
 export PATHIN=${DK_suite}/model/datain
 
 # Variáveis utilizadas no script de submissão
-if [ ${ANLTYPE} == CTR ]
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC ]
 then
 
   EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}
@@ -262,7 +263,7 @@ else
 
 fi
 
-if [ ${ANLTYPE} != CTR ]
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
   export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_SMT${LABELI}.${ANLPERT}PT/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_SMT${LABELI}.${ANLPERT}PT/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"

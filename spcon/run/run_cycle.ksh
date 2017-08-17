@@ -66,13 +66,11 @@
 #BOC
 
 # Descomentar para debugar
-#set -o xtrace
+set -o xtrace
 
-inctime=${HOME}/bin/inctime # incluir compilação do inctime na compilação do SPCON
+source ${PWD}/../../config_spcon.ksh vars_export
 
-oens_name=oensMB09_bam
-
-run_scripts=${SUBMIT_HOME}/${oens_name}/run
+inctime=${util_inctime}/inctime
 
 model_res=TQ0126L028
 
@@ -169,7 +167,7 @@ verifica_eof_anls() {
     for pert in ${Perts[@]}
     do
 
-      anl_file=${SUBMIT_HOME}/oensMB09_bam/bam/model/datain/GANL${mem}${pert}${2}S.unf.${3}
+      anl_file=${model_datain}/GANL${mem}${pert}${2}S.unf.${3}
 
       if [ ! -e ${anl_file} ]
       then
@@ -189,7 +187,7 @@ verifica_eof_anls() {
 run_deceof() {
 
   echo "* ANL EOF TOSPEC (${data})"
-  nohup ${run_scripts}/run_deceof.ksh ${1} EOF ${2} ${3} ${4} > deceof_${3}.log &
+  nohup ${spcon_run}/run_deceof.ksh ${1} EOF ${2} ${3} ${4} > deceof_${3}.log &
   wait
 
 }
@@ -197,7 +195,7 @@ run_deceof() {
 run_pre() {
 
   echo "* PRE CTR (${1})"
-  nohup ${run_scripts}/runPre 126 28 ${1} NMC 1 T F 574 64 > pre_${1}.log &
+  nohup ${spcon_run}/runPre 126 28 ${1} NMC 1 T F 574 64 > pre_${1}.log &
   wait 
 
 }
@@ -205,7 +203,15 @@ run_pre() {
 run_model_ctr() {
 
   echo "* MODEL CTR (${2})"
-  nohup ${run_scripts}/run_model.ksh 48 24 1 ${1} SMT ${2} CTR 2 > modelCTR_${2}.log &
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} CTR 2 > modelCTR_${2}.log &
+  wait 
+
+}
+
+run_model_nmc() {
+
+  echo "* MODEL NMC (${2})"
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} NMC 2 > modelNMC_${2}.log &
   wait 
 
 }
@@ -213,7 +219,7 @@ run_model_ctr() {
 run_recanl() {
 
   echo "* ANL TOGRID CTR (${2})"
-  nohup ${run_scripts}/run_recanl.ksh ${1} SMT ANLSMT ${2} > recanl_${2}.log &
+  nohup ${spcon_run}/run_recanl.ksh ${1} SMT ANLSMT ${2} > recanl_${2}.log &
   wait 
 
 }
@@ -221,7 +227,7 @@ run_recanl() {
 run_rdpert() {
 
   echo "* ANL RDPERT (${3})"
-  nohup ${run_scripts}/run_rdpert.ksh ${1} SMT ${2} ${3} ${4} > rdpert_${3}.log &
+  nohup ${spcon_run}/run_rdpert.ksh ${1} SMT ${2} ${3} ${4} > rdpert_${3}.log &
   wait
 
 }
@@ -229,7 +235,7 @@ run_rdpert() {
 run_decanl() {
 
   echo "* ANL TOSPEC (${3})"
-  nohup ${run_scripts}/run_decanl.ksh ${1} SMT ${2} ${3} ${4} > decanl_${3}.log &
+  nohup ${spcon_run}/run_decanl.ksh ${1} SMT ${2} ${3} ${4} > decanl_${3}.log &
   wait
 
 }
@@ -237,7 +243,7 @@ run_decanl() {
 run_model_rdpert() {
 
   echo "* MODEL RDPERT (${2})"
-  nohup ${run_scripts}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 2 R > modelRDPERT_${2}.log &
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 7 2 R > modelRDPERT_${2}.log &
   wait
 
 }
@@ -245,7 +251,7 @@ run_model_rdpert() {
 run_recfct_ctr() {
 
   echo "* MODEL TOGRID CTRL (${2})"
-  nohup ${run_scripts}/run_recfct.ksh ${1} CTR ${2} > recfctCTR_${2}.log &
+  nohup ${spcon_run}/run_recfct.ksh ${1} CTR ${2} > recfctCTR_${2}.log &
   wait
 
 }
@@ -253,7 +259,7 @@ run_recfct_ctr() {
 run_recfct_rdpert() {
 
   echo "* MODEL TOSPEC RDPERT (${3})"
-  nohup ${run_scripts}/run_recfct.ksh ${1} ${2} ${3} > recfctRPT_${3}.log &
+  nohup ${spcon_run}/run_recfct.ksh ${1} ${2} ${3} > recfctRPT_${3}.log &
   
   wait
 
@@ -262,7 +268,7 @@ run_recfct_rdpert() {
 run_eof() {
 
   echo "* ANL EOF (${4})"
-  nohup ${run_scripts}/run_eof.ksh ${1} ${2} ${3} ${4} > eof_${4}.log &
+  nohup ${spcon_run}/run_eof.ksh ${1} ${2} ${3} ${4} > eof_${4}.log &
   wait
 
 }
@@ -270,19 +276,27 @@ run_eof() {
 run_model_eof() {
 
   echo "* MODEL EOF N (${2})"
-  nohup ${run_scripts}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 2 N > modelN_${2}.log &
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 2 N > modelN_${2}.log &
   echo "* MODEL EOF P (${2})"
-  nohup ${run_scripts}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 2 P > modelP_${2}.log &
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 2 P > modelP_${2}.log &
   wait %1 %2
+
+}
+
+run_pos_ctr() {
+
+  echo "* POS CTR (${2})"
+  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} 2 > posCTR_${2}.log &
+  wait
 
 }
 
 run_pos_eof() {
 
   echo "* POS EOF N (${2})"
-  nohup ${run_scripts}/run_pos.ksh 48 24 1 ${1} ${2} ${3} N > posN_${2}.log &
+  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} N > posN_${2}.log &
   echo "* POS EOF P (${2})"
-  nohup ${run_scripts}/run_pos.ksh 48 24 1 ${1} ${2} ${3} P > posP_${2}.log &
+  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} P > posP_${2}.log &
   wait %1 %2
 
 }
@@ -291,6 +305,11 @@ data=${datai}
 
 while [ ${data} -le ${dataf} ]
 do
+
+  # Cálculo das datas das previsões
+  data_fct_48h=$(${inctime} ${data} +48hr %y4%m2%d2%h2)
+  data_fct_360h=$(${inctime} ${data} +360hr %y4%m2%d2%h2)
+
 
   echo ""
 
@@ -302,10 +321,9 @@ do
   run_pre ${data}
   
   # 2) Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle)
-  run_model_ctr ${model_res} ${data}
-  
+  run_model_ctr ${model_res} ${data} ${data_fct_48h}
+
   # 3) Recomposição dos coeficientes espectrais da análise para ponto de grade
-  #run_recanl.ksh ${model_res} SMT ANLNMC ${data}
   run_recanl ${model_res} ${data}
   
   # 4) Gera e soma as perturbações randômicas à análise controle
@@ -315,7 +333,7 @@ do
   run_decanl ${model_res} ${moist_opt} ${data} ${num_pert}
 
   # 6) Realização das previsões a partir das análises perturbadas para uso na análise de EOF
-  run_model_rdpert ${model_res} ${data} ${num_pert}
+  run_model_rdpert ${model_res} ${data} ${num_pert} ${data_fct_48h}
 
   # 7) Recomposição para ponto de grade das previsões realizadas a partir da análise controle
   run_recfct_ctr ${model_res} ${data}
@@ -331,11 +349,17 @@ do
 
   verifica_eof_anls ${num_pert} ${data} ${model_res}
 
-  # 11) Realização das previsões a partir do conjunto de análises com perturbações ótimas
-  run_model_eof ${model_res} ${data} ${num_pert}  
+  # 11) Realização das previsões para até 15 dias a partir da análise controle (sem perturbações)
+  run_model_nmc ${model_res} ${data} ${data_fct_360h}
 
-  # 12) Realização do pós-processamento do conjunto de previsões realizado a partir do conjunto de análises com perturbações ótimas
+  # 12) Realização das previsões para até 15 dias a partir do conjunto de análises com perturbações ótimas
+  run_model_eof ${model_res} ${data} ${num_pert} ${data_fct_360h}
+
+  # 13) Realização do pós-processamento do conjunto de previsões de até 15 dias realizado a partir do conjunto de análises com perturbações ótimas
   run_pos_eof ${model_res} ${data} ${num_pert}
+
+  # 14) Realização do pós-processamento das previsões de até 15 dias realizadas a partir da  análise controle
+  run_pos_ctr ${model_res} ${data} ${data_fct_360h}
 
   data=$(${inctime} ${data} +${fcth}hr %y4%m2%d2%h2)
 
