@@ -14,21 +14,30 @@
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> testcase -> aloca os dados necessário para testar
 #                                 a instalação
+#
 #                     model    -> faz checkout de uma revisão do 
 #                                 modelo atmosférico BAM
+#
+#                     inctime  -> faz checkout de uma revisão do
+#                                 utilitário inctime
+#
 #                     compilar -> compila o SPCON (módulos de 
 #                                 perturbação e BAM)
+#
 #                     ajuda    -> mostra esta ajuda
 #
-#            <opcao2> rev      -> funciona apenas com a opção model
+#           <opcao2>> rev      -> funciona apenas com as opções model e inctime
 #                                 (indica o número da revisão a ser
 #                                 baixada)
-#                                 para escolher uma revisão do BAM,
-#                                 acesse a página:
+#                                 para escolher uma revisão do BAM e/ou inctime,
+#                                 acesse as páginas:
 # https://projetos.cptec.inpe.br/projects/smg/repository/show/trunk/SMG/cptec/bam
+# https://projetos.cptec.inpe.br/projects/smg/repository/show/trunk/SMG/util/inctime
 #
 #  Uso/Exemplos: ./config_spcon.ksh model 
 #                ./config_spcon.ksh model 200 (alternativo)   
+#                ./config_spcon.ksh inctime
+#                ./config_spcon.ksh inctime 200 (alternativo)
 #                ./config_spcon.ksh compilar
 #                ./config_spcon.ksh testcase
 #                ./config_spcon.ksh ajuda  
@@ -37,6 +46,7 @@
 #
 # 14 Agosto de 2017 - C. F. Bastarz - Versão inicial.  
 # 15 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 17 Agosto de 2017 - C. F. Bastarz - Inclusão da compilação do inctime.
 #
 # !REMARKS:
 #
@@ -55,15 +65,19 @@
 # e instalação do SPCON)
 vars_export() {
 
-  export spcon_name=spcon_test
+  export spcon_name=oensMB09_bam
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
+
+  export spcon_run=${home_spcon}/run
 
   export home_bam=${home_spcon}/bam
 
   export bam_pre=${home_bam}/pre
   export bam_model=${home_bam}/model
   export bam_pos=${home_bam}/pos
+
+  export model_datain=${bam_model}/datain
 
   export pre_source=${bam_pre}/sources
   export model_source=${bam_model}/source
@@ -72,6 +86,10 @@ vars_export() {
   export pre_exec=${bam_pre}/exec
   export model_exec=${bam_model}/exec
   export pos_exec=${bam_pos}/exec
+
+  export util_spcon=${home_spcon}/util
+
+  export util_inctime=${util_spcon}/inctime
 
   export spcon_testcase=${SUBMIT_HOME}/testcase_spcon
 
@@ -110,6 +128,35 @@ model() {
     svn export -r${1} https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
 
   fi
+
+}
+
+# Função inctime (realiza uma retirada de uma revisão do inctime
+# a partir do SVN do Sistema de Modelagem Global)
+inctime() {
+
+  vars_export
+
+  mkdir -p ${util_inctime}
+
+  cd ${util_inctime}
+
+  if [ -z ${1} ]
+  then
+
+    echo "inctime"
+
+    svn export https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
+
+  else
+
+    echo "inctime r${1}"
+
+    svn export -r${1} https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
+
+  fi
+
+  cd ${spcon_home}
 
 }
 
@@ -166,6 +213,16 @@ compilar() {
 
   else
 
+    # Compilação do inctime
+
+    cd ${util_inctime}
+
+    nohup make > make_inctime.log &
+
+    wait
+
+    # Compilação do método de perturbação
+
     # Substitui a linha que começa com a palavra "HOME=" pela valor da variável 
     # HOME=${home_spcon}, no arquivo ${home_spcon}/config/Makefile.conf.pgi
     sed -i "s,^HOME\=.*$,HOME\=${home_spcon},g" ${home_spcon}/config/Makefile.conf.pgi
@@ -175,6 +232,8 @@ compilar() {
     nohup make comp=pgi > make_spcon.log &
 
     wait
+
+    # Compilação do modelo atmosférico
 
     # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
     # PATH2=${pre_exec}, nos arquivos ${pre_source}/Makefile e ${pre_source}/Makefile.in
@@ -227,6 +286,11 @@ else
 
     compilar
  
+  elif [ ${1} == "vars_export" ]
+  then
+
+    vars_export
+ 
   elif [ ${1} == "ajuda" ]
   then
 
@@ -250,5 +314,3 @@ else
   fi
 
 fi
-
-exit 0
