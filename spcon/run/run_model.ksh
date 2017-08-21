@@ -22,41 +22,38 @@
 #
 #            <opcao4> resolucao -> resolução espectral do modelo
 #                                
-#            <opcao5> prefixo   -> prefixo que identifica o tipo de
-#                                  análise
+#            <opcao5> pref_topo -> prefixo que identifica o tipo de
+#                                  análise de acordo com topografia
 #
 #            <opcao6> datai     -> data da análise corrente 
 #
 #            <opcao7> dataf     -> data da previsão final
 #
-#            <opcao8> membro    -> membro controle ou tamanho 
-#                                  do conjunto
+#            <opcao8> prefixo   -> prefixo que identifica o tipo de análise 
 #            
 #            <opcao9> init      -> tipo de inicialização 
 #
-#            <opcao10> perturb  -> tipo de perturbação (dependendo
-#                                  do valor da opção 8, não é necessário
-#                                  indicar a opção 9)
+#            <opcao10> n_mem b  -> tamanho do conjunto de perturbações
 #            
 #  Uso/Exemplos: 
 # 
 #  Membro controle:
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 CTR 2
-# 2012123118 na resolução TQ0126L028)
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 NMC 2 1
 # 
 #  Demais membros:
 #  - previsoes a partir das analises perturbadas randomicamente:
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 R
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 RDP 2 7
 #  - previsoes a partir das analises perturbadas por EOF (subtraidas):
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 N
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 NPT 2 7
 #  - previsoes a partir das analises perturbadas por EOF (somadas):
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2012123118 7 2 P
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 PPT 2 7
 #
 # !REVISION HISTORY:
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
 # 17 Agosto de 2017 - C. F. Bastarz - Inclusão da opção <dataf>
+# 18 Agosto de 2017 - C. F. Bastarz - Modificação nos argumentos de entrada.
 #
 # !REMARKS:
 #
@@ -203,8 +200,23 @@ MAQUI=$(hostname -s)
 SCRIPTFILEPATH=${HOME_suite}/run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}modg.${DIRRESOL}.${LABELI}.${MAQUI}
 NAMELISTFILEPATH=${HOME_suite}/run
 
-export DHFCT=3
-export DHRES=3
+# As opções abaixo fazem referência à frequência de saída das previsões (DHFCT) e dos arquivos de restart (DHRES)
+# Se ANLTYPE for igual a CTR ou RDP, então as previsões serão referentes à análise controle, com previsões para
+#2 dias e com saídas a cada 3 horas;
+# Se ANLTYPE for igual a NMC, NPT ou PPT, então as previsões serão referentes às análises controle e perturbadas
+# por EOF (respectivamente), e serão feitas para 15 dias e com saída a cada 3 horas.
+if [ ${ANLTYPE} == RDP -o ${ANLTYPE} == CTR ]
+then
+  export DHFCT=3
+  export DHRES=3
+elif [ ${ANLTYPE} == NMC -o ${ANLTYPE} == NPT -o ${ANLTYPE} == PPT ]
+then
+  export DHFCT=6
+  export DHRES=6
+else
+  export DHFCT=6
+  export DHRES=6 
+fi
 
 export NMSST="sstwkl"
 
@@ -231,31 +243,36 @@ then
 
   mkdir -p ${DIRFNAMEOUTPUT}
 
-  export PREFIY=CTR
+  if [ ${ANLTYPE} == CTR ]
+  then
+    export PREFIY=CTR
+  else
+    export PREFIY=NMC
+  fi
   export PREFIX=SMT
 
   cria_namelist ${TRC} ${LV} ${TIMESTEP} ${LABELI} ${LABELW} ${LABELF} ${DHFCT} ${DHRES} ${GENRES} ${PREFIX} ${PREFIY} ${NMSST} ${PATHIN} ${DIRFNAMEOUTPUT} ${RSTIN} ${RSTOU} ${EIGENINIT} ${MGIVEN} ${GAUSSGIVEN} ${INITLZ} ${NAMELISTFILEPATH} ${EXECFILEPATH}
  
 else
 
-  for MEM in $(seq -f %02g 1 ${ANLTYPE})
+  for MEM in $(seq -f %02g 1 ${ANLPERT})
   do
 
-    EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLPERT}PT
-    EXECFILEPATHMEM=${DK_suite}/model/exec_SMT${LABELI}.${ANLPERT}PT/${MEM}${ANLPERT}
+    EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}
+    EXECFILEPATHMEM=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
 
     mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}
    
     ln -sf ${DK_suite}/model/exec/ParModel_MPI ${EXECFILEPATHMEM}
 
-    export RSTIN=${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${MEM}${ANLPERT}/RST
-    export RSTOU=${DK_suite}/model/dataout/${TRCLV}/${LABELW}/${MEM}${ANLPERT}/RST
-    export DIRFNAMEOUTPUT=${DK_suite}/model/dataout/${DIRRESOL}/${LABELI}/${MEM}${ANLPERT}
+    export RSTIN=${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${MEM}${ANLTYPE:0:1}/RST
+    export RSTOU=${DK_suite}/model/dataout/${TRCLV}/${LABELW}/${MEM}${ANLTYPE:0:1}/RST
+    export DIRFNAMEOUTPUT=${DK_suite}/model/dataout/${DIRRESOL}/${LABELI}/${MEM}${ANLTYPE:0:1}
 
     mkdir -p ${DIRFNAMEOUTPUT}
 
-    export PREFIY=${MEM}${ANLPERT}
-    export PREFIX=${MEM}${ANLPERT}
+    export PREFIY=${MEM}${ANLTYPE:0:1}
+    export PREFIX=${MEM}${ANLTYPE:0:1}
 
     cria_namelist ${TRC} ${LV} ${TIMESTEP} ${LABELI} ${LABELW} ${LABELF} ${DHFCT} ${DHRES} ${GENRES} ${PREFIX} ${PREFIY} ${NMSST} ${PATHIN} ${DIRFNAMEOUTPUT} ${RSTIN} ${RSTOU} ${EIGENINIT} ${MGIVEN} ${GAUSSGIVEN} ${INITLZ} ${NAMELISTFILEPATH} ${EXECFILEPATHMEM}
 
@@ -265,13 +282,13 @@ fi
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
-  export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_SMT${LABELI}.${ANLPERT}PT/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_SMT${LABELI}.${ANLPERT}PT/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#PBS -N BAMENS${ANLPERT}PT"
-  export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLTYPE}"
+  export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+  export PBSDIRECTIVENAME="#PBS -N BAMENS${ANLTYPE}"
+  export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLPERT}PT/\${MEM}${ANLPERT}"
-  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLPERT}PT/model.${ANLTYPE}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
+  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLPERT}"
 else
   export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
@@ -279,7 +296,7 @@ else
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}"
-  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLTYPE}"
+  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLPERT}"
 fi
 
 # Script de submissão

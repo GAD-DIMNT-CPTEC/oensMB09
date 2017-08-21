@@ -23,31 +23,34 @@
 #
 #            <opcao4> resolucao -> resolução espectral do modelo
 #                                
-#            <opcao5> data      -> data da análise corrente 
+#            <opcao5> datai     -> data da análise corrente 
 #
-#            <opcao6> membro    -> membro controle ou tamanho 
-#                                  do conjunto
+#            <opcao6> dataf     -> data final da previsão 
 #
-#            <opcao7> sufixo    -> sufixo que identifica o tipo de
+#            <opcao7> prefixo   -> sufixo que identifica o tipo de
 #                                  análise
+#
+#            <opcao8> membro    -> tamanho do conjunto de perturbações
+#
 #            
 #  Uso/Exemplos: 
 # 
 #  Membro controle:
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 CTR 2
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 CTR 
 # 
 #  Demais membros:
 #  - pos-processamento das previsoes geradas a partir das analises perturbadas randomicamente:
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 R
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 RDP 7
 #  - pos-processamento das previsoes geradas a partir das analises perturbadas por EOF (subtraidas):
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 N
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 NPT 7
 #  - pos-processamento das previsoes geradas a partir das analises perturbadas por EOF (somadas):
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2012123118 7 P
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 PPT 7
 #
 # !REVISION HISTORY:
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 18 Agosto de 2017 - C. F. Bastarz - Modificação na ordem dos argumentos.
 #
 # !REMARKS:
 #
@@ -123,29 +126,29 @@ then
 else
   export LABELI=${5} 
 fi
-#if [ -z "${6}" ]
-#then
-#  echo "NFDAYS is not set" 
-#  exit 3
-#else
-#  export NFDAYS=${6}  
-#fi
 if [ -z "${6}" ]
+then
+  echo "LABELF is not set" 
+  exit 3
+else
+  export LABELF=${6}  
+fi
+if [ -z "${7}" ]
 then
   echo "ANLTYPE is not set" 
 else
-  if [ "${6}" != "CTR" ]
+  if [ "${7}" != "CTR" ] # pode ser RDP, NPT ou PPT
   then 
-    export ANLTYPE=${6}  
-    if [ -z "${7}" ]
+    export ANLTYPE=${7}  
+    if [ -z "${8}" ]
     then
       echo "ANLPERT is not set" 
       exit 1
     else
-      export ANLPERT=${7}  
+      export ANLPERT=${8}  
     fi
   else
-    export ANLTYPE=${6}  
+    export ANLTYPE=CTR
   fi
 fi
 
@@ -163,19 +166,6 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 
 export RESOL=$(echo ${TRCLV} | cut -c 1-6)
 export NIVEL=$(echo ${TRCLV} | cut -c 7-11)
-
-# Se for a previsao controle, integra o modelo por NFDAYS;
-# Se nao for a previsao controle, integra o modelo por 48 horas
-# (revisar)
-#if [ $(echo ${ANLTYPE} | grep R | wc -l) -eq 0 ]
-#then
-NFDAYS=2 # controle, kpds13=10
-LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%Y%m%d%H")
-#else
-#LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 48 hours" +"%Y%m%d%H")   
-#fi
-
-export INCTIME=${HOME}/bin/inctime
 
 export DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 export MAQUI=$(hostname -s)
@@ -211,11 +201,11 @@ then
  
 else
 
-  for MEM in $(seq -f %02g 1 ${ANLTYPE})
+  for MEM in $(seq -f %02g 1 ${ANLPERT})
   do
 
-    EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLPERT}PT/${MEM}${ANLPERT}
-    EXECFILEPATHMEM=${DK_suite}/pos/exec_SMT${LABELI}.${ANLPERT}PT/${MEM}${ANLPERT}
+    EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+    EXECFILEPATHMEM=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
 
     mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}
    
@@ -223,12 +213,12 @@ else
 
     export DATALIB=${DK_suite}/pos/datain/
 
-    export DATAIN=${DK_suite}/model/dataout/${DIRRESOL}/${LABELI}/${MEM}${ANLPERT}
-    export DATAOUT=${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${MEM}${ANLPERT}
+    export DATAIN=${DK_suite}/model/dataout/${DIRRESOL}/${LABELI}/${MEM}${ANLTYPE:0:1}
+    export DATAOUT=${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${MEM}${ANLTYPE:0:1}
 
     mkdir -p ${DATAOUT}
 
-    export PREFIX=${MEM}${ANLPERT}
+    export PREFIX=${MEM}${ANLTYPE:0:1}
 
     cria_namelist ${RESOL} ${NIVEL} ${LABELI} ${LABELF} ${PREFIX} ${DATAIN} ${DATAOUT} ${DATALIB} ${BINARY} ${REQTB} ${REGINT} ${RESPOS} ${NAMELISTFILEPATH} ${EXECFILEPATH} 
 
@@ -238,13 +228,13 @@ fi
 
 if [ ${ANLTYPE} != CTR ]
 then
-  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_SMT${LABELI}.${ANLPERT}PT/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_SMT${LABELI}.${ANLPERT}PT/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#PBS -N POSENS${ANLPERT}PT"
-  export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLTYPE}"
+  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+  export PBSDIRECTIVENAME="#PBS -N POSENS${ANLTYPE}"
+  export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLPERT}PT/\${MEM}${ANLPERT}"
-  export MONITORFILE="${DK_suite}/pos/exec_SMT${LABELI}.${ANLPERT}PT/pos.${ANLTYPE}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
+  export MONITORFILE="${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/pos.${ANLPERT}"
 else
   export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
@@ -276,7 +266,7 @@ ${PBSDIRECTIVEARRAY}
 ulimit -s unlimited
 ulimit -c unlimited
 
-export PBS_SERVER=${PBSServar}
+export PBS_SERVER=${PBSServer}
 export KMP_STACKSIZE=128m
 
 ${PBSMEM}

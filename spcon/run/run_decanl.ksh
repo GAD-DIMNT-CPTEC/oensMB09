@@ -216,35 +216,35 @@ cd ${HOME_suite}/run
 export LEV=${NIVEL}
 export TRUNC=${RESOL}
 
-#
-#  Now, build the necessary INCLUDE for the choosen truncation and 
-#       vertical resolution.. 
-#
-
-if [ "\${COMPILE}" != "run" ]
-then
-
-  cd \${INC}
-
-cat <<EOT1 > decanl.n
-      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
-      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},LMAX=${LR})
-EOT1
-
-  if (diff decanl.n decanl.h > /dev/null)
-  then
-    echo "decanl.n and decanl.h are the same"
-    rm -f decanl.n
-  else
-    echo "decanl.n and decanl.h are different"
-    mv decanl.n decanl.h
-  fi
-
-  #
-  #  End of includes
-  #
-
-fi
+###
+###  Now, build the necessary INCLUDE for the choosen truncation and 
+###       vertical resolution.. 
+###
+##
+###if [ "\${COMPILE}" != "run" ]
+###then
+###
+###  cd \${INC}
+###
+###cat <<EOT1 > decanl.n
+###      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
+###      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},LMAX=${LR})
+###EOT1
+###
+###  if (diff decanl.n decanl.h > /dev/null)
+###  then
+###    echo "decanl.n and decanl.h are the same"
+###    rm -f decanl.n
+###  else
+###    echo "decanl.n and decanl.h are different"
+###    mv decanl.n decanl.h
+###  fi
+###
+###  #
+###  #  End of includes
+###  #
+###
+###fi
 
 #
 #  Now, build the necessary NAMELIST input:

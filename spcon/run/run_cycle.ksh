@@ -9,7 +9,8 @@
 # Global (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./run_cycle.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5> 
+#      ./run_cycle.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#                      <opcao6> 
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> datai     -> data da primeira análise
@@ -23,32 +24,43 @@
 #
 #            <opcao5> num_pert  -> número de perturbações
 #
+#            <opcao6> run_pos   -> opção lógica (YES/NO) para realizar
+#                                  o pós-processamento das previsoes 
+#                                  ao final da iteração de cada loop
+#
 #  Uso/Exemplos: ./run_cycle.ksh 
 #                (realiza o testcase padrão)
 #                ./run_cycle.ksh 2013010100 2013010200   
 #                (realiza o SPCON para as análises 2013010100, 2013010112 
-#                e 2013010200; assume moist_opt=YES, fcth=12 e num_pert=7)
+#                e 2013010200; assume moist_opt=YES, fcth=12, num_pert=7
+#                e run_pos=NO)
 #                ./run_cycle.ksh 2013010100 2013010112 YES
 #                (realiza o SPCON para as análises do intervalo 2013010100
-#                e 2013010112 - inclusive; assume fcth=12 e num_pert=7)
+#                e 2013010112 - inclusive; assume fcth=12, num_pert=7 e 
+#                run_pos=NO)
 #                ./run_cycle.ksh 2013010100 2013010312 YES 12
 #                (realiza o SPCON para as análises do intervalo 2013010100
-#                e 2013010312 - inclusive; assume num_pert=7)
+#                e 2013010312 - inclusive; assume num_pert=7 e run_pos=NO)
 #                ./run_cycle.ksh 2013010100 2013010200 NO 6
 #                (realiza o SPCON para as análises do intervalo 2013010100
 #                e 2013010200 - inclusive, com moist_opt=NO e fcth=6; neste
 #                caso, serão integradas as análises 2013010100, 2013010106
-#                2013010112, 2013010118 e 2013010200; assume num_pert=7)
-#                ./run_cycle.ksh 2013010100 2013010200 NO 6 10
+#                2013010112, 2013010118 e 2013010200; assume num_pert=7 e
+#                run_pos=NO)
+#                ./run_cycle.ksh 2013010100 2013010200 NO 6 10 YES
 #                (realiza o SPCON para as análises do intervalo 2013010100
 #                e 2013010200 - inclusive, mas utiliza 10 perturbações 
-#                e gera um conjunto total de 21 previsões)
-#
+#                e gera um conjunto total de 21 previsões, com o 
+#                pós-processamento das previsões ao final de cada loop)
 # 
 # !REVISION HISTORY:
 #
 # 14 Agosto de 2017 - C. F. Bastarz - Versão inicial.  
 # 15 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 17 Agosto de 2017 - C. F. Bastarz - Inclusão da realização das previsões
+#                                     para 15 dias
+# 18 Agosto de 2017 - C. F. Bastarz - Inclusão de opção para submeter ou não
+#                                     o pós-processamento do modelo atmosférico
 #
 # !REMARKS:
 #
@@ -66,7 +78,7 @@
 #BOC
 
 # Descomentar para debugar
-set -o xtrace
+#set -o xtrace
 
 source ${PWD}/../../config_spcon.ksh vars_export
 
@@ -78,14 +90,16 @@ model_res=TQ0126L028
 if [ ${#} -eq 0 ]
 then
 
-  datai=2013010100
-  dataf=2013010112
+  datai=2013010112
+  dataf=2013010312
   
   moist_opt=YES
 
   fcth=12
 
   num_pert=7
+
+  run_pos=NO
 
   echo ""
 
@@ -99,6 +113,7 @@ then
   echo "* Perturbação da Umidade.....: ${moist_opt}"
   echo "* Quantidade de Perturbações.: ${num_pert}"
   echo "* Tamanho Total do Conjunto..: $(echo $(($((${num_pert}*2))+1))) membros"
+  echo "* Opção Pós-Processamento....: ${run_pos}"
 
   echo ""
 
@@ -139,6 +154,13 @@ else
     num_pert=${5}
   fi
 
+  if [ -z ${6} ]
+  then
+    run_pos=NO
+  else
+    run_pos=${6}
+  fi
+
   echo ""
 
   echo "> Realizando o SPCON Global com o dados do testcase"
@@ -151,6 +173,7 @@ else
   echo "* Perturbação da Umidade.....: ${moist_opt}"
   echo "* Quantidade de Perturbações.: ${num_pert}"
   echo "* Tamanho Total do Conjunto..: $(echo $(($((${num_pert}*2))+1))) membros"
+  echo "* Opção Pós-Processamento....: ${run_pos}"
 
   echo ""
 
@@ -200,19 +223,37 @@ run_pre() {
 
 }
 
-run_model_ctr() {
+run_model_ctr() { # 2 dias, 3h
 
   echo "* MODEL CTR (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} CTR 2 > modelCTR_${2}.log &
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} CTR 2 1 > modelCTR_${2}.log &
   wait 
 
 }
 
-run_model_nmc() {
+run_model_rdp() { # 2 dias, 3h
+
+  echo "* MODEL RDP (${2})"
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} RDP 2 ${4} > modelRDP_${2}.log &
+  wait
+
+}
+
+run_model_nmc() { # 15 dias, 6h
 
   echo "* MODEL NMC (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} NMC 2 > modelNMC_${2}.log &
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
   wait 
+
+}
+
+run_model_eof() { # 15 dias, 6h
+
+  echo "* MODEL EOF N (${2})"
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} NPT 2 ${4} > modelN_${2}.log &
+  echo "* MODEL EOF P (${2})"
+  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} PPT 2 ${4} > modelP_${2}.log &
+  wait %1 %2
 
 }
 
@@ -226,7 +267,7 @@ run_recanl() {
 
 run_rdpert() {
 
-  echo "* ANL RDPERT (${3})"
+  echo "* ANL RDP (${3})"
   nohup ${spcon_run}/run_rdpert.ksh ${1} SMT ${2} ${3} ${4} > rdpert_${3}.log &
   wait
 
@@ -240,14 +281,6 @@ run_decanl() {
 
 }
 
-run_model_rdpert() {
-
-  echo "* MODEL RDPERT (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 7 2 R > modelRDPERT_${2}.log &
-  wait
-
-}
-
 run_recfct_ctr() {
 
   echo "* MODEL TOGRID CTRL (${2})"
@@ -256,11 +289,10 @@ run_recfct_ctr() {
 
 }
 
-run_recfct_rdpert() {
+run_recfct_rdp() {
 
-  echo "* MODEL TOSPEC RDPERT (${3})"
+  echo "* MODEL TOSPEC RDP (${3})"
   nohup ${spcon_run}/run_recfct.ksh ${1} ${2} ${3} > recfctRPT_${3}.log &
-  
   wait
 
 }
@@ -273,31 +305,19 @@ run_eof() {
 
 }
 
-run_model_eof() {
-
-  echo "* MODEL EOF N (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 2 N > modelN_${2}.log &
-  echo "* MODEL EOF P (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} 2 P > modelP_${2}.log &
-  wait %1 %2
-
-}
-
 run_pos_ctr() {
 
   echo "* POS CTR (${2})"
-  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} 2 > posCTR_${2}.log &
-  wait
+  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} ${3} CTR > posCTR_${2}.log &
 
 }
 
 run_pos_eof() {
 
   echo "* POS EOF N (${2})"
-  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} N > posN_${2}.log &
+  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} ${3} NPT ${4} > posN_${2}.log &
   echo "* POS EOF P (${2})"
-  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} P > posP_${2}.log &
-  wait %1 %2
+  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} ${3} PPT ${4} > posP_${2}.log &
 
 }
 
@@ -333,13 +353,13 @@ do
   run_decanl ${model_res} ${moist_opt} ${data} ${num_pert}
 
   # 6) Realização das previsões a partir das análises perturbadas para uso na análise de EOF
-  run_model_rdpert ${model_res} ${data} ${num_pert} ${data_fct_48h}
+  run_model_rdp ${model_res} ${data} ${data_fct_48h} ${num_pert} 
 
   # 7) Recomposição para ponto de grade das previsões realizadas a partir da análise controle
   run_recfct_ctr ${model_res} ${data}
 
   # 8) Recomposição para ponto de grade das previsões realizadas a partir das análises perturbadas randomicamente
-  run_recfct_rdpert ${model_res} ${num_pert} ${data}
+  run_recfct_rdp ${model_res} ${num_pert} ${data}
 
   # 9) Realização da análise de EOF para gerar as perturbações ótimas a serem utilizadas na composição final dos membros do conjunto
   run_eof ${model_res} ${num_pert} ${moist_opt} ${data}
@@ -355,11 +375,16 @@ do
   # 12) Realização das previsões para até 15 dias a partir do conjunto de análises com perturbações ótimas
   run_model_eof ${model_res} ${data} ${num_pert} ${data_fct_360h}
 
-  # 13) Realização do pós-processamento do conjunto de previsões de até 15 dias realizado a partir do conjunto de análises com perturbações ótimas
-  run_pos_eof ${model_res} ${data} ${num_pert}
+  if [ ${run_pos} == YES ]
+  then
 
-  # 14) Realização do pós-processamento das previsões de até 15 dias realizadas a partir da  análise controle
-  run_pos_ctr ${model_res} ${data} ${data_fct_360h}
+    # 13) Realização do pós-processamento das previsões de até 15 dias realizadas a partir da  análise controle
+    run_pos_ctr ${model_res} ${data} ${data_fct_360h}
+
+    # 14) Realização do pós-processamento do conjunto de previsões de até 15 dias realizado a partir do conjunto de análises com perturbações ótimas
+    run_pos_eof ${model_res} ${data} ${data_fct_360h} ${num_pert}
+
+  fi
 
   data=$(${inctime} ${data} +${fcth}hr %y4%m2%d2%h2)
 

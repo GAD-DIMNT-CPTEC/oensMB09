@@ -207,28 +207,28 @@ do
     export ERR1=R.fct
   fi
   
-  #
-  #  Now, build the necessary INCLUDE for the choosen truncation and 
-  #       vertical resolution.. 
-  #
-  cd \${INC}
-cat <<EOT1 > recfct.n
-      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
-      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},LMAX=${LR})
-EOT1
-
-  if (diff recfct.n recfct.h > /dev/null)
-  then
-    echo "recfct.n and recfct.h are the same"
-    rm -f recfct.n
-  else
-    echo "recfct.n and recfct.h are different"
-    mv recfct.n recfct.h
-  fi
-  
-  #
-  #  End of includes
-  #
+##  #
+##  #  Now, build the necessary INCLUDE for the choosen truncation and 
+##  #       vertical resolution.. 
+##  #
+##  cd \${INC}
+##cat <<EOT1 > recfct.n
+##      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
+##      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},LMAX=${LR})
+##EOT1
+##
+##  if (diff recfct.n recfct.h > /dev/null)
+##  then
+##    echo "recfct.n and recfct.h are the same"
+##    rm -f recfct.n
+##  else
+##    echo "recfct.n and recfct.h are different"
+##    mv recfct.n recfct.h
+##  fi
+##  
+##  #
+##  #  End of includes
+##  #
   
   #
   #  Now, build the necessary NAMELIST input:

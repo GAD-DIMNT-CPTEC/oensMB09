@@ -204,35 +204,35 @@ LEV=${NIVEL}
 TRUNC=${RESOL}
 export TRUNC LEV
 
-#
-#  Now, build the necessary INCLUDE for the choosen truncation and 
-#       vertical resolution.. 
-#
-
-if [ "\${COMPILE}" != "run" ]
-then
-
-  cd \${INC}
-
-cat <<EOT1 > rdpert.n
-      INTEGER IMAX,JMAX,MEND,KMAX,IDM
-      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},IDM=\${NUMPERT})
-EOT1
-
-if (diff rdpert.n rdpert.h > /dev/null)
-then
-  echo "rdpert.n and rdpert.h are the same"
-  rm -f rdpert.n
-else
-  echo "rdpert.n and rdpert.h are different"
-  mv rdpert.n rdpert.h
-fi
-
-#
-#  End of includes
-#
-
-fi
+###
+###  Now, build the necessary INCLUDE for the choosen truncation and 
+###       vertical resolution.. 
+###
+##
+##if [ "\${COMPILE}" != "run" ]
+##then
+##
+##  cd \${INC}
+##
+##cat <<EOT1 > rdpert.n
+##      INTEGER IMAX,JMAX,MEND,KMAX,IDM
+##      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},IDM=\${NUMPERT})
+##EOT1
+##
+##if (diff rdpert.n rdpert.h > /dev/null)
+##then
+##  echo "rdpert.n and rdpert.h are the same"
+##  rm -f rdpert.n
+##else
+##  echo "rdpert.n and rdpert.h are different"
+##  mv rdpert.n rdpert.h
+##fi
+##
+###
+###  End of includes
+###
+##
+##fi
 
 #
 #  Now, build the necessary NAMELIST input:
