@@ -90,7 +90,7 @@ model_res=TQ0126L028
 if [ ${#} -eq 0 ]
 then
 
-  datai=2013010112
+  datai=2013010200
   dataf=2013010312
   
   moist_opt=YES
@@ -242,17 +242,19 @@ run_model_rdp() { # 2 dias, 3h
 run_model_nmc() { # 15 dias, 6h
 
   echo "* MODEL NMC (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
-  wait 
+  nohup ${spcon_run}/run_model.ksh 96 24 1 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
+#  wait # Neste caso, como o script deve aguardar a submissão das previsões a partir das análises
+        # perturbadas por EOF, então esta submissão não o script não precisa aguardar este processo
+        # terminar.     
 
 }
 
 run_model_eof() { # 15 dias, 6h
 
   echo "* MODEL EOF N (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} NPT 2 ${4} > modelN_${2}.log &
+  nohup ${spcon_run}/run_model.ksh 96 24 1 ${1} SMT ${2} ${3} NPT 2 ${4} > modelN_${2}.log &
   echo "* MODEL EOF P (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} PPT 2 ${4} > modelP_${2}.log &
+  nohup ${spcon_run}/run_model.ksh 96 24 1 ${1} SMT ${2} ${3} PPT 2 ${4} > modelP_${2}.log &
   wait %1 %2
 
 }

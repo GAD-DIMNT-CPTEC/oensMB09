@@ -54,6 +54,8 @@
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
 # 17 Agosto de 2017 - C. F. Bastarz - Inclusão da opção <dataf>
 # 18 Agosto de 2017 - C. F. Bastarz - Modificação nos argumentos de entrada.
+# 22 Agosto de 2017 - C. F. Bastarz - Inclusão do sleep 10s no final do script
+#                                     de submissão para aguardar o I/O do BAM
 #
 # !REMARKS:
 #
@@ -288,7 +290,7 @@ then
   export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
-  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLPERT}"
+  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLTYPE}"
 else
   export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
@@ -296,7 +298,14 @@ else
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}"
-  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLPERT}"
+  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLTYPE}"
+fi
+
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != RDP ]
+then
+  export walltime="02:00:00"
+else
+  export walltime="00:50:00"
 fi
 
 # Script de submissão
@@ -304,7 +313,7 @@ cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
 ${PBSOUTFILE}
 ${PBSERRFILE}
-#PBS -l walltime=0:30:00
+#PBS -l walltime=${walltime}
 #PBS -l mppwidth=${MPPWIDTH}
 #PBS -l mppnppn=${MPPNPPN}
 #PBS -l mppdepth=${MPPDEPTH}
@@ -335,6 +344,8 @@ date
 aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/Print.model.${LABELI}.MPI${MPPWIDTH}.log
 
 date
+
+sleep 10s # espera para terminar todos os processos de I/O
 
 touch ${MONITORFILE}
 EOF0
