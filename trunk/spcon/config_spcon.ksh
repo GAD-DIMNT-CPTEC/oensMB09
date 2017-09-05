@@ -91,7 +91,7 @@ vars_export() {
 
   export util_inctime=${util_spcon}/inctime
 
-  export spcon_testcase=${SUBMIT_HOME}/testcase_spcon
+  export spcon_testcase=/scratchin/grupos/assim_dados/home/carlos.bastarz/testcase_spcon
 
 }
 
