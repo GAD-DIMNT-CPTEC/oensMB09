@@ -40,6 +40,7 @@
 #                ./config_spcon.ksh inctime 200 (alternativo)
 #                ./config_spcon.ksh compilar
 #                ./config_spcon.ksh testcase
+#                ./config_spcon.ksh configurar
 #                ./config_spcon.ksh ajuda  
 # 
 # !REVISION HISTORY:
@@ -105,6 +106,29 @@ testcase() {
   cp -pvfr ${spcon_testcase}/pre/* ${bam_pre}/
   cp -pvfr ${spcon_testcase}/model/* ${bam_model}/
   cp -pvfr ${spcon_testcase}/pos/* ${bam_pos}/
+
+}
+
+# Função configurar (cria links simbólicos de bam/run para ../../run)
+configurar() {
+
+  vars_export
+
+  echo "Configurar"
+
+  if [ -d "../bam/run/" ]
+  then
+
+    cd ${spcon_run}/
+
+    ln -svf ../bam/run/* .
+
+  else
+
+    echo "Diretório ${spcon_run}/../bam/run/ não existe!"
+    exit 1
+
+  fi
 
 }
 
