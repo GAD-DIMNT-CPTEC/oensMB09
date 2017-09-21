@@ -18,10 +18,11 @@
 #            <opcao2> prefixo   -> prefixo que identifica o tipo de
 #                                  análise
 #
-#            <opcao3> data      -> data da análise corrente 
-#
-#            <opcao4> moist_opt -> opção lógica (YES/NO) para
+#            <opcao3> moist_opt -> opção lógica (YES/NO) para
 #                                  perturbar ou não a umidade
+#
+#            <opcao4> data      -> data da análise corrente 
+#
 #
 #            <opcao5> membro    -> tamanho do conjunto 
 #            
