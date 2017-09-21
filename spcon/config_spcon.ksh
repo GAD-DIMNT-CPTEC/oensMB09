@@ -12,25 +12,28 @@
 #      ./config_spcon.ksh <opcao1> <opcao2>
 #
 # !INPUT PARAMETERS:
-#  Opcoes..: <opcao1> testcase -> aloca os dados necessário para testar
-#                                 a instalação
+#  Opcoes..: <opcao1> testcase   -> aloca os dados necessário para testar
+#                                   a instalação
 #
-#                     model    -> faz checkout de uma revisão do 
-#                                 modelo atmosférico BAM
+#                     model      -> faz checkout de uma revisão do 
+#                                   modelo atmosférico BAM
 #
-#                     inctime  -> faz checkout de uma revisão do
-#                                 utilitário inctime
+#                     inctime    -> faz checkout de uma revisão do
+#                                   utilitário inctime
 #
-#                     compilar -> compila o SPCON (módulos de 
-#                                 perturbação e BAM)
+#                     compilar   -> compila o SPCON (módulos de 
+#                                   perturbação e BAM)
 #
-#                     ajuda    -> mostra esta ajuda
+#                     configurar -> compila o SPCON (módulos de 
+#                                   perturbação e BAM)
 #
-#           <opcao2>> rev      -> funciona apenas com as opções model e inctime
-#                                 (indica o número da revisão a ser
-#                                 baixada)
-#                                 para escolher uma revisão do BAM e/ou inctime,
-#                                 acesse as páginas:
+#                     ajuda      -> mostra esta ajuda
+#
+#            <opcao2> rev        -> funciona apenas com as opções model e inctime
+#                                   (indica o número da revisão a ser
+#                                   baixada)
+#                                   para escolher uma revisão do BAM e/ou inctime,
+#                                   acesse as páginas:
 # https://projetos.cptec.inpe.br/projects/smg/repository/show/trunk/SMG/cptec/bam
 # https://projetos.cptec.inpe.br/projects/smg/repository/show/trunk/SMG/util/inctime
 #
@@ -48,6 +51,8 @@
 # 14 Agosto de 2017 - C. F. Bastarz - Versão inicial.  
 # 15 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
 # 17 Agosto de 2017 - C. F. Bastarz - Inclusão da compilação do inctime.
+# 20 Setembro de 2017 - C. F. Bastarz - Inclusão da função configurar
+# 21 Setembro de 2017 - C. F. Bastarz - Incrementada a função configurar
 #
 # !REMARKS:
 #
@@ -69,6 +74,7 @@ vars_export() {
   export spcon_name=oensMB09_bam
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
+  export work_spcon=${WORK_HOME}/${spcon_name}
 
   export spcon_run=${home_spcon}/run
 
@@ -129,6 +135,37 @@ configurar() {
     exit 1
 
   fi
+
+  # Cria os links simbólicos dos diretórios do SPCON
+  set -A Procs decanl deceof eof rdpert recanl recfct
+
+  for proc in ${Procs[@]}
+  do
+
+    dir_proc=${home_spcon}/${proc}
+
+    if [ ${proc} == "decanl" ]
+    then
+
+      proc_dataout=${model_datain}
+      proc_output=${work_spcon}/${proc}/output
+
+    else
+
+      proc_dataout=${work_spcon}/${proc}/dataout
+      proc_output=${work_spcon}/${proc}/output
+
+    fi
+
+    cd ${dir_proc}
+
+    if [ -d "${proc_dataout}" ]; then mkdir -p ${proc_dataout}; fi
+    ln -sf ${proc_dataout}
+
+    if [ -d "${proc_output}" ]; then mkdir -p ${proc_output}; fi
+    ln -sf ${proc_output}
+
+  done
 
 }
 
