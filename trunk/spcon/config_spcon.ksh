@@ -144,10 +144,10 @@ configurar() {
 
     dir_proc=${home_spcon}/${proc}
 
-    if [ ${proc} == "decanl" ]
+    if [ ${proc} == "decanl" -o ${proc} == "deceof" ]
     then
 
-      proc_dataout=${model_datain}
+      proc_dataout=${model_datain} # As análises espectrais perturbadas devem ser encontradas no model/datain
       proc_output=${work_spcon}/${proc}/output
 
     else
