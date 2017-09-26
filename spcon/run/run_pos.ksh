@@ -36,7 +36,7 @@
 #  Uso/Exemplos: 
 # 
 #  Membro controle:
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 CTR 
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 NMC 
 # 
 #  Demais membros:
 #  - pos-processamento das previsoes geradas a partir das analises perturbadas randomicamente:
@@ -61,7 +61,7 @@
 #BOC
 
 # Descomentar para debugar
-#set -o xtrace
+set -o xtrace
 
 # Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]
@@ -135,20 +135,21 @@ else
 fi
 if [ -z "${7}" ]
 then
-  echo "ANLTYPE is not set" 
+  echo "ANLTYPE is not set"
+  exit 4 
 else
-  if [ "${7}" != "CTR" ] # pode ser RDP, NPT ou PPT
+  if [ "${7}" == "CTR" -o "${7}" = "NMC" ] # pode ser RDP, NPT ou PPT
   then 
     export ANLTYPE=${7}  
+  else
     if [ -z "${8}" ]
     then
       echo "ANLPERT is not set" 
-      exit 1
+      exit 5
     else
+      export ANLTYPE=${7}  
       export ANLPERT=${8}  
     fi
-  else
-    export ANLTYPE=CTR
   fi
 fi
 
@@ -179,7 +180,7 @@ export REGINT=".FALSE."
 export RESPOS="-0.50000"
 
 # Variáveis utilizadas no script de submissão
-if [ ${ANLTYPE} == CTR ]
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC ]
 then
 
   EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}
@@ -226,7 +227,7 @@ else
 
 fi
 
-if [ ${ANLTYPE} != CTR ]
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
   export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
@@ -297,6 +298,5 @@ do
 /opt/grads/2.0.a9/bin/gribmap -i ${arqctl}
 
 done
-
 
 exit 0

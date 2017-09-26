@@ -129,6 +129,12 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
 
 #
+# Create output directory
+#
+
+mkdir -p \${DK_suite}/eof/dataout/${RESOL}${NIVEL}/
+
+#
 #  Change directory to run
 #
 
