@@ -2,14 +2,172 @@ Neste diretório estão contidos os arquivos de configuração necessários aos 
 
 Em cada diretório, estão presentes os seguintes arquivos, responsáveis pela definição das dimensões das grades dos arquivos de análise e previsões e definição das regiões a serem perturbadas (com base nas dimensões de grade):
 
-- rdpert.h
-- nvector.inc
-- fftpln.h
-- deceof.h
-- deceof2.h
-- decanl.h
-- reseofes.inc
-- recfct.h
-- recanl.h
+- rdpert.h     : contém informações sobre as dimensões da grade e número de perturbações randômicas;
+- nvector.inc  : contém informação sobre o tamanho do array com as EOFs utilizadas nas perturbações ótimas;
+- fftpln.h     : contém informações sobre as dimensões da grade;
+- deceof.h     : contém informações sobre as dimensões da grade, o número de EOFs utilizadas, o número de variáveis a serem perturbadas e o número de regiões a serem perturbadas;
+- deceof2.h    : contém informações sobre as posições das regiões a serem perturbadas (atualmente, são 5);
+- decanl.h     : contém informações sobre as dimensões da grade;
+- reseofes.inc : contém informações sobre as dimensões da grade e o número de EOFs utilizadas;
+- recfct.h     : contém informações sobre as dimensões da grade e o número de EOFs utilizadas;
+- recanl.h     : contém informações sobre as dimensões da grade e o número de EOFs utilizadas;
 
-Última atualização: carlos.frederico@cptec.inpe.br (21/09/2017)
+Mais informações sobre as regiões perturbadas por EOF, levando-se em consideração a Tese de Doutorado do Dr. Marcos Mendonça, a partir da qual estabeleceu-se o esquema de perturbações "MB09":
+
+#
+# TQ0126L028 (384 x 192)
+#
+
+# - Regiões Antigas:
+
+# Coordenadas das regiões em "grid" (N/S)
+# Para converter para "world coordinates" (graus),
+# usar o comando "q gr2w Xdim Ydim"
+#    HS         TR         HN         AS        AAS        GL
+# =================================================================
+# JN(1)=1  ; JN(2)=76 ; JN(3)=118; JN(4)=75 ; JN(5)=109; JN(6)=1  ;
+# JS(1)=75 ; JS(2)=117; JS(3)=192; JS(4)=108; JS(5)=161; JS(6)=192;
+# IW(1)=1  ; IW(2)=1  ; IW(3)=1  ; IW(4)=276; IW(5)=266; IW(6)=1  ; 
+# IE(1)=384; IE(2)=384; IE(3)=384; IE(4)=372; IE(5)=362; IE(6)=384;
+
+# Coordenadas das regiões em "world coordinates" (graus)
+# Para converter para "grid" (N/S),
+# usar o comando "q w2gr lon lat"
+#         HS                TR                HN                 AAS                ?                GL
+# ===============================================================================================================
+# lat1(1)= -89.2843; lat1(2)= -19.1688; lat1(3)= 20.1038; lat1(4)= -20.1038; lat1(5)= 11.6883; lat1(6)= -89.2843;
+# lat2(1)= -20.1038; lat2(2)=  19.1688; lat2(3)= 89.2843; lat2(4)=  10.7532; lat2(5)= 60.3114; lat2(6)=  89.2843;
+# lon1(1)= 0       ; lon1(2)= 0       ; lon1(3)= 0      ; lon1(4)=  257.812; lon1(5)= 248.438; lon1(6)= 0       ; 
+# lon2(1)= 360     ; lon2(2)= 360     ; lon2(3)= 360    ; lon2(4)=  347.812; lon2(5)= 338.438; lon2(6)= 360     ;
+
+# - Regiões Corrigidas:
+
+# Coordenadas das regiões em "grid" (N/S)
+# Para converter para "world coordinates" (graus),
+# usar o comando "q gr2w Xdim Ydim"
+#    HS         TR         HN         NAS        SAS       ATL(?)       GL
+# ============================================================================
+# JN(1)=1  ; JN(2)=76 ; JN(3)=118; JN(4)=76 ; JN(5)= 35; JN(5)=109; JN(6)=1  ;
+# JS(1)=75 ; JS(2)=117; JS(3)=192; JS(4)=117; JS(5)= 75; JS(5)=161; JS(6)=192;
+# IW(1)=1  ; IW(2)=1  ; IW(3)=1  ; IW(4)=275; IW(5)=275; IW(5)=265; IW(6)=1  ; 
+# IE(1)=383; IE(2)=383; IE(3)=383; IE(4)=370; IE(5)=370; IE(5)=360; IE(6)=383;
+
+# Coordenadas das regiões em "world coordinates" (graus)
+# Para converter para "grid" (N/S),
+# usar o comando "q w2gr lon lat"
+#         HS                TR                HN                  NAS                SAS              ATL(?)              GL
+# ==================================================================================================================================
+# lat1(1)= -89.2843; lat1(2)= -19.1688; lat1(3)= 20.1038; lat1(4)= -19.1688; lat1(5)= -57.5064; lat1(6)= 11.6883; lat1(7)= -89.2843;
+# lat2(1)= -20.1038; lat2(2)=  19.1688; lat2(3)= 89.2843; lat2(4)=  19.1688; lat2(5)= -20.1038; lat2(6)= 60.3114; lat2(7)=  89.2843;
+# lon1(1)= 0       ; lon1(2)= 0       ; lon1(3)= 0      ; lon1(4)=  257.812; lon1(5)= 257.812 ; lon1(6)= 248.438; lon1(7)= 0       ; 
+# lon2(1)= 360     ; lon2(2)= 360     ; lon2(3)= 360    ; lon2(4)=  347.812; lon2(5)= 347.812 ; lon2(6)= 338.438; lon2(7)= 360     ;
+
+# HS
+#q w2xy 0 -89.2843
+#q w2xy 360 -20.1038
+#'set line 2 1 6'
+#'draw rec 0.5 1.27386 10.5 3.57987'
+
+# TR
+#q w2xy 0 -19.1688
+#q w2xy 360 19.1688
+#'set line 3 1 6'
+#'draw rec 0.5 3.61104 10.5 4.88896'
+
+# HN
+#q w2xy 0 20.1038
+#q w2xy 360 89.2843
+#'set line 4 1 6'
+#'draw rec 0.5 4.92013 10.5 7.22614'
+
+# NAS
+#q w2xy 257.812 -19.1688
+#q w2xy 347.812 19.1688
+#'set line 5 1 6'
+#'draw rec 7.66144 3.61104 10.1614 4.88896'
+
+# SAS
+#q w2xy 257.812 -57.5064
+#q w2xy 347.812 -20.1038
+#'set line 6 1 6'
+#'draw rec 7.66144 2.33312 10.1614 3.57987'
+
+# ATL
+#q w2xy 248.438 11.6883
+#q w2xy 338.438 60.3114
+#'set line 1 1 6'
+#'draw rec 7.40106 4.63961 9.90106 6.26038'
+
+# GL
+#q w2xy 0 -89.2843
+#q w2xy 360 89.2843
+#'set line 7 1 6'
+#'draw rec 0.5 1.27386 10.5 7.22614'
+
+#
+# TQ0213L042 (640 x 320)
+#
+
+# Coordenadas das regiões em "grid" (N/S)
+# Para converter para "world coordinates" (graus),
+# usar o comando "q gr2w Xdim Ydim"
+#    HS         TR         HN         NAS        SAS       ATL(?)       GL
+# ============================================================================
+# JN(1)=1  ; JN(2)=126; JN(3)=196; JN(4)=126; JN(5)= 53; JN(6)=181; JN(7)=1  ;
+# JS(1)=125; JS(2)=195; JS(3)=320; JS(4)=195; JS(5)=125; JS(6)=268; JS(7)=320;
+# IW(1)=1  ; IW(2)=1  ; IW(3)=1  ; IW(4)=459; IW(5)=443; IW(6)=443; IW(7)=1  ; 
+# IE(1)=641; IE(2)=641; IE(3)=641; IE(4)=619; IE(5)=603; IE(6)=603; IE(7)=641;
+
+# Coordenadas das regiões em "world coordinates" (graus)
+# Para converter para "grid" (N/S),
+# usar o comando "q w2gr lon lat"
+#         HS                TR                HN                 NAS                SAS              ATL(?)             GL
+# =================================================================================================================================
+# lat1(1)= -89.5702; lat1(2)= -19.376; lat1(3)= 19.9376; lat1(4)= -19.376; lat1(5)= -60.3743; lat1(6)=  11.5132; lat1(7)= -89.5702;
+# lat2(1)= -19.9376; lat2(2)=  19.376; lat2(3)= 89.5702; lat2(4)=  19.376; lat2(5)= -19.9376; lat2(6)=  60.3743; lat2(7)=  89.5702;
+# lon1(1)= 0       ; lon1(2)= 0      ; lon1(3)= 0      ; lon1(4)= 257.625; lon1(5)= 248.625 ; lon1(6)= 248.625 ; lon1(7)= 0       ; 
+# lon2(1)= 360     ; lon2(2)= 360    ; lon2(3)= 360    ; lon2(4)= 347.625; lon2(5)= 338.625 ; lon2(6)= 338.625 ; lon2(7)= 360     ;
+
+# HS
+#q w2xy 0 -89.5702
+#q w2xy 360 -19.9376
+#'set line 2 1 6'
+#'draw rec 0.5 1.26433 10.5 3.58541'
+
+# TR
+#q w2xy 0 -19.376
+#q w2xy 360 19.376
+#'set line 3 1 6'
+#'draw rec 0.5 3.60413 10.5 4.89587'
+
+# HN
+#q w2xy 0 19.9376 
+#q w2xy 360 89.5702
+#'set line 4 1 6'
+#'draw rec 0.5 4.91459 10.5 7.23567'
+
+# NAS
+#q w2xy 257.625 -19.376
+#q w2xy 347.625 19.376
+#'set line 5 1 6'
+#'draw rec 7.65625 3.60413 10.1562 4.89587'
+
+# SAS
+#q w2xy 248.625 -60.3743
+#q w2xy 338.625 -19.9376
+#'set line 6 1 6'
+#'draw rec 7.40625 2.23752 9.90625 3.58541'
+
+# ATL
+#q w2xy 248.625 11.5132
+#q w2xy 338.625 60.3743
+#'set line 1 1 6'
+#'draw rec 7.40625 4.63377 9.90625 6.26248'
+
+# GL
+#q w2xy 0 -89.5702
+#q w2xy 360 89.5702
+#'set line 7 1 6'
+#'draw rec 0.5 1.26433 10.5 7.23567'
+
+Última atualização: carlos.frederico@cptec.inpe.br (29/09/2017)
