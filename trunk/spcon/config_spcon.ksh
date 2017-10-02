@@ -76,7 +76,7 @@ set -o xtrace
 # e instalação do SPCON)
 vars_export() {
 
-  export spcon_name=spcon_bam_mb09
+  export spcon_name=oensMB09_bam
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
   export work_spcon=${WORK_HOME}/${spcon_name}
@@ -134,7 +134,7 @@ configurar() {
 
     cd ${spcon_run}/
 
-    ln -svf ${bam_run}/* .
+    ln -svfn ${bam_run}/* .
 
   else
 
@@ -157,20 +157,28 @@ configurar() {
       proc_dataout=${model_datain} # As análises espectrais perturbadas devem ser encontradas no model/datain
       proc_output=${work_spcon}/${proc}/output
 
+      cd ${dir_proc}
+
+      if [ ! -d "${proc_dataout}" ]; then mkdir -p ${proc_dataout}; fi
+      ln -sfn ${proc_dataout} dataout
+
+      if [ ! -d "${proc_output}" ]; then mkdir -p ${proc_output}; fi
+      ln -sfn ${proc_output}
+
     else
 
       proc_dataout=${work_spcon}/${proc}/dataout
       proc_output=${work_spcon}/${proc}/output
 
+      cd ${dir_proc}
+
+      if [ ! -d "${proc_dataout}" ]; then mkdir -p ${proc_dataout}; fi
+      ln -sfn ${proc_dataout}
+
+      if [ ! -d "${proc_output}" ]; then mkdir -p ${proc_output}; fi
+      ln -sfn ${proc_output}
+
     fi
-
-    cd ${dir_proc}
-
-    if [ ! -d "${proc_dataout}" ]; then mkdir -p ${proc_dataout}; fi
-    ln -sf ${proc_dataout}
-
-    if [ ! -d "${proc_output}" ]; then mkdir -p ${proc_output}; fi
-    ln -sf ${proc_output}
 
   done
 

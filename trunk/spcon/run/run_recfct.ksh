@@ -60,7 +60,7 @@ export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 . ${FILEENV} ${1} ${2}
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 # Verificação dos argumentos de entrada
 if [ -z "${1}" ]
@@ -115,7 +115,7 @@ HSTMAQ=$(hostname)
 RUNTM=$(date +'%y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
-mkdir -p ${DK_suite}/recfct/output
+mkdir -p ${DK_suite}/../recfct/output
 
 # Opções específicas para o conjunto de membros ou apenas o controle
 if [ ${PREFIC} != CTR ]
@@ -137,10 +137,10 @@ RUNTM=$(date +"%s")
 # Script de submissão
 SCRIPTSFILE=setrecfct${TYPES}.${TRCLV}.${LABELI}${LABELF}.${PBS_SERVER}
 
-cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.err
+#PBS -o ${DK_suite}/../recfct/output/${SCRIPTSFILE}.${RUNTM}.out
+#PBS -e ${DK_suite}/../recfct/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=00:05:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
@@ -236,45 +236,45 @@ do
   
   GNAMEL=\${NAMEL}\${LABELI}\${LABELF}\${EXTL}.\${TRCLV}
   echo \${GNAMEL}
-  echo \${DK_suite}/recfct/datain/\${GNAMEL}
+  echo \${DK_suite}/../recfct/datain/\${GNAMEL}
   
-cat <<EOT2 > \${DK_suite}/recfct/datain/\${GNAMEL}
+cat <<EOT2 > \${DK_suite}/../recfct/datain/\${GNAMEL}
 \${NAMES}\${LABELI}\${LABELF}\${ERS1}.\${TRCLV}
 \${NAMER}\${LABELI}\${LABELF}\${ERR1}.\${TRCLV}
 EOT2
 
-cat <<EOT3 > \${DK_suite}/recfct/datain/recfct\${TYPES}.nml
+cat <<EOT3 > \${DK_suite}/../recfct/datain/recfct\${TYPES}.nml
  &DATAIN
   LDIM=1
-  DIRL='\${DK_suite}/recfct/datain/ '
+  DIRL='\${DK_suite}/../recfct/datain/ '
   DIRS='\${DK_suite}/model/dataout/\${TRCLV}/\${LABELI}/\${MEM}${PREFIC}/  '
-  DIRR='\${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/ '
+  DIRR='\${DK_suite}/../recfct/dataout/\${TRCLV}/\${LABELI}/ '
   GNAMEL='\${GNAMEL} '
  &END
 EOT3
 
-  mkdir -p \${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/
+  mkdir -p \${DK_suite}/../recfct/dataout/\${TRCLV}/\${LABELI}/
 
   #
   #  Run Decomposition
   #
   
-  cd ${HOME_suite}/recfct/bin/\${TRCLV}
+  cd ${HOME_suite}/../recfct/bin/\${TRCLV}
   
-  ./recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
+  ./recfct.\${TRCLV} < ${DK_suite}/../recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/../recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
   
 done
 
-touch ${DK_suite}/recfct/bin/\${TRCLV}/monitor.${MONITORID}
+touch ${DK_suite}/../recfct/bin/\${TRCLV}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
-chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
+chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
 qsub ${SCRIPTSFILE}
 
-until [ -e "${DK_suite}/recfct/bin/${TRCLV}/monitor.${MONITORID}" ]; do sleep 1s; done
+until [ -e "${DK_suite}/../recfct/bin/${TRCLV}/monitor.${MONITORID}" ]; do sleep 1s; done
 
-rm ${DK_suite}/recfct/bin/${TRCLV}/monitor.${MONITORID}
+rm ${DK_suite}/../recfct/bin/${TRCLV}/monitor.${MONITORID}
 
 exit 0
