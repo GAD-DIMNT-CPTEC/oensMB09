@@ -82,6 +82,8 @@ vars_export() {
 
   export home_bam=${home_spcon}/bam
 
+  export bam_run=${home_bam}/run
+
   export bam_pre=${home_bam}/pre
   export bam_model=${home_bam}/model
   export bam_pos=${home_bam}/pos
@@ -124,16 +126,16 @@ configurar() {
 
   echo "Configurar"
 
-  if [ -d "../bam/run/" ]
+  if [ -d "${bam_run}" ]
   then
 
     cd ${spcon_run}/
 
-    ln -svf ../bam/run/* .
+    ln -svf ${bam_run}/* .
 
   else
 
-    echo "Diretório ${spcon_run}/../bam/run/ não existe!"
+    echo "Diretório ${bam_run} não existe!"
     exit 1
 
   fi
@@ -161,16 +163,19 @@ configurar() {
 
     cd ${dir_proc}
 
-    if [ -d "${proc_dataout}" ]; then mkdir -p ${proc_dataout}; fi
+    if [ ! -d "${proc_dataout}" ]; then mkdir -p ${proc_dataout}; fi
     ln -sf ${proc_dataout}
 
-    if [ -d "${proc_output}" ]; then mkdir -p ${proc_output}; fi
+    if [ ! -d "${proc_output}" ]; then mkdir -p ${proc_output}; fi
     ln -sf ${proc_output}
 
   done
 
   # Cria um arquivo texto com os valores das variáveis da função "vars_export"
-  nohup /bin/bash -x ./config_spcon.ksh vars_export > VARIAVEIS &
+  cd ${home_spcon}
+
+  nohup /bin/bash -x ./config_spcon.ksh vars_export > .VARIAVEIS1 2> VARIAVEIS < /dev/null &
+  rm .VARIAVEIS1
 
 }
 
@@ -251,7 +256,9 @@ ajuda() {
   echo "     * compila os módulos de perturbação e o modelo BAM"
   echo "  4) ./config_spcon.ksh testcase"
   echo "     * aloca os dados necessários para testar a instalação"
-  echo "  5) ./config_spcon.ksh ajuda"
+  echo "  5) ./config_spcon.ksh configurar"
+  echo "     * cria diretórios e links simbólicos da instalação"
+  echo "  6) ./config_spcon.ksh ajuda"
   echo "     * mostra este menu de ajuda"
 
   echo ""
@@ -347,6 +354,11 @@ else
   
     testcase
  
+  elif [ ${1} == "configurar" ]
+  then
+
+    configurar
+ 
   elif [ ${1} == "compilar" ]
   then
 
@@ -365,15 +377,20 @@ else
   elif [ ${1} == "model" ]
   then
   
-    if [ ${#} -ne 2 ]
+    if [ ${#} -eq 2 ]
     then
   
+      model ${2}
+  
+    elif [ ${#} -eq 1 ] 
+    then
+  
+      model
+
+    else
+
       ajuda
       exit 2
-  
-    else
-  
-      model ${2}
   
     fi
   
