@@ -1,5 +1,24 @@
 Este pacote contem as rotinas e scripts de perturbacao das condicoes iniciais para SPCON-MB09 do CPTEC/INPE.
 
+Nas revisões mais recentes do pacote do SPCON global, os procedimentos obtenção do modelo BAM, configuração e compilação são feitos a partir do script "config_spcon.ksh". Siga as instruções a seguir para configurar e compilar o SPCON global.
+
+1) Login na eslogin01 ou eslogin02
+$ ssh eslogin01
+ou
+$ ssh eslogin02
+2) Obter uma cópia do modelo BAM (trunk)
+$ ./config_spcon.ksh model
+3) Obter uma cópia do utilitário inctime (trunk)
+$ ./config_spcon.ksh inctime
+4) Configurar o pacote (cria links simbólicos e diretórios)
+$ ./config_spcon.ksh configurar
+5) Compilar o pacote (método de perturbação, modelo e utilitários)
+$ ./config_spcon.ksh compilar
+6) Obter os dados para a realização do testcase
+$ ./config_spcon.ksh testcase
+
+As informações a seguir são apresentada apenas para consulta em relação às revisões anteriores do SPCON global.
+
 Para compilar:
 1) Login em qualquer eslogin0* (exceto eslogin01);
 2) Executar o comando abaixo e escolher a opcao 6:
@@ -82,4 +101,4 @@ Currently Loaded Modulefiles:
  13) udreg/2.3.1-1.0400.4264.3.1.gem           27) admin-modules/1.0.2-1.0400.31284.2.2.gem
  14) xt-libsci/11.1.01                         28) Base-opts/1.0.2-1.0400.31284.2.2.gem
 
-Ultima atualizacao: carlos.frederico@cptec.inpe.br (24/02/2016)
+Ultima atualizacao: carlos.frederico@cptec.inpe.br (02/10/2017)
