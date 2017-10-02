@@ -56,7 +56,7 @@ export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 . ${FILEENV} ${1} ${2}
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -79,7 +79,7 @@ else
   LABELI=${4}
 fi
 
-bin=${DK_suite}/recanl/bin/${RESOL}${NIVEL}; mkdir -p ${bin}
+bin=${DK_suite}/../recanl/bin/${RESOL}${NIVEL}; mkdir -p ${bin}
 
 # Variáveis utilizadas no script de submissão
 HSTMAQ=$(hostname)
@@ -94,16 +94,16 @@ echo ${EXT}
 
 export PBS_SERVER=aux20-eth4
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
-mkdir -p ${DK_suite}/recanl/output
+mkdir -p ${DK_suite}/../recanl/output
 
 SCRIPTSFILE=setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTSFILE}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
+#PBS -o ${DK_suite}/../recanl/output/${SCRIPTSFILE}.${RUNTM}.out
+#PBS -e ${DK_suite}/../recanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=0:05:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
@@ -114,7 +114,7 @@ cat <<EOT0 > ${SCRIPTSFILE}
 
 export PBS_SERVER=aux20-eth4
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 . ${FILEENV} ${1} ${2}
 
 #
@@ -177,32 +177,32 @@ fi
 #  IOPERMOD is the directory for input file.
 #
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 #
 #  Now, build the necessary NAMELIST input:
 #
 
 export GNAMEL=\${NAMEL}${LABELI}\${EXTL}.${RESOL}${NIVEL}
-echo ${DK_suite}/recanl/datain/\${GNAMEL}
+echo ${DK_suite}/../recanl/datain/\${GNAMEL}
 
-cat <<EOT2 > ${DK_suite}/recanl/datain/\${GNAMEL}
+cat <<EOT2 > ${DK_suite}/../recanl/datain/\${GNAMEL}
 \${NAMES}${LABELI}\${ERS1}.${RESOL}${NIVEL}
 \${NAMER}${LABELI}\${ERR1}.${RESOL}${NIVEL}
 EOT2
 
-cat <<EOT3 > ${DK_suite}/recanl/datain/recanl${PERR}.nml
+cat <<EOT3 > ${DK_suite}/../recanl/datain/recanl${PERR}.nml
  &DATAIN
   LDIM=1
-  DIRL='${DK_suite}/recanl/datain/ '
+  DIRL='${DK_suite}/../recanl/datain/ '
   DIRS='${DK_suite}/model/datain/ '
-  DIRR='${DK_suite}/recanl/dataout/${RESOL}${NIVEL}/ '
+  DIRR='${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/ '
   GNAMEL='\${GNAMEL} '
  &END
 EOT3
 
-mkdir -p ${DK_suite}/recanl/dataout/${RESOL}${NIVEL}/ 
-cd ${HOME_suite}/run
+mkdir -p ${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/ 
+cd ${HOME_suite}/../run
 
 #
 #  Run Decomposition
@@ -214,7 +214,7 @@ echo 'Running recomposition...'
 #  Set directories
 #
 
-export recanl_dir=${HOME_suite}/recanl
+export recanl_dir=${HOME_suite}/../recanl
 
 export source=\${recanl_dir}/source
 export bin=\${recanl_dir}/bin/${RESOL}${NIVEL}; mkdir -p \${bin}

@@ -181,7 +181,7 @@ export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 . ${FILEENV} ${RES} ${PREFIC}
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -199,8 +199,8 @@ export TIMESTEP=600
 DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 MAQUI=$(hostname -s)
 
-SCRIPTFILEPATH=${HOME_suite}/run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}modg.${DIRRESOL}.${LABELI}.${MAQUI}
-NAMELISTFILEPATH=${HOME_suite}/run
+SCRIPTFILEPATH=${HOME_suite}/../run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}modg.${DIRRESOL}.${LABELI}.${MAQUI}
+NAMELISTFILEPATH=${HOME_suite}/../run
 
 # As opções abaixo fazem referência à frequência de saída das previsões (DHFCT) e dos arquivos de restart (DHRES)
 # Se ANLTYPE for igual a CTR ou RDP, então as previsões serão referentes à análise controle, com previsões para

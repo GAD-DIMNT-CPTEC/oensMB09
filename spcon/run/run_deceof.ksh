@@ -62,7 +62,7 @@ export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 . ${FILEENV} ${1}
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -128,7 +128,7 @@ MVHN=1; MVTR=1; MVHS=1; MVSAN=1; MVSAS=1
 # Variáveis utilizadas no script de submissão
 export PBS_SERVER=aux20-eth4
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 RUNTM=$(date +"%s")
 
@@ -139,10 +139,10 @@ MONITORID=${RANDOM}
 
 cat <<EOT0 > ${SCRIPTSFILES}
 #! /bin/bash -x
-###PBS -o ${DK_suite}/deceof/output/setdeceof${PERR}${RESOL}${NIVEL}${LABELI}.${MAQUI}.${RUNTM}.out
-###PBS -e ${DK_suite}/deceof/output/setdeceof${PERR}${RESOL}${NIVEL}${LABELI}.${MAQUI}.${RUNTM}.err
-#PBS -o ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
-#PBS -e ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
+###PBS -o ${DK_suite}/../deceof/output/setdeceof${PERR}${RESOL}${NIVEL}${LABELI}.${MAQUI}.${RUNTM}.out
+###PBS -e ${DK_suite}/../deceof/output/setdeceof${PERR}${RESOL}${NIVEL}${LABELI}.${MAQUI}.${RUNTM}.err
+#PBS -o ${DK_suite}/../deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
+#PBS -e ${DK_suite}/../deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
 #PBS -l walltime=0:15:00
 #PBS -l mppnppn=1
 #PBS -A CPTEC
@@ -238,12 +238,12 @@ export MACH=${MAQUI}
 
 GNAMEL=\${NAMEL}\${LABELI}\${EXTL}.\${TRUNC}\${LEV}
 
-cat <<EOT3 > \${DK_suite}/deceof/datain/deceof\${NUM}.nml
+cat <<EOT3 > \${DK_suite}/../deceof/datain/deceof\${NUM}.nml
  &DATAIN
   GNAMEL='\${GNAMEL} '
-  DIRL='\${DK_suite}/deceof/datain/ '
+  DIRL='\${DK_suite}/../deceof/datain/ '
   DIRI='\${DK_suite}/model/datain/ '
-  DIRG='\${DK_suite}/eof/dataout/\${TRUNC}\${LEV}/ '
+  DIRG='\${DK_suite}/../eof/dataout/\${TRUNC}\${LEV}/ '
   DIRS='\${DK_suite}/model/datain/ '
  &END
  &HUMIDI
@@ -311,9 +311,9 @@ echo "filevhs= "\${filevhs}
 echo "filevsan="\${filevsan} 
 echo "filevsas="\${filevsas} 
 
-rm -f \${DK_suite}/deceof/datain/\${GNAMEL}
+rm -f \${DK_suite}/../deceof/datain/\${GNAMEL}
 
-cat <<EOT2 > \${DK_suite}/deceof/datain/\${GNAMEL}
+cat <<EOT2 > \${DK_suite}/../deceof/datain/\${GNAMEL}
 \${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 \${filephn}
 \${fileptr}
@@ -347,9 +347,9 @@ EOT2
 #  Run Decomposition
 #
 
-cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
+cd \${HOME_suite}/../deceof/bin/\${TRUNC}\${LEV}
 
-./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/../deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/../deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
 filephn=prssnhn\${NUM}${MPHN}\${LABELI}
 fileptr=prssntr\${NUM}${MPTR}\${LABELI}
@@ -411,9 +411,9 @@ echo "filevhs= "\${filevhs}
 echo "filevsan="\${filevsan} 
 echo "filevsas="\${filevsas} 
 
-rm -f \${DK_suite}/deceof/datain/\${GNAMEL}
+rm -f \${DK_suite}/../deceof/datain/\${GNAMEL}
 
-cat <<EOT4 > \${DK_suite}/deceof/datain/\${GNAMEL}
+cat <<EOT4 > \${DK_suite}/../deceof/datain/\${GNAMEL}
 \${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 \${filephn}
 \${fileptr}
@@ -447,22 +447,22 @@ EOT4
 #  Run Decomposition
 #
 
-cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
+cd \${HOME_suite}/../deceof/bin/\${TRUNC}\${LEV}
 
-./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/../deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/../deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
 touch ${DK_suite}/deceof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
-chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
+chmod +x ${HOME_suite}/../run/${SCRIPTSFILES}
 
 qsub ${SCRIPTSFILES}
 
-until [ -e "${DK_suite}/deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
+until [ -e "${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
 
-echo "SUBMIT: ${HOME_suite}/run/${SCRIPTSFILES}"
+echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILES}"
 
-rm ${DK_suite}/deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
+rm ${DK_suite}/deceof/../bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0

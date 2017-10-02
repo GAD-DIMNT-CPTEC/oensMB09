@@ -87,7 +87,7 @@ export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 . ${FILEENV} ${TRCLV} ${NMEM}
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -98,7 +98,7 @@ export NIVEL=${TRCLV:6:4}
 LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%Y%m%d%H")
 export LABELI LABELF NFDAYS
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 # Variáveis utilizadas no script de submissão
 export PBS_SERVER=aux20-eth4
@@ -113,10 +113,10 @@ MONITORID=${RANDOM}
 
 RUNTM=$(date +"%s")
 
-cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.err
+#PBS -o ${DK_suite}/../eof/output/${SCRIPTSFILE}.${RUNTM}.out
+#PBS -e ${DK_suite}/../eof/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=0:10:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
@@ -132,13 +132,13 @@ export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
 # Create output directory
 #
 
-mkdir -p \${DK_suite}/eof/dataout/${RESOL}${NIVEL}/
+mkdir -p \${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/
 
 #
 #  Change directory to run
 #
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 #
 #  Run scripts of recomposition         
@@ -265,30 +265,30 @@ echo "Hour: "\$HOUR
 
 export ext=R.fct.${RESOL}${NIVEL}
 
-cd ${DK_suite}/recfct/dataout/${RESOL}${NIVEL}/${LABELI}/
+cd ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/
 
 for LABELF in \$( ls -1 GFCTCTR${LABELI}*fct* | cut -c18-27)
 do
-cat <<EOT1 >> ${DK_suite}/eof/datain/templ\${REG}\${MEM}${LABELI}
-${DK_suite}/recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTCTR${LABELI}\${LABELF}\${ext}
-${DK_suite}/recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCT\${MEM}R${LABELI}\${LABELF}\${ext}
+cat <<EOT1 >> ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
+${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTCTR${LABELI}\${LABELF}\${ext}
+${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCT\${MEM}R${LABELI}\${LABELF}\${ext}
 EOT1
 done
 
-echo ${DK_suite}/eof/datain/templ\${REG}\${MEM}${LABELI}
+echo ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
 
-cp ${DK_suite}/eof/datain/templ\${REG}\${MEM}${LABELI} ${DK_suite}/eof/datain/templ\${MEM}${LABELI}
+cp ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI} ${DK_suite}/../eof/datain/templ\${MEM}${LABELI}
 
-cd \${DK_suite}/eof/datain
+cd \${DK_suite}/../eof/datain
 
 export ext=R.unf
 
 cat <<EOT1 > eofpres\${REG}\${MEM}.nml
  &DATAIN
-  DIRI='\${DK_suite}/eof/datain/ '
+  DIRI='\${DK_suite}/../eof/datain/ '
 !  DIRA='\${DK_suite}/model/datain/ '
-  DIRA='\${DK_suite}/rdpert/dataout/${RESOL}${NIVEL}/ '
-  DIRO='\${DK_suite}/eof/dataout/${RESOL}${NIVEL}/ '
+  DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
+  DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${MEM}${LABELI} '
   ANAME='GANL\${MEM}R${LABELI}\${ext}.${RESOL}${NIVEL} '
   PRSOUT='prsout\${REG}\${MEM}${LABELI} '
@@ -330,21 +330,21 @@ cat <<EOT1 > eofpres\${REG}\${MEM}.nml
  &END
 EOT1
 
-cd \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
+cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
-./eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-touch ${DK_suite}/eof/bin/\${RESOL}\${NIVEL}/monitor-pres.\${REG}.${MONITORID}
+./eofpres.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-pres.\${REG}.${MONITORID}
 
-cd \${DK_suite}/eof/datain
+cd \${DK_suite}/../eof/datain
 
 export ext=R.unf
 
 cat <<EOT1 > eoftem\${REG}\${MEM}.nml
  &DATAIN
-  DIRI='\${DK_suite}/eof/datain/ '
-!  DIRA='\${DK_suite}/recanl/dataout/${RESOL}${NIVEL}/ '
-  DIRA='\${DK_suite}/rdpert/dataout/${RESOL}${NIVEL}/ '
-  DIRO='\${DK_suite}/eof/dataout/${RESOL}${NIVEL}/ '
+  DIRI='\${DK_suite}/../eof/datain/ '
+!  DIRA='\${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/ '
+  DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
+  DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
   ANAME='GANL\${MEM}R\${LABELI}\${ext}.${RESOL}${NIVEL} '
   TEMOUT='temout\${REG}\${MEM}\${LABELI} '
@@ -391,10 +391,10 @@ cat <<EOT1 > eoftem\${REG}\${MEM}.nml
  &END
 EOT1
 
-cd \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
+cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
-./eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-touch ${DK_suite}/eof/bin/\${RESOL}\${NIVEL}/monitor-temp.\${REG}.${MONITORID}
+./eoftem.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-temp.\${REG}.${MONITORID}
 
 if [ ${HUMID} = YES ] 
 then
@@ -403,16 +403,16 @@ then
   #  Now, build the necessary NAMELIST input:
   #
 
-  cd \${DK_suite}/eof/datain
+  cd \${DK_suite}/../eof/datain
 
   export ext=R.unf
 
 cat <<EOT1 > eofhum\${REG}\${MEM}.nml
  &DATAIN
-  DIRI='\${DK_suite}/eof/datain/ '
-!  DIRA='\${DK_suite}/recanl/dataout/${RESOL}${NIVEL}/ '
-  DIRA='\${DK_suite}/rdpert/dataout/${RESOL}${NIVEL}/ '
-  DIRO='\${DK_suite}/eof/dataout/${RESOL}${NIVEL}/ '
+  DIRI='\${DK_suite}/../eof/datain/ '
+!  DIRA='\${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/ '
+  DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
+  DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
   ANAME='GANL\${MEM}R\${LABELI}\${ext}.${RESOL}${NIVEL} '
   HUMOUT='humout\${REG}\${MEM}\${LABELI} '
@@ -460,23 +460,23 @@ cat <<EOT1 > eofhum\${REG}\${MEM}.nml
  &END
 EOT1
 
-  cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
+  cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
-  ./eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-  touch ${DK_suite}/eof/bin/\${RESOL}\${NIVEL}/monitor-hum.\${REG}.${MONITORID}
+  ./eofhum.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-hum.\${REG}.${MONITORID}
 
 fi
 
-cd \${DK_suite}/eof/datain
+cd \${DK_suite}/../eof/datain
 
 export ext=R.unf
 
 cat <<EOT1 > eofwin\${REG}\${MEM}.nml
  &DATAIN
-  DIRI='\${DK_suite}/eof/datain/ '
-!  DIRA='\${DK_suite}/recanl/dataout/${RESOL}${NIVEL}/ '
-  DIRA='\${DK_suite}/rdpert/dataout/${RESOL}${NIVEL}/ '
-  DIRO='\${DK_suite}/eof/dataout/${RESOL}${NIVEL}/ '
+  DIRI='\${DK_suite}/../eof/datain/ '
+!  DIRA='\${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/ '
+  DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
+  DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
   ANAME='GANL\${MEM}R\${LABELI}\${ext}.${RESOL}${NIVEL} '
   WINOUT='winout\${REG}\${MEM}\${LABELI} '
@@ -612,22 +612,22 @@ cat <<EOT1 > eofwin\${REG}\${MEM}.nml
  &END
 EOT1
 
-cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
+cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
-./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-touch ${DK_suite}/eof/bin/\${RESOL}\${NIVEL}/monitor-win.\${REG}.${MONITORID}
+./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/../eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-win.\${REG}.${MONITORID}
 
 done
 
-touch ${DK_suite}/eof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
-chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
+chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
-qsub ${HOME_suite}/run/${SCRIPTSFILE}
+qsub ${HOME_suite}/../run/${SCRIPTSFILE}
 
-until [ -e "${DK_suite}/eof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
-rm ${DK_suite}/eof/bin/${RESOL}${NIVEL}/monitor*.${MONITORID}
+until [ -e "${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
+rm ${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor*.${MONITORID}
 
 exit 0

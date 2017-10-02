@@ -60,7 +60,7 @@ export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
 . ${FILEENV} ${1} ${2}
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -110,9 +110,9 @@ echo ${RUNTM}
 echo ${EXT}
 
 export PBS_SERVER=aux20-eth4
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
-mkdir -p ${DK_suite}/rdpert/output
+mkdir -p ${DK_suite}/../rdpert/output
 
 # Script de submissão
 SCRIPTSFILE=setrdpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
@@ -121,8 +121,8 @@ MONITORID=${RANDOM}
 
 cat <<EOT0 > ${SCRIPTSFILE}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
+#PBS -o ${DK_suite}/../rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
+#PBS -e ${DK_suite}/../rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -S /bin/bash
 #PBS -l walltime=0:01:00
 #PBS -l select=1:ncpus=1
@@ -133,7 +133,7 @@ cat <<EOT0 > ${SCRIPTSFILE}
 
 export PBS_SERVER=aux20-eth4
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 . ${FILEENV} ${1} ${2}
 
 #
@@ -191,10 +191,10 @@ echo \${DK_suite}
 echo \${DK_suite}
 echo \${DK_suite}/model/datain
 
-echo "cp ${DK_suite}/recanl/dataout/${RESOL}${NIVEL}/\${NAMER}\${LABELI}\${EXTR}.${RESOL}${NIVEL} ${DK_suite}/model/datain"
-cp ${DK_suite}/recanl/dataout/${RESOL}${NIVEL}/\${NAMER}\${LABELI}\${EXTR}.${RESOL}${NIVEL} ${DK_suite}/model/datain
+echo "cp ${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/\${NAMER}\${LABELI}\${EXTR}.${RESOL}${NIVEL} ${DK_suite}/model/datain"
+cp ${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/\${NAMER}\${LABELI}\${EXTR}.${RESOL}${NIVEL} ${DK_suite}/model/datain
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 #
 #  Set Horizontal Truncation and Vertical Layers
@@ -239,7 +239,7 @@ export TRUNC LEV
 #  Mariane (1999) stdt=0.6 K, stdu=3 m/s
 #
 
-cat <<EOT2 > \${DK_suite}/rdpert/datain/rdpert.nml
+cat <<EOT2 > \${DK_suite}/../rdpert/datain/rdpert.nml
  &DATAIN
   FLONW=0
   FLONE=360.0 
@@ -286,12 +286,12 @@ cat <<EOT2 > \${DK_suite}/rdpert/datain/rdpert.nml
   HUM='${HUMID}'
  &END
  &DATNAM
-  DIRO='\${DK_suite}/recanl/dataout/\${TRUNC}\${LEV}/ '
-  DIRP='\${DK_suite}/rdpert/dataout/\${TRUNC}\${LEV}/ '
+  DIRO='\${DK_suite}/../recanl/dataout/\${TRUNC}\${LEV}/ '
+  DIRP='\${DK_suite}/../rdpert/dataout/\${TRUNC}\${LEV}/ '
   GNAMEO='\${NAMER}\${LABELI}\${EXTR}.\${TRUNC}\${LEV} '
 EOT2
 
-mkdir -p \${DK_suite}/rdpert/dataout/\${TRUNC}\${LEV}/ 
+mkdir -p \${DK_suite}/../rdpert/dataout/\${TRUNC}\${LEV}/ 
 
 i=1
 
@@ -300,11 +300,11 @@ do
 
   if [ \${i}  -le 9 ]
   then
-cat <<EOT3 >> \${DK_suite}/rdpert/datain/rdpert.nml
+cat <<EOT3 >> \${DK_suite}/../rdpert/datain/rdpert.nml
   GNAMEP(\${i})='GANL0\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}'
 EOT3
   else
-cat <<EOT3 >> \${DK_suite}/rdpert/datain/rdpert.nml
+cat <<EOT3 >> \${DK_suite}/../rdpert/datain/rdpert.nml
   GNAMEP(\${i})='GANL\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}'
 EOT3
   fi
@@ -313,21 +313,21 @@ EOT3
 
 done
 
-cat <<EOT4 >> \${DK_suite}/rdpert/datain/rdpert.nml
+cat <<EOT4 >> \${DK_suite}/../rdpert/datain/rdpert.nml
  &END
 EOT4
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 #
 #  Run Random Perturbation
 #
 
-cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
+cd ${DK_suite}/../rdpert/bin/\${TRUNC}\${LEV}
 
-./rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+./rdpert.\${TRUNC}\${LEV} < ${DK_suite}/../rdpert/datain/rdpert.nml > ${DK_suite}/../rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
 
-touch ${DK_suite}/rdpert/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+touch ${DK_suite}/../rdpert/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
@@ -335,8 +335,8 @@ chmod +x ${SCRIPTSFILE}
 
 qsub ${SCRIPTSFILE}
 
-until [ -e "${DK_suite}/rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
+until [ -e "${DK_suite}/../rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
 
-rm ${DK_suite}/rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
+rm ${DK_suite}/../rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0
