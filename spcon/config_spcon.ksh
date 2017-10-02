@@ -53,6 +53,8 @@
 # 17 Agosto de 2017 - C. F. Bastarz - Inclusão da compilação do inctime.
 # 20 Setembro de 2017 - C. F. Bastarz - Inclusão da função configurar
 # 21 Setembro de 2017 - C. F. Bastarz - Incrementada a função configurar
+# 02 Outubro de 2017 - C. F. Bastarz - Incluído comando para criar o arquivo VARIAVEIS
+#                                      a partir da função "configurar"
 #
 # !REMARKS:
 #
@@ -166,6 +168,9 @@ configurar() {
     ln -sf ${proc_output}
 
   done
+
+  # Cria um arquivo texto com os valores das variáveis da função "vars_export"
+  nohup /bin/bash -x ./config_spcon.ksh vars_export > VARIAVEIS &
 
 }
 
