@@ -48,13 +48,16 @@
 # 
 # !REVISION HISTORY:
 #
-# 14 Agosto de 2017 - C. F. Bastarz - Versão inicial.  
-# 15 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
-# 17 Agosto de 2017 - C. F. Bastarz - Inclusão da compilação do inctime.
+# 14 Agosto de 2017 - C. F. Bastarz   - Versão inicial.  
+# 15 Agosto de 2017 - C. F. Bastarz   - Inclusão comentários.
+# 17 Agosto de 2017 - C. F. Bastarz   - Inclusão da compilação do inctime.
 # 20 Setembro de 2017 - C. F. Bastarz - Inclusão da função configurar
 # 21 Setembro de 2017 - C. F. Bastarz - Incrementada a função configurar
-# 02 Outubro de 2017 - C. F. Bastarz - Incluído comando para criar o arquivo VARIAVEIS
-#                                      a partir da função "configurar"
+# 02 Outubro de 2017 - C. F. Bastarz  - Incluído comando para criar o arquivo VARIAVEIS
+#                                       a partir da função "configurar"; modificada a função
+#                                       de export do modelo BAM; incluida a opção de export
+#                                       do inctime
+#           
 #
 # !REMARKS:
 #
@@ -67,13 +70,13 @@
 #BOC
 
 # Descomentar para debugar
-#set -o xtrace
+set -o xtrace
 
 # Função vars_export (contém as variáveis utilizadas na configuração
 # e instalação do SPCON)
 vars_export() {
 
-  export spcon_name=oensMB09_bam
+  export spcon_name=spcon_bam_mb09
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
   export work_spcon=${WORK_HOME}/${spcon_name}
@@ -177,6 +180,17 @@ configurar() {
   nohup /bin/bash -x ./config_spcon.ksh vars_export > .VARIAVEIS1 2> VARIAVEIS < /dev/null &
   rm .VARIAVEIS1
 
+  # Altera os arquivos de configuração do BAM para a instalação corrente
+  sed -i "s,HOMEBASE=/scratchin/grupos/assim_dados/home/\${USER}/SMG/cptec/bam,HOMEBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
+  sed -i "s,SUBTBASE=/scratchin/grupos/assim_dados/home/\${USER}/SMG/datainout/bam,SUBTBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
+  sed -i "s,WORKBASE=/scratchout/grupos/assim_dados/home/\${USER}/SMG/datainout/bam,WORKBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
+
+  sed -i "s,PATHBASE=/scratchin/grupos/assim_dados/home/\${USER}/SMG/cptec/bam,PATHBASE=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
+  sed -i "s,DK=/scratchin/grupos/assim_dados/home/\${USER}/SMG/datainout/bam,DK=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
+  sed -i "s,DK2=/scratchin/grupos/assim_dados/home/\${USER}/SMG/datainout/bam,DK2=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
+
+  sed -i "s,/scratchin/grupos/assim_dados/home/carlos.bastarz/oensMB09_bam/bam/pre/datasst/oiv2monthly/,${bam_pre}/datasst/oiv2monthly/,g" ${bam_pre}/datasst/oiv2monthly/sstmtd.nml
+
 }
 
 # Função model (realiza uma retirada de uma revisão do BAM 
@@ -208,9 +222,9 @@ inctime() {
 
   vars_export
 
-  mkdir -p ${util_inctime}
+  mkdir -p ${util_spcon}
 
-  cd ${util_inctime}
+  cd ${util_spcon}
 
   if [ -z ${1} ]
   then
@@ -252,13 +266,15 @@ ajuda() {
   echo "     * faz checkout da revisão número 200 do BAM"
   echo "  2) ./config_spcon.ksh model"
   echo "     * faz checkout da última revisão do BAM"
-  echo "  3) ./config_spcon.ksh compilar"
+  echo "  3) ./config_spcon.ksh inctime"
+  echo "     * faz checkout da última revisão do inctime"
+  echo "  4) ./config_spcon.ksh compilar"
   echo "     * compila os módulos de perturbação e o modelo BAM"
-  echo "  4) ./config_spcon.ksh testcase"
-  echo "     * aloca os dados necessários para testar a instalação"
   echo "  5) ./config_spcon.ksh configurar"
   echo "     * cria diretórios e links simbólicos da instalação"
-  echo "  6) ./config_spcon.ksh ajuda"
+  echo "  6) ./config_spcon.ksh testcase"
+  echo "     * aloca os dados necessários para testar a instalação"
+  echo "  7) ./config_spcon.ksh ajuda"
   echo "     * mostra este menu de ajuda"
 
   echo ""
@@ -287,12 +303,21 @@ compilar() {
   else
 
     # Compilação do inctime
+    if [ -d ${util_inctime} ]
+    then
 
-    cd ${util_inctime}
+      cd ${util_inctime}
 
-    nohup make > make_inctime.log &
+      nohup make > make_inctime.log &
 
-    wait
+      wait
+
+    else
+
+      echo "Diretório ${util_inctime} não existe!"
+      exit 1
+
+    fi
 
     # Compilação do método de perturbação
 
@@ -308,32 +333,42 @@ compilar() {
 
     # Compilação do modelo atmosférico
 
-    # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
-    # PATH2=${pre_exec}, nos arquivos ${pre_source}/Makefile e ${pre_source}/Makefile.in
-    sed -i "s,^PATH2\=.*$,PATH2\=${pre_exec},g" ${pre_source}/Makefile
-    sed -i "s,^PATH2\=.*$,PATH2\=${pre_exec},g" ${pre_source}/Makefile.in
+    if [ -d ${home_bam} ]
+    then
 
-    cd ${home_spcon}/bam/pre/sources
-    nohup make pgi_cray > make_pre.log &
+      # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
+      # PATH2=${pre_exec}, nos arquivos ${pre_source}/Makefile e ${pre_source}/Makefile.in
+      sed -i "s,^PATH2\=.*$,PATH2\=${pre_exec},g" ${pre_source}/Makefile
+      sed -i "s,^PATH2\=.*$,PATH2\=${pre_exec},g" ${pre_source}/Makefile.in
+  
+      cd ${home_spcon}/bam/pre/sources
+      nohup make pgi_cray > make_pre.log &
+  
+      # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
+      # PATH2=${model_exec}, nos arquivos ${model_source}/Makefile e ${model_source}/Makefile.in
+      sed -i "s,^PATH2\=.*$,PATH2\=${model_exec},g" ${model_source}/Makefile
+      sed -i "s,^PATH2\=.*$,PATH2\=${model_exec},g" ${model_source}/Makefile.in
+  
+      cd ${home_spcon}/bam/model/source
+      nohup make pgi_cray > make_model.log &
+  
+      # Substitui as linhas que começam com "PATH2=" pelo valor da variável
+      # PATH2=${pos_exec} nos arquivos ${pos_source}/Makefile e ${pos_source}/Makefile.in
+      sed -i "s,^PATH2\=.*$,PATH2\=${pos_exec},g" ${pos_source}/Makefile
+      sed -i "s,^PATH2\=.*$,PATH2\=${pos_exec},g" ${pos_source}/Makefile.in
+  
+      cd ${home_spcon}/bam/pos/source
+      nohup make pgi_cray > make_pos.log &
+  
+      # Aguarda a finalização dos últimos três comandos nohups
+      wait %1 %2 %3
 
-    # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
-    # PATH2=${model_exec}, nos arquivos ${model_source}/Makefile e ${model_source}/Makefile.in
-    sed -i "s,^PATH2\=.*$,PATH2\=${model_exec},g" ${model_source}/Makefile
-    sed -i "s,^PATH2\=.*$,PATH2\=${model_exec},g" ${model_source}/Makefile.in
+    else
 
-    cd ${home_spcon}/bam/model/source
-    nohup make pgi_cray > make_model.log &
+      echo "Diretório ${home_bam} não existe!"
+      exit 2
 
-    # Substitui as linhas que começam com "PATH2=" pelo valor da variável
-    # PATH2=${pos_exec} nos arquivos ${pos_source}/Makefile e ${pos_source}/Makefile.in
-    sed -i "s,^PATH2\=.*$,PATH2\=${pos_exec},g" ${pos_source}/Makefile
-    sed -i "s,^PATH2\=.*$,PATH2\=${pos_exec},g" ${pos_source}/Makefile.in
-
-    cd ${home_spcon}/bam/pos/source
-    nohup make pgi_cray > make_pos.log &
-
-    # Aguarda a finalização dos últimos três comandos nohups
-    wait %1 %2 %3
+    fi
 
   fi
 
@@ -374,6 +409,26 @@ else
 
     ajuda
  
+  elif [ ${1} == "inctime" ]
+  then
+  
+    if [ ${#} -eq 2 ]
+    then
+  
+      inctime ${2}
+  
+    elif [ ${#} -eq 1 ] 
+    then
+  
+      inctime
+
+    else
+
+      ajuda
+      exit 2
+  
+    fi
+  
   elif [ ${1} == "model" ]
   then
   
@@ -390,7 +445,7 @@ else
     else
 
       ajuda
-      exit 2
+      exit 3
   
     fi
   
