@@ -41,9 +41,9 @@
 #                ./config_spcon.ksh model 200 (alternativo)   
 #                ./config_spcon.ksh inctime
 #                ./config_spcon.ksh inctime 200 (alternativo)
-#                ./config_spcon.ksh compilar
 #                ./config_spcon.ksh testcase
 #                ./config_spcon.ksh configurar
+#                ./config_spcon.ksh compilar
 #                ./config_spcon.ksh ajuda  
 # 
 # !REVISION HISTORY:
@@ -70,7 +70,7 @@
 #BOC
 
 # Descomentar para debugar
-set -o xtrace
+#set -o xtrace
 
 # Função vars_export (contém as variáveis utilizadas na configuração
 # e instalação do SPCON)
@@ -269,20 +269,21 @@ ajuda() {
 
   echo ""
 
-  echo "> Uso/Exemplos:"
-  echo "  1) ./config_spcon.ksh model 200"
-  echo "     * faz checkout da revisão número 200 do BAM"
-  echo "  2) ./config_spcon.ksh model"
+  echo "> Uso/Exemplos (seguir esta ordem):"
+  echo ""
+  echo "  1) ./config_spcon.ksh model"
   echo "     * faz checkout da última revisão do BAM"
-  echo "  3) ./config_spcon.ksh inctime"
+  echo "  OU ./config_spcon.ksh model 200"
+  echo "     * faz checkout da revisão número 200 do BAM"
+  echo "  2) ./config_spcon.ksh inctime"
   echo "     * faz checkout da última revisão do inctime"
-  echo "  4) ./config_spcon.ksh compilar"
-  echo "     * compila os módulos de perturbação e o modelo BAM"
-  echo "  5) ./config_spcon.ksh configurar"
-  echo "     * cria diretórios e links simbólicos da instalação"
-  echo "  6) ./config_spcon.ksh testcase"
+  echo "  3) ./config_spcon.ksh testcase"
   echo "     * aloca os dados necessários para testar a instalação"
-  echo "  7) ./config_spcon.ksh ajuda"
+  echo "  4) ./config_spcon.ksh configurar"
+  echo "     * cria diretórios e links simbólicos da instalação"
+  echo "  5) ./config_spcon.ksh compilar"
+  echo "     * compila os módulos de perturbação e o modelo BAM"
+  echo "  -> ./config_spcon.ksh ajuda"
   echo "     * mostra este menu de ajuda"
 
   echo ""
