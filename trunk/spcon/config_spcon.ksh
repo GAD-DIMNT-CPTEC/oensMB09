@@ -189,13 +189,13 @@ configurar() {
   rm .VARIAVEIS1
 
   # Altera os arquivos de configuração do BAM para a instalação corrente
-  sed -i "s,HOMEBASE=/scratchin/grupos/assim_dados/home/\${USER}/SMG/cptec/bam,HOMEBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
-  sed -i "s,SUBTBASE=/scratchin/grupos/assim_dados/home/\${USER}/SMG/datainout/bam,SUBTBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
-  sed -i "s,WORKBASE=/scratchout/grupos/assim_dados/home/\${USER}/SMG/datainout/bam,WORKBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
+  sed -i "s,export HOMEBASE=.*,export HOMEBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
+  sed -i "s,export SUBTBASE=.*,export SUBTBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
+  sed -i "s,export WORKBASE=.*,export WORKBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
 
-  sed -i "s,PATHBASE=/scratchin/grupos/assim_dados/home/\${USER}/SMG/cptec/bam,PATHBASE=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
-  sed -i "s,DK=/scratchin/grupos/assim_dados/home/\${USER}/SMG/datainout/bam,DK=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
-  sed -i "s,DK2=/scratchin/grupos/assim_dados/home/\${USER}/SMG/datainout/bam,DK2=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
+  sed -i "s,export PATHBASE=.*,export PATHBASE=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
+  sed -i "s,export DK=.*,export DK=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
+  sed -i "s,export DK2=.*,export DK2=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
 
   sed -i "s,/scratchin/grupos/assim_dados/home/carlos.bastarz/oensMB09_bam/bam/pre/datasst/oiv2monthly/,${bam_pre}/datasst/oiv2monthly/,g" ${bam_pre}/datasst/oiv2monthly/sstmtd.nml
 

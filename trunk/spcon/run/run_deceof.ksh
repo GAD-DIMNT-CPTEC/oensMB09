@@ -463,6 +463,6 @@ until [ -e "${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; 
 
 echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILES}"
 
-rm ${DK_suite}/deceof/../bin/${RESOL}${NIVEL}/monitor.${MONITORID}
+rm ${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0
