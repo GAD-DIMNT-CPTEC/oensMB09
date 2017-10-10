@@ -43,20 +43,23 @@
 #                ./config_spcon.ksh inctime 200 (alternativo)
 #                ./config_spcon.ksh testcase
 #                ./config_spcon.ksh configurar
+#                ./config_spcon.ksh configurar TQ0213L042 (alternativo)
 #                ./config_spcon.ksh compilar
 #                ./config_spcon.ksh ajuda  
 # 
 # !REVISION HISTORY:
 #
-# 14 Agosto de 2017 - C. F. Bastarz   - Versão inicial.  
-# 15 Agosto de 2017 - C. F. Bastarz   - Inclusão comentários.
-# 17 Agosto de 2017 - C. F. Bastarz   - Inclusão da compilação do inctime.
+# 14 Agosto de 2017   - C. F. Bastarz - Versão inicial.  
+# 15 Agosto de 2017   - C. F. Bastarz - Inclusão comentários.
+# 17 Agosto de 2017   - C. F. Bastarz - Inclusão da compilação do inctime.
 # 20 Setembro de 2017 - C. F. Bastarz - Inclusão da função configurar
 # 21 Setembro de 2017 - C. F. Bastarz - Incrementada a função configurar
-# 02 Outubro de 2017 - C. F. Bastarz  - Incluído comando para criar o arquivo VARIAVEIS
+# 02 Outubro de 2017  - C. F. Bastarz - Incluído comando para criar o arquivo VARIAVEIS
 #                                       a partir da função "configurar"; modificada a função
 #                                       de export do modelo BAM; incluida a opção de export
 #                                       do inctime
+# 10 Outubro de 2017  - C. F. Bastarz - Inclusão de opção para indicar a resolução do sistema
+#                                       (a opção default é a TQ0126L028)
 #           
 #
 # !REMARKS:
@@ -82,6 +85,9 @@ vars_export() {
   export work_spcon=${WORK_HOME}/${spcon_name}
 
   export spcon_run=${home_spcon}/run
+
+  export spcon_config=${home_spcon}/config
+  export spcon_include=${home_spcon}/include
 
   export home_bam=${home_spcon}/bam
 
@@ -128,6 +134,51 @@ configurar() {
   vars_export
 
   echo "Configurar"
+
+  # Se indicada a resolução a ser utilizada, modifica-se o arquivo Makefile 
+  # e os links apontando para o diretório "include"
+  if [ ${1} == "TQ0126L028" -o -z ${1} ] # TQ0126L028 é a resolução padrão
+  then
+
+    echo "O SPCON global já está configurando para a resolução TQ0126L028"
+
+  else
+
+    echo "Configurando o SPCON global para a resolução ${1}"
+
+    # Verifica se o sistema pode ser configurado para a resolução indicada
+    if [ ! -d ${spcon_include}/${1} ]
+    then
+
+      echo "O SPCON global não está preparado para a resolução ${1}!"
+      echo "Verifique o arquivo ${spcon_include}/README para mais informações."
+      exit 1
+
+    else
+
+      TRUNC=$(echo ${1} | cut -c 1-6) 
+      LEV=$(echo ${1} | cut -c 7-10) 
+
+      sed -i "s,TRUNC.*,TRUNC=${TRUNC},g" ${spcon_config}/Makefile
+      sed -i "s,LEV.*,LEV=${LEV},g" ${spcon_config}/Makefile
+
+      # Cria os links simbólicos dos diretórios do SPCON
+      set -A Procs decanl deceof rdpert recanl recfct eofhumi eofpres eoftemp eofwind fftpln
+    
+      for proc in ${Procs[@]}
+      do
+    
+        dir_proc=${home_spcon}/${proc}
+    
+        cd ${dir_proc}
+  
+        ln -sfn ${spcon_include}/${1} .
+  
+      done
+
+    fi
+
+  fi
 
   if [ -d "${bam_run}" ]
   then
@@ -272,7 +323,7 @@ ajuda() {
   echo "> Uso/Exemplos (seguir esta ordem):"
   echo ""
   echo "  1) ./config_spcon.ksh model"
-  echo "     * faz checkout da última revisão do BAM"
+  echo "     * faz checkout da última revisão do BAM (default)"
   echo "  OU ./config_spcon.ksh model 200"
   echo "     * faz checkout da revisão número 200 do BAM"
   echo "  2) ./config_spcon.ksh inctime"
@@ -280,7 +331,9 @@ ajuda() {
   echo "  3) ./config_spcon.ksh testcase"
   echo "     * aloca os dados necessários para testar a instalação"
   echo "  4) ./config_spcon.ksh configurar"
-  echo "     * cria diretórios e links simbólicos da instalação"
+  echo "     * cria diretórios e links simbólicos da instalação para a resolução TQ0126L028 (default)"
+  echo "  OU ./config_spcon.ksh configurar TQ0213L042"
+  echo "     * cria diretórios e links simbólicos da instalação para a resolução TQ0213L042"
   echo "  5) ./config_spcon.ksh compilar"
   echo "     * compila os módulos de perturbação e o modelo BAM"
   echo "  -> ./config_spcon.ksh ajuda"
@@ -401,7 +454,22 @@ else
   elif [ ${1} == "configurar" ]
   then
 
-    configurar
+    if [ ${#} -eq 2 ]
+    then
+  
+      configurar ${2}
+  
+    elif [ ${#} -eq 1 ] 
+    then
+  
+      configurar
+
+    else
+
+      ajuda
+      exit 2
+  
+    fi
  
   elif [ ${1} == "compilar" ]
   then

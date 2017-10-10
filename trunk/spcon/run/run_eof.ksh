@@ -98,6 +98,86 @@ export NIVEL=${TRCLV:6:4}
 LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%Y%m%d%H")
 export LABELI LABELF NFDAYS
 
+# A seção abaixo foi modificada para refletir as alterações no script de forma que, dada a resolução do modelo,
+# sejam exportadas as variáveis com os limites de cada região a ser perturbada (HS, TR, HN, NAS e SAS).
+# Descrição das variáveis:
+# MR: número de ondas
+# KR: número de níveis sigma
+# LR: número de EOFs
+# NI: número de pontos de longitude (da região)
+# NJ: número de pontos de latitude (da região)
+# IR: número de pontos de longitude (de toda a grade)
+# JR: número de pontos de latitude (de toda a grade)
+# II: ponto de longitude mais a oeste (IW)
+# IS: ponto de longitude mais a leste (IE)
+# JI: ponto de latitude mais ao sul (JS)
+# JS: ponto de latitude mais ao norte (JN)
+# IIPS: ?
+# ISPS: ?
+# JIPS: ?
+# JSPS: ?
+
+case ${TRC} in
+
+# Original:
+#126) MR=126   ; IR=384   ; JR=192  ; II=1    ; IS=384 ; NI=384 ; 
+#     JI=1     ; JS=75    ; NJ=75   ; 
+#     IIPS=192 ; ISPS=299 ; JIPS=40 ; JSPS=75 ; 
+#     KR=28    ; LR=11    ;;
+
+# Corrigido:
+126) MR=126      ; KR=28       ; LR=11      ;              # Define a resolução do modelo e número de EOFs
+     IR=384      ; JR=192      ;                           # Define o número de pontos da grade
+     # Região HS:
+     HNNI=384    ; HNNJ=75     ;                           # Define o número de pontos da região 
+     HNII=1      ; HNIS=384    ; HNJI=1     ; HNJS=75    ; # Define a região da perturbação 
+     HNIIPS=1    ; HNISPS=384  ; HNJIPS=1   ; HNJSPS=75  ; # Não usado
+     # Região TR:
+     TRNI=384    ; TRNJ=75     ;                           # Define o número de pontos da região  
+     TRII=1      ; TRIS=384    ; TRJI=76    ; TRJS=117   ; # Define a região da perturbação  
+     TRIIPS=1    ; TRISPS=384  ; TRJIPS=76  ; TRJSPS=117 ; # Não usado
+     # Região HN:
+     HSNI=384    ; HSNJ=75     ;                           # Define o número de pontos da região  
+     HSII=1      ; HSIS=384    ; HSJI=118   ; HSJS=192   ; # Define a região da perturbação  
+     HSIIPS=1    ; HSISPS=384  ; HSJIPS=118 ; HSJSPS=192 ; # Não usado
+     # Região NAS:
+     NASNI=97    ; NASNJ=42    ;                           # Define o número de pontos da região  
+     NASII=278   ; NASIS=374   ; NASJI=76   ; NASJS=117  ; # Define a região da perturbação  
+     NASIIPS=278 ; NASISPS=374 ; NASJIPS=76 ; NASJSPS=117; # Não usado
+     # Região SAS:
+     SASNI=97    ; SASNJ=44    ;                           # Define o número de pontos da região  
+     SASII=268   ; SASIS=364   ; SASJI=32   ; SASJS=75   ; # Define a região da perturbação  
+     SASIIPS=268 ; SASISPS=364 ; SASJIPS=32 ; SASJSPS=75 ; # Não usado
+     ;; 
+
+213) MR=213      ; KR=42       ; LR=11      ;          
+     IR=640      ; JR=320      ;
+     # Região HS: 
+     HNNI=640    ; HNNJ=125    ;                           # Define o número de pontos da região   
+     HNII=1      ; HNIS=640    ; HNJI=1     ; HNJS=125   ; # Define a região da perturbação  
+     HNIIPS=1    ; HNISPS=640  ; HNJIPS=1   ; HNJSPS=125 ; # Não usado 
+     # Região TR: 
+     TRNI=640    ; TRNJ=70     ;                           # Define o número de pontos da região   
+     TRII=1      ; TRIS=640    ; TRJI=126   ; TRJS=195   ; # Define a região da perturbação  
+     TRIIPS=1    ; TRISPS=640  ; TRJIPS=126 ; TRJSPS=195 ; # Não usado 
+     # Região HN: 
+     HSNI=640    ; HSNJ=125    ;                           # Define o número de pontos da região   
+     HSII=1      ; HSIS=640    ; HSJI=196   ; HSJS=320   ; # Define a região da perturbação  
+     HSIIPS=1    ; HSISPS=640  ; HSJIPS=196 ; HSJSPS=320 ; # Não usado 
+     # Região NAS: 
+     NASNI=161   ; NASNJ=70    ;                           # Define o número de pontos da região       
+     NASII=459   ; NASIS=619   ; NASJI=126  ; NASJS=195  ; # Define a região da perturbação  
+     NASIIPS=459 ; NASISPS=619 ; NASJIPS=195; NASJSPS=126; # Não usado 
+     # Região SAS: 
+     SASNI=161   ; SASNJ=73    ;                           # Define o número de pontos da região       
+     SASII=443   ; SASIS=603   ; SASJI=53   ; SASJS=125 ;  # Define a região da perturbação  
+     SASIIPS=443 ; SASISPS=603 ; SASJIPS=125; SASJSPS=53;  # Não usado 
+     ;;
+
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+
+esac
+
 cd ${HOME_suite}/../run
 
 # Variáveis utilizadas no script de submissão
@@ -145,7 +225,6 @@ cd ${HOME_suite}/../run
 #
 
 Regs=(hn hs san sas tr)
-#Regs=(hn)
 
 for REG in \${Regs[@]}
 do
@@ -156,89 +235,109 @@ do
 
 if [ \${REG} == hn ]
 then
-  export MR=126
-  export IR=384
-  export JR=192
-  export II=1
-  export IS=384
-  export NI=384
-  export JI=1
-  export JS=75
-  export NJ=75
-  export IIPS=192
-  export ISPS=299
-  export JIPS=40
-  export JSPS=75
-  export KR=28
-  export LR=11
+  export MR=${MR}
+  export KR=${KR}
+  export LR=${LR}
+
+  export IR=${IR}
+  export JR=${JR}
+
+  export NI=${HNNI} 
+  export NJ=${HNNJ}
+ 
+  export II=${HNII} 
+  export IS=${HNIS}
+  export JI=${HNJI}
+  export JS=${HNJS}
+
+  export IIPS=${HNIIPS} 
+  export ISPS=${HNISPS}
+  export JIPS=${HNJIPS}
+  export JSPS=${HNJSPS}
 elif [ \${REG} == hs ] 
 then
-  export MR=126
-  export IR=384
-  export JR=192
-  export II=1
-  export IS=384
-  export NI=384
-  export JI=118
-  export JS=192 
-  export NJ=75
-  export IIPS=192
-  export ISPS=299
-  export JIPS=118
-  export JSPS=153
-  export KR=28
-  export LR=11
+  export MR=${MR}
+  export KR=${KR}
+  export LR=${LR}
+  
+  export IR=${IR}
+  export JR=${JR}
+
+  export NI=${HSNI} 
+  export NJ=${HSNJ}
+
+  export II=${HSII} 
+  export IS=${HSIS}
+  export JI=${HSJI}
+  export JS=${HSJS}
+
+  export IIPS=${HSIIPS} 
+  export ISPS=${HSISPS}
+  export JIPS=${HSJIPS}
+  export JSPS=${HSJSPS}
 elif [ \${REG} == san ] 
 then
-  export MR=126
-  export IR=384
-  export JR=192
-  export II=276
-  export IS=372
-  export NI=97
-  export JI=75
-  export JS=108
-  export NJ=34
-  export IIPS=276
-  export ISPS=316
-  export JIPS=75
-  export JSPS=108
-  export KR=28
-  export LR=11
+  export MR=${MR}
+  export KR=${KR}
+  export LR=${LR}
+
+  export IR=${IR}
+  export JR=${JR}
+
+  export NI=${NASNI} 
+  export NJ=${NASNJ}
+
+  export II=${NASII}  
+  export IS=${NASIS}
+  export JI=${NASJI}
+  export JS=${NASJS}
+
+  export IIPS=${NASIIPS} 
+  export ISPS=${NASISPS}
+  export JIPS=${NASJIPS}
+  export JSPS=${NASJSPS}
 elif [ \${REG} == sas ] 
 then
-  export MR=126
-  export IR=384
-  export JR=192
-  export II=266
-  export IS=362
-  export NI=97
-  export JI=109
-  export JS=161
-  export NJ=53
-  export IIPS=266
-  export ISPS=316
-  export JIPS=109
-  export JSPS=160 
-  export KR=28
-  export LR=11
+  export MR=${MR}
+  export KR=${KR}
+  export LR=${LR}
+  
+  export IR=${IR}
+  export JR=${JR}
+
+  export NI=${SASNI} 
+  export NJ=${SASNJ}
+
+  export II=${SASII} 
+  export IS=${SASIS}
+  export JI=${SASJI}
+  export JS=${SASJS}
+
+  export IIPS=${SASIIPS} 
+  export ISPS=${SASISPS}
+  export JIPS=${SASJIPS}
+  export JSPS=${SASJSPS} 
 elif [ \${REG} == tr ] 
 then
-  export MR=126
-  export IR=384
-  export JR=192
-  export II=1
-  export IS=384
-  export NI=384
-  export JI=76
-  export JS=117 
-  export NJ=42
-  export IIPS=192
-  export ISPS=299
-  export JIPS=76
-  export JSPS=117
-  export KR=28
-  export LR=11
+  export MR=${MR}
+  export KR=${KR}
+  export LR=${LR}
+
+  export IR=${IR}
+  export JR=${JR}
+
+  export NI=${TRNI} 
+  export NJ=${TRNJ}
+
+  export II=${TRII} 
+  export IS=${TRIS}
+  export JI=${TRJI}
+  export JS=${TRJS}
+
+  export IIPS=${TRIIPS} 
+  export ISPS=${TRISPS}
+  export JIPS=${TRJIPS}
+  export JSPS=${TRJSPS}
 else
   echo "Region undefined."
   exit 1
@@ -286,7 +385,6 @@ export ext=R.unf
 cat <<EOT1 > eofpres\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
-!  DIRA='\${DK_suite}/model/datain/ '
   DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
   DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${MEM}${LABELI} '

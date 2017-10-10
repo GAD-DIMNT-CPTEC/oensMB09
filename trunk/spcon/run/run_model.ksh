@@ -194,7 +194,16 @@ export NIVEL=${TRCLV:6:4}
 # Se a previsão for a partir do conjunto de perturbações por EOF, integra o modelo por 360 horas (15 dias).
 export LABELW=${LABELF}
 
-export TIMESTEP=600
+if [ ${TRCLV} == "TQ0126L028" ]
+then
+  export TIMESTEP=600
+elif [ ${TRCLV} == "TQ0213L042" ]
+then
+  export TIMESTEP=360
+else
+  echo "Erro na resolução ${TRCLV}"
+  exit 1
+fi
 
 DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 MAQUI=$(hostname -s)
@@ -305,7 +314,7 @@ if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != RDP ]
 then
   export walltime="02:00:00"
 else
-  export walltime="00:50:00"
+  export walltime="01:00:00"
 fi
 
 # Script de submissão

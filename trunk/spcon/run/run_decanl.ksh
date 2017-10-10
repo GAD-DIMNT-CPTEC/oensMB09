@@ -120,7 +120,7 @@ cat <<EOT0 > ${SCRIPTSFILE}
 #PBS -o ${DK_suite}/../decanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/../decanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -S /bin/bash
-#PBS -l walltime=0:01:00
+#PBS -l walltime=0:10:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
 #PBS -V
