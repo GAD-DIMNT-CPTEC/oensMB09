@@ -141,7 +141,7 @@ cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
 #!/bin/bash -x
 #PBS -o ${DK_suite}/../recfct/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/../recfct/output/${SCRIPTSFILE}.${RUNTM}.err
-#PBS -l walltime=00:05:00
+#PBS -l walltime=00:15:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
 #PBS -V
