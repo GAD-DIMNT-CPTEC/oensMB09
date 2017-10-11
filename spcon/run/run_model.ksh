@@ -299,15 +299,15 @@ then
   export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
-  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLTYPE}"
+  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.\${PBS_ARRAY_INDEX}"
 else
   export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#PBS -N BAMENS${ANLTYPE}"
+  export PBSDIRECTIVENAME="#PBS -N BAM${ANLTYPE}"
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}"
-  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.${ANLTYPE}"
+  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.\${ANLTYPE}"
 fi
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != RDP ]
@@ -320,8 +320,9 @@ fi
 # Script de submissão
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
-${PBSOUTFILE}
-${PBSERRFILE}
+###${PBSOUTFILE}
+###${PBSERRFILE}
+#PBS -j oe
 #PBS -l walltime=${walltime}
 #PBS -l mppwidth=${MPPWIDTH}
 #PBS -l mppnppn=${MPPNPPN}
@@ -348,7 +349,11 @@ ${PBSEXECFILEPATH}
 
 cd \${EXECFILEPATH}
 
+echo \${PBS_JOBID} > ${HOME_suite}/../run/this.job.${ANLTYPE}
+
 date
+
+mkdir -p \${EXECFILEPATH}/setout
 
 aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/Print.model.${LABELI}.MPI${MPPWIDTH}.log
 
@@ -364,7 +369,45 @@ chmod +x ${SCRIPTFILEPATH}
 
 qsub ${SCRIPTFILEPATH}
 
-until [ -e ${MONITORFILE} ]; do sleep 1s; done
-rm ${MONITORFILE}
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+then
+
+  for i in $(seq 1 ${ANLPERT})
+  do
+
+    until [ -e ${EXECFILEPATH}/model.${i} ]; do sleep 1s; done
+    rm ${EXECFILEPATH}/model.${i}
+
+  done
+
+else
+
+  until [ -e ${EXECFILEPATH}/model.${ANLTYPE} ]; do sleep 1s; done
+  rm ${EXECFILEPATH}/model.${ANLTYPE}
+
+fi
+
+#JOBID=$(cat ${HOME_suite}/../run/this.job.${ANLTYPE} | awk -F "[" '{print $1}')
+JOBID=$(cat ${HOME_suite}/../run/this.job.${ANLTYPE} | cut -c 1-7)
+
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+then
+
+  for i in $(seq 1 ${ANLPERT})
+  do
+
+    until [ -e ${HOME_suite}/../run/BAMENS${ANLTYPE}.o${JOBID}.${i} ]; do sleep 1s; done
+    mv -v ${HOME_suite}/../run/BAMENS${ANLTYPE}.o${JOBID}.${i} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.${i}.out
+  
+  done
+
+else
+
+  until [ -e  ${HOME_suite}/../run/BAM${ANLTYPE}.o${JOBID} ]; do sleep 1s; done 
+  mv -v ${HOME_suite}/../run/BAM${ANLTYPE}.o${JOBID} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out
+
+fi
+
+rm ${HOME_suite}/../run/this.job.${ANLTYPE}
 
 exit 0
