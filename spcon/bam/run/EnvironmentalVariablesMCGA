@@ -1,0 +1,87 @@
+#!/bin/ksh
+#help#
+#************************************************************************************#
+#                                                                                    #
+# script to run CPTEC OPERATION                                                      #
+# EnvironmentalVariablesMCGA.ksh    TQZZZZLXXX                                       #
+#                                                                                    #
+#                    ZZZZ   => 4 digits spectral resolution                          #
+#                     XXX   => 3 digits vertical resolution                          #
+#                                                                                    #
+#************************************************************************************#
+#help#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  exit 1
+else
+export TRCLV=$1
+fi
+
+if [ -z "${2}" ]
+then
+  echo "PREFIX is not set"  
+  echo "PREFIX set by users" 
+else
+export PREFIX=$2
+fi
+
+LENGTH=`echo ${TRCLV} | awk '{print length($1)}'`
+if [[ ${LENGTH} -eq 10 ]] ; then 
+export TRC=`echo ${TRCLV} | awk '{print substr($1,3,4)/1}'`
+export GRID=`echo ${TRCLV} | awk '{print substr($1,2,1)}'`
+export LV=`echo ${TRCLV} | awk '{print substr($1,8,3)/1}'`
+else
+echo "ERROR AT RESOLUTION" ${TRCLV} 
+fi
+
+#export PATHBASE=home_bam
+export PATHBASE=/scratchin/grupos/assim_dados/home/${USER}/SMG/cptec/bam
+
+if [ -z "${PATHBASE}" ] ;then
+export PATHBASE=`cd ..;pwd`       # Default, if no filename specified.
+fi 
+#echo ${DK}; export DK=subt_bam
+echo ${DK}; export DK=/scratchin/grupos/assim_dados/home/${USER}/SMG/datainout/bam
+
+if [ -z "${DK}" ] ;then
+export DK=`cd ..;pwd`       # Default, if no filename specified.
+fi
+#echo ${DK2}; export DK2=subt_bam
+echo ${DK2}; export DK2=/scratchin/grupos/assim_dados/home/${USER}/SMG/datainout/bam
+
+if [ -z "${DK2}" ] ;then
+export DK2=`cd ..;pwd`       # Default, if no filename specified.
+fi 
+
+echo ${PATHBASE}     ${DK}
+export QUOTA=CPTEC
+export pbs_server2=aux20-eth4
+export pbs_server1=eslogin13
+export HOME_suite=${PATHBASE} ; mkdir -p ${HOME_suite}
+export DK_suite=${DK} ; mkdir -p ${DK_suite}
+export DK_suite2=${DK2} ; mkdir -p ${DK_suite2}
+export QSUB=/opt/pbs/default/bin/qsub
+export QUEUE=debug
+export QUEUEM=debug
+export QUEUEP=debug
+export AUX_QUEUE=pesq.q
+export WALLTIME="00:30:00"
+export WALLTIME6="00:30:00"
+export AUX_WALLTIME="00:30:00"
+export DK_SAN=${DK_NAS}
+export DK_SAN=${DK_NAS}
+
+export PREFXI="${PREFIX}"     #preffix for name of input files
+export PREFXO="${PREFIX}"     #preffix for name of output files
+
+export AnlPref="gdas1"     #preffix for name of input files
+export tmstp=`date +'%s'`
+
+export caldate=${HOME_suite}/utils/bin/caldate.3.0.1
+export GRHDATAOUT=${DK_suite}/grh/dataout ; mkdir -p ${GRHDATAOUT}
+export GSSTEP=0
+export MAQUI=`uname -s`
+export NDFCT0012=180h # Tempo de integracao para as rodadas das 00 e 12 (usa o script caldate)
+export NDFCT0618=12h  # Tempo de integracao para as rodadas das 06 e 18 (usa o script caldate)
+export DIRGRADS=/opt/grads/2.0.a9/bin

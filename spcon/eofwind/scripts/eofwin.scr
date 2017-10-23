@@ -1,0 +1,53 @@
+#!/bin/ksh -x
+#
+#********************************************************#
+#                                                        #
+#     Name:     eofwin.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               the wind eof                             #
+#                                                        #
+#     Date:        February 11th, 1998.                  #
+#     Last change: August   14th, 2000.                  #
+#                                                        #
+#********************************************************#
+#
+echo "EOFW           -x-  RUNNING ..."
+#    Set directories:
+#
+source=${HOME_suite}/eofwind/source
+bin=${SC1_suite}/eof/bin/$TRUNC$LEV;mkdir -p ${bin}
+out=${SC2_suite}/eof/dataout/${RESOL}${NIVEL};mkdir -p ${out}
+inp=${SC1_suite}/eof/datain;mkdir -p ${inp}
+outp=${SC1_suite}/eofwind/output;mkdir -p ${outp}
+#
+#   Check if the makefile will compile:
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f eofwin.mk
+exit
+  fi
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f eofwin.mk clean
+make -f eofwin.mk
+exit
+  fi
+#
+cd ${bin}
+#
+echo "./eofwin.${TRUNC}${LEV} < ${inp}/eofwin${REGE}${NUM}.nml > $outp/eofwin.${LABELI}.${HOUR}.${TRUNC}${LEV}"
+./eofwin.${TRUNC}${LEV} < ${inp}/eofwin${REGE}${NUM}.nml > ${outp}/eofwin.${LABELI}.${HOUR}.${TRUNC}${LEV}
+#
