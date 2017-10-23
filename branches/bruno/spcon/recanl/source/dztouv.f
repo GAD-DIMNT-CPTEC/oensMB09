@@ -1,0 +1,126 @@
+      SUBROUTINE DZTOUV(QDIV,QROT,QU,QV)
+C*
+C*    CALCULATES SPECTRAL REPRESENTATION OF COSINE-WEIGHTED
+C*    WIND COMPONENTS FROM SPECTRAL REPRESENTATION OF
+C*    VORTICITY AND DIVERGENCE.
+C*    SPECIALLY PROGRAMMED FOR TRIANGULAR TRUNCATION
+C*
+C*    ARGUMENT(DIMENSIONS)          DESCRIPTION
+C*
+C*    QDIV(2,MNWV0,KMAX)     INPUT: DIVERGENCE (SPECTRAL)
+C*    QROT(2,MNWV0,KMAX)     INPUT: VORTICITY  (SPECTRAL)
+C*    QU  (2,MNWV1,KMAX)    OUTPUT: ZONAL PSEUDO-WIND (SPECTRAL)
+C*    QV  (2,MNWV1,KMAX)    OUTPUT: MERIDIONAL PSEUDO-WIND (SPECTRAL)
+C*
+      include "recanl.h"
+C*
+      INTEGER MEND1,MEND2,MNWV2,MNWV0,MNWV3,MNWV1
+      PARAMETER (MEND1=MEND+1,MEND2=MEND1+1,MNWV2=MEND1*MEND2,
+     *           MNWV0=MNWV2/2,MNWV3=MNWV2+2*MEND1,MNWV1=MNWV3/2)
+C*
+      INTEGER LA0(MEND1,MEND1),LA1(MEND1,MEND2)
+      REAL QDIV(2,MNWV0,KMAX),QROT(2,MNWV0,KMAX),
+     *     QU(2,MNWV1,KMAX),QV(2,MNWV1,KMAX),
+     *     EPS(MNWV1),E0(MNWV1),E1(MNWV0)
+C*
+      INTEGER L,NN,MMAX,MM,K,NMAX,L0,L0P,L0M,L1,L1P
+      REAL ER,AN,AM
+C*
+      COMMON /LA0LA1/ LA0,LA1
+      COMMON /PLNEPS/ EPS
+C*
+      ER=6.37E6
+C*
+      E0(1)=0.0
+      E1(1)=0.0
+      DO MM=2,MEND1
+      E0(MM)=0.0
+      E1(MM)=ER/FLOAT(MM)
+      ENDDO
+C*
+      L=MEND1
+      DO NN=2,MEND2
+      MMAX=MEND2-NN+1
+      DO MM=1,MMAX
+      L=L+1
+      E0(L)=ER*EPS(L)/FLOAT(NN+MM-2)
+      ENDDO
+      ENDDO
+C*
+      L=MEND1
+      DO NN=2,MEND1
+      MMAX=MEND2-NN
+      DO MM=1,MMAX
+      L=L+1
+      AN=NN+MM-2
+      AM=MM-1
+      E1(L)=ER*AM/(AN+AN*AN)
+      ENDDO
+      ENDDO
+C*
+*vdir novector
+      DO K=1,KMAX
+      DO MM=1,MEND1
+      NMAX=MEND2+1-MM
+C*
+      QU(1,MM,K)= E1(MM)*QDIV(2,MM,K)
+      QU(2,MM,K)=-E1(MM)*QDIV(1,MM,K)
+      QV(1,MM,K)= E1(MM)*QROT(2,MM,K)
+      QV(2,MM,K)=-E1(MM)*QROT(1,MM,K)
+C*
+      IF (NMAX .GE. 3) THEN
+      L=MEND1
+      QU(1,MM,K)=QU(1,MM,K)+E0(MM+L)*QROT(1,MM+L,K)
+      QU(2,MM,K)=QU(2,MM,K)+E0(MM+L)*QROT(2,MM+L,K)
+      QV(1,MM,K)=QV(1,MM,K)-E0(MM+L)*QDIV(1,MM+L,K)
+      QV(2,MM,K)=QV(2,MM,K)-E0(MM+L)*QDIV(2,MM+L,K)
+      ENDIF
+C*
+      IF (NMAX .GE. 4) THEN
+      DO NN=2,NMAX-2
+      L0 =LA0(MM,NN)
+      L0P=LA0(MM,NN+1)
+      L0M=LA0(MM,NN-1)
+      L1 =LA1(MM,NN)
+      L1P=LA1(MM,NN+1)
+      QU(1,L1,K)=-E0(L1)*QROT(1,L0M,K)+E0(L1P)*QROT(1,L0P,K)
+     1           +E1(L0)*QDIV(2,L0 ,K)
+      QU(2,L1,K)=-E0(L1)*QROT(2,L0M,K)+E0(L1P)*QROT(2,L0P,K)
+     1           -E1(L0)*QDIV(1,L0 ,K)
+      QV(1,L1,K)= E0(L1)*QDIV(1,L0M,K)-E0(L1P)*QDIV(1,L0P,K)
+     1           +E1(L0)*QROT(2,L0 ,K)
+      QV(2,L1,K)= E0(L1)*QDIV(2,L0M,K)-E0(L1P)*QDIV(2,L0P,K)
+     1           -E1(L0)*QROT(1,L0 ,K)
+      ENDDO
+      ENDIF
+C
+      IF (NMAX .GE. 3) THEN
+      NN=NMAX-1
+      L0 =LA0(MM,NN)
+      L0M=LA0(MM,NN-1)
+      L1 =LA1(MM,NN)
+      QU(1,L1,K)=-E0(L1)*QROT(1,L0M,K)
+     1           +E1(L0)*QDIV(2,L0 ,K)
+      QU(2,L1,K)=-E0(L1)*QROT(2,L0M,K)
+     1           -E1(L0)*QDIV(1,L0 ,K)
+      QV(1,L1,K)= E0(L1)*QDIV(1,L0M,K)
+     1           +E1(L0)*QROT(2,L0 ,K)
+      QV(2,L1,K)= E0(L1)*QDIV(2,L0M,K)
+     1           -E1(L0)*QROT(1,L0 ,K)
+      ENDIF
+C
+      IF (NMAX .GE. 2) THEN
+      NN=NMAX
+      L0M=LA0(MM,NN-1)
+      L1 =LA1(MM,NN)
+      QU(1,L1,K)=-E0(L1)*QROT(1,L0M,K)
+      QU(2,L1,K)=-E0(L1)*QROT(2,L0M,K)
+      QV(1,L1,K)= E0(L1)*QDIV(1,L0M,K)
+      QV(2,L1,K)= E0(L1)*QDIV(2,L0M,K)
+      ENDIF
+C
+      ENDDO
+      ENDDO
+C*
+      RETURN
+      END

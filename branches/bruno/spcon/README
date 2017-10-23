@@ -1,0 +1,104 @@
+Este pacote contem as rotinas e scripts de perturbacao das condicoes iniciais para SPCON-MB09 do CPTEC/INPE.
+
+Nas revisões mais recentes do pacote do SPCON global, os procedimentos obtenção do modelo BAM, configuração e compilação são feitos a partir do script "config_spcon.ksh". Siga as instruções a seguir para configurar e compilar o SPCON global.
+
+1) Login na eslogin01 ou eslogin02
+$ ssh eslogin01
+ou
+$ ssh eslogin02
+2) Obter uma cópia do modelo BAM (trunk)
+$ ./config_spcon.ksh model
+3) Obter uma cópia do utilitário inctime (trunk)
+$ ./config_spcon.ksh inctime
+4) Configurar o pacote (cria links simbólicos e diretórios)
+$ ./config_spcon.ksh configurar
+5) Compilar o pacote (método de perturbação, modelo e utilitários)
+$ ./config_spcon.ksh compilar
+6) Obter os dados para a realização do testcase
+$ ./config_spcon.ksh testcase
+
+As informações a seguir são apresentada apenas para consulta em relação às revisões anteriores do SPCON global.
+
+Para compilar:
+1) Login em qualquer eslogin0* (exceto eslogin01);
+2) Executar o comando abaixo e escolher a opcao 6:
+$ source /usr/bin/development_config
+3) Alterar a versao do compilador:
+$ module swap pgi pgi/11.10.0
+4) Executar o script de configuracao:
+$ config_spcon.ksh
+5) Compilar o pacote:
+$ make comp=pgi
+
+Observacoes:
+- As bibliotecas e executaveis ficam armazenados dentro de cada uma das pastas dos processos;
+- Os executaveis e bibliotecas das EOFs (de cada variaveis) sao criados diretamente dentro de eof/bin/<resolucao>;
+- Para uso com outras resolucoes, e necessario criar os header (ver diretorio include/<resolucao>)
+- A resolucao padrao e TQ0126L028;
+- Cada um dos processos pode ser compilado individualmente utilizando os comandos "make comp=pgi / make comp=pgi clean"
+
+Uso:
+- Seguir o algoritmo do scritp run/ciclo_spcon.ksh.
+
+Outras informacoes:
+
+- Em 24/02/2016
+
+A compilacao das rotinas de perturbacao para o SPCON foi feita no seguinte ambiente:
+- eslogin06
+Currently Loaded Modulefiles:
+  1) modules/3.2.6.6                           14) udreg/2.3.1-1.0400.3778.7.3.gem
+  2) pbs/10.4.0.101257                         15) ugni/2.3-1.0400.4127.5.20.gem
+  3) eswrap/1.0.9                              16) gni-headers/2.1-1.0400.4156.6.1.gem
+  4) xtpe-mc12                                 17) dmapp/3.2.1-1.0400.3965.10.63.gem
+  5) tupa2/1.0.0                               18) xpmem/0.1-2.0400.30792.5.6.gem
+  6) xtpe-network-gemini                       19) hss-llm/6.0.0
+  7) PrgEnv-pgi/3.1.72                         20) admin-modules/1.0.2-1.0400.28857.5.1.gem
+  8) xt-totalview/8.9.2                        21) Base-opts/1.0.2-1.0400.28857.5.1.gem
+  9) totalview-support/1.1.2                   22) atp/1.4.2
+ 10) pgi/11.10.0                               23) xt-asyncpe/5.07
+ 11) nodestat/2.2-1.0400.28140.5.3.gem         24) xt-libsci/11.0.05
+ 12) sdb/1.0-1.0400.29394.12.45.gem            25) xt-mpich2/5.4.3
+ 13) MySQL/5.0.64-1.0000.4667.20.1             26) pmi/3.0.0-1.0000.8661.28.2807.gem
+
+
+- Em 15/10/2015
+
+Devido a problemas de realizacao do MCGA, o modelo foi recompilado com o PGI na eslogin01. Os demais processos cntinuam compilados com o compilador da Cray.
+- eslogin01
+Currently Loaded Modulefiles:
+  1) modules/3.2.6.6                           14) xt-asyncpe/5.14
+  2) xtpe-network-gemini                       15) PrgEnv-pgi/4.0.46
+  3) pgi/12.8.0                                16) pbs/10.4.0.101257
+  4) totalview-support/1.1.3                   17) eswrap/1.0.9
+  5) xt-totalview/8.10.0                       18) xtpe-mc12
+  6) xt-libsci/11.1.01                         19) xt-mpich2/5.5.4
+  7) udreg/2.3.1-1.0400.4264.3.1.gem           20) atp/1.5.1
+  8) ugni/2.3-1.0400.4374.4.88.gem             21) tupa2/1.0.0
+  9) pmi/3.0.1-1.0000.9101.2.26.gem            22) ldump/1.2-1.0400.7229.4.130.gem
+ 10) dmapp/3.2.1-1.0400.4255.2.159.gem         23) lcrash/1.2-1.0400.7230.4.1.gem
+ 11) gni-headers/2.1-1.0400.4351.3.1.gem       24) cray-install-tools/1.0.1-1.0000.2804.0
+ 12) xpmem/0.1-2.0400.31280.3.1.gem            25) admin-modules/1.0.2-1.0400.31284.2.2.gem
+ 13) xe-sysroot/4.0.46                         26) Base-opts/1.0.2-1.0400.31284.2.2.gem
+
+- Em 14/10/2015
+
+Ambiente de compilacao do MCGA (pre/model/pos):
+- eslogin01
+Currently Loaded Modulefiles:
+  1) modules/3.2.6.6                           15) acml/5.1.0
+  2) xtpe-network-gemini                       16) xt-totalview/8.10.0
+  3) PrgEnv-cray/4.0.46                        17) totalview-support/1.1.3
+  4) xt-mpich2/5.5.4                           18) cce/8.0.6
+  5) xt-asyncpe/5.14                           19) pbs/10.4.0.101257
+  6) rca/1.0.0-2.0400.31553.3.58.gem           20) eswrap/1.0.9
+  7) xe-sysroot/4.0.46                         21) xtpe-mc12
+  8) xpmem/0.1-2.0400.31280.3.1.gem            22) atp/1.5.1
+  9) gni-headers/2.1-1.0400.4351.3.1.gem       23) tupa2/1.0.0
+ 10) dmapp/3.2.1-1.0400.4255.2.159.gem         24) ldump/1.2-1.0400.7229.4.130.gem
+ 11) pmi/3.0.1-1.0000.9101.2.26.gem            25) lcrash/1.2-1.0400.7230.4.1.gem
+ 12) ugni/2.3-1.0400.4374.4.88.gem             26) cray-install-tools/1.0.1-1.0000.2804.0
+ 13) udreg/2.3.1-1.0400.4264.3.1.gem           27) admin-modules/1.0.2-1.0400.31284.2.2.gem
+ 14) xt-libsci/11.1.01                         28) Base-opts/1.0.2-1.0400.31284.2.2.gem
+
+Ultima atualizacao: carlos.frederico@cptec.inpe.br (02/10/2017)
