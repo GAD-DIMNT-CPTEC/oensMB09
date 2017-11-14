@@ -96,20 +96,6 @@ fi
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 
-# Informações da grade 
-# Obs: está fixo para o TQ0126L028
-export MR=126
-export IR=384
-export JR=192
-export KR=09
-export LR=11
-export KR=18
-export LR=11
-export KR=28
-export LR=11
-export KR=42
-export LR=11
-
 # Variáveis utilizadas no script de submissão
 HSTMAQ=$(hostname)
 RUNTM=$(date +'%y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
@@ -141,7 +127,7 @@ cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
 #!/bin/bash -x
 #PBS -o ${DK_suite}/../recfct/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/../recfct/output/${SCRIPTSFILE}.${RUNTM}.err
-#PBS -l walltime=00:15:00
+#PBS -l walltime=01:00:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
 #PBS -V
@@ -206,29 +192,6 @@ do
     export ERS1=F.fct
     export ERR1=R.fct
   fi
-  
-##  #
-##  #  Now, build the necessary INCLUDE for the choosen truncation and 
-##  #       vertical resolution.. 
-##  #
-##  cd \${INC}
-##cat <<EOT1 > recfct.n
-##      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
-##      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},LMAX=${LR})
-##EOT1
-##
-##  if (diff recfct.n recfct.h > /dev/null)
-##  then
-##    echo "recfct.n and recfct.h are the same"
-##    rm -f recfct.n
-##  else
-##    echo "recfct.n and recfct.h are different"
-##    mv recfct.n recfct.h
-##  fi
-##  
-##  #
-##  #  End of includes
-##  #
   
   #
   #  Now, build the necessary NAMELIST input:

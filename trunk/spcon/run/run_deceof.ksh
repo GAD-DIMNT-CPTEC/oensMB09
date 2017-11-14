@@ -105,20 +105,7 @@ fi
 
 export NUMPERT=${NPERT}
 
-# Informações da grade 
-# Obs: está fixo para o TQ0126L028
-export MR=126  
-export IR=384  
-export JR=192 
-export KR=09 
-export LR=11 
-export KR=18  
-export LR=13 
-export KR=28 
-export LR=17 
-export KR=42  
-export LR=18 
-
+# As variáveis a seguir são utilizadas na composição dos nomes dos arquivos com as perturbações por EOF
 MPHN=1; MPTR=1; MPHS=1; MPSAN=1; MPSAS=1
 MTHN=1; MTTR=1; MTHS=1; MTSAN=1; MTSAS=1
 MQHN=1; MQTR=1; MQHS=1; MQSAN=1; MQSAS=1
@@ -139,8 +126,6 @@ MONITORID=${RANDOM}
 
 cat <<EOT0 > ${SCRIPTSFILES}
 #! /bin/bash -x
-###PBS -o ${DK_suite}/../deceof/output/setdeceof${PERR}${RESOL}${NIVEL}${LABELI}.${MAQUI}.${RUNTM}.out
-###PBS -e ${DK_suite}/../deceof/output/setdeceof${PERR}${RESOL}${NIVEL}${LABELI}.${MAQUI}.${RUNTM}.err
 #PBS -o ${DK_suite}/../deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
 #PBS -e ${DK_suite}/../deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
 #PBS -l walltime=0:15:00

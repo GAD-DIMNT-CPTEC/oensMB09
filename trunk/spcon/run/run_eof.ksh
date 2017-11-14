@@ -31,6 +31,8 @@
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# XX Outubro de 2017 - C. F. Bastarz - Inclusão limites região TQ0213L042
+# 03 Novembro de 2017 - C. F. Bastarz - Inclusão limites região TQ0299L064
 #
 # !REMARKS:
 #
@@ -41,7 +43,7 @@
 #BOC
 
 # Descomentar para debugar
-#set -o xtrace
+set -o xtrace
 
 # Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]
@@ -129,17 +131,17 @@ case ${TRC} in
 126) MR=126      ; KR=28       ; LR=11      ;              # Define a resolução do modelo e número de EOFs
      IR=384      ; JR=192      ;                           # Define o número de pontos da grade
      # Região HS:
-     HNNI=384    ; HNNJ=75     ;                           # Define o número de pontos da região 
-     HNII=1      ; HNIS=384    ; HNJI=1     ; HNJS=75    ; # Define a região da perturbação 
-     HNIIPS=1    ; HNISPS=384  ; HNJIPS=1   ; HNJSPS=75  ; # Não usado
+     HSNI=384    ; HSNJ=75     ;                           # Define o número de pontos da região  
+     HSII=1      ; HSIS=384    ; HSJI=118   ; HSJS=192   ; # Define a região da perturbação  
+     HSIIPS=1    ; HSISPS=384  ; HSJIPS=118 ; HSJSPS=192 ; # Não usado
      # Região TR:
      TRNI=384    ; TRNJ=75     ;                           # Define o número de pontos da região  
      TRII=1      ; TRIS=384    ; TRJI=76    ; TRJS=117   ; # Define a região da perturbação  
      TRIIPS=1    ; TRISPS=384  ; TRJIPS=76  ; TRJSPS=117 ; # Não usado
      # Região HN:
-     HSNI=384    ; HSNJ=75     ;                           # Define o número de pontos da região  
-     HSII=1      ; HSIS=384    ; HSJI=118   ; HSJS=192   ; # Define a região da perturbação  
-     HSIIPS=1    ; HSISPS=384  ; HSJIPS=118 ; HSJSPS=192 ; # Não usado
+     HNNI=384    ; HNNJ=75     ;                           # Define o número de pontos da região 
+     HNII=1      ; HNIS=384    ; HNJI=1     ; HNJS=75    ; # Define a região da perturbação 
+     HNIIPS=1    ; HNISPS=384  ; HNJIPS=1   ; HNJSPS=75  ; # Não usado
      # Região NAS:
      NASNI=97    ; NASNJ=42    ;                           # Define o número de pontos da região  
      NASII=278   ; NASIS=374   ; NASJI=76   ; NASJS=117  ; # Define a região da perturbação  
@@ -153,17 +155,17 @@ case ${TRC} in
 213) MR=213      ; KR=42       ; LR=11      ;          
      IR=640      ; JR=320      ;
      # Região HS: 
-     HNNI=640    ; HNNJ=125    ;                           # Define o número de pontos da região   
-     HNII=1      ; HNIS=640    ; HNJI=1     ; HNJS=125   ; # Define a região da perturbação  
-     HNIIPS=1    ; HNISPS=640  ; HNJIPS=1   ; HNJSPS=125 ; # Não usado 
+     HSNI=640    ; HSNJ=125    ;                           # Define o número de pontos da região   
+     HSII=1      ; HSIS=640    ; HSJI=1     ; HSJS=125   ; # Define a região da perturbação  
+     HSIIPS=1    ; HSISPS=640  ; HSJIPS=1   ; HSJSPS=125 ; # Não usado 
      # Região TR: 
      TRNI=640    ; TRNJ=70     ;                           # Define o número de pontos da região   
      TRII=1      ; TRIS=640    ; TRJI=126   ; TRJS=195   ; # Define a região da perturbação  
      TRIIPS=1    ; TRISPS=640  ; TRJIPS=126 ; TRJSPS=195 ; # Não usado 
      # Região HN: 
-     HSNI=640    ; HSNJ=125    ;                           # Define o número de pontos da região   
-     HSII=1      ; HSIS=640    ; HSJI=196   ; HSJS=320   ; # Define a região da perturbação  
-     HSIIPS=1    ; HSISPS=640  ; HSJIPS=196 ; HSJSPS=320 ; # Não usado 
+     HNNI=640    ; HNNJ=125    ;                           # Define o número de pontos da região   
+     HNII=1      ; HNIS=640    ; HNJI=196   ; HNJS=320   ; # Define a região da perturbação  
+     HNIIPS=1    ; HNISPS=640  ; HNJIPS=196 ; HNJSPS=320 ; # Não usado 
      # Região NAS: 
      NASNI=161   ; NASNJ=70    ;                           # Define o número de pontos da região       
      NASII=459   ; NASIS=619   ; NASJI=126  ; NASJS=195  ; # Define a região da perturbação  
@@ -172,6 +174,30 @@ case ${TRC} in
      SASNI=161   ; SASNJ=73    ;                           # Define o número de pontos da região       
      SASII=443   ; SASIS=603   ; SASJI=53   ; SASJS=125 ;  # Define a região da perturbação  
      SASIIPS=443 ; SASISPS=603 ; SASJIPS=125; SASJSPS=53;  # Não usado 
+     ;;
+
+299) MR=299      ; KR=64       ; LR=11      ;          
+     IR=900      ; JR=450      ;
+     # Região HS: 
+     HSNI=900    ; HSNJ=176    ;                           # Define o número de pontos da região   
+     HSII=1      ; HSIS=900    ; HSJI=1     ; HSJS=176   ; # Define a região da perturbação  
+     HSIIPS=1    ; HSISPS=900  ; HSJIPS=1   ; HSJSPS=176 ; # Não usado 
+     # Região TR: 
+     TRNI=900    ; TRNJ=98     ;                           # Define o número de pontos da região   
+     TRII=1      ; TRIS=900    ; TRJI=177   ; TRJS=274   ; # Define a região da perturbação  
+     TRIIPS=1    ; TRISPS=900  ; TRJIPS=177 ; TRJSPS=274 ; # Não usado 
+     # Região HN: 
+     HNNI=900    ; HNNJ=176    ;                           # Define o número de pontos da região   
+     HNII=1      ; HNIS=900    ; HNJI=276   ; HNJS=450   ; # Define a região da perturbação  
+     HNIIPS=1    ; HNISPS=900  ; HNJIPS=276 ; HNJSPS=450 ; # Não usado 
+     # Região NAS: 
+     NASNI=226   ; NASNJ=98    ;                           # Define o número de pontos da região       
+     NASII=645   ; NASIS=870   ; NASJI=177  ; NASJS=274  ; # Define a região da perturbação  
+     NASIIPS=645 ; NASISPS=870 ; NASJIPS=177; NASJSPS=274; # Não usado 
+     # Região SAS: 
+     SASNI=226   ; SASNJ=103   ;                           # Define o número de pontos da região       
+     SASII=623   ; SASIS=848   ; SASJI=74   ; SASJS=176  ;  # Define a região da perturbação  
+     SASIIPS=623 ; SASISPS=848 ; SASJIPS=74 ; SASJSPS=176;  # Não usado 
      ;;
 
 *) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
@@ -197,7 +223,7 @@ cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
 #!/bin/bash -x
 #PBS -o ${DK_suite}/../eof/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/../eof/output/${SCRIPTSFILE}.${RUNTM}.err
-#PBS -l walltime=0:10:00
+#PBS -l walltime=01:00:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
 #PBS -V
@@ -440,7 +466,6 @@ export ext=R.unf
 cat <<EOT1 > eoftem\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
-!  DIRA='\${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/ '
   DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
   DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
@@ -474,14 +499,7 @@ cat <<EOT1 > eoftem\${REG}\${MEM}.nml
   TEMPEN1(10)='tempn\${REG}\${MEM}10\${LABELI} ',
   TEMPEN1(11)='tempn\${REG}\${MEM}11\${LABELI} '
  &END
- &STTEMP
-  STDT( 1)=1.50,STDT( 2)=1.50,STDT( 3)=1.50,STDT( 4)=1.50,STDT( 5)=1.50,
-  STDT( 6)=1.50,STDT( 7)=1.50,STDT( 8)=1.50,STDT( 9)=1.50,STDT(10)=1.50,
-  STDT(11)=1.50,STDT(12)=1.50,STDT(13)=1.50,STDT(14)=1.50,STDT(15)=1.50,
-  STDT(16)=1.50,STDT(17)=1.50,STDT(18)=1.50,STDT(19)=1.50,STDT(20)=1.50,
-  STDT(21)=1.50,STDT(22)=1.50,STDT(23)=1.50,STDT(24)=1.50,STDT(25)=1.50,
-  STDT(26)=1.50,STDT(27)=1.50,STDT(28)=1.50
- &END
+ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
@@ -508,7 +526,6 @@ then
 cat <<EOT1 > eofhum\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
-!  DIRA='\${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/ '
   DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
   DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
@@ -542,15 +559,7 @@ cat <<EOT1 > eofhum\${REG}\${MEM}.nml
   HUMPEN1(10)='humpn\${REG}\${MEM}10\${LABELI} ',
   HUMPEN1(11)='humpn\${REG}\${MEM}11\${LABELI} '
  &END
- &STHUMI
-  STDQ( 1)= 0.770,STDQ( 2)= 0.780,STDQ( 3)= 0.780,STDQ( 4)= 0.780,
-  STDQ( 5)= 0.800,STDQ( 6)= 0.820,STDQ( 7)= 0.880,STDQ( 8)= 0.980,
-  STDQ( 9)= 1.140,STDQ(10)= 1.270,STDQ(11)= 1.370,STDQ(12)= 1.350,
-  STDQ(13)= 1.180,STDQ(14)= 1.050,STDQ(15)= 0.900,STDQ(16)= 0.750,
-  STDQ(17)= 0.490,STDQ(18)= 0.260,STDQ(19)= 0.120,STDQ(20)= 0.050,
-  STDQ(21)= 0.020,STDQ(22)= 0.000,STDQ(23)= 0.000,STDQ(24)= 0.000,
-  STDQ(25)= 0.000,STDQ(26)= 0.000,STDQ(27)= 0.000,STDQ(28)= 0.000
- &END
+ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
@@ -572,7 +581,6 @@ export ext=R.unf
 cat <<EOT1 > eofwin\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
-!  DIRA='\${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/ '
   DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
   DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
@@ -684,22 +692,8 @@ cat <<EOT1 > eofwin\${REG}\${MEM}.nml
   HUMPEN1(10)='humpn\${REG}\${MEM}10\${LABELI} ',
   HUMPEN1(11)='humpn\${REG}\${MEM}11\${LABELI} '
  &END
- &STZWIN
-  STDU( 1)=5.00,STDU( 2)=5.00,STDU( 3)=5.00,STDU( 4)=5.00,STDU( 5)=5.00,
-  STDU( 6)=5.00,STDU( 7)=5.00,STDU( 8)=5.00,STDU( 9)=5.00,STDU(10)=5.00,
-  STDU(11)=5.00,STDU(12)=5.00,STDU(13)=5.00,STDU(14)=5.00,STDU(15)=5.00,
-  STDU(16)=5.00,STDU(17)=5.00,STDU(18)=5.00,STDU(19)=5.00,STDU(20)=5.00,
-  STDU(21)=5.00,STDU(22)=5.00,STDU(23)=5.00,STDU(24)=5.00,STDU(25)=5.00,
-  STDU(26)=5.00,STDU(27)=5.00,STDU(28)=5.00
- &END
- &STMWIN
-  STDV( 1)=5.00,STDV( 2)=5.00,STDV( 3)=5.00,STDV( 4)=5.00,STDV( 5)=5.00,
-  STDV( 6)=5.00,STDV( 7)=5.00,STDV( 8)=5.00,STDV( 9)=5.00,STDV(10)=5.00,
-  STDV(11)=5.00,STDV(12)=5.00,STDV(13)=5.00,STDV(14)=5.00,STDV(15)=5.00,
-  STDV(16)=5.00,STDV(17)=5.00,STDV(18)=5.00,STDV(19)=5.00,STDV(20)=5.00,
-  STDV(21)=5.00,STDV(22)=5.00,STDV(23)=5.00,STDV(24)=5.00,STDV(25)=5.00,
-  STDV(26)=5.00,STDV(27)=5.00,STDV(28)=5.00
- &END
+ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/uvelpert.nml)
+ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert.nml)
  &HUMIDI
   HUM='${HUMID}'
  &END
@@ -726,6 +720,6 @@ chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 qsub ${HOME_suite}/../run/${SCRIPTSFILE}
 
 until [ -e "${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
-rm ${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor*.${MONITORID}
+rm ${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor*${MONITORID}
 
 exit 0

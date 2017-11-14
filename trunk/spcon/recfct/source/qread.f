@@ -34,6 +34,7 @@ C*
       write(*,*)'entrou qread'
 CAMM      READ(N)IFDAY,TOD,IDATE,IDATEC,SI,SL
       READ(N)IFDAY,TOD,IDATE,IDATEC
+CCFB      READ(N)IFDAY,TOD,IDATE,IDATEC,SI,SL
       write(*,'(A)')' '
       WRITE(*,'(A,I5,A,F6.2)')' IFDAY = ',IFDAY,' TOD = ',TOD
       write(*,'(A,4I5)')' IDATE  =',IDATE
@@ -49,6 +50,12 @@ C*    read orography
       DO MN=1,MNWV2
       QGZS(MN)=QWK(MN)
       ENDDO
+C*
+C*    CFB: O print a seguir parace consertar um bug na leitura dos records dos arquivos de previsao
+C*    (o maxval e o minval nao fazem nada)
+      PRINT *, 'CFB_DEBUG FROM QREAD MAX(QGZS)', MAXVAL(QGZS)
+      PRINT *, 'CFB_DEBUG FROM QREAD MIN(QGZS)', MINVAL(QGZS)
+C*
 C*
 C*    read land sea mask
       READ(N)MASK

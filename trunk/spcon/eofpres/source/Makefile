@@ -6,8 +6,8 @@ INC = $(SOPERMOD)/eofpres/include
 EXT = $(TRUNC)$(LEV)
 BIN = $(SOPERMOD)/eof/bin/$(EXT)
 
-FTNFLAG = -byteswapio -r8 -i8 
-CHWFLAG = -byteswapio -i8 -r8
+FTNFLAG = -byteswapio -r8 -i8 -mcmodel=medium 
+CHWFLAG = -byteswapio -i8 -r8 
 CPP = -I\${INC}
 F_UFMTIEEE = 10,11,20,62,64,68,69,72,74
 
@@ -24,7 +24,6 @@ $(PROG): $(OBJ)
 	ar x $(BIN)/eofpres$(EXT).a $(BIN)/eofpres.o
 	$(F77) $(FTNFLAG) -o $(PROG) $(BIN)/eofpres.o $(BIN)/eofpres$(EXT).a
 	-rm $(BIN)/*.o
-
 
 .SUFFIXES : .f .$(EXT)
 .f.$(EXT):
