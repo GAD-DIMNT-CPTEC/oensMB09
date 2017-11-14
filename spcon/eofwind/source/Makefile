@@ -6,8 +6,9 @@ INC = $(SOPERMOD)/eofwind/include
 EXT = $(TRUNC)$(LEV)
 BIN = $(SOPERMOD)/eof/bin/$(EXT)
 
-FTNFLAG = -byteswapio -r8 -i8 
-CHWFLAG = -byteswapio -i8 -r8 
+FTNFLAG = -byteswapio -r8 -i8 -mcmodel=medium
+CHWFLAG = -byteswapio -r8 -i8 
+
 CPP = -I\${INC}
 F_UFMTIEEE = 10,11,20,62,64,68,69,72,74
 

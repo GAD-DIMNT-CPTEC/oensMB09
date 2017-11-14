@@ -39,10 +39,12 @@
 #
 #  Uso/Exemplos: ./config_spcon.ksh model 
 #                ./config_spcon.ksh model 200 (alternativo)   
+#                ./config_spcon.ksh model oper (recomendável para resoluções > TQ0126L028)   
 #                ./config_spcon.ksh inctime
 #                ./config_spcon.ksh inctime 200 (alternativo)
 #                ./config_spcon.ksh testcase
 #                ./config_spcon.ksh configurar
+#                ./config_spcon.ksh configurar TQ0126L028 (alternativo)
 #                ./config_spcon.ksh configurar TQ0213L042 (alternativo)
 #                ./config_spcon.ksh compilar
 #                ./config_spcon.ksh ajuda  
@@ -52,15 +54,16 @@
 # 14 Agosto de 2017   - C. F. Bastarz - Versão inicial.  
 # 15 Agosto de 2017   - C. F. Bastarz - Inclusão comentários.
 # 17 Agosto de 2017   - C. F. Bastarz - Inclusão da compilação do inctime.
-# 20 Setembro de 2017 - C. F. Bastarz - Inclusão da função configurar
-# 21 Setembro de 2017 - C. F. Bastarz - Incrementada a função configurar
+# 20 Setembro de 2017 - C. F. Bastarz - Inclusão da função configurar.
+# 21 Setembro de 2017 - C. F. Bastarz - Incrementada a função configurar.
 # 02 Outubro de 2017  - C. F. Bastarz - Incluído comando para criar o arquivo VARIAVEIS
 #                                       a partir da função "configurar"; modificada a função
 #                                       de export do modelo BAM; incluida a opção de export
-#                                       do inctime
+#                                       do inctime.
 # 10 Outubro de 2017  - C. F. Bastarz - Inclusão de opção para indicar a resolução do sistema
-#                                       (a opção default é a TQ0126L028)
-#           
+#                                       (a opção default é a TQ0126L028).
+# 14 Novembro de 2017 - C. F. Bastarz - Inclusão da opção "model oper" para usar os executável
+#                                       e namelist operacionais do BAM.         
 #
 # !REMARKS:
 #
@@ -265,6 +268,19 @@ model() {
 
     svn export https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
 
+  elif [ ${1} == "oper" ]
+  then
+
+    svn export https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
+
+    echo "ATENÇÃO: SUBSTITUINDO MODEL_trunk PELO MODEL_oper"
+
+    sleep 10s
+
+    mv -v ${model_source} ${model_source}.trunk
+
+    tar -zxvf /stornext/home/modoper/BAM/model/source.20170515.tgz -C ${bam_model}/
+
   else
 
     echo "Model r${1}"
@@ -386,6 +402,8 @@ compilar() {
     # Substitui a linha que começa com a palavra "HOME=" pela valor da variável 
     # HOME=${home_spcon}, no arquivo ${home_spcon}/config/Makefile.conf.pgi
     sed -i "s,^HOME\=.*$,HOME\=${home_spcon},g" ${home_spcon}/config/Makefile.conf.pgi
+
+    # Incluir a alteração da resolução (eg., TQ0126L028, TQ0213L042, TQ0299L064 etc)
 
     cd ${home_spcon}
 

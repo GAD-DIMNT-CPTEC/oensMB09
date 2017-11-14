@@ -6,8 +6,8 @@ INC = $(SOPERMOD)/eofhumi/include
 EXT = $(TRUNC)$(LEV)
 BIN = $(SOPERMOD)/eof/bin/$(TRUNC)$(LEV)
 
-FTNFLAG = -byteswapio -r8 -i8 
-CHWFLAG = -byteswapio -i8 -r8 
+FTNFLAG = -byteswapio -r8 -i8 -mcmodel=medium 
+CHWFLAG = -byteswapio -i8 -r8
 CPP = -I\${INC}
 
 OBJ = eofhum.$(EXT) \

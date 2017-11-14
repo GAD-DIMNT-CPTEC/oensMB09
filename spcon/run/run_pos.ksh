@@ -36,7 +36,12 @@
 #  Uso/Exemplos: 
 # 
 #  Membro controle:
+#  - pós-processamento das previsões a partir das análise do NCEP (prefixo NMC):
 #  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 NMC 
+#  - pós-processamento das previsões a partir das análise do ECMWF (prefixo EIT, resolução de 1,5 graus):
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 EIT 
+#  - pós-processamento das previsões a partir das análise do ECMWF (prefixo EIH, resolução de 0,75 graus):
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 EIH 
 # 
 #  Demais membros:
 #  - pos-processamento das previsoes geradas a partir das analises perturbadas randomicamente:
@@ -51,6 +56,7 @@
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
 # 18 Agosto de 2017 - C. F. Bastarz - Modificação na ordem dos argumentos.
+# 26 Outubro de 2017 - C. F. Bastarz - Inclusão dos prefixos das análises do ECMWF (EIT/EIH).
 #
 # !REMARKS:
 #
@@ -138,7 +144,7 @@ then
   echo "ANLTYPE is not set"
   exit 4 
 else
-  if [ "${7}" == "CTR" -o "${7}" = "NMC" ] # pode ser RDP, NPT ou PPT
+  if [ "${7}" == "CTR" -o "${7}" == "NMC" -o "${7}" == "EIT" -o "${7}" == "EIH" ] # pode ser RDP, NPT ou PPT
   then 
     export ANLTYPE=${7}  
   else
@@ -158,9 +164,9 @@ export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
 
-. ${FILEENV} ${RES} ${PREFIC}
+. ${FILEENV} ${RES} ${ANLTYPE}
 
-cd ${HOME_suite}/run
+cd ${HOME_suite}/../run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -171,8 +177,8 @@ export NIVEL=$(echo ${TRCLV} | cut -c 7-11)
 export DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 export MAQUI=$(hostname -s)
 
-export SCRIPTFILEPATH=${HOME_suite}/run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}posg.${DIRRESOL}.${LABELI}.${MAQUI}
-export NAMELISTFILEPATH=${HOME_suite}/run
+export SCRIPTFILEPATH=${HOME_suite}/../run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}posg.${DIRRESOL}.${LABELI}.${MAQUI}
+export NAMELISTFILEPATH=${HOME_suite}/../run
 
 export BINARY=".FALSE."
 export REQTB="p"
@@ -180,10 +186,10 @@ export REGINT=".FALSE."
 export RESPOS="-0.50000"
 
 # Variáveis utilizadas no script de submissão
-if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC ]
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
 
-  EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}
+  EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}
 
   mkdir -p ${EXECFILEPATH}/setout
    
@@ -205,8 +211,9 @@ else
   for MEM in $(seq -f %02g 1 ${ANLPERT})
   do
 
-    EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
-    EXECFILEPATHMEM=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+    EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+#    EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}
+    EXECFILEPATHMEM=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
 
     mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}
    
@@ -227,23 +234,23 @@ else
 
 fi
 
-if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
-  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
   export PBSDIRECTIVENAME="#PBS -N POSENS${ANLTYPE}"
   export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
-  export MONITORFILE="${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/pos.${ANLPERT}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
+  export MONITORFILE="${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/pos.\${PBS_ARRAY_INDEX}"
 else
-  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
   export PBSDIRECTIVENAME="#PBS -N POSENS${ANLTYPE}"
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}"
-  export MONITORFILE="${DK_suite}/pos/exec_SMT${LABELI}.${ANLTYPE}/pos.${ANLTYPE}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}"
+  export MONITORFILE="${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.\${ANLTYPE}/pos.\${ANLTYPE}"
 fi
 
 PBSServer='eslogin'
@@ -251,9 +258,8 @@ PBSServer='eslogin'
 # Script de submissão
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
-${PBSOUTFILE}
-${PBSERRFILE}
-#PBS -l walltime=0:30:00
+#PBS -j oe
+#PBS -l walltime=01:00:00
 #PBS -l mppwidth=${MPPWIDTH}
 #PBS -l mppnppn=${MPPNPPN}
 #PBS -l mppdepth=${MPPDEPTH}
@@ -275,6 +281,8 @@ ${PBSEXECFILEPATH}
 
 cd \${EXECFILEPATH}
 
+echo \${PBS_JOBID} > ${HOME_suite}/../run/this.pos.job.${ANLTYPE}
+
 date
 
 aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
@@ -289,8 +297,54 @@ chmod +x ${SCRIPTFILEPATH}
 
 qsub ${SCRIPTFILEPATH}
 
-until [ -e ${MONITORFILE} ]; do sleep 1s; done
-rm ${MONITORFILE}
+#until [ -e ${MONITORFILE} ]; do sleep 1s; done
+#rm ${MONITORFILE}
+#
+#for arqctl in $(find ${DATAOUT}/../ -name "*.ctl")
+#do
+#
+#/opt/grads/2.0.a9/bin/gribmap -i ${arqctl}
+#
+#done
+
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+then
+
+  for i in $(seq 1 ${ANLPERT})
+  do
+
+    until [ -e ${EXECFILEPATH}/../pos.${i} ]; do sleep 1s; done
+    rm ${EXECFILEPATH}/../pos.${i}
+
+  done
+
+else
+
+  until [ -e ${EXECFILEPATH}/pos.${ANLTYPE} ]; do sleep 1s; done
+  rm ${EXECFILEPATH}/pos.${ANLTYPE}
+
+fi
+
+#JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${ANLTYPE} | awk -F "[" '{print $1}')
+JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${ANLTYPE} | cut -c 1-7)
+
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+then
+
+  for i in $(seq 1 ${ANLPERT})
+  do
+
+    until [ -e ${HOME_suite}/../run/POSENS${ANLTYPE}.o${JOBID}.${i} ]; do sleep 1s; done
+    mv -v ${HOME_suite}/../run/POSENS${ANLTYPE}.o${JOBID}.${i} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.${i}.out
+  
+  done
+
+else
+
+  until [ -e  ${HOME_suite}/../run/POS${ANLTYPE}.o${JOBID} ]; do sleep 1s; done 
+  mv -v ${HOME_suite}/../run/POS${ANLTYPE}.o${JOBID} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out
+
+fi
 
 for arqctl in $(find ${DATAOUT}/../ -name "*.ctl")
 do
@@ -298,5 +352,7 @@ do
 /opt/grads/2.0.a9/bin/gribmap -i ${arqctl}
 
 done
+
+rm ${HOME_suite}/../run/this.pos.job.${ANLTYPE}
 
 exit 0

@@ -38,14 +38,21 @@
 #  Uso/Exemplos: 
 # 
 #  Membro controle:
+# - previsões a partir da análise controle (prefixo CTR - análises NCEP ou ECMWF): 
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 CTR 2 1
+# - previsões a partir da análise controle (prefixo NMC - análises NCEP):
 # ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 NMC 2 1
+# - previsões a partir da análise controle (prefixo EIT - análises ECMWF de 1,5 graus): 
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 EIT 2 1
+#  - previsoes a partir das analises do ECMWF (prefixo EIH - análises ECMWF de 0,75 graus)
+# ./run_model.ksh 48 24 1 TQ0126L028 EIH 2013010100 2013011600 EIH 2 1
 # 
 #  Demais membros:
-#  - previsoes a partir das analises perturbadas randomicamente:
+#  - previsões a partir das analises perturbadas randomicamente:
 # ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 RDP 2 7
-#  - previsoes a partir das analises perturbadas por EOF (subtraidas):
+#  - previses a partir das analises perturbadas por EOF (subtraidas):
 # ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 NPT 2 7
-#  - previsoes a partir das analises perturbadas por EOF (somadas):
+#  - previsões a partir das analises perturbadas por EOF (somadas):
 # ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 PPT 2 7
 #
 # !REVISION HISTORY:
@@ -56,6 +63,7 @@
 # 18 Agosto de 2017 - C. F. Bastarz - Modificação nos argumentos de entrada.
 # 22 Agosto de 2017 - C. F. Bastarz - Inclusão do sleep 10s no final do script
 #                                     de submissão para aguardar o I/O do BAM
+# 26 Outubro de 2017 - C. F. Bastarz - Inclusão dos prefixos das análises do ECMWF (EIT/EIH)
 #
 # !REMARKS:
 #
@@ -200,6 +208,9 @@ then
 elif [ ${TRCLV} == "TQ0213L042" ]
 then
   export TIMESTEP=360
+elif [ ${TRCLV} == "TQ0299L064" ]
+then
+  export TIMESTEP=200
 else
   echo "Erro na resolução ${TRCLV}"
   exit 1
@@ -220,7 +231,7 @@ if [ ${ANLTYPE} == RDP -o ${ANLTYPE} == CTR ]
 then
   export DHFCT=3
   export DHRES=3
-elif [ ${ANLTYPE} == NMC -o ${ANLTYPE} == NPT -o ${ANLTYPE} == PPT ]
+elif [ ${ANLTYPE} == NMC -o ${ANLTYPE} == NPT -o ${ANLTYPE} == PPT -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
   export DHFCT=6
   export DHRES=6
@@ -239,10 +250,10 @@ export GAUSSGIVEN=".TRUE."
 export PATHIN=${DK_suite}/model/datain
 
 # Variáveis utilizadas no script de submissão
-if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC ]
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
 
-  EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}
+  EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}
 
   mkdir -p ${EXECFILEPATH}/setout
    
@@ -257,10 +268,16 @@ then
   if [ ${ANLTYPE} == CTR ]
   then
     export PREFIY=CTR
+  elif [ ${ANLTYPE} == EIT ]
+  then
+    export PREFIY=EIT
+  elif [ ${ANLTYPE} == EIH ]
+  then
+    export PREFIY=EIH
   else
     export PREFIY=NMC
   fi
-  export PREFIX=SMT
+  export PREFIX=${PREFIC}
 
   cria_namelist ${TRC} ${LV} ${TIMESTEP} ${LABELI} ${LABELW} ${LABELF} ${DHFCT} ${DHRES} ${GENRES} ${PREFIX} ${PREFIY} ${NMSST} ${PATHIN} ${DIRFNAMEOUTPUT} ${RSTIN} ${RSTOU} ${EIGENINIT} ${MGIVEN} ${GAUSSGIVEN} ${INITLZ} ${NAMELISTFILEPATH} ${EXECFILEPATH}
  
@@ -269,8 +286,8 @@ else
   for MEM in $(seq -f %02g 1 ${ANLPERT})
   do
 
-    EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}
-    EXECFILEPATHMEM=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+    EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}
+    EXECFILEPATHMEM=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
 
     mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}
    
@@ -291,37 +308,35 @@ else
 
 fi
 
-if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
-  export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+  export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
   export PBSDIRECTIVENAME="#PBS -N BAMENS${ANLTYPE}"
   export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
-  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.\${PBS_ARRAY_INDEX}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
+  export MONITORFILE="${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/model.\${PBS_ARRAY_INDEX}"
 else
-  export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+  export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
   export PBSDIRECTIVENAME="#PBS -N BAM${ANLTYPE}"
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}"
-  export MONITORFILE="${DK_suite}/model/exec_SMT${LABELI}.${ANLTYPE}/model.\${ANLTYPE}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}"
+  export MONITORFILE="${DK_suite}/model/exec_${PREFIC}${LABELI}.\${ANLTYPE}/model.\${ANLTYPE}"
 fi
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != RDP ]
 then
-  export walltime="02:00:00"
+  export walltime="04:00:00"
 else
-  export walltime="01:00:00"
+  export walltime="02:00:00"
 fi
 
 # Script de submissão
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
-###${PBSOUTFILE}
-###${PBSERRFILE}
 #PBS -j oe
 #PBS -l walltime=${walltime}
 #PBS -l mppwidth=${MPPWIDTH}
@@ -334,28 +349,29 @@ ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #PBS -q ${QUEUE}
 
-ulimit -s unlimited
-ulimit -c unlimited
-
+export PBS_SERVER=eslogin13
 export HUGETLB_MORECORE=yes
 export HUGETLB_ELFMAP=W
 export HUGETLB_FORCE_ELFMAP=yes+
 export MPICH_ENV_DISPLAY=1
 export HUGETLB_DEFAULT_PAGE_SIZE=2m
-export OMP_NUM_THREADS=${MPPDEPTH}
 
 ${PBSMEM}
 ${PBSEXECFILEPATH}
 
 cd \${EXECFILEPATH}
 
-echo \${PBS_JOBID} > ${HOME_suite}/../run/this.job.${ANLTYPE}
+export OMP_NUM_THREADS=6
+
+ulimit -s unlimited
+
+echo \${PBS_JOBID} > ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE}
 
 date
 
 mkdir -p \${EXECFILEPATH}/setout
 
-aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/Print.model.${LABELI}.MPI${MPPWIDTH}.log
+aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/Print.model.${LABELI}.MPI${MPPWIDTH}.log
 
 date
 
@@ -387,8 +403,8 @@ else
 
 fi
 
-#JOBID=$(cat ${HOME_suite}/../run/this.job.${ANLTYPE} | awk -F "[" '{print $1}')
-JOBID=$(cat ${HOME_suite}/../run/this.job.${ANLTYPE} | cut -c 1-7)
+#JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | cut -c 1-7)
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
@@ -408,6 +424,6 @@ else
 
 fi
 
-rm ${HOME_suite}/../run/this.job.${ANLTYPE}
+rm ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE}
 
 exit 0
