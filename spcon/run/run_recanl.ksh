@@ -104,7 +104,7 @@ cat <<EOT0 > ${SCRIPTSFILE}
 #!/bin/bash -x
 #PBS -o ${DK_suite}/../recanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/../recanl/output/${SCRIPTSFILE}.${RUNTM}.err
-#PBS -l walltime=0:05:00
+#PBS -l walltime=0:10:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
 #PBS -V

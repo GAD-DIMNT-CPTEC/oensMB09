@@ -7,8 +7,8 @@ EXT = $(TRUNC)$(LEV)
 DIR = $(SOPERMOD)/recanl/bin/$(EXT)
 LIB = $(SOPERMOD)/fftpln/lib/$(EXT)
 
-FTNFLAG = -byteswapio -i8 -r8
-CPP = -I\${INC}
+FTNFLAG = -byteswapio -i8 -r8 -mcmodel=medium 
+CPP = -I\${INC} 
 
 F_UFMTIEEE = 10,20
 F_UFMTADJUST10 = TYPE2
