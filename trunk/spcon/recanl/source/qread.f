@@ -28,7 +28,6 @@ C*
 C*
       COMMON /INDATA/ IFDAY,TOD,IDATE,IDATEC,SI,SL
 C*
-      write(*,*)'entrou qread'
       READ(N)IFDAY,TOD,IDATE,IDATEC,SI,SL
       write(*,'(A)')' '
       WRITE(*,'(A,I5,A,F6.2)')' IFDAY = ',IFDAY,' TOD = ',TOD
@@ -74,7 +73,6 @@ C*
       QQ(MN,K)=QWK(MN)
       ENDDO
       ENDDO
-C*
       CALL TRANSS(QGZS,   1,-1)
       CALL TRANSS(QLNP,   1,-1)
       CALL TRANSS(QTMP,KMAX,-1)

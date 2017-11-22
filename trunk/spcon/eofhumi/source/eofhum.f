@@ -232,7 +232,8 @@ C*
       ENDDO
       ENDDO
 
-      SIGMA1(K)=STDQ(K)/1000.0
+C*    CFB: STDQ esta em g/Kg; SIGMA1 esta em Kg/Kg (g/Kg / 1000 -> Kg/Kg)
+      SIGMA1(K)=STDQ(K)/1000.0 
       SIGMA2(K)=SQRT(SIGMA2(K)/REAL(IMAX0*JMAX0))
       write(*,*)'sigma1(',K,')=',sigma1(K)
       write(*,*)'sigma2(',K,')=',sigma2(K)

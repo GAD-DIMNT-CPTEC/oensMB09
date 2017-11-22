@@ -6,7 +6,7 @@ INC = $(SOPERMOD)/rdpert/include
 EXT = $(TRUNC)$(LEV)
 DIR = $(SOPERMOD)/rdpert/bin/$(EXT)
 
-FTNFLAG = -byteswapio -r8 -i8
+FTNFLAG = -byteswapio -r8 -i8 -mcmodel=medium
 CPP = -I\${INC}
 F_UFMTIEEE = 10,20
 

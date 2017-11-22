@@ -7,7 +7,7 @@ EXT = $(TRUNC)$(LEV)
 DIR = $(SOPERMOD)/deceof/bin/$(EXT)
 LIB = $(SOPERMOD)/fftpln/lib/$(EXT)
 
-FTNFLAG = -byteswapio -i8 -r8 
+FTNFLAG = -byteswapio -i8 -r8 -mcmodel=medium 
 CPP = -I\${INC}
 
 F_UFMTIEEE = 10,11,20,62,64,72,74
@@ -32,7 +32,6 @@ $(PROG): $(OBJ)
 	ar x $(DIR)/deceof.a $(DIR)/deceof.o
 	$(F77) $(FTNFLAG) -o $(PROG) $(DIR)/deceof.o $(DIR)/deceof.a $(LIB)/fftpln.a
 	-rm $(DIR)/*.o
-
 
 .SUFFIXES : .f .$(EXT)
 .f.$(EXT):
