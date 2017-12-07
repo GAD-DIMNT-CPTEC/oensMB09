@@ -499,7 +499,7 @@ cat <<EOT1 > eoftem\${REG}\${MEM}.nml
   TEMPEN1(10)='tempn\${REG}\${MEM}10\${LABELI} ',
   TEMPEN1(11)='tempn\${REG}\${MEM}11\${LABELI} '
  &END
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert.nml)
+ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert_eof.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
@@ -559,7 +559,7 @@ cat <<EOT1 > eofhum\${REG}\${MEM}.nml
   HUMPEN1(10)='humpn\${REG}\${MEM}10\${LABELI} ',
   HUMPEN1(11)='humpn\${REG}\${MEM}11\${LABELI} '
  &END
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert.nml)
+ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert_eof.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
@@ -692,8 +692,8 @@ cat <<EOT1 > eofwin\${REG}\${MEM}.nml
   HUMPEN1(10)='humpn\${REG}\${MEM}10\${LABELI} ',
   HUMPEN1(11)='humpn\${REG}\${MEM}11\${LABELI} '
  &END
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/uvelpert.nml)
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert.nml)
+ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/uvelpert_eof.nml)
+ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert_eof.nml)
  &HUMIDI
   HUM='${HUMID}'
  &END
