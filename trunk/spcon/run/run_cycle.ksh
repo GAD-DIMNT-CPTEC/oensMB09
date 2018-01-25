@@ -62,7 +62,18 @@
 # 18 Agosto de 2017 - C. F. Bastarz - Inclusão de opção para submeter ou não
 #                                     o pós-processamento do modelo atmosférico
 #
+# 10 Janeiro de 2018 - C. F. Bastarz - Inclusão de variáveis referentes à
+#                                      resolução da análise (e previsões)
+#                                      número de processadores utilizados
+#                                      pelo pré/model/pós
+#
+# 11 Janeiro de 2018 - C. F. Bastarz - Melhorada a verificação dos processos
+#
 # !REMARKS:
+#
+# Após esta seção de comentários, as variáveis referentes à resolução da
+# análise e número de processadores devem ser alteradas conforme as
+# configurações do experimento.
 #
 # !BUGS:
 #
@@ -77,14 +88,38 @@
 #--------------------------------------------------------------------#
 #BOC
 
+# Resolução e escolha do número de processadores dos processos
+#
+# Resolução  model_nproc pos_nproc Observação
+# ============================================
+# TQ0126L028          48        48 
+# TQ0213L042         192       192
+# TQ0299L064         384       384 não testado
+model_res=TQ0213L042
+bam_trunc_tmp=$(echo ${model_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $1}')
+bam_lev_tmp=$(echo ${model_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $2}')
+bam_trunc="${bam_trunc_tmp//[!1-9]/}"
+bam_lev="${bam_lev_tmp//[!1-9]/}"
+
+# Utilize o comando "/stornext/home/carlos./bastarz/bin/rsig gdas1.T00Z.SAnl.2013013000"
+# e verifique o valor das variáveis "jcap" e "lev"                                                       
+#ncep_res=TQ0574L064 # NCEP SAnl (até 2017 - para ler o header dos arquivos de análise espectrais)
+ncep_res=TQ1534L064 # NCEP NEMS (a partir de 2017)
+
+anl_trunc_tmp=$(echo ${ncep_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $1}')
+anl_lev_tmp=$(echo ${ncep_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $2}')
+anl_trunc="${anl_trunc_tmp//[!1-9]/}"
+anl_lev="${anl_lev_tmp//[!1-9]/}"
+
+model_nproc=192
+pos_nproc=192
+
 # Descomentar para debugar
 #set -o xtrace
 
-source ${PWD}/../../config_spcon.ksh vars_export
+source ${PWD}/../config_spcon.ksh vars_export
 
 inctime=${util_inctime}/inctime
-
-model_res=TQ0126L028
 
 # Tratamento das opções da linha de comando
 if [ ${#} -eq 0 ]
@@ -114,6 +149,7 @@ then
   echo "* Quantidade de Perturbações.: ${num_pert}"
   echo "* Tamanho Total do Conjunto..: $(echo $(($((${num_pert}*2))+1))) membros"
   echo "* Opção Pós-Processamento....: ${run_pos}"
+  echo "* Resolução..................: ${model_res}"
 
   echo ""
 
@@ -163,7 +199,7 @@ else
 
   echo ""
 
-  echo "> Realizando o SPCON Global com o dados do testcase"
+  echo "> Realizando o SPCON Global com os parâmetros a seguir"
 
   echo ""
 
@@ -174,6 +210,7 @@ else
   echo "* Quantidade de Perturbações.: ${num_pert}"
   echo "* Tamanho Total do Conjunto..: $(echo $(($((${num_pert}*2))+1))) membros"
   echo "* Opção Pós-Processamento....: ${run_pos}"
+  echo "* Resolução..................: ${model_res}"
 
   echo ""
 
@@ -195,7 +232,7 @@ verifica_eof_anls() {
       if [ ! -e ${anl_file} ]
       then
 
-        run_deceof
+        run_deceof ${3} ${4} ${2} ${1}
 
       fi
 
@@ -211,40 +248,48 @@ run_deceof() {
 
   echo "* ANL EOF TOSPEC (${data})"
   nohup ${spcon_run}/run_deceof.ksh ${1} EOF ${2} ${3} ${4} > deceof_${3}.log &
-  wait
+  check_status run_deceof
+  await
 
 }
 
 run_pre() {
 
   echo "* PRE CTR (${1})"
-  nohup ${spcon_run}/runPre 126 28 ${1} NMC 1 T F 574 64 > pre_${1}.log &
-  wait 
+  nohup ${spcon_run}/runPre ${bam_trunc} ${bam_lev} ${1} NMC 1 T F ${anl_trunc} ${anl_lev} > pre_${1}.log &
+  check_status run_pre
+  await
 
 }
 
 run_model_ctr() { # 2 dias, 3h
 
   echo "* MODEL CTR (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} CTR 2 1 > modelCTR_${2}.log &
-  wait 
+  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} CTR 2 1 > modelCTR_${2}.log &
+  check_status run_model_ctr
+  await
 
 }
 
 run_model_rdp() { # 2 dias, 3h
 
   echo "* MODEL RDP (${2})"
-  nohup ${spcon_run}/run_model.ksh 48 24 1 ${1} SMT ${2} ${3} RDP 2 ${4} > modelRDP_${2}.log &
-  wait
+  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} RDP 2 ${4} > modelRDP_${2}.log &
+  check_status run_model_rdp
+  await 
 
 }
 
 run_model_nmc() { # 15 dias, 6h
 
   echo "* MODEL NMC (${2})"
-  nohup ${spcon_run}/run_model.ksh 96 24 1 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
+  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
+#  check_status run_model_nmc
+#  await
+#  pid_model_nmc=$!
+#  wait ${pid_model_nmc}
 #  wait # Neste caso, como o script deve aguardar a submissão das previsões a partir das análises
-        # perturbadas por EOF, então esta submissão não o script não precisa aguardar este processo
+        # perturbadas por EOF, então esta submissão não precisa aguardar este processo
         # terminar.     
 
 }
@@ -252,10 +297,18 @@ run_model_nmc() { # 15 dias, 6h
 run_model_eof() { # 15 dias, 6h
 
   echo "* MODEL EOF N (${2})"
-  nohup ${spcon_run}/run_model.ksh 96 24 1 ${1} SMT ${2} ${3} NPT 2 ${4} > modelN_${2}.log &
+  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${4} NPT 2 ${3} > modelN_${2}.log &
+  check_status run_model_npt
+  pid_model_eofn=$!
+  echo ${pid_model_eofn}  
+
   echo "* MODEL EOF P (${2})"
-  nohup ${spcon_run}/run_model.ksh 96 24 1 ${1} SMT ${2} ${3} PPT 2 ${4} > modelP_${2}.log &
-  wait %1 %2
+  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${4} PPT 2 ${3} > modelP_${2}.log &
+  check_status run_model_ppt
+  pid_model_eofp=$!
+  echo ${pid_model_eofp}
+
+  wait ${pid_model_nmc} ${pid_model_eofn} ${pid_model_eofp}
 
 }
 
@@ -263,7 +316,8 @@ run_recanl() {
 
   echo "* ANL TOGRID CTR (${2})"
   nohup ${spcon_run}/run_recanl.ksh ${1} SMT ANLSMT ${2} > recanl_${2}.log &
-  wait 
+  check_status run_recanl
+  await 
 
 }
 
@@ -271,7 +325,8 @@ run_rdpert() {
 
   echo "* ANL RDP (${3})"
   nohup ${spcon_run}/run_rdpert.ksh ${1} SMT ${2} ${3} ${4} > rdpert_${3}.log &
-  wait
+  check_status run_rdpert
+  await
 
 }
 
@@ -279,7 +334,8 @@ run_decanl() {
 
   echo "* ANL TOSPEC (${3})"
   nohup ${spcon_run}/run_decanl.ksh ${1} SMT ${2} ${3} ${4} > decanl_${3}.log &
-  wait
+  check_status run_decanl
+  await
 
 }
 
@@ -287,7 +343,8 @@ run_recfct_ctr() {
 
   echo "* MODEL TOGRID CTRL (${2})"
   nohup ${spcon_run}/run_recfct.ksh ${1} CTR ${2} > recfctCTR_${2}.log &
-  wait
+  check_status run_recfct_ctr
+  await 
 
 }
 
@@ -295,7 +352,8 @@ run_recfct_rdp() {
 
   echo "* MODEL TOSPEC RDP (${3})"
   nohup ${spcon_run}/run_recfct.ksh ${1} ${2} ${3} > recfctRPT_${3}.log &
-  wait
+  check_status run_recfct_rdp
+  await 
 
 }
 
@@ -303,23 +361,46 @@ run_eof() {
 
   echo "* ANL EOF (${4})"
   nohup ${spcon_run}/run_eof.ksh ${1} ${2} ${3} ${4} > eof_${4}.log &
-  wait
+  check_status run_eof
+  await
 
 }
 
 run_pos_ctr() {
 
   echo "* POS CTR (${2})"
-  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} ${3} CTR > posCTR_${2}.log &
+  nohup ${spcon_run}/run_pos.ksh ${pos_nproc} 4 6 ${1} ${2} ${3} CTR > posCTR_${2}.log &
 
 }
 
 run_pos_eof() {
 
   echo "* POS EOF N (${2})"
-  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} ${3} NPT ${4} > posN_${2}.log &
+  nohup ${spcon_run}/run_pos.ksh ${pos_nproc} 4 6 ${1} ${2} ${3} NPT ${4} > posN_${2}.log &
   echo "* POS EOF P (${2})"
-  nohup ${spcon_run}/run_pos.ksh 48 24 1 ${1} ${2} ${3} PPT ${4} > posP_${2}.log &
+  nohup ${spcon_run}/run_pos.ksh ${pos_nproc} 4 6 ${1} ${2} ${3} PPT ${4} > posP_${2}.log &
+
+}
+
+await() {
+
+  pid_proc=$!
+  echo ${pid_proc}
+  wait ${pid_proc}
+
+}
+
+check_status() {
+
+  if [ "$(echo $?)" -ne "0" ]
+  then
+
+    echo "Processo ${1} falhou, abortando!!"
+    kill -9 $$
+    kill -9 $!
+    exit 1
+
+  fi
 
 }
 
@@ -340,8 +421,8 @@ do
   echo ""
 
   # 1) Realização do pré-processamento da primeira análise controle
-  run_pre ${data}
-  
+  run_pre ${data} 
+
   # 2) Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle)
   run_model_ctr ${model_res} ${data} ${data_fct_48h}
 
@@ -369,7 +450,7 @@ do
   # 10) Composição do arquivo de análise a partir das perturbações EOF
   run_deceof ${model_res} ${moist_opt} ${data} ${num_pert}
 
-  verifica_eof_anls ${num_pert} ${data} ${model_res}
+  verifica_eof_anls ${num_pert} ${data} ${model_res} ${moist_opt}
 
   # 11) Realização das previsões para até 15 dias a partir da análise controle (sem perturbações)
   run_model_nmc ${model_res} ${data} ${data_fct_360h}
