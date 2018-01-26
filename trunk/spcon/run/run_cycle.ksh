@@ -419,43 +419,43 @@ do
 
   echo ""
 
-#  # 1) Realização do pré-processamento da primeira análise controle
-#  run_pre ${data} 
-#
-#  # 2) Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle)
-#  run_model_nmc ${model_res} ${data} ${data_fct_48h}
-#
-#  # 3) Recomposição dos coeficientes espectrais da análise para ponto de grade
-#  run_recanl ${model_res} ${data}
-#  
-#  # 4) Gera e soma as perturbações randômicas à análise controle
-#  run_rdpert ${model_res} ${moist_opt} ${data} ${num_pert} 
-# 
-#  # 5) Decomposição das análises perturbadas em ponto de grade para coeficientes espectrais
-#  run_decanl ${model_res} ${moist_opt} ${data} ${num_pert}
-#
-#  # 6) Realização das previsões a partir das análises perturbadas para uso na análise de EOF
-#  run_model_rdp ${model_res} ${data} ${data_fct_48h} ${num_pert} 
-#
-#  # 7) Recomposição para ponto de grade das previsões realizadas a partir da análise controle
-#  run_recfct_nmc ${model_res} ${data}
-#
-#  # 8) Recomposição para ponto de grade das previsões realizadas a partir das análises perturbadas randomicamente
-#  run_recfct_rdp ${model_res} ${num_pert} ${data}
-#
-#  # 9) Realização da análise de EOF para gerar as perturbações ótimas a serem utilizadas na composição final dos membros do conjunto
-#  run_eof ${model_res} ${num_pert} ${moist_opt} ${data}
-#
-#  # 10) Composição do arquivo de análise a partir das perturbações EOF
-#  run_deceof ${model_res} ${moist_opt} ${data} ${num_pert}
-#
-#  verifica_eof_anls ${num_pert} ${data} ${model_res} ${moist_opt}
-#
-#  # 11) Realização das previsões para até 15 dias a partir da análise controle (sem perturbações)
-#  run_model_ctr ${model_res} ${data} ${data_fct_360h}
-#
-#  # 12) Realização das previsões para até 15 dias a partir do conjunto de análises com perturbações ótimas
-#  run_model_eof ${model_res} ${data} ${num_pert} ${data_fct_360h}
+  # 1) Realização do pré-processamento da primeira análise controle
+  run_pre ${data} 
+
+  # 2) Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle)
+  run_model_nmc ${model_res} ${data} ${data_fct_48h}
+
+  # 3) Recomposição dos coeficientes espectrais da análise para ponto de grade
+  run_recanl ${model_res} ${data}
+  
+  # 4) Gera e soma as perturbações randômicas à análise controle
+  run_rdpert ${model_res} ${moist_opt} ${data} ${num_pert} 
+ 
+  # 5) Decomposição das análises perturbadas em ponto de grade para coeficientes espectrais
+  run_decanl ${model_res} ${moist_opt} ${data} ${num_pert}
+
+  # 6) Realização das previsões a partir das análises perturbadas para uso na análise de EOF
+  run_model_rdp ${model_res} ${data} ${data_fct_48h} ${num_pert} 
+
+  # 7) Recomposição para ponto de grade das previsões realizadas a partir da análise controle
+  run_recfct_nmc ${model_res} ${data}
+
+  # 8) Recomposição para ponto de grade das previsões realizadas a partir das análises perturbadas randomicamente
+  run_recfct_rdp ${model_res} ${num_pert} ${data}
+
+  # 9) Realização da análise de EOF para gerar as perturbações ótimas a serem utilizadas na composição final dos membros do conjunto
+  run_eof ${model_res} ${num_pert} ${moist_opt} ${data}
+
+  # 10) Composição do arquivo de análise a partir das perturbações EOF
+  run_deceof ${model_res} ${moist_opt} ${data} ${num_pert}
+
+  verifica_eof_anls ${num_pert} ${data} ${model_res} ${moist_opt}
+
+  # 11) Realização das previsões para até 15 dias a partir da análise controle (sem perturbações)
+  run_model_ctr ${model_res} ${data} ${data_fct_360h}
+
+  # 12) Realização das previsões para até 15 dias a partir do conjunto de análises com perturbações ótimas
+  run_model_eof ${model_res} ${data} ${num_pert} ${data_fct_360h}
 
   if [ ${run_pos} == YES ]
   then
