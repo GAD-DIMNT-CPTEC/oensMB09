@@ -36,8 +36,8 @@
 #  Uso/Exemplos: 
 # 
 #  Membro controle:
-#  - pós-processamento das previsões a partir das análise do NCEP (prefixo NMC):
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 NMC 
+#  - pós-processamento das previsões a partir das análise do NCEP (prefixo CTR):
+#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 CTR 
 #  - pós-processamento das previsões a partir das análise do ECMWF (prefixo EIT, resolução de 1,5 graus):
 #  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 EIT 
 #  - pós-processamento das previsões a partir das análise do ECMWF (prefixo EIH, resolução de 0,75 graus):
@@ -57,6 +57,7 @@
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
 # 18 Agosto de 2017 - C. F. Bastarz - Modificação na ordem dos argumentos.
 # 26 Outubro de 2017 - C. F. Bastarz - Inclusão dos prefixos das análises do ECMWF (EIT/EIH).
+# 25 Janeiro de 2018 - C. F. Bastarz - Ajustes nos prefixos NMC (controle 48h) e CTR (controle 120h)
 #
 # !REMARKS:
 #

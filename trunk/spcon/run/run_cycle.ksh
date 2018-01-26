@@ -61,13 +61,12 @@
 #                                     para 15 dias
 # 18 Agosto de 2017 - C. F. Bastarz - Inclusão de opção para submeter ou não
 #                                     o pós-processamento do modelo atmosférico
-#
 # 10 Janeiro de 2018 - C. F. Bastarz - Inclusão de variáveis referentes à
 #                                      resolução da análise (e previsões)
 #                                      número de processadores utilizados
 #                                      pelo pré/model/pós
-#
 # 11 Janeiro de 2018 - C. F. Bastarz - Melhorada a verificação dos processos
+# 25 Janeiro de 2018 - C. F. Bastarz - Ajustados os prefixos NMC (controle 48h) e CTR (controle 120h)
 #
 # !REMARKS:
 #
@@ -262,11 +261,11 @@ run_pre() {
 
 }
 
-run_model_ctr() { # 2 dias, 3h
+run_model_nmc() { # 2 dias, 3h
 
-  echo "* MODEL CTR (${2})"
-  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} CTR 2 1 > modelCTR_${2}.log &
-  check_status run_model_ctr
+  echo "* MODEL NMC (${2})"
+  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
+  check_status run_model_nmc
   await
 
 }
@@ -280,14 +279,14 @@ run_model_rdp() { # 2 dias, 3h
 
 }
 
-run_model_nmc() { # 15 dias, 6h
+run_model_ctr() { # 15 dias, 6h
 
-  echo "* MODEL NMC (${2})"
-  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
-#  check_status run_model_nmc
+  echo "* MODEL CTR (${2})"
+  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} CTR 2 1 > modelCTR_${2}.log &
+#  check_status run_model_ctr
 #  await
-#  pid_model_nmc=$!
-#  wait ${pid_model_nmc}
+#  pid_model_ctr=$!
+#  wait ${pid_model_ctr}
 #  wait # Neste caso, como o script deve aguardar a submissão das previsões a partir das análises
         # perturbadas por EOF, então esta submissão não precisa aguardar este processo
         # terminar.     
@@ -339,11 +338,11 @@ run_decanl() {
 
 }
 
-run_recfct_ctr() {
+run_recfct_nmc() {
 
-  echo "* MODEL TOGRID CTRL (${2})"
-  nohup ${spcon_run}/run_recfct.ksh ${1} CTR ${2} > recfctCTR_${2}.log &
-  check_status run_recfct_ctr
+  echo "* MODEL TOGRID NMC (${2})"
+  nohup ${spcon_run}/run_recfct.ksh ${1} NMC ${2} > recfctNMC_${2}.log &
+  check_status run_recfct_nmc
   await 
 
 }
@@ -420,48 +419,48 @@ do
 
   echo ""
 
-  # 1) Realização do pré-processamento da primeira análise controle
-  run_pre ${data} 
-
-  # 2) Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle)
-  run_model_ctr ${model_res} ${data} ${data_fct_48h}
-
-  # 3) Recomposição dos coeficientes espectrais da análise para ponto de grade
-  run_recanl ${model_res} ${data}
-  
-  # 4) Gera e soma as perturbações randômicas à análise controle
-  run_rdpert ${model_res} ${moist_opt} ${data} ${num_pert} 
- 
-  # 5) Decomposição das análises perturbadas em ponto de grade para coeficientes espectrais
-  run_decanl ${model_res} ${moist_opt} ${data} ${num_pert}
-
-  # 6) Realização das previsões a partir das análises perturbadas para uso na análise de EOF
-  run_model_rdp ${model_res} ${data} ${data_fct_48h} ${num_pert} 
-
-  # 7) Recomposição para ponto de grade das previsões realizadas a partir da análise controle
-  run_recfct_ctr ${model_res} ${data}
-
-  # 8) Recomposição para ponto de grade das previsões realizadas a partir das análises perturbadas randomicamente
-  run_recfct_rdp ${model_res} ${num_pert} ${data}
-
-  # 9) Realização da análise de EOF para gerar as perturbações ótimas a serem utilizadas na composição final dos membros do conjunto
-  run_eof ${model_res} ${num_pert} ${moist_opt} ${data}
-
-  # 10) Composição do arquivo de análise a partir das perturbações EOF
-  run_deceof ${model_res} ${moist_opt} ${data} ${num_pert}
-
-  verifica_eof_anls ${num_pert} ${data} ${model_res} ${moist_opt}
-
-  # 11) Realização das previsões para até 15 dias a partir da análise controle (sem perturbações)
-  run_model_nmc ${model_res} ${data} ${data_fct_360h}
-
-  # 12) Realização das previsões para até 15 dias a partir do conjunto de análises com perturbações ótimas
-  run_model_eof ${model_res} ${data} ${num_pert} ${data_fct_360h}
+#  # 1) Realização do pré-processamento da primeira análise controle
+#  run_pre ${data} 
+#
+#  # 2) Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle)
+#  run_model_nmc ${model_res} ${data} ${data_fct_48h}
+#
+#  # 3) Recomposição dos coeficientes espectrais da análise para ponto de grade
+#  run_recanl ${model_res} ${data}
+#  
+#  # 4) Gera e soma as perturbações randômicas à análise controle
+#  run_rdpert ${model_res} ${moist_opt} ${data} ${num_pert} 
+# 
+#  # 5) Decomposição das análises perturbadas em ponto de grade para coeficientes espectrais
+#  run_decanl ${model_res} ${moist_opt} ${data} ${num_pert}
+#
+#  # 6) Realização das previsões a partir das análises perturbadas para uso na análise de EOF
+#  run_model_rdp ${model_res} ${data} ${data_fct_48h} ${num_pert} 
+#
+#  # 7) Recomposição para ponto de grade das previsões realizadas a partir da análise controle
+#  run_recfct_nmc ${model_res} ${data}
+#
+#  # 8) Recomposição para ponto de grade das previsões realizadas a partir das análises perturbadas randomicamente
+#  run_recfct_rdp ${model_res} ${num_pert} ${data}
+#
+#  # 9) Realização da análise de EOF para gerar as perturbações ótimas a serem utilizadas na composição final dos membros do conjunto
+#  run_eof ${model_res} ${num_pert} ${moist_opt} ${data}
+#
+#  # 10) Composição do arquivo de análise a partir das perturbações EOF
+#  run_deceof ${model_res} ${moist_opt} ${data} ${num_pert}
+#
+#  verifica_eof_anls ${num_pert} ${data} ${model_res} ${moist_opt}
+#
+#  # 11) Realização das previsões para até 15 dias a partir da análise controle (sem perturbações)
+#  run_model_ctr ${model_res} ${data} ${data_fct_360h}
+#
+#  # 12) Realização das previsões para até 15 dias a partir do conjunto de análises com perturbações ótimas
+#  run_model_eof ${model_res} ${data} ${num_pert} ${data_fct_360h}
 
   if [ ${run_pos} == YES ]
   then
 
-    # 13) Realização do pós-processamento das previsões de até 15 dias realizadas a partir da  análise controle
+    # 13) Realização do pós-processamento das previsões de até 15 dias realizadas a partir da análise controle
     run_pos_ctr ${model_res} ${data} ${data_fct_360h}
 
     # 14) Realização do pós-processamento do conjunto de previsões de até 15 dias realizado a partir do conjunto de análises com perturbações ótimas
