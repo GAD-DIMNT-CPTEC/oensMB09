@@ -38,10 +38,10 @@
 #  Uso/Exemplos: 
 # 
 #  Membro controle:
-# - previsões a partir da análise controle (prefixo CTR - análises NCEP ou ECMWF): 
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 CTR 2 1
-# - previsões a partir da análise controle (prefixo NMC - análises NCEP):
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 NMC 2 1
+# - previsões a partir da análise controle (prefixo NMC - análises NCEP ou ECMWF): 
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 NMC 2 1
+# - previsões a partir da análise controle (prefixo CTR - análises NCEP):
+# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 CTR 2 1
 # - previsões a partir da análise controle (prefixo EIT - análises ECMWF de 1,5 graus): 
 # ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 EIT 2 1
 #  - previsoes a partir das analises do ECMWF (prefixo EIH - análises ECMWF de 0,75 graus)
@@ -64,6 +64,7 @@
 # 22 Agosto de 2017 - C. F. Bastarz - Inclusão do sleep 10s no final do script
 #                                     de submissão para aguardar o I/O do BAM
 # 26 Outubro de 2017 - C. F. Bastarz - Inclusão dos prefixos das análises do ECMWF (EIT/EIH)
+# 25 Janeiro de 2018 - C. F. Bastarz - Ajuste dos prefixos NMC (controle 48h) e CTR (controle 120h)
 #
 # !REMARKS:
 #
@@ -85,27 +86,27 @@ fi
 
 cria_namelist() {
 
-sed  -e "s;#TRUNC#;${1};g" \
-     -e "s;#NLEV#;${2};g" \
-     -e "s;#DELT#;${3};g" \
-     -e "s;#LABELI#;${4:8:2},${4:6:2},${4:4:2},${4:0:4};g" \
-     -e "s;#LABELW#;${5:8:2},${5:6:2},${5:4:2},${5:0:4};g" \
-     -e "s;#LABELF#;${6:8:2},${6:6:2},${6:4:2},${6:0:4};g" \
-     -e "s;#DHFCT#;${7};g" \
-     -e "s;#DHRES#;${8};g" \
-     -e "s;#GENRES#;${9};g" \
-     -e "s;#PREFIX#;${10};g" \
-     -e "s;CPT;${11};g" \
-     -e "s;#NMSST#;${12};g" \
-     -e "s;#PATHIN#;${13};g" \
-     -e "s;#PATHOU#;${14};g" \
-     -e "s;#RSTIN#;${15};g" \
-     -e "s;#RSTOU#;${16};g" \
-     -e "s;#EIGENINIT#;${17};g" \
-     -e "s;#MGIVEN#;${18};g" \
-     -e "s;#GAUSSGIVEN#;${19};g" \
-     -e "s;#INITLZ#;${20};g" \
-     ${21}/MODELIN.template > ${22}/MODELIN
+sed -e "s;#TRUNC#;${1};g" \
+    -e "s;#NLEV#;${2};g" \
+    -e "s;#DELT#;${3};g" \
+    -e "s;#LABELI#;${4:8:2},${4:6:2},${4:4:2},${4:0:4};g" \
+    -e "s;#LABELW#;${5:8:2},${5:6:2},${5:4:2},${5:0:4};g" \
+    -e "s;#LABELF#;${6:8:2},${6:6:2},${6:4:2},${6:0:4};g" \
+    -e "s;#DHFCT#;${7};g" \
+    -e "s;#DHRES#;${8};g" \
+    -e "s;#GENRES#;${9};g" \
+    -e "s;#PREFIX#;${10};g" \
+    -e "s;CPT;${11};g" \
+    -e "s;#NMSST#;${12};g" \
+    -e "s;#PATHIN#;${13};g" \
+    -e "s;#PATHOU#;${14};g" \
+    -e "s;#RSTIN#;${15};g" \
+    -e "s;#RSTOU#;${16};g" \
+    -e "s;#EIGENINIT#;${17};g" \
+    -e "s;#MGIVEN#;${18};g" \
+    -e "s;#GAUSSGIVEN#;${19};g" \
+    -e "s;#INITLZ#;${20};g" \
+    ${21}/MODELIN.template > ${22}/MODELIN
 
 echo "Namelist criado em: ${22}/MODELIN"
 
@@ -223,15 +224,15 @@ SCRIPTFILEPATH=${HOME_suite}/../run/set$(echo "${ANLTYPE}" | awk '{print tolower
 NAMELISTFILEPATH=${HOME_suite}/../run
 
 # As opções abaixo fazem referência à frequência de saída das previsões (DHFCT) e dos arquivos de restart (DHRES)
-# Se ANLTYPE for igual a CTR ou RDP, então as previsões serão referentes à análise controle, com previsões para
-#2 dias e com saídas a cada 3 horas;
-# Se ANLTYPE for igual a NMC, NPT ou PPT, então as previsões serão referentes às análises controle e perturbadas
+# Se ANLTYPE for igual a NMC ou RDP, então as previsões serão referentes à análise controle, com previsões para
+# 2 dias e com saídas a cada 3 horas;
+# Se ANLTYPE for igual a CTR, NPT ou PPT, então as previsões serão referentes às análises controle e perturbadas
 # por EOF (respectivamente), e serão feitas para 15 dias e com saída a cada 3 horas.
-if [ ${ANLTYPE} == RDP -o ${ANLTYPE} == CTR ]
+if [ ${ANLTYPE} == RDP -o ${ANLTYPE} == NMC ]
 then
   export DHFCT=3
   export DHRES=3
-elif [ ${ANLTYPE} == NMC -o ${ANLTYPE} == NPT -o ${ANLTYPE} == PPT -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
+elif [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NPT -o ${ANLTYPE} == PPT -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
   export DHFCT=6
   export DHRES=6
@@ -327,7 +328,7 @@ else
   export MONITORFILE="${DK_suite}/model/exec_${PREFIC}${LABELI}.\${ANLTYPE}/model.\${ANLTYPE}"
 fi
 
-if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != RDP ]
+if [ ${ANLTYPE} != NMC -a ${ANLTYPE} != RDP ]
 then
   export walltime="04:00:00"
 else
