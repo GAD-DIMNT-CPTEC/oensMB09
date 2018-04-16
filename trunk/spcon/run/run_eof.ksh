@@ -33,6 +33,7 @@
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
 # XX Outubro de 2017 - C. F. Bastarz - Inclusão limites região TQ0213L042
 # 03 Novembro de 2017 - C. F. Bastarz - Inclusão limites região TQ0299L064
+# 09 Fevereiro de 2018 - C. F. Bastarz - Ajuste dos prefixos NMC (controle 48h) e CTR (controle 120h)
 #
 # !REMARKS:
 #
@@ -196,8 +197,8 @@ case ${TRC} in
      NASIIPS=645 ; NASISPS=870 ; NASJIPS=177; NASJSPS=274; # Não usado 
      # Região SAS: 
      SASNI=226   ; SASNJ=103   ;                           # Define o número de pontos da região       
-     SASII=623   ; SASIS=848   ; SASJI=74   ; SASJS=176  ;  # Define a região da perturbação  
-     SASIIPS=623 ; SASISPS=848 ; SASJIPS=74 ; SASJSPS=176;  # Não usado 
+     SASII=623   ; SASIS=848   ; SASJI=74   ; SASJS=176  ; # Define a região da perturbação  
+     SASIIPS=623 ; SASISPS=848 ; SASJIPS=74 ; SASJSPS=176; # Não usado 
      ;;
 
 *) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
@@ -392,10 +393,10 @@ export ext=R.fct.${RESOL}${NIVEL}
 
 cd ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/
 
-for LABELF in \$( ls -1 GFCTCTR${LABELI}*fct* | cut -c18-27)
+for LABELF in \$( ls -1 GFCTNMC${LABELI}*fct* | cut -c18-27)
 do
 cat <<EOT1 >> ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
-${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTCTR${LABELI}\${LABELF}\${ext}
+${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTNMC${LABELI}\${LABELF}\${ext}
 ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCT\${MEM}R${LABELI}\${LABELF}\${ext}
 EOT1
 done
@@ -457,7 +458,7 @@ EOT1
 cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
 ./eofpres.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-pres.\${REG}.${MONITORID}
+echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-pres.\${REG}.${MONITORID}
 
 cd \${DK_suite}/../eof/datain
 
@@ -510,7 +511,7 @@ EOT1
 cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
 ./eoftem.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-temp.\${REG}.${MONITORID}
+echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-temp.\${REG}.${MONITORID}
 
 if [ ${HUMID} = YES ] 
 then
@@ -570,7 +571,7 @@ EOT1
   cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
   ./eofhum.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-  touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-hum.\${REG}.${MONITORID}
+  echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-hum.\${REG}.${MONITORID}
 
 fi
 
@@ -707,11 +708,11 @@ EOT1
 cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
 ./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/../eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-win.\${REG}.${MONITORID}
+echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-win.\${REG}.${MONITORID}
 
 done
 
-touch ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução

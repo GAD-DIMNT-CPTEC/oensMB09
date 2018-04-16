@@ -226,7 +226,7 @@ cd \${bin}
 echo "./recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
 ./recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
 
-touch \${bin}/monitor.t
+echo "" > \${bin}/monitor.t
 EOT0
 
 # Submete o script e aguarda o fim da execução

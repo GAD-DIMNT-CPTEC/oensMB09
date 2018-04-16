@@ -275,7 +275,7 @@ EOT3
 
 done
 
-touch ${DK_suite}/../decanl/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+echo "" >> ${DK_suite}/../decanl/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução

@@ -378,7 +378,7 @@ date
 
 sleep 10s # espera para terminar todos os processos de I/O
 
-touch ${MONITORFILE}
+echo "" >> ${MONITORFILE}
 EOF0
 
 # Submete o script e aguarda o fim da execução
