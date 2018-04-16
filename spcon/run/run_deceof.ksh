@@ -436,7 +436,7 @@ cd \${HOME_suite}/../deceof/bin/\${TRUNC}\${LEV}
 
 ./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/../deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/../deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
-touch ${DK_suite}/../deceof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+echo "" >> ${DK_suite}/../deceof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução

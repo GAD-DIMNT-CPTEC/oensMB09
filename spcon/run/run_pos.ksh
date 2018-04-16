@@ -290,7 +290,7 @@ aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGr
 
 date
 
-touch ${MONITORFILE}
+echo "" >> ${MONITORFILE}
 EOF0
 
 # Submete o script e aguarda o fim da execução

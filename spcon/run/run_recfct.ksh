@@ -34,6 +34,7 @@
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 31 Janeiro de 2018 - C. F. Bastarz - Ajustados os prefixos NMC e CTR
 #
 # !REMARKS:
 #
@@ -104,7 +105,7 @@ EXT=out
 mkdir -p ${DK_suite}/../recfct/output
 
 # Opções específicas para o conjunto de membros ou apenas o controle
-if [ ${PREFIC} != CTR ]
+if [ ${PREFIC} != NMC ]
 then
   export PBSDIRECTIVE="#PBS -J 1-${NMEM}"
   export DEFINEMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
@@ -228,7 +229,7 @@ EOT3
   
 done
 
-touch ${DK_suite}/../recfct/bin/\${TRCLV}/monitor.${MONITORID}
+echo "" > ${DK_suite}/../recfct/bin/\${TRCLV}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução

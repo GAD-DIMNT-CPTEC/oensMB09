@@ -273,7 +273,7 @@ cd ${DK_suite}/../rdpert/bin/\${TRUNC}\${LEV}
 
 ./rdpert.\${TRUNC}\${LEV} < ${DK_suite}/../rdpert/datain/rdpert.nml > ${DK_suite}/../rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
 
-touch ${DK_suite}/../rdpert/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+echo "" > ${DK_suite}/../rdpert/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
