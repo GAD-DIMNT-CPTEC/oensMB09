@@ -233,7 +233,8 @@ C*
       ENDDO
 
 C*    CFB: STDQ esta em g/Kg; SIGMA1 esta em Kg/Kg (g/Kg / 1000 -> Kg/Kg)
-      SIGMA1(K)=STDQ(K)/1000.0 
+!      SIGMA1(K)=STDQ(K)/1000.0 ! CFB: Usar quando a umidade especifica do modelo estiver em g/Kg
+      SIGMA1(K)=STDQ(K)         ! CFB: Usar quando a umidade especifica do modelo estiver em Kg/Kg
       SIGMA2(K)=SQRT(SIGMA2(K)/REAL(IMAX0*JMAX0))
       write(*,*)'sigma1(',K,')=',sigma1(K)
       write(*,*)'sigma2(',K,')=',sigma2(K)

@@ -87,6 +87,9 @@
 #--------------------------------------------------------------------#
 #BOC
 
+# Descomentar para debugar
+#set -o xtrace
+
 # Resolução e escolha do número de processadores dos processos
 #
 # Resolução  model_nproc pos_nproc Observação
@@ -102,8 +105,8 @@ bam_lev="${bam_lev_tmp//[!1-9]/}"
 
 # Utilize o comando "/stornext/home/carlos./bastarz/bin/rsig gdas1.T00Z.SAnl.2013013000"
 # e verifique o valor das variáveis "jcap" e "lev"                                                       
-#ncep_res=TQ0574L064 # NCEP SAnl (até 2017 - para ler o header dos arquivos de análise espectrais)
-ncep_res=TQ1534L064 # NCEP NEMS (a partir de 2017)
+ncep_res=TQ0574L064 # NCEP SAnl (até 2017 - para ler o header dos arquivos de análise espectrais)
+#ncep_res=TQ1534L064 # NCEP NEMS (a partir de 2017)
 
 anl_trunc_tmp=$(echo ${ncep_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $1}')
 anl_lev_tmp=$(echo ${ncep_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $2}')
@@ -112,9 +115,6 @@ anl_lev="${anl_lev_tmp//[!1-9]/}"
 
 model_nproc=192
 pos_nproc=192
-
-# Descomentar para debugar
-#set -o xtrace
 
 source ${PWD}/../config_spcon.ksh vars_export
 
@@ -307,7 +307,7 @@ run_model_eof() { # 15 dias, 6h
   pid_model_eofp=$!
   echo ${pid_model_eofp}
 
-  wait ${pid_model_nmc} ${pid_model_eofn} ${pid_model_eofp}
+  wait ${pid_model_ctr} ${pid_model_eofn} ${pid_model_eofp}
 
 }
 
