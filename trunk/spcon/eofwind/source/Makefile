@@ -22,7 +22,6 @@ all:     $(PROG)
 
 chwz.$(EXT): chwz.f 
 	$(F77) $(CPP) $(CHWFLAG) -c -o $(BIN)/chwz.o chwz.f
-	touch chwz.$(EXT)
 
 $(PROG): $(OBJ)
 	ar rcv $(BIN)/eofwin$(EXT).a $(BIN)/*.o
@@ -33,7 +32,6 @@ $(PROG): $(OBJ)
 .SUFFIXES : .f .$(EXT)
 .f.$(EXT):
 	$(F77) $(CPP) $(FTNFLAG) -c -o $(BIN)/$*.o $<
-	touch $*.$(EXT)
 
 clean:
 	-rm $(BIN)/eofwin$(EXT).a

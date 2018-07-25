@@ -36,7 +36,6 @@ $(PROG): $(OBJ)
 .SUFFIXES : .f .$(EXT)
 .f.$(EXT):
 	$(F77) $(CPP) $(FTNFLAG) -c -o $(DIR)/$*.o $<
-	touch $*.$(EXT)
 
 clean:
 	-rm $(DIR)/deceof.a

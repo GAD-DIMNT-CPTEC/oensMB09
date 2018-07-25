@@ -82,7 +82,7 @@
 # e instalação do SPCON)
 vars_export() {
 
-  export spcon_name=oensMB09_bam
+  export spcon_name=oensMB09_wand
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
   export work_spcon=${WORK_HOME}/${spcon_name}
@@ -114,7 +114,7 @@ vars_export() {
 
   export util_inctime=${util_spcon}/inctime
 
-  export spcon_testcase=/scratchin/grupos/assim_dados/home/carlos.bastarz/testcase_spcon
+  export spcon_testcase=/scratchin/grupos/ensemble/home/carlos.bastarz/testcase_spcon
 
 }
 
@@ -140,7 +140,7 @@ configurar() {
 
   # Se indicada a resolução a ser utilizada, modifica-se o arquivo Makefile 
   # e os links apontando para o diretório "include"
-  if [ ${1} == "TQ0126L028" -o -z ${1} ] # TQ0126L028 é a resolução padrão
+  if [ -z ${1} ] # TQ0126L028 é a resolução padrão
   then
 
     echo "O SPCON global já está configurando para a resolução TQ0126L028"
@@ -162,11 +162,13 @@ configurar() {
       TRUNC=$(echo ${1} | cut -c 1-6) 
       LEV=$(echo ${1} | cut -c 7-10) 
 
-      sed -i "s,TRUNC.*,TRUNC=${TRUNC},g" ${spcon_config}/Makefile
-      sed -i "s,LEV.*,LEV=${LEV},g" ${spcon_config}/Makefile
+      sed -i "s,TRUNC.*,TRUNC=${TRUNC},g" ${spcon_config}/Makefile.conf.pgi
+      sed -i "s,LEV.*,LEV=${LEV},g" ${spcon_config}/Makefile.conf.pgi
+
+      sed -i "s,HOME=.*,HOME=${home_spcon},g" ${spcon_config}/Makefile.conf.pgi
 
       # Cria os links simbólicos dos diretórios do SPCON
-      set -A Procs decanl deceof rdpert recanl recfct eofhumi eofpres eoftemp eofwind fftpln
+      set -A Procs decanl deceof rdpert recanl recfct eof eofhumi eofpres eoftemp eofwind fftpln
     
       for proc in ${Procs[@]}
       do
@@ -175,8 +177,11 @@ configurar() {
     
         cd ${dir_proc}
   
-        ln -sfn ${spcon_include}/${1} .
-  
+        ln -sfn ${spcon_include}/${1} include
+ 
+        mkdir -p ${home_spcon}/${proc}/lib/${1}
+        mkdir -p ${home_spcon}/${proc}/bin/${1}
+
       done
 
     fi
@@ -397,13 +402,13 @@ compilar() {
 
     fi
 
-    # Compilação do método de perturbação
-
-    # Substitui a linha que começa com a palavra "HOME=" pela valor da variável 
-    # HOME=${home_spcon}, no arquivo ${home_spcon}/config/Makefile.conf.pgi
-    sed -i "s,^HOME\=.*$,HOME\=${home_spcon},g" ${home_spcon}/config/Makefile.conf.pgi
-
-    # Incluir a alteração da resolução (eg., TQ0126L028, TQ0213L042, TQ0299L064 etc)
+#    # Compilação do método de perturbação
+#
+#    # Substitui a linha que começa com a palavra "HOME=" pela valor da variável 
+#    # HOME=${home_spcon}, no arquivo ${home_spcon}/config/Makefile.conf.pgi
+#    sed -i "s,^HOME\=.*$,HOME\=${home_spcon},g" ${home_spcon}/config/Makefile.conf.pgi
+#
+#    # Incluir a alteração da resolução (eg., TQ0126L028, TQ0213L042, TQ0299L064 etc)
 
     cd ${home_spcon}
 
