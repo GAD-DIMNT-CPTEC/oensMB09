@@ -29,7 +29,6 @@ $(PROG): $(OBJ)
 .SUFFIXES : .f .$(EXT)
 .f.$(EXT):
 	$(F77) $(CPP) $(FTNFLAG) -c -o $(BIN)/$*.o $<
-	touch $*.$(EXT)
 
 clean:
 	-rm $(BIN)/eoftem$(EXT).a
