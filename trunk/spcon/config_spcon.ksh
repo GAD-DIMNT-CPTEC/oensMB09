@@ -39,7 +39,8 @@
 #
 #  Uso/Exemplos: ./config_spcon.ksh model 
 #                ./config_spcon.ksh model 200 (alternativo)   
-#                ./config_spcon.ksh model oper (recomendável para resoluções > TQ0126L028)   
+#                ./config_spcon.ksh model opersrc (sources oper, recomendável para resoluções > TQ0126L028)   
+#                ./config_spcon.ksh model operexe (executáveis oper, recomendável para resoluções > TQ0126L028)   
 #                ./config_spcon.ksh inctime
 #                ./config_spcon.ksh inctime 200 (alternativo)
 #                ./config_spcon.ksh testcase
@@ -64,6 +65,10 @@
 #                                       (a opção default é a TQ0126L028).
 # 14 Novembro de 2017 - C. F. Bastarz - Inclusão da opção "model oper" para usar os executável
 #                                       e namelist operacionais do BAM.         
+# 10 Agosto de 2018   - C. F. Bastarz - Atualizações com relação à versão operacional do BAM 
+#                                       (esta versão operacional é aquela que foi utilizada na Tupã,
+#                                       e não na XC50. Executáveis compilados com o Cray, útil para
+#                                       testes pré-operacionais).
 #
 # !REMARKS:
 #
@@ -82,7 +87,7 @@
 # e instalação do SPCON)
 vars_export() {
 
-  export spcon_name=oensMB09_wand
+  export spcon_name=oensMB09_bam
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
   export work_spcon=${WORK_HOME}/${spcon_name}
@@ -273,7 +278,7 @@ model() {
 
     svn export https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
 
-  elif [ ${1} == "oper" ]
+  elif [ ${1} == "opersrc" ]
   then
 
     svn export https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
@@ -284,8 +289,27 @@ model() {
 
     mv -v ${model_source} ${model_source}.trunk
 
-    tar -zxvf /stornext/home/modoper/BAM/model/source.20170515.tgz -C ${bam_model}/
+    tar -zxvf /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPERSRC/source.20170515.tgz -C ${bam_model}/
 
+    echo "ATENÇÃO: Recomenda-se a compilação do MODEL_oper utilizando o compilador da CRAY"
+
+  elif [ ${1} == "operexe" ]
+  then
+
+    echo "ATENÇÃO: SUBSTITUINDO MODEL_trunk PELO MODEL_oper"
+
+    mv -v ${model_source} ${model_source}.trunk
+
+    mkdir -p ${pre_exec}
+    mkdir -p ${model_exec}
+    mkdir -p ${pos_exec}
+
+    cp -v /stornext/online1/ensemble/carlos/spcon/dev/operexec/pre/exec ${pre_exec}
+    cp -v /stornext/online1/ensemble/carlos/spcon/dev/operexec/model/exec ${model_exec}
+    cp -v /stornext/online1/ensemble/carlos/spcon/dev/operexec/pos/exec ${pos_exec}
+
+    echo "ATENÇÃO: Nesta opção o BAM já está pré-compilado"
+    
   else
 
     echo "Model r${1}"
