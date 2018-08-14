@@ -378,31 +378,31 @@ date
 
 sleep 10s # espera para terminar todos os processos de I/O
 
-echo "" >> ${MONITORFILE}
+#echo "" >> ${MONITORFILE}
 EOF0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${SCRIPTFILEPATH}
 
-qsub ${SCRIPTFILEPATH}
+qsub -W block=true ${SCRIPTFILEPATH}
 
-if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
-then
-
-  for i in $(seq 1 ${ANLPERT})
-  do
-
-    until [ -e ${EXECFILEPATH}/model.${i} ]; do sleep 1s; done
-    rm ${EXECFILEPATH}/model.${i}
-
-  done
-
-else
-
-  until [ -e ${EXECFILEPATH}/model.${ANLTYPE} ]; do sleep 1s; done
-  rm ${EXECFILEPATH}/model.${ANLTYPE}
-
-fi
+#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+#then
+#
+#  for i in $(seq 1 ${ANLPERT})
+#  do
+#
+#    until [ -e ${EXECFILEPATH}/model.${i} ]; do sleep 1s; done
+#    rm ${EXECFILEPATH}/model.${i}
+#
+#  done
+#
+#else
+#
+#  until [ -e ${EXECFILEPATH}/model.${ANLTYPE} ]; do sleep 1s; done
+#  rm ${EXECFILEPATH}/model.${ANLTYPE}
+#
+#fi
 
 #JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
 JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | cut -c 1-7)

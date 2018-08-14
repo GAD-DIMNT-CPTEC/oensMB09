@@ -275,18 +275,18 @@ EOT3
 
 done
 
-echo "" >> ${DK_suite}/../decanl/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+#echo "" >> ${DK_suite}/../decanl/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
-qsub ${SCRIPTSFILE}
+qsub -W block=true ${SCRIPTSFILE}
 
-until [ -e "${DK_suite}/../decanl/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
+#until [ -e "${DK_suite}/../decanl/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
 
 echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILE}"
 
-rm ${DK_suite}/../decanl/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
+#rm ${DK_suite}/../decanl/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0

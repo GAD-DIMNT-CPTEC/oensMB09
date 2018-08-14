@@ -436,18 +436,18 @@ cd \${HOME_suite}/../deceof/bin/\${TRUNC}\${LEV}
 
 ./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/../deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/../deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
-echo "" >> ${DK_suite}/../deceof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+#echo "" >> ${DK_suite}/../deceof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILES}
 
-qsub ${SCRIPTSFILES}
+qsub -W block=true ${SCRIPTSFILES}
 
-until [ -e "${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
+#until [ -e "${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
 
 echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILES}"
 
-rm ${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
+#rm ${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0

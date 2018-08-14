@@ -229,16 +229,16 @@ EOT3
   
 done
 
-echo "" > ${DK_suite}/../recfct/bin/\${TRCLV}/monitor.${MONITORID}
+#echo "" > ${DK_suite}/../recfct/bin/\${TRCLV}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
-qsub ${SCRIPTSFILE}
+qsub -W block=true ${SCRIPTSFILE}
 
-until [ -e "${DK_suite}/../recfct/bin/${TRCLV}/monitor.${MONITORID}" ]; do sleep 1s; done
+#until [ -e "${DK_suite}/../recfct/bin/${TRCLV}/monitor.${MONITORID}" ]; do sleep 1s; done
 
-rm ${DK_suite}/../recfct/bin/${TRCLV}/monitor.${MONITORID}
+#rm ${DK_suite}/../recfct/bin/${TRCLV}/monitor.${MONITORID}
 
 exit 0
