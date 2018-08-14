@@ -100,24 +100,31 @@ vars_export() {
   export spcon_include=${home_spcon}/include
 
   export home_bam=${home_spcon}/bam
+  export work_bam=${work_spcon}/bam
 
   export bam_run=${home_bam}/run
 
   export bam_pre=${home_bam}/pre
+  export bam_pre_work=${work_bam}/bam/pre
   export pre_source=${bam_pre}/sources
   export pre_datain=${bam_pre}/datain
+  export pre_dataout=${bam_pre_work}/dataout
   export pre_datasst=${bam_pre}/datasst
   export pre_databcs=${bam_pre}/databcs
   export pre_exec=${bam_pre}/exec
 
   export bam_model=${home_bam}/model
+  export bam_model_work=${work_bam}/bam/model
   export model_source=${bam_model}/source
+  export model_dataout=${bam_model_work}/dataout
   export model_datain=${bam_model}/datain
   export model_exec=${bam_model}/exec
 
   export bam_pos=${home_bam}/pos
+  export bam_pos_work=${work_bam}/bam/pos
   export pos_source=${bam_pos}/source
   export pos_datain=${bam_pos}/datain
+  export pos_dataout=${bam_pos_work}/dataout
   export pos_exec=${bam_pos}/exec
 
   export util_spcon=${home_spcon}/util
@@ -151,17 +158,26 @@ model_dirs() {
 
   mkdir -p ${pre_source}
   mkdir -p ${pre_datain}
+  mkdir -p ${pre_dataout}
   mkdir -p ${pre_exec}
   mkdir -p ${pre_datasst}
   mkdir -p ${pre_databcs}
 
+  cd ${bam_pre} && ln -s ${pre_dataout} . && cd -
+
   mkdir -p ${model_source}
   mkdir -p ${model_datain}
+  mkdir -p ${model_dataout}
   mkdir -p ${model_exec}
+
+  cd ${bam_model} && ln -s ${model_dataout} . && cd -
 
   mkdir -p ${pos_source}
   mkdir -p ${pos_datain}
+  mkdir -p ${pos_dataout}
   mkdir -p ${pos_exec}
+
+  cd ${bam_pos} && ln -s ${pos_dataout} . && cd -
 
 }
 
@@ -186,6 +202,8 @@ config_spcon() {
     sed -i "s,LEV.*,LEV=${LEV},g" ${spcon_config}/Makefile.conf.pgi
 
     sed -i "s,HOME=.*,HOME=${home_spcon},g" ${spcon_config}/Makefile.conf.pgi
+
+    sed -i "s,model_res=TQ0126L028,model_res=${1},g" ${spcon_run}/run_cycle.ksh
 
     # Cria os links simbólicos dos diretórios do SPCON
     set -A Procs decanl deceof rdpert recanl recfct eof eofhumi eofpres eoftemp eofwind fftpln
@@ -278,8 +296,6 @@ config_spcon() {
 
 # Função configurar (cria links simbólicos de bam/run para ../../run)
 configurar() {
-
-#  vars_export
 
   model_dirs
 
