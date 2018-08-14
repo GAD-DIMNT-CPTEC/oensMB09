@@ -97,7 +97,8 @@
 # TQ0126L028          48        48 
 # TQ0213L042         192       192
 # TQ0299L064         384       384 não testado
-model_res=TQ0213L042
+model_res=TQ0126L028
+
 bam_trunc_tmp=$(echo ${model_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $1}')
 bam_lev_tmp=$(echo ${model_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $2}')
 bam_trunc="${bam_trunc_tmp//[!1-9]/}"
@@ -113,7 +114,27 @@ anl_lev_tmp=$(echo ${ncep_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $
 anl_trunc="${anl_trunc_tmp//[!1-9]/}"
 anl_lev="${anl_lev_tmp//[!1-9]/}"
 
-model_nproc=192
+if [ ${model_res} == "TQ0126L028" ]
+then
+
+  model_nproc=48
+
+elif [ ${model_res} == "TQ0213L042" ]
+then
+
+  model_nproc=192
+
+elif [ ${model_res} == "TQ0299L064" ]
+then
+
+  model_nproc=384
+
+else
+
+  model_nproc=96
+
+fi
+
 pos_nproc=192
 
 source ${PWD}/../config_spcon.ksh vars_export
@@ -149,8 +170,6 @@ then
   echo "* Tamanho Total do Conjunto..: $(echo $(($((${num_pert}*2))+1))) membros"
   echo "* Opção Pós-Processamento....: ${run_pos}"
   echo "* Resolução..................: ${model_res}"
-
-  echo ""
 
 else
 

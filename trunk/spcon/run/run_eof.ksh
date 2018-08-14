@@ -708,7 +708,7 @@ EOT1
 cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
 
 ./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/../eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-win.\${REG}.${MONITORID}
+#echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-win.\${REG}.${MONITORID}
 
 done
 
@@ -718,9 +718,9 @@ EOT0
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
-qsub ${HOME_suite}/../run/${SCRIPTSFILE}
+qsub -W block=true ${HOME_suite}/../run/${SCRIPTSFILE}
 
-until [ -e "${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
-rm ${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor*${MONITORID}
+#until [ -e "${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
+#rm ${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor*${MONITORID}
 
 exit 0

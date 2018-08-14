@@ -290,13 +290,13 @@ aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGr
 
 date
 
-echo "" >> ${MONITORFILE}
+#echo "" >> ${MONITORFILE}
 EOF0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${SCRIPTFILEPATH}
 
-qsub ${SCRIPTFILEPATH}
+qsub -W block=true ${SCRIPTFILEPATH}
 
 #until [ -e ${MONITORFILE} ]; do sleep 1s; done
 #rm ${MONITORFILE}
@@ -308,23 +308,23 @@ qsub ${SCRIPTFILEPATH}
 #
 #done
 
-if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
-then
-
-  for i in $(seq 1 ${ANLPERT})
-  do
-
-    until [ -e ${EXECFILEPATH}/../pos.${i} ]; do sleep 1s; done
-    rm ${EXECFILEPATH}/../pos.${i}
-
-  done
-
-else
-
-  until [ -e ${EXECFILEPATH}/pos.${ANLTYPE} ]; do sleep 1s; done
-  rm ${EXECFILEPATH}/pos.${ANLTYPE}
-
-fi
+#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+#then
+#
+#  for i in $(seq 1 ${ANLPERT})
+#  do
+#
+#    until [ -e ${EXECFILEPATH}/../pos.${i} ]; do sleep 1s; done
+#    rm ${EXECFILEPATH}/../pos.${i}
+#
+#  done
+#
+#else
+#
+#  until [ -e ${EXECFILEPATH}/pos.${ANLTYPE} ]; do sleep 1s; done
+#  rm ${EXECFILEPATH}/pos.${ANLTYPE}
+#
+#fi
 
 #JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${ANLTYPE} | awk -F "[" '{print $1}')
 JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${ANLTYPE} | cut -c 1-7)

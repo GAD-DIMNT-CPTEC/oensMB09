@@ -273,16 +273,16 @@ cd ${DK_suite}/../rdpert/bin/\${TRUNC}\${LEV}
 
 ./rdpert.\${TRUNC}\${LEV} < ${DK_suite}/../rdpert/datain/rdpert.nml > ${DK_suite}/../rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
 
-echo "" > ${DK_suite}/../rdpert/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
+#echo "" > ${DK_suite}/../rdpert/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${SCRIPTSFILE} 
 
-qsub ${SCRIPTSFILE}
+qsub -W block=true ${SCRIPTSFILE}
 
-until [ -e "${DK_suite}/../rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
+#until [ -e "${DK_suite}/../rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
 
-rm ${DK_suite}/../rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
+#rm ${DK_suite}/../rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0
