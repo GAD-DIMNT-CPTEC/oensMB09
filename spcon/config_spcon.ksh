@@ -43,10 +43,10 @@
 #                ./config_spcon.ksh model operexe (executáveis oper, recomendável para resoluções > TQ0126L028)   
 #                ./config_spcon.ksh inctime
 #                ./config_spcon.ksh inctime 200 (alternativo)
-#                ./config_spcon.ksh testcase
 #                ./config_spcon.ksh configurar
 #                ./config_spcon.ksh configurar TQ0126L028 (alternativo)
 #                ./config_spcon.ksh configurar TQ0213L042 (alternativo)
+#                ./config_spcon.ksh testcase
 #                ./config_spcon.ksh compilar
 #                ./config_spcon.ksh ajuda  
 # 
@@ -68,9 +68,11 @@
 # 10 Agosto de 2018   - C. F. Bastarz - Atualizações com relação à versão operacional do BAM 
 #                                       (esta versão operacional é aquela que foi utilizada na Tupã,
 #                                       e não na XC50. Executáveis compilados com o Cray, útil para
-#                                       testes pré-operacionais).
+#                                       testes pré-operacionais). Atualizada a ordem de configuração do sistema.
 #
 # !REMARKS:
+#
+# - Nas futuras revisões/versões este script deverá seguir o padrão definido para o SMG. 
 #
 # !BUGS:
 #
@@ -87,7 +89,7 @@
 # e instalação do SPCON)
 vars_export() {
 
-  export spcon_name=oensMB09_bam
+  export spcon_name=oensMB09_trunk
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
   export work_spcon=${WORK_HOME}/${spcon_name}
@@ -102,17 +104,20 @@ vars_export() {
   export bam_run=${home_bam}/run
 
   export bam_pre=${home_bam}/pre
-  export bam_model=${home_bam}/model
-  export bam_pos=${home_bam}/pos
-
-  export model_datain=${bam_model}/datain
-
   export pre_source=${bam_pre}/sources
-  export model_source=${bam_model}/source
-  export pos_source=${bam_pos}/source
-
+  export pre_datain=${bam_pre}/datain
+  export pre_datasst=${bam_pre}/datasst
+  export pre_databcs=${bam_pre}/databcs
   export pre_exec=${bam_pre}/exec
+
+  export bam_model=${home_bam}/model
+  export model_source=${bam_model}/source
+  export model_datain=${bam_model}/datain
   export model_exec=${bam_model}/exec
+
+  export bam_pos=${home_bam}/pos
+  export pos_source=${bam_pos}/source
+  export pos_datain=${bam_pos}/datain
   export pos_exec=${bam_pos}/exec
 
   export util_spcon=${home_spcon}/util
@@ -134,62 +139,70 @@ testcase() {
   cp -pvfr ${spcon_testcase}/model/* ${bam_model}/
   cp -pvfr ${spcon_testcase}/pos/* ${bam_pos}/
 
+  sed -i "s,/scratchin/grupos/assim_dados/home/carlos.bastarz/oensMB09_bam/bam/pre/datasst/oiv2monthly/,${bam_pre}/datasst/oiv2monthly/,g" ${bam_pre}/datasst/oiv2monthly/sstmtd.nml
+
 }
 
-# Função configurar (cria links simbólicos de bam/run para ../../run)
-configurar() {
+model_dirs() {
 
   vars_export
 
-  echo "Configurar"
+  mkdir -p ${bam_run}
 
-  # Se indicada a resolução a ser utilizada, modifica-se o arquivo Makefile 
-  # e os links apontando para o diretório "include"
-  if [ -z ${1} ] # TQ0126L028 é a resolução padrão
+  mkdir -p ${pre_source}
+  mkdir -p ${pre_datain}
+  mkdir -p ${pre_exec}
+  mkdir -p ${pre_datasst}
+  mkdir -p ${pre_databcs}
+
+  mkdir -p ${model_source}
+  mkdir -p ${model_datain}
+  mkdir -p ${model_exec}
+
+  mkdir -p ${pos_source}
+  mkdir -p ${pos_datain}
+  mkdir -p ${pos_exec}
+
+}
+
+config_spcon() {
+
+  vars_export
+
+  # Verifica se o sistema pode ser configurado para a resolução indicada
+  if [ ! -d ${spcon_include}/${1} ]
   then
 
-    echo "O SPCON global já está configurando para a resolução TQ0126L028"
+    echo "O SPCON global não está preparado para a resolução ${1}!"
+    echo "Verifique o arquivo ${spcon_include}/README para mais informações."
+    exit 1
 
   else
 
-    echo "Configurando o SPCON global para a resolução ${1}"
+    TRUNC=$(echo ${1} | cut -c 1-6) 
+    LEV=$(echo ${1} | cut -c 7-10) 
 
-    # Verifica se o sistema pode ser configurado para a resolução indicada
-    if [ ! -d ${spcon_include}/${1} ]
-    then
+    sed -i "s,TRUNC.*,TRUNC=${TRUNC},g" ${spcon_config}/Makefile.conf.pgi
+    sed -i "s,LEV.*,LEV=${LEV},g" ${spcon_config}/Makefile.conf.pgi
 
-      echo "O SPCON global não está preparado para a resolução ${1}!"
-      echo "Verifique o arquivo ${spcon_include}/README para mais informações."
-      exit 1
+    sed -i "s,HOME=.*,HOME=${home_spcon},g" ${spcon_config}/Makefile.conf.pgi
 
-    else
-
-      TRUNC=$(echo ${1} | cut -c 1-6) 
-      LEV=$(echo ${1} | cut -c 7-10) 
-
-      sed -i "s,TRUNC.*,TRUNC=${TRUNC},g" ${spcon_config}/Makefile.conf.pgi
-      sed -i "s,LEV.*,LEV=${LEV},g" ${spcon_config}/Makefile.conf.pgi
-
-      sed -i "s,HOME=.*,HOME=${home_spcon},g" ${spcon_config}/Makefile.conf.pgi
-
-      # Cria os links simbólicos dos diretórios do SPCON
-      set -A Procs decanl deceof rdpert recanl recfct eof eofhumi eofpres eoftemp eofwind fftpln
-    
-      for proc in ${Procs[@]}
-      do
-    
-        dir_proc=${home_spcon}/${proc}
-    
-        cd ${dir_proc}
+    # Cria os links simbólicos dos diretórios do SPCON
+    set -A Procs decanl deceof rdpert recanl recfct eof eofhumi eofpres eoftemp eofwind fftpln
   
-        ln -sfn ${spcon_include}/${1} include
- 
-        mkdir -p ${home_spcon}/${proc}/lib/${1}
-        mkdir -p ${home_spcon}/${proc}/bin/${1}
+    for proc in ${Procs[@]}
+    do
+  
+      dir_proc=${home_spcon}/${proc}
+  
+      cd ${dir_proc}
 
-      done
+      ln -sfn ${spcon_include}/${1} include
 
-    fi
+      mkdir -p ${home_spcon}/${proc}/lib/${1}
+      mkdir -p ${home_spcon}/${proc}/bin/${1}
+
+    done
 
   fi
 
@@ -261,7 +274,35 @@ configurar() {
   sed -i "s,export DK=.*,export DK=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
   sed -i "s,export DK2=.*,export DK2=${home_bam},g" ${bam_run}/EnvironmentalVariablesMCGA
 
-  sed -i "s,/scratchin/grupos/assim_dados/home/carlos.bastarz/oensMB09_bam/bam/pre/datasst/oiv2monthly/,${bam_pre}/datasst/oiv2monthly/,g" ${bam_pre}/datasst/oiv2monthly/sstmtd.nml
+}
+
+# Função configurar (cria links simbólicos de bam/run para ../../run)
+configurar() {
+
+#  vars_export
+
+  model_dirs
+
+  echo "Configurar"
+
+  # Se indicada a resolução a ser utilizada, modifica-se o arquivo Makefile 
+  # e os links apontando para o diretório "include"
+  if [ -z ${1} ] # TQ0126L028 é a resolução padrão
+  then
+
+    echo "Configurando o SPCON global para a resolução TQ0126L028 (padrão)"
+    export spcon_res=TQ0126L028
+
+    config_spcon TQ0126L028
+
+  else
+
+    echo "Configurando o SPCON global para a resolução ${1}"
+    export spcon_res=${1}
+
+    config_spcon ${1}
+
+  fi
 
 }
 
@@ -276,37 +317,27 @@ model() {
 
     echo "Model"
 
-    svn export https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
+    svn export --force https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
 
   elif [ ${1} == "opersrc" ]
   then
 
-    svn export https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
+    model_dirs
 
-    echo "ATENÇÃO: SUBSTITUINDO MODEL_trunk PELO MODEL_oper"
-
-    sleep 10s
-
-    mv -v ${model_source} ${model_source}.trunk
-
-    tar -zxvf /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPERSRC/source.20170515.tgz -C ${bam_model}/
+    tar -zxvf /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPERSRC/source.20170515.tar.gz -C ${bam_model}/
 
     echo "ATENÇÃO: Recomenda-se a compilação do MODEL_oper utilizando o compilador da CRAY"
 
   elif [ ${1} == "operexe" ]
   then
 
-    echo "ATENÇÃO: SUBSTITUINDO MODEL_trunk PELO MODEL_oper"
+    model_dirs
 
-    mv -v ${model_source} ${model_source}.trunk
+    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/pre/exec/* ${pre_exec}
+    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/model/exec/* ${model_exec}
+    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/pos/exec/* ${pos_exec}
 
-    mkdir -p ${pre_exec}
-    mkdir -p ${model_exec}
-    mkdir -p ${pos_exec}
-
-    cp -v /stornext/online1/ensemble/carlos/spcon/dev/operexec/pre/exec ${pre_exec}
-    cp -v /stornext/online1/ensemble/carlos/spcon/dev/operexec/model/exec ${model_exec}
-    cp -v /stornext/online1/ensemble/carlos/spcon/dev/operexec/pos/exec ${pos_exec}
+    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/run/* ${bam_run} 
 
     echo "ATENÇÃO: Nesta opção o BAM já está pré-compilado"
     
@@ -314,7 +345,7 @@ model() {
 
     echo "Model r${1}"
 
-    svn export -r${1} https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
+    svn export -r${1} --force https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
 
   fi
 
@@ -335,13 +366,13 @@ inctime() {
 
     echo "inctime"
 
-    svn export https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
+    svn export --force https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
 
   else
 
     echo "inctime r${1}"
 
-    svn export -r${1} https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
+    svn export -r${1} --force https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
 
   fi
 
@@ -354,7 +385,7 @@ ajuda() {
 
   echo ""
 
-  echo "Sistema de Previsão por Conjunto Global (SPCON) v1.5 - Agosto de 2017"
+  echo "Sistema de Previsão por Conjunto Global (SPCON) v1.5 - Agosto de 2018"
 
   echo ""
 
@@ -371,14 +402,18 @@ ajuda() {
   echo "     * faz checkout da última revisão do BAM (default)"
   echo "  OU ./config_spcon.ksh model 200"
   echo "     * faz checkout da revisão número 200 do BAM"
+  echo "  OU ./config_spcon.ksh model opersrc"
+  echo "     * copia o source do BAM operacional (20170515)"
+  echo "  OU ./config_spcon.ksh model operexe"
+  echo "     * copia os executáveis do BAM operacional compilado com o CRAY (20170515)"
   echo "  2) ./config_spcon.ksh inctime"
   echo "     * faz checkout da última revisão do inctime"
-  echo "  3) ./config_spcon.ksh testcase"
-  echo "     * aloca os dados necessários para testar a instalação"
-  echo "  4) ./config_spcon.ksh configurar"
+  echo "  3) ./config_spcon.ksh configurar"
   echo "     * cria diretórios e links simbólicos da instalação para a resolução TQ0126L028 (default)"
   echo "  OU ./config_spcon.ksh configurar TQ0213L042"
   echo "     * cria diretórios e links simbólicos da instalação para a resolução TQ0213L042"
+  echo "  4) ./config_spcon.ksh testcase"
+  echo "     * aloca os dados necessários para testar a instalação"
   echo "  5) ./config_spcon.ksh compilar"
   echo "     * compila os módulos de perturbação e o modelo BAM"
   echo "  -> ./config_spcon.ksh ajuda"
@@ -386,7 +421,7 @@ ajuda() {
 
   echo ""
 
-  echo "> Dúvidas e sugestões: carlos.bastarz@inpe.br"
+  echo "> Dúvidas e sugestões: carlos.bastarz@inpe.br (R.7996)"
 
   echo ""
 
@@ -415,6 +450,7 @@ compilar() {
 
       cd ${util_inctime}
 
+      echo "Compilando o inctime..."
       nohup make > make_inctime.log &
 
       wait
@@ -436,6 +472,7 @@ compilar() {
 
     cd ${home_spcon}
 
+    echo "Compilando o método de perturbação..."
     nohup make comp=pgi > make_spcon.log &
 
     wait
@@ -445,32 +482,68 @@ compilar() {
     if [ -d ${home_bam} ]
     then
 
-      # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
-      # PATH2=${pre_exec}, nos arquivos ${pre_source}/Makefile e ${pre_source}/Makefile.in
-      sed -i "s,^PATH2\=.*$,PATH2\=${pre_exec},g" ${pre_source}/Makefile
-      sed -i "s,^PATH2\=.*$,PATH2\=${pre_exec},g" ${pre_source}/Makefile.in
-  
-      cd ${home_spcon}/bam/pre/sources
-      nohup make pgi_cray > make_pre.log &
-  
-      # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
-      # PATH2=${model_exec}, nos arquivos ${model_source}/Makefile e ${model_source}/Makefile.in
-      sed -i "s,^PATH2\=.*$,PATH2\=${model_exec},g" ${model_source}/Makefile
-      sed -i "s,^PATH2\=.*$,PATH2\=${model_exec},g" ${model_source}/Makefile.in
-  
-      cd ${home_spcon}/bam/model/source
-      nohup make pgi_cray > make_model.log &
-  
-      # Substitui as linhas que começam com "PATH2=" pelo valor da variável
-      # PATH2=${pos_exec} nos arquivos ${pos_source}/Makefile e ${pos_source}/Makefile.in
-      sed -i "s,^PATH2\=.*$,PATH2\=${pos_exec},g" ${pos_source}/Makefile
-      sed -i "s,^PATH2\=.*$,PATH2\=${pos_exec},g" ${pos_source}/Makefile.in
-  
-      cd ${home_spcon}/bam/pos/source
-      nohup make pgi_cray > make_pos.log &
-  
+      if [ ! -e ${pre_source}/Makefile ]
+      then 
+
+        echo "O pre/BAM não será compilado (operexe utilizado)"
+
+      else
+
+        # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
+        # PATH2=${pre_exec}, nos arquivos ${pre_source}/Makefile e ${pre_source}/Makefile.in
+        sed -i "s,^PATH2\=.*$,PATH2\=${pre_exec},g" ${pre_source}/Makefile
+        sed -i "s,^PATH2\=.*$,PATH2\=${pre_exec},g" ${pre_source}/Makefile.in
+    
+        cd ${home_spcon}/bam/pre/sources
+        echo "Compilando o pre/BAM..."
+        nohup make pgi_cray > make_pre.log &
+
+        wait
+
+      fi
+
+      if [ ! -e ${model_source}/Makefile ]
+      then 
+
+        echo "O pre/BAM não será compilado (operexe utilizado)"
+
+      else
+
+        # Substitui as linhas que começam com "PATH2=" pelo valor da variável 
+        # PATH2=${model_exec}, nos arquivos ${model_source}/Makefile e ${model_source}/Makefile.in
+        sed -i "s,^PATH2\=.*$,PATH2\=${model_exec},g" ${model_source}/Makefile
+        sed -i "s,^PATH2\=.*$,PATH2\=${model_exec},g" ${model_source}/Makefile.in
+    
+        cd ${home_spcon}/bam/model/source
+        echo "Compilando o model/BAM..."
+        nohup make pgi_cray > make_model.log &
+ 
+        wait
+
+      fi
+
+      if [ ! -e ${pos_source}/Makefile ]
+      then 
+
+        echo "O pos/model não será compilado (operexe utilizado)"
+
+      else
+
+        # Substitui as linhas que começam com "PATH2=" pelo valor da variável
+        # PATH2=${pos_exec} nos arquivos ${pos_source}/Makefile e ${pos_source}/Makefile.in
+        sed -i "s,^PATH2\=.*$,PATH2\=${pos_exec},g" ${pos_source}/Makefile
+        sed -i "s,^PATH2\=.*$,PATH2\=${pos_exec},g" ${pos_source}/Makefile.in
+    
+        cd ${home_spcon}/bam/pos/source
+        echo "Compilando o pos/BAM..."
+        nohup make pgi_cray > make_pos.log &
+ 
+        wait
+
+      fi
+
       # Aguarda a finalização dos últimos três comandos nohups
-      wait %1 %2 %3
+#      wait %1 %2 %3
 
     else
 
