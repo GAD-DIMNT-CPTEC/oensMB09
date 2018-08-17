@@ -105,15 +105,15 @@ EXT=out
 mkdir -p ${DK_suite}/../recfct/output
 
 # Opções específicas para o conjunto de membros ou apenas o controle
-if [ ${PREFIC} != NMC ]
+if [ ${PREFIC} == NMC -o ${PREFIC} == CTR ]
 then
+  export MODELDATAOUT="cd ${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${PREFIC}/"
+  export ENSTYPE="export TYPES=${TYPES}"
+else  
   export PBSDIRECTIVE="#PBS -J 1-${NMEM}"
   export DEFINEMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   export MODELDATAOUT="cd ${DK_suite}/model/dataout/${TRCLV}/${LABELI}/\${MEM}${PREFIC}/"
   export ENSTYPE="export TYPES=FCT\${MEM}${PREFIC}"
-else
-  export MODELDATAOUT="cd ${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${PREFIC}/"
-  export ENSTYPE="export TYPES=${TYPES}"
 fi
 
 MONITORID=${RANDOM}
