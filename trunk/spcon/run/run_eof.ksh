@@ -393,10 +393,10 @@ export ext=R.fct.${RESOL}${NIVEL}
 
 cd ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/
 
-for LABELF in \$( ls -1 GFCTNMC${LABELI}*fct* | cut -c18-27)
+for LABELF in \$( ls -1 GFCTCTR${LABELI}*fct* | cut -c18-27)
 do
 cat <<EOT1 >> ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
-${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTNMC${LABELI}\${LABELF}\${ext}
+${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTCTR${LABELI}\${LABELF}\${ext}
 ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCT\${MEM}R${LABELI}\${LABELF}\${ext}
 EOT1
 done
