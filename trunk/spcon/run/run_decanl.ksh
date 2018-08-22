@@ -110,8 +110,6 @@ export PBS_SERVER=aux20-eth4
 
 cd ${HOME_suite}/../run
 
-MONITORID=${RANDOM}
-
 # Script de submissão
 SCRIPTSFILE=setdrpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
@@ -274,8 +272,6 @@ EOT3
   i=\$((\${i}+1))
 
 done
-
-#echo "" >> ${DK_suite}/../decanl/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
@@ -283,10 +279,6 @@ chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
 qsub -W block=true ${SCRIPTSFILE}
 
-#until [ -e "${DK_suite}/../decanl/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
-
 echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILE}"
-
-#rm ${DK_suite}/../decanl/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0

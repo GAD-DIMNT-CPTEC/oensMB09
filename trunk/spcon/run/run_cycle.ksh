@@ -97,7 +97,7 @@
 # TQ0126L028          48        48 
 # TQ0213L042         192       192
 # TQ0299L064         384       384 não testado
-model_res=TQ0126L028
+model_res=TQ0213L042
 
 bam_trunc_tmp=$(echo ${model_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $1}')
 bam_lev_tmp=$(echo ${model_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $2}')

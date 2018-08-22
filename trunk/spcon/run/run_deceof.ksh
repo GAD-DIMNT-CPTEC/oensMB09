@@ -122,8 +122,6 @@ RUNTM=$(date +"%s")
 # Script de submissão
 SCRIPTSFILES=setdec${2}.${RESOL}.${LABELI}.${MAQUI}
 
-MONITORID=${RANDOM}
-
 cat <<EOT0 > ${SCRIPTSFILES}
 #! /bin/bash -x
 #PBS -o ${DK_suite}/../deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
@@ -435,8 +433,6 @@ EOT4
 cd \${HOME_suite}/../deceof/bin/\${TRUNC}\${LEV}
 
 ./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/../deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/../deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-
-#echo "" >> ${DK_suite}/../deceof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
@@ -444,10 +440,6 @@ chmod +x ${HOME_suite}/../run/${SCRIPTSFILES}
 
 qsub -W block=true ${SCRIPTSFILES}
 
-#until [ -e "${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
-
 echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILES}"
-
-#rm ${DK_suite}/../deceof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0

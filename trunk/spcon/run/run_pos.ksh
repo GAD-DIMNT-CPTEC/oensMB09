@@ -243,7 +243,6 @@ then
   export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
-  export MONITORFILE="${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/pos.\${PBS_ARRAY_INDEX}"
 else
   export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
@@ -251,7 +250,6 @@ else
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}"
-  export MONITORFILE="${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.\${ANLTYPE}/pos.\${ANLTYPE}"
 fi
 
 PBSServer='eslogin'
@@ -289,8 +287,6 @@ date
 aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
 
 date
-
-#echo "" >> ${MONITORFILE}
 EOF0
 
 # Submete o script e aguarda o fim da execução
@@ -298,35 +294,6 @@ chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
-#until [ -e ${MONITORFILE} ]; do sleep 1s; done
-#rm ${MONITORFILE}
-#
-#for arqctl in $(find ${DATAOUT}/../ -name "*.ctl")
-#do
-#
-#/opt/grads/2.0.a9/bin/gribmap -i ${arqctl}
-#
-#done
-
-#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
-#then
-#
-#  for i in $(seq 1 ${ANLPERT})
-#  do
-#
-#    until [ -e ${EXECFILEPATH}/../pos.${i} ]; do sleep 1s; done
-#    rm ${EXECFILEPATH}/../pos.${i}
-#
-#  done
-#
-#else
-#
-#  until [ -e ${EXECFILEPATH}/pos.${ANLTYPE} ]; do sleep 1s; done
-#  rm ${EXECFILEPATH}/pos.${ANLTYPE}
-#
-#fi
-
-#JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${ANLTYPE} | awk -F "[" '{print $1}')
 JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${ANLTYPE} | cut -c 1-7)
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
