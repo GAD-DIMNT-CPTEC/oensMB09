@@ -122,13 +122,6 @@ export LABELI LABELF NFDAYS
 
 case ${TRC} in
 
-# Original:
-#126) MR=126   ; IR=384   ; JR=192  ; II=1    ; IS=384 ; NI=384 ; 
-#     JI=1     ; JS=75    ; NJ=75   ; 
-#     IIPS=192 ; ISPS=299 ; JIPS=40 ; JSPS=75 ; 
-#     KR=28    ; LR=11    ;;
-
-# Corrigido:
 126) MR=126      ; KR=28       ; LR=11      ;              # Define a resolução do modelo e número de EOFs
      IR=384      ; JR=192      ;                           # Define o número de pontos da grade
      # Região HS:
@@ -216,8 +209,6 @@ export MAQUI=$(hostname -s)
 # Script de submissão
 SCRIPTSFILE=set${NMEM}perpntg.${TRCLV}.${LABELI}.${MAQUI}
 
-MONITORID=${RANDOM}
-
 RUNTM=$(date +"%s")
 
 cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
@@ -242,173 +233,178 @@ export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
 mkdir -p \${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/
 
 #
-#  Change directory to run
+# Change directory to run
 #
 
 cd ${HOME_suite}/../run
 
 #
-#  Run scripts of recomposition         
+# Run scripts of recomposition         
 #
 
-Regs=(hn hs san sas tr)
+# O SPCON global está prepadado para calcular perturbações sobre as seguintes regiões:
+# HS, TR, HN, NAS e SAS
+# Opcionalmente, pode-se desejar que estas perturbações sejam feitas apenas sobre um
+# ou mais regiões entre aquelas suportadas.
+
+Regs=(hs tr hn nas sas)
 
 for REG in \${Regs[@]}
 do
 
-#
-# Set region limits
-#
-
-if [ \${REG} == hn ]
-then
-  export MR=${MR}
-  export KR=${KR}
-  export LR=${LR}
-
-  export IR=${IR}
-  export JR=${JR}
-
-  export NI=${HNNI} 
-  export NJ=${HNNJ}
- 
-  export II=${HNII} 
-  export IS=${HNIS}
-  export JI=${HNJI}
-  export JS=${HNJS}
-
-  export IIPS=${HNIIPS} 
-  export ISPS=${HNISPS}
-  export JIPS=${HNJIPS}
-  export JSPS=${HNJSPS}
-elif [ \${REG} == hs ] 
-then
-  export MR=${MR}
-  export KR=${KR}
-  export LR=${LR}
+  #
+  # Set region limits
+  #
   
-  export IR=${IR}
-  export JR=${JR}
-
-  export NI=${HSNI} 
-  export NJ=${HSNJ}
-
-  export II=${HSII} 
-  export IS=${HSIS}
-  export JI=${HSJI}
-  export JS=${HSJS}
-
-  export IIPS=${HSIIPS} 
-  export ISPS=${HSISPS}
-  export JIPS=${HSJIPS}
-  export JSPS=${HSJSPS}
-elif [ \${REG} == san ] 
-then
-  export MR=${MR}
-  export KR=${KR}
-  export LR=${LR}
-
-  export IR=${IR}
-  export JR=${JR}
-
-  export NI=${NASNI} 
-  export NJ=${NASNJ}
-
-  export II=${NASII}  
-  export IS=${NASIS}
-  export JI=${NASJI}
-  export JS=${NASJS}
-
-  export IIPS=${NASIIPS} 
-  export ISPS=${NASISPS}
-  export JIPS=${NASJIPS}
-  export JSPS=${NASJSPS}
-elif [ \${REG} == sas ] 
-then
-  export MR=${MR}
-  export KR=${KR}
-  export LR=${LR}
+  if [ \${REG} == hs ] 
+  then
+    export MR=${MR}
+    export KR=${KR}
+    export LR=${LR}
+    
+    export IR=${IR}
+    export JR=${JR}
   
-  export IR=${IR}
-  export JR=${JR}
-
-  export NI=${SASNI} 
-  export NJ=${SASNJ}
-
-  export II=${SASII} 
-  export IS=${SASIS}
-  export JI=${SASJI}
-  export JS=${SASJS}
-
-  export IIPS=${SASIIPS} 
-  export ISPS=${SASISPS}
-  export JIPS=${SASJIPS}
-  export JSPS=${SASJSPS} 
-elif [ \${REG} == tr ] 
-then
-  export MR=${MR}
-  export KR=${KR}
-  export LR=${LR}
-
-  export IR=${IR}
-  export JR=${JR}
-
-  export NI=${TRNI} 
-  export NJ=${TRNJ}
-
-  export II=${TRII} 
-  export IS=${TRIS}
-  export JI=${TRJI}
-  export JS=${TRJS}
-
-  export IIPS=${TRIIPS} 
-  export ISPS=${TRISPS}
-  export JIPS=${TRJIPS}
-  export JSPS=${TRJSPS}
-else
-  echo "Region undefined."
-  exit 1
-fi
-
-export TRUNC=${RESOL}
-export LEV=${NIVEL}
-
-#
-#  Set date (year,month,day) and hour (hour:minute) 
-#
-#  DATE=yyyymmdd
-#  HOUR=hh:mn
-#
-
-export DATE=\$(date +'%Y')\$(date +'%m')\$(date +'%d')
-export HOUR=\$(date +'%H:%M')
-echo "Date: "\$DATE
-echo "Hour: "\$HOUR
-
-#
-#  Now, build the necessary NAMELIST input:
-#
-
-export ext=R.fct.${RESOL}${NIVEL}
-
-cd ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/
-
-for LABELF in \$( ls -1 GFCTCTR${LABELI}*fct* | cut -c18-27)
-do
+    export NI=${HSNI} 
+    export NJ=${HSNJ}
+  
+    export II=${HSII} 
+    export IS=${HSIS}
+    export JI=${HSJI}
+    export JS=${HSJS}
+  
+    export IIPS=${HSIIPS} 
+    export ISPS=${HSISPS}
+    export JIPS=${HSJIPS}
+    export JSPS=${HSJSPS}
+  elif [ \${REG} == tr ] 
+  then
+    export MR=${MR}
+    export KR=${KR}
+    export LR=${LR}
+  
+    export IR=${IR}
+    export JR=${JR}
+  
+    export NI=${TRNI} 
+    export NJ=${TRNJ}
+  
+    export II=${TRII} 
+    export IS=${TRIS}
+    export JI=${TRJI}
+    export JS=${TRJS}
+  
+    export IIPS=${TRIIPS} 
+    export ISPS=${TRISPS}
+    export JIPS=${TRJIPS}
+    export JSPS=${TRJSPS}
+  elif [ \${REG} == hn ]
+  then
+    export MR=${MR}
+    export KR=${KR}
+    export LR=${LR}
+  
+    export IR=${IR}
+    export JR=${JR}
+  
+    export NI=${HNNI} 
+    export NJ=${HNNJ}
+   
+    export II=${HNII} 
+    export IS=${HNIS}
+    export JI=${HNJI}
+    export JS=${HNJS}
+  
+    export IIPS=${HNIIPS} 
+    export ISPS=${HNISPS}
+    export JIPS=${HNJIPS}
+    export JSPS=${HNJSPS}
+  elif [ \${REG} == sas ] 
+  then
+    export MR=${MR}
+    export KR=${KR}
+    export LR=${LR}
+    
+    export IR=${IR}
+    export JR=${JR}
+  
+    export NI=${SASNI} 
+    export NJ=${SASNJ}
+  
+    export II=${SASII} 
+    export IS=${SASIS}
+    export JI=${SASJI}
+    export JS=${SASJS}
+  
+    export IIPS=${SASIIPS} 
+    export ISPS=${SASISPS}
+    export JIPS=${SASJIPS}
+    export JSPS=${SASJSPS} 
+  elif [ \${REG} == nas ] 
+  then
+    export MR=${MR}
+    export KR=${KR}
+    export LR=${LR}
+  
+    export IR=${IR}
+    export JR=${JR}
+  
+    export NI=${NASNI} 
+    export NJ=${NASNJ}
+  
+    export II=${NASII}  
+    export IS=${NASIS}
+    export JI=${NASJI}
+    export JS=${NASJS}
+  
+    export IIPS=${NASIIPS} 
+    export ISPS=${NASISPS}
+    export JIPS=${NASJIPS}
+    export JSPS=${NASJSPS}
+  else
+    echo "Region undefined."
+    exit 1
+  fi
+  
+  export TRUNC=${RESOL}
+  export LEV=${NIVEL}
+  
+  #
+  # Set date (year,month,day) and hour (hour:minute) 
+  #
+  # DATE=yyyymmdd
+  # HOUR=hh:mn
+  #
+  
+  export DATE=\$(date +'%Y')\$(date +'%m')\$(date +'%d')
+  export HOUR=\$(date +'%H:%M')
+  echo "Date: "\$DATE
+  echo "Hour: "\$HOUR
+  
+  #
+  # Now, build the necessary NAMELIST input:
+  #
+  
+  export ext=R.fct.${RESOL}${NIVEL}
+  
+  cd ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/
+  
+  for LABELF in \$(ls -1 GFCTCTR${LABELI}*fct* | cut -c18-27)
+  do
 cat <<EOT1 >> ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
 ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTCTR${LABELI}\${LABELF}\${ext}
 ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCT\${MEM}R${LABELI}\${LABELF}\${ext}
 EOT1
-done
-
-echo ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
-
-cp ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI} ${DK_suite}/../eof/datain/templ\${MEM}${LABELI}
-
-cd \${DK_suite}/../eof/datain
-
-export ext=R.unf
-
+  done
+  
+  echo ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
+  
+  cp ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI} ${DK_suite}/../eof/datain/templ\${MEM}${LABELI}
+  
+  cd \${DK_suite}/../eof/datain
+  
+  export ext=R.unf
+  
 cat <<EOT1 > eofpres\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
@@ -455,15 +451,14 @@ cat <<EOT1 > eofpres\${REG}\${MEM}.nml
  &END
 EOT1
 
-cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
-
-./eofpres.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-pres.\${REG}.${MONITORID}
-
-cd \${DK_suite}/../eof/datain
-
-export ext=R.unf
-
+  cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
+  
+  ./eofpres.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  
+  cd \${DK_suite}/../eof/datain
+  
+  export ext=R.unf
+  
 cat <<EOT1 > eoftem\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
@@ -500,7 +495,7 @@ cat <<EOT1 > eoftem\${REG}\${MEM}.nml
   TEMPEN1(10)='tempn\${REG}\${MEM}10\${LABELI} ',
   TEMPEN1(11)='tempn\${REG}\${MEM}11\${LABELI} '
  &END
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert_eof.nml)
+$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert_eof.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
@@ -508,21 +503,20 @@ cat <<EOT1 > eoftem\${REG}\${MEM}.nml
  &END
 EOT1
 
-cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
-
-./eoftem.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-temp.\${REG}.${MONITORID}
-
-if [ ${HUMID} = YES ] 
-then
-
-  #
-  #  Now, build the necessary NAMELIST input:
-  #
-
-  cd \${DK_suite}/../eof/datain
-
-  export ext=R.unf
+  cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
+  
+  ./eoftem.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  
+  if [ ${HUMID} = YES ] 
+  then
+  
+    #
+    # Now, build the necessary NAMELIST input:
+    #
+  
+    cd \${DK_suite}/../eof/datain
+  
+    export ext=R.unf
 
 cat <<EOT1 > eofhum\${REG}\${MEM}.nml
  &DATAIN
@@ -560,7 +554,7 @@ cat <<EOT1 > eofhum\${REG}\${MEM}.nml
   HUMPEN1(10)='humpn\${REG}\${MEM}10\${LABELI} ',
   HUMPEN1(11)='humpn\${REG}\${MEM}11\${LABELI} '
  &END
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert_eof.nml)
+$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert_eof.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
@@ -568,17 +562,16 @@ cat <<EOT1 > eofhum\${REG}\${MEM}.nml
  &END
 EOT1
 
-  cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
-
-  ./eofhum.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-  echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-hum.\${REG}.${MONITORID}
-
-fi
-
-cd \${DK_suite}/../eof/datain
-
-export ext=R.unf
-
+    cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
+  
+    ./eofhum.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  
+  fi
+  
+  cd \${DK_suite}/../eof/datain
+  
+  export ext=R.unf
+  
 cat <<EOT1 > eofwin\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
@@ -693,8 +686,8 @@ cat <<EOT1 > eofwin\${REG}\${MEM}.nml
   HUMPEN1(10)='humpn\${REG}\${MEM}10\${LABELI} ',
   HUMPEN1(11)='humpn\${REG}\${MEM}11\${LABELI} '
  &END
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/uvelpert_eof.nml)
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert_eof.nml)
+$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/uvelpert_eof.nml)
+$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert_eof.nml)
  &HUMIDI
   HUM='${HUMID}'
  &END
@@ -704,23 +697,17 @@ cat <<EOT1 > eofwin\${REG}\${MEM}.nml
   IIPS=\${IIPS},ISPS=\${ISPS},JIPS=\${JIPS},JSPS=\${JSPS}
  &END
 EOT1
-
-cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
-
-./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/../eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
-#echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor-win.\${REG}.${MONITORID}
-
+  
+  cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
+  
+  ./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/../eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  
 done
-
-echo "" >> ${DK_suite}/../eof/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
 qsub -W block=true ${HOME_suite}/../run/${SCRIPTSFILE}
-
-#until [ -e "${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
-#rm ${DK_suite}/../eof/bin/${RESOL}${NIVEL}/monitor*${MONITORID}
 
 exit 0

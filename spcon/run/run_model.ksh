@@ -228,11 +228,11 @@ NAMELISTFILEPATH=${HOME_suite}/../run
 # 2 dias e com saídas a cada 3 horas;
 # Se ANLTYPE for igual a CTR, NPT ou PPT, então as previsões serão referentes às análises controle e perturbadas
 # por EOF (respectivamente), e serão feitas para 15 dias e com saída a cada 3 horas.
-if [ ${ANLTYPE} == RDP -o ${ANLTYPE} == NMC ]
+if [ ${ANLTYPE} == RDP -o ${ANLTYPE} == CTR ]
 then
   export DHFCT=3
   export DHRES=3
-elif [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NPT -o ${ANLTYPE} == PPT -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
+elif [ ${ANLTYPE} == NMC -o ${ANLTYPE} == NPT -o ${ANLTYPE} == PPT -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
   export DHFCT=6
   export DHRES=6
@@ -317,7 +317,6 @@ then
   export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
-  export MONITORFILE="${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/model.\${PBS_ARRAY_INDEX}"
 else
   export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
@@ -325,7 +324,6 @@ else
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}"
-  export MONITORFILE="${DK_suite}/model/exec_${PREFIC}${LABELI}.\${ANLTYPE}/model.\${ANLTYPE}"
 fi
 
 if [ ${ANLTYPE} != NMC -a ${ANLTYPE} != RDP ]
@@ -377,8 +375,6 @@ aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss \${EXECFILEPATH}/ParModel_
 date
 
 sleep 10s # espera para terminar todos os processos de I/O
-
-#echo "" >> ${MONITORFILE}
 EOF0
 
 # Submete o script e aguarda o fim da execução
@@ -386,25 +382,6 @@ chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
-#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
-#then
-#
-#  for i in $(seq 1 ${ANLPERT})
-#  do
-#
-#    until [ -e ${EXECFILEPATH}/model.${i} ]; do sleep 1s; done
-#    rm ${EXECFILEPATH}/model.${i}
-#
-#  done
-#
-#else
-#
-#  until [ -e ${EXECFILEPATH}/model.${ANLTYPE} ]; do sleep 1s; done
-#  rm ${EXECFILEPATH}/model.${ANLTYPE}
-#
-#fi
-
-#JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
 JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | cut -c 1-7)
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]

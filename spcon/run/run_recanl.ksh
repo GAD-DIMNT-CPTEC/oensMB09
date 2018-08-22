@@ -225,17 +225,11 @@ cd \${bin}
 
 echo "./recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
 ./recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
-
-#echo "" > \${bin}/monitor.t
 EOT0
 
 # Submete o script e aguarda o fim da execução
 chmod +x setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 qsub -W block=true setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
-
-#until [ -e ${bin}/monitor.t ]; do sleep 1s; done
-
-#rm ${bin}/monitor.t
 
 exit 0

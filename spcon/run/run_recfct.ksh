@@ -116,8 +116,6 @@ else
   export ENSTYPE="export TYPES=FCT\${MEM}${PREFIC}"
 fi
 
-MONITORID=${RANDOM}
-
 export PBS_SERVER=aux20-eth4
 RUNTM=$(date +"%s")
 
@@ -228,17 +226,11 @@ EOT3
   ./recfct.\${TRCLV} < ${DK_suite}/../recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/../recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
   
 done
-
-#echo "" > ${DK_suite}/../recfct/bin/\${TRCLV}/monitor.${MONITORID}
 EOT0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
 qsub -W block=true ${SCRIPTSFILE}
-
-#until [ -e "${DK_suite}/../recfct/bin/${TRCLV}/monitor.${MONITORID}" ]; do sleep 1s; done
-
-#rm ${DK_suite}/../recfct/bin/${TRCLV}/monitor.${MONITORID}
 
 exit 0

@@ -122,8 +122,6 @@ mkdir -p ${DK_suite}/../rdpert/output
 # Script de submissão
 SCRIPTSFILE=setrdpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-MONITORID=${RANDOM}
-
 cat <<EOT0 > ${SCRIPTSFILE}
 #!/bin/bash -x
 #PBS -o ${DK_suite}/../rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
@@ -142,10 +140,10 @@ cd ${HOME_suite}/../run
 . ${FILEENV} ${1} ${2}
 
 #
-#  Set date (year,month,day) and hour (hour:minute) 
+# Set date (year,month,day) and hour (hour:minute) 
 #
-#  DATE=yyyymmdd
-#  HOUR=hh:mn
+# DATE=yyyymmdd
+# HOUR=hh:mn
 #
 
 export DATE=\$(date +'%Y')\$(date +'%m')\$(date +'%d')
@@ -155,8 +153,8 @@ echo "Date: "\${DATE}
 echo "Hour: "\${HOUR}
 
 #
-#  LABELI = yyyymmddhh
-#  LABELI = input file label
+# LABELI = yyyymmddhh
+# LABELI = input file label
 #
 
 export NUMPERT=${NPERT}
@@ -165,28 +163,28 @@ export LABELI=${LABELI}
 #
 #  Prefix names for the FORTRAN files
 #
-#  NAMER - Recomposed input file prefix
-#  NAMEP - Recomposed perturbed file prefix
+# NAMER - Recomposed input file prefix
+# NAMEP - Recomposed perturbed file prefix
 #
 
 export NAMER=GANL${PREFIC}
 
 #
-#  Suffix names for the FORTRAN files
-#  EXTR - Recomposed input file extension
+# Suffix names for the FORTRAN files
+# EXTR - Recomposed input file extension
 #
 
 export EXTR=R.unf
 
 #
-#  Set directories
+# Set directories
 #
-#  HOME_suite  is the directory for sources, scripts and
-#              printouts files.
-#   DK_suite is the directory for input and output data
-#            and bin files.
-#   DK_suite is the directory for big selected output files.
-#   IHOME_suite is the directory for input file.
+# HOME_suite  is the directory for sources, scripts and
+#             printouts files.
+# DK_suite is the directory for input and output data
+#             and bin files.
+# DK_suite is the directory for big selected output files.
+# IHOME_suite is the directory for input file.
 #
 
 export HOME_suite DK_suite DK_suite IHOME_suite
@@ -202,7 +200,7 @@ cp ${DK_suite}/../recanl/dataout/${RESOL}${NIVEL}/\${NAMER}\${LABELI}\${EXTR}.${
 cd ${HOME_suite}/../run
 
 #
-#  Set Horizontal Truncation and Vertical Layers
+# Set Horizontal Truncation and Vertical Layers
 #
 
 LEV=${NIVEL}
@@ -210,8 +208,13 @@ TRUNC=${RESOL}
 export TRUNC LEV
 
 #
-#  Now, build the necessary NAMELIST input:
-#  Mariane (1999) stdt=0.6 K, stdu=3 m/s
+# Now, build the necessary NAMELIST input:
+# Mariane (1999) stdt=0.6 K, stdu=3 m/s
+#
+
+#
+# As perturbações randômicas são feitas em toda a grade (veja os valores de FLONW, FLONW e GLATSN, GLATSS).
+# Apenas as perturbações por EOF é que são calculadas nas regiões de interesse.
 #
 
 cat <<EOT2 > \${DK_suite}/../rdpert/datain/rdpert.nml
@@ -224,10 +227,10 @@ cat <<EOT2 > \${DK_suite}/../rdpert/datain/rdpert.nml
  &STPRES
   STDP=1.00
  &END
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert_rdp.nml)
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/uvelpert_rdp.nml)
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert_rdp.nml)
- $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert_rdp.nml)
+$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert_rdp.nml)
+$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/uvelpert_rdp.nml)
+$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert_rdp.nml)
+$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert_rdp.nml)
  &HUMIDI
   HUM='${HUMID}'
  &END
@@ -244,7 +247,7 @@ i=1
 while [ \${i} -le \${NUMPERT} ]
 do
 
-  if [ \${i}  -le 9 ]
+  if [ \${i} -le 9 ]
   then
 cat <<EOT3 >> \${DK_suite}/../rdpert/datain/rdpert.nml
   GNAMEP(\${i})='GANL0\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}'
@@ -259,30 +262,23 @@ EOT3
 
 done
 
-cat <<EOT4 >> \${DK_suite}/../rdpert/datain/rdpert.nml
- &END
-EOT4
+#cat <<EOT4 >> \${DK_suite}/../rdpert/datain/rdpert.nml
+# &END
+#EOT4
 
 cd ${HOME_suite}/../run
 
 #
-#  Run Random Perturbation
+# Run Random Perturbation
 #
 
 cd ${DK_suite}/../rdpert/bin/\${TRUNC}\${LEV}
 
 ./rdpert.\${TRUNC}\${LEV} < ${DK_suite}/../rdpert/datain/rdpert.nml > ${DK_suite}/../rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
-
-#echo "" > ${DK_suite}/../rdpert/bin/\${RESOL}\${NIVEL}/monitor.${MONITORID}
 EOT0
 
-# Submete o script e aguarda o fim da execução
 chmod +x ${SCRIPTSFILE} 
 
 qsub -W block=true ${SCRIPTSFILE}
-
-#until [ -e "${DK_suite}/../rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}" ]; do sleep 1s; done
-
-#rm ${DK_suite}/../rdpert/bin/${RESOL}${NIVEL}/monitor.${MONITORID}
 
 exit 0
