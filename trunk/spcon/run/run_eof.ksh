@@ -137,36 +137,36 @@ case ${TRC} in
      HNII=1      ; HNIS=384    ; HNJI=1     ; HNJS=75    ; # Define a região da perturbação 
      HNIIPS=1    ; HNISPS=384  ; HNJIPS=1   ; HNJSPS=75  ; # Não usado
      # Região NAS:
-     NASNI=97    ; NASNJ=42    ;                           # Define o número de pontos da região  
-     NASII=278   ; NASIS=374   ; NASJI=76   ; NASJS=117  ; # Define a região da perturbação  
-     NASIIPS=278 ; NASISPS=374 ; NASJIPS=76 ; NASJSPS=117; # Não usado
+     NASNI=97    ; NASNJ=44    ;                           # Define o número de pontos da região  
+     NASII=278   ; NASIS=374   ; NASJI=32   ; NASJS=75   ; # Define a região da perturbação  
+     NASIIPS=278 ; NASISPS=374 ; NASJIPS=32 ; NASJSPS=75 ; # Não usado
      # Região SAS:
-     SASNI=97    ; SASNJ=44    ;                           # Define o número de pontos da região  
-     SASII=268   ; SASIS=364   ; SASJI=32   ; SASJS=75   ; # Define a região da perturbação  
-     SASIIPS=268 ; SASISPS=364 ; SASJIPS=32 ; SASJSPS=75 ; # Não usado
+     SASNI=97    ; SASNJ=42    ;                           # Define o número de pontos da região  
+     SASII=268   ; SASIS=364   ; SASJI=76   ; SASJS=117  ; # Define a região da perturbação  
+     SASIIPS=268 ; SASISPS=364 ; SASJIPS=76 ; SASJSPS=117; # Não usado
      ;; 
 
 213) MR=213      ; KR=42       ; LR=11      ;          
      IR=640      ; JR=320      ;
      # Região HS: 
      HSNI=640    ; HSNJ=125    ;                           # Define o número de pontos da região   
-     HSII=1      ; HSIS=640    ; HSJI=1     ; HSJS=125   ; # Define a região da perturbação  
-     HSIIPS=1    ; HSISPS=640  ; HSJIPS=1   ; HSJSPS=125 ; # Não usado 
+     HSII=1      ; HSIS=640    ; HSJI=196   ; HSJS=320   ; # Define a região da perturbação  
+     HSIIPS=1    ; HSISPS=640  ; HSJIPS=196 ; HSJSPS=320 ; # Não usado 
      # Região TR: 
      TRNI=640    ; TRNJ=70     ;                           # Define o número de pontos da região   
      TRII=1      ; TRIS=640    ; TRJI=126   ; TRJS=195   ; # Define a região da perturbação  
      TRIIPS=1    ; TRISPS=640  ; TRJIPS=126 ; TRJSPS=195 ; # Não usado 
      # Região HN: 
      HNNI=640    ; HNNJ=125    ;                           # Define o número de pontos da região   
-     HNII=1      ; HNIS=640    ; HNJI=196   ; HNJS=320   ; # Define a região da perturbação  
-     HNIIPS=1    ; HNISPS=640  ; HNJIPS=196 ; HNJSPS=320 ; # Não usado 
+     HNII=1      ; HNIS=640    ; HNJI=1     ; HNJS=125   ; # Define a região da perturbação  
+     HNIIPS=1    ; HNISPS=640  ; HNJIPS=1   ; HNJSPS=125 ; # Não usado 
      # Região NAS: 
      NASNI=161   ; NASNJ=70    ;                           # Define o número de pontos da região       
      NASII=459   ; NASIS=619   ; NASJI=126  ; NASJS=195  ; # Define a região da perturbação  
      NASIIPS=459 ; NASISPS=619 ; NASJIPS=195; NASJSPS=126; # Não usado 
      # Região SAS: 
      SASNI=161   ; SASNJ=73    ;                           # Define o número de pontos da região       
-     SASII=443   ; SASIS=603   ; SASJI=53   ; SASJS=125 ;  # Define a região da perturbação  
+     SASII=443   ; SASIS=603   ; SASJI=196   ; SASJS=265;  # Define a região da perturbação  
      SASIIPS=443 ; SASISPS=603 ; SASJIPS=125; SASJSPS=53;  # Não usado 
      ;;
 
