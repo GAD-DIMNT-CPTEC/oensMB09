@@ -19,7 +19,10 @@ C*
       CHARACTER GNAMEO*256,GNAMEP(IDM)*256,DIRO*256,DIRP*256
       CHARACTER HUM*3
 C*
-      NAMELIST /DATAIN/ FLONW,FLONE,GLATN,GLATS,IW,IE,JN,JS,SECTOR
+! CFB
+!      NAMELIST /DATAIN/ FLONW,FLONE,GLATN,GLATS,IW,IE,JN,JS,SECTOR
+      NAMELIST /DATAIN/ FLONW,FLONE,GLATN,GLATS ! CFB: IW,IE,JN,JS,SECTOR não são lidos do rdpert.nml
+! CFB      
       NAMELIST /STPRES/ STDP
       NAMELIST /STTEMP/ STDT
       NAMELIST /STZWIN/ STDU
@@ -139,8 +142,9 @@ C*
       ENDDO
       ENDIF
 C*
-C*    PUT ZEROES OUTSIDE SELECTED REGION
-C*
+C*    PUT ZEROES OUTSIDE SELECTED REGION ! CFB: qual é a função disso se as perturbações randômicas são feitas em 
+C*                                       ! toda a grade? -> Provavelmente as perturbações randômicas podem ser 
+C*                                       ! feitas em regiões distintas ao invés da grade toda quando SECTOR=TRUE
       IF (SECTOR) THEN
       DO K=1,KMAX
       DO J=1,JMAX

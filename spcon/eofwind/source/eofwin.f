@@ -316,7 +316,7 @@ C
             IF (I.GE.IINF .AND. I.LE.ISUP) THEN
               BFUPAUX=FACTOR*UP(I-IINF+1,J-JINF+1,K)
 c              TUP(I,J,K,L)=BFUPAUX !It is necessary adjust the phase of the wind pert. to obtain balance with pres. pert.
-              TUP(I,J,K,L)=-BFUPAUX
+              TUP(I,J,K,L)=-BFUPAUX ! CFB - verificar
             ELSE
               TUP(I,J,K,L)=0.0
             ENDIF

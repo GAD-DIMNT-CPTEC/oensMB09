@@ -34,7 +34,9 @@ C*
       RPT(I,J,K)=TMEAN+SQRT(STDT(K))*GASDEV(IDUM)
       RPU(I,J,K)=UMEAN+SQRT(STDU(K))*GASDEV(IDUM)
       RPV(I,J,K)=VMEAN+SQRT(STDV(K))*GASDEV(IDUM)
-      RPQ(I,J,K)=QMEAN+STDQ(K)*GASDEV(IDUM)/1000
+      RPQ(I,J,K)=QMEAN+STDQ(K)*GASDEV(IDUM)/1000 ! CFB - verificar se o STDEV está em g/kg ou kg/kg 
+                                                 ! (se está sendo dividido por 1000, é porque então STDEVQ
+                                                 ! está em g/kg, para que a perturbação fique em kg/kg)
       ENDDO
       ENDDO
       ENDDO

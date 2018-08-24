@@ -262,9 +262,9 @@ EOT3
 
 done
 
-#cat <<EOT4 >> \${DK_suite}/../rdpert/datain/rdpert.nml
-# &END
-#EOT4
+cat <<EOT4 >> \${DK_suite}/../rdpert/datain/rdpert.nml
+ &END
+EOT4
 
 cd ${HOME_suite}/../run
 
