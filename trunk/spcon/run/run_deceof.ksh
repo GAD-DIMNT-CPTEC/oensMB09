@@ -106,11 +106,11 @@ fi
 export NUMPERT=${NPERT}
 
 # As variáveis a seguir são utilizadas na composição dos nomes dos arquivos com as perturbações por EOF
-MPHN=1; MPTR=1; MPHS=1; MPSAN=1; MPSAS=1
-MTHN=1; MTTR=1; MTHS=1; MTSAN=1; MTSAS=1
-MQHN=1; MQTR=1; MQHS=1; MQSAN=1; MQSAS=1
-MUHN=1; MUTR=1; MUHS=1; MUSAN=1; MUSAS=1
-MVHN=1; MVTR=1; MVHS=1; MVSAN=1; MVSAS=1
+MPHN=1; MPTR=1; MPHS=1; MPNAS=1; MPSAS=1
+MTHN=1; MTTR=1; MTHS=1; MTNAS=1; MTSAS=1
+MQHN=1; MQTR=1; MQHS=1; MQNAS=1; MQSAS=1
+MUHN=1; MUTR=1; MUHS=1; MUNAS=1; MUSAS=1
+MVHN=1; MVTR=1; MVHS=1; MVNAS=1; MVSAS=1
 
 # Variáveis utilizadas no script de submissão
 export PBS_SERVER=aux20-eth4
@@ -237,61 +237,61 @@ EOT3
 filephn=prssehn\${NUM}${MPHN}\${LABELI}
 fileptr=prssetr\${NUM}${MPTR}\${LABELI}
 filephs=prssehs\${NUM}${MPHS}\${LABELI}
-filepsan=prssesan\${NUM}${MPSAN}\${LABELI}
+filepnas=prssenas\${NUM}${MPNAS}\${LABELI}
 filepsas=prssesas\${NUM}${MPSAS}\${LABELI}
 
 echo "filephn= "\${filephn} 
 echo "fileptr= "\${fileptr} 
 echo "filephs= "\${filephs} 
-echo "filepsan="\${filepsan} 
+echo "filepnas="\${filepnas} 
 echo "filepsas="\${filepsas} 
 
 filethn=tempehn\${NUM}${MTHN}\${LABELI}
 filettr=tempetr\${NUM}${MTTR}\${LABELI}
 fileths=tempehs\${NUM}${MTHS}\${LABELI}
-filetsan=tempesan\${NUM}${MTSAN}\${LABELI}
+filetnas=tempenas\${NUM}${MTNAS}\${LABELI}
 filetsas=tempesas\${NUM}${MTSAS}\${LABELI}
 
 echo "filethn= "\${filethn} 
 echo "filettr= "\${filettr} 
 echo "fileths= "\${fileths} 
-echo "filetsan="\${filetsan} 
+echo "filetnas="\${filetnas} 
 echo "filetsas="\${filetsas} 
 
 fileqhn=humpehn\${NUM}${MQHN}\${LABELI}
 fileqtr=humpetr\${NUM}${MQTR}\${LABELI}
 fileqhs=humpehs\${NUM}${MQHS}\${LABELI}
-fileqsan=humpesan\${NUM}${MQSAN}\${LABELI}
+fileqnas=humpenas\${NUM}${MQNAS}\${LABELI}
 fileqsas=humpesas\${NUM}${MQSAS}\${LABELI}
 
 echo "fileqhn= "\${fileqhn} 
 echo "fileqtr= "\${fileqtr} 
 echo "fileqhs= "\${fileqhs} 
-echo "fileqsan="\${fileqsan} 
+echo "fileqnas="\${fileqnas} 
 echo "fileqsas="\${fileqsas} 
 
 fileuhn=winpehn\${NUM}${MUHN}\${LABELI}
 fileutr=winpetr\${NUM}${MUTR}\${LABELI}
 fileuhs=winpehs\${NUM}${MUHS}\${LABELI}
-fileusan=winpesan\${NUM}${MUSAN}\${LABELI}
+fileunas=winpenas\${NUM}${MUNAS}\${LABELI}
 fileusas=winpesas\${NUM}${MUSAS}\${LABELI}
 
 echo "fileuhn= "\${fileuhn} 
 echo "fileutr= "\${fileutr} 
 echo "fileuhs= "\${fileuhs} 
-echo "fileusan="\${fileusan} 
+echo "fileunas="\${fileunas} 
 echo "fileusas="\${fileusas} 
 
 filevhn=winpehn\${NUM}${MVHN}\${LABELI}
 filevtr=winpetr\${NUM}${MVTR}\${LABELI}
 filevhs=winpehs\${NUM}${MVHS}\${LABELI}
-filevsan=winpesan\${NUM}${MVSAN}\${LABELI}
+filevnas=winpenas\${NUM}${MVNAS}\${LABELI}
 filevsas=winpesas\${NUM}${MVSAS}\${LABELI}
 
 echo "filevhn= "\${filevhn} 
 echo "filevtr= "\${filevtr} 
 echo "filevhs= "\${filevhs} 
-echo "filevsan="\${filevsan} 
+echo "filevnas="\${filevnas} 
 echo "filevsas="\${filevsas} 
 
 rm -f \${DK_suite}/../deceof/datain/\${GNAMEL}
@@ -301,27 +301,27 @@ cat <<EOT2 > \${DK_suite}/../deceof/datain/\${GNAMEL}
 \${filephn}
 \${fileptr}
 \${filephs}
-\${filepsan} 
+\${filepnas} 
 \${filepsas}
 \${filethn}
 \${filettr}
 \${fileths}
-\${filetsan}
+\${filetnas}
 \${filetsas}
 \${fileqhn}
 \${fileqtr}
 \${fileqhs}
-\${fileqsan}
+\${fileqnas}
 \${fileqsas}
 \${fileuhn}
 \${fileutr}
 \${fileuhs}
-\${fileusan}
+\${fileunas}
 \${fileusas}
 \${filevhn}
 \${filevtr}
 \${filevhs}
-\${filevsan}
+\${filevnas}
 \${filevsas}
 \${NAMES1}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 EOT2
@@ -337,61 +337,61 @@ cd \${HOME_suite}/../deceof/bin/\${TRUNC}\${LEV}
 filephn=prssnhn\${NUM}${MPHN}\${LABELI}
 fileptr=prssntr\${NUM}${MPTR}\${LABELI}
 filephs=prssnhs\${NUM}${MPHS}\${LABELI}
-filepsan=prssnsan\${NUM}${MPSAN}\${LABELI}
+filepnas=prssnnas\${NUM}${MPNAS}\${LABELI}
 filepsas=prssnsas\${NUM}${MPSAS}\${LABELI}
 
 echo "filephn= "\${filephn} 
 echo "fileptr= "\${fileptr} 
 echo "filephs= "\${filephs} 
-echo "filepsan="\${filepsan} 
+echo "filepnas="\${filepnas} 
 echo "filepsas="\${filepsas} 
 
 filethn=tempnhn\${NUM}${MTHN}\${LABELI}
 filettr=tempntr\${NUM}${MTTR}\${LABELI}
 fileths=tempnhs\${NUM}${MTHS}\${LABELI}
-filetsan=tempnsan\${NUM}${MTSAN}\${LABELI}
+filetnas=tempnnas\${NUM}${MTNAS}\${LABELI}
 filetsas=tempnsas\${NUM}${MTSAS}\${LABELI}
 
 echo "filethn= "\${filethn} 
 echo "filettr= "\${filettr} 
 echo "fileths= "\${fileths} 
-echo "filetsan="\${filetsan} 
+echo "filetnas="\${filetnas} 
 echo "filetsas="\${filetsas} 
 
 fileqhn=humpnhn\${NUM}${MQHN}\${LABELI}
 fileqtr=humpntr\${NUM}${MQTR}\${LABELI}
 fileqhs=humpnhs\${NUM}${MQHS}\${LABELI}
-fileqsan=humpnsan\${NUM}${MQSAN}\${LABELI}
+fileqnas=humpnnas\${NUM}${MQNAS}\${LABELI}
 fileqsas=humpnsas\${NUM}${MQSAS}\${LABELI}
 
 echo "fileqhn= "\${fileqhn} 
 echo "fileqtr= "\${fileqtr} 
 echo "fileqhs= "\${fileqhs} 
-echo "fileqsan="\${fileqsan} 
+echo "fileqnas="\${fileqnas} 
 echo "fileqsas="\${fileqsas} 
 
 fileuhn=winpnhn\${NUM}${MUHN}\${LABELI}
 fileutr=winpntr\${NUM}${MUTR}\${LABELI}
 fileuhs=winpnhs\${NUM}${MUHS}\${LABELI}
-fileusan=winpnsan\${NUM}${MUSAN}\${LABELI}
+fileunas=winpnnas\${NUM}${MUNAS}\${LABELI}
 fileusas=winpnsas\${NUM}${MUSAS}\${LABELI}
 
 echo "fileuhn= "\${fileuhn} 
 echo "fileutr= "\${fileutr} 
 echo "fileuhs= "\${fileuhs} 
-echo "fileusan="\${fileusan} 
+echo "fileunas="\${fileunas} 
 echo "fileusas="\${fileusas} 
 
 filevhn=winpnhn\${NUM}${MVHN}\${LABELI}
 filevtr=winpntr\${NUM}${MVTR}\${LABELI}
 filevhs=winpnhs\${NUM}${MVHS}\${LABELI}
-filevsan=winpnsan\${NUM}${MVSAN}\${LABELI}
+filevnas=winpnnas\${NUM}${MVNAS}\${LABELI}
 filevsas=winpnsas\${NUM}${MVSAS}\${LABELI}
 
 echo "filevhn= "\${filevhn} 
 echo "filevtr= "\${filevtr} 
 echo "filevhs= "\${filevhs} 
-echo "filevsan="\${filevsan} 
+echo "filevnas="\${filevnas} 
 echo "filevsas="\${filevsas} 
 
 rm -f \${DK_suite}/../deceof/datain/\${GNAMEL}
@@ -401,27 +401,27 @@ cat <<EOT4 > \${DK_suite}/../deceof/datain/\${GNAMEL}
 \${filephn}
 \${fileptr}
 \${filephs}
-\${filepsan}
+\${filepnas}
 \${filepsas}
 \${filethn}
 \${filettr}
 \${fileths}
-\${filetsan}
+\${filetnas}
 \${filetsas}
 \${fileqhn}
 \${fileqtr}
 \${fileqhs}
-\${fileqsan}
+\${fileqnas}
 \${fileqsas}
 \${fileuhn}
 \${fileutr}
 \${fileuhs}
-\${fileusan}
+\${fileunas}
 \${fileusas}
 \${filevhn}
 \${filevtr}
 \${filevhs}
-\${filevsan}
+\${filevnas}
 \${filevsas}
 \${NAMES3}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 EOT4
