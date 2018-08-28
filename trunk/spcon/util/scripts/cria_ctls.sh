@@ -21,10 +21,10 @@
 #            
 #            <opcao4> inpert    -> número de perturbações 
 #
-#  Uso/Exemplos: ./run_cycle.ksh 2013010100 126 28 7
+#  Uso/Exemplos: ./cria_ctls.sh 2013010100 126 28 7
 #                (cria os arquivos ctls para todas as variáveis e regiões e para 7 membros
 #                na resolução TQ0126L028 para a data 2013010100)
-#                ./run_cycle.ksh 2013010100 213 42 7 
+#                ./cria_ctls.sh 2013010100 213 42 7 
 #                (cria os arquivos ctls para todas as variáveis e regiões e para 7 membros
 #                na resolução TQ0126L028 para a data 2013010100)
 # 
