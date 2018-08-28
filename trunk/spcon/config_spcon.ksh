@@ -89,7 +89,7 @@
 # e instalação do SPCON)
 vars_export() {
 
-  export spcon_name=oensMB09_trunk
+  export spcon_name=oensMB09_aval
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
   export work_spcon=${WORK_HOME}/${spcon_name}
@@ -142,11 +142,15 @@ testcase() {
 
   echo "Testcase"
 
-  cp -pvfr ${spcon_testcase}/pre/* ${bam_pre}/
-  cp -pvfr ${spcon_testcase}/model/* ${bam_model}/
-  cp -pvfr ${spcon_testcase}/pos/* ${bam_pos}/
+  cp -pvfr ${spcon_testcase}/pre/datain ${pre_datain}/
+  cp -pvfr ${spcon_testcase}/pre/dataout ${pre_dataout}/
+  cp -pvfr ${spcon_testcase}/pre/datasst ${pre_datasst}/
+  cp -pvfr ${spcon_testcase}/pre/databcs ${pre_databcs}/
 
   sed -i "s,/scratchin/grupos/assim_dados/home/carlos.bastarz/oensMB09_bam/bam/pre/datasst/oiv2monthly/,${bam_pre}/datasst/oiv2monthly/,g" ${bam_pre}/datasst/oiv2monthly/sstmtd.nml
+
+  cp -pvfr ${spcon_testcase}/model/* ${bam_model}/
+  cp -pvfr ${spcon_testcase}/pos/* ${bam_pos}/
 
 }
 
