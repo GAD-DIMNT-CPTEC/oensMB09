@@ -165,9 +165,9 @@ case ${TRC} in
      NASII=459   ; NASIS=619   ; NASJI=126  ; NASJS=195  ; # Define a região da perturbação  
      NASIIPS=459 ; NASISPS=619 ; NASJIPS=126; NASJSPS=195; # Não usado 
      # Região SAS: 
-     SASNI=161   ; SASNJ=73    ;                           # Define o número de pontos da região       
-     SASII=443   ; SASIS=603   ; SASJI=53  ; SASJS=125   ; # Define a região da perturbação  
-     SASIIPS=443 ; SASISPS=603 ; SASJIPS=53; SASJSPS=125 ; # Não usado 
+     SASNI=161   ; SASNJ=73    ;                            # Define o número de pontos da região       
+     SASII=443   ; SASIS=603   ; SASJI=196  ; SASJS=268   ; # Define a região da perturbação  
+     SASIIPS=443 ; SASISPS=603 ; SASJIPS=196; SASJSPS=268 ; # Não usado 
      ;;
 
 299) MR=299      ; KR=64       ; LR=11      ;          
@@ -189,9 +189,9 @@ case ${TRC} in
      NASII=645   ; NASIS=870   ; NASJI=177  ; NASJS=274  ; # Define a região da perturbação  
      NASIIPS=645 ; NASISPS=870 ; NASJIPS=177; NASJSPS=274; # Não usado 
      # Região SAS: 
-     SASNI=226   ; SASNJ=103   ;                           # Define o número de pontos da região       
-     SASII=623   ; SASIS=848   ; SASJI=74   ; SASJS=176  ; # Define a região da perturbação  
-     SASIIPS=623 ; SASISPS=848 ; SASJIPS=74 ; SASJSPS=176; # Não usado 
+     SASNI=226   ; SASNJ=103   ;                            # Define o número de pontos da região       
+     SASII=623   ; SASIS=848   ; SASJI=275   ; SASJS=377  ; # Define a região da perturbação  
+     SASIIPS=623 ; SASISPS=848 ; SASJIPS=275 ; SASJSPS=377; # Não usado 
      ;;
 
 *) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
