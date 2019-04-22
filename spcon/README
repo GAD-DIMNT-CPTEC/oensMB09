@@ -1,6 +1,6 @@
-Este pacote contem as rotinas e scripts de perturbacao das condicoes iniciais para SPCON-MB09 do CPTEC/INPE.
+Este pacote contém as rotinas e scripts de perturbação das condições iniciais para SPCON-MB09 do CPTEC/INPE.
 
-Nas revisões mais recentes do pacote do SPCON global, os procedimentos obtenção do modelo BAM, configuração e compilação são feitos a partir do script "config_spcon.ksh". Siga as instruções a seguir para configurar e compilar o SPCON global.
+Nas revisões mais recentes do pacote do SPCON global, os procedimentos de obtenção do modelo BAM, configuração e compilação são feitos a partir do script "config_spcon.ksh". Siga as instruções a seguir para configurar e compilar o SPCON global.
 
 1) Login na eslogin01 ou eslogin02
 $ ssh eslogin01
@@ -30,24 +30,24 @@ $ config_spcon.ksh
 5) Compilar o pacote:
 $ make comp=pgi
 
-Observacoes:
-- As bibliotecas e executaveis ficam armazenados dentro de cada uma das pastas dos processos;
-- Os executaveis e bibliotecas das EOFs (de cada variaveis) sao criados diretamente dentro de eof/bin/<resolucao>;
-- Para uso com outras resolucoes, e necessario criar os header (ver diretorio include/<resolucao>)
-- A resolucao padrao e TQ0126L028;
-- Cada um dos processos pode ser compilado individualmente utilizando os comandos "make comp=pgi / make comp=pgi clean"
+Observações:
+- As bibliotecas e executáveis ficam armazenados dentro de cada uma das pastas dos processos;
+- Os executáveis e bibliotecas das EOFs (de cada variavel) são criados diretamente dentro de eof/bin/<resolucao>;
+- Para uso com outras resoluções, é necessário criar os arquivos de configuração (ver diretorio include/<resolucao>);
+- A resolução padrao é TQ0126L028;
+- Cada um dos processos pode ser compilado individualmente utilizando os comandos "make comp=pgi / make comp=pgi clean";
 - Caso seja necessário alterar a resolução do modelo, todos os processos do método de perturbação devem ser recompilados
   para aquela resolução. Altere a resolução no arquivo config/Makefile.comf.pgi. Neste caso, o modelo não precisará ser
   recompilado.
 
 Uso:
-- Seguir o algoritmo do scritp run/ciclo_spcon.ksh.
+- Seguir o algorítmo do scritp run/ciclo_spcon.ksh.
 
-Outras informacoes:
+Outras informações:
 
 - Em 24/02/2016
 
-A compilacao das rotinas de perturbacao para o SPCON foi feita no seguinte ambiente:
+A compilação das rotinas de perturbação para o SPCON foi feita no seguinte ambiente:
 - eslogin06
 Currently Loaded Modulefiles:
   1) modules/3.2.6.6                           14) udreg/2.3.1-1.0400.3778.7.3.gem
@@ -67,7 +67,7 @@ Currently Loaded Modulefiles:
 
 - Em 15/10/2015
 
-Devido a problemas de realizacao do MCGA, o modelo foi recompilado com o PGI na eslogin01. Os demais processos cntinuam compilados com o compilador da Cray.
+Devido a problemas de realização do MCGA, o modelo foi recompilado com o PGI na eslogin01. Os demais processos continuam compilados com o compilador da Cray.
 - eslogin01
 Currently Loaded Modulefiles:
   1) modules/3.2.6.6                           14) xt-asyncpe/5.14
@@ -86,7 +86,7 @@ Currently Loaded Modulefiles:
 
 - Em 14/10/2015
 
-Ambiente de compilacao do MCGA (pre/model/pos):
+Ambiente de compilação do MCGA (pre/model/pos):
 - eslogin01
 Currently Loaded Modulefiles:
   1) modules/3.2.6.6                           15) acml/5.1.0
@@ -104,4 +104,4 @@ Currently Loaded Modulefiles:
  13) udreg/2.3.1-1.0400.4264.3.1.gem           27) admin-modules/1.0.2-1.0400.31284.2.2.gem
  14) xt-libsci/11.1.01                         28) Base-opts/1.0.2-1.0400.31284.2.2.gem
 
-Ultima atualizacao: carlos.frederico@cptec.inpe.br (14/11/2017)
+Ultima atualização: carlos.frederico@cptec.inpe.br (22/04/2019)
