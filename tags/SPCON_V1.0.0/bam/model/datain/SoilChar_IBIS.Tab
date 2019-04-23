@@ -1,0 +1,48 @@
+Soil  BEE   PhiSat   SatCo    Poros   Slope  Wopt(%)  Skew   RespSat
+ 1   1.700  -0.077 5.833E-05  0.437   0.176  59.653   0.354   0.508
+ 2   2.100  -0.094 1.697E-05  0.437   0.176  60.080   0.357   0.513
+ 3   3.100  -0.157 7.194E-06  0.453   0.176  61.120   0.362   0.525
+ 4   4.500  -0.111 3.666E-06  0.463   0.176  61.725   0.363   0.533
+ 5   4.700  -0.214 1.888E-06  0.501   0.176  60.501   0.360   0.518
+ 6   4.000  -0.284 1.194E-06  0.398   0.176  62.701   0.359   0.545
+ 7   5.200  -0.262 6.388E-07  0.464   0.176  64.533   0.328   0.570
+ 8   6.660  -0.338 4.166E-07  0.471   0.176  66.520   0.232   0.600
+ 9   6.000  -0.299 3.330E-07  0.430   0.176  66.363   0.243   0.598
+10   7.900  -0.341 2.500E-07  0.479   0.176  66.363   0.243   0.598
+11   7.600  -0.374 1.660E-07  0.475   0.176  66.675   0.221   0.603
+12   7.600  -0.378 1.000E-05  0.800   0.176  69.920   0.255   0.663
+13   7.600  -0.358 9.216E-07  0.489   0.176  59.000   0.347   0.500
+wrapper does not read beyond this line
+
+The soil texture catagories are (based on the 12 USDA classes):
+
+Soil  Name            % clay  % sand
+ 1    sand               3       92
+ 2    loamy sand         5       82
+ 3    sandy loam         10      65
+ 4    silt loam          13      22
+ 5    silt               7       7
+ 6    loam               18      42
+ 7    sandy clay loam    28      58
+ 8    sandy clay         40      52
+ 9    clay loam          39      32
+10    silty clay loam    39      10
+11    silty clay         41      7
+12    clay               65      19
+13    clay               65      19
+
+Soil properties based on the approximate centroid of the soil texture 
+catagory within the USDA texture triangle.
+
+Modifications:
+  Kevin Schaefer added respiration variables (Wopt, skew, RespSat) 
+    using curve fits based on data from Raich et al., 1991 (6/19/00)
+  Kevin Schaefer updated table using centroid % clay/sand (3/30/01)
+,SoilVar%BEE   , &
+SoilVar%PhiSat ,&
+SoilVar%SatCo  ,&
+SoilVar%poros  ,&
+SoilVar%Slope  ,&
+SoilVar%Wopt   ,&
+SoilVar%Skew   ,&
+SoilVar%RespSat

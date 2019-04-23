@@ -1,0 +1,55 @@
+#!/bin/ksh -x
+#********************************************************#
+#                                                        #
+#     Name:     eoftem.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               the humidity eof                         #
+#                                                        #
+#     Date:        January  30th, 2000                   #
+#     Last change: January  30th, 2000                   #
+#                                                        #
+#********************************************************#
+#
+echo "EOFT           -x-  RUNNING ..."
+#    Set directories:
+#
+source=HOME_suite/eofhumi/source
+bin=$SC1_suite/eof/bin/$TRUNC$LEV;mkdir -p ${bin}
+input=$SC2_suite/eof/datain;mkdir -p ${input}
+out=$HOME_suite/eof/dataout/$TRUNC$LEV;mkdir -p ${out}
+inp=$SC1_suite/eof/datain;mkdir -p ${inp}
+outp=$SC1_suite/eofhumi/output;mkdir -p ${outp}
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f eofhum.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f eofhum.mk clean
+make -f eofhum.mk
+exit
+  fi
+#
+cd $bin
+cp -v eofhum.$TRUNC$LEV eofhum.$TRUNC$LEV.${NUM}${LABELI}
+#
+echo "./eofhum.$TRUNC$LEV.${NUM}${LABELI} < $inp/eofhum${REGE}${NUM}${LABELI}.nml > $outp/eofhum.$LABELI.$HOUR.$TRUNC$LEV"
+./eofhum.$TRUNC$LEV.${NUM}${LABELI} < $inp/eofhum${REGE}${NUM}${LABELI}.nml > $outp/eofhum${REGE}.$LABELI.$HOUR.$TRUNC$LEV
+#
+#
