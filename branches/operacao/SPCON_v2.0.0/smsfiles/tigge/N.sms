@@ -1,0 +1,82 @@
+%include <head.h>
+%include <date.h>
+
+if [ %TASK% = "NMC" ]; then
+	PREFX=NMC
+else
+	PREFX=$(echo %FAMILY1%%TASK%)
+fi
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% ${PREFX}
+LABELI=$SMSDATEHH
+
+if [ ${LABELI:8:2} -eq 06 -o ${LABELI:8:2} -eq 18 ]; then
+%include <tail.h>
+fi
+
+if [ "${PREFX}" = "AVN" -o "${PREFX}" = "NMC" ]; then
+      membnum=000
+      LBALEI=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 12 hours" +"%%Y%%m%%d%%H")
+fi
+if [ "${PREFX}" = "01N" ]; then
+      membnum=001
+fi
+if [ "${PREFX}" = "02N" ]; then
+      membnum=002
+fi
+if [ "${PREFX}" = "03N" ]; then
+      membnum=003
+fi
+if [ "${PREFX}" = "04N" ]; then
+      membnum=004
+fi
+if [ "${PREFX}" = "05N" ]; then
+      membnum=005
+fi
+if [ "${PREFX}" = "06N" ]; then
+      membnum=006
+fi
+if [ "${PREFX}" = "07N" ]; then
+      membnum=007
+fi
+if [ "${PREFX}" = "01P" ]; then
+      membnum=008
+fi
+if [ "${PREFX}" = "02P" ]; then
+      membnum=009
+fi
+if [ "${PREFX}" = "03P" ]; then
+      membnum=010
+fi
+if [ "${PREFX}" = "04P" ]; then
+      membnum=011
+fi
+if [ "${PREFX}" = "05P" ]; then
+      membnum=012
+fi
+if [ "${PREFX}" = "06P" ]; then
+      membnum=013
+fi
+if [ "${PREFX}" = "07P" ]; then
+      membnum=014
+fi
+
+set +e
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/tigge/dataout/%RESOL%/${LABELI}/${membnum} tigge 503342641
+if [ $? -eq 0 ]; then
+   smslabel Info "Ok: ${LABELI}"
+%include <tail.h>
+fi
+set -e
+
+smslabel Info "Fazendo Rodada: ${LABELI}"
+exec=runtigge.bash
+
+echo ./${exec} $TRC $LV ${LABELI} ${PREFX}
+./${exec} $TRC $LV ${LABELI} ${PREFX}
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/tigge/dataout/%RESOL%/${LABELI}/ tigge 503342641
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/tigge/dataout/%RESOL%/${LABELI}/ tigge 503342641
+
+%include <tail.h>

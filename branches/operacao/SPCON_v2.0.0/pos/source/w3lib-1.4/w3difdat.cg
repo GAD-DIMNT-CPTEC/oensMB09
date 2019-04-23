@@ -1,0 +1,31 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  w3difdat.f
+       !        File                  :  w3difdat.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    2.       
+    2.       subroutine w3difdat( jdat, idat, it, rinc )
+   50.       $LCS_jdat_0 = loc( jdat )
+   50.       $t_S1 = iw3jdn( 0[$LCS_jdat_0,0], 1[$LCS_jdat_0,0], 2[$LCS_jdat_0,0] )
+   51.       $LCS_idat_1 = loc( idat )
+   51.       $t_S0 = iw3jdn( 0[$LCS_idat_1,0], 1[$LCS_idat_1,0], 2[$LCS_idat_1,0] )
+   50.       0[loc( rinc1 ),0] = real( $t_S1 - $t_S0 )
+   52.       !  === Begin Short Vector Loop ===
+   52.       1[loc( rinc1 ):4:1] = real( 4[loc( jdat ):4:1] - 4[loc( idat ):4:1] )
+   52.       !  === End Short Vector Loop ===
+   53.       call w3reddat( 0[loc( it ),0], 0[loc( rinc1 ),0], 0[loc( rinc ),0] )
+   55.       return
+   55.       end
+   55.       

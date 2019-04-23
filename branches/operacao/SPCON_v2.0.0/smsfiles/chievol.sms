@@ -1,0 +1,14 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+echo ./runchievol.bash ${TRC} ${LV} ${LABELI} NMC
+./runchievol.bash ${TRC} ${LV} ${LABELI} NMC
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/chievol/dataout/%RESOL%/${LABELI}/ 2 0
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/chievol/dataout/%RESOL%/${LABELI}/ 2 0
+
+%include <tail.h>

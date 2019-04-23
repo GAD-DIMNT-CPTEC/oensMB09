@@ -1,0 +1,22 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+set +e
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/prcmed/dataout/%RESOL%/${LABELI}/gif/ png 1000
+if [ $? -eq 0 ]; then
+   smslabel Info "Ok: ${LABELI}"
+%include <tail.h>
+fi
+set -e
+
+echo ./runprcmed.bash ${TRC} ${LV} ${LABELI} NMC
+./runprcmed.bash ${TRC} ${LV} ${LABELI} NMC
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/prcmed/dataout/%RESOL%/${LABELI}/gif/ png 10
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/prcmed/dataout/%RESOL%/${LABELI}/gif/ png 10
+
+%include <tail.h>

@@ -1,0 +1,1110 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  FileAccess.f90
+       !        File                  :  FileAccess.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   32.       
+   32.       subroutine initfiles
+   49.       if ( int( substr[req,0:1] ) == 101 ) then
+   50.          substr[dirctl,0:128] = '/forecast/ETA'
+   51.          substr[namep,0:7] = 'GPOSETA'
+   51.       else
+   53.          substr[dirctl,0:128] = //( '/forecast/', substr[prefx,0:3] )
+   54.          substr[namep,0:7] = //( 'GPOS', substr[prefx,0:3] )
+   54.       endif
+   54.       $SW_req_V0 = int( substr[req,0:1] )
+   57.       switch( 1 + -99 + $SW_req_V0 )
+   57.       
+   58.          case 14 :
+   58.             substr[rfd,0:7] = 'rfd.pnt'
+   59.             substr[extp,0:5] = 'P.unf'
+   60.             substr[exdp,0:5] = 'P.ctl'
+   62.          case 17 :
+   62.             substr[rfd,0:7] = 'rfd.sfc'
+   63.             substr[extp,0:5] = 'S.unf'
+   64.             substr[exdp,0:5] = 'S.ctl'
+   66.          case 1 :
+   66.             substr[rfd,0:7] = 'rfd.clm'
+   67.             substr[extp,0:5] = 'C.unf'
+   68.             substr[exdp,0:5] = 'C.ctl'
+   70.          case 3 :
+   70.             substr[rfd,0:7] = 'rfd.clm'
+   71.             substr[extp,0:5] = 'E.unf'
+   72.             substr[exdp,0:5] = 'E.ctl'
+   74.          case 18 :
+   74.          case 15 : 16 :
+   74.          case 4 : 13 :
+   74.          case 2 :
+   74.          case 0 :
+   74.             substr[rfd,0:7] = 'rfd    '
+   75.             substr[extp,0:5] = 'D.unf'
+   76.             substr[exdp,0:5] = 'D.ctl'
+   79.       0[loc( id ),0] = max( 1, _ltrim( substr[dirctl,0:128] ) )
+   81.       substr[moddir,0:33] = //( 'GFCT', //( substr[prefx,0:3], //( substr[labeli,0:10], //( substr[labelf,0:10], 'F.dir.' ) ) ) )
+   82.       substr[modfls,0:128] = //( substr[datain,0:_ltrim( substr[datain,0:128] )], //( '/', //( substr[moddir,0:33], //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.files' ) ) ) ) )
+   83.       $CS_id_0 = loc( id )
+   83.       2[$CS_id_0,0] = max( 1, _ltrim( substr[modfls,0:128] ) )
+   85.       0[loc( t$56 ),0].L = 0x100000000000000L
+   85.       1[loc( t$56 ),0].L = 0
+   85. !dir$ suppress substr[modfls,0:max( 0, 2[loc( id ),0] )]
+   85.       $MR_im_S1 = 2[$CS_id_0,0]
+   85.       $LCS_0 = max( 0, $MR_im_S1 )
+   85.       2[loc( t$56 ),0].L = int( loc( substr[modfls,0:$LCS_0] ), 8 )
+   85.       3[loc( t$56 ),0].L = $LCS_0
+   85.       4[loc( t$56 ),0].L = 0
+   85.       5[loc( t$56 ),0].L = 0
+   85. !dir$ suppress lex
+   85.       6[loc( t$56 ),0].L = int( loc( lex ), 8 )
+   85.       7[loc( t$56 ),0].L = 0
+   85.       8[loc( t$56 ),0].L = 0
+   85.       9[loc( t$56 ),0].L = 0
+   85.       10[loc( t$56 ),0].L = 0
+   85.       12[loc( t$56 ),0].L = 0
+   85.       14[loc( t$56 ),0].L = 0
+   85.       16[loc( t$56 ),0].L = 0
+   85.       18[loc( t$56 ),0].L = 0
+   85.       20[loc( t$56 ),0].L = 0
+   85.       22[loc( t$56 ),0].L = 0
+   85.       24[loc( t$56 ),0].L = 0
+   85.       25[loc( t$56 ),0].L = 0
+   85.       26[loc( t$56 ),0].L = 0
+   85.       28[loc( t$56 ),0].L = 0
+   85.       30[loc( t$56 ),0].L = 0
+   85.       32[loc( t$56 ),0].L = 0
+   85.       34[loc( t$56 ),0].L = 0
+   85.       36[loc( t$56 ),0].L = 0
+   85.       38[loc( t$56 ),0].L = 0
+   85.       40[loc( t$56 ),0].L = 0
+   85.       42[loc( t$56 ),0].L = 0
+   85.       43[loc( t$56 ),0].L = 0x2000500000000L
+   85.       44[loc( t$56 ),0].L = 0
+   85.       45[loc( t$56 ),0].L = 0
+   85.       46[loc( t$56 ),0].L = 0
+   85.       47[loc( t$56 ),0].L = 0
+   85.       48[loc( t$56 ),0].L = 0
+   85.       49[loc( t$56 ),0].L = 0
+   85.       51[loc( t$56 ),0].L = 0
+   85.       53[loc( t$56 ),0].L = 0
+   85.       55[loc( t$56 ),0].L = 0
+   85.       56[loc( t$56 ),0].L = 0
+   85.       57[loc( t$56 ),0].L = 0
+   85.       59[loc( t$56 ),0].L = 0
+   85.       60[loc( t$56 ),0].L = 0
+   85.       61[loc( t$56 ),0].L = 0
+   85.       62[loc( t$56 ),0].L = 0
+   85.       63[loc( t$56 ),0].L = 0
+   85.       65[loc( t$56 ),0].L = 0
+   85.       67[loc( t$56 ),0].L = 0
+   85.       68[loc( t$56 ),0].L = 0
+   85.       69[loc( t$56 ),0].L = 0
+   85.       t$55 = _inquire( t$56 )
+   86.       if ( lex == .false. ) then
+   87.          _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O4 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StaticIolist_O5 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+   88.          t$59 = int( _alloc( max( 0, 5 + max( 0, 2[$CS_id_0,0] ) ) ), 8 )
+   88.          $MR_im_S2 = 2[$CS_id_0,0]
+   88.          $CS_1 = max( 0, $MR_im_S2 )
+   88.          $LCS_2 = max( 0, 5 + $CS_1 )
+   88.          substr[0,t$59:$LCS_2] = //( 'FILE=', substr[modfls,0:$CS_1] )
+   88.          $_StackIolist_O10 = $_StaticIolist_O9
+   88.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O10 ),0].L ) ), 8 ),0].L = loc( substr[0,t$59:$LCS_2] )
+   88.          _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O8 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O10 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+   88.          _free( t$59 )
+   89.          substr[t$60,0:4] = ' '
+   89.          call _stop( substr[t$60,0:1] )
+   89.       else
+   92.          ios = 0
+   91.          t$62 = 16[loc( nfbeg ),0]
+   92.          substr[t$63,0:4] = 'OLD'
+   91.          substr[t$64,0:10] = 'SEQUENTIAL'
+   91.          substr[t$65,0:9] = 'FORMATTED'
+   92.          substr[t$66,0:4] = 'READ'
+   91.          0[loc( t$67 ),0].L = 0x100000000000000L
+   91. !dir$ suppress t$62
+   91.          1[loc( t$67 ),0].L = int( loc( t$62 ), 8 )
+   91. !dir$ suppress ios
+   91.          2[loc( t$67 ),0].L = int( loc( ios ), 8 )
+   91.          3[loc( t$67 ),0].L = 0
+   91. !dir$ suppress substr[modfls,0:_ltrim( substr[modfls,0:max( 0, 2[loc( id ),0] )] )]
+   91.          4[loc( t$67 ),0].L = int( loc( substr[modfls,0:_ltrim( substr[modfls,0:max( 0, 2[$CS_id_0,0] )] )] ), 8 )
+   91.          5[loc( t$67 ),0].L = _ltrim( substr[modfls,0:max( 0, 2[$CS_id_0,0] )] )
+   91. !dir$ suppress substr[t$63,0:3]
+   91.          6[loc( t$67 ),0].L = int( loc( substr[t$63,0:3] ), 8 )
+   91.          7[loc( t$67 ),0].L = 3
+   91. !dir$ suppress substr[t$64,0:10]
+   91.          8[loc( t$67 ),0].L = int( loc( substr[t$64,0:10] ), 8 )
+   91.          9[loc( t$67 ),0].L = 10
+   91. !dir$ suppress substr[t$65,0:9]
+   91.          10[loc( t$67 ),0].L = int( loc( substr[t$65,0:9] ), 8 )
+   91.          11[loc( t$67 ),0].L = 9
+   91.          12[loc( t$67 ),0].L = 0
+   91.          13[loc( t$67 ),0].L = 0
+   91.          15[loc( t$67 ),0].L = 0
+   91. !dir$ suppress substr[t$66,0:4]
+   91.          17[loc( t$67 ),0].L = int( loc( substr[t$66,0:4] ), 8 )
+   91.          18[loc( t$67 ),0].L = 4
+   91.          19[loc( t$67 ),0].L = 0
+   91.          21[loc( t$67 ),0].L = 0
+   91.          23[loc( t$67 ),0].L = 0x2000200000000L
+   91.          24[loc( t$67 ),0].L = 0
+   91.          26[loc( t$67 ),0].L = 0
+   91.          28[loc( t$67 ),0].L = 0
+   91.          30[loc( t$67 ),0].L = 0
+   91.          32[loc( t$67 ),0].L = 0
+   91.          34[loc( t$67 ),0].L = 0
+   91.          t$61 = _open( t$67 )
+   94.          $ios_S3 = ios
+   94.          if ( $ios_S3 /= 0 ) then
+   95.             $MR_nferr_S4 = 8[loc( nfbeg ),0]
+   95.             $Unit_temp_O0 = $MR_nferr_S4
+   95.             $_StackCntrl_O12 = $_StaticCntrl_O11
+   95.             $MR_StackCntrl_S5 = loc( $Unit_temp_O0 )
+   95.             1[loc( $_StackCntrl_O12 ),0].L = $MR_StackCntrl_S5
+   95.             $_StackIolist_O15 = $_StaticIolist_O13
+   95.             0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O15 ),0].L ) ), 8 ),0].L = loc( substr[modfls,0:_ltrim( substr[modfls,0:128] )] )
+   95.             0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O15 ),0].L ) ), 8 ),0].L = loc( ios )
+   95.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O12 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O15 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+   98.             substr[t$68,0:14] = ' ** (Error) **'
+   98.             call _stop( substr[t$68,0:14] )
+   98.          else
+  111.             $CS_nfbeg_2 = loc( nfbeg )
+  111.             $MR_nfbeg_S6 = 0[$CS_nfbeg_2,0]
+  111.             if ( _lsh( $MR_nfbeg_S6 - 12[$CS_nfbeg_2,0], 1 ) > 0 ) then
+  112.                $I_L112_S8 = 0
+  113.                $LIS_E1 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O19 ),0].L ) ), 8 )
+  113.                do
+  113.                   $Unit_temp_O1 = 16[$CS_nfbeg_2,0]
+  113.                   $_StackCntrl_O12 = $_StaticCntrl_O17
+  113.                   $MR_StackCntrl_S7 = loc( $Unit_temp_O1 )
+  113.                   1[loc( $_StackCntrl_O12 ),0].L = $MR_StackCntrl_S7
+  113.                   $_StackIolist_O19 = $_StaticIolist_O18
+  113.                   0[$LIS_E1,0].L = loc( substr[skip,0:1] )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StackCntrl_O12 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O19 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  114.                   $I_L112_S8 = 1 + $I_L112_S8
+  114.                   if ( $I_L112_S8 >= _lsh( 0[$CS_nfbeg_2,0] - 12[$CS_nfbeg_2,0], 1 ) ) exit
+  114.                enddo
+  114.             endif
+  117.             $MR_nfbeg_S9 = 0[$CS_nfbeg_2,0]
+  117.             if ( $MR_nfbeg_S9 > 0 ) then
+  115.                goto 10
+  117.             else if ( 6[$CS_nfbeg_2,0] <= 0 ) then
+  118.                substr[posctl,0:33] = //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelf,0:10], //( substr[exdp,0:2], 'icn.' ) ) ) )
+  118.             else
+  118.    10          continue
+  120.                substr[posctl,0:33] = //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelf,0:10], //( substr[exdp,0:2], 'fct.' ) ) ) )
+  120.             endif
+  129.             ios = 0
+  127.             t$62 = 20[$CS_nfbeg_2,0]
+  127.             t$73 = 5 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[posctl,0:33] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  127.             t$75 = int( _alloc( max( 0, t$73 ) ), 8 )
+  127.             $CS_4 = max( 0, t$73 )
+  127.             substr[0,t$75:$CS_4] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[posctl,0:_ltrim( substr[posctl,0:33] )], //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.lst' ) ) ) ) )
+  129.             substr[t$76,0:7] = 'REPLACE'
+  128.             substr[t$77,0:10] = 'SEQUENTIAL'
+  128.             substr[t$78,0:9] = 'FORMATTED'
+  128.             substr[t$79,0:5] = 'WRITE'
+  127.             0[loc( t$80 ),0].L = 0x100000000000000L
+  127. !dir$ suppress t$62
+  127.             1[loc( t$80 ),0].L = int( loc( t$62 ), 8 )
+  127. !dir$ suppress ios
+  127.             2[loc( t$80 ),0].L = int( loc( ios ), 8 )
+  127.             3[loc( t$80 ),0].L = 0
+  127. !dir$ suppress substr[0,t$75:max( 0, t$73 )]
+  127.             4[loc( t$80 ),0].L = int( loc( substr[0,t$75:$CS_4] ), 8 )
+  127.             5[loc( t$80 ),0].L = $CS_4
+  127. !dir$ suppress substr[t$76,0:7]
+  127.             6[loc( t$80 ),0].L = int( loc( substr[t$76,0:7] ), 8 )
+  127.             7[loc( t$80 ),0].L = 7
+  127. !dir$ suppress substr[t$77,0:10]
+  127.             8[loc( t$80 ),0].L = int( loc( substr[t$77,0:10] ), 8 )
+  127.             9[loc( t$80 ),0].L = 10
+  127. !dir$ suppress substr[t$78,0:9]
+  127.             10[loc( t$80 ),0].L = int( loc( substr[t$78,0:9] ), 8 )
+  127.             11[loc( t$80 ),0].L = 9
+  127.             12[loc( t$80 ),0].L = 0
+  127.             13[loc( t$80 ),0].L = 0
+  127.             15[loc( t$80 ),0].L = 0
+  127. !dir$ suppress substr[t$79,0:5]
+  127.             17[loc( t$80 ),0].L = int( loc( substr[t$79,0:5] ), 8 )
+  127.             18[loc( t$80 ),0].L = 5
+  127.             19[loc( t$80 ),0].L = 0
+  127.             21[loc( t$80 ),0].L = 0
+  127.             23[loc( t$80 ),0].L = 0x2000200000000L
+  127.             24[loc( t$80 ),0].L = 0
+  127.             26[loc( t$80 ),0].L = 0
+  127.             28[loc( t$80 ),0].L = 0
+  127.             30[loc( t$80 ),0].L = 0
+  127.             32[loc( t$80 ),0].L = 0
+  127.             34[loc( t$80 ),0].L = 0
+  127.             t$72 = _open( t$80 )
+  127.             _free( t$75 )
+  131.             $ios_S10 = ios
+  131.             if ( $ios_S10 /= 0 ) then
+  132.                t$81 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  133.                t$83 = int( _alloc( max( 0, t$81 ) ), 8 )
+  133.                $LCS_6 = max( 0, t$81 )
+  133.                substr[0,t$83:$LCS_6] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[posctl,0:33], //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.lst' ) ) ) ) )
+  132.                $MR_nferr_S11 = 8[loc( nfbeg ),0]
+  132.                $Unit_temp_O2 = $MR_nferr_S11
+  132.                $_StackCntrl_O12 = $_StaticCntrl_O20
+  132.                $MR_StackCntrl_S12 = loc( $Unit_temp_O2 )
+  132.                1[loc( $_StackCntrl_O12 ),0].L = $MR_StackCntrl_S12
+  132.                $_StackIolist_O23 = $_StaticIolist_O21
+  132.                0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O23 ),0].L ) ), 8 ),0].L = loc( substr[0,t$83:$LCS_6] )
+  132.                0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O23 ),0].L ) ), 8 ),0].L = loc( ios )
+  132.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O12 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O23 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  133.                _free( t$83 )
+  135.                substr[t$84,0:14] = ' ** (Error) **'
+  135.                call _stop( substr[t$84,0:14] )
+  135.             else
+  141.                ios = 0
+  140.                t$62 = 24[loc( nfbeg ),0]
+  140.                t$86 = 8 + ( _ltrim( substr[datalib,0:128] ) )
+  140.                t$88 = int( _alloc( max( 0, t$86 ) ), 8 )
+  140.                $CS_5 = max( 0, t$86 )
+  140.                substr[0,t$88:$CS_5] = //( substr[datalib,0:_ltrim( substr[datalib,0:128] )], //( '/', substr[rfd,0:7] ) )
+  141.                substr[t$89,0:4] = 'OLD'
+  141.                substr[t$90,0:10] = 'SEQUENTIAL'
+  140.                substr[t$91,0:9] = 'FORMATTED'
+  141.                substr[t$92,0:4] = 'READ'
+  140.                0[loc( t$93 ),0].L = 0x100000000000000L
+  140. !dir$ suppress t$62
+  140.                1[loc( t$93 ),0].L = int( loc( t$62 ), 8 )
+  140. !dir$ suppress ios
+  140.                2[loc( t$93 ),0].L = int( loc( ios ), 8 )
+  140.                3[loc( t$93 ),0].L = 0
+  140. !dir$ suppress substr[0,t$88:max( 0, t$86 )]
+  140.                4[loc( t$93 ),0].L = int( loc( substr[0,t$88:$CS_5] ), 8 )
+  140.                5[loc( t$93 ),0].L = $CS_5
+  140. !dir$ suppress substr[t$89,0:3]
+  140.                6[loc( t$93 ),0].L = int( loc( substr[t$89,0:3] ), 8 )
+  140.                7[loc( t$93 ),0].L = 3
+  140. !dir$ suppress substr[t$90,0:10]
+  140.                8[loc( t$93 ),0].L = int( loc( substr[t$90,0:10] ), 8 )
+  140.                9[loc( t$93 ),0].L = 10
+  140. !dir$ suppress substr[t$91,0:9]
+  140.                10[loc( t$93 ),0].L = int( loc( substr[t$91,0:9] ), 8 )
+  140.                11[loc( t$93 ),0].L = 9
+  140.                12[loc( t$93 ),0].L = 0
+  140.                13[loc( t$93 ),0].L = 0
+  140.                15[loc( t$93 ),0].L = 0
+  140. !dir$ suppress substr[t$92,0:4]
+  140.                17[loc( t$93 ),0].L = int( loc( substr[t$92,0:4] ), 8 )
+  140.                18[loc( t$93 ),0].L = 4
+  140.                19[loc( t$93 ),0].L = 0
+  140.                21[loc( t$93 ),0].L = 0
+  140.                23[loc( t$93 ),0].L = 0x2000200000000L
+  140.                24[loc( t$93 ),0].L = 0
+  140.                26[loc( t$93 ),0].L = 0
+  140.                28[loc( t$93 ),0].L = 0
+  140.                30[loc( t$93 ),0].L = 0
+  140.                32[loc( t$93 ),0].L = 0
+  140.                34[loc( t$93 ),0].L = 0
+  140.                t$85 = _open( t$93 )
+  140.                _free( t$88 )
+  143.                $ios_S13 = ios
+  143.                if ( $ios_S13 /= 0 ) then
+  144.                   t$94 = 8 + ( _ltrim( substr[datalib,0:128] ) )
+  145.                   t$96 = int( _alloc( max( 0, t$94 ) ), 8 )
+  145.                   $LCS_8 = max( 0, t$94 )
+  145.                   substr[0,t$96:$LCS_8] = //( substr[datalib,0:_ltrim( substr[datalib,0:128] )], //( '/', substr[rfd,0:7] ) )
+  144.                   $MR_nferr_S14 = 8[loc( nfbeg ),0]
+  144.                   $Unit_temp_O3 = $MR_nferr_S14
+  144.                   $_StackCntrl_O12 = $_StaticCntrl_O25
+  144.                   $MR_StackCntrl_S15 = loc( $Unit_temp_O3 )
+  144.                   1[loc( $_StackCntrl_O12 ),0].L = $MR_StackCntrl_S15
+  144.                   $_StackIolist_O28 = $_StaticIolist_O26
+  144.                   0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O28 ),0].L ) ), 8 ),0].L = loc( substr[0,t$96:$LCS_8] )
+  144.                   0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O28 ),0].L ) ), 8 ),0].L = loc( ios )
+  144.                   _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O12 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O28 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  145.                   _free( t$96 )
+  147.                   substr[t$97,0:14] = ' ** (Error) **'
+  147.                   call _stop( substr[t$97,0:14] )
+  147.                endif
+  147.             endif
+  147.          endif
+  147.       endif
+  152.       return
+  152.       end
+  152.       
+  155.       
+  155.       subroutine opnpos( labelp )
+  180.       $MR_nfmdf_S1 = 130[loc( binary ),0]
+  180.       $Unit_temp_O0 = $MR_nfmdf_S1
+  180.       $_StackCntrl_O17 = $_StaticCntrl_O16
+  180.       $MR_StackCntrl_S2 = loc( $Unit_temp_O0 )
+  180.       1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S2
+  180.       3[loc( $_StackCntrl_O17 ),0].L = loc( ierr )
+  180.       $_StackIolist_O19 = $_StaticIolist_O18
+  180.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O19 ),0].L ) ), 8 ),0].L = loc( substr[namfct1,0:256] )
+  180.       t$98 = _frf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O19 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  181.       $ierr_S3 = ierr
+  181.       if ( $ierr_S3 /= 0 ) then
+  182.          $CS_binary_S4 = loc( binary )
+  182.          $MR_nferr_S5 = 122[$CS_binary_S4,0]
+  182.          $Unit_temp_O1 = $MR_nferr_S5
+  182.          $_StackCntrl_O17 = $_StaticCntrl_O21
+  182.          $MR_StackCntrl_S6 = loc( $Unit_temp_O1 )
+  182.          1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S6
+  182.          $_StackIolist_O23 = $_StaticIolist_O22
+  182.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O23 ),0].L ) ), 8 ),0].L = loc( substr[modfls,0:_ltrim( substr[modfls,0:128] )] )
+  182.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O23 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  183.          $MR_nferr_S7 = 122[loc( binary ),0]
+  183.          $Unit_temp_O2 = $MR_nferr_S7
+  183.          $_StackCntrl_O17 = $_StaticCntrl_O24
+  183.          $MR_StackCntrl_S8 = loc( $Unit_temp_O2 )
+  183.          1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S8
+  183.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StaticIolist_O25 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  184.          substr[t$99,0:4] = ' '
+  184.          call _stop( substr[t$99,0:1] )
+  184.       else
+  193.          ios = 0
+  192.          t$101 = 118[loc( binary ),0]
+  193.          substr[t$102,0:4] = 'OLD'
+  193.          substr[t$103,0:10] = 'SEQUENTIAL'
+  192.          substr[t$104,0:9] = 'FORMATTED'
+  193.          substr[t$105,0:4] = 'READ'
+  192.          0[loc( t$106 ),0].L = 0x100000000000000L
+  192. !dir$ suppress t$101
+  192.          1[loc( t$106 ),0].L = int( loc( t$101 ), 8 )
+  192. !dir$ suppress ios
+  192.          2[loc( t$106 ),0].L = int( loc( ios ), 8 )
+  192.          3[loc( t$106 ),0].L = 0
+  192. !dir$ suppress substr[namfct1,0:_ltrim( substr[namfct1,0:256] )]
+  192.          4[loc( t$106 ),0].L = int( loc( substr[namfct1,0:_ltrim( substr[namfct1,0:256] )] ), 8 )
+  192.          5[loc( t$106 ),0].L = _ltrim( substr[namfct1,0:256] )
+  192. !dir$ suppress substr[t$102,0:3]
+  192.          6[loc( t$106 ),0].L = int( loc( substr[t$102,0:3] ), 8 )
+  192.          7[loc( t$106 ),0].L = 3
+  192. !dir$ suppress substr[t$103,0:10]
+  192.          8[loc( t$106 ),0].L = int( loc( substr[t$103,0:10] ), 8 )
+  192.          9[loc( t$106 ),0].L = 10
+  192. !dir$ suppress substr[t$104,0:9]
+  192.          10[loc( t$106 ),0].L = int( loc( substr[t$104,0:9] ), 8 )
+  192.          11[loc( t$106 ),0].L = 9
+  192.          12[loc( t$106 ),0].L = 0
+  192.          13[loc( t$106 ),0].L = 0
+  192.          15[loc( t$106 ),0].L = 0
+  192. !dir$ suppress substr[t$105,0:4]
+  192.          17[loc( t$106 ),0].L = int( loc( substr[t$105,0:4] ), 8 )
+  192.          18[loc( t$106 ),0].L = 4
+  192.          19[loc( t$106 ),0].L = 0
+  192.          21[loc( t$106 ),0].L = 0
+  192.          23[loc( t$106 ),0].L = 0x2000200000000L
+  192.          24[loc( t$106 ),0].L = 0
+  192.          26[loc( t$106 ),0].L = 0
+  192.          28[loc( t$106 ),0].L = 0
+  192.          30[loc( t$106 ),0].L = 0
+  192.          32[loc( t$106 ),0].L = 0
+  192.          34[loc( t$106 ),0].L = 0
+  192.          t$100 = _open( t$106 )
+  195.          $ios_S9 = ios
+  195.          if ( $ios_S9 /= 0 ) then
+  196.             $MR_nferr_S10 = 122[loc( binary ),0]
+  196.             $Unit_temp_O3 = $MR_nferr_S10
+  196.             $_StackCntrl_O17 = $_StaticCntrl_O27
+  196.             $MR_StackCntrl_S11 = loc( $Unit_temp_O3 )
+  196.             1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S11
+  196.             $_StackIolist_O30 = $_StaticIolist_O28
+  196.             0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O30 ),0].L ) ), 8 ),0].L = loc( substr[namfct1,0:_ltrim( substr[namfct1,0:256] )] )
+  196.             0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O30 ),0].L ) ), 8 ),0].L = loc( ios )
+  196.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O30 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  199.             substr[t$107,0:14] = ' ** (Error) **'
+  199.             call _stop( substr[t$107,0:14] )
+  199.          else
+  204.             $CS_binary_S12 = loc( binary )
+  204.             $MR_nfmdf_S13 = 130[$CS_binary_S12,0]
+  204.             $Unit_temp_O4 = $MR_nfmdf_S13
+  204.             $_StackCntrl_O17 = $_StaticCntrl_O32
+  204.             $MR_StackCntrl_S14 = loc( $Unit_temp_O4 )
+  204.             1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S14
+  204.             $_StackIolist_O34 = $_StaticIolist_O33
+  204.             0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O34 ),0].L ) ), 8 ),0].L = loc( substr[namfct2,0:256] )
+  204.             _frf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O34 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  212.             ios = 0
+  211.             t$101 = 124[loc( binary ),0]
+  212.             substr[t$109,0:4] = 'OLD'
+  212.             substr[t$110,0:10] = 'SEQUENTIAL'
+  211.             substr[t$111,0:11] = 'UNFORMATTED'
+  212.             substr[t$112,0:4] = 'READ'
+  211.             0[loc( t$113 ),0].L = 0x100000000000000L
+  211. !dir$ suppress t$101
+  211.             1[loc( t$113 ),0].L = int( loc( t$101 ), 8 )
+  211. !dir$ suppress ios
+  211.             2[loc( t$113 ),0].L = int( loc( ios ), 8 )
+  211.             3[loc( t$113 ),0].L = 0
+  211. !dir$ suppress substr[namfct2,0:_ltrim( substr[namfct2,0:256] )]
+  211.             4[loc( t$113 ),0].L = int( loc( substr[namfct2,0:_ltrim( substr[namfct2,0:256] )] ), 8 )
+  211.             5[loc( t$113 ),0].L = _ltrim( substr[namfct2,0:256] )
+  211. !dir$ suppress substr[t$109,0:3]
+  211.             6[loc( t$113 ),0].L = int( loc( substr[t$109,0:3] ), 8 )
+  211.             7[loc( t$113 ),0].L = 3
+  211. !dir$ suppress substr[t$110,0:10]
+  211.             8[loc( t$113 ),0].L = int( loc( substr[t$110,0:10] ), 8 )
+  211.             9[loc( t$113 ),0].L = 10
+  211. !dir$ suppress substr[t$111,0:11]
+  211.             10[loc( t$113 ),0].L = int( loc( substr[t$111,0:11] ), 8 )
+  211.             11[loc( t$113 ),0].L = 11
+  211.             12[loc( t$113 ),0].L = 0
+  211.             13[loc( t$113 ),0].L = 0
+  211.             15[loc( t$113 ),0].L = 0
+  211. !dir$ suppress substr[t$112,0:4]
+  211.             17[loc( t$113 ),0].L = int( loc( substr[t$112,0:4] ), 8 )
+  211.             18[loc( t$113 ),0].L = 4
+  211.             19[loc( t$113 ),0].L = 0
+  211.             21[loc( t$113 ),0].L = 0
+  211.             23[loc( t$113 ),0].L = 0x2000200000000L
+  211.             24[loc( t$113 ),0].L = 0
+  211.             26[loc( t$113 ),0].L = 0
+  211.             28[loc( t$113 ),0].L = 0
+  211.             30[loc( t$113 ),0].L = 0
+  211.             32[loc( t$113 ),0].L = 0
+  211.             34[loc( t$113 ),0].L = 0
+  211.             t$108 = _open( t$113 )
+  214.             $ios_S15 = ios
+  214.             if ( $ios_S15 /= 0 ) then
+  215.                $MR_nferr_S16 = 122[loc( binary ),0]
+  215.                $Unit_temp_O5 = $MR_nferr_S16
+  215.                $_StackCntrl_O17 = $_StaticCntrl_O35
+  215.                $MR_StackCntrl_S17 = loc( $Unit_temp_O5 )
+  215.                1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S17
+  215.                $_StackIolist_O38 = $_StaticIolist_O36
+  215.                0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O38 ),0].L ) ), 8 ),0].L = loc( substr[namfct2,0:_ltrim( substr[namfct2,0:256] )] )
+  215.                0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O38 ),0].L ) ), 8 ),0].L = loc( ios )
+  215.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O38 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  218.                substr[t$114,0:14] = ' ** (Error) **'
+  218.                call _stop( substr[t$114,0:14] )
+  218.             else
+  223.                $in_S0 = max( 1, _ltrim( substr[namfct1,0:256] ) )
+  224.                $LCS_13_0 = -13 + $in_S0
+  224.                if ( substr[namfct1,$LCS_13_0:2] /= 'ir' ) then
+  224.                   substr[exdp,3:2] = substr[namfct1,$LCS_13_0:2]
+  224.                endif
+  225.                $LCS_1 = $in_S0
+  225.                substr[extp,2:3] = substr[namfct2,-14 + $LCS_1:3]
+  226.                substr[labelp,0:10] = substr[namfct2,-26 + $LCS_1:10]
+  228.                if ( 0[$CS_binary_S12,0] /= .false. ) then
+  230.                   t$115 = 34 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  231.                   t$117 = int( _alloc( max( 0, t$115 ) ), 8 )
+  231.                   $LCS_2 = max( 0, t$115 )
+  231.                   substr[0,t$117:$LCS_2] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], substr[lev,0:_ltrim( substr[lev,0:4] )] ) ) ) ) ) ) ) )
+  230.                   $MR_nfprt_S18 = 136[$CS_binary_S12,0]
+  230.                   $Unit_temp_O6 = $MR_nfprt_S18
+  230.                   $_StackCntrl_O17 = $_StaticCntrl_O40
+  230.                   $MR_StackCntrl_S19 = loc( $Unit_temp_O6 )
+  230.                   1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S19
+  230.                   $_StackIolist_O42 = $_StaticIolist_O41
+  230.                   0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O42 ),0].L ) ), 8 ),0].L = loc( substr[0,t$117:$LCS_2] )
+  230.                   _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O42 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  231.                   _free( t$117 )
+  239.                   ios = 0
+  236.                   t$101 = 132[loc( binary ),0]
+  236.                   t$119 = 34 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  237.                   t$121 = int( _alloc( max( 0, t$119 ) ), 8 )
+  237.                   $CS_2 = max( 0, t$119 )
+  237.                   substr[0,t$121:$CS_2] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], substr[lev,0:_ltrim( substr[lev,0:4] )] ) ) ) ) ) ) ) )
+  239.                   substr[t$122,0:7] = 'REPLACE'
+  238.                   substr[t$123,0:10] = 'SEQUENTIAL'
+  238.                   substr[t$124,0:11] = 'UNFORMATTED'
+  238.                   substr[t$125,0:5] = 'WRITE'
+  236.                   0[loc( t$126 ),0].L = 0x100000000000000L
+  236. !dir$ suppress t$101
+  236.                   1[loc( t$126 ),0].L = int( loc( t$101 ), 8 )
+  236. !dir$ suppress ios
+  236.                   2[loc( t$126 ),0].L = int( loc( ios ), 8 )
+  236.                   3[loc( t$126 ),0].L = 0
+  236. !dir$ suppress substr[0,t$121:max( 0, t$119 )]
+  236.                   4[loc( t$126 ),0].L = int( loc( substr[0,t$121:$CS_2] ), 8 )
+  236.                   5[loc( t$126 ),0].L = $CS_2
+  236. !dir$ suppress substr[t$122,0:7]
+  236.                   6[loc( t$126 ),0].L = int( loc( substr[t$122,0:7] ), 8 )
+  236.                   7[loc( t$126 ),0].L = 7
+  236. !dir$ suppress substr[t$123,0:10]
+  236.                   8[loc( t$126 ),0].L = int( loc( substr[t$123,0:10] ), 8 )
+  236.                   9[loc( t$126 ),0].L = 10
+  236. !dir$ suppress substr[t$124,0:11]
+  236.                   10[loc( t$126 ),0].L = int( loc( substr[t$124,0:11] ), 8 )
+  236.                   11[loc( t$126 ),0].L = 11
+  236.                   12[loc( t$126 ),0].L = 0
+  236.                   13[loc( t$126 ),0].L = 0
+  236.                   15[loc( t$126 ),0].L = 0
+  236. !dir$ suppress substr[t$125,0:5]
+  236.                   17[loc( t$126 ),0].L = int( loc( substr[t$125,0:5] ), 8 )
+  236.                   18[loc( t$126 ),0].L = 5
+  236.                   19[loc( t$126 ),0].L = 0
+  236.                   21[loc( t$126 ),0].L = 0
+  236.                   23[loc( t$126 ),0].L = 0x2000200000000L
+  236.                   24[loc( t$126 ),0].L = 0
+  236.                   26[loc( t$126 ),0].L = 0
+  236.                   28[loc( t$126 ),0].L = 0
+  236.                   30[loc( t$126 ),0].L = 0
+  236.                   32[loc( t$126 ),0].L = 0
+  236.                   34[loc( t$126 ),0].L = 0
+  236.                   t$118 = _open( t$126 )
+  237.                   _free( t$121 )
+  241.                   $ios_S20 = ios
+  241.                   if ( $ios_S20 /= 0 ) then
+  242.                      t$127 = 34 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  244.                      t$129 = int( _alloc( max( 0, t$127 ) ), 8 )
+  244.                      $LCS_4 = max( 0, t$127 )
+  244.                      substr[0,t$129:$LCS_4] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], substr[lev,0:_ltrim( substr[lev,0:4] )] ) ) ) ) ) ) ) )
+  242.                      $MR_nferr_S21 = 122[loc( binary ),0]
+  242.                      $Unit_temp_O7 = $MR_nferr_S21
+  242.                      $_StackCntrl_O17 = $_StaticCntrl_O43
+  242.                      $MR_StackCntrl_S22 = loc( $Unit_temp_O7 )
+  242.                      1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S22
+  242.                      $_StackIolist_O46 = $_StaticIolist_O44
+  242.                      0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O46 ),0].L ) ), 8 ),0].L = loc( substr[0,t$129:$LCS_4] )
+  242.                      0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O46 ),0].L ) ), 8 ),0].L = loc( ios )
+  242.                      _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O46 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  244.                      _free( t$129 )
+  246.                      substr[t$130,0:14] = ' ** (Error) **'
+  246.                      call _stop( substr[t$130,0:14] )
+  246.                   else
+  249.                      t$131 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  250.                      t$133 = int( _alloc( max( 0, t$131 ) ), 8 )
+  250.                      $LCS_5 = max( 0, t$131 )
+  250.                      substr[0,t$133:$LCS_5] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.ctl' ) ) ) ) ) ) ) ) )
+  249.                      $MR_nfprt_S23 = 136[loc( binary ),0]
+  249.                      $Unit_temp_O8 = $MR_nfprt_S23
+  249.                      $_StackCntrl_O17 = $_StaticCntrl_O48
+  249.                      $MR_StackCntrl_S24 = loc( $Unit_temp_O8 )
+  249.                      1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S24
+  249.                      $_StackIolist_O50 = $_StaticIolist_O49
+  249.                      0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O50 ),0].L ) ), 8 ),0].L = loc( substr[0,t$133:$LCS_5] )
+  249.                      _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O50 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  250.                      _free( t$133 )
+  258.                      ios = 0
+  255.                      $MR_nfctl_S25 = 116[loc( binary ),0]
+  255.                      t$101 = $MR_nfctl_S25
+  255.                      t$135 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  256.                      t$137 = int( _alloc( max( 0, t$135 ) ), 8 )
+  256.                      $CS_3 = max( 0, t$135 )
+  256.                      substr[0,t$137:$CS_3] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.ctl' ) ) ) ) ) ) ) ) )
+  258.                      substr[t$138,0:7] = 'REPLACE'
+  257.                      substr[t$139,0:10] = 'SEQUENTIAL'
+  257.                      substr[t$140,0:9] = 'FORMATTED'
+  257.                      substr[t$141,0:5] = 'WRITE'
+  255.                      0[loc( t$142 ),0].L = 0x100000000000000L
+  255. !dir$ suppress t$101
+  255.                      1[loc( t$142 ),0].L = int( loc( t$101 ), 8 )
+  255. !dir$ suppress ios
+  255.                      2[loc( t$142 ),0].L = int( loc( ios ), 8 )
+  255.                      3[loc( t$142 ),0].L = 0
+  255. !dir$ suppress substr[0,t$137:max( 0, t$135 )]
+  255.                      4[loc( t$142 ),0].L = int( loc( substr[0,t$137:$CS_3] ), 8 )
+  255.                      5[loc( t$142 ),0].L = $CS_3
+  255. !dir$ suppress substr[t$138,0:7]
+  255.                      6[loc( t$142 ),0].L = int( loc( substr[t$138,0:7] ), 8 )
+  255.                      7[loc( t$142 ),0].L = 7
+  255. !dir$ suppress substr[t$139,0:10]
+  255.                      8[loc( t$142 ),0].L = int( loc( substr[t$139,0:10] ), 8 )
+  255.                      9[loc( t$142 ),0].L = 10
+  255. !dir$ suppress substr[t$140,0:9]
+  255.                      10[loc( t$142 ),0].L = int( loc( substr[t$140,0:9] ), 8 )
+  255.                      11[loc( t$142 ),0].L = 9
+  255.                      12[loc( t$142 ),0].L = 0
+  255.                      13[loc( t$142 ),0].L = 0
+  255.                      15[loc( t$142 ),0].L = 0
+  255. !dir$ suppress substr[t$141,0:5]
+  255.                      17[loc( t$142 ),0].L = int( loc( substr[t$141,0:5] ), 8 )
+  255.                      18[loc( t$142 ),0].L = 5
+  255.                      19[loc( t$142 ),0].L = 0
+  255.                      21[loc( t$142 ),0].L = 0
+  255.                      23[loc( t$142 ),0].L = 0x2000200000000L
+  255.                      24[loc( t$142 ),0].L = 0
+  255.                      26[loc( t$142 ),0].L = 0
+  255.                      28[loc( t$142 ),0].L = 0
+  255.                      30[loc( t$142 ),0].L = 0
+  255.                      32[loc( t$142 ),0].L = 0
+  255.                      34[loc( t$142 ),0].L = 0
+  255.                      t$134 = _open( t$142 )
+  256.                      _free( t$137 )
+  259.                      $ios_S26 = ios
+  259.                      if ( $ios_S26 /= 0 ) then
+  260.                         t$143 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  262.                         t$145 = int( _alloc( max( 0, t$143 ) ), 8 )
+  262.                         $LCS_7 = max( 0, t$143 )
+  262.                         substr[0,t$145:$LCS_7] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.ctl' ) ) ) ) ) ) ) ) )
+  260.                         $MR_nferr_S27 = 122[loc( binary ),0]
+  260.                         $Unit_temp_O9 = $MR_nferr_S27
+  260.                         $_StackCntrl_O17 = $_StaticCntrl_O51
+  260.                         $MR_StackCntrl_S28 = loc( $Unit_temp_O9 )
+  260.                         1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S28
+  260.                         $_StackIolist_O54 = $_StaticIolist_O52
+  260.                         0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O54 ),0].L ) ), 8 ),0].L = loc( substr[0,t$145:$LCS_7] )
+  260.                         0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O54 ),0].L ) ), 8 ),0].L = loc( ios )
+  260.                         _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O54 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  262.                         _free( t$145 )
+  264.                         substr[t$146,0:14] = ' ** (Error) **'
+  264.                         call _stop( substr[t$146,0:14] )
+  264.                      else
+  270.                         t$147 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dirctl,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  271.                         t$149 = int( _alloc( max( 0, t$147 ) ), 8 )
+  271.                         $LCS_8 = max( 0, t$147 )
+  271.                         substr[0,t$149:$LCS_8] = //( substr[dirctl,0:_ltrim( substr[dirctl,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.ctl' ) ) ) ) ) ) ) ) )
+  270.                         $MR_nfppf_S29 = 134[loc( binary ),0]
+  270.                         $Unit_temp_O10 = $MR_nfppf_S29
+  270.                         $_StackCntrl_O17 = $_StaticCntrl_O56
+  270.                         $MR_StackCntrl_S30 = loc( $Unit_temp_O10 )
+  270.                         1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S30
+  270.                         $_StackIolist_O58 = $_StaticIolist_O57
+  270.                         0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O58 ),0].L ) ), 8 ),0].L = loc( substr[0,t$149:$LCS_8] )
+  270.                         _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O58 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  271.                         _free( t$149 )
+  272.                         t$150 = 34 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dirctl,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  273.                         t$152 = int( _alloc( max( 0, t$150 ) ), 8 )
+  273.                         $LCS_9 = max( 0, t$150 )
+  273.                         substr[0,t$152:$LCS_9] = //( substr[dirctl,0:_ltrim( substr[dirctl,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], substr[lev,0:_ltrim( substr[lev,0:4] )] ) ) ) ) ) ) ) )
+  272.                         $MR_nfppf_S31 = 134[loc( binary ),0]
+  272.                         $Unit_temp_O11 = $MR_nfppf_S31
+  272.                         $_StackCntrl_O17 = $_StaticCntrl_O59
+  272.                         $MR_StackCntrl_S32 = loc( $Unit_temp_O11 )
+  272.                         1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S32
+  272.                         $_StackIolist_O61 = $_StaticIolist_O60
+  272.                         0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O61 ),0].L ) ), 8 ),0].L = loc( substr[0,t$152:$LCS_9] )
+  272.                         _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O61 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  273.                         _free( t$152 )
+  273.                      endif
+  273.                   endif
+  273.                else
+  279.                   t$153 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  280.                   t$155 = int( _alloc( max( 0, t$153 ) ), 8 )
+  280.                   $LCS_10 = max( 0, t$153 )
+  280.                   substr[0,t$155:$LCS_10] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.ctl' ) ) ) ) ) ) ) ) )
+  279.                   $MR_nferr_S33 = 122[$CS_binary_S12,0]
+  279.                   $Unit_temp_O12 = $MR_nferr_S33
+  279.                   $_StackCntrl_O17 = $_StaticCntrl_O62
+  279.                   $MR_StackCntrl_S34 = loc( $Unit_temp_O12 )
+  279.                   1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S34
+  279.                   $_StackIolist_O64 = $_StaticIolist_O63
+  279.                   0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O64 ),0].L ) ), 8 ),0].L = loc( substr[0,t$155:$LCS_10] )
+  279.                   _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O64 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  280.                   _free( t$155 )
+  281.                   $MR_nfctl_S35 = 116[loc( binary ),0]
+  281.                   t$101 = $MR_nfctl_S35
+  281.                   t$157 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  282.                   t$159 = int( _alloc( max( 0, t$157 ) ), 8 )
+  282.                   $CS_4 = max( 0, t$157 )
+  282.                   substr[0,t$159:$CS_4] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.ctl' ) ) ) ) ) ) ) ) )
+  282.                   substr[t$160,0:7] = 'REPLACE'
+  281.                   0[loc( t$161 ),0].L = 0x100000000000000L
+  281. !dir$ suppress t$101
+  281.                   1[loc( t$161 ),0].L = int( loc( t$101 ), 8 )
+  281.                   2[loc( t$161 ),0].L = 0
+  281.                   3[loc( t$161 ),0].L = 0
+  281. !dir$ suppress substr[0,t$159:max( 0, t$157 )]
+  281.                   4[loc( t$161 ),0].L = int( loc( substr[0,t$159:$CS_4] ), 8 )
+  281.                   5[loc( t$161 ),0].L = $CS_4
+  281. !dir$ suppress substr[t$160,0:7]
+  281.                   6[loc( t$161 ),0].L = int( loc( substr[t$160,0:7] ), 8 )
+  281.                   7[loc( t$161 ),0].L = 7
+  281.                   8[loc( t$161 ),0].L = 0
+  281.                   10[loc( t$161 ),0].L = 0
+  281.                   12[loc( t$161 ),0].L = 0
+  281.                   13[loc( t$161 ),0].L = 0
+  281.                   15[loc( t$161 ),0].L = 0
+  281.                   17[loc( t$161 ),0].L = 0
+  281.                   19[loc( t$161 ),0].L = 0
+  281.                   21[loc( t$161 ),0].L = 0
+  281.                   23[loc( t$161 ),0].L = 0
+  281.                   24[loc( t$161 ),0].L = 0
+  281.                   26[loc( t$161 ),0].L = 0
+  281.                   28[loc( t$161 ),0].L = 0
+  281.                   30[loc( t$161 ),0].L = 0
+  281.                   32[loc( t$161 ),0].L = 0
+  281.                   34[loc( t$161 ),0].L = 0
+  281.                   t$156 = _open( t$161 )
+  282.                   _free( t$159 )
+  287.                   t$162 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dirctl,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  288.                   t$164 = int( _alloc( max( 0, t$162 ) ), 8 )
+  288.                   $LCS_12 = max( 0, t$162 )
+  288.                   substr[0,t$164:$LCS_12] = //( substr[dirctl,0:_ltrim( substr[dirctl,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.ctl' ) ) ) ) ) ) ) ) )
+  287.                   $MR_nfppf_S36 = 134[loc( binary ),0]
+  287.                   $Unit_temp_O13 = $MR_nfppf_S36
+  287.                   $_StackCntrl_O17 = $_StaticCntrl_O65
+  287.                   $MR_StackCntrl_S37 = loc( $Unit_temp_O13 )
+  287.                   1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S37
+  287.                   $_StackIolist_O67 = $_StaticIolist_O66
+  287.                   0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O67 ),0].L ) ), 8 ),0].L = loc( substr[0,t$164:$LCS_12] )
+  287.                   _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O67 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  288.                   _free( t$164 )
+  289.                   t$165 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dirctl,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  290.                   t$167 = int( _alloc( max( 0, t$165 ) ), 8 )
+  290.                   $LCS_13 = max( 0, t$165 )
+  290.                   substr[0,t$167:$LCS_13] = //( substr[dirctl,0:_ltrim( substr[dirctl,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.grb' ) ) ) ) ) ) ) ) )
+  289.                   $MR_nfppf_S38 = 134[loc( binary ),0]
+  289.                   $Unit_temp_O14 = $MR_nfppf_S38
+  289.                   $_StackCntrl_O17 = $_StaticCntrl_O68
+  289.                   $MR_StackCntrl_S39 = loc( $Unit_temp_O14 )
+  289.                   1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S39
+  289.                   $_StackIolist_O70 = $_StaticIolist_O69
+  289.                   0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O70 ),0].L ) ), 8 ),0].L = loc( substr[0,t$167:$LCS_13] )
+  289.                   _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O70 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  290.                   _free( t$167 )
+  295.                   t$168 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  296.                   t$170 = int( _alloc( max( 0, t$168 ) ), 8 )
+  296.                   $LCS_14 = max( 0, t$168 )
+  296.                   substr[0,t$170:$LCS_14] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.grb' ) ) ) ) ) ) ) ) )
+  295.                   $MR_nferr_S40 = 122[loc( binary ),0]
+  295.                   $Unit_temp_O15 = $MR_nferr_S40
+  295.                   $_StackCntrl_O17 = $_StaticCntrl_O71
+  295.                   $MR_StackCntrl_S41 = loc( $Unit_temp_O15 )
+  295.                   1[loc( $_StackCntrl_O17 ),0].L = $MR_StackCntrl_S41
+  295.                   $_StackIolist_O73 = $_StaticIolist_O72
+  295.                   0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O73 ),0].L ) ), 8 ),0].L = loc( substr[0,t$170:$LCS_14] )
+  295.                   _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O73 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O20 ) ) )
+  296.                   _free( t$170 )
+  298.                   t$171 = 38 + ( _ltrim( substr[lev,0:4] ) ) + ( _ltrim( substr[dataout,0:128] ) ) + ( _ltrim( substr[trunc,0:6] ) )
+  299.                   t$173 = int( _alloc( max( 0, t$171 ) ), 8 )
+  299.                   $LCS_15 = max( 0, t$171 )
+  299.                   substr[0,t$173:$LCS_15] = //( substr[dataout,0:_ltrim( substr[dataout,0:128] )], //( '/', //( substr[namep,0:7], //( substr[labeli,0:10], //( substr[labelp,0:10], //( substr[extp,0:5], //( '.', //( substr[trunc,0:_ltrim( substr[trunc,0:6] )], //( substr[lev,0:_ltrim( substr[lev,0:4] )], '.grb' ) ) ) ) ) ) ) ) )
+  298.                   $Con_P49 = 51
+  298.                   call baopen( $Con_P49, substr[0,t$173:$LCS_15], ierr )
+  299.                   _free( t$173 )
+  301.                   $ierr_S42 = ierr
+  301.                   if ( $ierr_S42 /= 0 ) then
+  302.                      substr[t$174,0:16] = ' Error in BAOPEN'
+  302.                      call _stop( substr[t$174,0:16] )
+  302.                   endif
+  302.                endif
+  302.             endif
+  302.          endif
+  302.       endif
+  312.       return
+  312.       end
+  312.       
+  315.       
+  315.       subroutine readfield( mdim, ldim, bufa )
+  315.       $CARG_mdim_I0 = 0[loc( mdim ),0]
+  315.       $CARG_ldim_I1 = 0[loc( ldim ),0]
+  315.       t$48 = int( _alloc( _lsh( max( 0, $CARG_mdim_I0 ), 2 ) ), 8 )
+  328.       t$49 = t$48
+  330.       if ( $CARG_ldim_I1 > 0 ) then
+  330.          $I_L330_S7 = 0
+  332.          if ( $CARG_mdim_I0 > 0 ) then
+  332.             $SR_S13 = 0
+  332.             $SR_S10 = 0
+  332.             $LCS_CARG_mdim_0 = $CARG_mdim_I0
+  332.             $LIS_E9 = _lsh( $LCS_CARG_mdim_0, 3 )
+  332.             $LIS_E7 = ( -1 + $CARG_ldim_I1 )
+  333.             $LIS_S8 = $CARG_ldim_I1
+  331.             $LIS_S5 = ( max( 0, $CARG_mdim_I0 ) )
+  331.             $LCS_bufb_1 = loc( 0[t$49,0] )
+  331.             $LIS_S4 = int( $LCS_bufb_1, 8 )
+  331.             $LIS_S3 = pointer to array[1] of real( $LCS_bufb_1 )
+  331.             do
+  331.                $nffct_S1 = nffct
+  331.                $Unit_temp_O0 = $nffct_S1
+  331.                $_StackCntrl_O3 = $_StaticCntrl_O2
+  331.                $MR_StackCntrl_S2 = loc( $Unit_temp_O0 )
+  331.                1[loc( $_StackCntrl_O3 ),0].L = $MR_StackCntrl_S2
+  331.                $_StackDv_P0 = $_StaticDV_P1
+  331.                0[loc( $_StackDv_P0 ),0].L = $LIS_S3
+  331.                1[loc( $_StackDv_P0 ),0].L = 32
+  331.                2[loc( $_StackDv_P0 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P0 ),0].L )
+  331.                23[loc( $_StackDv_P0 )].B = 1
+  331.                4[loc( $_StackDv_P0 ),0].L = $LIS_S4
+  331.                5[loc( $_StackDv_P0 ),0].L = 32
+  331.                21[loc( $_StackDv_P0 )].B = 0
+  331.                6[loc( $_StackDv_P0 ),0] = 0
+  331.                6[loc( $_StackDv_P0 ),0].L = 1
+  331.                7[loc( $_StackDv_P0 ),0].L = $LIS_S5
+  331.                8[loc( $_StackDv_P0 ),0].L = 1
+  331.                $_StackIolist_O5 = $_StaticIolist_O4
+  331.                $MR_StackIolist_S6 = int( loc( $_StackDv_P0 ), 8 )
+  331.                2[loc( $_StackIolist_O5 ),0].L = $MR_StackIolist_S6
+  331.                2[loc( $_StackDv_P0 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P0 ),0].L ) )
+  331.                _fru( pointer to integer (kind=8)( loc( $_StackCntrl_O3 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O5 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O6 ) ) )
+  332.                $F_A33 = $LCS_CARG_mdim_0
+  332.                $I_S12 = 0
+  332.                if ( $F_A33 > $LCS_CARG_mdim_0 ) then
+  332.                   $LB_Y0 = 1
+  332.                   $UB_Y1 = $LCS_CARG_mdim_0
+  332.                   $Subscript_Y2 = 1
+  332.                   $Subscript_Y3 = $F_A33
+  332.                   $Subscript_Y4 = 1
+  332.                   _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+  332.                   $LB_Y0 = 1
+  332.                   $UB_Y1 = $LCS_CARG_mdim_0
+  332.                   $Subscript_Y2 = 1
+  332.                   $Subscript_Y3 = $F_A33
+  332.                   $Subscript_Y4 = 1
+  332.                   _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y46, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y47 )
+  332.                endif
+  332.                if ( $LIS_E7 - $I_L330_S7 < 0 ) then
+  332.                   $LB_Y0 = 1
+  332.                   $UB_Y1 = $LIS_S8
+  332.                   $Subscript_Y5 = 1 + $I_L330_S7
+  332.                   _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y44, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y45 )
+  332.                endif
+  332.                if ( $F_A33 >= 4 ) then
+  332.                   $TC_0 = and( -4, $F_A33 )
+  332.                   $LC_S11 = -$TC_0
+  332.                   $SI_S9 = 0
+  332.                   do
+  332.                      0[loc( bufa ) + $SR_S10 + _lsh( $SI_S9, 3 ):4:1].L = real( 0[t$49 + _lsh( $SI_S9, 2 ):4:1], 8 )
+  332.                      $SI_S9 = 4 + $SI_S9
+  332.                      $LC_S11 = 4 + $LC_S11
+  332.                      if ( $LC_S11 >= 0 ) exit
+  332.                   enddo
+  332.                   $I_S12 = $TC_0
+  332.                endif
+  332.                if ( $F_A33 > $I_S12 ) then
+  332.                   $LIS_E10 = loc( bufa )
+  332.                   do
+  332.                      0[$LIS_E10,$I_S12 + $SR_S13].L = real( 0[t$49,$I_S12], 8 )
+  332.                      $I_S12 = 1 + $I_S12
+  332.                      if ( $I_S12 >= $F_A33 ) exit
+  332.                   enddo
+  332.                endif
+  332.                $SR_S13 = $LCS_CARG_mdim_0 + $SR_S13
+  332.                $SR_S10 = $LIS_E9 + $SR_S10
+  333.                $I_L330_S7 = 1 + $I_L330_S7
+  332.                if ( $I_L330_S7 >= $LIS_S8 ) exit
+  332.             enddo
+  332.          else
+  333.             $LIS_S20 = $CARG_ldim_I1
+  331.             $LIS_S18 = ( max( 0, $CARG_mdim_I0 ) )
+  331.             $LCS_bufb_2 = loc( 0[t$49,0] )
+  331.             $LIS_S17 = int( $LCS_bufb_2, 8 )
+  331.             $LIS_S16 = pointer to array[1] of real( $LCS_bufb_2 )
+  331.             do
+  331.                $nffct_S14 = nffct
+  331.                $Unit_temp_O0 = $nffct_S14
+  331.                $_StackCntrl_O3 = $_StaticCntrl_O2
+  331.                $MR_StackCntrl_S15 = loc( $Unit_temp_O0 )
+  331.                1[loc( $_StackCntrl_O3 ),0].L = $MR_StackCntrl_S15
+  331.                $_StackDv_P0 = $_StaticDV_P1
+  331.                0[loc( $_StackDv_P0 ),0].L = $LIS_S16
+  331.                1[loc( $_StackDv_P0 ),0].L = 32
+  331.                2[loc( $_StackDv_P0 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P0 ),0].L )
+  331.                23[loc( $_StackDv_P0 )].B = 1
+  331.                4[loc( $_StackDv_P0 ),0].L = $LIS_S17
+  331.                5[loc( $_StackDv_P0 ),0].L = 32
+  331.                21[loc( $_StackDv_P0 )].B = 0
+  331.                6[loc( $_StackDv_P0 ),0] = 0
+  331.                6[loc( $_StackDv_P0 ),0].L = 1
+  331.                7[loc( $_StackDv_P0 ),0].L = $LIS_S18
+  331.                8[loc( $_StackDv_P0 ),0].L = 1
+  331.                $_StackIolist_O5 = $_StaticIolist_O4
+  331.                $MR_StackIolist_S19 = int( loc( $_StackDv_P0 ), 8 )
+  331.                2[loc( $_StackIolist_O5 ),0].L = $MR_StackIolist_S19
+  331.                2[loc( $_StackDv_P0 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P0 ),0].L ) )
+  331.                _fru( pointer to integer (kind=8)( loc( $_StackCntrl_O3 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O5 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O6 ) ) )
+  333.                $I_L330_S7 = 1 + $I_L330_S7
+  332.                if ( $I_L330_S7 >= $LIS_S20 ) exit
+  332.             enddo
+  332.          endif
+  332.       endif
+  334.       if ( 10[loc( mend ),0] - $CARG_mdim_I0 == 0 ) then
+  334.          $Con_P10 = -1
+  334.          call transs( 0[loc( ldim ),0], $Con_P10, 0[loc( bufa ),0].L )
+  334.       endif
+  315.       _free( t$48 )
+  336.       return
+  336.       end
+  336.       
+  339.       
+  339.       subroutine readheader( ifday, tod, idate, idatec )
+  353.       $Unit_temp_O0 = nffct
+  353.       $_StackCntrl_O2 = $_StaticCntrl_O1
+  353.       1[loc( $_StackCntrl_O2 ),0].L = loc( $Unit_temp_O0 )
+  353.       $_StackIolist_O4 = $_StaticIolist_O3
+  353.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O4 ),0].L ) ), 8 ),0].L = loc( ifday4 )
+  353.       0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O4 ),0].L ) ), 8 ),0].L = loc( tod4 )
+  353.       $_StackDv_P0 = $_StaticDV_P2
+  353.       $LCS_idate4_0 = loc( 0[loc( idate4 ),0] )
+  353.       0[loc( $_StackDv_P0 ),0].L = pointer to array[1] of integer( $LCS_idate4_0 )
+  353.       1[loc( $_StackDv_P0 ),0].L = 32
+  353.       2[loc( $_StackDv_P0 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P0 ),0].L )
+  353.       23[loc( $_StackDv_P0 )].B = 1
+  353.       4[loc( $_StackDv_P0 ),0].L = int( $LCS_idate4_0, 8 )
+  353.       5[loc( $_StackDv_P0 ),0].L = 32
+  353.       21[loc( $_StackDv_P0 )].B = 0
+  353.       6[loc( $_StackDv_P0 ),0] = 0
+  353.       6[loc( $_StackDv_P0 ),0].L = 1
+  353.       7[loc( $_StackDv_P0 ),0].L = 4
+  353.       8[loc( $_StackDv_P0 ),0].L = 1
+  353.       10[loc( $_StackIolist_O4 ),0].L = int( loc( $_StackDv_P0 ), 8 )
+  353.       $_StackDv_P1 = $_StaticDV_P3
+  353.       $LCS_idatec4_1 = loc( 0[loc( idatec4 ),0] )
+  353.       0[loc( $_StackDv_P1 ),0].L = pointer to array[1] of integer( $LCS_idatec4_1 )
+  353.       1[loc( $_StackDv_P1 ),0].L = 32
+  353.       2[loc( $_StackDv_P1 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P1 ),0].L )
+  353.       23[loc( $_StackDv_P1 )].B = 1
+  353.       4[loc( $_StackDv_P1 ),0].L = int( $LCS_idatec4_1, 8 )
+  353.       5[loc( $_StackDv_P1 ),0].L = 32
+  353.       21[loc( $_StackDv_P1 )].B = 0
+  353.       6[loc( $_StackDv_P1 ),0] = 0
+  353.       6[loc( $_StackDv_P1 ),0].L = 1
+  353.       7[loc( $_StackDv_P1 ),0].L = 4
+  353.       8[loc( $_StackDv_P1 ),0].L = 1
+  353.       14[loc( $_StackIolist_O4 ),0].L = int( loc( $_StackDv_P1 ), 8 )
+  353.       2[loc( $_StackDv_P1 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P1 ),0].L ) )
+  353.       2[loc( $_StackDv_P0 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P0 ),0].L ) )
+  353.       _fru( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O4 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  355.       0[loc( ifday ),0] = ifday4
+  356.       0[loc( tod ),0].L = real( tod4, 8 )
+  357.       !  === Begin Short Vector Loop ===
+  357.       0[loc( idate ):4:1] = 0[loc( idate4 ):4:1]
+  358.       0[loc( idatec ):4:1] = 0[loc( idatec4 ):4:1]
+  357.       !  === End Short Vector Loop ===
+  360.       return
+  360.       end
+  360.       
+  362.       
+  362.       subroutine writefield( ndim, bfr )
+  362.       $CARG_ndim_I0 = 0[loc( ndim ),0]
+  362.       t$52 = int( _alloc( _lsh( max( 0, $CARG_ndim_I0 ), 2 ) ), 8 )
+  369.       t$53 = t$52
+  371.       $LCS_CARG_ndim_0 = $CARG_ndim_I0
+  371.       $F_A33 = $LCS_CARG_ndim_0
+  371.       if ( $CARG_ndim_I0 > 0 ) then !  99.50%
+  371.          $I_S2 = 0
+  371.          if ( $F_A33 > $LCS_CARG_ndim_0 ) then
+  371.             $LB_Y0 = 1
+  371.             $UB_Y1 = $LCS_CARG_ndim_0
+  371.             $Subscript_Y2 = 1
+  371.             $Subscript_Y3 = $F_A33
+  371.             $Subscript_Y4 = 1
+  371.             _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+  371.             $LB_Y0 = 1
+  371.             $UB_Y1 = $CARG_ndim_I0
+  371.             $Subscript_Y2 = 1
+  371.             $Subscript_Y3 = $F_A33
+  371.             $Subscript_Y4 = 1
+  371.             _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y45 )
+  371.          endif
+  371.          if ( $F_A33 >= 4 ) then
+  371.             $TC_0 = and( -4, $F_A33 )
+  371.             $LC_S1 = -$TC_0
+  371.             $SI_S0 = 0
+  371.             do
+  371.                0[t$53 + _lsh( $SI_S0, 2 ):4:1] = real( 0[_lsh( $SI_S0, 3 ) + loc( bfr ):4:1].L )
+  371.                $SI_S0 = 4 + $SI_S0
+  371.                $LC_S1 = 4 + $LC_S1
+  371.                if ( $LC_S1 >= 0 ) exit
+  371.             enddo
+  371.             $I_S2 = $TC_0
+  371.          endif
+  371.          if ( $F_A33 > $I_S2 ) then
+  371.             do
+  371.                0[t$53,$I_S2] = real( 0[loc( bfr ),$I_S2].L )
+  371.                $I_S2 = 1 + $I_S2
+  371.                if ( $I_S2 >= $F_A33 ) exit
+  371.             enddo
+  371.          endif
+  371.       endif
+  372.       $Unit_temp_O0 = nfpos
+  372.       $_StackCntrl_O2 = $_StaticCntrl_O1
+  372.       1[loc( $_StackCntrl_O2 ),0].L = loc( $Unit_temp_O0 )
+  372.       $_StackDv_P0 = $_StaticDV_P1
+  372.       $LCS_bfr4_1 = loc( 0[t$53,0] )
+  372.       0[loc( $_StackDv_P0 ),0].L = pointer to array[1] of real( $LCS_bfr4_1 )
+  372.       1[loc( $_StackDv_P0 ),0].L = 32
+  372.       2[loc( $_StackDv_P0 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P0 ),0].L )
+  372.       23[loc( $_StackDv_P0 )].B = 1
+  372.       4[loc( $_StackDv_P0 ),0].L = int( $LCS_bfr4_1, 8 )
+  372.       5[loc( $_StackDv_P0 ),0].L = 32
+  372.       21[loc( $_StackDv_P0 )].B = 0
+  372.       6[loc( $_StackDv_P0 ),0] = 0
+  372.       6[loc( $_StackDv_P0 ),0].L = 1
+  372.       7[loc( $_StackDv_P0 ),0].L = ( max( 0, $CARG_ndim_I0 ) )
+  372.       8[loc( $_StackDv_P0 ),0].L = 1
+  372.       $_StackIolist_O4 = $_StaticIolist_O3
+  372.       2[loc( $_StackIolist_O4 ),0].L = int( loc( $_StackDv_P0 ), 8 )
+  372.       2[loc( $_StackDv_P0 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P0 ),0].L ) )
+  372.       _fwu( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O4 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  362.       _free( t$52 )
+  374.       return
+  374.       end
+  374.       
+  377.       
+  377.       subroutine skipf( lev )
+  377.       $CARG_lev_I0 = 0[loc( lev ),0]
+  385.       if ( $CARG_lev_I0 > 0 ) then
+  385.          $I_L385_S1 = 0
+  387.          $LIS_E0 = $CARG_lev_I0
+  387.          do
+  386.             $Unit_temp_O0 = nffct
+  386.             $_StackCntrl_O2 = $_StaticCntrl_O1
+  386.             1[loc( $_StackCntrl_O2 ),0].L = loc( $Unit_temp_O0 )
+  386.             _fru( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O3 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  387.             $I_L385_S1 = 1 + $I_L385_S1
+  387.             if ( $I_L385_S1 >= $LIS_E0 ) exit
+  387.          enddo
+  387.       endif
+  389.       return
+  389.       end
+  389.       
+  392.       
+  392.       subroutine closefiles
+  396.       t$182 = 8[loc( nfctl ),0]
+  396.       0[loc( t$183 ),0].L = 0x100000000000000L
+  396. !dir$ suppress t$182
+  396.       1[loc( t$183 ),0].L = int( loc( t$182 ), 8 )
+  396.       2[loc( t$183 ),0].L = 0
+  396.       3[loc( t$183 ),0].L = 0
+  396.       4[loc( t$183 ),0].L = 0
+  396.       6[loc( t$183 ),0].L = 0
+  396.       7[loc( t$183 ),0].L = 0
+  396.       t$181 = _close( t$183 )
+  397.       t$182 = 16[loc( nfctl ),0]
+  397.       0[loc( t$185 ),0].L = 0x100000000000000L
+  397. !dir$ suppress t$182
+  397.       1[loc( t$185 ),0].L = int( loc( t$182 ), 8 )
+  397.       2[loc( t$185 ),0].L = 0
+  397.       3[loc( t$185 ),0].L = 0
+  397.       4[loc( t$185 ),0].L = 0
+  397.       6[loc( t$185 ),0].L = 0
+  397.       7[loc( t$185 ),0].L = 0
+  397.       t$184 = _close( t$185 )
+  398.       t$182 = 0[loc( nfctl ),0]
+  398.       0[loc( t$187 ),0].L = 0x100000000000000L
+  398. !dir$ suppress t$182
+  398.       1[loc( t$187 ),0].L = int( loc( t$182 ), 8 )
+  398.       2[loc( t$187 ),0].L = 0
+  398.       3[loc( t$187 ),0].L = 0
+  398.       4[loc( t$187 ),0].L = 0
+  398.       6[loc( t$187 ),0].L = 0
+  398.       7[loc( t$187 ),0].L = 0
+  398.       t$186 = _close( t$187 )
+  399.       t$182 = 2[loc( nfctl ),0]
+  399.       0[loc( t$189 ),0].L = 0x100000000000000L
+  399. !dir$ suppress t$182
+  399.       1[loc( t$189 ),0].L = int( loc( t$182 ), 8 )
+  399.       2[loc( t$189 ),0].L = 0
+  399.       3[loc( t$189 ),0].L = 0
+  399.       4[loc( t$189 ),0].L = 0
+  399.       6[loc( t$189 ),0].L = 0
+  399.       7[loc( t$189 ),0].L = 0
+  399.       t$188 = _close( t$189 )
+  400.       t$182 = 51
+  400.       0[loc( t$191 ),0].L = 0x100000000000000L
+  400. !dir$ suppress t$182
+  400.       1[loc( t$191 ),0].L = int( loc( t$182 ), 8 )
+  400.       2[loc( t$191 ),0].L = 0
+  400.       3[loc( t$191 ),0].L = 0
+  400.       4[loc( t$191 ),0].L = 0
+  400.       6[loc( t$191 ),0].L = 0
+  400.       7[loc( t$191 ),0].L = 0
+  400.       t$190 = _close( t$191 )
+  401.       return
+  401.       end
+  401.       
+    6.       
+    6.       module fileaccess
+    6.       end
+    6.       

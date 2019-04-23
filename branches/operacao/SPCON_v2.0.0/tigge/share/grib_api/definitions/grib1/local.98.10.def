@@ -1,0 +1,94 @@
+
+# START 1/local.98.10 ----------------------------------------------------------------------
+# LOCAL 98 10
+#
+# localDefinitionTemplate_010
+# ---------------------------
+#
+# Description            Octet    Code    Ksec1    Count
+# -----------            -----    ----    -----    -----
+#localDefinitionNumber           41      I1      37      -
+#class                           42      I1      38      -
+#type                            43      I1      39      -
+#stream                          44      I2      40      -
+#experimentVersionNumber         46      A4      41      -
+#
+#number                          50      I1      42      -
+#total                           51      I1      43      -
+#centralClusterDefinition        52      I1      44      -
+#parameterIndicator              53      I1      45      -
+#levelIndicator                  54      I1      46      -
+#northLatitudeOfDomainOfTubing   55      S3      47      -
+#westLongitudeOfDomainOfTubing   58      S3      48      -
+#southLatitudeOfDomainOfTubing   61      S3      49      -
+#eastLongitudeOfDomainOfTubing   64      S3      50      -
+#numberOfOperationalForecastTube 67      I1      51      -
+#numberOfControlForecastTube     68      I1      52      -
+#heightOrPressureOfLevel         69      I2      53      -
+#referenceStep                   71      I2      54      -
+#radiusOfCentralCluster          73      I2      55      -
+#ensembleStandardDeviation       75      I2      56      -
+#distanceFromTubeToEnsembleMean  77      I2      57      -
+#numberOfForecastsInTube         79      I1      58      -
+#ensembleForecastNumbers         80      LP_I1   59      numberOfForecastsInTube
+#spareToEnsureFixedLength        -       PADTO   n/a     334
+#
+
+template mars_labeling "grib1/mars_labeling.def";
+
+unsigned[1] tubeNumber ;
+alias mars.number = tubeNumber;
+
+unsigned[1] totalNumberOfTubes ;
+unsigned[1] centralClusterDefinition ;
+
+unsigned[1] parameterIndicator ;
+alias indicatorOfParameter = parameterIndicator;
+
+unsigned[1] levelIndicator ;
+alias indicatorOfTypeOfLevelConsidered = levelIndicator;
+
+signed[3] northLatitudeOfDomainOfTubing ;
+alias  northernLatitudeOfTheDomainOfTubing = northLatitudeOfDomainOfTubing ;
+
+signed[3] westLongitudeOfDomainOfTubing ;
+alias westernLongitudeOfTheDomainOfTubing = westLongitudeOfDomainOfTubing ;
+
+signed[3] southLatitudeOfDomainOfTubing ;
+alias southernLatitudeOfTheDomainOfTubing = southLatitudeOfDomainOfTubing ;
+
+signed[3] eastLongitudeOfDomainOfTubing ;
+alias easternLongitudeOfTheDomainOfTubing = eastLongitudeOfDomainOfTubing ;
+
+unsigned[1] numberOfOperationalForecastTube ;
+alias numberOfTubeToWhichTheOperationalForecastBelongs = numberOfOperationalForecastTube ;
+
+unsigned[1] numberOfControlForecastTube ;
+alias numberOfTubeToWhichTheControlForecastBelongs = numberOfControlForecastTube ;
+
+unsigned[2] heightOrPressureOfLevel ;
+alias heightOrPressureOfLevelConsidered =  heightOrPressureOfLevel ;
+
+unsigned[2] referenceStep ;
+alias referenceStepConsidered = referenceStep;
+alias mars.reference = referenceStep;
+
+unsigned[2] radiusOfCentralCluster ;
+
+unsigned[2] ensembleStandardDeviation ;
+
+unsigned[2] distanceFromTubeToEnsembleMean ;
+alias distanceOfTheTubeExtremeToTheEnsembleMean =  distanceFromTubeToEnsembleMean ;
+
+unsigned[1] numberOfForecastsInTube ;
+alias numberOfForecastsBelongingToTheTubeOrCentralCluster =  numberOfForecastsInTube ;
+
+unsigned[1] ensembleForecastNumbers[numberOfForecastsInTube];
+
+# spareToEnsureFixedLength
+padto padding_loc10_1(offsetSection1+334);
+
+meta domain g1domain(northLatitudeOfDomainOfTubing,westLongitudeOfDomainOfTubing,southLatitudeOfDomainOfTubing,eastLongitudeOfDomainOfTubing) : optional;
+alias mars.domain = domain;
+
+# END   1/local.98.10 ----------------------------------------------------------------------

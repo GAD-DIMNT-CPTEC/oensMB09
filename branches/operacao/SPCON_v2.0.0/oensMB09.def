@@ -1,0 +1,195 @@
+setenv -i SUBMIT_HOME
+setenv -i WORK_HOME
+setenv -i HOME
+
+set HOME $HOME
+set DK $SUBMIT_HOME
+set DIROUTJOB $WORK_HOME # RAIZ DO DIRETORIO ONDE SERAO JOGADAS AS SAIDAS DO SMS
+
+set RESOLUTION "TQ0126L028  "
+
+suite oensMB09
+   defstatus suspended
+
+   clock real
+
+   edit MOD         "o"
+   edit YMD         "9999999912"
+
+   edit MODELHOME	"$HOME/oensMB09"
+   edit MODELDK 	  "$DK/oensMB09"
+   edit MODELCONFIG "$HOME/oensMB09/run/EnvironmentalVariablesMCGA"
+   
+   edit SMSHOME     "$DIROUTJOB/out_jobs"
+   edit SMSFILES    "$HOME/oensMB09/smsfiles"
+   edit SMSINCLUDE  "$HOME/oensMB09/includes"
+
+   set TRC `echo $RESOLUTION | cut -c3-6`
+   set LV  `echo $RESOLUTION | cut -c8-10`
+
+   edit RESOL     $RESOLUTION
+   edit TRC 		$TRC
+   edit LV  		$LV
+
+########## CONFIGURACAO ##########################################
+   task limits
+      defstatus complete
+      limit prod 6
+      limit i    1
+      limit anl  8
+      limit job  30
+##################################################################
+   family main
+      cron 00:30 23:30 0:01
+      family $RESOLUTION 
+         family pre
+            inlimit /oensMB09/limits:i
+            task runPre
+	            event CHOPPING
+	            event SSTWEEKLYNCEP
+	            event SSTWEEKLY
+            	event SNOWCLIMA               
+                label Info "Ok "
+            task runPert
+            task runPreCtrl
+				event ctrl
+				event decomp
+         endfamily
+         family model
+            loop PN (01 02 03 04 05 06 07) do
+               family ${PN}
+                  task runAnl
+				  	      inlimit /oensMB09/limits:anl
+                     label Info "Ok "
+                     trigger (/oensMB09/main/$RESOLUTION/pre/runPreCtrl eq complete)
+                  task N
+                     label Info "Ok "
+                     trigger (runAnl eq complete)
+                  task P
+                     label Info "Ok "
+                     trigger (runAnl eq complete)
+               endfamily
+            endloop
+            task NMC
+               label Info "Ok "
+               trigger (/oensMB09/main/$RESOLUTION/pre/runPre eq complete)
+         endfamily
+         family pos
+            loop PN (01 02 03 04 05 06 07) do
+               family ${PN}
+                  family N
+                     trigger (/oensMB09/main/$RESOLUTION/model/${PN}/N eq complete)
+                     label Info "Ok "
+					 task POS
+ 					 task ETA
+				  endfamily
+                  family P
+                     trigger (/oensMB09/main/$RESOLUTION/model/${PN}/P eq complete)
+                     label Info "Ok "
+					         task POS
+					         task ETA
+				      endfamily
+              endfamily
+            endloop
+            family NMC
+                trigger (/oensMB09/main/$RESOLUTION/model/NMC eq complete)
+                label Info "Ok "
+				task POS
+				task ETA
+		    endfamily
+            task runEnsMed
+               trigger (./ctrl eq complete)
+               event prod
+               label Info "Ok "
+            task runPlumes
+            	trigger (/oensMB09/main/$RESOLUTION/model eq complete)
+               event prod
+               label Info "Ok "
+            task ctrl
+           	   trigger (/oensMB09/main/$RESOLUTION/pos/01/N/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/02/N/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/03/N/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/04/N/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/05/N/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/06/N/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/07/N/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/01/P/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/02/P/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/03/P/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/04/P/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/05/P/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/06/P/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/07/P/POS eq complete and \
+                        /oensMB09/main/$RESOLUTION/pos/NMC/POS  eq complete )
+         endfamily
+      endfamily
+   endfamily
+##################################################################   
+   family TIGGE
+      cron 00:30 23:30 0:01
+      trigger (/oensMB09/main/$RESOLUTION/pos/ctrl eq complete)
+      edit SMSFILES    "$HOME/oensMB09/smsfiles/tigge"
+      inlimit /oensMB09/limits:job
+      family $RESOLUTION
+			loop PN (01 02 03 04 05 06 07) do
+				family ${PN}
+					task N
+                  label Info "Ok "
+					task P
+                  label Info "Ok "
+				endfamily
+			endloop
+		   task NMC
+            label Info "Ok "
+         task insertLDM
+            label Info "Ok "
+            trigger (/oensMB09/main/$RESOLUTION/pos/NMC eq complete and\
+               /oensMB09/main/$RESOLUTION/pos/01  eq complete and\
+               /oensMB09/main/$RESOLUTION/pos/02  eq complete and\
+               /oensMB09/main/$RESOLUTION/pos/03  eq complete and\
+               /oensMB09/main/$RESOLUTION/pos/04  eq complete and\
+               /oensMB09/main/$RESOLUTION/pos/05  eq complete and\
+               /oensMB09/main/$RESOLUTION/pos/06  eq complete )
+      endfamily
+   endfamily
+##################################################################   
+   family products
+      cron 00:30 23:30 0:01
+  	   defstatus queued
+      trigger (/oensMB09/main/$RESOLUTION/pos/ctrl eq complete)
+#      inlimit /oensMB09/limits:prod
+      family $RESOLUTION    
+         family controle
+             trigger ( /oensMB09/main/$RESOLUTION/pos/ctrl eq complete )
+             task PrdpntP
+             task runGrh
+               trigger ( /oensMB09/main/$RESOLUTION/pos/runPlumes:prod eq set )
+             task Mapas
+         endfamily
+         task gesfam
+             trigger (/oensMB09/main/$RESOLUTION/pos/runEnsMed:prod eq set )
+         task ghprec
+             trigger (/oensMB09/main/$RESOLUTION/pos/runPlumes:prod eq set )
+         task probability
+             trigger (/oensMB09/main/$RESOLUTION/pos/ctrl eq complete )
+         task probagr
+             trigger (/oensMB09/main/$RESOLUTION/pos/ctrl eq complete )
+         task spread
+             trigger (/oensMB09/main/$RESOLUTION/pos/runEnsMed:prod eq set )
+         task cluster
+             trigger (/oensMB09/main/$RESOLUTION/pos/ctrl eq complete )
+         task spaguetti
+             trigger (/oensMB09/main/$RESOLUTION/pos/runEnsMed:prod eq set )
+         task grhens
+             trigger (/oensMB09/main/$RESOLUTION/pos/runPlumes:prod eq set )
+         task prcmed
+             trigger (/oensMB09/main/$RESOLUTION/pos/runEnsMed:prod eq set )
+         task wgne
+             trigger (/oensMB09/main/$RESOLUTION/pos/runEnsMed:prod eq set )
+         task chievol
+             trigger (/oensMB09/main/$RESOLUTION/pos/runEnsMed:prod eq set )
+         task skillens
+             trigger (/oensMB09/main/$RESOLUTION/pos/runEnsMed:prod eq set )
+      endfamily
+   endfamily
+endsuite

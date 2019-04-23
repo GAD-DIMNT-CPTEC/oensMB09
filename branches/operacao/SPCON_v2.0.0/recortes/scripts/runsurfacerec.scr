@@ -1,0 +1,636 @@
+#!/bin/ksh -x
+#help#
+#*******************************************************************#
+#                                                                   #
+#      Name:           runsurfacerec.scr                            #
+#                                                                   #
+#      Function:       This script compiles/runs the program        #
+#                      to transform data binary to grib.            #
+#                                                                   #
+#      Date:           April 03th, 2000.                            #
+#      Last change:    Abril 03th, 2000.                            #
+#                                                                   #
+#      Valid Arguments for runsurfacerec.scr                        #
+#                                                                   #
+#      First : COMPILE: help, comp or run                           #
+#      Second: LABELI : initial forecasting label                   #
+#      Third : LABELF : final forecasting label                     #
+#      Fourth: TRC    : three-digit triangular truncation           #
+#      Fifth : LV     : two-digit number of vertical sigma-layers   #
+#      sixth : NMEMBR : number of members of the ensemble           #
+#                                                                   #
+#              LABLEx : yyyymmddhh                                  #
+#                       yyyy = two digit year                       #
+#                       mm   = two digit month                      #
+#                       dd   = two digit day                        #
+#                       hh   = two digit hour                       #
+#                                                                   #
+#*******************************************************************#
+#help#
+#
+#       Help:
+#
+. ../../include/config.sx6
+#
+#       Test of Valid Arguments
+#
+LABELI=$1
+LABELS=`echo $LABELI | cut -c 1-8`
+HH=`echo $LABELI | cut -c 9-10`
+LABELF=`date -d "$LABELS ${NFDAYS} days" +"%Y%m%d${HH}"`
+NMEMBR=`echo "$NPERT*2+1" | bc -l`
+echo "PARAMETROS - $LABELI $LABELF $TRC $LV $NMEMBR"
+#
+# Set TERM
+#
+TERM=vt100;export TERM
+#
+# Set labels
+#
+COMPILE=run
+echo "COMPILE = $COMPILE"
+#
+# set umask
+#
+umask 033
+#
+# Check for compilation
+#
+if [ "$COMPILE" = "comp" ]
+then
+#
+# Generate include files
+#
+#
+#   Compile FORTRAN source
+#
+echo "rm -f fixgrb"
+rm -f fixgrb
+#
+echo "f77 -cpp -I./ -u -o fixgrb fixgrb.f"
+f77 -cpp -I./ -u -o fixgrb fixgrb.f
+#
+exit 0
+fi
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+GPOS=GPOS
+GPOS2=GESF
+RESOL=T${TRC}
+NIVEL=L${LV}
+CASE=$RESOL$NIVEL
+MODELID=cptec002
+export RESOL NIVEL CASE
+#
+#. ${HOME}/tempo/global/oenspro/produtos/scripts/config.oens.prod
+
+####################################################################
+#
+#   Set directories and remote machines
+#
+#   DIRPRD: is the directory of the machine RMTCPR where there
+#           are the programs to generate special products.
+#   DIRSKL: is the directory of the machine RMTCPR where there
+#           are the programs to generate skill of forecast.
+#   RMTUSR: is the remote user at the telecom machine RMTCPR.
+#   RMTCPR: is the remote machine to run the special products.
+#   RMTGRU: is the remote user at the guara machine RMTGRM.
+#   RMTGRM: is the remote machine to run the runfazlink1.scr.
+#   RMTOPM: is the remote machine to run the recmod.scr.
+#   DIRGRA: is the directory of the machine RMTGRM.
+#   DIROPE: is the directory of the machine RMTOPM where there
+#           is the program to do the desired link.  
+#   DIRSCR: is the directory of the scripts which grib model data
+#   RMMWAM: is the remote machine to run the runwamT062.ksh
+#   RMTWAM: is the remote user at the machine RMMWAM
+#   DIRWAM: is the directory of the machine RMMWAM  
+#
+####################################################################
+
+# -----------------  PRODUTOS  --------------------
+
+DIRSCR=$OPERM/recortes/scripts
+
+####################################################################
+#
+#   Generate script file to run special products
+#
+####################################################################
+
+cd ${DIRSCR}
+
+echo "rm -f setsurfacerec.${date}.$CASE"
+rm -f setsurfacerec.${date}.$CASE
+
+cat <<EOT5 > setsurfacerec.${date}.$CASE
+#!/bin/ksh 
+
+####################################################################
+#
+#   function calday
+#
+####################################################################
+
+calday ()
+{
+yi=\`awk 'BEGIN {print substr("'\${LABELI}'",1,4)}'\`
+mi=\`awk 'BEGIN {print substr("'\${LABELI}'",5,2)}'\`
+di=\`awk 'BEGIN {print substr("'\${LABELI}'",7,2)}'\`
+hi=\`awk 'BEGIN {print substr("'\${LABELI}'",9,2)}'\`
+#
+let ybi=\${yi}%4
+if [ \${ybi} = 0 ]
+then
+set -A md 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+let dr=\${di}-\${nrdays}
+let mr=\${mi}
+let yr=\${yi}
+let hr=\${hi}
+if [ dr -le 0 ]
+then
+let nr=\${mi}-2
+if [ nr -lt 0 ]
+then let nr=11
+fi
+let dr=dr+md[\${nr}]
+let mr=\${mi}-1
+fi
+if [ mr -le 0 ]
+then
+let mr=12
+let yr=yr-1
+fi
+if [ dr -lt 10 ]
+then DR=0\${dr}
+else DR=\${dr}
+fi
+if [ mr -lt 10 ]
+then MR=0\${mr}
+else MR=\${mr}
+fi
+YR=\${yr}
+if [ hr -lt 10 ]
+then HR=0\${hr}
+else HR=\${hr}
+fi
+let str=\${MR}-1
+LSTD=\${md[\${str}]}
+}
+#
+# Set initial current hour
+#
+HOUR=\`date +'%H:%M'\`
+export HOUR
+echo "  HOUR = \$HOUR"
+#
+# Set labels
+#
+LABELI=$LABELI
+LABELF=$LABELF
+echo "LABELI = \$LABELI"
+echo "LABELF = \$LABELF"
+#
+#
+# Set directories
+#
+yydir=\`awk 'BEGIN {print substr("'\$LABELI'",1,4)}'\`
+mmdir=\`awk 'BEGIN {print substr("'\$LABELI'",5,2)}'\`
+dddir=\`awk 'BEGIN {print substr("'\$LABELI'",7,2)}'\`
+export yydir mmdir dddir
+resol=\`awk 'BEGIN {print tolower("'$RESOL'")}'\`
+nivel=\`awk 'BEGIN {print tolower("'$NIVEL'")}'\`
+echo "resol="\$resol
+echo "nivel="\$nivel
+#
+DIRBANG=${BANGU}
+#DIRCTL1=\${DIRBANG}/GPOS/\$yydir/\$mmdir/\$dddir
+DIRCTL1=${ROPERM}/pos/dataout/T${TRC}L${LV}
+DIRCTL2=\${DIRBANG}/RECPRD/GESFAM/\$yydir/\$mmdir/\$dddir
+DIRCTLM=${ROPERM}/ensmed/dataout/T${TRC}L${LV}
+DIRGESF=/web1/ftp/pub/produtos/ensemble/GESFAM
+DIRSCR=$DIRSCR
+DIRLATS=/usr/local/grads/bin
+dirgrb=${ROPERM}/produtos/recortes/dataout/t${TRC}l${LV}
+#dirgrb=${DKPROD}/dataout/t126l28
+#dirgrb=${BANGU}/../t126l28/recprd
+
+export DIRCTL1 DIRCTL2 dirgrb DIRBANG DIRLATS DIRSCR
+CASE=$CASE
+echo "CASE   = \$CASE"
+echo "DIRCTL1 = \$DIRCTL1"
+echo "DIRCTL2 = \$DIRCTL2"
+
+#
+#-------------------------------------------------------------
+#
+# Remove old files
+#
+#-------------------------------------------------------------
+
+NMEMBRP=${NMEMBR}
+let NP=NMEMBRP-1
+let NPR=NP/2
+
+cd ${DIRSCR}
+
+for nrdays in 2 3 4 5 6
+do
+calday
+LABELR=\${YR}\${MR}\${DR}\${HR};export LABELR
+LASTDAY=\${LSTD}
+echo "LABELR  = \${LABELR}"
+yydirold=\`awk 'BEGIN {print substr("'\$LABELR'",1,4)}'\`
+mmdirold=\`awk 'BEGIN {print substr("'\$LABELR'",5,2)}'\`
+dddirold=\`awk 'BEGIN {print substr("'\$LABELR'",7,2)}'\`
+export yydirold mmdirold dddirold
+#
+DIRSFCREC=\${DIRBANG}/RECPRD/GESFAM/\$yydirold/\$mmdirold/\$dddirold
+export DIRSFCREC
+#
+echo "rm -f \${DIRSFCREC}/${GPOS2}*\${LABELR}*"
+nk=1
+   while [ \${nk} -le \${NPR}  ]
+   do 
+      if [ \${nk} -lt 10 ]
+      then
+         nk='0'\${nk}
+      fi
+      rm -f \${DIRSFCREC}/${GPOS2}\${nk}P\${LABELR}*lst
+      rm -f \${DIRSFCREC}/${GPOS2}\${nk}P\${LABELR}*ctl
+      rm -f \${DIRSFCREC}/${GPOS2}\${nk}P\${LABELR}*gmp
+      rm -f \${DIRSFCREC}/${GPOS2}\${nk}P\${LABELR}*grb
+      rm -f \${DIRSFCREC}/${GPOS2}\${nk}N\${LABELR}*lst
+      rm -f \${DIRSFCREC}/${GPOS2}\${nk}N\${LABELR}*ctl
+      rm -f \${DIRSFCREC}/${GPOS2}\${nk}N\${LABELR}*gmp
+      rm -f \${DIRSFCREC}/${GPOS2}\${nk}N\${LABELR}*grb
+      let nk=nk+1
+   done
+      rm -f \${DIRSFCREC}/${GPOS2}AVN\${LABELR}*lst
+      rm -f \${DIRSFCREC}/${GPOS2}AVN\${LABELR}*ctl
+      rm -f \${DIRSFCREC}/${GPOS2}AVN\${LABELR}*gmp
+      rm -f \${DIRSFCREC}/${GPOS2}AVN\${LABELR}*grb
+
+      rm -f \${DIRSFCREC}/${GPOS2}ENM\${LABELR}*lst
+      rm -f \${DIRSFCREC}/${GPOS2}ENM\${LABELR}*ctl
+      rm -f \${DIRSFCREC}/${GPOS2}ENM\${LABELR}*gmp
+      rm -f \${DIRSFCREC}/${GPOS2}ENM\${LABELR}*grb
+      
+rmdir \${DIRSFCREC}
+if [ \${dddirold} -eq \${LASTDAY} ]
+then
+   rmdir \${DIRBANG}/RECPRD/GESFAM/\$yydirold/\$mmdirold
+   if [ \${mmdirold} -eq 12 ]
+   then
+      rmdir \${DIRBANG}/RECPRD/GESFAM/\$yydirold
+   fi
+fi
+
+done
+
+################################################################
+#
+# Grads:  (turi)
+#
+################################################################
+
+export GAUDFT=/usr/local/grads/udf/udft
+export GADDIR=/usr/local/grads/dat
+export GRADSB=/usr/local/grads/bin
+export GASCRP=/usr/local/grads/lib
+
+
+################################################################
+#
+# Run task
+#
+# Set characteristics of the product
+################################################################
+
+tit='CPTEC GLOBAL ENSEMBLE SURFACE PRODUCTS '\$CASE'  COLD'
+lon1=-101.250
+lon2=-11.250
+lat1=-60.62040
+lat2=13.98945
+fields='topo psnm uves vves tems tsfc umrs prec'
+
+################################################################
+#
+# Does rec to members (1 to 15)
+#
+################################################################
+
+echo "rm -f \$dirgrb/${GPOS2}*\${LABELI}*"
+
+for TIPO in P.fct
+do
+for arq in \`ls \${DIRCTL1}/${GPOS}???\${LABELI}??????????\${TIPO}.\$CASE.ctl\`
+do
+#AAF for arq in \`cat \${arqlst} |grep ctl\`
+#AAF do
+
+arq1=\`basename \$arq\`
+strmb=\`awk 'BEGIN { print substr("'\$arq1'",5,3) }'\`
+strg1=\`awk 'BEGIN { print substr("'\$arq1'",8,33) }'\`
+arqout=${GPOS2}\${strmb}\${strg1}
+
+op="-i \$DIRCTL1/\$arq1 -o \$dirgrb/\$arqout -center $MODELID -grid gaussian -format grads_grib -ftype ctl -lat \${lat1} \${lat2} -lon \${lon1}
+\${lon2}  -table cptec.table -v -vars \${fields} -title \${tit}"
+
+echo "lats4d \$op"
+
+subup=\$arqout
+sublo=\`awk 'BEGIN {print tolower("'\$subup'")}'\`
+#
+rep=0
+until [ -s \$dirgrb/\$sublo.ctl ]
+do
+let rep=rep+1
+echo "=> Grib Repet: \$rep"
+if [ \$rep -ge 5 ]
+then rm -f WARNNING.\${LABELI}
+echo "#####################################">WARNNING.\${LABELI}
+echo "  rec product execution problem encontered">>WARNNING.\${LABELI}
+echo "  Repeted more then \$rep times">>WARNNING.\${LABELI}
+echo "  Please execute the command below:">>WARNNING.\${LABELI}
+echo "  ./setsurfacerec.scr">>WARNNING.\${LABELI}
+echo "#####################################">>WARNNING.\${LABELI}
+exit 1
+fi
+rm -f \$dirgrb/\$arqout.ctl
+rm -f \$dirgrb/\$arqout.gmp
+rm -f \$dirgrb/\$arqout.grb
+\${DIRLATS}/lats4d \$op
+done
+
+cat \$dirgrb/\$sublo.ctl | sed "s/\$sublo/\$subup/g" > \$dirgrb/ctl.tmp
+
+mv  \$dirgrb/ctl.tmp \$dirgrb/\$sublo.ctl
+mv \$dirgrb/\$sublo.ctl \$dirgrb/\$subup.ctl
+mv \$dirgrb/\$sublo.gmp \$dirgrb/\$subup.gmp
+mv \$dirgrb/\$sublo.grb \$dirgrb/\$subup.grb
+
+head -3 \$dirgrb/\$subup.ctl>\$dirgrb/\$subup.ctl.tmp
+let l=\`wc -l \$dirgrb/\$subup.ctl|awk '{print \$1}'\`-3
+tail -\$l \$dirgrb/\$subup.ctl>>\$dirgrb/\$subup.ctl.tmp
+mv -f \$dirgrb/\$subup.ctl.tmp \$dirgrb/\$subup.ctl
+
+#${OPERMOD}/recortes/scripts/fixgrb \$dirgrb/\$subup.grb
+rm -f \${arq}.tmp
+
+#AAF done
+done
+done
+#-------------------------------------------------------------
+#
+# Does rec to ensemble mean 
+#
+#-------------------------------------------------------------
+
+for TIPO in P.fct
+do
+#AAF for arqlst in \`ls \${DIRCTLM}/${GPOS}*\${LABELI}\${LABELF}\${TIPO}.\$CASE.lst\`
+#AAF do
+#AAF for arq in \`cat \${arqlst} |grep ctl\`
+for arq in \`ls \${DIRCTLM}/${GPOS}ENM\${LABELI}2*.ctl\`
+do
+arq1=\`basename \$arq\`
+strmb=\`awk 'BEGIN { print substr("'\$arq1'",5,3) }'\`
+strg1=\`awk 'BEGIN { print substr("'\$arq1'",8,33) }'\`
+arqout=${GPOS2}\${strmb}\${strg1}
+#
+op="-i \$DIRCTLM/\$arq1 -o \$dirgrb/\$arqout -center $MODELID -grid gaussian -format grads_grib -ftype ctl -lat \${lat1} \${lat2} -lon \${lon1}
+\${lon2}  -table ${OPERM}/recortes/scripts/cptec.table -v -vars \${fields} -title \${tit}"
+echo "lats4d \$op"
+subup=\$arqout
+sublo=\`awk 'BEGIN {print tolower("'\$subup'")}'\`
+#
+rep=0
+until [ -s \$dirgrb/\$sublo.ctl ]
+do
+let rep=rep+1
+echo "=> Grib Repet: \$rep"
+if [ \$rep -ge 5 ]
+then rm -f WARNNING.\${LABELI}
+echo "#####################################">WARNNING.\${LABELI}
+echo "  rec product execution problem encontered">>WARNNING.\${LABELI}
+echo "  Repeted more then \$rep times">>WARNNING.\${LABELI}
+echo "  Please execute the command below:">>WARNNING.\${LABELI}
+echo "  ./setsurfacerec.scr">>WARNNING.\${LABELI}
+echo "#####################################">>WARNNING.\${LABELI}
+exit 1
+fi
+rm -f \$dirgrb/\$arqout.ctl
+rm -f \$dirgrb/\$arqout.gmp
+rm -f \$dirgrb/\$arqout.grb
+
+\${DIRLATS}/lats4d \$op
+
+done
+
+cat \$dirgrb/\$sublo.ctl | sed "s/\$sublo/\$subup/g" > \$dirgrb/ctl.tmp
+mv  \$dirgrb/ctl.tmp \$dirgrb/\$sublo.ctl
+mv \$dirgrb/\$sublo.ctl \$dirgrb/\$subup.ctl
+mv \$dirgrb/\$sublo.gmp \$dirgrb/\$subup.gmp
+mv \$dirgrb/\$sublo.grb \$dirgrb/\$subup.grb
+
+head -3 \$dirgrb/\$subup.ctl>\$dirgrb/\$subup.ctl.tmp
+let l=\`wc -l \$dirgrb/\$subup.ctl|awk '{print \$1}'\`-3
+tail -\$l \$dirgrb/\$subup.ctl>>\$dirgrb/\$subup.ctl.tmp
+mv -f \$dirgrb/\$subup.ctl.tmp \$dirgrb/\$subup.ctl
+rm -f \${arq}.tmp
+
+#AAF done
+done
+done
+
+
+exit 0
+#-------------------------------------------------------------
+#   Move grib files to archive directory
+#-------------------------------------------------------------
+
+#AAFecho "cp -f \$dirgrb/${GPOS2}*\${LABELI}* \$DIRCTL2"
+
+#AAFnk=1
+#AAFwhile [ \${nk} -le \${NPR}  ]
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAFdo 
+#AAF   if [ \${nk} -lt 10 ]
+#AAF   then
+#AAF      nk='0'\${nk}
+#AAF   fi
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}\${nk}P*ctl\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}\${nk}P*gmp\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}\${nk}P*grb\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}\${nk}N*ctl\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}\${nk}N*gmp\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}\${nk}N*grb\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   let nk=nk+1
+#AAFdone
+#AAF
+# AVN
+#AAF
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}AVN*ctl\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}AVN*gmp\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}AVN*grb\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF
+# ENM
+
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}ENM*ctl\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}ENM*gmp\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF   for listarq in \`ls \$dirgrb/${GPOS2}ENM*grb\`
+#AAF   do
+#AAF      cp -f \${listarq} \$DIRCTL2
+#AAF   done
+#AAF
+#-------------------------------------------------------------
+#
+# Put recs at external machine
+#
+#-------------------------------------------------------------
+
+nrdays=4
+calday
+labelr4=\${YR}\${MR}\${DR}\${HR}
+nrdays=3
+calday
+labelr3=\${YR}\${MR}\${DR}\${HR}
+nrdays=2
+calday
+labelr2=\${YR}\${MR}\${DR}\${HR}
+nk=1
+while [ \${nk} -le \${NPR}  ]
+do 
+   if [ \${nk} -lt 10 ]
+   then
+      nk='0'\${nk}
+   fi
+rm -f putrec.\${nk}.${date}.${CASE}
+
+cat << EOT >> putrec.\${nk}.${date}.${CASE}
+user pnt &arun/a*
+bin 
+cd \${DIRGESF}
+mdelete GESF\${nk}P${labelr4}*
+mdelete GESF\${nk}P${labelr3}*
+mdelete GESF\${nk}P${labelr2}*
+mdelete GESF\${nk}N${labelr4}*
+mdelete GESF\${nk}N${labelr3}*
+mdelete GESF\${nk}N${labelr2}*
+lcd \${DIRCTL2}
+mput GESF\${nk}P\${LABELI}*
+mput GESF\${nk}N\${LABELI}*
+EOT
+
+
+ftp -in tucupi < putrec.\${nk}.${date}.${CASE}
+rm -f putrec.\${nk}.${date}.${CASE}
+
+let nk=nk+1
+done
+
+#AVN
+
+rm -f putrec.AVN.${date}.${CASE}
+cat << EOT >> putrec.AVN.${date}.${CASE}
+user pnt &arun/a*
+bin 
+cd \${DIRGESF}
+mdelete GESFAVN${labelr4}*
+mdelete GESFAVN${labelr3}*
+mdelete GESFAVN${labelr2}*
+mdelete GESFAVN${labelr4}*
+mdelete GESFAVN${labelr3}*
+mdelete GESFAVN${labelr2}*
+lcd \${DIRCTL2}
+mput GESFAVN\${LABELI}*
+EOT
+
+
+ftp -in tucupi < putrec.AVN.${date}.${CASE}
+rm -f putrec.AVN.${date}.${CASE}
+
+#ENM
+rm -f putrec.ENM.${date}.${CASE}
+cat << EOT >> putrec.ENM.${date}.${CASE}
+user pnt &arun/a*
+bin 
+cd \${DIRGESF}
+mdelete GESFENM${labelr4}*
+mdelete GESFENM${labelr3}*
+mdelete GESFENM${labelr2}*
+mdelete GESFENM${labelr4}*
+mdelete GESFENM${labelr3}*
+mdelete GESFENM${labelr2}*
+lcd \${DIRCTL2}
+mput GESFENM\${LABELI}*
+EOT
+
+
+ftp -in tucupi < putrec.ENM.${date}.${CASE}
+rm -f putrec.ENM.${date}.${CASE}
+
+
+rm -f setsurfacerec.${date}.${CASE}
+
+EOT5
+#
+#   End script generation. Then change permission to executable
+#
+chmod 700 setsurfacerec.${date}.$CASE
+#
+#echo "at now +1 minute setsurfacerec.${date}.$CASE"
+
+#AMM at now +1 minute setsurfacerec.${date}.$CASE
+setsurfacerec.${date}.$CASE
+
+#
+

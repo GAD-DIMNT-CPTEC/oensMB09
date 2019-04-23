@@ -1,0 +1,554 @@
+#!/bin/bash -x 
+#help#
+#*******************************************************************#
+#                                                                   #
+#     Name:           runrectigger.1.4.una                          #
+#     runrectigger.1.4.una 42 28 2004032600  NMC 7                  #
+#                                                                   #
+#     Function:       This script generated and submit              #
+#                     a script to start the global model            #
+#                     at a given date/time to integration           #
+#                     from initial date till final date.            #
+#                                                                   #
+#     Date:           June   02th, 2003.                            #
+#     Last change:    June   02th, 2003.                            #
+#                                                                   #
+#     Valid Arguments for runpntg.sx6                               #
+#                                                                   #
+#     First :   HELP: help or nothing for getting help              #
+#     First :    TRC: three-digit triangular truncation             #
+#     Second:     LV: two-digit number of vertical sigma-layers     #
+#     Third : LABELI: initial forecasting label                     #
+#     PREFX:   PREFX: preffix for name of input files               #
+#     Fifth :   PERT: perturbation                                  #
+#                                                                   #
+#             PERT  : NMC,01P,01N,02P,02N,...                       #
+#             LABELx: yyyymmddhh                                    #
+#                     yyyy = four digit year                        #
+#                       mm = two digit month                        #
+#                       dd = two digit day                          #
+#                       hh = two digit UTC hour                     #
+#*******************************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+    cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+    exit 0
+fi
+
+#
+#       Testing Valid Arguments
+#
+if [ -z "${1}" ]
+then
+TRC=62
+else
+export TRC=`echo $1 | awk '{print $1/1}'`
+fi
+if [ -z "${2}" ]
+then
+LV=28
+else
+export LV=`echo $2 | awk '{print $1/1}'` 
+fi
+if [ -z "${3}" ]
+then
+LABELI="NMC"
+exit
+else
+export LABELI=${3}
+fi
+
+
+if [ -z "${4}" ]
+then
+PREFX="NMC"
+exit
+else
+export PREFX=${4}
+fi
+
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+HSTMAQ=`hostname` # example una2
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT=out
+export HSTMAQ MAQUI RUNTM EXT
+#
+#   Set Perturbation
+#
+PERT=`echo ${5} |awk '{ printf("%3.3s\n",$1)  }' `
+export PERT
+#
+#   Set directories and remote machines
+#
+#   OPERM : is the directory for sources, scripts and printouts 
+#           at SX6.
+#   SOPERM: is the directory for input and output files at SX6.
+#   ROPERM: is the directory for big selected output files at SX6.
+#   CTLDIR: is the directory where the outputs will be available
+#           after they where send to the machine RMTCPF.
+#   DIRPRD: is the directory of the machine RMTCPR where there
+#           are the programs to generate special products.
+#   RMTUSR: is the remote user at the telecom machine RMTCPR.
+#   RMTCPR: is the remote machine to run the special products.
+#   RMTCPF: is the remote archieve machine.
+#   RMUSCF: is the remote archieve machine user.
+#   RMPWCF: is the remote archieve machine password.
+#   RMTCPY: is the remote products machine for external users.
+#
+#
+#. ../include/config.sx6 
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesMCGA -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE} CTR
+cd ${HOME_suite}/run
+
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+export TRUNC=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+export LEV=`echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' `
+
+ 
+LABELI=$3
+
+if [ -s $LABELI ]; then
+      echo "ERRO: FALTA PARAMETRO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+      exit 1
+else
+      if [ ${#LABELI} -lt 10 ]; then
+            echo "ERRO: PARAMETRO INCORRETO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+            exit 2
+      else
+            YYYY=`echo $LABELI |cut -c 1-4`
+            MM=`echo $LABELI |cut -c 5-6`
+            DD=`echo $LABELI |cut -c 7-8`
+            HH=`echo $LABELI |cut -c 9-10`
+
+            LABELF=`date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}"`
+            YYYYF=`echo $LABELF |cut -c 1-4`
+            MMF=`echo $LABELF |cut -c 5-6`
+            DDF=`echo $LABELF |cut -c 7-8`
+            HHF=`echo $LABELF |cut -c 9-10`
+      fi
+fi
+
+if [ -s $PREFX ]; then
+      echo "ERRO - PARAMETRO PERT\nFORMATO: runrectigge.sx6 yyyymmddhh 01N"
+      exit 2
+fi
+if [ "${PREFX}" = "NMC" ]; then
+      membnum=000
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "AVN" ]; then
+      membnum=000
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "01N" ]; then
+      membnum=001
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "02N" ]; then
+      membnum=002
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "03N" ]; then
+      membnum=003
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "04N" ]; then
+      membnum=004
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "05N" ]; then
+      membnum=005
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "06N" ]; then
+      membnum=006
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "07N" ]; then
+      membnum=007
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "01P" ]; then
+      membnum=008
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "02P" ]; then
+      membnum=009
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "03P" ]; then
+      membnum=010
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "04P" ]; then
+      membnum=011
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "05P" ]; then
+      membnum=012
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "06P" ]; then
+      membnum=013
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+if [ "${PREFX}" = "07P" ]; then
+      membnum=014
+      mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+fi
+
+PREFX=$4
+
+#. smslabel Info "Aguardando Pos-processados: $LABELI" > /dev/null
+
+
+REQ="D"
+HH=`echo $LABELI | cut -c 9-10`
+LABELS=`echo $LABELI | cut -c 1-8`
+LABELF=`date -d "${LABELS} 15 days" +"%Y%m%d${HH}"`
+
+export GRIB_DEFINITION_PATH=/home/io_pad/grib_api/lib_grib_api/grib_api-1.9.0/definitions
+export GRIB_TEMPLATES_PATH=/home/io_pad/grib_api/lib_grib_api/grib_api-1.9.0/samples
+export GRIB_SAMPLES_PATH=/home/io_pad/grib_api/lib_grib_api/grib_api-1.9.0/samples
+GRADS=/usr/local/grads/bin
+WGRIB18=${OPERM}/tigge/bin/wgrib.tupay
+ARQINI=z_tigge_c_sbsj_${LABELI}0000_glob
+DIRINI=sbsj_${LABELI}00_glob_prod
+
+
+# EXECUTAVIES DO TIGGE
+#CONVERTER - converte de grib para grib2
+#TIGGENAME - converte o nome do grib2 para o nome de convencao do TIGGE
+#TIGGECHECK - Verifica se o arquivo gerado esta correto
+CONVERTER=/home/io_pad/grib_api/lib_grib_api/grib_api-1.9.0/bin/grib_convert
+TIGGENAME=/home/io_pad/grib_api/lib_grib_api/grib_api-1.9.0/bin/tigge_name
+TIGGECHECK=/home/io_pad/grib_api/lib_grib_api/grib_api-1.9.0/bin/tigge_check
+
+#tiggedirmopora=/usr/local/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/${DIRINI}
+tiggeoutgoing=${tiggedirmopora}/outgoing
+
+
+#PKUBOTA   ssh ${tiggeldm} -l ldm "mkdir -p $tiggescratch"
+
+#/usr/local/ldm/tigge/
+
+#PKUBOTA   typeset -RZ4 HOR
+#PKUBOTA   typeset -RZ3 nnn
+#PKUBOTA   typeset -RZ4 llll
+#PKUBOTA   typeset -RZ3 tiggenameaux
+
+set +x
+mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${PREFX}
+
+cd ${ROPERM}/tigge/dataout/${TRUNC}${LEV}
+#ARQLST=${ROPERM}/pos/dataout/${TRUNC}${LEV}/GPOS${PREFX}${LABELI}${LABELF}${REQ}.fct.${TRUNC}${LEV}.lst
+
+#if [ `ls -ltr $ARQLST | awk '{print $5}'` -le 1 ]; then
+#      exit 1
+#fi
+
+#ls -ltr ${ROPERM}/pos/dataout/${TRUNC}${LEV}/GPOS${PREFX}${LABELI}*grb | awk '{print $9}' > ${ARQLST}
+echo PWD=`pwd`
+
+# PEGA TODOS OS ARQUIVOS DO .lst PARA RECORTE
+echo "GERANDO RECORTES...\n"
+
+#AAF COMENTADO PARA FAZER O LOOP FIXO for arq in `cat ${ARQLST} | grep -v inz`
+#AAF COMENTADO PARA FAZER O LOOP FIXO do            
+
+rm -f ${OPERM}/tigge/bin/ens.${PREFX}.list
+rm -Rf ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${PREFX}
+mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${PREFX}
+rm -Rf   ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}
+mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}
+
+set +x
+nd=0; p=0
+while [ $nd -le 360 ]; do # VARIA DE 00 a 360 horas de previsao para calcular a data de previsao do arquivo
+#      labelfct=`${CALDATE} ${LABELI} + ${nd}h "yyyymmddhh"` #calcula a data de previsao do arquivo
+      labelddate=`echo $LABELI | cut -c 1-8`
+      hhddate=`echo $LABELI | cut -c 9-10`
+      labelfct=`date -d "$labelddate ${hhddate}:00 ${nd} hours" +"%Y%m%d%H"` #calcula a data de previsao do arquivo
+      
+      if [ ${LABELI} -eq ${labelfct} ]; then
+            tarq=`ls -ltr ${ROPERM}/pos/dataout/${TRUNC}${LEV}/${LABELI}/GPOS${PREFX}${LABELI}${labelfct}*icn*grb | grep -v "inz" | grep -v "~l" | awk '{print $5}'` # capturaa o tamanho do arquivo
+      else
+            tarq=`ls -ltr ${ROPERM}/pos/dataout/${TRUNC}${LEV}/${LABELI}/GPOS${PREFX}${LABELI}${labelfct}*grb | grep -v "inz" | grep -v "~l" | awk '{print $5}'` # capturaa o tamanho do arquivo
+      fi
+      if [ $LABELI -ne $labelfct ]; then # verifica a data para pegar o tamnha dos icn e fct, que sao diferentes
+            taor=296424 #tamanho fct
+            fct=fct
+      else
+            taor=266781 #tamanho icn
+            fct=icn
+      fi
+      if [ $tarq -ge ${taor} ]; then # verifica se o tamanho do arquivo estah correto, se estiver gera os arquivos do tigge para o arquivo de previsao
+                                     # a cada arquivo pos-processado, serah verificado o tamanho e caso esteja correto, comeca os recortes z_tigge*
+            arq=`ls -ltr ${ROPERM}/pos/dataout/${TRUNC}${LEV}/${LABELI}/GPOS${PREFX}${LABELI}${labelfct}*grb | grep -v "inz" | awk '{print $9}'` #captura o nome do arquivo pos-processado
+            echo ${nd} - ${labelfct} - $arq #imprime parametros para controle (pode-se comentar a linha)
+            arqens=`basename $arq`
+            mkdir -p ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}
+set -x
+            ln -sf $arq ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}/$arqens
+#            cp -v $arq ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}/$arqens
+set +x
+      fi
+      
+cat <<EOF >> ${OPERM}/tigge/bin/ens.${PREFX}.list
+$arqens
+EOF
+      echo "${ROPERM}/pos/dataout/${TRUNC}${LEV}/${LABELI}/GPOS${PREFX}${LABELI}${labelfct}P.${fct}.${TRUNC}${LEV}.grb -a $tarq -ge ${taor} "
+      if [ \( -s ${ROPERM}/pos/dataout/${TRUNC}${LEV}/${LABELI}/GPOS${PREFX}${LABELI}${labelfct}P.${fct}.${TRUNC}${LEV}.grb \) -a \( $tarq -ge ${taor} \) ]; then
+            let nd=${nd}+6 #CONTINUACAO DO LOOP DE ARQUIVOS (IF TAMANHO DE ARQUIVO OK INCREMENTA DATA DE PREVISAO DO ARQUIVO)
+      else
+            echo "AGUARDANDO ARQUIVO ${ROPERM}/pos/dataout/${TRUNC}${LEV}/${LABELI}/GPOS${PREFX}${LABELI}${labelfct}P.${fct}.${TRUNC}${LEV}.grb"
+            sleep 63
+      fi
+done #FIM DO LOOP DE ARQUIVOS
+
+#AAF COMENTADO PARA FAZER O LOOP FIXO done
+#PKUBOTA exit 200
+
+echo "ARQUIVOS ENCONTRADOS, INICIANDO RECORTES..."
+#PKUBOTA sleep 30
+cpu_mpi=4
+cpu_node=4
+num=$(($cpu_mpi+$cpu_node-1))
+fra=$(($num/$cpu_node))
+cpu_tot=$(($fra*$cpu_node))
+hold="-sync y"
+echo fila=mpi-npn${cpu_node} total cpus=${cpu_tot}
+cat <<EOF > ${OPERM}/run/tigge.${PREFX}.una
+#!/bin/bash -x
+# 
+#$ -q global.q
+#$ -pe mpi-npn${cpu_node} ${cpu_tot}
+#$ -o una1:${OPERM}/run/setout/tigge.${PREFX}${LABELI}.out.%s
+#$ -j y
+#$ -V
+#$ -S /bin/bash
+#$ -N tiggeR${NUM}
+#
+cd ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}
+#
+${OPERM}/tigge/bin/tigge.x < ${OPERM}/tigge/bin/ens.${PREFX}.list
+#
+exit 0
+EOF
+echo "\nGERANDO RECORTES\n"
+#submit ${OPERM}/run/tigge.${PREFX}.una ${QUEUE} Info
+qsub ${hold} ${OPERM}/run/tigge.${PREFX}.una 
+
+sleep 1
+
+#rm -f ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}/GPOS*
+echo ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}
+cd ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}
+
+# Cria arquivo concatenado para arquivamento
+touch ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${ARQINI}.${membnum}.tmp
+
+echo "\nCONVERTENDO PARA GRIB2 e RENOMEANDO\n"
+for arqgrib1 in `ls ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}/ | grep -i tigge`
+do
+     echo  ${CONVERTER} ${OPERM}/tigge/rules/cptec.rules_grib_final.prod.${TRUNC}${LEV} ${arqgrib1} ${arqgrib1}.${membnum}.2
+           ${CONVERTER} ${OPERM}/tigge/rules/cptec.rules_grib_final.prod.${TRUNC}${LEV} ${arqgrib1} ${arqgrib1}.${membnum}.2
+     echo ${TIGGENAME} ${arqgrib1}.${membnum}.2 | grep "CORRECT" | cut -d: -f2
+      tiggename=`${TIGGENAME} ${arqgrib1}.${membnum}.2 | grep "CORRECT" | cut -d: -f2`
+      sleep 5
+# IF PARA VARIAVEIS QUE NAO ESTAO EM "PROD" MAS AINDA EM "TEST"
+# ATUALMENTE ttr, slhf, str e sshf
+      if [ \( `echo $tiggename | grep "ttr.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "slhf.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "str.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "sshf.grib" | wc -l` -eq 1 \) ]; then
+set -x
+            tiggeconf=`echo $tiggename | cut -c 50-52`
+            rm -f ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}/*prod*ttr.grib
+            rm -f ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}/*prod*slhf.grib
+            rm -f ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}/*prod*str.grib
+            rm -f ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${LABELI}/${PREFX}/*prod*sshf.grib
+
+set -x
+            ${CONVERTER} ${OPERM}/tigge/rules/cptec.rules_grib_final.${TRUNC}${LEV} ${arqgrib1} ${arqgrib1}.${membnum}.2
+            tiggename=`${TIGGENAME} ${arqgrib1}.${membnum}.2 | grep "CORRECT" | cut -d: -f2`
+      fi
+      tiggename=`echo $tiggename | sed -e s%"c_46"%"c_sbsj"%g`
+      tiggeconf=`echo $tiggename | cut -c 52-54`
+# FIM IF DAS VARIAVEIS TEST
+#      set +x
+#      echo "membro: $tiggeconf"
+      echo  mv ${arqgrib1}.${membnum}.2 ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/$tiggename
+            mv ${arqgrib1}.${membnum}.2 ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/$tiggename
+      set +e
+      echo  ${TIGGECHECK} ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/$tiggename
+      ${TIGGECHECK} ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/$tiggename
+      if [ $? -ne 0 ]; then
+            echo "ERRO - ${TIGGECHECK} ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/$tiggename"
+            rm -f ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/$tiggename
+            rm -f ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/$tiggename
+      fi
+#      set +x
+set -x
+#      echo `basename ${arqgrib1}` - $tiggename
+
+# Concatena arquivos para armazenamento
+#AAF      cat ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/$tiggename ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${ARQINI}.${membnum}.tmp > ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${ARQINI}.${membnum}.grb
+#AAF      cp -rpf ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${ARQINI}.${membnum}.grb ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${ARQINI}.${membnum}.tmp
+
+#AAF      smslabel Info "$tiggename"
+done
+
+# Move o arquivo temporario da concatenacao para o arquivos de armazenamento.
+#AAF mv ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${ARQINI}.${membnum}.tmp ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${ARQINI}.${membnum}.grb
+exit
+
+#z_tigge_c_sbsj_20071126000000_glob_test_pf_pl_0234_001_1000_v.grib
+
+cd ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}/
+
+#sleep 60
+tt=pf
+
+if [ ! "${PREFX}" = "AVN" ]; then
+rm -f ${ARQINI}_????_??_??_????_001_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_002_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_003_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_004_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_005_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_006_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_007_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_008_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_009_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_010_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_011_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_012_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_013_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_014_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_015_*lsm.grib
+
+rm -f ${ARQINI}_????_??_??_????_001_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_002_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_003_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_004_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_005_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_006_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_007_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_008_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_009_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_010_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_011_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_012_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_013_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_014_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_015_*orog.grib
+
+rm -f ${ARQINI}_prod_??_??_????_???_*ttr.grib
+rm -f ${ARQINI}_prod_??_??_????_???_*slhf.grib
+rm -f ${ARQINI}_prod_??_??_????_???_*str.grib
+rm -f ${ARQINI}_prod_??_??_????_???_*sshf.grib
+
+NARQTIN=3468
+#NARQTIN=0
+else
+NARQTIN=3590
+#NARQTIN=0
+fi
+
+# VERIFICACAO DE ARQUIVOS
+echo "\n\n"
+set -x
+#find . -name "${ARQINI}_????_??_??_????_${tiggeconf}*.grib" -exec ls -ltr {} \; | awk 'BEGIN {i=0} {if ($5!=147643 || $5!=147667 ) printf ("Problemas no Arquivo: %s",$9)} END {printf ("%d",i)}'
+NARQVERIF=`find . -name "${ARQINI}_????_??_??_????_${tiggeconf}*.grib" -exec ls -ltr {} \; | awk 'BEGIN {i=0} {if ($5==147643 || $5==147667 ) i+=1} END {printf ("%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTEJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 23
+set -e
+set -u
+      echo "ERRO NO NUMERO DE ARQUIVOS!"
+      exit 23
+fi
+echo "\n\n"
+
+derr=366
+while [ $derr -le 558 ]; do
+
+      VER366=`find . -name "${ARQINI}_????_??_??_0${derr}_${tiggeconf}*.grib" -print | wc -l`
+
+      if [ $VER366 -ge 1 ]; then
+            cd ..
+            rm -Rf ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+            echo " saindo... erro arquivo 366"
+            sleep 67
+            exit 27
+      fi
+
+let derr=${derr}+06
+done
+
+
+#FAZ A COPIA DOS RECORTES PARA A MOPORA e DEPOIS MOVE PARA O DIRETORIO DE SAIDA.
+#smslabel Info "Copiando Arquivos..."
+set +e
+ssh ldm@${tiggeldm} "mkdir $tiggescratch"
+set -e
+#scp -q ${ARQINI}_prod_??_??_00??_${tiggeconf}_*.grib ldm@${tiggeldm}:$tiggescratch
+#scp -q ${ARQINI}_prod_??_??_01??_${tiggeconf}_*.grib ldm@${tiggeldm}:$tiggescratch
+#scp -q ${ARQINI}_prod_??_??_02??_${tiggeconf}_*.grib ldm@${tiggeldm}:$tiggescratch
+#scp -q ${ARQINI}_prod_??_??_03??_${tiggeconf}_*.grib ldm@${tiggeldm}:$tiggescratch
+echo "RODANDO vescptigge.ksh"
+ljkafd=`pwd`
+cd ${OPERM}/run/
+./vescptigge.ksh $LABELI ${membnum}
+cd $ljkafd
+
+
+set +e; set +u
+mkdir -p ${tiggenas}/${ARQINI}/
+cp -rpf ${ARQINI}_prod_??_??_????_${tiggeconf}_*.grib ${tiggenas}/${ARQINI}/
+NARQVERIF=`find ${tiggenas}/${ARQINI}/ -name "${ARQINI}_????_??_??_????_${tiggeconf}*.grib" -exec ls -ltr {} \; | awk 'BEGIN {i=0} {if ($5==147643 || $5==147667 ) i+=1} END {printf ("%d",i)}'`
+
+# AAF ADICIONADO EM 20090113
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS no NAS, COPIA NOVAMENTE
+set -e;
+      echo "ERRO NO NUMERO DE ARQUIVOS no NAS! COPIANDO NOVAMENTE!"
+      find . -name "${ARQINI}_????_??_??_????_${tiggeconf}*.grib" -print | cpio -pdmv ${tiggenas}/${ARQINI}/
+fi
+
+echo "RODANDO vescptigge.ksh"
+ljkafd=`pwd`
+cd ${OPERM}/run/
+./vescptigge.ksh $LABELI ${membnum}
+cd $ljkafd
+
+set +e; set +u
+
+set +e
+#rm -Rf ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${PREFX}
+#rm -Rf ${ROPERM}/tigge/dataout/${TRUNC}${LEV}/${membnum}
+# APAGA ARQUIVOS ANTIGOS
+LABELR=`date -d "$LABELS 1 day ago" +"%Y%m%d"`
+LABELR2=`date -d "$LABELS 2 day ago" +"%Y%m%d"`
+
+set +e; set +u
+cd ${OPERM}/run
+./runcattigge.2.0.ksh $LABELI ${membnum}
+rm -Rf ${tiggenas}/pos
+set -e
+
+#smslabel Info "Ok - ${LABELI}"
+exit 0

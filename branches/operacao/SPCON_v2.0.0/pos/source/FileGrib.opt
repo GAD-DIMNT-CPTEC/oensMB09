@@ -1,0 +1,727 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  FileGrib.f90
+       !        File                  :  FileGrib.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   16.       
+   16.       subroutine gdspdssetion( kgds, kpds )
+   32.       $I_L32_86 = 0
+   32. !dir$ ivdep
+   32.       do
+   32.          kpds(1 + $I_L32_86) = 0
+   33.          kgds(1 + $I_L32_86) = 0
+   32.          $I_L32_86 = 1 + $I_L32_86
+   32.          if ( $I_L32_86 >= 200 ) exit
+   32.       enddo
+   37.       $idrt_S7 = 4
+   38.       if ( regintin /= .false. ) then
+   38.          $idrt_S7 = 0
+   38.       endif
+   40.       iday_anl = 0
+   40.       iday_fct = 0
+   40.       if ( yy_fct + -yy_anl >= 0 ) then
+   40.          if ( mod( real( yy_fct ), 4.0 ) == 0.0 ) then
+   40.             if ( yy_fct + -yy_anl > 0 ) then
+   40.                if ( -1 + mm_anl > 0 ) then
+   40.                   $I_L40_104 = 0
+   40. !dir$ ivdep
+   40.                   do
+   40.                      iday_anl = iday_anl + monlb(1 + $I_L40_104)
+   40.                      $I_L40_104 = 1 + $I_L40_104
+   40.                      if ( $I_L40_104 >= -1 + mm_anl ) exit
+   40.                   enddo
+   40.                endif
+   40.                $I_L40_106 = 0
+   40. !dir$ ivdep
+   40.                do
+   40.                   iday_fct = iday_fct + monlb(1 + $I_L40_106)
+   40.                   $I_L40_106 = 1 + $I_L40_106
+   40.                   if ( $I_L40_106 >= 12 ) exit
+   40.                enddo
+   40.                if ( 1 < ( yy_fct + -yy_anl ) ) then
+   40.                   $I_L40_108 = 0
+   40.                   if ( -5 + yy_fct + -yy_anl >= 0 ) then
+   40.                      $I_L40_118 = 0
+   40. !dir$ blocking_size( 16, 16 )
+   40.                      do
+   40.                         $I_L40_82 = 0
+   40. !dir$ ivdep
+   40. !dir$ blocking_size( 12, 12 )
+   40.                         do
+   40.                            iday_fct = iday_fct + 4 * monlb(1 + $I_L40_82)
+   40.                            $I_L40_82 = 1 + $I_L40_82
+   40.                            if ( $I_L40_82 >= 12 ) exit
+   40.                         enddo
+   40.                         $I_L40_118 = 1 + $I_L40_118
+   40.                         if ( $I_L40_118 >= _rsh( -1 + yy_fct + -yy_anl, 2 ) ) exit
+   40.                      enddo
+   40.                      $I_L40_108 = and( 0xfffffffffffffffcUL, -1 + yy_fct + -yy_anl )
+   40.                   endif
+   40.                   if ( $I_L40_108 < -1 + yy_fct + -yy_anl ) then
+   40.                      $I_L40_112 = 0
+   40. !dir$ blocking_size( 16, 16 )
+   40.                      do
+   40.                         $I_L40_82 = 0
+   40. !dir$ ivdep
+   40. !dir$ blocking_size( 12, 12 )
+   40.                         do
+   40.                            iday_fct = iday_fct + monlb(1 + $I_L40_82)
+   40.                            $I_L40_82 = 1 + $I_L40_82
+   40.                            if ( $I_L40_82 >= 12 ) exit
+   40.                         enddo
+   40.                         $I_L40_112 = 1 + $I_L40_112
+   40.                         if ( $I_L40_112 >= -1 + yy_fct + -yy_anl + -$I_L40_108 ) exit
+   40.                      enddo
+   40.                   endif
+   40.                endif
+   40.             endif
+   40.             if ( yy_fct + -yy_anl == 0 ) then
+   40.                if ( -1 + mm_anl > 0 ) then
+   40.                   $I_L40_100 = 0
+   40. !dir$ ivdep
+   40.                   do
+   40.                      iday_anl = iday_anl + monlb(1 + $I_L40_100)
+   40.                      $I_L40_100 = 1 + $I_L40_100
+   40.                      if ( $I_L40_100 >= -1 + mm_anl ) exit
+   40.                   enddo
+   40.                endif
+   40.             endif
+   40.             if ( -1 + mm_fct > 0 ) then
+   40.                $I_L40_102 = 0
+   40. !dir$ ivdep
+   40.                do
+   40.                   iday_fct = iday_fct + monlb(1 + $I_L40_102)
+   40.                   $I_L40_102 = 1 + $I_L40_102
+   40.                   if ( $I_L40_102 >= -1 + mm_fct ) exit
+   40.                enddo
+   40.             endif
+   40.          else
+   40.             if ( yy_fct + -yy_anl > 0 ) then
+   40.                if ( -1 + mm_anl > 0 ) then
+   40.                   $I_L40_96 = 0
+   40. !dir$ ivdep
+   40.                   do
+   40.                      iday_anl = iday_anl + monln(1 + $I_L40_96)
+   40.                      $I_L40_96 = 1 + $I_L40_96
+   40.                      if ( $I_L40_96 >= -1 + mm_anl ) exit
+   40.                   enddo
+   40.                endif
+   40.                $I_L40_98 = 0
+   40. !dir$ ivdep
+   40.                do
+   40.                   iday_fct = iday_fct + monln(1 + $I_L40_98)
+   40.                   $I_L40_98 = 1 + $I_L40_98
+   40.                   if ( $I_L40_98 >= 12 ) exit
+   40.                enddo
+   40.                if ( 1 < ( yy_fct + -yy_anl ) ) then
+   40.                   $I_L40_110 = 0
+   40.                   if ( -5 + yy_fct + -yy_anl >= 0 ) then
+   40.                      $I_L40_120 = 0
+   40. !dir$ blocking_size( 16, 16 )
+   40.                      do
+   40.                         $I_L40_84 = 0
+   40. !dir$ ivdep
+   40. !dir$ blocking_size( 12, 12 )
+   40.                         do
+   40.                            iday_fct = iday_fct + 4 * monln(1 + $I_L40_84)
+   40.                            $I_L40_84 = 1 + $I_L40_84
+   40.                            if ( $I_L40_84 >= 12 ) exit
+   40.                         enddo
+   40.                         $I_L40_120 = 1 + $I_L40_120
+   40.                         if ( $I_L40_120 >= _rsh( -1 + yy_fct + -yy_anl, 2 ) ) exit
+   40.                      enddo
+   40.                      $I_L40_110 = and( 0xfffffffffffffffcUL, -1 + yy_fct + -yy_anl )
+   40.                   endif
+   40.                   if ( $I_L40_110 < -1 + yy_fct + -yy_anl ) then
+   40.                      $I_L40_115 = 0
+   40. !dir$ blocking_size( 16, 16 )
+   40.                      do
+   40.                         $I_L40_84 = 0
+   40. !dir$ ivdep
+   40. !dir$ blocking_size( 12, 12 )
+   40.                         do
+   40.                            iday_fct = iday_fct + monln(1 + $I_L40_84)
+   40.                            $I_L40_84 = 1 + $I_L40_84
+   40.                            if ( $I_L40_84 >= 12 ) exit
+   40.                         enddo
+   40.                         $I_L40_115 = 1 + $I_L40_115
+   40.                         if ( $I_L40_115 >= -1 + yy_fct + -yy_anl + -$I_L40_110 ) exit
+   40.                      enddo
+   40.                   endif
+   40.                endif
+   40.             endif
+   40.             if ( yy_fct + -yy_anl == 0 ) then
+   40.                if ( -1 + mm_anl > 0 ) then
+   40.                   $I_L40_92 = 0
+   40. !dir$ ivdep
+   40.                   do
+   40.                      iday_anl = iday_anl + monln(1 + $I_L40_92)
+   40.                      $I_L40_92 = 1 + $I_L40_92
+   40.                      if ( $I_L40_92 >= -1 + mm_anl ) exit
+   40.                   enddo
+   40.                endif
+   40.             endif
+   40.             if ( -1 + mm_fct > 0 ) then
+   40.                $I_L40_94 = 0
+   40. !dir$ ivdep
+   40.                do
+   40.                   iday_fct = iday_fct + monln(1 + $I_L40_94)
+   40.                   $I_L40_94 = 1 + $I_L40_94
+   40.                   if ( $I_L40_94 >= -1 + mm_fct ) exit
+   40.                enddo
+   40.             endif
+   40.          endif
+   40.       endif
+   45.       kgds(1) = modulo( $idrt_S7, 256 )
+   46.       kgds(2) = idim
+   47.       kgds(3) = jdim
+   48.       if ( $idrt_S7 == 4 ) then
+   52.          kgds(4) = _rnd( 1000.0 * (glat%base_addr)(1, 0) )
+   49.       else if ( $idrt_S7 == 0 ) then
+   50.          kgds(4) = -90000
+   50.       endif
+   54.       kgds(5) = 0
+   55.       kgds(6) = 128
+   56.       kgds(7) = -kgds(4)
+   57.       kgds(8) = _rnd( ( 360000.0 * 1.0/kgds(2) ) * ( -1 + kgds(2) ) )
+   58.       kgds(9) = _rnd( ( 360000.0 * 1.0/kgds(2) ) )
+   59.       if ( $idrt_S7 == 4 ) then
+   63.          kgds(10) = jdim / 2
+   60.       else if ( $idrt_S7 == 0 ) then
+   61.          kgds(10) = _rnd( ( 180000.0 * 1.0/( -1 + kgds(3) ) ) )
+   61.       endif
+   66.       $I_L66_88 = 0
+   66. !dir$ ivdep
+   66.       do
+   66.          kgds(11 + $I_L66_88) = 0
+   66.          $I_L66_88 = 1 + $I_L66_88
+   66.          if ( $I_L66_88 >= 9 ) exit
+   66.       enddo
+   67.       kgds(20) = 255
+   68.       $I_L68_90 = 0
+   68. !dir$ ivdep
+   68.       do
+   68.          kgds(21 + $I_L68_90) = 0
+   68.          $I_L68_90 = 1 + $I_L68_90
+   68.          if ( $I_L68_90 >= 180 ) exit
+   68.       enddo
+   73.       kpds(1) = 46
+   74.       kpds(2) = 0
+   75.       kpds(3) = 255
+   76.       kpds(4) = 128
+   77.       kpds(5) = 2
+   78.       kpds(6) = 1
+   79.       kpds(7) = 102
+   80.       if ( postclim /= .false. ) then
+   81.          kpds(8) = cvmg( -1900 + yy_fct, -2000 + yy_fct, yy_anl <= 2000 )
+   86.          kpds(9) = mm_fct
+   87.          kpds(10) = dd_fct
+   88.          kpds(11) = hh_fct
+   88.       else
+   90.          kpds(8) = cvmg( -1900 + yy_anl, -2000 + yy_anl, yy_anl <= 2000 )
+   95.          kpds(9) = mm_anl
+   96.          kpds(10) = dd_anl
+   97.          kpds(11) = hh_anl
+   97.       endif
+   99.       kpds(12) = 0
+  122.       kpds(13) = kpds13
+  123.       if ( kpds13 == 1 ) then
+  124.          $dhfct_S8 = 1
+  124.          goto 10
+  125.       else if ( kpds13 == 2 ) then
+  126.          $dhfct_S8 = 24
+  126.          goto 10
+  126.       else if ( kpds13 == 3 ) then
+  128.          $dhfct_S8 = 720
+  128.          goto 10
+  128.       else if ( kpds13 == 11 ) then
+  130.          $dhfct_S8 = 6
+  130.          goto 10
+  130.       else if ( kpds13 == 4 ) then
+  132.          $dhfct_S8 = 8760
+  132.          goto 10
+  132.       else if ( kpds13 == 10 ) then
+  134.          $dhfct_S8 = 3
+  134.          goto 10
+  134.       else if ( kpds13 == 12 ) then
+  136.          $dhfct_S8 = 12
+  136.    10    continue
+  143.          if ( postclim /= .false. ) then
+  144.             kpds(14) = 0
+  144.          else
+  146.             kpds(14) = ( hh_fct + -hh_anl + 24 * iday_fct + -24 * iday_anl + 24 * dd_fct + -24 * dd_anl ) / $dhfct_S8
+  146.          endif
+  148.          kpds(15) = 0
+  149.          kpds(16) = postclim /= 0
+  154.          kpds(17) = 0
+  155.          kpds(18) = 1
+  156.          kpds(19) = 254
+  157.          kpds(20) = 0
+  158.          kpds(21) = cvmg( 20, 21, yy_anl <= 2000 )
+  163.          kpds(22) = 0
+  164.          kpds(23) = 0
+  165.          kpds(24) = 0
+  170.          kpds(25) = 32
+  171.          kpds(26) = 0
+  172.          kpds(27) = 0
+  173.          kpds(28) = 0
+  173.       else
+  138.          _fwrite( _clist( 0, 0, 3, 6, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'ERROR AT kpds13 INDICATOR OF FORECAST TIME UNIT', 0x800600000000L ) ) )
+  139.           _substr(t$32,1,4) = ' '
+  139.          call _stop(  _substr(t$32,1,1) )
+  139.       endif
+  175.       return
+  175.       end
+  175.       
+  178.       
+  178.       subroutine writegrbfield( var, ndim, kgds, kpds, bfr, l )
+  178.       t$1 = ndim
+  190.       t$2 = _zla( 0, ndim )
+  201.       t$5 = 4 * _zla( 0, ndim )
+  198.       t$7 = 8 * _zla( 0, ndim )
+  180.       if ( t$34 == 0 ) then
+  180.          t$12(1) = 2
+  180.          t$13(1) = 0
+  180.          t$14(1) = 0
+  180.          t$9(1) = int( loc( t$33 ), 8 )
+  180.          t$10(1) = 0
+  180.          t$11(1) = int( loc( t$8 ), 8 )
+  180.          t$34 = __get_dynamic_type( 2, t$9(1), t$12(1), 1, t$10(1), t$11(1), t$13(1), t$14(1) )
+  180.       endif
+  180.       if ( t$36 == 0 ) then
+  180.          t$20(1) = 2
+  180.          t$21(1) = 0
+  180.          t$22(1) = 0
+  180.          t$17(1) = int( loc( t$35 ), 8 )
+  180.          t$18(1) = 0
+  180.          t$19(1) = int( loc( t$16 ), 8 )
+  180.          t$36 = __get_dynamic_type( 2, t$17(1), t$20(1), 1, t$18(1), t$19(1), t$21(1), t$22(1) )
+  180.       endif
+  180.       if ( t$38 == 0 ) then
+  180.          t$28(1) = 2
+  180.          t$29(1) = 0
+  180.          t$30(1) = 0
+  180.          t$25(1) = int( loc( t$37 ), 8 )
+  180.          t$26(1) = 0
+  180.          t$27(1) = int( loc( t$24 ), 8 )
+  180.          t$38 = __get_dynamic_type( 2, t$25(1), t$28(1), 1, t$26(1), t$27(1), t$29(1), t$30(1) )
+  180.       endif
+  178.       t$3 = int( _alloc( 8 * _zla( 0, ndim ) ), 8 )
+  201.       t$4 = t$3
+  198.       t$6 = t$3 + 4 * _zla( 0, ndim )
+  203.       $F_A37 = ndim
+  203.       if ( ndim > 0 ) then
+  203.          $I_L203_24 = 0
+  203. !dir$ ivdep
+  203.          do
+  203.             bfr4(1 + $I_L203_24) = real( bfr(1 + $I_L203_24) )
+  203.             $I_L203_24 = 1 + $I_L203_24
+  203.             if ( $I_L203_24 >= $F_A37 ) exit
+  203.          enddo
+  203.       endif
+  204.       kf = ndim
+  219.       $Reduc_A44 = inf000.0
+  219.       $F_A46 = ndim
+  219.       if ( ndim > 0 ) then
+  219.          $I_L219_26 = 0
+  219. !dir$ ivdep
+  219.          do
+  219.             $Reduc_A44 = min( $Reduc_A44, bfr4(1 + $I_L219_26) )
+  219.             $I_L219_26 = 1 + $I_L219_26
+  219.             if ( $I_L219_26 >= $F_A46 ) exit
+  219.          enddo
+  219.       endif
+  219.       t$33 = $Reduc_A44
+  219.       $Reduc_A47 = -inf00.0
+  219.       $F_A49 = ndim
+  219.       if ( ndim > 0 ) then
+  219.          $I_L219_28 = 0
+  219. !dir$ ivdep
+  219.          do
+  219.             $Reduc_A47 = max( $Reduc_A47, bfr4(1 + $I_L219_28) )
+  219.             $I_L219_28 = 1 + $I_L219_28
+  219.             if ( $I_L219_28 >= $F_A49 ) exit
+  219.          enddo
+  219.       endif
+  219.       t$34 = $Reduc_A47
+  219.       $IOitem_O1 = kpds(5)
+  219.       _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'Parm = ', 0x800600000000L ), _iotype( $IOitem_O1, 0x2000200000000L ), _iotype( ' Variable range:', 0x800600000000L ), _iotype( t$33, 0x402060300000000L ), _iotype( ' to ', 0x800600000000L ), _iotype( t$34, 0x402060300000000L ) ) )
+  220.       if ( ( l < pmand%dim_1%LB .or. l > -1 + pmand%dim_1%LB + pmand%dim_1%EX ) /= .false. ) then
+  220.           _substr(t$36,1,13) = 'FileGrib.f90'
+  220.           _substr(t$37,1,6) = 'PMAND'
+  220.          t$38 = pmand%dim_1%LB
+  220.          t$39 = -1 + pmand%dim_1%LB + pmand%dim_1%EX
+  220.          t$40 = l
+  220.          call _bounds_error(  _substr(t$36,1,13), 220,  _substr(t$37,1,6), 1, t$38, t$39, t$40, t$35 )
+  220.       endif
+  220.       $IOitem_O0 = (pmand%base_addr)(l, 0)
+  220.       _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'Level = ', 0x800600000000L ), _iotype( $IOitem_O0, 0x804060300000000L ) ) )
+  225.       $varfound_S2 = .false.
+  226.       $t_S0 = size_tb(1)
+  226.       if ( $t_S0 > 0 ) then
+  227.          $SC_table1_I0 = table1%dim_1%EX
+  227.          $SC_table1_I1 = table1%dim_1%LB
+  226.          $I_L226_18 = 0
+  226. !dir$ ivdep
+  226.          do
+  227.             if (  _substr((table1%base_addr)(1 + $I_L226_18, 0)%name,1,4) ==  _substr(var,1,4) ) then
+  228.                $varfound_S2 = .true.
+  229.                itab1 = ( 1 + $I_L226_18 )
+  229.                goto 10
+  229.             endif
+  232.             $I_L226_18 = 1 + $I_L226_18
+  231.             if ( $I_L226_18 >= $t_S0 ) exit
+  231.          enddo
+  231.       endif
+  231.    10 continue
+  233.       if ( $varfound_S2 == .false. ) then
+  234.           _substr(t$44,1,35) = //( 'Variable ', //(  _substr(var,1,4), ' not found in table 1.' ) )
+  234.          _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$44,1,35), 0x800600000000L ) ) )
+  235.          call flush( 6, 0 )
+  236.           _substr(t$45,1,4) = ' '
+  236.          call _stop(  _substr(t$45,1,1) )
+  236.       else
+  240.          $varfound_S5 = .false.
+  241.          $t_S3 = size_tb(2)
+  241.          if ( $t_S3 > 0 ) then
+  242.             $SC_table2_I2 = table2%dim_1%EX
+  242.             $SC_table2_I3 = table2%dim_1%LB
+  242.             $SC_table1_I0 = table1%dim_1%EX
+  242.             $SC_table1_I1 = table1%dim_1%LB
+  241.             $I_L241_20 = 0
+  241.             do
+  242.                if (  _substr((table2%base_addr)(1 + $I_L241_20, 0)%level_type,1,_ltrim(  _substr((table2%base_addr)(1 + $I_L241_20, 0)%level_type,1,8) )) ==  _substr((table1%base_addr)(itab1, 0)%level,1,_ltrim(  _substr((table1%base_addr)(itab1, 0)%level,1,6) )) ) then
+  243.                   $varfound_S5 = .true.
+  244.                   itab2 = ( 1 + $I_L241_20 )
+  244.                   goto 20
+  244.                endif
+  247.                $I_L241_20 = 1 + $I_L241_20
+  246.                if ( $I_L241_20 >= $t_S3 ) exit
+  246.             enddo
+  246.          endif
+  246.    20    continue
+  248.          if ( $varfound_S5 == .false. ) then
+  249.             if ( ( itab1 < table1%dim_1%LB .or. itab1 > -1 + table1%dim_1%LB + table1%dim_1%EX ) /= .false. ) then
+  249.                 _substr(t$50,1,13) = 'FileGrib.f90'
+  249.                 _substr(t$51,1,7) = 'TABLE1'
+  249.                t$38 = table1%dim_1%LB
+  249.                t$39 = -1 + table1%dim_1%LB + table1%dim_1%EX
+  249.                t$40 = itab1
+  249.                call _bounds_error(  _substr(t$50,1,13), 249,  _substr(t$51,1,7), 1, t$38, t$39, t$40, t$49 )
+  249.             endif
+  249.             if ( ( itab1 < table1%dim_1%LB .or. itab1 > -1 + table1%dim_1%LB + table1%dim_1%EX ) /= .false. ) then
+  249.                 _substr(t$53,1,13) = 'FileGrib.f90'
+  249.                 _substr(t$54,1,7) = 'TABLE1'
+  249.                t$55 = table1%dim_1%LB
+  249.                t$56 = -1 + table1%dim_1%LB + table1%dim_1%EX
+  249.                t$57 = itab1
+  249.                call _bounds_error(  _substr(t$53,1,13), 249,  _substr(t$54,1,7), 1, t$55, t$56, t$57, t$52 )
+  249.             endif
+  249.             if ( ( itab1 < table1%dim_1%LB .or. itab1 > -1 + table1%dim_1%LB + table1%dim_1%EX ) /= .false. ) then
+  249.                 _substr(t$59,1,13) = 'FileGrib.f90'
+  249.                 _substr(t$60,1,7) = 'TABLE1'
+  249.                t$61 = table1%dim_1%LB
+  249.                t$62 = -1 + table1%dim_1%LB + table1%dim_1%EX
+  249.                t$63 = itab1
+  249.                call _bounds_error(  _substr(t$59,1,13), 249,  _substr(t$60,1,7), 1, t$61, t$62, t$63, t$58 )
+  249.             endif
+  249.             t$64 = 36 + ( _ltrim(  _substr((table1%base_addr)(itab1, 0)%level,1,6) ) )
+  249.             t$66 = int( _alloc( max( 0, t$64 ) ), 8 )
+  249.              _substr(t$65,1,max( 0, t$64 )) = //( 'Type of Level ', //(  _substr((table1%base_addr)(itab1, 0)%level,1,_ltrim(  _substr((table1%base_addr)(itab1, 0)%level,1,6) )), ' not found in table 2.' ) )
+  249.             _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$65,1,max( 0, t$64 )), 0x800600000000L ) ) )
+  249.             _free( t$66 )
+  250.             _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'May be one surface or plev variable, i.e. zonal wind, geopotential', 0x800600000000L ) ) )
+  251.             kpds(5) = (table1%base_addr)(itab1, 0)%id
+  252.             kpds(6) = 100
+  253.             kpds(7) = int( (pmand%base_addr)(l, 0) )
+  253.          else
+  260.             kpds(5) = (table1%base_addr)(itab1, 0)%id
+  261.             kpds(6) = (table2%base_addr)(itab2, 0)%default
+  263.             if ( l == 1 ) then
+  263.                kpds(7) = (table2%base_addr)(itab2, 0)%p2
+  263.             endif
+  263.          endif
+  266.          if ( (table1%base_addr)(itab1, 0)%dec_scal_fact == -999 ) then
+  267.             ibs = 0
+  267.          else
+  269.             ibs = (table1%base_addr)(itab1, 0)%dec_scal_fact
+  269.          endif
+  272.          nbits = (table1%base_addr)(itab1, 0)%precision
+  276.          if ( ndim > 0 ) then
+  276.             $I_L276_22 = 0
+  276. !dir$ ivdep
+  276.             do
+  277.                if ( bfr4(1 + $I_L276_22) <= 1.0e-15 ) then
+  277.                   if ( bfr4(1 + $I_L276_22) >= -1.0e-15 ) then
+  277.                      bfr4(1 + $I_L276_22) = 0.0
+  277.                   endif
+  277.                endif
+  281.                $I_L276_22 = 1 + $I_L276_22
+  277.                if ( $I_L276_22 >= ndim ) exit
+  277.             enddo
+  277.          endif
+  285.          if (  _substr(var,1,4) == 'PREC' ) then
+  281.             goto 30
+  285.          else if (  _substr(var,1,4) == 'PRGE' ) then
+  285.             goto 30
+  285.          else if (  _substr(var,1,4) == 'PRCV' ) then
+  285.             goto 30
+  285.          else if (  _substr(var,1,4) == 'NEVE' ) then
+  285.    30       continue
+  288.             $ifhr_S7 = kpds(14)
+  289.             kpds(14) = -1 + $ifhr_S7
+  290.             kpds(15) = $ifhr_S7
+  291.             kpds(16) = 4
+  291.          endif
+  295.          if ( ens /= .false. ) then
+  302.             kens(1) = 1
+  311.             if (  _substr(prefx,1,3) == 'AVN' ) then
+  312.                kens(2) = 1
+  313.                kens(3) = 1
+  314.             else if (  _substr(prefx,1,3) == '01P' ) then
+  319.                kens(2) = 3
+  320.                kens(3) = 1
+  320.             else if (  _substr(prefx,1,3) == '02P' ) then
+  322.                kens(2) = 3
+  323.                kens(3) = 2
+  323.             else if (  _substr(prefx,1,3) == '03P' ) then
+  325.                kens(2) = 3
+  326.                kens(3) = 3
+  326.             else if (  _substr(prefx,1,3) == '04P' ) then
+  328.                kens(2) = 3
+  329.                kens(3) = 4
+  329.             else if (  _substr(prefx,1,3) == '05P' ) then
+  331.                kens(2) = 3
+  332.                kens(3) = 5
+  332.             else if (  _substr(prefx,1,3) == '06P' ) then
+  334.                kens(2) = 3
+  335.                kens(3) = 6
+  335.             else if (  _substr(prefx,1,3) == '07P' ) then
+  337.                kens(2) = 3
+  338.                kens(3) = 7
+  338.             else if (  _substr(prefx,1,3) == '01N' ) then
+  340.                kens(2) = 2
+  341.                kens(3) = 1
+  341.             else if (  _substr(prefx,1,3) == '02N' ) then
+  343.                kens(2) = 2
+  344.                kens(3) = 2
+  344.             else if (  _substr(prefx,1,3) == '03N' ) then
+  346.                kens(2) = 2
+  347.                kens(3) = 3
+  347.             else if (  _substr(prefx,1,3) == '04N' ) then
+  349.                kens(2) = 2
+  350.                kens(3) = 4
+  350.             else if (  _substr(prefx,1,3) == '05N' ) then
+  352.                kens(2) = 2
+  353.                kens(3) = 5
+  353.             else if (  _substr(prefx,1,3) == '06N' ) then
+  355.                kens(2) = 2
+  356.                kens(3) = 6
+  356.             else if (  _substr(prefx,1,3) == '07N' ) then
+  358.                kens(2) = 2
+  359.                kens(3) = 7
+  359.             endif
+  364.             kens(4) = 1
+  365.             kens(5) = 255
+  369.             call putgben( 51, kf, kpds(1), kgds(1), kens(1), ibs, nbits, bitmap(1), bfr4(1), iret )
+  371.             if ( iret /= 0 ) then
+  374.                _fwrite( _clist( 0, 0, 3, 6, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'PUTGBEN failed!  iret=', 0x800600000000L ), _iotype( iret, 0x2000200000000L ) ) )
+  375.                 _substr(t$70,1,10) = 'WRITE_GRIB'
+  375.                call _stop(  _substr(t$70,1,10) )
+  375.             else
+  375.                goto 40
+  375.             endif
+  375.          else
+  383.             call putgbn( 51, kf, kpds(1), kgds(1), ibs, nbits, bitmap(1), bfr4(1), iret )
+  385.             if ( iret == 0 ) then
+  386.                _fwrite( _clist( 0, 0, 3, 6, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'PUTGBN successful, iret=', 0x800600000000L ), _iotype( iret, 0x2000200000000L ) ) )
+  386.    40          continue
+  178.                _free( t$3 )
+  178.             else
+  388.                _fwrite( _clist( 0, 0, 3, 6, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'PUTGBN failed!  iret=', 0x800600000000L ), _iotype( iret, 0x2000200000000L ) ) )
+  389.                 _substr(t$71,1,10) = 'WRITE_GRIB'
+  389.                call _stop(  _substr(t$71,1,10) )
+  389.             endif
+  389.          endif
+  389.       endif
+  394.       return
+  394.       end
+  394.       
+  395.       
+  395.       subroutine gethours( hh_anl, dd_anl, mm_anl, yy_anl, hh_fct, dd_fct, mm_fct, yy_fct, fct_hours, anl_hours )
+  413.       iday_anl = 0
+  414.       iday_fct = 0
+  415.       if ( yy_fct + -yy_anl >= 0 ) then
+  416.          if ( mod( real( yy_fct ), 4.0 ) == 0.0 ) then
+  449.             if ( yy_fct + -yy_anl > 0 ) then
+  418.                if ( -1 + mm_anl > 0 ) then
+  418.                   $I_L418_68 = 0
+  418. !dir$ ivdep
+  418.                   do
+  419.                      iday_anl = iday_anl + monlb(1 + $I_L418_68)
+  420.                      $I_L418_68 = 1 + $I_L418_68
+  418.                      if ( $I_L418_68 >= -1 + mm_anl ) exit
+  418.                   enddo
+  418.                endif
+  428.                $I_L428_70 = 0
+  428. !dir$ ivdep
+  428.                do
+  429.                   iday_fct = iday_fct + monlb(1 + $I_L428_70)
+  430.                   $I_L428_70 = 1 + $I_L428_70
+  428.                   if ( $I_L428_70 >= 12 ) exit
+  428.                enddo
+  449.                if ( 1 < ( yy_fct + -yy_anl ) ) then
+  415.                   $I_L415_72 = 0
+  415.                   if ( -5 + yy_fct + -yy_anl >= 0 ) then
+  415.                      $I_L415_82 = 0
+  415. !dir$ blocking_size( 16, 16 )
+  415.                      do
+  428.                         $I_L428_52 = 0
+  428. !dir$ ivdep
+  428. !dir$ blocking_size( 12, 12 )
+  428.                         do
+  429.                            iday_fct = iday_fct + 4 * monlb(1 + $I_L428_52)
+  430.                            $I_L428_52 = 1 + $I_L428_52
+  428.                            if ( $I_L428_52 >= 12 ) exit
+  428.                         enddo
+  449.                         $I_L415_82 = 1 + $I_L415_82
+  448.                         if ( $I_L415_82 >= _rsh( -1 + yy_fct + -yy_anl, 2 ) ) exit
+  448.                      enddo
+  449.                      $I_L415_72 = and( 0xfffffffffffffffcUL, -1 + yy_fct + -yy_anl )
+  449.                   endif
+  415.                   if ( $I_L415_72 < -1 + yy_fct + -yy_anl ) then
+  415.                      $I_L415_76 = 0
+  415. !dir$ blocking_size( 16, 16 )
+  415.                      do
+  428.                         $I_L428_52 = 0
+  428. !dir$ ivdep
+  428. !dir$ blocking_size( 12, 12 )
+  428.                         do
+  429.                            iday_fct = iday_fct + monlb(1 + $I_L428_52)
+  430.                            $I_L428_52 = 1 + $I_L428_52
+  428.                            if ( $I_L428_52 >= 12 ) exit
+  428.                         enddo
+  449.                         $I_L415_76 = 1 + $I_L415_76
+  448.                         if ( $I_L415_76 >= -1 + yy_fct + -yy_anl + -$I_L415_72 ) exit
+  448.                      enddo
+  448.                   endif
+  448.                endif
+  448.             endif
+  417.             if ( yy_fct + -yy_anl == 0 ) then
+  418.                if ( -1 + mm_anl > 0 ) then
+  418.                   $I_L418_64 = 0
+  418. !dir$ ivdep
+  418.                   do
+  419.                      iday_anl = iday_anl + monlb(1 + $I_L418_64)
+  420.                      $I_L418_64 = 1 + $I_L418_64
+  418.                      if ( $I_L418_64 >= -1 + mm_anl ) exit
+  418.                   enddo
+  418.                endif
+  418.             endif
+  424.             if ( -1 + mm_fct > 0 ) then
+  424.                $I_L424_66 = 0
+  424. !dir$ ivdep
+  424.                do
+  425.                   iday_fct = iday_fct + monlb(1 + $I_L424_66)
+  426.                   $I_L424_66 = 1 + $I_L424_66
+  424.                   if ( $I_L424_66 >= -1 + mm_fct ) exit
+  424.                enddo
+  424.             endif
+  424.          else
+  449.             if ( yy_fct + -yy_anl > 0 ) then
+  434.                if ( -1 + mm_anl > 0 ) then
+  434.                   $I_L434_60 = 0
+  434. !dir$ ivdep
+  434.                   do
+  435.                      iday_anl = iday_anl + monln(1 + $I_L434_60)
+  436.                      $I_L434_60 = 1 + $I_L434_60
+  434.                      if ( $I_L434_60 >= -1 + mm_anl ) exit
+  434.                   enddo
+  434.                endif
+  444.                $I_L444_62 = 0
+  444. !dir$ ivdep
+  444.                do
+  445.                   iday_fct = iday_fct + monln(1 + $I_L444_62)
+  446.                   $I_L444_62 = 1 + $I_L444_62
+  444.                   if ( $I_L444_62 >= 12 ) exit
+  444.                enddo
+  449.                if ( 1 < ( yy_fct + -yy_anl ) ) then
+  415.                   $I_L415_74 = 0
+  415.                   if ( -5 + yy_fct + -yy_anl >= 0 ) then
+  415.                      $I_L415_84 = 0
+  415. !dir$ blocking_size( 16, 16 )
+  415.                      do
+  444.                         $I_L444_54 = 0
+  444. !dir$ ivdep
+  444. !dir$ blocking_size( 12, 12 )
+  444.                         do
+  445.                            iday_fct = iday_fct + 4 * monln(1 + $I_L444_54)
+  446.                            $I_L444_54 = 1 + $I_L444_54
+  444.                            if ( $I_L444_54 >= 12 ) exit
+  444.                         enddo
+  449.                         $I_L415_84 = 1 + $I_L415_84
+  448.                         if ( $I_L415_84 >= _rsh( -1 + yy_fct + -yy_anl, 2 ) ) exit
+  448.                      enddo
+  449.                      $I_L415_74 = and( 0xfffffffffffffffcUL, -1 + yy_fct + -yy_anl )
+  449.                   endif
+  415.                   if ( $I_L415_74 < -1 + yy_fct + -yy_anl ) then
+  415.                      $I_L415_79 = 0
+  415. !dir$ blocking_size( 16, 16 )
+  415.                      do
+  444.                         $I_L444_54 = 0
+  444. !dir$ ivdep
+  444. !dir$ blocking_size( 12, 12 )
+  444.                         do
+  445.                            iday_fct = iday_fct + monln(1 + $I_L444_54)
+  446.                            $I_L444_54 = 1 + $I_L444_54
+  444.                            if ( $I_L444_54 >= 12 ) exit
+  444.                         enddo
+  449.                         $I_L415_79 = 1 + $I_L415_79
+  448.                         if ( $I_L415_79 >= -1 + yy_fct + -yy_anl + -$I_L415_74 ) exit
+  448.                      enddo
+  448.                   endif
+  448.                endif
+  448.             endif
+  433.             if ( yy_fct + -yy_anl == 0 ) then
+  434.                if ( -1 + mm_anl > 0 ) then
+  434.                   $I_L434_56 = 0
+  434. !dir$ ivdep
+  434.                   do
+  435.                      iday_anl = iday_anl + monln(1 + $I_L434_56)
+  436.                      $I_L434_56 = 1 + $I_L434_56
+  434.                      if ( $I_L434_56 >= -1 + mm_anl ) exit
+  434.                   enddo
+  434.                endif
+  434.             endif
+  440.             if ( -1 + mm_fct > 0 ) then
+  440.                $I_L440_58 = 0
+  440. !dir$ ivdep
+  440.                do
+  441.                   iday_fct = iday_fct + monln(1 + $I_L440_58)
+  442.                   $I_L440_58 = 1 + $I_L440_58
+  440.                   if ( $I_L440_58 >= -1 + mm_fct ) exit
+  440.                enddo
+  440.             endif
+  440.          endif
+  440.       endif
+  453.       anl_hours = -24 + hh_anl + 24 * iday_anl + 24 * dd_anl
+  454.       fct_hours = -24 + hh_fct + 24 * iday_fct + 24 * dd_fct
+  455.       return
+  455.       end
+  455.       
+    6.       
+    6.       module filegrib
+    6.       end
+    6.       

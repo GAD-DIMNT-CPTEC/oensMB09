@@ -1,0 +1,135 @@
+%include <head.h>
+%include <date.h>
+
+# ESTE SLEEP SERVE APENAS PARA MANTER A DATA PARA A RODADA DOS PRODUTOS.
+# NAO ALTERAR O TEMPO DO SLEEP
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+
+##################################################################################################
+# IMPORTANTE IMPORTANTE IMPORTANTE
+#Além de executar a remocao de vies, ainda cria os links no /Pos
+##################################################################################################
+
+LABELI=${SMSDATEHH}
+
+    dir=/stornext/online7/pnt/oper/tempo/oensMB09
+    dir=/stornext/online7/pnt/preoper/tempo/oensMB09  # PARA USO NO IO
+    set +x
+    echo "Removendo total com 120 dias"
+    data_limite=$(date -d "${SMSDATEHH:0:8} ${SMSDATEHH:8:4}:00 120 days ago" +"%%Y%%m%%d%%H")
+    echo ${data_limite}
+
+    cd ${dir}
+    for d in $(ls -d ??????/????); do
+       d2=$(echo ${d} | tr -d "/" | cut -c1-10)
+       if [ ${d2} -le ${data_limite} ]; then
+          echo
+          echo "---------------------------------------------------------------------"
+          echo "REMOVENDO POS: ${d}"
+          echo "---------------------------------------------------------------------"
+          echo
+#          rm -rfv ${d}
+          echo
+       fi
+    done
+
+    set +x
+    echo "Removendo rvies com 50 dias"
+    data_limite=$(date -d "${SMSDATEHH:0:8} ${SMSDATEHH:8:4}:00 50 days ago" +"%%Y%%m%%d%%H")
+    echo ${data_limite}
+
+    cd ${dir}
+    for d in $(ls -d ??????/????); do
+       d2=$(echo ${d} | tr -d "/" | cut -c1-10)
+       if [ ${d2} -le ${data_limite} ]; then
+          echo
+          echo "---------------------------------------------------------------------"
+          echo "REMOVENDO RVIES: ${d}"
+          echo "---------------------------------------------------------------------"
+          echo
+#          rm -rfv ${d}/rvies
+          echo
+       fi
+    done
+
+    echo "Copiando pos..."
+    mkdir -p ${dir}/${SMSDATEHH:0:6}/${SMSDATEHH:6:4}/
+    cp -rpfv ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/* ${dir}/${SMSDATEHH:0:6}/${SMSDATEHH:6:4}/
+
+if [ 7${SMSDATEHH:8:2} -eq 0 -o 7${SMSDATEHH:8:2} -eq 12 ]; then
+if [ 1 -eq 2 ]; then
+       cd ${HOME_suite}/vies_oper_00_12/scripts   
+       echo ./vies.sh ${SMSDATEHH}
+       ./vies.sh ${SMSDATEHH} &
+       cd ${HOME_suite}/vies_oper_06_18/scripts   
+       echo ./vies.sh ${SMSDATEHH}
+       ./vies.sh ${SMSDATEHH} &
+       wait
+
+       sleep 60
+       echo "---------------------------------------------------------------------"
+       echo "COPIANDO"
+       echo "---------------------------------------------------------------------"
+       echo
+       mkdir -p ${dir}/${SMSDATEHH:0:6}/${SMSDATEHH:6:4}/rvies/
+       cp -rpfv ${SC2_suite}/vies_oper/${SMSDATEHH}/* ${dir}/${SMSDATEHH:0:6}/${SMSDATEHH:6:4}/rvies/
+       echo "---------------------------------------------------------------------"
+       echo
+    #fi
+
+    set +x
+    rm -f ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/GPOS*
+    for arqrmv in $(find ${SC2_suite}/vies_oper/${SMSDATEHH}/ -name "GBRM[0N]?[CPN]2*[0268].*.grb" ); do
+       prefrmv=$(basename $(echo $arqrmv | sed -e s%%"GBRM"%%"GPOS"%% | cut -d. -f1))
+       prefix=$(basename $arqrmv | cut -c5-7)
+       suffrmv=$(echo $arqrmv | cut -d. -f3)
+       if [ -z ${suffrmv} ]; then
+          suffrmv=$(echo $arqrmv | cut -d. -f2)
+       else
+          if [ $(echo ${suffrmv} | grep grb | wc -l) -eq 1 ]; then
+             suffrmv=grb
+          else
+             suffrmv=idx
+          fi
+       fi
+       arqpos=$(basename $(ls ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/${prefix}/${prefrmv}*.${suffrmv}))
+       echo $prefrmv - $suffrmv - ${arqpos}
+       ln -sfv ${arqrmv} ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/${arqpos}
+    done
+fi
+    find ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/???/ -name "GPOS???2*.ctl"    -exec ln -sfv {} ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/ \;
+    find ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/???/ -name "GPOS???2*.icn.*[bl]"  -exec ln -sfv {} ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/ \;
+    find ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/???/ -name "GPOS???2*.inz.*[bl]"  -exec ln -sfv {} ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/ \;
+    find ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/ -maxdepth 1 -name "GPOS???2*.ctl" -exec gribmap -i {} \;
+
+else
+    find ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/???/ -name "GPOS???2*"  -exec ln -sfv {} ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/ \;
+fi
+
+cd %MODELHOME%/run
+./runtemplate.bash 126 28 ${SMSDATEHH} 01N
+./runtemplate.bash 126 28 ${SMSDATEHH} 01P
+
+./runtemplate.bash 126 28 ${SMSDATEHH} 02N
+./runtemplate.bash 126 28 ${SMSDATEHH} 02P
+
+./runtemplate.bash 126 28 ${SMSDATEHH} 03N
+./runtemplate.bash 126 28 ${SMSDATEHH} 03P
+
+./runtemplate.bash 126 28 ${SMSDATEHH} 04N
+./runtemplate.bash 126 28 ${SMSDATEHH} 04P
+
+./runtemplate.bash 126 28 ${SMSDATEHH} 05N
+./runtemplate.bash 126 28 ${SMSDATEHH} 05P
+
+./runtemplate.bash 126 28 ${SMSDATEHH} 06N
+./runtemplate.bash 126 28 ${SMSDATEHH} 06P
+
+./runtemplate.bash 126 28 ${SMSDATEHH} 07N
+./runtemplate.bash 126 28 ${SMSDATEHH} 07P
+
+./runtemplate.bash 126 28 ${SMSDATEHH} NMC
+
+%include <tail.h>

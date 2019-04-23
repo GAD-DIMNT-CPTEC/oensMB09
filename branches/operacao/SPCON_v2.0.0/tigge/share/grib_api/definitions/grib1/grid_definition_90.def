@@ -1,0 +1,71 @@
+# grib 1 -> 2
+constant gridDefinitionTemplateNumber     = 90;
+
+# START 1/grid_definition.space_view_perspective_or_orthographic
+# GRID DEFINITION Space view perspective or orthographic
+#  Nx - number of points along X-axis
+unsigned[2] numberOfPointsAlongXAxis ;
+
+unsigned[2] numberOfPointsAlongYAxis ;
+
+unsigned[3] latitudeOfSubSatellitePoint : optional;
+meta latitudeOfSubSatellitePointInDegrees  scale(latitudeOfSubSatellitePoint,oneConstant,grib1divider);
+alias Lap=latitudeOfSubSatellitePoint;
+
+unsigned[3] longitudeOfSubSatellitePoint : optional;
+meta longitudeOfSubSatellitePointInDegrees  scale(longitudeOfSubSatellitePoint,oneConstant,grib1divider);
+alias Lap=longitudeOfSubSatellitePoint;
+
+include "resolution_flags.def";
+
+unsigned[3] apparentDiameterOfEarthInGridLengthsInXDirection ;
+
+
+unsigned[3] apparentDiameterOfEarthInGridLengthsInYDirection ;
+
+unsigned[2] xCoordinateOfSubSatellitePoint ;
+
+
+unsigned[2] yCoordinateOfSubSatellitePoint ;
+
+include "scanning_mode.def";
+
+unsigned[3] orientationOfTheGridInMillidegrees ;
+meta orientationOfTheGridInDegrees  scale(orientationOfTheGridInMillidegrees,oneConstant,grib1divider);
+
+unsigned[3] altitudeOfTheCameraFromTheEarthSCenterMeasuredInUnitsOfTheEarth ;
+
+unsigned[2] xCoordinateOfOriginOfSectorImage ;
+
+unsigned[2] yCoordinateOfOriginOfSectorImage ;
+
+#Ce      Length is normally 32 + stretched and/or rotated
+#Ce      parameters + vertical coordinate parameters + list of
+#Ce      numbers of points.
+#Ce      (Lambert conformal and Mercator are 42 octets in length,
+#Ce      while Space view is 40 for ECMWF (44 in GRIB specification)
+if ( centre != 98 ) {
+  pad padding_grid90_1(6);
+}
+
+alias geography.lap = latitudeOfSubSatellitePoint;
+alias geography.lop = longitudeOfSubSatellitePoint;
+
+alias geography.nx = numberOfPointsAlongXAxis;
+alias geography.ny = numberOfPointsAlongYAxis;
+
+alias geography.Ni = numberOfPointsAlongXAxis;
+alias geography.Nj = numberOfPointsAlongYAxis;
+
+alias geography.yo = yCoordinateOfOriginOfSectorImage;
+alias geography.xo = xCoordinateOfOriginOfSectorImage;
+alias geography.nr = altitudeOfTheCameraFromTheEarthSCenterMeasuredInUnitsOfTheEarth;
+alias geography.orientationOfTheGrid = orientationOfTheGridInMillidegrees;
+
+alias geography.Yp = yCoordinateOfSubSatellitePoint;
+alias geography.Xp = xCoordinateOfSubSatellitePoint;
+
+alias geography.dy = apparentDiameterOfEarthInGridLengthsInYDirection;
+alias geography.dx = apparentDiameterOfEarthInGridLengthsInXDirection;
+
+# END   1/grid_definition.space_view_perspective_or_orthographic ----------------------------------------------------------------------

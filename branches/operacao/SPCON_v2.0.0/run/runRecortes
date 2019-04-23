@@ -1,0 +1,415 @@
+#!/bin/bash -x
+#help#
+#************************************************************************************#
+#                                                                                    #
+# script to run CPTEC Post-processing on PC Clusters under MPI Scali                 #
+# and Sun Grid Engine without OpenMP                                                 #
+#                                                                                    #
+# assumptions: assume present but NOT at the same directory:                         #
+#              $FEXE/PostGrib (Post-processing Executable file)                      #
+#              $FSCR/POSTIN-GRIB (Post-processing input Namelist file)               #
+#                                                                                    #
+# usage: run_post_UNA.sh cpu_mpi  cpu_node name TRC LV LABELI LABELF name ps NMC hold #
+# where:                                                                             #
+# cpu_mpi: integer, the desired number of mpi processes                              #
+# cpu_node: integer, the desired number of mpi processes per shared memory node      #
+#************************************************************************************#
+#TESTE runGrh.ok 1 1 GRHTQ0213L042 213 42 2011011400 2011011500 GFGNNMC reduzida NMC hold
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  exit 1
+fi
+if [ -z "${4}" ]
+then
+  echo "TRC is not set" 
+  exit 2
+else
+  TRC=`echo ${4} | awk '{print $1/1}'`   
+fi
+if [ -z "${5}" ]
+then
+  echo "LV is not set" 
+  exit 2
+else
+  LV=`echo ${5} | awk '{print $1/1}'`    
+fi
+
+if [ -z "${6}" ]
+then
+  echo "LABELI is not set" 
+  exit 3
+else
+  export LABELI=${6}  
+fi
+if [ -z "${7}" ]
+then
+  echo "LABELF is not set" 
+  exit 3
+else
+  export LABELF=${7}  
+fi
+
+PATHA=`pwd`
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+export FILEENV=`find ${PATHA} -maxdepth 2 -name EnvironmentalVariablesOENS -print`
+. ${FILEENV} ${CASE} NMC
+
+#
+# SETTING THE APPROPRIATED ENVIRONMENT
+#
+cd ${HOME_suite}/run
+
+RESOL=`echo ${CASE} | cut -dL -f1`
+NIVEL=L`echo ${CASE} | cut -dL -f2`
+MODELID=cptec002
+HSTMAQ=`hostname`
+MAQUI=`hostname -s`
+RUNTM=`date +'%Y%m%d%T'`
+export RESOL NIVEL CASE MAQUI MODELID HSTMAQ RUNTM
+#
+#   Set directories and remote machines
+#
+#   DIRBASE is the root for T213 directories structure; 
+#   SCRIPTFILENAME is the script file that submits executable (with path)
+DIRBASE=${HOME_suite}
+
+cpu_mpi=${1};  if [[ -z "${1}"  ]]; then cpu_mpi=1 ; fi
+cpu_node=${2}; if [[ -z "${2}"  ]]; then cpu_node=1; fi
+export cpu_mpi cpu_node
+export RES=$3
+
+# total cpus and nodes
+
+num=$(($cpu_mpi+$cpu_node-1))
+fra=$(($num/$cpu_node))
+cpu_tot=$(($fra*$cpu_node))
+echo fila=mpi-npn${cpu_node} total cpus=${cpu_tot}
+
+
+yyyymmdd=`awk 'BEGIN { print substr('$LABELI',1,8) }'`
+hh=`awk 'BEGIN { print substr('$LABELI',9,2) }'`
+
+export DATAINDIR=${SC2_suite}/pos/dataout/${CASE}/${yyyymmdd}${hh}
+export RECDATAOUT=${SC2_suite}/produtos/recortes/controle/${CASE}/${yyyymmdd}${hh};mkdir -p ${RECDATAOUT}
+nhoras=${NDFCT0012}
+
+if [ "${hh}" -eq "06" -o "${hh}" -eq "18" ]; then
+    nhoras=${NDFCT0618}
+fi
+
+rm -f ${RECDATAOUT}/G*${LABELI}2*.ctl
+rm -f ${RECDATAOUT}/G*${LABELI}2*.gmp
+rm -f ${RECDATAOUT}/G*${LABELI}2*.ctl
+rm -f ${RECDATAOUT}/G*${LABELI}2*.idx
+
+unset noclobber
+PREFXO=NMC
+GPOS=GPOS${PREFXO}
+
+dateoutjob=`date +"%Y%m%d%H%S"`
+SCRIPTFILENAME=${HOME_suite}/run/set$(basename ${0}).${PERR}.${CASE}.$(hostname)
+OUTPUTFILEPATH=${SC2_suite}/out_err/${CASE}/${LABELI}; mkdir -p $OUTPUTFILEPATH
+
+echo ${SCRIPTFILENAME}
+cat <<EOT>${SCRIPTFILENAME}
+#PBS -W umask=026
+#PBS -o ${OUTPUTFILEPATH}/$(basename ${0}).${NUM}${PT}.${LABELI}.${tmstp}.out
+#PBS -e ${OUTPUTFILEPATH}/$(basename ${0}).${NUM}${PT}.${LABELI}.${tmstp}.err
+#PBS -N $RES
+#PBS -q $QUEUE3
+#PBS -S /bin/bash
+#PBS -lselect=1:ncpus=1
+#PBS -N $RES
+
+umask 026
+
+ti=\$(date +"%s %Y/%m/%d %H:%M:%S") # TEMPO INICIAL
+
+PATHA=`pwd`
+. ${FILEENV} ${CASE} NMC
+
+unset noclobber
+
+####--- Configuracoes para enviar os GAMRAMS para a UNA ---###
+#
+# A copia abaixo evita problemas com maiusculas/minusculas contidas
+# no caminho ate a cptec.table
+#
+cp ${HOME_suite}/run/cptec.table ${DATAINDIR}
+echo "LABELF=$LABELF"
+
+for recortes in \`cat ${HOME_suite}/run/especificacoes_do_recorte.${CASE}.txt | awk '{print \$1}'\`; do
+    xname=\`grep \${recortes} ${HOME_suite}/run/especificacoes_do_recorte.${CASE}.txt\`
+    c1=\`echo \$xname | cut -f1 -d":"\`; c2=\`echo \$xname | cut -f2 -d":"\`; c3=\`echo \$xname | cut -f3 -d":"\` 
+    c4=\`echo \$xname | cut -f4 -d":"\`; c5=\`echo \$xname | cut -f5 -d":"\`; c6=\`echo \$xname | cut -f6 -d":"\` 
+    c7=\`echo \$xname | cut -f7 -d":"\`; c8=\`echo \$xname | cut -f8 -d":"\`; c9=\`echo \$xname | cut -f9 -d":"\`  
+    tl1=' SECTOR: ';tl2=' FILE';tit=\$c2\$tl1\$c3\$tl2
+
+    for narq in \`ls ${DATAINDIR}/${GPOS}${LABELI}*.fct.$CASE.idx ${DATAINDIR}/${GPOS}${LABELI}*.fgs.$CASE.idx ${DATAINDIR}/${GPOS}${LABELI}*.icn.$CASE.idx\` ; do
+        narqin=\`echo \$narq | sed s@".idx"@".ctl"@g\`
+        narquppcas=${RECDATAOUT}/\`basename \${narqin/${GPOS}/G\$c1}\`
+        narquppcas=\${narquppcas%*.ctl}
+        if [ \( \$(echo \$c1| grep AMSTSP | wc -l) -eq 1 \) -o \( \$(echo \$c1| grep AMSSFC | wc -l) -eq 1 \) -o \( \$(echo \$c1| grep AMTEMS | wc -l) -eq 1 \) ]; then
+                 novono=\$(echo \$narquppcas | sed -e s@'P\\.'@'S\\.'@g )
+                 narquppcas=\$novono
+        fi
+#DSM 09/Fev/2012        if [ ! \$(echo \$c6 | cut -d. -f1) = "-89" ]; then
+        if [ ! \$(echo \$c6 | cut -d. -f1) = "-89" ] && [ \$c1 != 'AMEUAF' ] ; then
+           op="-q -i \$narqin -o \${narquppcas}.tmp -center $MODELID -format grads_grib -lat -89 \$c7 -levs \$c8 -lon \$c4 \$c5 -grid gaussian -table ${HOME_suite}/run/cptec.table -v -vars \$c9 -title \$tit"
+           ${GRADSB}/lats4d.sh \$op
+           sleep 3  #DSM
+           op="-q -i \${narquppcas}.tmp.ctl -o \${narquppcas} -center $MODELID -format grads_grib -lat \$c6 \$c7 -levs \$c8 -lon \$c4 \$c5 -grid gaussian -table ${HOME_suite}/run/cptec.table -v -vars \$c9 -title \$tit"
+           ${GRADSB}/lats4d.sh \$op
+           rm -f \${narquppcas}.tmp*
+        else
+           op="-q -i \$narqin -o \${narquppcas} -center $MODELID -format grads_grib -lat \$c6 \$c7 -levs \$c8 -lon \$c4 \$c5 -grid gaussian -table ${HOME_suite}/run/cptec.table -v -vars \$c9 -title \$tit"
+           ${GRADSB}/lats4d.sh \$op
+        fi
+
+#+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+#
+# IF para corrigir o CTL porque o lats nao o produz
+# corretamente no caso de um recorte com dominio global
+#
+        if [ G\${c1} == "GDSAGLB" ]; then
+            # Correcting the wrong line in the CTL
+cat << EOF > `echo ${HOME_suite}`/run/exscript
+40
+d
+i
+ 85.647  86.208  86.769  87.331  87.892  88.453  89.013  89.570
+zdef 17 levels
+.
+41,43j
+wq
+EOF
+            ex - \${narquppcas}.ctl < `echo ${HOME_suite}`/run/exscript
+            # Mapping the GRIB data
+            ${GRADSB}/gribmap -i \${narquppcas}.ctl
+        fi
+        if [ G\${c1} == "GPOSUSP" ]; then
+            # Correcting the wrong line in the CTL
+cat << EOF > `echo ${HOME_suite}`/run/exscript
+40
+d
+i
+ 85.647  86.208  86.769  87.331  87.892  88.453  89.013  89.570
+zdef 1 levels 1000
+.
+wq
+EOF
+             ex - \${narquppcas}.ctl < `echo ${HOME_suite}`/run/exscript
+             # Mapping the GRIB data
+             ${GRADSB}/gribmap -i \${narquppcas}.ctl
+         fi
+		 rm -f `echo ${HOME_suite}`/run/exscript
+#+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+	done
+done
+
+
+#RECORTES PARA O LDM DESLIGADOS
+#   DESLIGADOS
+
+echo "POS-PROCESSANDO DHN"
+mkdir -p ${SC2_suite}/dhn/dataout/${CASE}/${LABELI}
+
+cat <<EOF> ${SC1_suite}/dhn/bin/dhn.nml
+ &NMLDHN
+  ITM=120,
+  ITC='3HR',
+  DIRI='${SC2_suite}/model/dataout/${CASE}/${LABELI}/ ',
+  DIRO='${SC2_suite}/pos/dataout/${CASE}/${LABELI}/ ',
+  FNDHI='GDHNNMC${LABELI}${LABELF}F.unf.${CASE} ',
+  FNICN='GPOSNMC${LABELI}${LABELI}P.icn.${CASE} ',
+  FNMSK='GDHNNMC${LABELI}${LABELF}S.msk.${CASE} ',
+  FNDHN='GDHNNMC${LABELI}${LABELF}S.fct.${CASE} '
+ &END
+EOF
+
+cd ${SC1_suite}/dhn/bin/
+time ./posdhn.x < dhn.nml
+
+echo ${SC2_suite}/pos/dataout/${CASE}/${LABELI}/GDHNNMC${LABELI}${LABELI}S.fct.${CASE}.ctl
+cat <<EOF> ${SC2_suite}/pos/dataout/${CASE}/${LABELI}/GDHNNMC${LABELI}${LABELI}S.fct.${CASE}.ctl
+dset ^GDHNNMC${LABELI}${LABELF}S.fct.${CASE}
+options big_endian
+title pressure history cptec agcm v3.0 1999 t126l28 cold
+undef 1e+20
+xdef 384 linear 0.000000 0.937500
+ydef 192 levels
+-89.284 -88.357 
+-87.424 -86.490 -85.556 -84.621 -83.687 -82.752 -81.817 -80.882 -79.947 -79.012 
+-78.077 -77.142 -76.207 -75.272 -74.337 -73.402 -72.467 -71.532 -70.597 -69.662 
+-68.727 -67.792 -66.857 -65.922 -64.987 -64.052 -63.116 -62.181 -61.246 -60.311 
+-59.376 -58.441 -57.506 -56.571 -55.636 -54.701 -53.766 -52.831 -51.896 -50.961 
+-50.026 -49.091 -48.156 -47.221 -46.286 -45.350 -44.415 -43.480 -42.545 -41.610 
+-40.675 -39.740 -38.805 -37.870 -36.935 -36.000 -35.065 -34.130 -33.195 -32.260 
+-31.325 -30.389 -29.454 -28.519 -27.584 -26.649 -25.714 -24.779 -23.844 -22.909 
+-21.974 -21.039 -20.104 -19.169 -18.234 -17.299 -16.364 -15.429 -14.493 -13.558 
+-12.623 -11.688 -10.753  -9.818  -8.883  -7.948  -7.013  -6.078  -5.143  -4.208 
+ -3.273  -2.338  -1.403  -0.468   0.468   1.403   2.338   3.273   4.208   5.143 
+  6.078   7.013   7.948   8.883   9.818  10.753  11.688  12.623  13.558  14.493 
+ 15.429  16.364  17.299  18.234  19.169  20.104  21.039  21.974  22.909  23.844 
+ 24.779  25.714  26.649  27.584  28.519  29.454  30.389  31.325  32.260  33.195 
+ 34.130  35.065  36.000  36.935  37.870  38.805  39.740  40.675  41.610  42.545 
+ 43.480  44.415  45.350  46.286  47.221  48.156  49.091  50.026  50.961  51.896 
+ 52.831  53.766  54.701  55.636  56.571  57.506  58.441  59.376  60.311  61.246 
+ 62.181  63.116  64.052  64.987  65.922  66.857  67.792  68.727  69.662  70.597 
+ 71.532  72.467  73.402  74.337  75.272  76.207  77.142  78.077  79.012  79.947 
+ 80.882  81.817  82.752  83.687  84.621  85.556  86.490  87.424  88.357  89.284 
+
+zdef 1 levels 1013
+tdef 120 linear $(date -d "${LABELI:0:8} ${LABELI:8:2}:00 3 hours" +"%HZ%d%b%Y")  3hr
+vars 2
+usst      0  193,  1,  0,  0 SURFACE ZONAL WIND STRESS [Pa]
+vsst      0  195,  1,  0,  0 SURFACE MERIDIONAL WIND STRESS [Pa]
+endvars
+EOF
+
+op="-q -i ${SC2_suite}/pos/dataout/${CASE}/${LABELI}/GDHNNMC${LABELI}${LABELI}S.fct.${CASE}.ctl -o ${SC2_suite}/dhn/dataout/${CASE}/${LABELI}/GDHNNMC${LABELI}${LABELI}S.fct.${CASE} -center $MODELID -format grads_grib -grid gaussian -table ${HOME_suite}/run/cptec.table -v"
+echo ${GRADSB}/lats4d.sh \$op
+${GRADSB}/lats4d.sh \$op
+
+cat <<EOF> ${SC2_suite}/dhn/dataout/${CASE}/${LABELI}/GDHNNMC${LABELI}${LABELI}S.fct.${CASE}.ctl
+dset ^GDHNNMC${LABELI}${LABELF}S.fct.${CASE}.grb
+index GDHNNMC${LABELI}${LABELF}S.fct.${CASE}.gmp
+dtype grib
+title pressure history cptec agcm v3.0 1999 t126l28 cold
+undef 1e+20
+xdef 384 linear 0.000000 0.937500
+ydef 192 levels
+-89.284 -88.357 
+-87.424 -86.490 -85.556 -84.621 -83.687 -82.752 -81.817 -80.882 -79.947 -79.012 
+-78.077 -77.142 -76.207 -75.272 -74.337 -73.402 -72.467 -71.532 -70.597 -69.662 
+-68.727 -67.792 -66.857 -65.922 -64.987 -64.052 -63.116 -62.181 -61.246 -60.311 
+-59.376 -58.441 -57.506 -56.571 -55.636 -54.701 -53.766 -52.831 -51.896 -50.961 
+-50.026 -49.091 -48.156 -47.221 -46.286 -45.350 -44.415 -43.480 -42.545 -41.610 
+-40.675 -39.740 -38.805 -37.870 -36.935 -36.000 -35.065 -34.130 -33.195 -32.260 
+-31.325 -30.389 -29.454 -28.519 -27.584 -26.649 -25.714 -24.779 -23.844 -22.909 
+-21.974 -21.039 -20.104 -19.169 -18.234 -17.299 -16.364 -15.429 -14.493 -13.558 
+-12.623 -11.688 -10.753  -9.818  -8.883  -7.948  -7.013  -6.078  -5.143  -4.208 
+ -3.273  -2.338  -1.403  -0.468   0.468   1.403   2.338   3.273   4.208   5.143 
+  6.078   7.013   7.948   8.883   9.818  10.753  11.688  12.623  13.558  14.493 
+ 15.429  16.364  17.299  18.234  19.169  20.104  21.039  21.974  22.909  23.844 
+ 24.779  25.714  26.649  27.584  28.519  29.454  30.389  31.325  32.260  33.195 
+ 34.130  35.065  36.000  36.935  37.870  38.805  39.740  40.675  41.610  42.545 
+ 43.480  44.415  45.350  46.286  47.221  48.156  49.091  50.026  50.961  51.896 
+ 52.831  53.766  54.701  55.636  56.571  57.506  58.441  59.376  60.311  61.246 
+ 62.181  63.116  64.052  64.987  65.922  66.857  67.792  68.727  69.662  70.597 
+ 71.532  72.467  73.402  74.337  75.272  76.207  77.142  78.077  79.012  79.947 
+ 80.882  81.817  82.752  83.687  84.621  85.556  86.490  87.424  88.357  89.284 
+
+zdef 1 levels 1013
+tdef 120 linear $(date -d "${LABELI:0:8} ${LABELI:8:2}:00 3 hours" +"%HZ%d%b%Y")  3hr
+vars 2
+usst      0  193,  1,  0,  0 SURFACE ZONAL WIND STRESS [Pa]
+vsst      0  195,  1,  0,  0 SURFACE MERIDIONAL WIND STRESS [Pa]
+endvars
+EOF
+
+cd ${SC2_suite}/dhn/dataout/${CASE}/${LABELI}/
+${GRADSB}/gribmap -i GDHNNMC${LABELI}${LABELI}S.fct.${CASE}.ctl
+exit 0
+#+-+-+-+++-+-+-++-+-+-++-+-+-+-+-+-++-+-+-+++-+-+-++-+-+-++-+-+-+-+-+-++-+-+-++-+-+-++-+-+-++-+-+-++-+-+-+
+#
+# Recortes para insercao no LDM
+#
+echo "user iddftp mssftp." > moingobe.ftp
+echo "prompt\nbin\ncd /home/iddftp/T213/" >> moingobe.ftp
+echo "lcd /gfs/dk20/modoper/tempo/global/T213L42/grib/$LABELS" >> moingobe.ftp
+
+j=0
+#set -A VARS psnm zgeo uvel vvel temp prec umrs
+VARS=( psnm zgeo uvel vvel temp prec umrs )
+echo \${VARS[0]}
+
+while [ \${j} -lt 07 ] ; do
+
+echo \$j - \${VARS[\$j]}
+
+hor=0000
+i=1
+
+while [ \${i} -lt 16 ] ; do
+      echo "Criando arquivo: \$hor -> Data: ${LABELF}"
+      FILE=cptglb${LABELI}.\${VARS[\${j}]}.pgrbf\${hor}
+      if [ \${i} -ne 1 ]; then
+           ${GRADSB}/lats4d.sh -i ${GPOS}${LABELI}${LABELF}P.fct.$CASE.ctl -o \${FILE} -format "grads_grib" -grid "gaussian" -vars "\${VARS[\$j]}"
+cat << EOF > `echo ${HOME_suite}`/run/exscript
+40
+d
+i
+ 85.647  86.208  86.769  87.331  87.892  88.453  89.013  89.570
+zdef 1 levels 1013
+.
+wq
+EOF
+ex -s ${DATAINDIR}/\${FILE}.ctl < `echo ${HOME_suite}`/run/exscript
+
+           echo "put \${FILE}.grb" >> moingobe.ftp
+           echo "\${FILE}.grb" >> moingobe.lst
+     else
+           ${GRADSB}/lats4d.sh -i ${GPOS}${LABELI}${LABELF}P.icn.$CASE.ctl -o \${FILE} -format "grads_grib" -grid "gaussian" -vars "\${VARS[\$j]}"
+           echo "put \${FILE}.grb" >> moingobe.ftp
+           echo "\${FILE}.grb" >> moingobe.lst
+cat << EOF > `echo ${HOME_suite}`/run/exscript
+40
+d
+i
+ 85.647  86.208  86.769  87.331  87.892  88.453  89.013  89.570
+zdef 1 levels 1013
+.
+wq
+EOF
+ex -s ${DATAINDIR}/\${FILE}.ctl < `echo ${HOME_suite}`/run/exscript
+
+     fi
+         hor=\`expr \${hor} + 12\`
+     if [ \${hor} -lt 10 ] ; then
+           hor=000\${hor}
+     else
+           if [ \${hor} -lt 100 ] ; then
+                 hor=00\${hor}
+           else
+                 hor=0\${hor}
+           fi
+     fi
+let i=\${i}+1
+done
+
+let j=\${j}+1
+done
+
+DATE=`echo ${LABELI} | cut -c 1-8`
+LABELR=`date -d "${DATE} 3 days ago" +"%Y%m%d"`
+echo "mdel cptglb${LABELR}*" >> moingobe.ftp
+
+echo "dir\nquit" >> moingobe.ftp
+#+-+-+-+++-+-+-++-+-+-++-+-+-+-+-+-++-+-+-+++-+-+-++-+-+-++-+-+-+-+-+-++-+-+-++-+-+-++-+-+-++-+-+-++-+-+-+
+
+mkdir -p ${CTRL_HOME}/${CASE}/${LABELI:0:6}
+date +"${HOME_suite}/run/runRecortes @ aux 1 @ ini \$ti @ fim %s %Y/%m/%d %H:%M:%S" >> ${CTRL_HOME}/${CASE}/${LABELI:0:6}/${LABELI:6:4}.txt
+
+EOT
+
+#
+#   End script generation. Then change permission to executable
+#
+export PBS_SERVER=aux20-eth4 # PARA RODAR NOS NOS DE PROCESSAMENTO AUXILIAR
+
+chmod 700 ${SCRIPTFILENAME}
+SBJ=$(qsub ${hold} ${SCRIPTFILENAME} | cut -d. -f1)
+
+it=2
+while [ ${it} -gt 0 ];do
+	it=0$(qstat | grep $SBJ | wc -l)
+	sleep 30
+done
+
+exit 0

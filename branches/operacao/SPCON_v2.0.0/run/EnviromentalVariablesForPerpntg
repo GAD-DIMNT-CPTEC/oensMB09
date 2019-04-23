@@ -1,0 +1,303 @@
+#!/bin/bash
+#help#
+#********************************************************************#
+#                                                                    #
+#     Name:           runperpntg.sx6                                 #
+#                                                                    #
+#     Function:       This script generated and submit               #
+#                     a script to start the global model             #
+#                     at a given date/time to integration            #
+#                     from initial date till final date.             #
+#                                                                    #
+#     Date:           May    28th, 2003.                             #
+#     Last change:    May    28th, 2003.                             #
+#                                                                    #
+#     Valid Arguments for runperpntg.sx6                             #
+#                                                                    #
+#     First    :   HELP: help or nothing for getting help            #
+#     First    : COMPILE: help, make, clean or run                   #
+#     Second   :    TRC: three-digit triangular truncation           #
+#     Third    :     LV: two-digit number of vertical sigma-layers   #
+#     Fourth   :    NUM: pertubation number                          #
+#     Fifth    :     PT: pertubation suffix                          #        
+#     Sixth    : LABELI: initial forecasting label                   #
+#     Seventh  : NFDAYS: number of forecasting days                  #
+#     Eighth   :  HUMID: YES or NO (humidity will be perturbed)      #
+#     Nineth   :NUMPERT: number of random perturbations              #
+#     Tenth    :  NMSST: SST file name or nothing                    #
+#                                                                    #
+#     Obs.   : NMSST : default sstaoi                                #
+#              LABELx: yyyymmddhh                                    #
+#                      yyyy = four digit year                        #
+#                        mm = two digit month                        #
+#                        dd = two digit day                          #
+#                        hh = two digit UTC hour                     #
+#********************************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+    cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+    exit 0
+fi
+#
+#       Testing Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+
+if [  -z "${2}" ]
+then
+echo "Second argument is not set: TRC"
+exit
+else
+export TRC=`echo ${2} | awk '{print $1/1}'`
+fi
+
+if [ -z "${3}" ]
+then
+echo "Third argument is not set: LV"
+exit
+else
+export LV=`echo ${3} | awk '{print $1/1}'` 
+fi
+
+if [ -z "${4}" ]
+then
+echo "Fourth argument is not set: NUM"
+exit
+fi
+
+if [ -z "${5}" ]
+then
+echo "Fifth argument is not set: PT"
+exit
+fi
+if [ -z "${6}" ]
+then
+echo "Sixth argument is not set (LABELI: yyyymmddhh)"
+exit
+fi
+if [ -z "${7}" ]
+then
+echo "Seventh argument is not set: NFDAYS"
+exit
+fi
+
+if [ -z "${8}" ]
+then
+echo "Eighth argument is not set: HUMID"
+exit
+else
+HUMID=${8}
+fi
+
+if [ -z "${9}" ]
+then
+echo "Nineth argument is not set: NUMPERT"
+exit
+else
+export NUMPERT=`echo ${9} | awk '{print $1/1}'` 
+fi
+
+if [ -z "${10}" ]
+then
+echo "Warning NMSST is not set. Using default: sstaoi"
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+COMPILE=${1}
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+HSTMAQ=`hostname`
+MACHINE=una
+QUEUE=pesq.q
+#QUEUE=global.q
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT=out
+export HSTMAQ MACHINE RUNTM EXT
+#
+#   Set directories and remote machines
+#
+#   OPERM : is the directory for sources, scripts and printouts 
+#           at SX6.
+#   SOPERM: is the directory for input and output files at SX6.
+#   ROPERM: is the directory for big selected output files at SX6.
+#   CTLDIR: is the directory where the outputs will be available
+#           after they where send to the machine RMTCPF.
+#   DIRPRD: is the directory of the machine RMTCPR where there
+#           are the programs to generate special products.
+#   RMTUSR: is the remote user at the telecom machine RMTCPR.
+#   RMTCPR: is the remote machine to run the special products.
+#   RMTCPF: is the remote archieve machine.
+#   RMUSCF: is the remote archieve machine user.
+#   RMPWCF: is the remote archieve machine password.
+#   RMTCPY: is the remote products machine for external users.
+#
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesMCGA -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE} ${4}${5}
+cd ${HOME_suite}/run
+#
+CTLDIR=
+DIRPRD=
+RMTUSR=
+RMTCPR=
+RMTCPF=
+RMUSCF=
+RMPWCF=
+RMTCPY=
+#
+export OPERM SOPERM ROPERM CTLDIR DIRPRD
+export RMTUSR RMTCPR RMTCPF RMUSCF RMPWCF RMTCPY
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+export TRUNC=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+export LEV=`echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' `
+NIVELP=K15
+export TRUNC LEV NIVELP
+NUM=`echo ${4} |awk '{ printf("%2.2d\n",$1)  }' `
+NIVELP=K15
+PT=${5}
+export NUM PT
+#
+#   Set initial and final forecasting labels and UTC Hour
+#
+LABELI=${6}
+NFDAYS=${7}
+export LABELI NFDAYS
+#
+#############Set number (fct) post-processing #########
+NF=24
+export NF
+
+####################################################### 
+#
+#   Set Perturbation
+#
+#   Set SST file name
+#
+if [ -z "${11}" ]
+then
+NMSST=sstaoi
+else
+NMSST=${11}
+fi
+export NMSST
+#
+cd ${OPERM}/run
+
+
+
+#================== PERRECO ==================#
+PERR=${NUM}
+#
+#   Set machine, Run time and Extention
+#
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+HSTMAQ=`hostname`
+export COMPILE=${1}
+MACHINE=una
+QUEUE=pesq.q
+#QUEUE=Inter
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+EXT=out
+echo ${MACHINE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   IOPERM is the directory for the input files.
+#
+cd ${HOME_suite}/run
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${IOPERM}
+#
+#   Set truncation and layers
+#
+export TRUNC=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+export LEV=`echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' `
+export RESOL=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+export NIVEL=`echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' `
+#
+cd ${OPERM}/run
+#
+mkdir -p ${ROPERM}/recfct/output
+
+# 
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y'``date +'%m'``date +'%d'`
+HOUR=`date +'%H:%M'`
+echo 'Date: '${DATE}
+echo 'Hour: '${HOUR}
+export DATE HOUR
+#
+NUM=${4}
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+echo ${LABELI}
+export LABELI
+export NFDAYS
+#
+cd ${ROPERM}/model/dataout/${RESOL}${NIVEL}/${LABELI}
+rm -f GFCT${NUM}R${LABELI}${LABELI}*
+rm -f GFCT${NUM}R${LABELI}*.dir.${RESOL}${NIVEL}
+rm -f GFCT${NUM}R${LABELI}*.dir.${RESOL}${NIVEL}.files
+for arq in `ls GFCT${NUM}R${LABELI}*F.fct.${RESOL}${NIVEL}`
+do
+  ln -sf ${DK_suite2}/model/dataout/${RESOL}${NIVEL}/${LABELI}/$arq ${DK_suite}/model/datain/
+done      
+ext=R.fct.${RESOL}${NIVEL}
+echo ${ext}
+cd  ${IOPERM}
+rm -f lst.GFCT${NUM}R${LABELI}.dr
+ls -1 GFCT${NUM}R${LABELI}*${RESOL}${NIVEL}  > lst.GFCT${NUM}R${LABELI}
+xx=`awk '{ print substr($1,18,10) }' lst.GFCT${NUM}R${LABELI}`
+echo ${xx} > ${OPERM}/run/lst.GFCT${NUM}R${LABELI}
+cd ${SOPERM}/eof/datain
+rm templ${NUM}${LABELI}
+it=1
+for lf in ${xx} 
+do
+  cd ${SOPERM}/eof/datain
+cat <<EOT1 >> ${SOPERM}/eof/datain/templ${NUM}${LABELI}
+${ROPERM}/recfct/dataout/${RESOL}${NIVEL}/GFCTCTR${LABELI}${lf}${ext}
+${ROPERM}/recfct/dataout/${RESOL}${NIVEL}/GFCT${NUM}R${LABELI}${lf}${ext}
+EOT1
+
+  ls -ltr ${SOPERM}/eof/datain/templ${NUM}${LABELI}
+  cd ${OPERM}/run
+  #for arq in \`ls ${ROPERM}/recfct/dataout/${RESOL}${NIVEL}/GFCT\${NUM}R\${LABELI}*.fct*\`
+  for arq in `ls ${ROPERM}/recfct/dataout/${RESOL}${NIVEL}/GFCT${NUM}R${LABELI}${lf}*.fct*`
+  do
+    echo ln -sf $arq ${ROPERM}/model/datain/
+    ln -sf $arq ${ROPERM}/model/datain/
+  done
+done

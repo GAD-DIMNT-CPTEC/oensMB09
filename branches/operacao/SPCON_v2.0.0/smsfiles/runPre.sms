@@ -1,0 +1,180 @@
+%include <head.h>
+%include <date.h>
+
+smslabel Info "Rodando para: ${SMSDATEHH}"
+
+export PBS_SERVER=aux20-eth4
+
+echo "IMPORTANTE:"
+echo "AS CHECKBOX/EVENTOS SAO MARCADAS APENAS NA PRIMEIRA TENTATIVA."
+echo "CASO SEJAM DESMARCADAS, NAO SERAO RE-MARCADAS AUTOMATICAMENTE."
+
+set -x
+
+if [ %SMSTRYNO% -eq 1 ]; then
+	smsevent CHOPPING
+	smsevent SNOWCLIMA
+	smsevent SSTWEEKLYNCEP
+	smsevent SSTWEEKLY
+fi
+
+set +x
+
+echo "FIM DA MARCACAO DOS CHECKBOX/EVENTOS"
+
+while [ 0 ]; do
+
+test=`cdp << EOF
+status -f -m full /externos/Download/ncep
+exit 
+EOF`
+test=`echo $test | grep active | wc -l`
+
+echo TEST=$test
+if [ $test -eq 0 ]; then
+	break
+else
+	echo "ESPERANDO ANALISE: ${SMSDATEHH}"
+	sleep 300
+fi
+done
+
+set -x
+SMSDATE=$(echo $SMSDATEHH | cut -c 1-8)
+HH=$(echo ${SMSDATEHH} | cut -c9-10)
+echo "SMSDATEHH=$SMSDATEHH"
+
+SMSDATEOLD=$(date -d "$SMSDATE $HH:00 5 day ago" +"%%Y%%m%%d")
+
+if [ %TRC% -eq 0299 ]; then
+	sleep 30
+	i=0
+	while [ $(cat .stat.%RESOL% | grep active | wc -l) -gt 0 ]; do
+		if [ $i -gt 60 ]; then
+			break
+		else
+cdp << EOF > .stat.%RESOL%
+status -m full /%SUITE%/main/TQ0213L042/pre
+exit 
+EOF
+		fi
+		echo "AGUARDANDO PRE do TQ0213L042"
+		smslabel Info "AGUARDANDO PRE do TQ0213L042"
+		sleep 60
+		let i=i+1
+	done
+fi
+
+mkdir -p /scratchout/oper/io/oensMB09/out_err/TQ0126L028/${SMSDATEHH}
+
+diranl=/stornext/online7/pnt/oper/tempo/externos/Download/NCEP/${SMSDATEHH:0:6}/${SMSDATEHH:6:4}
+dirin=/scratchin/oper/io/oensMB09/pre/datain/
+set +e
+
+#cat <<EOF>/dev/null #COMECO COMENTARIO
+while [ $(ls ${diranl}/gblav.T${SMSDATEHH:8:2}Z.SAnl.${SMSDATEHH} | wc -l) -ne 1 ]; do
+   sleep 30
+done
+
+if [ $(ls ${diranl}/gblav.T${SMSDATEHH:8:2}Z.SAnl.${SMSDATEHH} | wc -l) -eq 1 ]; then
+   cp -pfv ${diranl}/gblav.T${SMSDATEHH:8:2}Z.SAnl.${SMSDATEHH} ${dirin}
+   if [ ${SMSDATEHH:8:2} -ne 00 ]; then
+      cp -pfv ${diranl}/gdas1.T${SMSDATEHH:8:2}Z.sstgrb2.${SMSDATEHH} ${dirin}
+      cp -pfv ${diranl}/gdas1.T${SMSDATEHH:8:2}Z.sstgrb2.${SMSDATEHH} ${dirin}
+      cp -pfv ${diranl}/rtgssthr_grb_0.083.grib2.${SMSDATEHH:0:8}  ${dirin}/rtgssthr_grb_0.083.grib2.${SMSDATEHH:0:8}
+   else
+      aaaaaa=$(date -d "${SMSDATEHH:0:8} ${SMSDATEHH:8:2}:00 1 day ago" +"%%Y%%m%%d%%H")
+      diranl2="/stornext/online7/pnt/oper/tempo/externos/Download/NCEP/${aaaaaa:0:6}/${aaaaaa:6:4}"
+      cp -pfv ${diranl2}/gdas1.T${aaaaaa:8:2}Z.sstgrb2.${aaaaaa}  ${dirin}/gdas1.T${SMSDATEHH:8:2}Z.sstgrb2.${SMSDATEHH}
+      cp -pfv ${diranl2}/rtgssthr_grb_0.083.grib2.${aaaaaa:0:8}  ${dirin}/rtgssthr_grb_0.083.grib2.${SMSDATEHH:0:8}
+   fi
+   cp -pfv ${diranl}/gdas1.T${SMSDATEHH:8:2}Z.snogrb2.${SMSDATEHH} ${dirin}
+else
+   diranl=/stornext/oper/tempo/externos/Download/NCEP/${SMSDATEHH:0:6}/${SMSDATEHH:6:4}
+   cp -pfv ${diranl}/gblav.SAnl_${SMSDATEHH}.tgz ${dirin}
+   cp -pfv ${diranl}/gdas1.T${SMSDATEHH:8:2}Z.sstgrb2.${SMSDATEHH}.tgz ${dirin}
+   cp -pfv ${diranl}/rtgssthr_grb_${SMSDATEHH}.tgz ${dirin}
+
+   a=$(pwd)
+   cd ${dirin}
+   tar zxvf gblav.SAnl_${SMSDATEHH}.tgz
+   tar zxvf rtgssthr_grb_${SMSDATEHH}.tgz ${dirin}
+   cd $a
+fi
+set -e
+
+set -x
+SUBMIT_HOME=/scratchin/oper/tempo
+####A=$(ls -ltr ${dirin}/gblav.T${HH}Z.SAnl.$SMSDATEHH | awk '{print $5}')
+A=$(ls -ltr ${dirin}/gblav.T${SMSDATEHH:8:2}Z.SAnl.${SMSDATEHH} | awk '{print $5}')
+if [ -z $A  ]; then
+   A=0
+   echo "ANALISE $SMSDATEHH NAO ENCONTRADA, AGUARDANDO..."
+fi
+
+while [ $A -lt 511376936 ]; do
+   echo "ANALISE $SMSDATEHH NAO ENCONTRADA, AGUARDANDO..."
+   A=$(ls -ltr ${dirin}/gblav.T${HH}Z.SAnl.$SMSDATEHH | awk '{print $5}')
+   if [ -z $A  ]; then
+      smslabel Info "Encontrada: gblav.T${HH}Z.SAnl.$SMSDATEHH"
+      A=0
+   fi
+   smslabel Info "Esperando Analise ${SMSDATEHH}"
+   sleep 30
+done
+
+sleep 3
+
+#EOF   #FINAL COMENTARIO
+
+smslabel Info "Rodada: $SMSDATEHH"
+
+if [ $HH -eq 00 ] ;then
+	D=$(date -d "$SMSDATE 00:00 1 day ago" +"%%Y%%m%%d")
+else
+	D=${SMSDATE}
+fi
+
+cd %MODELHOME%/run
+#SEGMENTADO VIA CDP E EVENTOS ./runPre %RESOL% ${SMSDATEHH} CHOPPING SNOWCLIMA SSTWEEKLYNCEP SSTWEEKLY
+#
+SUBMIT_HOME=/scratchin/oper/io
+
+cdp << EOF > .jobtest.%RESOL%
+status -m full -e /%SUITE%/main/%RESOL%/pre
+exit 
+EOF
+
+LABELI=${SMSDATEHH}
+
+echo "INICIANDO PRE..."
+if [ $(cat .jobtest.%RESOL% | grep -i CHOPPING | grep -i set | wc -l) -eq 1 ]; then
+   echo "./runPre %RESOL% ${SMSDATEHH} CHOPPING"
+	./runPre %RESOL% ${SMSDATEHH} CHOPPING
+fi
+if [ $(cat .jobtest.%RESOL% | grep -i SSTWEEKLYNCEP | grep -i set | wc -l) -eq 1 ]; then
+   echo "./runPre %RESOL% ${SMSDATEHH} SSTWEEKLYNCEP SSTWEEKLY"
+	./runPre %RESOL% ${SMSDATEHH} SSTWEEKLYNCEP
+	./runPre %RESOL% ${SMSDATEHH} SSTWEEKLY
+fi
+if [ $(cat .jobtest.%RESOL% | grep -i SNOWCLIMA | grep -i set | wc -l) -eq 1 ]; then
+   echo "./runPre %RESOL% ${SMSDATEHH} SNOWCLIMA"
+   ./runPre %RESOL% ${SMSDATEHH} SNOWCLIMA
+fi
+
+#rm -f .jobtest.%RESOL%
+
+if [ $HH -eq 18 -o $HH -eq 06 ]; then
+
+SERVIDORSMS=%SMSNODE%
+USER=$USER
+PASS=%SMSPASS%
+SUITE=%RESOL% 
+
+cdp << EOF
+force complete -f /%SUITE%/${SUITE}/products
+exit 
+EOF
+fi
+smslabel Info "Rodada: $SMSDATEHH"
+%include <tail.h>

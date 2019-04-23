@@ -1,0 +1,46 @@
+%include <head.h>
+%include <date.h>
+
+nproc=24
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+a=0
+while [ $(echo $a | grep -i complete | wc -l) -eq 0 ]; do
+   a=$(cdp<<EOF
+status -m full /oensMB09/main/TQ0126L028/pos/NMC/POS
+exit 
+EOF)
+   sleep 10
+done
+
+LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%%Y%%m%%d%%H")
+
+for p in 01N 02N 03N 04N 05N 06N 07N NMC 01P 02P 03P 04P 05P 06P 07P; do
+   ./runGrh 4 4 EnsGRH  $TRC $LV ${LABELI} ${LABELF} GFGN${p} psnm ${p} hold &
+   sleep 5
+done
+wait
+
+for p in 01N 02N 03N 04N 05N 06N 07N NMC 01P 02P 03P 04P 05P 06P 07P; do
+   if [ 0$(ls -ltr ${SC2_suite}/pos/dataout/%RESOL%/${LABELI}/GFGN${p}${LABELI}${LABELF}M.grh.%RESOL% | awk '{print $5}') -lt 16813440 ]; then
+      echo "verificar: ${SC2_suite}/pos/dataout/%RESOL%/${LABELI}/GFGN${p}${LABELI}${LABELF}M.grh.%RESOL% e ${SC2_suite}/model/dataout/%RESOL%/${LABELI}/${p}/GFGH*"
+      exit 3
+   else
+      echo "GFGN${p}${LABELI}${LABELF}M.grh.%RESOL% - OK"
+   fi
+done
+
+
+echo ./runplumes.bash $TRC $LV ${LABELI} ${NFDAYS} ${NPERT} NMC
+./runplumes.bash run $TRC $LV ${LABELI} ${NFDAYS} ${NPERT} NMC
+
+echo "Verificando Arquivos: ${LABELI} %RESOL%"
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/plumes/dataout/%RESOL%/${LABELI}/ %RESOL% 5000 #5000000000
+
+smsevent prod
+
+sleep 120
+
+%include <tail.h>
