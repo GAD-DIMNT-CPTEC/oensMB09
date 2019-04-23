@@ -1,0 +1,113 @@
+%include <head.h>
+%include <date.h>
+
+sleep 10
+
+if [ %FAMILY1% = "NMC" ]; then
+	PREFX=NMC
+else
+	PREFX=$(echo %FAMILY% | cut -d/ -f4-5 | sed -e s@/@""@g)
+	nproc=24
+fi
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% ${PREFX}
+LABELI=$SMSDATEHH
+
+
+if [ %TASK% = "POS" ]; then
+	exec=runPos
+   sd=1004770536
+   dirv=pos
+else
+	exec=runPosEta
+   sd=4668589088
+   dirv=poseta
+fi
+
+if [ %FAMILY1% = "NMC" ]; then
+   PREFX=NMC
+   NFDAYS=16
+
+   if [ ${SMSDATEHH:8:2} -eq 06 -o ${SMSDATEHH:8:2} -eq 18 ]; then
+      NFDAYS=1
+      if [ %TASK% = "ETA" ]; then
+%include <tail.h>
+      fi
+   fi
+
+   if [ -e $(ls -l --full-time ${SC2_suite}/model/dataout/%RESOL%/${LABELI}/${PREFX}/GFCT${PREFX}${LABELI}2*files | tail -1 | awk '{print $9}') ]; then
+      LABELF=$(basename $(ls -l ${SC2_suite}/model/dataout/%RESOL%/${LABELI}/${PREFX}/GFCT${PREFX}${LABELI}2*files | tail -1 | awk '{print $9}') | cut -c18-27)
+   else
+      LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%%Y%%m%%d%%H")
+   fi
+   echo $LABELF
+fi
+
+rm -f ${SC2_suite}/${dirv}/dataout/%RESOL%/${LABELI}/GPOS${PREFX}
+echo ./${exec} 1 1 Pos${PREFX}%TASK% $TRC $LV ${LABELI} ${LABELF} ${PREFX} 3600
+./${exec} 1 1 Pos${PREFX}%TASK% $TRC $LV ${LABELI} ${LABELF} ${PREFX} 3600
+
+sleep 10
+
+echo "Verificando Arquivos: GPOS${PREFX}${LABELI}"
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/$dirv/dataout/%RESOL%/${LABELI}/ ${PREFX} $sd
+
+cd ${HOME_suite}/run
+./runtemplate.bash $TRC $LV ${LABELI} ${PREFX}
+
+dir=/stornext/online7/pnt/preoper/tempo/oensMB09
+
+echo "Copiando pos..."
+mkdir -p ${dir}/${SMSDATEHH:0:6}/${SMSDATEHH:6:4}/
+cp -rpfv ${SC2_suite}/pos/dataout/TQ0126L028/${SMSDATEHH}/${PREFX} ${dir}/${SMSDATEHH:0:6}/${SMSDATEHH:6:4}/
+
+
+
+%include <tail.h>
+# MODIFICACAO PARA VOLTAR PARA OS 15 DIAS APENAS.
+if [ %FAMILY1% = "NMC" ]; then
+
+   if [ ${SMSDATEHH:8:2} -eq 06 -o ${SMSDATEHH:8:2} -eq 18 ]; then
+%include <tail.h>
+   fi
+      
+   cd ${SC2_suite}/$dirv/dataout/%RESOL%/${LABELI}/
+   NFDAYS=15
+   LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%%Y%%m%%d%%H")
+   for arq in $(ls GPOSNMC*grb); do
+      if [ ${arq:17:10} -gt ${LABELF} ]; then
+         echo ${arq:17:10}
+         mkdir -p ${ONLINE}/oensMB09/%RESOL%/${LABELI:0:6}/${LABELI:6:4}/pos/ctrl
+         echo cp -f ${SC2_suite}/$dirv/dataout/%RESOL%/${LABELI}/GPOSNMC${LABELI}${arq:17:10}* ${ONLINE}/oensMB09/%RESOL%/${LABELI:0:6}/${LABELI:6:4}/pos/ctrl
+         cp -f ${SC2_suite}/$dirv/dataout/%RESOL%/${LABELI}/GPOSNMC${LABELI}${arq:17:10}* ${ONLINE}/oensMB09/%RESOL%/${LABELI:0:6}/${LABELI:6:4}/pos/ctrl
+         echo rm -f ${SC2_suite}/$dirv/dataout/%RESOL%/${LABELI}/GPOSNMC${LABELI}${arq:17:10}*
+         rm -f ${SC2_suite}/$dirv/dataout/%RESOL%/${LABELI}/GPOSNMC${LABELI}${arq:17:10}*
+      fi
+   done
+   cd ${HOME_suite}/run
+   ./runtemplate.bash $TRC $LV ${LABELI} ${PREFX}
+   nproc=96
+   
+   # EXECUTA MODELO NOVAMENTE COM 15 DIAS DE PREVISAO PARA GERAR O GFGH CORRETO.
+   if [  %TASK% = "POS" ]; then
+      while [ $(echo $a | grep -i complete | wc -l) -eq 0 ]; do
+a=$(cdp<<EOF
+status -m full /oensMB09/main/TQ0126L028/pos/NMC/ETA
+exit 
+EOF)
+         sleep 10
+      done
+      ./runModel $nproc 24 1 ENS${PREFX} $TRC $LV ${LABELI} ${LABELF} ${PREFX} 2700
+   fi
+fi
+#sleep 600
+
+%include <tail.h>
+
+#sleep 2000
+#if [ "%TASK%" = "ETA" -a 0$(echo %FAMILY% | grep 07 | wc -l)  -gt 0 ]; then
+#	./runcluster.bash ${LABELI} NMC $TRC $LV
+#fi
+
+%include <tail.h>

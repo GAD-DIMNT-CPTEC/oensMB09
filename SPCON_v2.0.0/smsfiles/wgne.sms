@@ -1,0 +1,24 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+set +e
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/wgne/dataout/%RESOL%/${LABELI}/ 2 9999999999999999999
+if [ $? -eq 0 ]; then
+   smslabel Info "Ok: ${LABELI}"
+%include <tail.h>
+fi
+set -e
+
+echo ./runwgne.bash ${TRC} ${LV} ${LABELI} NMC
+./runwgne.bash ${TRC} ${LV} ${LABELI} NMC
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/wgne/dataout/%RESOL%/${LABELI}/ 2 0
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/wgne/dataout/%RESOL%/${LABELI}/ 2 0
+
+cp -r ${SC2_suite}/produtos/wgne/dataout/%RESOL%/${LABELI} /stornext/online7/pnt/preoper/tempo/oensMB09/wgne
+
+%include <tail.h>

@@ -1,0 +1,89 @@
+#!/bin/bash -x
+#help#
+#************************************************************************************#
+#                                                                                    #
+# script to run CPTEC OPERATION                                                      #
+# EnvironmentalVariablesMCGA.ksh    TQZZZZLXXX     PREFIX                            #
+#                                                                                    #
+#                    ZZZZ   => 4 digits spectral resolution                          #
+#                     XXX   => 3 digits vertical resolution                          #
+#                                                                                    #
+#************************************************************************************#
+#help#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  exit 1
+else
+export TRCLV=$1
+fi
+export PBS_SERVER=eslogin13
+export LANG=US
+
+if [ -z "${2}" ]
+then
+  echo "PREFIX is not set"  
+  echo "PREFIX set by users" 
+else
+  export PREFIX=$2 
+fi
+
+LENGTH=`echo ${TRCLV} | awk '{print length($1)}'`
+if [[ ${LENGTH} -eq 10 ]] ; then 
+  export TRC=`echo ${TRCLV} | awk '{print substr($1,3,4)/1}'`
+  export GRID=`echo ${TRCLV} | awk '{print substr($1,2,1)}'`
+  export LV=`echo ${TRCLV} | awk '{print substr($1,8,3)/1}'`
+else
+  echo "ERROR AT RESOLUTION" ${TRCLV} 
+fi
+
+#export HOME=/scratchin/oper/tempo/home
+#export SUBMIT_HOME=/scratchin/oper/tempo
+#export WORK_HOME=/scratchout/oper/tempo
+#export ARCHIVE_PNT=/stornext/oper/tempo
+
+export ARCHIVE_PNT=/dev/null
+
+export PATHBASE=${HOME}/oensMB09	   # Default, if no filename specified.
+export DK=${SUBMIT_HOME}	               # Default, if no filename specified.
+
+export COMPILE="run"
+
+export HOME_suite="${PATHBASE}"                                ; mkdir -p ${HOME_suite}
+export SC1_suite="${SUBMIT_HOME}/oensMB09"                     ; mkdir -p ${SC1_suite}
+export SC2_suite="${WORK_HOME}/oensMB09"                       ; mkdir -p ${SC2_suite}
+export CTRL_HOME="${SUBMIT_HOME}/CRNG/controle/tempo/oensMB09" ; mkdir -p ${CTRL_HOME}
+export ARC_suite="${ARCHIVE_PNT}/oensMB09"
+export BACKUP1="$ARC_suite"
+export BACKUP2="$ARC_suite"
+export BACKUP3="$ARC_suite"
+
+echo $HOME_suite
+echo $SC1_suite
+echo $SC2_suite
+
+export NFDAYS=15
+export NPERT=07
+export HUMID="NO"
+
+export PREFXI="NMC"
+
+# QUEUE1 -> FILA PARA PRE-PROCESSAMENTO e OUTROS JOBS COM APENAS 1 PROC.
+#           RODA DIRETAMENTE NOS N\ufffdS AUXILIARES
+#           #PBS -lselect=1:ncpus=1
+#
+# QUEUE2 -> FILA PARA JOBS PESADOS, Ex: MODELO
+# QUEUE3 -> FILA PARA JOBS PEQUENOS DE POS-PROCESSAMENTO
+export QUEUE1="oper.q"
+export QUEUE2="oper"    # FILA PARA RODAR NOS NOS DE PROCESSAMENTO
+export QUEUE3="oper.q"
+
+export dirgrads=/opt/grads/2.0.1.oga/bin/
+export WGRIB2=/stornext/home/modoper/bin/grads-2.0.1.oga.1/Classic/bin/wgrib2
+
+export GADLIB=/stornext/home/modoper/bin/grads-2.0.a9.oga/Resources/Scripts
+export GRADSB=/stornext/home/modoper/bin/grads-2.0.a9.oga
+export GADDIR=/stornext/home/modoper/bin/grads-2.0.a9.oga/Resources/SupportData
+
+
+return

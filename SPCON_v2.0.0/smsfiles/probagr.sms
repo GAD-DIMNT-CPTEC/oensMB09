@@ -1,0 +1,39 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+set +e
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probagr/dataout/%RESOL%/${LABELI} prob 890000
+if [ $? -eq 0 ]; then
+   smslabel Info "Ok: ${LABELI}"
+%include <tail.h>
+fi
+set -e
+
+
+NMEMBR=$(echo "${NPERT}*2+1" | bc -l )
+
+echo ./runprobagr.bash run ${TRC} ${LV} ${LABELI} ${NFDAYS} $NMEMBR NMC
+./runprobagr.bash run ${TRC} ${LV} ${LABELI} ${NFDAYS} $NMEMBR NMC
+
+sleep 60
+
+echo ./runprobweek.bash run ${TRC} ${LV} ${LABELI} ${NFDAYS} $NPERT NMC
+./runprobweek.bash run ${TRC} ${LV} ${LABELI} ${NFDAYS} $NPERT NMC
+sleep 60
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probagr/dataout/%RESOL%/${LABELI} prob 890000
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probagr/dataout/%RESOL%/${LABELI} prob 890000
+
+sleep 10
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probagr/dataout/%RESOL%/${LABELI}/gif png 090000
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probagr/dataout/%RESOL%/${LABELI}/gif png 090000
+
+sleep 10
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probweek/dataout/%RESOL%/${LABELI} prob 3544842
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probweek/dataout/%RESOL%/${LABELI} prob 3544842
+
+%include <tail.h>

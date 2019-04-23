@@ -1,0 +1,1213 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        Notice - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Watches.f90
+       !        File                  :  Watches.cg
+       !        Network               :  Gemini interconnect
+       !        Target                :  X86, 64-bit, sse3
+       !        
+  129.       
+  129.       subroutine createwatches( nw, firstw )
+   72.       $LCS_nw_0 = loc( nw )
+   72.       $MR_nw_4 = 0[$LCS_nw_0,0]
+   72.       if ( $MR_nw_4 <= 0 ) then
+   73.          $_StackCntrl_O1 = $_StaticCntrl_O0
+   73.          (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+   73.          $_StackIolist_O3 = $_StaticIolist_O2
+   73.          0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O3)[0].L ) ), 8 ),0].L = loc( 0[$LCS_nw_0,0] )
+   73.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O3[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   74.          _f90_adjustl( substr[t$41,0:10], substr[c0,0:10] )
+   74.          t$42 = 54 + ( _ltrim( substr[t$41,0:10] ) )
+   74.          $CS_0 = max( 0, t$42 )
+   74.          t$44 = int( _alloc( $CS_0 ), 8 )
+   74.          substr[0,t$44:$CS_0] = //( '**(CreateWatches)** number of watches (', //( substr[t$41,0:_ltrim( substr[t$41,0:10] )], ') should be > 0' ) )
+   74.          call fatalerror( substr[0,t$44:$CS_0] )
+   74.          _free( t$44 )
+   75.          substr[t$45,0:4] = '1'
+   75.          call _stop( substr[t$45,0:1] )
+   75.       else
+   76.          $MR_firstw_S2 = 0[loc( firstw ),0]
+   76.          if ( $MR_firstw_S2 > $MR_nw_4 ) then
+   77.             $_StackCntrl_O1 = $_StaticCntrl_O5
+   77.             (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+   77.             $_StackIolist_O7 = $_StaticIolist_O6
+   77.             0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O7)[0].L ) ), 8 ),0].L = loc( 0[loc( nw ),0] )
+   77.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O7[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   78.             $_StackCntrl_O1 = $_StaticCntrl_O8
+   78.             (1,$_StackCntrl_O1)[0].L = loc( substr[c1,0:10] )
+   78.             $_StackIolist_O10 = $_StaticIolist_O9
+   78.             0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O10)[0].L ) ), 8 ),0].L = loc( 0[loc( firstw ),0] )
+   78.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O10[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   79.             _f90_adjustl( substr[t$46,0:10], substr[c1,0:10] )
+   80.             _f90_adjustl( substr[t$47,0:10], substr[c0,0:10] )
+   79.             t$48 = ( _ltrim( substr[t$46,0:10] ) ) + ( _ltrim( substr[t$47,0:10] ) ) + 57
+   80.             $CS_1 = max( 0, t$48 )
+   80.             t$50 = int( _alloc( $CS_1 ), 8 )
+   80.             substr[0,t$50:$CS_1] = //( '**(CreateWatches)** first watch (', //( substr[t$46,0:_ltrim( substr[t$46,0:10] )], //( ') > number of watches (', //( substr[t$47,0:_ltrim( substr[t$47,0:10] )], ')' ) ) ) )
+   79.             call fatalerror( substr[0,t$50:$CS_1] )
+   80.             _free( t$50 )
+   81.             substr[t$51,0:4] = '1'
+   81.             call _stop( substr[t$51,0:1] )
+   81.          else
+   86.             nwatches = $MR_nw_4
+   87.             $MR_timecpu_S3 = (2,timecpu)[0].L
+   87.             $MR_timecpu_S4 = or( 16, $MR_timecpu_S3 )
+   87.             (2,timecpu)[0].L = $MR_timecpu_S4
+   87.             (6,timecpu)[0].L = 0
+   87.             $MR_timecpu_S5 = max( 0, ( 1 + $MR_nw_4 ) )
+   87.             (7,timecpu)[0].L = $MR_timecpu_S5
+   87.             (8,timecpu)[0].L = 1
+   87.             $_allo_P1[0].L = 0x1000000000001L
+   87.             (1,$_allo_P1)[0].L = loc( timecpu )
+   87.             call __allocate( $_allo_P1, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+   88.             $ierr_S6 = ierr
+   88.             if ( $ierr_S6 /= 0 ) then
+   89.                $_StackCntrl_O1 = $_StaticCntrl_O11
+   89.                (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+   89.                $_StackIolist_O13 = $_StaticIolist_O12
+   89.                0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O13)[0].L ) ), 8 ),0].L = loc( ierr )
+   89.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O13[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   90.                _f90_adjustl( substr[t$52,0:10], substr[c0,0:10] )
+   90.                t$53 = 52 + ( _ltrim( substr[t$52,0:10] ) )
+   90.                $CS_2 = max( 0, t$53 )
+   90.                t$55 = int( _alloc( $CS_2 ), 8 )
+   90.                substr[0,t$55:$CS_2] = //( '**(CreateWatches)** allocate TimeCpu returned error ', substr[t$52,0:_ltrim( substr[t$52,0:10] )] )
+   90.                call fatalerror( substr[0,t$55:$CS_2] )
+   90.                _free( t$55 )
+   90.             endif
+   92.             $MR_timecpu_S7 = (7,timecpu)[0].L
+   92.             $F_A33 = $MR_timecpu_S7
+   92.             if ( $MR_timecpu_S7 > 0 ) then !  99.50%
+   92.                $I_L92_S12 = 0
+   92.                $MR_timecpu_S8 = timecpu[0].L
+   92.                if ( $F_A33 >= 4 ) then !  99.50%
+   92.                   $TC_0 = and( -4, $F_A33 )
+   92.                   $LC_S11 = -$TC_0
+   92.                   $SI_S10 = 0
+   92.                   $LIS_2[0:4:1] = _bcst( 0.0, 4 )
+   92.                   $LIS_S9 = int( $MR_timecpu_S8, 8 )
+   92.                   do
+   92.                      0[$LIS_S9 + $SI_S10:4:1] = $LIS_2[0:4:1]
+   92.                      $SI_S10 = 16 + $SI_S10
+   92.                      $LC_S11 = 4 + $LC_S11
+   92.                      if ( $LC_S11 >= 0 ) exit
+   92.                   enddo
+   92.                   $I_L92_S12 = $TC_0
+   92.                endif
+   92.                if ( $F_A33 > $I_L92_S12 ) then !  99.50%
+   92.                   $LIS_S13 = int( $MR_timecpu_S8, 8 )
+   92.                   do
+   92.                      0[$LIS_S13,$I_L92_S12] = 0.0
+   92.                      $I_L92_S12 = 1 + $I_L92_S12
+   92.                      if ( $I_L92_S12 >= $F_A33 ) exit
+   92.                   enddo
+   92.                endif
+   92.             endif
+   94.             $MR_timewall_S14 = (2,timewall)[0].L
+   94.             $MR_timewall_S15 = or( 16, $MR_timewall_S14 )
+   94.             (2,timewall)[0].L = $MR_timewall_S15
+   94.             (6,timewall)[0].L = 0
+   94.             $nwatches_S16 = nwatches
+   94.             $MR_timewall_S17 = ( max( 0, 1 + $nwatches_S16 ) )
+   94.             (7,timewall)[0].L = $MR_timewall_S17
+   94.             (8,timewall)[0].L = 1
+   94.             $_allo_P2[0].L = 0x1000000000001L
+   94.             (1,$_allo_P2)[0].L = loc( timewall )
+   94.             call __allocate( $_allo_P2, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+   95.             $ierr_S18 = ierr
+   95.             if ( $ierr_S18 /= 0 ) then
+   96.                $_StackCntrl_O1 = $_StaticCntrl_O14
+   96.                (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+   96.                $_StackIolist_O16 = $_StaticIolist_O15
+   96.                0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O16)[0].L ) ), 8 ),0].L = loc( ierr )
+   96.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O16[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   97.                _f90_adjustl( substr[t$56,0:10], substr[c0,0:10] )
+   97.                t$57 = 53 + ( _ltrim( substr[t$56,0:10] ) )
+   97.                t$59 = int( _alloc( max( 0, t$57 ) ), 8 )
+   97.                $LCS_4 = max( 0, t$57 )
+   97.                substr[0,t$59:$LCS_4] = //( '**(CreateWatches)** allocate TimeWall returned error ', substr[t$56,0:_ltrim( substr[t$56,0:10] )] )
+   97.                call fatalerror( substr[0,t$59:$LCS_4] )
+   97.                _free( t$59 )
+   97.             endif
+   99.             $MR_timewall_S19 = (7,timewall)[0].L
+   99.             $F_A34 = $MR_timewall_S19
+   99.             if ( $MR_timewall_S19 > 0 ) then !  99.50%
+   99.                $I_L99_S24 = 0
+   99.                $MR_timewall_S20 = timewall[0].L
+   99.                if ( $F_A34 >= 4 ) then !  99.50%
+   99.                   $TC_3 = and( -4, $F_A34 )
+   99.                   $LC_S23 = -$TC_3
+   99.                   $SI_S22 = 0
+   99.                   $LIS_4[0:4:1] = _bcst( 0.0, 4 )
+   99.                   $LIS_S21 = int( $MR_timewall_S20, 8 )
+   99.                   do
+   99.                      0[$LIS_S21 + $SI_S22:4:1] = $LIS_4[0:4:1]
+   99.                      $SI_S22 = 16 + $SI_S22
+   99.                      $LC_S23 = 4 + $LC_S23
+   99.                      if ( $LC_S23 >= 0 ) exit
+   99.                   enddo
+   99.                   $I_L99_S24 = $TC_3
+   99.                endif
+   99.                if ( $F_A34 > $I_L99_S24 ) then !  99.50%
+   99.                   $LIS_S25 = int( $MR_timewall_S20, 8 )
+   99.                   do
+   99.                      0[$LIS_S25,$I_L99_S24] = 0.0
+   99.                      $I_L99_S24 = 1 + $I_L99_S24
+   99.                      if ( $I_L99_S24 >= $F_A34 ) exit
+   99.                   enddo
+   99.                endif
+   99.             endif
+  101.             $MR_name_S26 = (2,name)[0].L
+  101.             $MR_name_S27 = or( 16, $MR_name_S26 )
+  101.             (2,name)[0].L = $MR_name_S27
+  101.             (6,name)[0].L = 0
+  101.             $nwatches_S28 = nwatches
+  101.             $CS_3 = ( max( 0, 1 + $nwatches_S28 ) )
+  101.             (7,name)[0].L = $CS_3
+  101.             (8,name)[0].L = 16
+  101.             $_allo_P3[0].L = 0x1000000000001L
+  101.             (1,$_allo_P3)[0].L = loc( name )
+  101.             call __allocate( $_allo_P3, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  102.             $ierr_S29 = ierr
+  102.             if ( $ierr_S29 /= 0 ) then
+  103.                $_StackCntrl_O1 = $_StaticCntrl_O17
+  103.                (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+  103.                $_StackIolist_O19 = $_StaticIolist_O18
+  103.                0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O19)[0].L ) ), 8 ),0].L = loc( ierr )
+  103.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O19[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  104.                _f90_adjustl( substr[t$60,0:10], substr[c0,0:10] )
+  104.                t$61 = 49 + ( _ltrim( substr[t$60,0:10] ) )
+  104.                t$63 = int( _alloc( max( 0, t$61 ) ), 8 )
+  104.                $LCS_5 = max( 0, t$61 )
+  104.                substr[0,t$63:$LCS_5] = //( '**(CreateWatches)** allocate Name returned error ', substr[t$60,0:_ltrim( substr[t$60,0:10] )] )
+  104.                call fatalerror( substr[0,t$63:$LCS_5] )
+  104.                _free( t$63 )
+  104.             endif
+  106.             $MR_name_25 = (7,name)[0].L
+  106.             $F_A35 = $MR_name_25
+  106.             if ( $MR_name_25 > 0 ) then !  99.50%
+  106.                $I_L106_S31 = 0
+  106.                $SC_name_I6 = name[0].L
+  106.                $SR_S30 = 0
+  106.                do
+  106.                   substr[$SC_name_I6,$SR_S30:16] = '          '
+  106.                   $SR_S30 = 16 + $SR_S30
+  106.                   $I_L106_S31 = 1 + $I_L106_S31
+  106.                   if ( $I_L106_S31 >= $F_A35 ) exit
+  106.                enddo
+  106.             endif
+  107.             $MR_name_26 = (6,name)[0].L
+  107.             $LCS_1_6 = $MR_name_25 + $MR_name_26 + -1
+  107.             if ( or( $LCS_1_6, -( $MR_name_26 ) ) < 0 ) then
+  107.                $LB_Y0 = $MR_name_26
+  107.                $UB_Y1 = $LCS_1_6
+  107.                $Subscript_Y5 = 0
+  107.                _bounds_error( $_File_Y40, $Line_Y50, $_Name_Y47, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y51 )
+  107.             endif
+  107.             substr[name[0].L,-_lsh( $MR_name_26, 4 ):16] = 'Total '
+  111.             call _cpu_time_4( tc )
+  112.             $t_S0 = irtc_rate_i8
+  112.             $Flat_S1 = _rtc
+  113.             if ( _rsh( $t_S0, 14 ) == 0 ) then
+  114.                substr[t$65,0:51] = '**(CreateWatches)** no clock at this instalation!!!'
+  114.                call fatalerror( substr[t$65,0:51] )
+  114.             endif
+  116.             $CS_4 = 1.0 / real( _rsh( $t_S0, 14 ) )
+  116.             timeunit = $CS_4
+  121.             $MR_timecpu_S32 = (7,timecpu)[0].L
+  121.             $MR_timecpu_28 = (6,timecpu)[0].L
+  121.             $LCS_1_7 = $MR_timecpu_28 + $MR_timecpu_S32 + -1
+  121.             if ( or( $LCS_1_7, -$MR_timecpu_28 ) < 0 ) then
+  121.                $LB_Y0 = $MR_timecpu_28
+  121.                $UB_Y1 = $LCS_1_7
+  121.                $Subscript_Y5 = 0
+  121.                _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  121.             endif
+  121.             $MR_tc_29 = tc
+  121.             $MR_timecpu_S33 = timecpu[0].L
+  121.             0[int( $MR_timecpu_S33, 8 ),-$MR_timecpu_28] = -$MR_tc_29
+  122.             $MR_timewall_S34 = (7,timewall)[0].L
+  122.             $MR_timewall_31 = (6,timewall)[0].L
+  122.             $LCS_1_8 = $MR_timewall_31 + $MR_timewall_S34 + -1
+  122.             if ( or( $LCS_1_8, -$MR_timewall_31 ) < 0 ) then
+  122.                $LB_Y0 = $MR_timewall_31
+  122.                $UB_Y1 = $LCS_1_8
+  122.                $Subscript_Y5 = 0
+  122.                _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y55 )
+  122.             endif
+  122.             $MR_timewall_S35 = timewall[0].L
+  122.             $CS_5 = -( real( and( 0x7fffffff, _rsh( $Flat_S1, 14 ) ) ) * $CS_4 )
+  122.             0[int( $MR_timewall_S35, 8 ),-$MR_timewall_31] = $CS_5
+  126.             $MR_firstw_S36 = 0[loc( firstw ),0]
+  126.             currwatch = $MR_firstw_S36
+  127.             $LCS_9 = $MR_timecpu_28 + $MR_timecpu_S32
+  127.             if ( or( -1 + ( $LCS_9 - $MR_firstw_S36 ), $MR_firstw_S36 - $MR_timecpu_28 ) < 0 ) then
+  127.                $LB_Y0 = $MR_timecpu_28
+  127.                $UB_Y1 = -1 + $LCS_9
+  127.                $Subscript_Y5 = $MR_firstw_S36
+  127.                _bounds_error( $_File_Y40, $Line_Y56, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y57 )
+  127.             endif
+  127.             $LCS_10 = $MR_firstw_S36
+  127.             0[int( $MR_timecpu_S33, 8 ),$LCS_10 - $MR_timecpu_28] = -$MR_tc_29
+  128.             $LCS_11 = $MR_timewall_31 + $MR_timewall_S34
+  128.             if ( or( $LCS_10 - $MR_timewall_31, -1 + ( $LCS_11 - $MR_firstw_S36 ) ) < 0 ) then
+  128.                $LB_Y0 = $MR_timewall_31
+  128.                $UB_Y1 = -1 + $LCS_11
+  128.                $Subscript_Y5 = $MR_firstw_S36
+  128.                _bounds_error( $_File_Y40, $Line_Y58, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y59 )
+  128.             endif
+  128.             0[int( $MR_timewall_S35, 8 ),$MR_firstw_S36 - $MR_timewall_31] = $CS_5
+  128.          endif
+  128.       endif
+  129.       return
+  129.       end
+  129.       
+  159.       
+  159.       subroutine destroywatches
+  142.       $_allo_P0[0].L = 0x1000000000001L
+  142.       (1,$_allo_P0)[0].L = loc( timecpu )
+  142.       call __deallocate( $_allo_P0, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  142.       $MR_timecpu_S0 = (2,timecpu)[0].L
+  142.       $MR_timecpu_S1 = and( 0xfffffffffffffffeUL, $MR_timecpu_S0 )
+  142.       (2,timecpu)[0].L = $MR_timecpu_S1
+  143.       $ierr_S2 = ierr
+  143.       if ( $ierr_S2 /= 0 ) then
+  144.          $_StackCntrl_O1 = $_StaticCntrl_O0
+  144.          (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+  144.          $_StackIolist_O3 = $_StaticIolist_O2
+  144.          0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O3)[0].L ) ), 8 ),0].L = loc( ierr )
+  144.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O3[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  145.          _f90_adjustl( substr[t$66,0:10], substr[c0,0:10] )
+  145.          t$67 = 55 + ( _ltrim( substr[t$66,0:10] ) )
+  145.          $CS_0 = max( 0, t$67 )
+  145.          t$69 = int( _alloc( $CS_0 ), 8 )
+  145.          substr[0,t$69:$CS_0] = //( '**(DestroyWatches)** deallocate TimeCpu returned error ', substr[t$66,0:_ltrim( substr[t$66,0:10] )] )
+  145.          call fatalerror( substr[0,t$69:$CS_0] )
+  145.          _free( t$69 )
+  145.       endif
+  148.       $_allo_P1[0].L = 0x1000000000001L
+  148.       (1,$_allo_P1)[0].L = loc( timewall )
+  148.       call __deallocate( $_allo_P1, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  148.       $MR_timewall_S3 = (2,timewall)[0].L
+  148.       $MR_timewall_S4 = and( 0xfffffffffffffffeUL, $MR_timewall_S3 )
+  148.       (2,timewall)[0].L = $MR_timewall_S4
+  149.       $ierr_S5 = ierr
+  149.       if ( $ierr_S5 /= 0 ) then
+  150.          $_StackCntrl_O1 = $_StaticCntrl_O5
+  150.          (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+  150.          $_StackIolist_O7 = $_StaticIolist_O6
+  150.          0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O7)[0].L ) ), 8 ),0].L = loc( ierr )
+  150.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O7[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  151.          _f90_adjustl( substr[t$70,0:10], substr[c0,0:10] )
+  151.          t$71 = 56 + ( _ltrim( substr[t$70,0:10] ) )
+  151.          $CS_1 = max( 0, t$71 )
+  151.          t$73 = int( _alloc( $CS_1 ), 8 )
+  151.          substr[0,t$73:$CS_1] = //( '**(DestroyWatches)** deallocate TimeWall returned error ', substr[t$70,0:_ltrim( substr[t$70,0:10] )] )
+  151.          call fatalerror( substr[0,t$73:$CS_1] )
+  151.          _free( t$73 )
+  151.       endif
+  154.       $_allo_P2[0].L = 0x1000000000001L
+  154.       (1,$_allo_P2)[0].L = loc( name )
+  154.       call __deallocate( $_allo_P2, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  154.       $MR_name_S6 = (2,name)[0].L
+  154.       $MR_name_S7 = and( 0xfffffffffffffffeUL, $MR_name_S6 )
+  154.       (2,name)[0].L = $MR_name_S7
+  155.       $ierr_S8 = ierr
+  155.       if ( $ierr_S8 /= 0 ) then
+  156.          $_StackCntrl_O1 = $_StaticCntrl_O8
+  156.          (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+  156.          $_StackIolist_O10 = $_StaticIolist_O9
+  156.          0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O10)[0].L ) ), 8 ),0].L = loc( ierr )
+  156.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O10[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  157.          _f90_adjustl( substr[t$74,0:10], substr[c0,0:10] )
+  157.          t$75 = 52 + ( _ltrim( substr[t$74,0:10] ) )
+  157.          $CS_2 = max( 0, t$75 )
+  157.          t$77 = int( _alloc( $CS_2 ), 8 )
+  157.          substr[0,t$77:$CS_2] = //( '**(DestroyWatches)** deallocate Name returned error ', substr[t$74,0:_ltrim( substr[t$74,0:10] )] )
+  157.          call fatalerror( substr[0,t$77:$CS_2] )
+  157.          _free( t$77 )
+  157.       endif
+  159.       return
+  159.       end
+  159.       
+  167.       
+  167.       subroutine dumpwatches( unit )
+  177.       call _cpu_time_4( tc )
+  178.       $Flat_S0 = _rtc
+  179.       $MR_timeunit_9 = timeunit
+  179.       $CS_timeunit_0 = real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) ) * $MR_timeunit_9
+  183.       $MR_timecpu_S5 = (7,timecpu)[0].L
+  183.       $MR_timecpu_S4 = (6,timecpu)[0].L
+  183.       $LCS_1_0 = $MR_timecpu_S4 + $MR_timecpu_S5 + -1
+  183.       if ( or( $LCS_1_0, -$MR_timecpu_S4 ) < 0 ) then
+  183.          $LB_Y0 = $MR_timecpu_S4
+  183.          $UB_Y1 = $LCS_1_0
+  183.          $Subscript_Y5 = 0
+  183.          _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  183.       endif
+  183.       $LCS_1_1 = $MR_timecpu_S4 + $MR_timecpu_S5 + -1
+  183.       if ( or( $LCS_1_1, -$MR_timecpu_S4 ) < 0 ) then
+  183.          $LB_Y0 = $MR_timecpu_S4
+  183.          $UB_Y1 = $LCS_1_1
+  183.          $Subscript_Y5 = 0
+  183.          _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  183.       endif
+  183.       $MR_tc_12 = tc
+  183.       $MR_timecpu_S6 = timecpu[0].L
+  183.       $LCS_2 = -$MR_timecpu_S4
+  183.       $LCS_MR_timecpu_3 = int( $MR_timecpu_S6, 8 )
+  183.       $MR_timecpu_S7 = 0[$LCS_MR_timecpu_3,$LCS_2]
+  183.       $MR_timecpu_S8 = $MR_timecpu_S7 + $MR_tc_12
+  183.       0[$LCS_MR_timecpu_3,$LCS_2] = $MR_timecpu_S8
+  184.       $currwatch_S9 = currwatch
+  184.       $LCS_4 = $MR_timecpu_S4 + $MR_timecpu_S5
+  184.       if ( or( $currwatch_S9 - $MR_timecpu_S4, -1 + ( $LCS_4 - $currwatch_S9 ) ) < 0 ) then
+  184.          $LB_Y0 = $MR_timecpu_S4
+  184.          $UB_Y1 = -1 + $LCS_4
+  184.          $Subscript_Y5 = $currwatch_S9
+  184.          _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+  184.       endif
+  184.       $LCS_5 = $MR_timecpu_S4 + $MR_timecpu_S5
+  184.       if ( or( $currwatch_S9 - $MR_timecpu_S4, -1 + ( $LCS_5 - $currwatch_S9 ) ) < 0 ) then
+  184.          $LB_Y0 = $MR_timecpu_S4
+  184.          $UB_Y1 = -1 + $LCS_5
+  184.          $Subscript_Y5 = $currwatch_S9
+  184.          _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+  184.       endif
+  184.       $LCS_6 = $currwatch_S9 - $MR_timecpu_S4
+  184.       $LCS_MR_timecpu_7 = int( $MR_timecpu_S6, 8 )
+  184.       $MR_timecpu_S10 = 0[$LCS_MR_timecpu_7,$LCS_6]
+  184.       $MR_timecpu_S11 = $MR_timecpu_S10 + $MR_tc_12
+  184.       0[$LCS_MR_timecpu_7,$LCS_6] = $MR_timecpu_S11
+  185.       $MR_timewall_S13 = (7,timewall)[0].L
+  185.       $MR_timewall_S12 = (6,timewall)[0].L
+  185.       $LCS_1_8 = $MR_timewall_S12 + $MR_timewall_S13 + -1
+  185.       if ( or( $LCS_1_8, -$MR_timewall_S12 ) < 0 ) then
+  185.          $LB_Y0 = $MR_timewall_S12
+  185.          $UB_Y1 = $LCS_1_8
+  185.          $Subscript_Y5 = 0
+  185.          _bounds_error( $_File_Y40, $Line_Y49, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y50 )
+  185.       endif
+  185.       $LCS_1_9 = $MR_timewall_S12 + $MR_timewall_S13 + -1
+  185.       if ( or( $LCS_1_9, -$MR_timewall_S12 ) < 0 ) then
+  185.          $LB_Y0 = $MR_timewall_S12
+  185.          $UB_Y1 = $LCS_1_9
+  185.          $Subscript_Y5 = 0
+  185.          _bounds_error( $_File_Y40, $Line_Y49, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y50 )
+  185.       endif
+  185.       $MR_timewall_S14 = timewall[0].L
+  185.       $LCS_10 = -$MR_timewall_S12
+  185.       $LCS_MR_timewall_11 = int( $MR_timewall_S14, 8 )
+  185.       $MR_timewall_S15 = 0[$LCS_MR_timewall_11,$LCS_10]
+  185.       $CS_timeunit_1 = $CS_timeunit_0
+  185.       $MR_timewall_S16 = $MR_timewall_S15 + $CS_timeunit_1
+  185.       0[$LCS_MR_timewall_11,$LCS_10] = $MR_timewall_S16
+  186.       $LCS_12 = $MR_timewall_S12 + $MR_timewall_S13
+  186.       if ( or( -1 + ( $LCS_12 - $currwatch_S9 ), $currwatch_S9 - $MR_timewall_S12 ) < 0 ) then
+  186.          $LB_Y0 = $MR_timewall_S12
+  186.          $UB_Y1 = -1 + $LCS_12
+  186.          $Subscript_Y5 = $currwatch_S9
+  186.          _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  186.       endif
+  186.       $LCS_13 = $MR_timewall_S12 + $MR_timewall_S13
+  186.       if ( or( $currwatch_S9 - $MR_timewall_S12, -1 + ( $LCS_13 - $currwatch_S9 ) ) < 0 ) then
+  186.          $LB_Y0 = $MR_timewall_S12
+  186.          $UB_Y1 = -1 + $LCS_13
+  186.          $Subscript_Y5 = $currwatch_S9
+  186.          _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  186.       endif
+  186.       $LCS_14 = $currwatch_S9 - $MR_timewall_S12
+  186.       $LCS_MR_timewall_15 = int( $MR_timewall_S14, 8 )
+  186.       $MR_timewall_S17 = 0[$LCS_MR_timewall_15,$LCS_14]
+  186.       $MR_timewall_S18 = $MR_timewall_S17 + $CS_timeunit_1
+  186.       0[$LCS_MR_timewall_15,$LCS_14] = $MR_timewall_S18
+  191.       numthreads = omp_get_max_threads
+  192.       $LCS_unit_16 = loc( unit )
+  192.       if ( cri_pointer( 0 ) /= loc( 0[$LCS_unit_16,0] ) ) then
+  193.          $MR_unit_22 = 0[$LCS_unit_16,0]
+  193.          $Unit_temp_O0 = $MR_unit_22
+  193.          $_StackCntrl_O8 = $_StaticCntrl_O7
+  193.          $MR_StackCntrl_S19 = loc( $Unit_temp_O0 )
+  193.          (1,$_StackCntrl_O8)[0].L = $MR_StackCntrl_S19
+  193.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O8 ) ), pointer to integer (kind=8)( loc( $_StaticIolist_O9[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O11 ) ) )
+  194.          $nwatches_S20 = nwatches
+  194.          if ( $nwatches_S20 > 0 ) then
+  194.             $I_L194_S22 = 0
+  195.             $numthreads_S21 = numthreads
+  195.             $SR_S36 = 16
+  195.             $LIS_E6 = int( pointer to c_union Pointer_union( loc( (11,$_StackIolist_O14)[0].L ) ), 8 )
+  195.             $LIS_E5 = int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O14)[0].L ) ), 8 )
+  195.             $LIS_S31 = 1.0 / real( $numthreads_S21 )
+  195.             $LIS_E3 = $MR_unit_22
+  197.             $LIS_E2 = $nwatches_S20
+  194.             do
+  196.                $MR_name_S24 = (7,name)[0].L
+  196.                $MR_name_S23 = (6,name)[0].L
+  196.                $LCS_IL194_17 = 1 + $I_L194_S22
+  196.                $LCS_1_18 = $MR_name_S23 + $MR_name_S24 + -1
+  196.                if ( int( $LCS_IL194_17 < $MR_name_S23 .or. $LCS_IL194_17 > $LCS_1_18 ) /= 0 ) then
+  196.                   substr[t$83,0:12] = 'Watches.f90'
+  196.                   substr[t$84,0:5] = 'NAME'
+  196.                   t$85 = $MR_name_S23
+  196.                   t$86 = $LCS_1_18
+  196.                   t$87 = $LCS_IL194_17
+  196.                   $Con_P83 = 196
+  196.                   $Con_P84 = 1
+  196.                   call _bounds_error( substr[t$83,0:12], $Con_P83, substr[t$84,0:5], $Con_P84, t$85, t$86, t$87, t$82 )
+  196.                endif
+  196.                $MR_timecpu_S26 = (7,timecpu)[0].L
+  196.                $MR_timecpu_S25 = (6,timecpu)[0].L
+  196.                $LCS_IL194_19 = 1 + $I_L194_S22
+  196.                $LCS_1_20 = $MR_timecpu_S25 + $MR_timecpu_S26 + -1
+  196.                if ( int( $LCS_IL194_19 < $MR_timecpu_S25 .or. $LCS_IL194_19 > $LCS_1_20 ) /= 0 ) then
+  196.                   substr[t$89,0:12] = 'Watches.f90'
+  196.                   substr[t$90,0:8] = 'TIMECPU'
+  196.                   t$91 = $MR_timecpu_S25
+  196.                   t$92 = $LCS_1_20
+  196.                   t$93 = $LCS_IL194_19
+  196.                   $Con_P83 = 196
+  196.                   $Con_P84 = 1
+  196.                   call _bounds_error( substr[t$89,0:12], $Con_P83, substr[t$90,0:8], $Con_P84, t$91, t$92, t$93, t$88 )
+  196.                endif
+  196.                $MR_timecpu_S28 = (7,timecpu)[0].L
+  196.                $MR_timecpu_S27 = (6,timecpu)[0].L
+  196.                $LCS_IL194_21 = 1 + $I_L194_S22
+  196.                $LCS_1_22 = $MR_timecpu_S27 + $MR_timecpu_S28 + -1
+  196.                if ( int( $LCS_IL194_21 < $MR_timecpu_S27 .or. $LCS_IL194_21 > $LCS_1_22 ) /= 0 ) then
+  196.                   substr[t$95,0:12] = 'Watches.f90'
+  196.                   substr[t$96,0:8] = 'TIMECPU'
+  196.                   t$97 = $MR_timecpu_S27
+  196.                   t$98 = $LCS_1_22
+  196.                   t$99 = $LCS_IL194_21
+  196.                   $Con_P83 = 196
+  196.                   $Con_P84 = 1
+  196.                   call _bounds_error( substr[t$95,0:12], $Con_P83, substr[t$96,0:8], $Con_P84, t$97, t$98, t$99, t$94 )
+  196.                endif
+  196.                $MR_timewall_S30 = (7,timewall)[0].L
+  196.                $MR_timewall_S29 = (6,timewall)[0].L
+  196.                $LCS_IL194_23 = 1 + $I_L194_S22
+  196.                $LCS_1_24 = $MR_timewall_S29 + $MR_timewall_S30 + -1
+  196.                if ( int( $LCS_IL194_23 < $MR_timewall_S29 .or. $LCS_IL194_23 > $LCS_1_24 ) /= 0 ) then
+  196.                   substr[t$101,0:12] = 'Watches.f90'
+  196.                   substr[t$102,0:9] = 'TIMEWALL'
+  196.                   t$103 = $MR_timewall_S29
+  196.                   t$104 = $LCS_1_24
+  196.                   t$105 = $LCS_IL194_23
+  196.                   $Con_P83 = 196
+  196.                   $Con_P84 = 1
+  196.                   call _bounds_error( substr[t$101,0:12], $Con_P83, substr[t$102,0:9], $Con_P84, t$103, t$104, t$105, t$100 )
+  196.                endif
+  195.                $Unit_temp_O1 = $LIS_E3
+  195.                $MR_timecpu_S32 = timecpu[0].L
+  195.                $MR_timecpu_S33 = (6,timecpu)[0].L
+  195.                $IOitem_O2 = ( 1[int( $MR_timecpu_S32, 8 ),$I_L194_S22 - $MR_timecpu_S33] * $LIS_S31 )
+  195.                $_StackCntrl_O8 = $_StaticCntrl_O12
+  195.                $MR_StackCntrl_S34 = loc( $Unit_temp_O1 )
+  195.                (1,$_StackCntrl_O8)[0].L = $MR_StackCntrl_S34
+  195.                $_StackIolist_O14 = $_StaticIolist_O13
+  195.                $MR_name_S35 = (6,name)[0].L
+  195.                0[$LIS_E5,0].L = loc( substr[name[0].L,$SR_S36 - _lsh( $MR_name_S35, 4 ):16] )
+  195.                $MR_timecpu_S37 = timecpu[0].L
+  195.                $LCS_timecpu_25 = loc( 0[int( $MR_timecpu_S37, 8 ),0] )
+  195.                $_StackDv_P1[0].L = pointer to array[1] of real( $LCS_timecpu_25 )
+  195.                (1,$_StackDv_P1)[0].L = 32
+  195.                (2,$_StackDv_P1)[0].L = and( 0xfffffffffffffffeUL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = and( 0xfffffffffffffffdUL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = and( 0xfffffffffffffff3UL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = and( 0xffffffffffffffefUL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = or( 64, notand( 2016, (2,$_StackDv_P1)[0].L ) )
+  195.                (2,$_StackDv_P1)[0].L = or( 65536, notand( 522240, (2,$_StackDv_P1)[0].L ) )
+  195.                (2,$_StackDv_P1)[0].L = and( -524289UL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = and( -4293918721UL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = and( 0xffffff00ffffffffUL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = and( 0xffff00ffffffffffUL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = and( 0xff00ffffffffffffUL, (2,$_StackDv_P1)[0].L )
+  195.                (2,$_StackDv_P1)[0].L = or( 0x100000000000000UL, notand( 0xff00000000000000UL, (2,$_StackDv_P1)[0].L ) )
+  195.                (6,$_StackDv_P1)[0] = 0
+  195.                (7,$_StackDv_P1)[0] = 131075
+  195.                (4,$_StackDv_P1)[0].L = int( $LCS_timecpu_25, 8 )
+  195.                (5,$_StackDv_P1)[0].L = 32
+  195.                $MR_timecpu_S38 = (6,timecpu)[0].L
+  195.                (6,$_StackDv_P1)[0].L = $MR_timecpu_S38
+  195.                $MR_timecpu_S39 = (7,timecpu)[0].L
+  195.                (7,$_StackDv_P1)[0].L = $MR_timecpu_S39
+  195.                (8,$_StackDv_P1)[0].L = 1
+  195.                (6,$_StackIolist_O14)[0].L = int( loc( $_StackDv_P1 ), 8 )
+  195.                $LCS_IL194_27 = 1 + $I_L194_S22
+  195.                $DVindex_O15 = $LCS_IL194_27
+  195.                (8,$_StackIolist_O14)[0].L = int( loc( $DVindex_O15 ), 8 )
+  195.                0[$LIS_E6,0].L = loc( $IOitem_O2 )
+  195.                $MR_timewall_S40 = timewall[0].L
+  195.                $LCS_timewall_26 = loc( 0[int( $MR_timewall_S40, 8 ),0] )
+  195.                $_StackDv_P2[0].L = pointer to array[1] of real( $LCS_timewall_26 )
+  195.                (1,$_StackDv_P2)[0].L = 32
+  195.                (2,$_StackDv_P2)[0].L = and( 0xfffffffffffffffeUL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = and( 0xfffffffffffffffdUL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = and( 0xfffffffffffffff3UL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = and( 0xffffffffffffffefUL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = or( 64, notand( 2016, (2,$_StackDv_P2)[0].L ) )
+  195.                (2,$_StackDv_P2)[0].L = or( 65536, notand( 522240, (2,$_StackDv_P2)[0].L ) )
+  195.                (2,$_StackDv_P2)[0].L = and( -524289UL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = and( -4293918721UL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = and( 0xffffff00ffffffffUL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = and( 0xffff00ffffffffffUL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = and( 0xff00ffffffffffffUL, (2,$_StackDv_P2)[0].L )
+  195.                (2,$_StackDv_P2)[0].L = or( 0x100000000000000UL, notand( 0xff00000000000000UL, (2,$_StackDv_P2)[0].L ) )
+  195.                (6,$_StackDv_P2)[0] = 0
+  195.                (7,$_StackDv_P2)[0] = 131075
+  195.                (4,$_StackDv_P2)[0].L = int( $LCS_timewall_26, 8 )
+  195.                (5,$_StackDv_P2)[0].L = 32
+  195.                $MR_timewall_S41 = (6,timewall)[0].L
+  195.                (6,$_StackDv_P2)[0].L = $MR_timewall_S41
+  195.                $MR_timewall_S42 = (7,timewall)[0].L
+  195.                (7,$_StackDv_P2)[0].L = $MR_timewall_S42
+  195.                (8,$_StackDv_P2)[0].L = 1
+  195.                (14,$_StackIolist_O14)[0].L = int( loc( $_StackDv_P2 ), 8 )
+  195.                $DVindex_O16 = $LCS_IL194_27
+  195.                (16,$_StackIolist_O14)[0].L = int( loc( $DVindex_O16 ), 8 )
+  195.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O8 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O14[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O11 ) ) )
+  195.                $SR_S36 = 16 + $SR_S36
+  197.                $I_L194_S22 = 1 + $I_L194_S22
+  197.                if ( $I_L194_S22 >= $LIS_E2 ) exit
+  197.             enddo
+  197.          endif
+  199.          $MR_name_S44 = (7,name)[0].L
+  199.          $MR_name_S43 = (6,name)[0].L
+  199.          $LCS_1_28 = $MR_name_S43 + $MR_name_S44 + -1
+  199.          if ( int( 0 < $MR_name_S43 .or. 0 > $LCS_1_28 ) /= 0 ) then
+  199.             substr[t$107,0:12] = 'Watches.f90'
+  199.             substr[t$108,0:5] = 'NAME'
+  199.             t$85 = $MR_name_S43
+  199.             t$86 = $LCS_1_28
+  199.             $Con_P83 = 199
+  199.             $Con_P84 = 1
+  199.             $Con_P85 = 0
+  199.             call _bounds_error( substr[t$107,0:12], $Con_P83, substr[t$108,0:5], $Con_P84, t$85, t$86, $Con_P85, t$106 )
+  199.          endif
+  199.          $MR_timecpu_S46 = (7,timecpu)[0].L
+  199.          $MR_timecpu_S45 = (6,timecpu)[0].L
+  199.          $LCS_1_29 = $MR_timecpu_S45 + $MR_timecpu_S46 + -1
+  199.          if ( int( 0 < $MR_timecpu_S45 .or. 0 > $LCS_1_29 ) /= 0 ) then
+  199.             substr[t$110,0:12] = 'Watches.f90'
+  199.             substr[t$111,0:8] = 'TIMECPU'
+  199.             t$87 = $MR_timecpu_S45
+  199.             t$91 = $LCS_1_29
+  199.             $Con_P83 = 199
+  199.             $Con_P84 = 1
+  199.             $Con_P85 = 0
+  199.             call _bounds_error( substr[t$110,0:12], $Con_P83, substr[t$111,0:8], $Con_P84, t$87, t$91, $Con_P85, t$109 )
+  199.          endif
+  199.          $MR_timecpu_S48 = (7,timecpu)[0].L
+  199.          $MR_timecpu_S47 = (6,timecpu)[0].L
+  199.          $LCS_1_30 = $MR_timecpu_S47 + $MR_timecpu_S48 + -1
+  199.          if ( int( 0 < $MR_timecpu_S47 .or. 0 > $LCS_1_30 ) /= 0 ) then
+  199.             substr[t$113,0:12] = 'Watches.f90'
+  199.             substr[t$114,0:8] = 'TIMECPU'
+  199.             t$92 = $MR_timecpu_S47
+  199.             t$93 = $LCS_1_30
+  199.             $Con_P83 = 199
+  199.             $Con_P84 = 1
+  199.             $Con_P85 = 0
+  199.             call _bounds_error( substr[t$113,0:12], $Con_P83, substr[t$114,0:8], $Con_P84, t$92, t$93, $Con_P85, t$112 )
+  199.          endif
+  199.          $MR_timewall_S50 = (7,timewall)[0].L
+  199.          $MR_timewall_S49 = (6,timewall)[0].L
+  199.          $LCS_1_31 = $MR_timewall_S49 + $MR_timewall_S50 + -1
+  199.          if ( int( 0 < $MR_timewall_S49 .or. 0 > $LCS_1_31 ) /= 0 ) then
+  199.             substr[t$116,0:12] = 'Watches.f90'
+  199.             substr[t$117,0:9] = 'TIMEWALL'
+  199.             t$97 = $MR_timewall_S49
+  199.             t$98 = $LCS_1_31
+  199.             $Con_P83 = 199
+  199.             $Con_P84 = 1
+  199.             $Con_P85 = 0
+  199.             call _bounds_error( substr[t$116,0:12], $Con_P83, substr[t$117,0:9], $Con_P84, t$97, t$98, $Con_P85, t$115 )
+  199.          endif
+  198.          $Unit_temp_O3 = $MR_unit_22
+  198.          $numthreads_S53 = numthreads
+  198.          $MR_timecpu_S51 = timecpu[0].L
+  198.          $MR_timecpu_S52 = (6,timecpu)[0].L
+  198.          $MR_timecpu_S54 = 0[int( $MR_timecpu_S51, 8 ),-$MR_timecpu_S52]
+  198.          $IOitem_O4 = $MR_timecpu_S54 / real( $numthreads_S53 )
+  198.          $_StackCntrl_O8 = $_StaticCntrl_O17
+  198.          $MR_StackCntrl_S55 = loc( $Unit_temp_O3 )
+  198.          (1,$_StackCntrl_O8)[0].L = $MR_StackCntrl_S55
+  198.          $_StackIolist_O19 = $_StaticIolist_O18
+  198.          $MR_name_S56 = (6,name)[0].L
+  198.          0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O19)[0].L ) ), 8 ),0].L = loc( substr[name[0].L,-_lsh( $MR_name_S56, 4 ):16] )
+  198.          $MR_timecpu_S57 = timecpu[0].L
+  198.          $LCS_timecpu_32 = loc( 0[int( $MR_timecpu_S57, 8 ),0] )
+  198.          $_StackDv_P3[0].L = pointer to array[1] of real( $LCS_timecpu_32 )
+  198.          (1,$_StackDv_P3)[0].L = 32
+  198.          (2,$_StackDv_P3)[0].L = and( 0xfffffffffffffffeUL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = and( 0xfffffffffffffffdUL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = and( 0xfffffffffffffff3UL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = and( 0xffffffffffffffefUL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = or( 64, notand( 2016, (2,$_StackDv_P3)[0].L ) )
+  198.          (2,$_StackDv_P3)[0].L = or( 65536, notand( 522240, (2,$_StackDv_P3)[0].L ) )
+  198.          (2,$_StackDv_P3)[0].L = and( -524289UL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = and( -4293918721UL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = and( 0xffffff00ffffffffUL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = and( 0xffff00ffffffffffUL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = and( 0xff00ffffffffffffUL, (2,$_StackDv_P3)[0].L )
+  198.          (2,$_StackDv_P3)[0].L = or( 0x100000000000000UL, notand( 0xff00000000000000UL, (2,$_StackDv_P3)[0].L ) )
+  198.          (6,$_StackDv_P3)[0] = 0
+  198.          (7,$_StackDv_P3)[0] = 131075
+  198.          (4,$_StackDv_P3)[0].L = int( $LCS_timecpu_32, 8 )
+  198.          (5,$_StackDv_P3)[0].L = 32
+  198.          $MR_timecpu_S58 = (6,timecpu)[0].L
+  198.          (6,$_StackDv_P3)[0].L = $MR_timecpu_S58
+  198.          $MR_timecpu_S59 = (7,timecpu)[0].L
+  198.          (7,$_StackDv_P3)[0].L = $MR_timecpu_S59
+  198.          (8,$_StackDv_P3)[0].L = 1
+  198.          (6,$_StackIolist_O19)[0].L = int( loc( $_StackDv_P3 ), 8 )
+  198.          $DVindex_O20 = 0
+  198.          (8,$_StackIolist_O19)[0].L = int( loc( $DVindex_O20 ), 8 )
+  198.          0[int( pointer to c_union Pointer_union( loc( (11,$_StackIolist_O19)[0].L ) ), 8 ),0].L = loc( $IOitem_O4 )
+  198.          $MR_timewall_S60 = timewall[0].L
+  198.          $LCS_timewall_33 = loc( 0[int( $MR_timewall_S60, 8 ),0] )
+  198.          $_StackDv_P4[0].L = pointer to array[1] of real( $LCS_timewall_33 )
+  198.          (1,$_StackDv_P4)[0].L = 32
+  198.          (2,$_StackDv_P4)[0].L = and( 0xfffffffffffffffeUL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = and( 0xfffffffffffffffdUL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = and( 0xfffffffffffffff3UL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = and( 0xffffffffffffffefUL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = or( 64, notand( 2016, (2,$_StackDv_P4)[0].L ) )
+  198.          (2,$_StackDv_P4)[0].L = or( 65536, notand( 522240, (2,$_StackDv_P4)[0].L ) )
+  198.          (2,$_StackDv_P4)[0].L = and( -524289UL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = and( -4293918721UL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = and( 0xffffff00ffffffffUL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = and( 0xffff00ffffffffffUL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = and( 0xff00ffffffffffffUL, (2,$_StackDv_P4)[0].L )
+  198.          (2,$_StackDv_P4)[0].L = or( 0x100000000000000UL, notand( 0xff00000000000000UL, (2,$_StackDv_P4)[0].L ) )
+  198.          (6,$_StackDv_P4)[0] = 0
+  198.          (7,$_StackDv_P4)[0] = 131075
+  198.          (4,$_StackDv_P4)[0].L = int( $LCS_timewall_33, 8 )
+  198.          (5,$_StackDv_P4)[0].L = 32
+  198.          $MR_timewall_S61 = (6,timewall)[0].L
+  198.          (6,$_StackDv_P4)[0].L = $MR_timewall_S61
+  198.          $MR_timewall_S62 = (7,timewall)[0].L
+  198.          (7,$_StackDv_P4)[0].L = $MR_timewall_S62
+  198.          (8,$_StackDv_P4)[0].L = 1
+  198.          (14,$_StackIolist_O19)[0].L = int( loc( $_StackDv_P4 ), 8 )
+  198.          $DVindex_O21 = 0
+  198.          (16,$_StackIolist_O19)[0].L = int( loc( $DVindex_O21 ), 8 )
+  198.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O8 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O19[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O11 ) ) )
+  200.          call flush( 0[loc( unit ),0], 0 )
+  200.       else
+  202.          _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O22 ) ), pointer to integer (kind=8)( loc( $_StaticIolist_O23[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O11 ) ) )
+  203.          $nwatches_S63 = nwatches
+  203.          if ( $nwatches_S63 > 0 ) then
+  203.             $I_L203_S65 = 0
+  204.             $numthreads_S64 = numthreads
+  204.             $SR_S78 = 16
+  204.             $LIS_E9 = int( pointer to c_union Pointer_union( loc( (11,$_StackIolist_O27)[0].L ) ), 8 )
+  204.             $LIS_E8 = int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O27)[0].L ) ), 8 )
+  204.             $LIS_S74 = 1.0 / real( $numthreads_S64 )
+  206.             $LIS_E7 = $nwatches_S63
+  203.             do
+  205.                $MR_name_S67 = (7,name)[0].L
+  205.                $MR_name_S66 = (6,name)[0].L
+  205.                $LCS_IL203_34 = 1 + $I_L203_S65
+  205.                $LCS_1_35 = $MR_name_S66 + $MR_name_S67 + -1
+  205.                if ( int( $LCS_IL203_34 < $MR_name_S66 .or. $LCS_IL203_34 > $LCS_1_35 ) /= 0 ) then
+  205.                   substr[t$122,0:12] = 'Watches.f90'
+  205.                   substr[t$123,0:5] = 'NAME'
+  205.                   t$99 = $MR_name_S66
+  205.                   t$103 = $LCS_1_35
+  205.                   t$104 = $LCS_IL203_34
+  205.                   $Con_P83 = 205
+  205.                   $Con_P84 = 1
+  205.                   call _bounds_error( substr[t$122,0:12], $Con_P83, substr[t$123,0:5], $Con_P84, t$99, t$103, t$104, t$121 )
+  205.                endif
+  205.                $MR_timecpu_S69 = (7,timecpu)[0].L
+  205.                $MR_timecpu_S68 = (6,timecpu)[0].L
+  205.                $LCS_IL203_36 = 1 + $I_L203_S65
+  205.                $LCS_1_37 = $MR_timecpu_S68 + $MR_timecpu_S69 + -1
+  205.                if ( int( $LCS_IL203_36 < $MR_timecpu_S68 .or. $LCS_IL203_36 > $LCS_1_37 ) /= 0 ) then
+  205.                   substr[t$125,0:12] = 'Watches.f90'
+  205.                   substr[t$126,0:8] = 'TIMECPU'
+  205.                   t$105 = $MR_timecpu_S68
+  205.                   t$85 = $LCS_1_37
+  205.                   t$86 = $LCS_IL203_36
+  205.                   $Con_P83 = 205
+  205.                   $Con_P84 = 1
+  205.                   call _bounds_error( substr[t$125,0:12], $Con_P83, substr[t$126,0:8], $Con_P84, t$105, t$85, t$86, t$124 )
+  205.                endif
+  205.                $MR_timecpu_S71 = (7,timecpu)[0].L
+  205.                $MR_timecpu_S70 = (6,timecpu)[0].L
+  205.                $LCS_IL203_38 = 1 + $I_L203_S65
+  205.                $LCS_1_39 = $MR_timecpu_S70 + $MR_timecpu_S71 + -1
+  205.                if ( int( $LCS_IL203_38 < $MR_timecpu_S70 .or. $LCS_IL203_38 > $LCS_1_39 ) /= 0 ) then
+  205.                   substr[t$128,0:12] = 'Watches.f90'
+  205.                   substr[t$129,0:8] = 'TIMECPU'
+  205.                   t$87 = $MR_timecpu_S70
+  205.                   t$91 = $LCS_1_39
+  205.                   t$92 = $LCS_IL203_38
+  205.                   $Con_P83 = 205
+  205.                   $Con_P84 = 1
+  205.                   call _bounds_error( substr[t$128,0:12], $Con_P83, substr[t$129,0:8], $Con_P84, t$87, t$91, t$92, t$127 )
+  205.                endif
+  205.                $MR_timewall_S73 = (7,timewall)[0].L
+  205.                $MR_timewall_S72 = (6,timewall)[0].L
+  205.                $LCS_IL203_40 = 1 + $I_L203_S65
+  205.                $LCS_1_41 = $MR_timewall_S72 + $MR_timewall_S73 + -1
+  205.                if ( int( $LCS_IL203_40 < $MR_timewall_S72 .or. $LCS_IL203_40 > $LCS_1_41 ) /= 0 ) then
+  205.                   substr[t$131,0:12] = 'Watches.f90'
+  205.                   substr[t$132,0:9] = 'TIMEWALL'
+  205.                   t$93 = $MR_timewall_S72
+  205.                   t$97 = $LCS_1_41
+  205.                   t$98 = $LCS_IL203_40
+  205.                   $Con_P83 = 205
+  205.                   $Con_P84 = 1
+  205.                   call _bounds_error( substr[t$131,0:12], $Con_P83, substr[t$132,0:9], $Con_P84, t$93, t$97, t$98, t$130 )
+  205.                endif
+  204.                $MR_timecpu_S75 = timecpu[0].L
+  204.                $MR_timecpu_S76 = (6,timecpu)[0].L
+  204.                $IOitem_O5 = ( 1[int( $MR_timecpu_S75, 8 ),$I_L203_S65 - $MR_timecpu_S76] * $LIS_S74 )
+  204.                $_StackIolist_O27 = $_StaticIolist_O26
+  204.                $MR_name_S77 = (6,name)[0].L
+  204.                0[$LIS_E8,0].L = loc( substr[name[0].L,$SR_S78 - _lsh( $MR_name_S77, 4 ):16] )
+  204.                $MR_timecpu_S79 = timecpu[0].L
+  204.                $LCS_timecpu_42 = loc( 0[int( $MR_timecpu_S79, 8 ),0] )
+  204.                $_StackDv_P5[0].L = pointer to array[1] of real( $LCS_timecpu_42 )
+  204.                (1,$_StackDv_P5)[0].L = 32
+  204.                (2,$_StackDv_P5)[0].L = and( 0xfffffffffffffffeUL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = and( 0xfffffffffffffffdUL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = and( 0xfffffffffffffff3UL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = and( 0xffffffffffffffefUL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = or( 64, notand( 2016, (2,$_StackDv_P5)[0].L ) )
+  204.                (2,$_StackDv_P5)[0].L = or( 65536, notand( 522240, (2,$_StackDv_P5)[0].L ) )
+  204.                (2,$_StackDv_P5)[0].L = and( -524289UL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = and( -4293918721UL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = and( 0xffffff00ffffffffUL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = and( 0xffff00ffffffffffUL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = and( 0xff00ffffffffffffUL, (2,$_StackDv_P5)[0].L )
+  204.                (2,$_StackDv_P5)[0].L = or( 0x100000000000000UL, notand( 0xff00000000000000UL, (2,$_StackDv_P5)[0].L ) )
+  204.                (6,$_StackDv_P5)[0] = 0
+  204.                (7,$_StackDv_P5)[0] = 131075
+  204.                (4,$_StackDv_P5)[0].L = int( $LCS_timecpu_42, 8 )
+  204.                (5,$_StackDv_P5)[0].L = 32
+  204.                $MR_timecpu_S80 = (6,timecpu)[0].L
+  204.                (6,$_StackDv_P5)[0].L = $MR_timecpu_S80
+  204.                $MR_timecpu_S81 = (7,timecpu)[0].L
+  204.                (7,$_StackDv_P5)[0].L = $MR_timecpu_S81
+  204.                (8,$_StackDv_P5)[0].L = 1
+  204.                (6,$_StackIolist_O27)[0].L = int( loc( $_StackDv_P5 ), 8 )
+  204.                $LCS_IL203_44 = 1 + $I_L203_S65
+  204.                $DVindex_O28 = $LCS_IL203_44
+  204.                (8,$_StackIolist_O27)[0].L = int( loc( $DVindex_O28 ), 8 )
+  204.                0[$LIS_E9,0].L = loc( $IOitem_O5 )
+  204.                $MR_timewall_S82 = timewall[0].L
+  204.                $LCS_timewall_43 = loc( 0[int( $MR_timewall_S82, 8 ),0] )
+  204.                $_StackDv_P6[0].L = pointer to array[1] of real( $LCS_timewall_43 )
+  204.                (1,$_StackDv_P6)[0].L = 32
+  204.                (2,$_StackDv_P6)[0].L = and( 0xfffffffffffffffeUL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = and( 0xfffffffffffffffdUL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = and( 0xfffffffffffffff3UL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = and( 0xffffffffffffffefUL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = or( 64, notand( 2016, (2,$_StackDv_P6)[0].L ) )
+  204.                (2,$_StackDv_P6)[0].L = or( 65536, notand( 522240, (2,$_StackDv_P6)[0].L ) )
+  204.                (2,$_StackDv_P6)[0].L = and( -524289UL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = and( -4293918721UL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = and( 0xffffff00ffffffffUL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = and( 0xffff00ffffffffffUL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = and( 0xff00ffffffffffffUL, (2,$_StackDv_P6)[0].L )
+  204.                (2,$_StackDv_P6)[0].L = or( 0x100000000000000UL, notand( 0xff00000000000000UL, (2,$_StackDv_P6)[0].L ) )
+  204.                (6,$_StackDv_P6)[0] = 0
+  204.                (7,$_StackDv_P6)[0] = 131075
+  204.                (4,$_StackDv_P6)[0].L = int( $LCS_timewall_43, 8 )
+  204.                (5,$_StackDv_P6)[0].L = 32
+  204.                $MR_timewall_S83 = (6,timewall)[0].L
+  204.                (6,$_StackDv_P6)[0].L = $MR_timewall_S83
+  204.                $MR_timewall_S84 = (7,timewall)[0].L
+  204.                (7,$_StackDv_P6)[0].L = $MR_timewall_S84
+  204.                (8,$_StackDv_P6)[0].L = 1
+  204.                (14,$_StackIolist_O27)[0].L = int( loc( $_StackDv_P6 ), 8 )
+  204.                $DVindex_O29 = $LCS_IL203_44
+  204.                (16,$_StackIolist_O27)[0].L = int( loc( $DVindex_O29 ), 8 )
+  204.                _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O25 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O27[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O11 ) ) )
+  204.                $SR_S78 = 16 + $SR_S78
+  206.                $I_L203_S65 = 1 + $I_L203_S65
+  206.                if ( $I_L203_S65 >= $LIS_E7 ) exit
+  206.             enddo
+  206.          endif
+  208.          $MR_name_S86 = (7,name)[0].L
+  208.          $MR_name_S85 = (6,name)[0].L
+  208.          $LCS_1_45 = $MR_name_S85 + $MR_name_S86 + -1
+  208.          if ( int( 0 < $MR_name_S85 .or. 0 > $LCS_1_45 ) /= 0 ) then
+  208.             substr[t$134,0:12] = 'Watches.f90'
+  208.             substr[t$135,0:5] = 'NAME'
+  208.             t$99 = $MR_name_S85
+  208.             t$103 = $LCS_1_45
+  208.             $Con_P83 = 208
+  208.             $Con_P84 = 1
+  208.             $Con_P85 = 0
+  208.             call _bounds_error( substr[t$134,0:12], $Con_P83, substr[t$135,0:5], $Con_P84, t$99, t$103, $Con_P85, t$133 )
+  208.          endif
+  208.          $MR_timecpu_S88 = (7,timecpu)[0].L
+  208.          $MR_timecpu_S87 = (6,timecpu)[0].L
+  208.          $LCS_1_46 = $MR_timecpu_S87 + $MR_timecpu_S88 + -1
+  208.          if ( int( 0 < $MR_timecpu_S87 .or. 0 > $LCS_1_46 ) /= 0 ) then
+  208.             substr[t$137,0:12] = 'Watches.f90'
+  208.             substr[t$138,0:8] = 'TIMECPU'
+  208.             t$104 = $MR_timecpu_S87
+  208.             t$105 = $LCS_1_46
+  208.             $Con_P83 = 208
+  208.             $Con_P84 = 1
+  208.             $Con_P85 = 0
+  208.             call _bounds_error( substr[t$137,0:12], $Con_P83, substr[t$138,0:8], $Con_P84, t$104, t$105, $Con_P85, t$136 )
+  208.          endif
+  208.          $MR_timecpu_S90 = (7,timecpu)[0].L
+  208.          $MR_timecpu_S89 = (6,timecpu)[0].L
+  208.          $LCS_1_47 = $MR_timecpu_S89 + $MR_timecpu_S90 + -1
+  208.          if ( int( 0 < $MR_timecpu_S89 .or. 0 > $LCS_1_47 ) /= 0 ) then
+  208.             substr[t$140,0:12] = 'Watches.f90'
+  208.             substr[t$141,0:8] = 'TIMECPU'
+  208.             t$85 = $MR_timecpu_S89
+  208.             t$86 = $LCS_1_47
+  208.             $Con_P83 = 208
+  208.             $Con_P84 = 1
+  208.             $Con_P85 = 0
+  208.             call _bounds_error( substr[t$140,0:12], $Con_P83, substr[t$141,0:8], $Con_P84, t$85, t$86, $Con_P85, t$139 )
+  208.          endif
+  208.          $MR_timewall_S92 = (7,timewall)[0].L
+  208.          $MR_timewall_S91 = (6,timewall)[0].L
+  208.          $LCS_1_48 = $MR_timewall_S91 + $MR_timewall_S92 + -1
+  208.          if ( int( 0 < $MR_timewall_S91 .or. 0 > $LCS_1_48 ) /= 0 ) then
+  208.             substr[t$143,0:12] = 'Watches.f90'
+  208.             substr[t$144,0:9] = 'TIMEWALL'
+  208.             t$87 = $MR_timewall_S91
+  208.             t$91 = $LCS_1_48
+  208.             $Con_P83 = 208
+  208.             $Con_P84 = 1
+  208.             $Con_P85 = 0
+  208.             call _bounds_error( substr[t$143,0:12], $Con_P83, substr[t$144,0:9], $Con_P84, t$87, t$91, $Con_P85, t$142 )
+  208.          endif
+  207.          $numthreads_S95 = numthreads
+  207.          $MR_timecpu_S93 = timecpu[0].L
+  207.          $MR_timecpu_S94 = (6,timecpu)[0].L
+  207.          $MR_timecpu_S96 = 0[int( $MR_timecpu_S93, 8 ),-$MR_timecpu_S94]
+  207.          $IOitem_O6 = $MR_timecpu_S96 / real( $numthreads_S95 )
+  207.          $_StackIolist_O32 = $_StaticIolist_O31
+  207.          $MR_name_S97 = (6,name)[0].L
+  207.          0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O32)[0].L ) ), 8 ),0].L = loc( substr[name[0].L,-_lsh( $MR_name_S97, 4 ):16] )
+  207.          $MR_timecpu_S98 = timecpu[0].L
+  207.          $LCS_timecpu_49 = loc( 0[int( $MR_timecpu_S98, 8 ),0] )
+  207.          $_StackDv_P7[0].L = pointer to array[1] of real( $LCS_timecpu_49 )
+  207.          (1,$_StackDv_P7)[0].L = 32
+  207.          (2,$_StackDv_P7)[0].L = and( 0xfffffffffffffffeUL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = and( 0xfffffffffffffffdUL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = and( 0xfffffffffffffff3UL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = and( 0xffffffffffffffefUL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = or( 64, notand( 2016, (2,$_StackDv_P7)[0].L ) )
+  207.          (2,$_StackDv_P7)[0].L = or( 65536, notand( 522240, (2,$_StackDv_P7)[0].L ) )
+  207.          (2,$_StackDv_P7)[0].L = and( -524289UL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = and( -4293918721UL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = and( 0xffffff00ffffffffUL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = and( 0xffff00ffffffffffUL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = and( 0xff00ffffffffffffUL, (2,$_StackDv_P7)[0].L )
+  207.          (2,$_StackDv_P7)[0].L = or( 0x100000000000000UL, notand( 0xff00000000000000UL, (2,$_StackDv_P7)[0].L ) )
+  207.          (6,$_StackDv_P7)[0] = 0
+  207.          (7,$_StackDv_P7)[0] = 131075
+  207.          (4,$_StackDv_P7)[0].L = int( $LCS_timecpu_49, 8 )
+  207.          (5,$_StackDv_P7)[0].L = 32
+  207.          $MR_timecpu_S99 = (6,timecpu)[0].L
+  207.          (6,$_StackDv_P7)[0].L = $MR_timecpu_S99
+  207.          $MR_timecpu_S100 = (7,timecpu)[0].L
+  207.          (7,$_StackDv_P7)[0].L = $MR_timecpu_S100
+  207.          (8,$_StackDv_P7)[0].L = 1
+  207.          (6,$_StackIolist_O32)[0].L = int( loc( $_StackDv_P7 ), 8 )
+  207.          $DVindex_O33 = 0
+  207.          (8,$_StackIolist_O32)[0].L = int( loc( $DVindex_O33 ), 8 )
+  207.          0[int( pointer to c_union Pointer_union( loc( (11,$_StackIolist_O32)[0].L ) ), 8 ),0].L = loc( $IOitem_O6 )
+  207.          $MR_timewall_S101 = timewall[0].L
+  207.          $LCS_timewall_50 = loc( 0[int( $MR_timewall_S101, 8 ),0] )
+  207.          $_StackDv_P8[0].L = pointer to array[1] of real( $LCS_timewall_50 )
+  207.          (1,$_StackDv_P8)[0].L = 32
+  207.          (2,$_StackDv_P8)[0].L = and( 0xfffffffffffffffeUL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = and( 0xfffffffffffffffdUL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = and( 0xfffffffffffffff3UL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = and( 0xffffffffffffffefUL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = or( 64, notand( 2016, (2,$_StackDv_P8)[0].L ) )
+  207.          (2,$_StackDv_P8)[0].L = or( 65536, notand( 522240, (2,$_StackDv_P8)[0].L ) )
+  207.          (2,$_StackDv_P8)[0].L = and( -524289UL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = and( -4293918721UL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = and( 0xffffff00ffffffffUL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = and( 0xffff00ffffffffffUL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = and( 0xff00ffffffffffffUL, (2,$_StackDv_P8)[0].L )
+  207.          (2,$_StackDv_P8)[0].L = or( 0x100000000000000UL, notand( 0xff00000000000000UL, (2,$_StackDv_P8)[0].L ) )
+  207.          (6,$_StackDv_P8)[0] = 0
+  207.          (7,$_StackDv_P8)[0] = 131075
+  207.          (4,$_StackDv_P8)[0].L = int( $LCS_timewall_50, 8 )
+  207.          (5,$_StackDv_P8)[0].L = 32
+  207.          $MR_timewall_S102 = (6,timewall)[0].L
+  207.          (6,$_StackDv_P8)[0].L = $MR_timewall_S102
+  207.          $MR_timewall_S103 = (7,timewall)[0].L
+  207.          (7,$_StackDv_P8)[0].L = $MR_timewall_S103
+  207.          (8,$_StackDv_P8)[0].L = 1
+  207.          (14,$_StackIolist_O32)[0].L = int( loc( $_StackDv_P8 ), 8 )
+  207.          $DVindex_O34 = 0
+  207.          (16,$_StackIolist_O32)[0].L = int( loc( $DVindex_O34 ), 8 )
+  207.          _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O30 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O32[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O11 ) ) )
+  207.       endif
+  213.       $MR_timecpu_S105 = (7,timecpu)[0].L
+  213.       $MR_timecpu_S104 = (6,timecpu)[0].L
+  213.       $LCS_1_51 = $MR_timecpu_S104 + $MR_timecpu_S105 + -1
+  213.       if ( or( $LCS_1_51, -$MR_timecpu_S104 ) < 0 ) then
+  213.          $LB_Y0 = $MR_timecpu_S104
+  213.          $UB_Y1 = $LCS_1_51
+  213.          $Subscript_Y5 = 0
+  213.          _bounds_error( $_File_Y40, $Line_Y55, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y56 )
+  213.       endif
+  213.       $LCS_1_52 = $MR_timecpu_S104 + $MR_timecpu_S105 + -1
+  213.       if ( or( $LCS_1_52, -$MR_timecpu_S104 ) < 0 ) then
+  213.          $LB_Y0 = $MR_timecpu_S104
+  213.          $UB_Y1 = $LCS_1_52
+  213.          $Subscript_Y5 = 0
+  213.          _bounds_error( $_File_Y40, $Line_Y55, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y56 )
+  213.       endif
+  213.       $MR_timecpu_S106 = timecpu[0].L
+  213.       $LCS_53 = -$MR_timecpu_S104
+  213.       $LCS_MR_timecpu_54 = int( $MR_timecpu_S106, 8 )
+  213.       $MR_timecpu_S107 = 0[$LCS_MR_timecpu_54,$LCS_53]
+  213.       $MR_timecpu_S108 = $MR_timecpu_S107 - $MR_tc_12
+  213.       0[$LCS_MR_timecpu_54,$LCS_53] = $MR_timecpu_S108
+  214.       $currwatch_S109 = currwatch
+  214.       $LCS_55 = $MR_timecpu_S104 + $MR_timecpu_S105
+  214.       if ( or( $currwatch_S109 - $MR_timecpu_S104, -1 + ( $LCS_55 - $currwatch_S109 ) ) < 0 ) then
+  214.          $LB_Y0 = $MR_timecpu_S104
+  214.          $UB_Y1 = -1 + $LCS_55
+  214.          $Subscript_Y5 = $currwatch_S109
+  214.          _bounds_error( $_File_Y40, $Line_Y58, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y59 )
+  214.       endif
+  214.       $LCS_56 = $MR_timecpu_S104 + $MR_timecpu_S105
+  214.       if ( or( $currwatch_S109 - $MR_timecpu_S104, -1 + ( $LCS_56 - $currwatch_S109 ) ) < 0 ) then
+  214.          $LB_Y0 = $MR_timecpu_S104
+  214.          $UB_Y1 = -1 + $LCS_56
+  214.          $Subscript_Y5 = $currwatch_S109
+  214.          _bounds_error( $_File_Y40, $Line_Y58, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y59 )
+  214.       endif
+  214.       $LCS_57 = $currwatch_S109 - $MR_timecpu_S104
+  214.       $LCS_MR_timecpu_58 = int( $MR_timecpu_S106, 8 )
+  214.       $MR_timecpu_S110 = 0[$LCS_MR_timecpu_58,$LCS_57]
+  214.       $MR_timecpu_S111 = $MR_timecpu_S110 - $MR_tc_12
+  214.       0[$LCS_MR_timecpu_58,$LCS_57] = $MR_timecpu_S111
+  215.       $MR_timewall_S113 = (7,timewall)[0].L
+  215.       $MR_timewall_S112 = (6,timewall)[0].L
+  215.       $LCS_1_59 = $MR_timewall_S112 + $MR_timewall_S113 + -1
+  215.       if ( or( $LCS_1_59, -$MR_timewall_S112 ) < 0 ) then
+  215.          $LB_Y0 = $MR_timewall_S112
+  215.          $UB_Y1 = $LCS_1_59
+  215.          $Subscript_Y5 = 0
+  215.          _bounds_error( $_File_Y40, $Line_Y61, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y62 )
+  215.       endif
+  215.       $LCS_1_60 = $MR_timewall_S112 + $MR_timewall_S113 + -1
+  215.       if ( or( $LCS_1_60, -$MR_timewall_S112 ) < 0 ) then
+  215.          $LB_Y0 = $MR_timewall_S112
+  215.          $UB_Y1 = $LCS_1_60
+  215.          $Subscript_Y5 = 0
+  215.          _bounds_error( $_File_Y40, $Line_Y61, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y62 )
+  215.       endif
+  215.       $MR_timewall_S114 = timewall[0].L
+  215.       $LCS_61 = -$MR_timewall_S112
+  215.       $LCS_MR_timewall_62 = int( $MR_timewall_S114, 8 )
+  215.       $MR_timewall_S115 = 0[$LCS_MR_timewall_62,$LCS_61]
+  215.       $MR_timewall_S116 = $MR_timewall_S115 - $CS_timeunit_0
+  215.       0[$LCS_MR_timewall_62,$LCS_61] = $MR_timewall_S116
+  216.       $LCS_63 = $MR_timewall_S112 + $MR_timewall_S113
+  216.       if ( or( -1 + ( $LCS_63 - $currwatch_S109 ), $currwatch_S109 - $MR_timewall_S112 ) < 0 ) then
+  216.          $LB_Y0 = $MR_timewall_S112
+  216.          $UB_Y1 = -1 + $LCS_63
+  216.          $Subscript_Y5 = $currwatch_S109
+  216.          _bounds_error( $_File_Y40, $Line_Y64, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y65 )
+  216.       endif
+  216.       $LCS_64 = $MR_timewall_S112 + $MR_timewall_S113
+  216.       if ( or( $currwatch_S109 - $MR_timewall_S112, -1 + ( $LCS_64 - $currwatch_S109 ) ) < 0 ) then
+  216.          $LB_Y0 = $MR_timewall_S112
+  216.          $UB_Y1 = -1 + $LCS_64
+  216.          $Subscript_Y5 = $currwatch_S109
+  216.          _bounds_error( $_File_Y40, $Line_Y64, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y65 )
+  216.       endif
+  216.       $LCS_65 = $currwatch_S109 - $MR_timewall_S112
+  216.       $LCS_MR_timewall_66 = int( $MR_timewall_S114, 8 )
+  216.       $MR_timewall_S117 = 0[$LCS_MR_timewall_66,$LCS_65]
+  216.       $MR_timewall_S118 = $MR_timewall_S117 - $CS_timeunit_0
+  216.       0[$LCS_MR_timewall_66,$LCS_65] = $MR_timewall_S118
+  217.       return
+  217.       end
+  217.       
+  262.       
+  262.       subroutine changewatch( tp )
+  236.       $MR_tp_S1 = 0[loc( tp ),0]
+  236.       $currwatch_S2 = currwatch
+  236.       if ( $currwatch_S2 - $MR_tp_S1 /= 0 ) then
+  238.          if ( $MR_tp_S1 <= 0 ) then
+  238.             goto 10
+  238.          else if ( $MR_tp_S1 > nwatches ) then
+  238.    10       continue
+  239.             $_StackCntrl_O1 = $_StaticCntrl_O0
+  239.             (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+  239.             $_StackIolist_O3 = $_StaticIolist_O2
+  239.             0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O3)[0].L ) ), 8 ),0].L = loc( 0[loc( tp ),0] )
+  239.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O3[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  240.             $_StackCntrl_O1 = $_StaticCntrl_O5
+  240.             (1,$_StackCntrl_O1)[0].L = loc( substr[c1,0:10] )
+  240.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StaticIolist_O6[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  241.             _f90_adjustl( substr[t$145,0:10], substr[c0,0:10] )
+  243.             _f90_adjustl( substr[t$146,0:10], substr[c1,0:10] )
+  241.             t$147 = ( _ltrim( substr[t$145,0:10] ) ) + ( _ltrim( substr[t$146,0:10] ) ) + 72
+  242.             $CS_0 = max( 0, t$147 )
+  242.             t$149 = int( _alloc( $CS_0 ), 8 )
+  242.             substr[0,t$149:$CS_0] = //( '**(ChangeWatch)** input watch (', //( substr[t$145,0:_ltrim( substr[t$145,0:10] )], //( ') should be > 0 and < number of watches (', substr[t$146,0:_ltrim( substr[t$146,0:10] )] ) ) )
+  241.             call fatalerror( substr[0,t$149:$CS_0] )
+  242.             _free( t$149 )
+  242.          endif
+  248.          call _cpu_time_4( tc )
+  249.          $Flat_S0 = _rtc
+  254.          $MR_timecpu_5 = (7,timecpu)[0].L
+  254.          $MR_timecpu_6 = (6,timecpu)[0].L
+  254.          $currwatch_S3 = currwatch
+  254.          $LCS_1 = $MR_timecpu_5 + $MR_timecpu_6
+  254.          if ( or( -1 + ( $LCS_1 - $currwatch_S3 ), $currwatch_S3 - $MR_timecpu_6 ) < 0 ) then
+  254.             $LB_Y0 = $MR_timecpu_6
+  254.             $UB_Y1 = -1 + $LCS_1
+  254.             $Subscript_Y5 = $currwatch_S3
+  254.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  254.          endif
+  254.          $LCS_2 = $MR_timecpu_5 + $MR_timecpu_6
+  254.          if ( or( $currwatch_S3 - $MR_timecpu_6, -1 + ( $LCS_2 - $currwatch_S3 ) ) < 0 ) then
+  254.             $LB_Y0 = $MR_timecpu_6
+  254.             $UB_Y1 = -1 + $LCS_2
+  254.             $Subscript_Y5 = $currwatch_S3
+  254.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  254.          endif
+  254.          $MR_tc_7 = tc
+  254.          $MR_timecpu_8 = timecpu[0].L
+  254.          $LCS_5 = $currwatch_S3
+  254.          $LCS_3 = $LCS_5 - $MR_timecpu_6
+  254.          $LCS_MR_timecpu_4 = int( $MR_timecpu_8, 8 )
+  254.          $MR_timecpu_S4 = 0[$LCS_MR_timecpu_4,$LCS_3]
+  254.          $MR_timecpu_S5 = $MR_timecpu_S4 + $MR_tc_7
+  254.          0[$LCS_MR_timecpu_4,$LCS_3] = $MR_timecpu_S5
+  255.          $MR_timewall_10 = (7,timewall)[0].L
+  255.          $MR_timewall_11 = (6,timewall)[0].L
+  255.          $LCS_6 = $MR_timewall_10 + $MR_timewall_11
+  255.          if ( or( $LCS_5 - $MR_timewall_11, -1 + ( $LCS_6 - $currwatch_S3 ) ) < 0 ) then
+  255.             $LB_Y0 = $MR_timewall_11
+  255.             $UB_Y1 = -1 + $LCS_6
+  255.             $Subscript_Y5 = $currwatch_S3
+  255.             _bounds_error( $_File_Y40, $Line_Y46, $_Name_Y45, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y47 )
+  255.          endif
+  255.          $LCS_7 = $MR_timewall_10 + $MR_timewall_11
+  255.          if ( or( -1 + ( $LCS_7 - $currwatch_S3 ), $currwatch_S3 - $MR_timewall_11 ) < 0 ) then
+  255.             $LB_Y0 = $MR_timewall_11
+  255.             $UB_Y1 = -1 + $LCS_7
+  255.             $Subscript_Y5 = $currwatch_S3
+  255.             _bounds_error( $_File_Y40, $Line_Y46, $_Name_Y45, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y47 )
+  255.          endif
+  255.          $MR_timeunit_12 = timeunit
+  255.          $MR_timewall_13 = timewall[0].L
+  255.          $LCS_8 = $currwatch_S3 - $MR_timewall_11
+  255.          $LCS_MR_timewall_9 = int( $MR_timewall_13, 8 )
+  255.          $MR_timewall_S6 = 0[$LCS_MR_timewall_9,$LCS_8]
+  255.          $CS_timeunit_1 = ( real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) ) * $MR_timeunit_12 )
+  255.          $MR_timewall_S7 = $MR_timewall_S6 + $CS_timeunit_1
+  255.          0[$LCS_MR_timewall_9,$LCS_8] = $MR_timewall_S7
+  259.          $MR_tp_S8 = 0[loc( tp ),0]
+  259.          currwatch = $MR_tp_S8
+  260.          $LCS_10 = $MR_timecpu_5 + $MR_timecpu_6
+  260.          if ( or( -1 + ( $LCS_10 - $MR_tp_S8 ), $MR_tp_S8 - $MR_timecpu_6 ) < 0 ) then
+  260.             $LB_Y0 = $MR_timecpu_6
+  260.             $UB_Y1 = -1 + $LCS_10
+  260.             $Subscript_Y5 = $MR_tp_S8
+  260.             _bounds_error( $_File_Y40, $Line_Y49, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y50 )
+  260.          endif
+  260.          $LCS_11 = $MR_timecpu_5 + $MR_timecpu_6
+  260.          if ( or( $MR_tp_S8 - $MR_timecpu_6, -1 + ( $LCS_11 - $MR_tp_S8 ) ) < 0 ) then
+  260.             $LB_Y0 = $MR_timecpu_6
+  260.             $UB_Y1 = -1 + $LCS_11
+  260.             $Subscript_Y5 = $MR_tp_S8
+  260.             _bounds_error( $_File_Y40, $Line_Y49, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y50 )
+  260.          endif
+  260.          $LCS_14 = $MR_tp_S8
+  260.          $LCS_12 = $LCS_14 - $MR_timecpu_6
+  260.          $LCS_MR_timecpu_13 = int( $MR_timecpu_8, 8 )
+  260.          $MR_timecpu_S9 = 0[$LCS_MR_timecpu_13,$LCS_12]
+  260.          $MR_timecpu_S10 = $MR_timecpu_S9 - $MR_tc_7
+  260.          0[$LCS_MR_timecpu_13,$LCS_12] = $MR_timecpu_S10
+  261.          $LCS_15 = $MR_timewall_10 + $MR_timewall_11
+  261.          if ( or( $LCS_14 - $MR_timewall_11, -1 + ( $LCS_15 - $MR_tp_S8 ) ) < 0 ) then
+  261.             $LB_Y0 = $MR_timewall_11
+  261.             $UB_Y1 = -1 + $LCS_15
+  261.             $Subscript_Y5 = $MR_tp_S8
+  261.             _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y45, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  261.          endif
+  261.          $LCS_16 = $MR_timewall_10 + $MR_timewall_11
+  261.          if ( or( -1 + ( $LCS_16 - $MR_tp_S8 ), $MR_tp_S8 - $MR_timewall_11 ) < 0 ) then
+  261.             $LB_Y0 = $MR_timewall_11
+  261.             $UB_Y1 = -1 + $LCS_16
+  261.             $Subscript_Y5 = $MR_tp_S8
+  261.             _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y45, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  261.          endif
+  261.          $LCS_17 = $MR_tp_S8 - $MR_timewall_11
+  261.          $LCS_MR_timewall_18 = int( $MR_timewall_13, 8 )
+  261.          $MR_timewall_S11 = 0[$LCS_MR_timewall_18,$LCS_17]
+  261.          $MR_timewall_S12 = $MR_timewall_S11 - $CS_timeunit_1
+  261.          0[$LCS_MR_timewall_18,$LCS_17] = $MR_timewall_S12
+  261.       endif
+  262.       return
+  262.       end
+  262.       
+  285.       
+  285.       subroutine namewatch( tp, namew )
+  277.       $MR_tp_S0 = 0[loc( tp ),0]
+  277.       if ( $MR_tp_S0 <= 0 ) then
+  285.          goto 10
+  277.       else if ( $MR_tp_S0 > nwatches ) then
+  277.    10    continue
+  278.          $_StackCntrl_O1 = $_StaticCntrl_O0
+  278.          (1,$_StackCntrl_O1)[0].L = loc( substr[c0,0:10] )
+  278.          $_StackIolist_O3 = $_StaticIolist_O2
+  278.          0[int( pointer to c_union Pointer_union( loc( (3,$_StackIolist_O3)[0].L ) ), 8 ),0].L = loc( 0[loc( tp ),0] )
+  278.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StackIolist_O3[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  279.          $_StackCntrl_O1 = $_StaticCntrl_O5
+  279.          (1,$_StackCntrl_O1)[0].L = loc( substr[c1,0:10] )
+  279.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( $_StaticIolist_O6[0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  280.          _f90_adjustl( substr[t$150,0:10], substr[c0,0:10] )
+  282.          _f90_adjustl( substr[t$151,0:10], substr[c1,0:10] )
+  280.          t$152 = ( _ltrim( substr[t$150,0:10] ) ) + ( _ltrim( substr[t$151,0:10] ) ) + 70
+  281.          $CS_0 = max( 0, t$152 )
+  281.          t$154 = int( _alloc( $CS_0 ), 8 )
+  281.          substr[0,t$154:$CS_0] = //( '**(NameWatch)** input watch (', //( substr[t$150,0:_ltrim( substr[t$150,0:10] )], //( ') should be > 0 and < number of watches (', substr[t$151,0:_ltrim( substr[t$151,0:10] )] ) ) )
+  280.          call fatalerror( substr[0,t$154:$CS_0] )
+  281.          _free( t$154 )
+  281.       endif
+  284.       $MR_name_3 = (6,name)[0].L
+  284.       $MR_tp_S1 = 0[loc( tp ),0]
+  284.       $MR_name_4 = (7,name)[0].L
+  284.       $LCS_1 = $MR_name_3 + $MR_name_4
+  284.       if ( or( -1 + ( $LCS_1 - $MR_tp_S1 ), $MR_tp_S1 - $MR_name_3 ) < 0 ) then
+  284.          $LB_Y0 = $MR_name_3
+  284.          $UB_Y1 = -1 + $LCS_1
+  284.          $Subscript_Y5 = $MR_tp_S1
+  284.          _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  284.       endif
+  284.       substr[name[0].L,_lsh( $MR_tp_S1 - $MR_name_3, 4 ):16] = substr[namew,0:_len( namew )]
+  285.       return
+  285.       end
+  285.       
+   47.       
+   47.       module watches
+  286.       return
+  286.       end
+  286.       

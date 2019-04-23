@@ -1,0 +1,29 @@
+#! /bin/bash -x
+#            0          1          2         3           4          5          6          7           8          9	   10        11           12       13        14
+#idatei=(2011110100 2011110112 2011110200 2009010600 2009010612 2009010700 2009010712 2009010800 2009010812 2009010900 2009010912 2009011000 2009011012 2009011100 2009011112 2009011200 2009011212 2009011300 2009011312 2009011400 2009011412 2009011500 2009011512 2009011600 2009011612 2009011700 2009011712 2009011800 2009011812 2009011900 2009011912 2009012000 2009012012 2009012100 2009012112 2009012200 2009012212 )
+idatei=(2011080100 2011080112 2009010912 2009011000 2009011012 2009011100 2009011112 2009011200 2009011212 2009011300 2009011312 2009011400 2009011412 2009011500 2009011512 2009011600 2009011612 2009011700 2009011712 2009011800 2009011812 2009011900 2009011912 2009012000 2009012012 2009012100 2009012112 2009012200 2009012212 )
+
+itr=0
+while [ ${itr} -lt 1 ];do
+nProc=`printf "PNT%4.4d  \n" ${itr}`
+
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 AVN 7 sstwkl >& lixo0 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 01N 7 sstwkl >& lixo1 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 02N 7 sstwkl >& lixo3 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 03N 7 sstwkl >& lixo4 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 04N 7 sstwkl >& lixo5 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 05N 7 sstwkl >& lixo6 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 06N 7 sstwkl >& lixo7 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 07N 7 sstwkl >& lixo8 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 01P 7 sstwkl >& lixo9 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 02P 7 sstwkl >& lixo10 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 03P 7 sstwkl >& lixo11 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 04P 7 sstwkl >& lixo12 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 05P 7 sstwkl >& lixo13 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 06P 7 sstwkl >& lixo14 &
+nohup ./runpntg.bash 126 28 ${idatei[$itr]} 15 07P 7 sstwkl >& lixo15 
+
+let itr=${itr}+1
+done
+
+exit

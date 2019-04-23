@@ -1,0 +1,39 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  w3fs26.f
+       !        File                  :  w3fs26.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    1.       
+    1.       subroutine w3fs26( jldayn, iyear, month, iday, idaywk, idayyr )
+    1.       $CARG_jldayn_I0 = 0[loc( jldayn ),0]
+   74.       $n_S0 = ( 274276 + _lsh( $CARG_jldayn_I0, 2 ) ) / 146097
+   75.       $PRT_P6 = 3 + 146097 * $n_S0
+   75.       $l_S1 = 68569 + $CARG_jldayn_I0 - _ash( $PRT_P6 + _rsh( _ash( $PRT_P6, 1 ), 30 ), 2 )
+   76.       $i_S2 = ( 4000 + 4000 * $l_S1 ) / 1461001
+   77.       $PRT_P7 = 1461 * $i_S2
+   77.       $l_S3 = 31 + $l_S1 - _ash( $PRT_P7 + _rsh( _ash( $PRT_P7, 1 ), 30 ), 2 )
+   78.       $j_S4 = 80 * $l_S3 / 2447
+   79.       0[loc( iday ),0] = $l_S3 + 2447 * $j_S4 / -80
+   80.       $l_S5 = $j_S4 / 11
+   81.       0[loc( month ),0] = -12 * $l_S5 + 2 + $j_S4
+   82.       $LCS_i_0 = 100 * $n_S0 + $i_S2 + $l_S5
+   82.       0[loc( iyear ),0] = -4900 + $LCS_i_0
+   83.       0[loc( idaywk ),0] = -7 * ( 1 + $CARG_jldayn_I0 ) / 7 + 2 + $CARG_jldayn_I0
+   84.       $PRT_P8 = 3 * ( -1 + $LCS_i_0 ) / 100
+   84.       $PRT_P9 = 1461 * ( $i_S2 + $l_S5 ) + -147561 + 146100 * $n_S0
+   84.       0[loc( idayyr ),0] = _ash( $PRT_P8 + _rsh( _ash( $PRT_P8, 1 ), 30 ), 2 ) + 31739 + $CARG_jldayn_I0 - _ash( $PRT_P9 + _rsh( _ash( $PRT_P9, 1 ), 30 ), 2 )
+   87.       return
+   87.       end
+   87.       

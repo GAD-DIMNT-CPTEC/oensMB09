@@ -1,0 +1,1340 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        Notice - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Init.f90
+       !        File                  :  Init.cg
+       !        Network               :  Gemini interconnect
+       !        Target                :  X86, 64-bit, sse3
+       !        
+  320.       
+  320.       subroutine initall( trunc, vert, reducedgrid, lineargrid, mgiven, gaussgiven, ct_in, cq_in, si_in, sl_in, del_in, dk_in, tk_in )
+  132.       6[loc( ct_in ),0].L = 1
+  132.       6[loc( cq_in ),0].L = 1
+  132.       6[loc( si_in ),0].L = 1
+  132.       6[loc( sl_in ),0].L = 1
+  155.       6[loc( del_in ),0].L = 1
+  154.       (1,imaxperlat)[0].L = 32
+  154.       $MR_imaxperlat_S54 = (2,imaxperlat)[0].L
+  154.       $MR_imaxperlat_S55 = or( 0x100000000010058UL, and( 16, $MR_imaxperlat_S54 ) )
+  154.       (2,imaxperlat)[0].L = $MR_imaxperlat_S55
+  154.       (6,imaxperlat)[0] = 10
+  154.       (7,imaxperlat)[0] = 131074
+  154.       (4,imaxperlat)[0].L = 0
+  154.       (5,imaxperlat)[0].L = 0
+  154.       (6,imaxperlat)[0].L = 1
+  154.       (7,imaxperlat)[0].L = 0
+  154.       (8,imaxperlat)[0].L = 1
+  132.       (1,mperlat)[0].L = 32
+  132.       $MR_mperlat_S56 = (2,mperlat)[0].L
+  132.       $MR_mperlat_S57 = or( 0x100000000010058UL, and( 16, $MR_mperlat_S56 ) )
+  132.       (2,mperlat)[0].L = $MR_mperlat_S57
+  132.       (6,mperlat)[0] = 10
+  132.       (7,mperlat)[0] = 131074
+  132.       (4,mperlat)[0].L = 0
+  132.       (5,mperlat)[0].L = 0
+  132.       (6,mperlat)[0].L = 1
+  132.       (7,mperlat)[0].L = 0
+  132.       (8,mperlat)[0].L = 1
+  185.       $MR_lineargrid_5 = 0[loc( lineargrid ),0]
+  185.       t$75 = 1 + 0[loc( trunc ),0] * cvmg( 2, 3, $MR_lineargrid_5 )
+  185.       nlon = nextsizefft( t$75 )
+  188.       $nlon_S58 = nlon
+  186.       do
+  188.          $LCS_nlon_0 = $nlon_S58 - and( -4, $nlon_S58 + _rsh( _ash( $nlon_S58, 1 ), 30 ) )
+  188.          if ( $LCS_nlon_0 == 0 ) goto 10
+  189.          t$75 = 4 + ( $nlon_S58 - $LCS_nlon_0 )
+  189.       enddo
+  189.    10 continue
+  189.       nlon = $nlon_S58
+  194.       nlat = _ash( $nlon_S58 + _rsh( $nlon_S58, 31 ), 1 )
+  198.       call registerbasicsizes( 0[loc( trunc ),0], nlat, nlon, 0[loc( vert ),0] )
+  206.       t$77 = 0[loc( si_in ),0].L
+  206.       t$78 = 0[loc( sl_in ),0].L
+  206.       t$79 = 0[loc( del_in ),0].L
+  206.       call initversizes( t$77, t$78, t$79 )
+  208.       $nls_S64 = 0
+  209.       k = 1
+  209.       $MR_kmax_9 = kmax
+  209.       if ( $MR_kmax_9 > 0 ) then
+  209.          $I_L209_S65 = 0
+  210.          $LCS_sl_in_1 = loc( sl_in )
+  210.          $MR_sl_in_S60 = 7[$LCS_sl_in_1,0].L
+  210.          $MR_sl_in_S59 = 6[$LCS_sl_in_1,0].L
+  210.          $LCS_1_2 = $MR_sl_in_S59 + $MR_sl_in_S60 + -1
+  210.          if ( int( 1 >= $MR_sl_in_S59 .and. $MR_kmax_9 <= $LCS_1_2 ) == 0 ) then
+  210.             $LB_Y0 = $MR_sl_in_S59
+  210.             $UB_Y1 = $LCS_1_2
+  210.             $Subscript_Y2 = 1
+  210.             $Subscript_Y3 = $MR_kmax_9
+  210.             $Subscript_Y4 = 1
+  210.             _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+  210.          endif
+  210.          $LCS_sl_in_3 = loc( sl_in )
+  210.          $MR_sl_in_S61 = 8[$LCS_sl_in_3,0].L
+  210.          $MR_sl_in_S62 = 0[$LCS_sl_in_3,0].L
+  209.          if ( $MR_sl_in_S61 /= 1 ) then
+  210.             $SR_S63 = $MR_sl_in_S61 * ( 1 - $MR_sl_in_S59 )
+  211.             $LIS_E5 = $MR_kmax_9
+  210.             $LIS_E4 = 9.9999000000000005e-2
+  210.             $LIS_S6 = int( $MR_sl_in_S62, 8 )
+  209.             do
+  210.                if ( 0[$LIS_S6,$SR_S63].L <= $LIS_E4 ) then
+  210.                   $nls_S64 = 1 + $nls_S64
+  210.                endif
+  210.                $SR_S63 = $MR_sl_in_S61 + $SR_S63
+  211.                $I_L209_S65 = 1 + $I_L209_S65
+  210.                if ( $I_L209_S65 >= $LIS_E5 ) exit
+  210.             enddo
+  210.          else
+  209.             $LCS_4 = $MR_kmax_9
+  209.             if ( $LCS_4 >= 2 ) then !  99.50%
+  209.                $TC_75 = and( -2, $LCS_4 )
+  209.                $LC_S66 = -$TC_75
+  209.                $SI_S67 = 0
+  210.                $LIS_7[0:2:1].L = _bcst( 9.9999000000000005e-2, 2 )
+  210.                $LIS_E6 = int( $MR_sl_in_S62, 8 ) - _lsh( $MR_sl_in_S59, 3 )
+  209.                if ( $LC_S66 < -7 ) then
+  209.                   do
+  210.                      $LCS_5 = $LIS_E6 + $SI_S67
+  210.                      $BM_VMT_S12[0:2:1].L = 1[$LCS_5:2:1].L <=.BM $LIS_7[0:2:1].L
+  210.                      $cii_nls_S13 = popcnt( _vsb2mask( $BM_VMT_S12[0:2:1].L ) )
+  210.                      $nls_S16 = ( $cii_nls_S13 + $nls_S64 )
+  210.                      $BM_VMT_S14[0:2:1].L = 3[$LCS_5:2:1].L <=.BM $LIS_7[0:2:1].L
+  210.                      $cii_nls_S15 = popcnt( _vsb2mask( $BM_VMT_S14[0:2:1].L ) )
+  210.                      $nls_S19 = ( $cii_nls_S15 + $nls_S16 )
+  210.                      $BM_VMT_S17[0:2:1].L = 5[$LCS_5:2:1].L <=.BM $LIS_7[0:2:1].L
+  210.                      $cii_nls_S18 = popcnt( _vsb2mask( $BM_VMT_S17[0:2:1].L ) )
+  210.                      $nls_S22 = ( $cii_nls_S18 + $nls_S19 )
+  210.                      $BM_VMT_S20[0:2:1].L = 7[$LCS_5:2:1].L <=.BM $LIS_7[0:2:1].L
+  210.                      $cii_nls_S21 = popcnt( _vsb2mask( $BM_VMT_S20[0:2:1].L ) )
+  210.                      $nls_S64 = ( $cii_nls_S21 + $nls_S22 )
+  209.                      $SI_S67 = 64 + $SI_S67
+  209.                      $LC_S66 = 8 + $LC_S66
+  209.                      if ( $LC_S66 >= -7 ) exit
+  209.                   enddo
+  209.                endif
+  209.                if ( $LC_S66 < 0 ) then
+  209.                   do
+  210.                      $BM_VMT_S23[0:2:1].L = 1[$LIS_E6 + $SI_S67:2:1].L <=.BM $LIS_7[0:2:1].L
+  210.                      $cii_nls_S24 = popcnt( _vsb2mask( $BM_VMT_S23[0:2:1].L ) )
+  210.                      $nls_S64 = ( $cii_nls_S24 + $nls_S64 )
+  209.                      $SI_S67 = 16 + $SI_S67
+  209.                      $LC_S66 = 2 + $LC_S66
+  209.                      if ( $LC_S66 >= 0 ) exit
+  209.                   enddo
+  209.                endif
+  209.                $I_L209_S65 = $TC_75
+  209.             endif
+  209.             if ( $MR_kmax_9 > $I_L209_S65 ) then !  99.50%
+  210.                if ( 1[int( $MR_sl_in_S62, 8 ),$I_L209_S65 - $MR_sl_in_S59].L <= 9.9999000000000005e-2 ) then
+  210.                   $nls_S64 = 1 + $nls_S64
+  210.                endif
+  210.             endif
+  210.          endif
+  211.          k = ( 1 + $MR_kmax_9 )
+  211.       endif
+  212.       nls = cvmg( $nls_S64, 1, $nls_S64 /= 0 )
+  213.       nlcs = 2 + $MR_kmax_9
+  215.       t$87 = 0
+  215.       $MR_si_in_19 = 2[loc( si_in ),0].L
+  215.       if ( _lsh( $MR_si_in_19, 59 ) < 0 ) then
+  215. !dir$ suppress 0[int( 0[loc( si_in ),0].L, 8 ),8[loc( si_in ),0].L + -( 6[loc( si_in ),0].L * 8[loc( si_in ),0].L )].L
+  215.          $LCS_si_in_6 = loc( si_in )
+  215.          $MR_si_in_S69 = 7[$LCS_si_in_6,0].L
+  215.          $MR_si_in_S68 = 6[$LCS_si_in_6,0].L
+  215.          $LCS_7 = $MR_si_in_S68 + $MR_si_in_S69
+  215.          if ( or( -2 + $LCS_7, 1 - $MR_si_in_S68 ) < 0 ) then
+  215.             $LB_Y0 = $MR_si_in_S68
+  215.             $UB_Y1 = -1 + $LCS_7
+  215.             $Subscript_Y5 = 1
+  215.             _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+  215.          endif
+  215.          $LCS_si_in_8 = loc( si_in )
+  215.          $MR_si_in_S70 = 0[$LCS_si_in_8,0].L
+  215.          $MR_si_in_S71 = 8[$LCS_si_in_8,0].L
+  215.          t$83 = loc( 0[int( $MR_si_in_S70, 8 ),$MR_si_in_S71 * ( 1 - $MR_si_in_S68 )].L )
+  215.       else
+  215.          t$87 = int( _alloc( max( 0, _lsh( max( 0, 7[loc( si_in ),0].L ), 3 ) ) ), 8 )
+  215.          $LCS_si_in_9 = loc( si_in )
+  215.          $MR_si_in_S72 = 7[$LCS_si_in_9,0].L
+  215.          $F_A33 = $MR_si_in_S72
+  215.          if ( $MR_si_in_S72 > 0 ) then !  99.50%
+  215.             $MR_si_in_S74 = 8[$LCS_si_in_9,0].L
+  215.             $MR_si_in_S73 = 6[$LCS_si_in_9,0].L
+  215.             $I_L215_S78 = 0
+  215.             $LCS_1_10 = $F_A33 + $MR_si_in_S73 + -1
+  215.             if ( int( 1 >= $MR_si_in_S73 .and. $F_A33 <= $LCS_1_10 ) == 0 ) then
+  215.                $LB_Y0 = $MR_si_in_S73
+  215.                $UB_Y1 = $LCS_1_10
+  215.                $Subscript_Y2 = 1
+  215.                $Subscript_Y3 = $F_A33
+  215.                $Subscript_Y4 = 1
+  215.                _rbounds_error( $_File_Y40, $Line_Y45, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y47 )
+  215.             endif
+  215.             $MR_si_in_S75 = 0[loc( si_in ),0].L
+  215.             if ( $MR_si_in_S74 /= 1 ) then
+  215.                $SR_S76 = $MR_si_in_S74 * ( 1 - $MR_si_in_S73 )
+  215.                $LIS_E8 = int( $MR_si_in_S75, 8 )
+  215.                do
+  215.                   $MR_S77 = 0[$LIS_E8,$SR_S76].L
+  215.                   0[t$87,$I_L215_S78].L = $MR_S77
+  215.                   $SR_S76 = $MR_si_in_S74 + $SR_S76
+  215.                   $I_L215_S78 = 1 + $I_L215_S78
+  215.                   if ( $I_L215_S78 >= $F_A33 ) exit
+  215.                enddo
+  215.             else
+  215.                if ( $F_A33 >= 2 ) then !  99.50%
+  215.                   $TC_82 = and( -2, $F_A33 )
+  215.                   $LC_S80 = -$TC_82
+  215.                   $SI_S79 = 0
+  215.                   $LIS_E9 = int( $MR_si_in_S75, 8 ) - _lsh( $MR_si_in_S73, 3 )
+  215.                   do
+  215.                      0[t$87 + $SI_S79:2:1].L = 1[$LIS_E9 + $SI_S79:2:1].L
+  215.                      $SI_S79 = 16 + $SI_S79
+  215.                      $LC_S80 = 2 + $LC_S80
+  215.                      if ( $LC_S80 >= 0 ) exit
+  215.                   enddo
+  215.                   $I_L215_S78 = $TC_82
+  215.                endif
+  215.                if ( $F_A33 > $I_L215_S78 ) then !  99.50%
+  215.                   $MR_S81 = 1[int( $MR_si_in_S75, 8 ),$I_L215_S78 - $MR_si_in_S73].L
+  215.                   0[t$87,$I_L215_S78].L = $MR_S81
+  215.                endif
+  215.             endif
+  215.          endif
+  215. !dir$ suppress 0[t$87,0].L
+  215.          t$83 = loc( 0[t$87,0].L )
+  215.       endif
+  215.       t$92 = 0
+  215.       $MR_sl_in_27 = 2[loc( sl_in ),0].L
+  215.       if ( _lsh( $MR_sl_in_27, 59 ) < 0 ) then
+  215. !dir$ suppress 0[int( 0[loc( sl_in ),0].L, 8 ),8[loc( sl_in ),0].L + -( 6[loc( sl_in ),0].L * 8[loc( sl_in ),0].L )].L
+  215.          $LCS_sl_in_11 = loc( sl_in )
+  215.          $MR_sl_in_S83 = 7[$LCS_sl_in_11,0].L
+  215.          $MR_sl_in_S82 = 6[$LCS_sl_in_11,0].L
+  215.          $LCS_12 = $MR_sl_in_S82 + $MR_sl_in_S83
+  215.          if ( or( -2 + $LCS_12, 1 - $MR_sl_in_S82 ) < 0 ) then
+  215.             $LB_Y0 = $MR_sl_in_S82
+  215.             $UB_Y1 = -1 + $LCS_12
+  215.             $Subscript_Y5 = 1
+  215.             _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y48 )
+  215.          endif
+  215.          $LCS_sl_in_13 = loc( sl_in )
+  215.          $MR_sl_in_S84 = 0[$LCS_sl_in_13,0].L
+  215.          $MR_sl_in_S85 = 8[$LCS_sl_in_13,0].L
+  215.          t$88 = loc( 0[int( $MR_sl_in_S84, 8 ),$MR_sl_in_S85 * ( 1 - $MR_sl_in_S82 )].L )
+  215.       else
+  215.          t$92 = int( _alloc( max( 0, _lsh( max( 0, 7[loc( sl_in ),0].L ), 3 ) ) ), 8 )
+  215.          $LCS_sl_in_14 = loc( sl_in )
+  215.          $MR_sl_in_S86 = 7[$LCS_sl_in_14,0].L
+  215.          $F_A34 = $MR_sl_in_S86
+  215.          if ( $MR_sl_in_S86 > 0 ) then !  99.50%
+  215.             $MR_sl_in_S88 = 8[$LCS_sl_in_14,0].L
+  215.             $MR_sl_in_S87 = 6[$LCS_sl_in_14,0].L
+  215.             $I_L215_S92 = 0
+  215.             $LCS_1_15 = $F_A34 + $MR_sl_in_S87 + -1
+  215.             if ( int( 1 >= $MR_sl_in_S87 .and. $F_A34 <= $LCS_1_15 ) == 0 ) then
+  215.                $LB_Y0 = $MR_sl_in_S87
+  215.                $UB_Y1 = $LCS_1_15
+  215.                $Subscript_Y2 = 1
+  215.                $Subscript_Y3 = $F_A34
+  215.                $Subscript_Y4 = 1
+  215.                _rbounds_error( $_File_Y40, $Line_Y45, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y49 )
+  215.             endif
+  215.             $MR_sl_in_S89 = 0[loc( sl_in ),0].L
+  215.             if ( $MR_sl_in_S88 /= 1 ) then
+  215.                $SR_S90 = $MR_sl_in_S88 * ( 1 - $MR_sl_in_S87 )
+  215.                $LIS_S30 = int( $MR_sl_in_S89, 8 )
+  215.                do
+  215.                   $MR_S91 = 0[$LIS_S30,$SR_S90].L
+  215.                   0[t$92,$I_L215_S92].L = $MR_S91
+  215.                   $SR_S90 = $MR_sl_in_S88 + $SR_S90
+  215.                   $I_L215_S92 = 1 + $I_L215_S92
+  215.                   if ( $I_L215_S92 >= $F_A34 ) exit
+  215.                enddo
+  215.             else
+  215.                if ( $F_A34 >= 2 ) then !  99.50%
+  215.                   $TC_85 = and( -2, $F_A34 )
+  215.                   $LC_S94 = -$TC_85
+  215.                   $SI_S93 = 0
+  215.                   $LIS_E10 = int( $MR_sl_in_S89, 8 ) - _lsh( $MR_sl_in_S87, 3 )
+  215.                   do
+  215.                      0[t$92 + $SI_S93:2:1].L = 1[$LIS_E10 + $SI_S93:2:1].L
+  215.                      $SI_S93 = 16 + $SI_S93
+  215.                      $LC_S94 = 2 + $LC_S94
+  215.                      if ( $LC_S94 >= 0 ) exit
+  215.                   enddo
+  215.                   $I_L215_S92 = $TC_85
+  215.                endif
+  215.                if ( $F_A34 > $I_L215_S92 ) then !  99.50%
+  215.                   $MR_S95 = 1[int( $MR_sl_in_S89, 8 ),$I_L215_S92 - $MR_sl_in_S87].L
+  215.                   0[t$92,$I_L215_S92].L = $MR_S95
+  215.                endif
+  215.             endif
+  215.          endif
+  215. !dir$ suppress 0[t$92,0].L
+  215.          t$88 = loc( 0[t$92,0].L )
+  215.       endif
+  215.       t$94 = 0
+  215.       t$97 = 0
+  215.       $MR_ct_in_31 = 2[loc( ct_in ),0].L
+  215.       if ( _lsh( $MR_ct_in_31, 59 ) < 0 ) then
+  215. !dir$ suppress 0[int( 0[loc( ct_in ),0].L, 8 ),8[loc( ct_in ),0].L + -( 6[loc( ct_in ),0].L * 8[loc( ct_in ),0].L )].L
+  215.          $LCS_ct_in_16 = loc( ct_in )
+  215.          $MR_ct_in_S97 = 7[$LCS_ct_in_16,0].L
+  215.          $MR_ct_in_S96 = 6[$LCS_ct_in_16,0].L
+  215.          $LCS_17 = $MR_ct_in_S96 + $MR_ct_in_S97
+  215.          if ( or( -2 + $LCS_17, 1 - $MR_ct_in_S96 ) < 0 ) then
+  215.             $LB_Y0 = $MR_ct_in_S96
+  215.             $UB_Y1 = -1 + $LCS_17
+  215.             $Subscript_Y5 = 1
+  215.             _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y50, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y51 )
+  215.          endif
+  215.          $LCS_ct_in_18 = loc( ct_in )
+  215.          $MR_ct_in_S98 = 0[$LCS_ct_in_18,0].L
+  215.          $MR_ct_in_S99 = 8[$LCS_ct_in_18,0].L
+  215.          t$93 = loc( 0[int( $MR_ct_in_S98, 8 ),$MR_ct_in_S99 * ( 1 - $MR_ct_in_S96 )].L )
+  215.       else
+  215.          $MR_ct_in_S97 = 7[loc( ct_in ),0].L
+  215.          t$94 = $MR_ct_in_S97
+  215.          t$97 = int( _alloc( max( 0, _lsh( max( 0, $MR_ct_in_S97 ), 3 ) ) ), 8 )
+  215. !dir$ suppress 0[t$97,0].L
+  215.          t$93 = loc( 0[t$97,0].L )
+  215.       endif
+  215.       t$99 = 0
+  215.       t$102 = 0
+  215.       $MR_cq_in_36 = 2[loc( cq_in ),0].L
+  215.       if ( _lsh( $MR_cq_in_36, 59 ) < 0 ) then
+  215. !dir$ suppress 0[int( 0[loc( cq_in ),0].L, 8 ),8[loc( cq_in ),0].L + -( 6[loc( cq_in ),0].L * 8[loc( cq_in ),0].L )].L
+  215.          $LCS_cq_in_19 = loc( cq_in )
+  215.          $MR_cq_in_S101 = 7[$LCS_cq_in_19,0].L
+  215.          $MR_cq_in_S100 = 6[$LCS_cq_in_19,0].L
+  215.          $LCS_20 = $MR_cq_in_S100 + $MR_cq_in_S101
+  215.          if ( or( -2 + $LCS_20, 1 - $MR_cq_in_S100 ) < 0 ) then
+  215.             $LB_Y0 = $MR_cq_in_S100
+  215.             $UB_Y1 = -1 + $LCS_20
+  215.             $Subscript_Y5 = 1
+  215.             _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y52, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  215.          endif
+  215.          $LCS_cq_in_21 = loc( cq_in )
+  215.          $MR_cq_in_S102 = 0[$LCS_cq_in_21,0].L
+  215.          $MR_cq_in_S103 = 8[$LCS_cq_in_21,0].L
+  215.          t$98 = loc( 0[int( $MR_cq_in_S102, 8 ),$MR_cq_in_S103 * ( 1 - $MR_cq_in_S100 )].L )
+  215.       else
+  215.          $MR_cq_in_S101 = 7[loc( cq_in ),0].L
+  215.          t$99 = $MR_cq_in_S101
+  215.          t$102 = int( _alloc( max( 0, _lsh( max( 0, $MR_cq_in_S101 ), 3 ) ) ), 8 )
+  215. !dir$ suppress 0[t$102,0].L
+  215.          t$98 = loc( 0[t$102,0].L )
+  215.       endif
+  215.       call init_ct_cq( kmax, t$83, t$88, t$93, t$98 )
+  215.       if ( _lsh( $MR_cq_in_36, 59 ) >= 0 ) then
+  215.          $F_A35 = t$99
+  215.          if ( t$99 > 0 ) then !  99.50%
+  215.             $LCS_cq_in_22 = loc( cq_in )
+  215.             $MR_cq_in_S105 = 8[$LCS_cq_in_22,0].L
+  215.             $MR_cq_in_S104 = 6[$LCS_cq_in_22,0].L
+  215.             $I_L215_S109 = 0
+  215.             $LCS_1_23 = $MR_cq_in_S101 + $MR_cq_in_S104 + -1
+  215.             if ( int( 1 >= $MR_cq_in_S104 .and. $F_A35 <= $LCS_1_23 ) == 0 ) then
+  215.                $LB_Y0 = $MR_cq_in_S104
+  215.                $UB_Y1 = $LCS_1_23
+  215.                $Subscript_Y2 = 1
+  215.                $Subscript_Y3 = $F_A35
+  215.                $Subscript_Y4 = 1
+  215.                _rbounds_error( $_File_Y40, $Line_Y45, $_Name_Y52, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y54 )
+  215.             endif
+  215.             $MR_cq_in_S106 = 0[loc( cq_in ),0].L
+  215.             if ( $MR_cq_in_S105 /= 1 ) then
+  215.                if ( $F_A35 >= 2 ) then !  99.50%
+  215.                   $TC_44 = and( -2, $F_A35 )
+  215.                   $LC_S108 = -$TC_44
+  215.                   $SI_S107 = 0
+  215.                   $LIS_E12 = $MR_cq_in_S105 * ( 8 - _lsh( $MR_cq_in_S104, 3 ) ) + int( $MR_cq_in_S106, 8 )
+  215.                   $LIS_E11 = _lsh( $MR_cq_in_S105, 3 )
+  215.                   do
+  215.                      0[$LIS_E12 + $LIS_E11 * $SI_S107,0].L = 0[t$102 + _lsh( $SI_S107, 3 ),0].L
+  215.                      0[$LIS_E12 + $LIS_E11 * $SI_S107,$MR_cq_in_S105].L = 1[t$102 + _lsh( $SI_S107, 3 ),0].L
+  215.                      $SI_S107 = 2 + $SI_S107
+  215.                      $LC_S108 = 2 + $LC_S108
+  215.                      if ( $LC_S108 >= 0 ) exit
+  215.                   enddo
+  215.                   $I_L215_S109 = $TC_44
+  215.                endif
+  215.                if ( $F_A35 > $I_L215_S109 ) then !  99.50%
+  215.                   $MR_S110 = 0[t$102,$I_L215_S109].L
+  215.                   0[int( $MR_cq_in_S106, 8 ),$MR_cq_in_S105 * ( 1 + ( $I_L215_S109 - $MR_cq_in_S104 ) )].L = $MR_S110
+  215.                endif
+  215.             else
+  215.                if ( $F_A35 >= 2 ) then !  99.50%
+  215.                   $TC_66 = and( -2, $F_A35 )
+  215.                   $LC_S112 = -$TC_66
+  215.                   $SI_S111 = 0
+  215.                   $LIS_E13 = int( $MR_cq_in_S106, 8 ) - _lsh( $MR_cq_in_S104, 3 )
+  215.                   do
+  215.                      1[$LIS_E13 + $SI_S111:2:1].L = 0[t$102 + $SI_S111:2:1].L
+  215.                      $SI_S111 = 16 + $SI_S111
+  215.                      $LC_S112 = 2 + $LC_S112
+  215.                      if ( $LC_S112 >= 0 ) exit
+  215.                   enddo
+  215.                   $I_L215_S109 = $TC_66
+  215.                endif
+  215.                if ( $F_A35 > $I_L215_S109 ) then !  99.50%
+  215.                   $MR_S113 = 0[t$102,$I_L215_S109].L
+  215.                   1[int( $MR_cq_in_S106, 8 ),$I_L215_S109 - $MR_cq_in_S104].L = $MR_S113
+  215.                endif
+  215.             endif
+  215.          endif
+  215.          _free( t$102 )
+  215.       endif
+  215.       if ( _lsh( $MR_ct_in_31, 59 ) >= 0 ) then
+  215.          $F_A36 = t$94
+  215.          if ( t$94 > 0 ) then !  99.50%
+  215.             $LCS_ct_in_24 = loc( ct_in )
+  215.             $MR_ct_in_S115 = 8[$LCS_ct_in_24,0].L
+  215.             $MR_ct_in_S114 = 6[$LCS_ct_in_24,0].L
+  215.             $I_L215_S119 = 0
+  215.             $LCS_1_25 = $MR_ct_in_S97 + $MR_ct_in_S114 + -1
+  215.             if ( int( 1 >= $MR_ct_in_S114 .and. $F_A36 <= $LCS_1_25 ) == 0 ) then
+  215.                $LB_Y0 = $MR_ct_in_S114
+  215.                $UB_Y1 = $LCS_1_25
+  215.                $Subscript_Y2 = 1
+  215.                $Subscript_Y3 = $F_A36
+  215.                $Subscript_Y4 = 1
+  215.                _rbounds_error( $_File_Y40, $Line_Y45, $_Name_Y50, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y55 )
+  215.             endif
+  215.             $MR_ct_in_S116 = 0[loc( ct_in ),0].L
+  215.             if ( $MR_ct_in_S115 /= 1 ) then
+  215.                if ( $F_A36 >= 2 ) then !  99.50%
+  215.                   $TC_47 = and( -2, $F_A36 )
+  215.                   $LC_S118 = -$TC_47
+  215.                   $SI_S117 = 0
+  215.                   $LIS_E15 = $MR_ct_in_S115 * ( 8 - _lsh( $MR_ct_in_S114, 3 ) ) + int( $MR_ct_in_S116, 8 )
+  215.                   $LIS_E14 = _lsh( $MR_ct_in_S115, 3 )
+  215.                   do
+  215.                      0[$LIS_E15 + $LIS_E14 * $SI_S117,0].L = 0[t$97 + _lsh( $SI_S117, 3 ),0].L
+  215.                      0[$LIS_E15 + $LIS_E14 * $SI_S117,$MR_ct_in_S115].L = 1[t$97 + _lsh( $SI_S117, 3 ),0].L
+  215.                      $SI_S117 = 2 + $SI_S117
+  215.                      $LC_S118 = 2 + $LC_S118
+  215.                      if ( $LC_S118 >= 0 ) exit
+  215.                   enddo
+  215.                   $I_L215_S119 = $TC_47
+  215.                endif
+  215.                if ( $F_A36 > $I_L215_S119 ) then !  99.50%
+  215.                   $MR_S120 = 0[t$97,$I_L215_S119].L
+  215.                   0[int( $MR_ct_in_S116, 8 ),$MR_ct_in_S115 * ( 1 + ( $I_L215_S119 - $MR_ct_in_S114 ) )].L = $MR_S120
+  215.                endif
+  215.             else
+  215.                if ( $F_A36 >= 2 ) then !  99.50%
+  215.                   $TC_69 = and( -2, $F_A36 )
+  215.                   $LC_S122 = -$TC_69
+  215.                   $SI_S121 = 0
+  215.                   $LIS_E16 = int( $MR_ct_in_S116, 8 ) - _lsh( $MR_ct_in_S114, 3 )
+  215.                   do
+  215.                      1[$LIS_E16 + $SI_S121:2:1].L = 0[t$97 + $SI_S121:2:1].L
+  215.                      $SI_S121 = 16 + $SI_S121
+  215.                      $LC_S122 = 2 + $LC_S122
+  215.                      if ( $LC_S122 >= 0 ) exit
+  215.                   enddo
+  215.                   $I_L215_S119 = $TC_69
+  215.                endif
+  215.                if ( $F_A36 > $I_L215_S119 ) then !  99.50%
+  215.                   $MR_S123 = 0[t$97,$I_L215_S119].L
+  215.                   1[int( $MR_ct_in_S116, 8 ),$I_L215_S119 - $MR_ct_in_S114].L = $MR_S123
+  215.                endif
+  215.             endif
+  215.          endif
+  215.          _free( t$97 )
+  215.       endif
+  215.       if ( _lsh( $MR_sl_in_27, 59 ) >= 0 ) then
+  215.          _free( t$92 )
+  215.       endif
+  215.       if ( _lsh( $MR_si_in_19, 59 ) >= 0 ) then
+  215.          _free( t$87 )
+  215.       endif
+  222.       call setfilenamegausspoints( jmax )
+  226.       call setfilenamewavesperlat( 0[loc( trunc ),0], jmax )
+  230.       call creategaussquad( jmax, 0[loc( gaussgiven ),0] )
+  238.       call verticalgroups( givenfouriergroups, nproc_vert )
+  239.       call spectraldomaindecomp
+  243.       $MR_mgiven_47 = 0[loc( mgiven ),0]
+  243.       $MR_reducedgrid_48 = 0[loc( reducedgrid ),0]
+  243.       allpolynomials = $MR_reducedgrid_48 .and. int( $MR_mgiven_47 ) == 0
+  244.       call createassoclegfunc( allpolynomials )
+  248.       $MR_mperlat_S124 = (2,mperlat)[0].L
+  248.       $MR_mperlat_S125 = or( 16, $MR_mperlat_S124 )
+  248.       (2,mperlat)[0].L = $MR_mperlat_S125
+  248.       (6,mperlat)[0].L = 1
+  248.       $jmax_S126 = jmax
+  248.       $MR_mperlat_S127 = ( max( 0, $jmax_S126 ) )
+  248.       (7,mperlat)[0].L = $MR_mperlat_S127
+  248.       (8,mperlat)[0].L = 1
+  248.       $_allo_P0[0].L = 0x1000000000001L
+  248.       (1,$_allo_P0)[0].L = loc( mperlat )
+  248.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  249.       if ( int( $MR_reducedgrid_48 ) == 0 ) then
+  259.          $jmax_S128 = jmax
+  259.          $F_A37 = $jmax_S128
+  259.          if ( $jmax_S128 > 0 ) then !  99.50%
+  259.             $I_L259_S132 = 0
+  259.             $LCS_26 = max( 0, $jmax_S128 )
+  259.             if ( $F_A37 > $LCS_26 ) then
+  259.                $LB_Y0 = 1
+  259.                $UB_Y1 = $LCS_26
+  259.                $Subscript_Y2 = 1
+  259.                $Subscript_Y3 = $F_A37
+  259.                $Subscript_Y4 = 1
+  259.                _rbounds_error( $_File_Y40, $Line_Y57, $_Name_Y56, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y58 )
+  259.             endif
+  259.             $SC_mmax_I35 = mmax
+  259.             $MR_mperlat_S129 = mperlat[0].L
+  259.             if ( $F_A37 >= 4 ) then !  99.50%
+  259.                $TC_22 = and( -4, $F_A37 )
+  259.                $LC_S131 = -$TC_22
+  259.                $SI_S130 = 0
+  259.                $LIS_18[0:4:1] = _bcst( $SC_mmax_I35, 4 )
+  259.                $LIS_S45 = int( $MR_mperlat_S129, 8 )
+  259.                do
+  259.                   0[$LIS_S45 + $SI_S130:4:1] = $LIS_18[0:4:1]
+  259.                   $SI_S130 = 16 + $SI_S130
+  259.                   $LC_S131 = 4 + $LC_S131
+  259.                   if ( $LC_S131 >= 0 ) exit
+  259.                enddo
+  259.                $I_L259_S132 = $TC_22
+  259.             endif
+  259.             if ( $F_A37 > $I_L259_S132 ) then !  99.50%
+  259.                $LIS_S49 = int( $MR_mperlat_S129, 8 )
+  259.                do
+  259.                   0[$LIS_S49,$I_L259_S132] = $SC_mmax_I35
+  259.                   $I_L259_S132 = 1 + $I_L259_S132
+  259.                   if ( $I_L259_S132 >= $F_A37 ) exit
+  259.                enddo
+  259.             endif
+  259.          endif
+  250.       else if ( int( $MR_mgiven_47 ) /= 0 ) then
+  251.          call readms( 0[int( mperlat[0].L, 8 ),0], substr[fnamewaves,0:211], jmax )
+  251.       else
+  253.          call varymwithlat( 0[int( legfuncs2f[0].L, 8 ),0].L, 0[int( gaussweights[0].L, 8 ),0].L, 0[int( mperlat[0].L, 8 ),0] )
+  254.          if ( myid == 0 ) then
+  255.             call writems( 0[int( mperlat[0].L, 8 ),0], substr[fnamewaves,0:211], jmax )
+  255.          endif
+  255.       endif
+  264.       $MR_imaxperlat_S133 = (2,imaxperlat)[0].L
+  264.       $MR_imaxperlat_S134 = or( 16, $MR_imaxperlat_S133 )
+  264.       (2,imaxperlat)[0].L = $MR_imaxperlat_S134
+  264.       (6,imaxperlat)[0].L = 1
+  264.       $jmax_S135 = jmax
+  264.       $MR_imaxperlat_S136 = ( max( 0, $jmax_S135 ) )
+  264.       (7,imaxperlat)[0].L = $MR_imaxperlat_S136
+  264.       (8,imaxperlat)[0].L = 1
+  264.       $_allo_P1[0].L = 0x1000000000001L
+  264.       (1,$_allo_P1)[0].L = loc( imaxperlat )
+  264.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  265.       $jmaxhalf_S137 = jmaxhalf
+  265.       if ( $jmaxhalf_S137 > 0 ) then
+  266.          $MR_mperlat_S138 = (7,mperlat)[0].L
+  265.          $I_L265_S141 = 0
+  266.          if ( $jmaxhalf_S137 > $MR_mperlat_S138 ) then
+  266.             $LB_Y0 = 1
+  266.             $UB_Y1 = $MR_mperlat_S138
+  266.             $Subscript_Y2 = 1
+  266.             $Subscript_Y3 = $jmaxhalf_S137
+  266.             $Subscript_Y4 = 1
+  266.             _rbounds_error( $_File_Y40, $Line_Y59, $_Name_Y56, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y60 )
+  266.          endif
+  266.          $jmax_S139 = jmax
+  266.          $CS_0 = max( 0, $jmax_S139 )
+  266.          $CS_1 = $CS_0
+  266.          if ( $jmaxhalf_S137 > $CS_1 ) then
+  266.             $LB_Y0 = 1
+  266.             $UB_Y1 = $CS_1
+  266.             $Subscript_Y2 = 1
+  266.             $Subscript_Y3 = $jmaxhalf_S137
+  266.             $Subscript_Y4 = 1
+  266.             _rbounds_error( $_File_Y40, $Line_Y59, $_Name_Y61, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y62 )
+  266.          endif
+  267.          $LIS_E21 = $jmaxhalf_S137
+  266.          $LCS_28 = cvmg( 2, 3, $MR_lineargrid_5 )
+  266.          $LIS_E20 = 1 - $LCS_28
+  265.          do
+  266.             $MR_mperlat_S140 = mperlat[0].L
+  266.             t$75 = $LIS_E20 + $LCS_28 * 0[int( $MR_mperlat_S140, 8 ),$I_L265_S141]
+  266.             0[int( imaxperlat[0].L, 8 ),$I_L265_S141] = nextsizefft( t$75 )
+  267.             $I_L265_S141 = 1 + $I_L265_S141
+  266.             if ( $I_L265_S141 >= $LIS_E21 ) exit
+  266.          enddo
+  266.       endif
+  268.       $jmaxhalf_S142 = jmaxhalf
+  268.       $LCS_jmaxhalf_30 = $jmaxhalf_S142
+  268.       $F_A38 = $LCS_jmaxhalf_30
+  268.       if ( $jmaxhalf_S142 > 0 ) then !  99.50%
+  268.          $MR_imaxperlat_S143 = (7,imaxperlat)[0].L
+  268.          $I_L268_S146 = 0
+  268.          $LCS_29 = $jmaxhalf_S142
+  268.          $LCS_31 = $LCS_29 - $F_A38
+  268.          if ( int( $LCS_29 <= $MR_imaxperlat_S143 .and. $LCS_31 >= 0 ) == 0 ) then
+  268.             $LB_Y0 = 1
+  268.             $UB_Y1 = $MR_imaxperlat_S143
+  268.             $Subscript_Y2 = $LCS_jmaxhalf_30
+  268.             $Subscript_Y3 = 1 + $LCS_31
+  268.             $Subscript_Y4 = -1
+  268.             _rbounds_error( $_File_Y40, $Line_Y63, $_Name_Y61, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y64 )
+  268.          endif
+  268.          $LCS_32 = $jmaxhalf_S142
+  268.          $LCS_F_33 = $F_A38 + $LCS_32
+  268.          if ( int( $jmaxhalf_S142 >= 0 .and. $LCS_F_33 <= $MR_imaxperlat_S143 ) == 0 ) then
+  268.             $LB_Y0 = 1
+  268.             $UB_Y1 = $MR_imaxperlat_S143
+  268.             $Subscript_Y2 = 1 + $LCS_32
+  268.             $Subscript_Y3 = $LCS_F_33
+  268.             $Subscript_Y4 = 1
+  268.             _rbounds_error( $_File_Y40, $Line_Y63, $_Name_Y61, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y65 )
+  268.          endif
+  268.          $SC_imaxperlat_I38 = imaxperlat[0].L
+  268.          if ( $F_A38 >= 4 ) then !  99.50%
+  268.             $TC_25 = and( -4, $F_A38 )
+  268.             $LC_S145 = -$TC_25
+  268.             $SI_S144 = 0
+  268.             $LIS_E22 = _lsh( $jmaxhalf_S142, 2 ) + int( $SC_imaxperlat_I38, 8 )
+  268.             do
+  268.                0[$LIS_E22 + $SI_S144:4:1] = _reverse( -4[$LIS_E22 - $SI_S144:4:1] )
+  268.                $SI_S144 = 16 + $SI_S144
+  268.                $LC_S145 = 4 + $LC_S145
+  268.                if ( $LC_S145 >= 0 ) exit
+  268.             enddo
+  268.             $I_L268_S146 = $TC_25
+  268.          endif
+  268.          if ( $F_A38 > $I_L268_S146 ) then !  99.50%
+  268.             $LIS_E24 = int( $SC_imaxperlat_I38, 8 )
+  268.             $LIS_E23 = $jmaxhalf_S142
+  268.             do
+  268.                0[$LIS_E24,$LIS_E23 + $I_L268_S146] = -1[$LIS_E24,$LIS_E23 - $I_L268_S146]
+  268.                $I_L268_S146 = 1 + $I_L268_S146
+  268.                if ( $I_L268_S146 >= $F_A38 ) exit
+  268.             enddo
+  268.          endif
+  268.       endif
+  272.       call registerothersizes( 0[int( imaxperlat[0].L, 8 ),0], 0[int( mperlat[0].L, 8 ),0], myid, maxnodes )
+  273.       call createfouriergroup( mygroup_four, myid_four )
+  274.       ibmax = ibdim_size
+  275.       call griddecomposition( ibmax, jbmax, jbmax_ext, maxnodes, myid, vmax_est )
+  276.       call exchange_ftog( nrecs_f, nrecs_g )
+  277.       call exchange_diag( nrecs_diag, nsends_diag )
+  278.       $slagr_S147 = slagr
+  278.       if ( int( $slagr_S147 ) /= 0 ) then
+  278.          if ( maxnodes > 1 ) then
+  278.             call exchange_hallos( nrecs_gr, nsends_gr, nscalars )
+  278.          endif
+  278.       endif
+  289.       $slagr_S148 = slagr
+  289.       t$106 = sl_twotime_scheme .and. $slagr_S148
+  288.       call initfields( ibmax, kmax, jbmax, mymnmax, mymnextmax, kmaxloc, mnmax_si, jbmax_ext, nscalars, t$106 )
+  293.       call initconstants( kmax )
+  295.       call creategridvalues
+  299.       call initsemiimpl
+  300.       t$107 = 0[loc( ct_in ),0].L
+  300.       t$108 = 0[loc( cq_in ),0].L
+  300.       call initimpldifu( t$107, t$108, 0[loc( dk_in ),0].L, 0[loc( tk_in ),0].L )
+  304.       call initdztouv
+  305.       call inituvtodz
+  306.       call initfiltdiss
+  308.       call set_communic_buffer
+  311.       call initgozrim
+  313.       call inittransform
+  318.       call destroyassoclegfunc
+  155.       $_allo_P2[0].L = 0x2000000000001L
+  155.       (1,$_allo_P2)[0].L = loc( mperlat )
+  155.       (2,$_allo_P2)[0].L = loc( imaxperlat )
+  155.       call _dealloc( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  320.       return
+  320.       end
+  320.       
+  330.       
+  330.       subroutine varymwithlat( pmn, w, mperlat )
+  330.       t$53 = int( _alloc( _lsh( max( 0, mnextmax ) * max( 0, nextmax ), 3 ) ), 8 )
+  334.       t$54 = t$53
+  349.       $MR_mnextmax_0 = mnextmax
+  349.       $LCS_mnextmax_0 = $MR_mnextmax_0
+  349.       $F_A34 = $LCS_mnextmax_0
+  349.       $MR_nextmax_1 = nextmax
+  349.       $F_A35 = $MR_nextmax_1
+  349.       if ( and( -$F_A35, -$F_A34 ) < 0 ) then !  99.50%
+  349.          $I_L349_S11 = 0
+  349.          if ( $F_A34 > $MR_mnextmax_0 ) then
+  349.             $LB_Y0 = 1
+  349.             $UB_Y1 = $LCS_mnextmax_0
+  349.             $Subscript_Y2 = 1
+  349.             $Subscript_Y3 = $F_A34
+  349.             $Subscript_Y4 = 1
+  349.             _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+  349.          endif
+  349.          if ( $MR_nextmax_1 <= 0 ) then
+  349.             $LB_Y0 = 1
+  349.             $UB_Y1 = $MR_nextmax_1
+  349.             $Subscript_Y5 = 1
+  349.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y45 )
+  349.          endif
+  349.          $SR_S10 = 0
+  349.          $LIS_E40 = $MR_nextmax_1
+  349.          do
+  349.             $W0 = 0.0
+  349.             __dset_cce( 0[t$54,$SR_S10].L, $W0, $F_A35 )
+  349.             $SR_S10 = $LIS_E40 + $SR_S10
+  349.             $I_L349_S11 = 1 + $I_L349_S11
+  349.             if ( $I_L349_S11 >= $F_A34 ) exit
+  349.          enddo
+  349.       endif
+  350.       $MR_jmaxhalf_2 = jmaxhalf
+  350.       if ( $MR_jmaxhalf_2 > 0 ) then
+  352.          $MR_mmax_3 = mmax
+  352.          if ( $MR_mmax_3 > 0 ) then
+  350.             $I_L350_S13 = 0
+  351.             $jmax_S12 = jmax
+  351.             if ( $MR_jmaxhalf_2 > $jmax_S12 ) then
+  351.                $LB_Y0 = 1
+  351.                $UB_Y1 = $jmax_S12
+  351.                $Subscript_Y2 = 1
+  351.                $Subscript_Y3 = $MR_jmaxhalf_2
+  351.                $Subscript_Y4 = 1
+  351.                _rbounds_error( $_File_Y40, $Line_Y47, $_Name_Y46, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y48 )
+  351.             endif
+  354.             $SC_mnextmap_I8 = (7,mnextmap)[0].L
+  363.             $SC_mnextmap_I9 = (6,mnextmap)[0].L
+  363.             $SC_mnextmap_I11 = (11,mnextmap)[0].L
+  354.             $SC_mnextmap_I6 = (10,mnextmap)[0].L
+  363.             $SC_mnextmap_I7 = (9,mnextmap)[0].L
+  363.             $SC_mnextmap_I10 = mnextmap[0].L
+  354.             $LCS_1 = $MR_mmax_3
+  354.             $LCS_6 = $LCS_1 - $SC_mnextmap_I9
+  354.             $LIS_E32 = $SC_mnextmap_I11 * ( $LCS_1 - $SC_mnextmap_I7 ) + $LCS_6
+  364.             $LCS_mmax_2 = $MR_mmax_3 - $MR_nextmax_1
+  364.             $LIS_E31 = t$54 + _lsh( $LCS_mmax_2, 3 )
+  367.             $LIS_E30 = 1 + $LCS_1
+  367.             $LIS_E29 = $jmax_S12
+  367.             $LIS_E28 = -1 + $jmax_S12
+  370.             $LCS_mmax_8 = $MR_mmax_3
+  366.             $LIS_E26 = 9.9999999999999998e-13
+  364.             $LCS_nextmax_3 = $MR_nextmax_1
+  364.             $LIS_E24 = _lsh( $LCS_nextmax_3, 3 )
+  364.             $LIS_E22 = -1 + $LCS_1
+  364.             $LIS_E21 = -inf
+  359.             $LCS_nextmax_9 = $MR_nextmax_1 - $MR_mmax_3
+  359.             $LIS_E20 = 1 + $LCS_nextmax_9
+  357.             $LCS_jmaxhalf_4 = $MR_jmaxhalf_2
+  357.             $LIS_E18 = $MR_mnextmax_0
+  354.             $LIS_E17 = int( $SC_mnextmap_I10, 8 )
+  357.             $LIS_E15 = -1 + $MR_jmaxhalf_2
+  354.             $LCS_5 = $SC_mnextmap_I8 + $SC_mnextmap_I9
+  354.             $LIS_E14 = -1 + $LCS_5
+  354.             $LIS_E13 = -1 + ( $LCS_5 - $MR_mmax_3 )
+  354.             $LCS_1_7 = $SC_mnextmap_I6 + $SC_mnextmap_I7 + -1
+  354.             $LIS_E9 = $MR_nextmax_1 <= $LCS_1_7
+  353.             $LIS_E7 = $LCS_nextmax_9
+  357.             $LIS_E51 = loc( pmn )
+  367.             $LIS_E50 = loc( mperlat )
+  351.             $LIS_E49 = loc( w )
+  350. !dir$ loop_info (automatic) cache_nt( 0[loc( w ),0].L, 0[loc( mperlat ),0] )
+  350.             do
+  351.                $wj_S6 = 0[$LIS_E49,$I_L350_S13,nt].L
+  352.                $I_L352_S14 = 0
+  364.                $SR_S25 = $LIS_E31
+  354.                $SR_S15 = 0
+  357.                $LIS_E34 = $I_L350_S13 - $MR_jmaxhalf_2
+  357.                $LIS_E33 = 1 + $I_L350_S13
+  352.                do
+  353.                   $CS_0 = ( $LIS_E7 + $I_L352_S14 ) < 0
+  353.                   if ( int( $CS_0 ) == 0 ) then
+  353.                      $I_L353_S18 = 0
+  354.                      $LCS_10 = $LCS_mmax_8 - $I_L352_S14
+  354.                      if ( int( $LCS_10 >= $SC_mnextmap_I7 .and. $LIS_E9 ) == 0 ) then
+  354.                         $LB_Y0 = $SC_mnextmap_I7
+  354.                         $UB_Y1 = $LCS_1_7
+  354.                         $Subscript_Y2 = $LCS_10
+  354.                         $Subscript_Y3 = $LCS_nextmax_3
+  354.                         $Subscript_Y4 = 1
+  354.                         _rbounds_error( $_File_Y40, $Line_Y50, $_Name_Y49, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y51 )
+  354.                      endif
+  354.                      $CS_1 = or( $LIS_E13 + $I_L352_S14, $LCS_6 - $I_L352_S14 ) >= 0
+  354.                      if ( int( $CS_1 ) == 0 ) then
+  354.                         $LB_Y0 = $SC_mnextmap_I9
+  354.                         $UB_Y1 = $LIS_E14
+  354.                         $Subscript_Y5 = $LCS_mmax_8 - $I_L352_S14
+  354.                         _bounds_error( $_File_Y40, $Line_Y50, $_Name_Y49, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y52 )
+  354.                      endif
+  357.                      if ( $LIS_E15 - $I_L350_S13 < 0 ) then
+  357.                         $LB_Y0 = 1
+  357.                         $UB_Y1 = $LCS_jmaxhalf_4
+  357.                         $Subscript_Y5 = $LIS_E33
+  357.                         _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y56, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y57 )
+  357.                      endif
+  354.                      $SR_S16 = $LIS_E32 - ( $I_L352_S14 + $SR_S15 )
+  357.                      $LIS_S19 = $LCS_mmax_2 - $I_L352_S14
+  359.                      $LIS_S20 = $LIS_E20 + $I_L352_S14
+  356.                      $LIS_S17 = $LCS_mmax_8 - $I_L352_S14
+  353.                      do
+  354.                         $mn_S5 = 0[$LIS_E17,$SR_S16]
+  357.                         $CS_2 = or( -1 + $mn_S5, $MR_mnextmax_0 - $mn_S5 ) >= 0
+  357.                         if ( int( $CS_2 ) == 0 ) then
+  357.                            $LB_Y0 = 1
+  357.                            $UB_Y1 = $LIS_E18
+  357.                            $Subscript_Y5 = $mn_S5
+  357.                            _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y53, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y55 )
+  357.                         endif
+  357.                         $SC_pmn_I5 = 0[$LIS_E51,$mn_S5 * $LCS_jmaxhalf_4 + $LIS_E34].L
+  355.                         $I_L355_S22 = 0
+  356.                         $LCS_11 = $LIS_S17 + $I_L353_S18
+  356.                         if ( int( $LCS_11 >= $SC_mnextmap_I7 .and. $LIS_E9 ) == 0 ) then
+  356.                            $LB_Y0 = $SC_mnextmap_I7
+  356.                            $UB_Y1 = $LCS_1_7
+  356.                            $Subscript_Y2 = $LCS_11
+  356.                            $Subscript_Y3 = $LCS_nextmax_3
+  356.                            $Subscript_Y4 = 1
+  356.                            _rbounds_error( $_File_Y40, $Line_Y58, $_Name_Y49, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y59 )
+  356.                         endif
+  356.                         if ( int( $CS_1 ) == 0 ) then
+  356.                            $LB_Y0 = $SC_mnextmap_I9
+  356.                            $UB_Y1 = $LIS_E14
+  356.                            $Subscript_Y5 = $LIS_S17
+  356.                            _bounds_error( $_File_Y40, $Line_Y58, $_Name_Y49, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y60 )
+  356.                         endif
+  357.                         if ( $LIS_E15 - $I_L350_S13 < 0 ) then
+  357.                            $LB_Y0 = 1
+  357.                            $UB_Y1 = $LCS_jmaxhalf_4
+  357.                            $Subscript_Y5 = $LIS_E33
+  357.                            _bounds_error( $_File_Y40, $Line_Y62, $_Name_Y64, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y65 )
+  357.                         endif
+  357.                         if ( int( $CS_2 ) == 0 ) then
+  357.                            $LB_Y0 = 1
+  357.                            $UB_Y1 = $LIS_E18
+  357.                            $Subscript_Y5 = $mn_S5
+  357.                            _bounds_error( $_File_Y40, $Line_Y62, $_Name_Y66, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y67 )
+  357.                         endif
+  357.                         $LCS_12 = $LIS_S17 + $I_L353_S18
+  357.                         if ( $LCS_12 <= 0 ) then
+  357.                            $LB_Y0 = 1
+  357.                            $UB_Y1 = $LCS_nextmax_3
+  357.                            $Subscript_Y2 = $LCS_12
+  357.                            $Subscript_Y3 = $LCS_nextmax_3
+  357.                            $Subscript_Y4 = 1
+  357.                            _rbounds_error( $_File_Y40, $Line_Y62, $_Name_Y68, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y69 )
+  357.                         endif
+  357.                         if ( int( $CS_2 ) == 0 ) then
+  357.                            $LB_Y0 = 1
+  357.                            $UB_Y1 = $LIS_E18
+  357.                            $Subscript_Y5 = $mn_S5
+  357.                            _bounds_error( $_File_Y40, $Line_Y62, $_Name_Y66, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y67 )
+  357.                         endif
+  356.                         $SR_S21 = $SR_S16
+  357.                         $LIS_E43 = $SC_pmn_I5 * $wj_S6
+  357.                         $LIS_E42 = $I_L353_S18 + $LIS_S19 + $mn_S5 * $LCS_nextmax_3
+  359.                         $LIS_E41 = $LIS_S20 - $I_L353_S18
+  355.                         do
+  356.                            $mnprime_S4 = 0[$LIS_E17,$SR_S21]
+  357.                            if ( or( -1 + $mnprime_S4, $MR_mnextmax_0 - $mnprime_S4 ) < 0 ) then
+  357.                               $LB_Y0 = 1
+  357.                               $UB_Y1 = $LIS_E18
+  357.                               $Subscript_Y5 = $mnprime_S4
+  357.                               _bounds_error( $_File_Y40, $Line_Y62, $_Name_Y61, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y63 )
+  357.                            endif
+  357.                            $MR_pmn_15 = 0[$LIS_E51,$mnprime_S4 * $LCS_jmaxhalf_4 + $LIS_E34].L
+  357.                            $LCS_13 = $LIS_E42 + $I_L355_S22
+  357.                            $MR_partial_S23 = -1[t$54,$LCS_13].L
+  357.                            $MR_partial_S24 = $MR_partial_S23 + $MR_pmn_15 * $LIS_E43
+  357.                            -1[t$54,$LCS_13].L = $MR_partial_S24
+  356.                            $SR_S21 = $SC_mnextmap_I11 + $SR_S21
+  359.                            $I_L355_S22 = 1 + $I_L355_S22
+  355.                            if ( $I_L355_S22 >= $LIS_E41 ) exit
+  355.                         enddo
+  354.                         $SR_S16 = $SC_mnextmap_I11 + $SR_S16
+  360.                         $I_L353_S18 = 1 + $I_L353_S18
+  359.                         if ( $I_L353_S18 >= $LIS_S20 ) exit
+  359.                      enddo
+  359.                   endif
+  361.                   $erromax_S8 = 0.0
+  362.                   if ( int( $CS_0 ) == 0 ) then
+  362.                      $I_L362_S27 = 0
+  363.                      $LCS_14 = $LCS_mmax_8 - $I_L352_S14
+  363.                      if ( int( $LCS_14 >= $SC_mnextmap_I7 .and. $LIS_E9 ) == 0 ) then
+  363.                         $LB_Y0 = $SC_mnextmap_I7
+  363.                         $UB_Y1 = $LCS_1_7
+  363.                         $Subscript_Y2 = $LCS_14
+  363.                         $Subscript_Y3 = $LCS_nextmax_3
+  363.                         $Subscript_Y4 = 1
+  363.                         _rbounds_error( $_File_Y40, $Line_Y72, $_Name_Y49, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y73 )
+  363.                      endif
+  363.                      if ( or( $LIS_E13 + $I_L352_S14, $LCS_6 - $I_L352_S14 ) < 0 ) then
+  363.                         $LB_Y0 = $SC_mnextmap_I9
+  363.                         $UB_Y1 = $LIS_E14
+  363.                         $Subscript_Y5 = $LCS_mmax_8 - $I_L352_S14
+  363.                         _bounds_error( $_File_Y40, $Line_Y72, $_Name_Y49, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y74 )
+  363.                      endif
+  364.                      $SR_S30 = $SR_S25
+  363.                      $SR_S26 = $LIS_E32 - ( $I_L352_S14 + $SR_S15 )
+  364.                      $LIS_S34 = $LCS_mmax_2 - $I_L352_S14
+  364.                      $LIS_E39 = $LIS_E22 - $I_L352_S14
+  364.                      $LIS_S29 = $LCS_mmax_8 - $I_L352_S14
+  364.                      $LIS_S28 = $LIS_E20 + $I_L352_S14
+  362.                      do
+  363.                         $mn_S9 = 0[$LIS_E17,$SR_S26]
+  364.                         $Reduc_A36 = $LIS_E21
+  364.                         $F_A38 = $LIS_S28 - $I_L362_S27
+  364.                         $I_L364_S33 = 0
+  364.                         if ( or( -1 + $mn_S9, $MR_mnextmax_0 - $mn_S9 ) < 0 ) then
+  364.                            $LB_Y0 = 1
+  364.                            $UB_Y1 = $LIS_E18
+  364.                            $Subscript_Y5 = $mn_S9
+  364.                            _bounds_error( $_File_Y40, $Line_Y76, $_Name_Y75, $Dim_Y9, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y77 )
+  364.                         endif
+  364.                         $LCS_15 = $I_L362_S27 + $LIS_S29
+  364.                         $LCS_16 = $F_A38 + $LIS_E39 + $I_L362_S27
+  364.                         if ( int( $LCS_15 > 0 .and. $LCS_16 <= $LCS_nextmax_3 ) == 0 ) then
+  364.                            $LB_Y0 = 1
+  364.                            $UB_Y1 = $LCS_nextmax_3
+  364.                            $Subscript_Y2 = $LCS_15
+  364.                            $Subscript_Y3 = $LCS_16
+  364.                            $Subscript_Y4 = 1
+  364.                            _rbounds_error( $_File_Y40, $Line_Y76, $_Name_Y78, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y79 )
+  364.                         endif
+  364.                         if ( $F_A38 >= 2 ) then !  99.50%
+  364.                            $TC_7 = and( -2, $F_A38 )
+  364.                            $VR_Reduc_10[0:2:1].L = _bcst( $LIS_E21, 2 )
+  364.                            $LC_S32 = -$TC_7
+  364.                            $SI_S31 = 0
+  364.                            $LIS_45[0:2:1].L = _bcst( 0x7fffffffffffffffUL, 2 )
+  364.                            $LIS_E44 = $mn_S9 * $LIS_E24 + $SR_S30
+  364.                            do
+  364.                               $VR_Reduc_10[0:2:1].L = max( $VR_Reduc_10[0:2:1].L, real( and( $LIS_45[0:2:1].L, (boolean[64])( -1[$LIS_E44 + $SI_S31:2:1].L ) ), 8 ) )
+  364.                               $SI_S31 = 16 + $SI_S31
+  364.                               $LC_S32 = 2 + $LC_S32
+  364.                               if ( $LC_S32 >= 0 ) exit
+  364.                            enddo
+  364.                            $Reduc_A36 = _rmax( $VR_Reduc_10[0:2:1].L, 2, 1 )
+  364.                            $I_L364_S33 = $TC_7
+  364.                         endif
+  364.                         if ( $F_A38 > $I_L364_S33 ) then !  99.50%
+  364.                            $Reduc_A36 = max( $Reduc_A36, abs( -1[t$54,$I_L362_S27 + $I_L364_S33 + $LIS_S34 + $mn_S9 * $LCS_nextmax_3].L ) )
+  364.                         endif
+  364.                         $erromax_S8 = max( $erromax_S8, $Reduc_A36 )
+  364.                         $SR_S30 = 8 + $SR_S30
+  363.                         $SR_S26 = $SC_mnextmap_I11 + $SR_S26
+  365.                         $I_L362_S27 = 1 + $I_L362_S27
+  365.                         if ( $I_L362_S27 >= $LIS_S28 ) exit
+  365.                      enddo
+  365.                   endif
+  366.                   if ( $erromax_S8 > $LIS_E26 ) then
+  367.                      if ( $LIS_E28 - $I_L350_S13 < 0 ) then
+  367.                         $LB_Y0 = 1
+  367.                         $UB_Y1 = $LIS_E29
+  367.                         $Subscript_Y5 = 1 + $I_L350_S13
+  367.                         _bounds_error( $_File_Y40, $Line_Y81, $_Name_Y80, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y82 )
+  367.                      endif
+  367.                      0[$LIS_E50,$I_L350_S13,nt] = min( $MR_mmax_3, $LIS_E30 - $I_L352_S14 )
+  367.                      goto 10
+  367.                   endif
+  364.                   $SR_S25 = -8 + $SR_S25
+  354.                   $SR_S15 = $SC_mnextmap_I11 + $SR_S15
+  370.                   $I_L352_S14 = 1 + $I_L352_S14
+  369.                   if ( $I_L352_S14 >= $LCS_mmax_8 ) exit
+  369.                enddo
+  369.    10          continue
+  371.                $I_L350_S13 = 1 + $I_L350_S13
+  370.                if ( $I_L350_S13 >= $LCS_jmaxhalf_4 ) exit
+  370.             enddo
+  370.          endif
+  370.       endif
+  372.       $LCS_jmaxhalf_17 = $MR_jmaxhalf_2
+  372.       $F_A39 = $LCS_jmaxhalf_17
+  372.       if ( $MR_jmaxhalf_2 > 0 ) then !  99.50%
+  372.          $I_L372_S38 = 0
+  372.          $jmax_S35 = jmax
+  372.          $LCS_18 = $MR_jmaxhalf_2 - $F_A39
+  372.          if ( int( $MR_jmaxhalf_2 <= $jmax_S35 .and. $LCS_18 >= 0 ) == 0 ) then
+  372.             $LB_Y0 = 1
+  372.             $UB_Y1 = $jmax_S35
+  372.             $Subscript_Y2 = $LCS_jmaxhalf_17
+  372.             $Subscript_Y3 = 1 + $LCS_18
+  372.             $Subscript_Y4 = -1
+  372.             _rbounds_error( $_File_Y40, $Line_Y84, $_Name_Y83, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y85 )
+  372.          endif
+  372.          $LCS_19 = $MR_jmaxhalf_2
+  372.          $LCS_F_20 = $F_A39 + $LCS_19
+  372.          if ( int( $MR_jmaxhalf_2 >= 0 .and. $LCS_F_20 <= $jmax_S35 ) == 0 ) then
+  372.             $LB_Y0 = 1
+  372.             $UB_Y1 = $jmax_S35
+  372.             $Subscript_Y2 = 1 + $LCS_19
+  372.             $Subscript_Y3 = $LCS_F_20
+  372.             $Subscript_Y4 = 1
+  372.             _rbounds_error( $_File_Y40, $Line_Y84, $_Name_Y86, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y87 )
+  372.          endif
+  372.          if ( $F_A39 >= 4 ) then !  99.50%
+  372.             $TC_4 = and( -4, $F_A39 )
+  372.             $LC_S37 = -$TC_4
+  372.             $SI_S36 = 0
+  372.             $LIS_E46 = _lsh( $MR_jmaxhalf_2, 2 ) + loc( mperlat )
+  372.             do
+  372.                0[$LIS_E46 + $SI_S36:4:1] = _reverse( -4[$LIS_E46 - $SI_S36:4:1] )
+  372.                $SI_S36 = 16 + $SI_S36
+  372.                $LC_S37 = 4 + $LC_S37
+  372.                if ( $LC_S37 >= 0 ) exit
+  372.             enddo
+  372.             $I_L372_S38 = $TC_4
+  372.          endif
+  372.          if ( $F_A39 > $I_L372_S38 ) then !  99.50%
+  372.             $LIS_E48 = loc( mperlat )
+  372.             $LIS_E47 = $MR_jmaxhalf_2
+  372.             do
+  372.                0[$LIS_E48,$LIS_E47 + $I_L372_S38] = -1[$LIS_E48,$LIS_E47 - $I_L372_S38]
+  372.                $I_L372_S38 = 1 + $I_L372_S38
+  372.                if ( $I_L372_S38 >= $F_A39 ) exit
+  372.             enddo
+  372.          endif
+  372.       endif
+  330.       _free( t$53 )
+  373.       return
+  373.       end
+  373.       
+  377.       
+  377.       subroutine init_ct_cq( kmax, si_in, sl_in, ct_in, cq_in )
+  377.       $LCS_kmax_0 = 0[loc( kmax ),0]
+  377.       t$58 = int( _alloc( _lsh( max( 0, $LCS_kmax_0 ), 3 ) + _lsh( max( 0, ( 1 + $LCS_kmax_0 ) ), 4 ) ), 8 )
+  403.       t$59 = t$58
+  405.       $MR_kmax_4 = 0[loc( kmax ),0]
+  405.       $LCS_1 = max( 0, $MR_kmax_4 )
+  405.       t$62 = t$58 + _lsh( $LCS_1, 3 )
+  405.       t$65 = t$58 + _lsh( $LCS_1 + max( 0, ( 1 + $MR_kmax_4 ) ), 3 )
+  434.       if ( $MR_kmax_4 /= 18 ) then
+  435.          $interp_S53 = .true.
+  435.       else
+  437.          $Reduc_S52 = .false.
+  437.          $I_L437_S51 = 0
+  437.          $LIS_S14 = 1.0e-4
+  437.          do
+  437.             if ( ( slmrf[$I_L437_S51].L - 0[loc( sl_in ),$I_L437_S51].L ) > $LIS_S14 ) then
+  437.                $Reduc_S52 = .true.
+  437.                goto 10
+  437.             endif
+  437.             $I_L437_S51 = 1 + $I_L437_S51
+  437.             if ( $I_L437_S51 >= 18 ) exit
+  437.          enddo
+  437.    10    continue
+  437.          $interp_S53 = $Reduc_S52
+  437.       endif
+  440.       if ( int( $interp_S53 ) /= 0 ) then
+  444.          gltmrf[0].L = 0.0
+  449.          glqmrf[0].L = 0.0
+  445.          $gltmrf_WR0_S55 = 0.0
+  445.          $glqmrf_WR0_S56 = 0.0
+  445.          $I_L445_S54 = 0
+  445.          do
+  446.             $MR_simrf_7 = simrf[$I_L445_S54].L
+  446.             $MR_simrf_8 = (1,simrf)[$I_L445_S54].L
+  446.             $LCS_2 = ( log( $MR_simrf_8 ) - log( $MR_simrf_7 ) )
+  446.             $SCF_S19 = ctmrf[$I_L445_S54].L * $LCS_2
+  446.             $gltmrf_WR0_S20 = $gltmrf_WR0_S55 + $SCF_S19
+  446.             (1,gltmrf)[$I_L445_S54].L = $gltmrf_WR0_S20
+  451.             $SCF_S21 = cqmrf[$I_L445_S54].L * $LCS_2
+  451.             $glqmrf_WR0_S22 = $glqmrf_WR0_S56 + $SCF_S21
+  451.             (1,glqmrf)[$I_L445_S54].L = $glqmrf_WR0_S22
+  446.             $MR_simrf_11 = (1,simrf)[$I_L445_S54].L
+  446.             $MR_simrf_12 = (2,simrf)[$I_L445_S54].L
+  446.             $LCS_3 = ( log( $MR_simrf_12 ) - log( $MR_simrf_11 ) )
+  446.             $SCF_S23 = (1,ctmrf)[$I_L445_S54].L * $LCS_3
+  446.             $gltmrf_WR0_S55 = $gltmrf_WR0_S20 + $SCF_S23
+  446.             (2,gltmrf)[$I_L445_S54].L = $gltmrf_WR0_S55
+  451.             $SCF_S24 = (1,cqmrf)[$I_L445_S54].L * $LCS_3
+  451.             $glqmrf_WR0_S56 = $glqmrf_WR0_S22 + $SCF_S24
+  451.             (2,glqmrf)[$I_L445_S54].L = $glqmrf_WR0_S56
+  447.             $I_L445_S54 = 2 + $I_L445_S54
+  447.             if ( $I_L445_S54 >= 16 ) exit
+  447.          enddo
+  446.          $MR_simrf_15 = (16,simrf)[0].L
+  446.          $MR_simrf_16 = (17,simrf)[0].L
+  446.          $LCS_4 = ( log( $MR_simrf_16 ) - log( $MR_simrf_15 ) )
+  446.          $SCF_S25 = (16,ctmrf)[0].L * $LCS_4
+  446.          $gltmrf_WR0_S26 = $gltmrf_WR0_S55 + $SCF_S25
+  446.          (17,gltmrf)[0].L = $gltmrf_WR0_S26
+  451.          $SCF_S27 = (16,cqmrf)[0].L * $LCS_4
+  451.          $glqmrf_WR0_S28 = $glqmrf_WR0_S56 + $SCF_S27
+  451.          (17,glqmrf)[0].L = $glqmrf_WR0_S28
+  448.          (18,gltmrf)[0].L = (17,gltmrf)[0].L
+  453.          (18,glqmrf)[0].L = (17,glqmrf)[0].L
+  455.          algsimrf[0:2:1].L = log( simrf[0:2:1].L )
+  454.          $SI_S57 = 16
+  454.          $LC_S58 = -8
+  454.          do
+  455.             _alog_a( 8, simrf[$SI_S57,0].L, $_VEXP_P2 )
+  455.             algsimrf[$SI_S57:2:1].L = $_VEXP_P2[0:2:1].L
+  455.             (2,algsimrf)[$SI_S57:2:1].L = (2,$_VEXP_P2)[0:2:1].L
+  455.             (4,algsimrf)[$SI_S57:2:1].L = (4,$_VEXP_P2)[0:2:1].L
+  455.             (6,algsimrf)[$SI_S57:2:1].L = (6,$_VEXP_P2)[0:2:1].L
+  454.             $SI_S57 = 64 + $SI_S57
+  454.             $LC_S58 = 4 + $LC_S58
+  454.             if ( $LC_S58 >= 0 ) exit
+  454.          enddo
+  457.          if ( $MR_kmax_4 > 0 ) then
+  457.             $I_L457_S61 = 0
+  457.             $LCS_5 = $MR_kmax_4
+  457.             if ( $LCS_5 >= 2 ) then !  99.50%
+  457.                $TC_10 = and( -2, $LCS_5 )
+  457.                $LC_S59 = -$TC_10
+  457.                $SI_S60 = 0
+  457.                if ( $LC_S59 < -7 ) then
+  457.                   do
+  458.                      _alog_a( 8, 0[$SI_S60 + loc( si_in ),0].L, $_VEXP_P3 )
+  458.                      $LCS_6 = t$59 + $SI_S60
+  458.                      0[$LCS_6:2:1].L = $_VEXP_P3[0:2:1].L
+  458.                      2[$LCS_6:2:1].L = (2,$_VEXP_P3)[0:2:1].L
+  458.                      4[$LCS_6:2:1].L = (4,$_VEXP_P3)[0:2:1].L
+  458.                      6[$LCS_6:2:1].L = (6,$_VEXP_P3)[0:2:1].L
+  457.                      $SI_S60 = 64 + $SI_S60
+  457.                      $LC_S59 = 8 + $LC_S59
+  457.                      if ( $LC_S59 >= -7 ) exit
+  457.                   enddo
+  457.                endif
+  457.                if ( $LC_S59 < 0 ) then
+  458.                   $LIS_E5 = loc( si_in )
+  457.                   do
+  458.                      0[t$59 + $SI_S60:2:1].L = log( 0[$LIS_E5 + $SI_S60:2:1].L )
+  457.                      $SI_S60 = 16 + $SI_S60
+  457.                      $LC_S59 = 2 + $LC_S59
+  457.                      if ( $LC_S59 >= 0 ) exit
+  457.                   enddo
+  457.                endif
+  457.                $I_L457_S61 = $TC_10
+  457.             endif
+  457.             if ( $MR_kmax_4 > $I_L457_S61 ) then !  99.50%
+  458.                0[t$59,$I_L457_S61].L = log( 0[loc( si_in ),$I_L457_S61].L )
+  458.             endif
+  465.             $SC_algsimrf_I0 = (17,algsimrf)[0].L
+  463.             $I_L463_S62 = 0
+  468.             $LIS_S37 = $MR_kmax_4
+  468.             $LIS_S36 = -1 + $MR_kmax_4
+  463.             do
+  464.                $kk_S64 = 2
+  465.                $MR_algsi_26 = 0[t$59,$I_L463_S62].L
+  465.                if ( $MR_algsi_26 <= $SC_algsimrf_I0 ) then
+  466.                   $kk_S64 = 18
+  466.                else
+  468.                   if ( $LIS_S36 - $I_L463_S62 < 0 ) then
+  468.                      $LB_Y0 = 1
+  468.                      $UB_Y1 = $LIS_S37
+  468.                      $Subscript_Y5 = 1 + $I_L463_S62
+  468.                      _bounds_error( $_File_Y40, $Line_Y49, $_Name_Y46, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y50 )
+  468.                   endif
+  468.                   $I_L468_S63 = 0
+  468.                   do
+  469.                      if ( $MR_algsi_26 >= (1,algsimrf)[$I_L468_S63].L ) then
+  469.                         if ( $MR_algsi_26 < algsimrf[$I_L468_S63].L ) then
+  470.                            $kk_S64 = ( 2 + $I_L468_S63 )
+  470.                         endif
+  470.                      endif
+  472.                      $I_L468_S63 = 1 + $I_L468_S63
+  471.                      if ( $I_L468_S63 >= 17 ) exit
+  471.                   enddo
+  471.                endif
+  474.                $CS_0 = or( -2 + $kk_S64, 19 - $kk_S64 ) >= 0
+  474.                if ( int( $CS_0 ) == 0 ) then
+  474.                   $LB_Y0 = 1
+  474.                   $UB_Y1 = 18
+  474.                   $Subscript_Y5 = ( -1 + $kk_S64 )
+  474.                   _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  474.                endif
+  474.                $CS_1 = or( -1 + $kk_S64, 18 - $kk_S64 ) >= 0
+  474.                if ( int( $CS_1 ) == 0 ) then
+  474.                   $LB_Y0 = 1
+  474.                   $UB_Y1 = 18
+  474.                   $Subscript_Y5 = $kk_S64
+  474.                   _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y54, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y55 )
+  474.                endif
+  474.                $CS_2 = or( -2 + $kk_S64, 20 - $kk_S64 ) >= 0
+  474.                if ( int( $CS_2 ) == 0 ) then
+  474.                   $LB_Y0 = 1
+  474.                   $UB_Y1 = 19
+  474.                   $Subscript_Y5 = ( -1 + $kk_S64 )
+  474.                   _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y56, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y57 )
+  474.                endif
+  474.                $CS_3 = or( 19 - $kk_S64, -1 + $kk_S64 ) >= 0
+  474.                if ( int( $CS_3 ) == 0 ) then
+  474.                   $LB_Y0 = 1
+  474.                   $UB_Y1 = 19
+  474.                   $Subscript_Y5 = $kk_S64
+  474.                   _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y58, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y59 )
+  474.                endif
+  474.                $MR_algsimrf_29 = (-2,algsimrf)[$kk_S64].L
+  474.                $MR_algsimrf_30 = (-1,algsimrf)[$kk_S64].L
+  474.                $MR_gltmrf_31 = (-2,gltmrf)[$kk_S64].L
+  474.                $CS_4 = 1.0 / ( $MR_algsimrf_30 - $MR_algsimrf_29 )
+  474.                $at_S8 = ( ( (-1,gltmrf)[$kk_S64].L - $MR_gltmrf_31 ) * $CS_4 )
+  475.                if ( int( $CS_0 ) == 0 ) then
+  475.                   $LB_Y0 = 1
+  475.                   $UB_Y1 = 18
+  475.                   $Subscript_Y5 = ( -1 + $kk_S64 )
+  475.                   _bounds_error( $_File_Y40, $Line_Y60, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y61 )
+  475.                endif
+  475.                if ( int( $CS_2 ) == 0 ) then
+  475.                   $LB_Y0 = 1
+  475.                   $UB_Y1 = 19
+  475.                   $Subscript_Y5 = ( -1 + $kk_S64 )
+  475.                   _bounds_error( $_File_Y40, $Line_Y60, $_Name_Y56, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y62 )
+  475.                endif
+  475.                $bt_S9 = $MR_gltmrf_31 - $at_S8 * $MR_algsimrf_29
+  476.                0[t$65,$I_L463_S62].L = $bt_S9 + $at_S8 * $MR_algsi_26
+  477.                if ( int( $CS_0 ) == 0 ) then
+  477.                   $LB_Y0 = 1
+  477.                   $UB_Y1 = 18
+  477.                   $Subscript_Y5 = ( -1 + $kk_S64 )
+  477.                   _bounds_error( $_File_Y40, $Line_Y67, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y68 )
+  477.                endif
+  477.                if ( int( $CS_1 ) == 0 ) then
+  477.                   $LB_Y0 = 1
+  477.                   $UB_Y1 = 18
+  477.                   $Subscript_Y5 = $kk_S64
+  477.                   _bounds_error( $_File_Y40, $Line_Y67, $_Name_Y54, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y69 )
+  477.                endif
+  477.                if ( int( $CS_2 ) == 0 ) then
+  477.                   $LB_Y0 = 1
+  477.                   $UB_Y1 = 19
+  477.                   $Subscript_Y5 = ( -1 + $kk_S64 )
+  477.                   _bounds_error( $_File_Y40, $Line_Y67, $_Name_Y70, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y71 )
+  477.                endif
+  477.                if ( int( $CS_3 ) == 0 ) then
+  477.                   $LB_Y0 = 1
+  477.                   $UB_Y1 = 19
+  477.                   $Subscript_Y5 = $kk_S64
+  477.                   _bounds_error( $_File_Y40, $Line_Y67, $_Name_Y72, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y73 )
+  477.                endif
+  477.                $MR_glqmrf_34 = (-2,glqmrf)[$kk_S64].L
+  477.                $aq_S10 = ( ( (-1,glqmrf)[$kk_S64].L - $MR_glqmrf_34 ) * $CS_4 )
+  478.                if ( int( $CS_0 ) == 0 ) then
+  478.                   $LB_Y0 = 1
+  478.                   $UB_Y1 = 18
+  478.                   $Subscript_Y5 = ( -1 + $kk_S64 )
+  478.                   _bounds_error( $_File_Y40, $Line_Y74, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y75 )
+  478.                endif
+  478.                if ( int( $CS_2 ) == 0 ) then
+  478.                   $LB_Y0 = 1
+  478.                   $UB_Y1 = 19
+  478.                   $Subscript_Y5 = ( -1 + $kk_S64 )
+  478.                   _bounds_error( $_File_Y40, $Line_Y74, $_Name_Y70, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y76 )
+  478.                endif
+  478.                $bq_S11 = $MR_glqmrf_34 - $aq_S10 * $MR_algsimrf_29
+  479.                0[t$62,$I_L463_S62].L = $bq_S11 + $aq_S10 * $MR_algsi_26
+  480.                $I_L463_S62 = 1 + $I_L463_S62
+  473.                if ( $I_L463_S62 >= $LIS_S37 ) exit
+  473.             enddo
+  473.          endif
+  483.          if ( -1 + $MR_kmax_4 > 0 ) then
+  483.             $I_L483_S65 = 0
+  486.             $LIS_S46 = loc( cq_in )
+  485.             $LIS_S45 = $MR_kmax_4
+  485.             $LIS_S44 = -1 + $MR_kmax_4
+  485.             $LIS_S43 = 1.0e-4
+  484.             $LIS_S42 = loc( ct_in )
+  483.             do
+  484.                $MR_algsi_37 = 0[t$59,$I_L483_S65].L
+  484.                $MR_algsi_38 = 1[t$59,$I_L483_S65].L
+  484.                $CS_5 = 1.0 / ( $MR_algsi_38 - $MR_algsi_37 )
+  484.                $ct_in_WR0_R2 = ( ( 1[t$65,$I_L483_S65].L - 0[t$65,$I_L483_S65].L ) * $CS_5 )
+  484.                0[$LIS_S42,$I_L483_S65].L = $ct_in_WR0_R2
+  485.                if ( abs( $ct_in_WR0_R2 ) <= $LIS_S43 ) then
+  485.                   if ( $LIS_S44 - $I_L483_S65 < 0 ) then
+  485.                      $LB_Y0 = 1
+  485.                      $UB_Y1 = $LIS_S45
+  485.                      $Subscript_Y5 = 1 + $I_L483_S65
+  485.                      _bounds_error( $_File_Y40, $Line_Y92, $_Name_Y90, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y93 )
+  485.                   endif
+  485.                   0[$LIS_S42,$I_L483_S65].L = 0.0
+  485.                endif
+  486.                $cq_in_WR0_R3 = ( ( 1[t$62,$I_L483_S65].L - 0[t$62,$I_L483_S65].L ) * $CS_5 )
+  486.                0[$LIS_S46,$I_L483_S65].L = $cq_in_WR0_R3
+  487.                if ( abs( $cq_in_WR0_R3 ) <= $LIS_S43 ) then
+  487.                   if ( $LIS_S44 - $I_L483_S65 < 0 ) then
+  487.                      $LB_Y0 = 1
+  487.                      $UB_Y1 = $LIS_S45
+  487.                      $Subscript_Y5 = 1 + $I_L483_S65
+  487.                      _bounds_error( $_File_Y40, $Line_Y103, $_Name_Y101, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y104 )
+  487.                   endif
+  487.                   0[$LIS_S46,$I_L483_S65].L = 0.0
+  487.                endif
+  488.                $I_L483_S65 = 1 + $I_L483_S65
+  487.                if ( $I_L483_S65 >= $LIS_S44 ) exit
+  487.             enddo
+  487.          endif
+  489.          if ( $MR_kmax_4 <= 0 ) then
+  489.             $LB_Y0 = 1
+  489.             $LCS_MR_kmax_7 = $MR_kmax_4
+  489.             $UB_Y1 = $LCS_MR_kmax_7
+  489.             $Subscript_Y5 = $LCS_MR_kmax_7
+  489.             _bounds_error( $_File_Y40, $Line_Y106, $_Name_Y105, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y107 )
+  489.          endif
+  489.          -1[loc( ct_in ),$MR_kmax_4].L = 0.0
+  490.          if ( $MR_kmax_4 <= 0 ) then
+  490.             $LB_Y0 = 1
+  490.             $LCS_MR_kmax_8 = $MR_kmax_4
+  490.             $UB_Y1 = $LCS_MR_kmax_8
+  490.             $Subscript_Y5 = $LCS_MR_kmax_8
+  490.             _bounds_error( $_File_Y40, $Line_Y109, $_Name_Y108, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y110 )
+  490.          endif
+  490.          -1[loc( cq_in ),$MR_kmax_4].L = 0.0
+  490.       else
+  495.          if ( 18 > $MR_kmax_4 ) then
+  495.             $LB_Y0 = 1
+  495.             $UB_Y1 = $MR_kmax_4
+  495.             $Subscript_Y2 = 1
+  495.             $Subscript_Y3 = 18
+  495.             $Subscript_Y4 = 1
+  495.             _rbounds_error( $_File_Y40, $Line_Y112, $_Name_Y111, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y113 )
+  495.          endif
+  496.          if ( 18 > $MR_kmax_4 ) then
+  496.             $LB_Y0 = 1
+  496.             $UB_Y1 = $MR_kmax_4
+  496.             $Subscript_Y2 = 1
+  496.             $Subscript_Y3 = 18
+  496.             $Subscript_Y4 = 1
+  496.             _rbounds_error( $_File_Y40, $Line_Y115, $_Name_Y114, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y116 )
+  496.          endif
+  496.          $LIS_S48 = loc( cq_in )
+  495.          $LIS_S47 = loc( ct_in )
+  495.          0[$LIS_S47:2:1].L = ctmrf[0:2:1].L
+  496.          0[$LIS_S48:2:1].L = cqmrf[0:2:1].L
+  494.          $SI_S66 = 16
+  494.          $LC_S67 = -8
+  494.          do
+  495.             $LCS_9 = $LIS_S47 + $SI_S66
+  495.             0[$LCS_9:2:1].L = ctmrf[$SI_S66:2:1].L
+  496.             $LCS_10 = $LIS_S48 + $SI_S66
+  496.             0[$LCS_10:2:1].L = cqmrf[$SI_S66:2:1].L
+  495.             2[$LCS_9:2:1].L = (2,ctmrf)[$SI_S66:2:1].L
+  496.             2[$LCS_10:2:1].L = (2,cqmrf)[$SI_S66:2:1].L
+  495.             4[$LCS_9:2:1].L = (4,ctmrf)[$SI_S66:2:1].L
+  496.             4[$LCS_10:2:1].L = (4,cqmrf)[$SI_S66:2:1].L
+  495.             6[$LCS_9:2:1].L = (6,ctmrf)[$SI_S66:2:1].L
+  496.             6[$LCS_10:2:1].L = (6,cqmrf)[$SI_S66:2:1].L
+  494.             $SI_S66 = 64 + $SI_S66
+  494.             $LC_S67 = 4 + $LC_S67
+  494.             if ( $LC_S67 >= 0 ) exit
+  494.          enddo
+  494.       endif
+  504.       $F_A36 = $MR_kmax_4
+  504.       if ( $MR_kmax_4 > 0 ) then !  99.50%
+  504.          $W0 = 0.0
+  504.          __dset_cce( 0[loc( cq_in ),0].L, $W0, $F_A36 )
+  504.       endif
+  377.       _free( t$58 )
+  506.       return
+  506.       end
+  506.       
+    6.       
+    6.       module init
+  508.       return
+  508.       end
+  508.       

@@ -1,0 +1,294 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        Notice - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Parallelism.f90
+       !        File                  :  Parallelism.opt
+       !        Network               :  Gemini interconnect
+       !        Target                :  X86, 64-bit, sse3
+       !        
+   57.       
+   57.       subroutine createparallelism
+   70.       call mpi_init( ierror )
+   71.       if ( ierror /= 0 ) then
+   72.          _fwrite( _clist( 0, 0, 3,  _substr(caux,1,4), Null_Arg, Null_Arg, t$4,  _substr(t$3,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierror, 0x2000200000000L ) ) )
+   73.           _substr(t$36,1,45) = //( '**(CreateParallelism)** MPI_INIT returns ',  _substr(caux,1,4) )
+   73.          call fatalerror(  _substr(t$36,1,45) )
+   73.       endif
+   78.       call mpi_comm_size( 1140850688, maxnodes, ierror )
+   79.       if ( ierror /= 0 ) then
+   80.          _fwrite( _clist( 0, 0, 3,  _substr(caux,1,4), Null_Arg, Null_Arg, t$6,  _substr(t$5,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierror, 0x2000200000000L ) ) )
+   81.           _substr(t$37,1,50) = //( '**(CreateParallelism)** MPI_COMM_SIZE returns ',  _substr(caux,1,4) )
+   81.          call fatalerror(  _substr(t$37,1,50) )
+   81.       endif
+   86.       call mpi_comm_rank( 1140850688, myid, ierror )
+   87.       if ( ierror /= 0 ) then
+   88.          _fwrite( _clist( 0, 0, 3,  _substr(caux,1,4), Null_Arg, Null_Arg, t$8,  _substr(t$7,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierror, 0x2000200000000L ) ) )
+   89.           _substr(t$38,1,50) = //( '**(CreateParallelism)** MPI_COMM_RANK returns ',  _substr(caux,1,4) )
+   89.          call fatalerror(  _substr(t$38,1,50) )
+   89.       endif
+   94.       call mpi_get_processor_name(  _substr(pname,1,127), compname, ierror )
+   95.       if ( ierror /= 0 ) then
+   96.          _fwrite( _clist( 0, 0, 3,  _substr(caux,1,4), Null_Arg, Null_Arg, t$10,  _substr(t$9,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierror, 0x2000200000000L ) ) )
+   97.           _substr(t$39,1,59) = //( '**(CreateParallelism)** MPI_GET_PROCESSOR_NAME retorna ',  _substr(caux,1,4) )
+   97.          call fatalerror(  _substr(t$39,1,59) )
+   97.       endif
+  103.       numthreads = omp_get_max_threads
+  107.       $IOitem_O0 = maxnodes * numthreads
+  107.       _fwrite( _clist( 0, 0, 3,  _substr(cnproc,1,4), Null_Arg, Null_Arg, t$12,  _substr(t$11,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O0, 0x2000200000000L ) ) )
+  108.       _fwrite( _clist( 0, 0, 3,  _substr(cthisproc,1,4), Null_Arg, Null_Arg, t$14,  _substr(t$13,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( myid, 0x2000200000000L ) ) )
+  112.       unitdump = 30
+  116.        _substr(namedump,1,14) = //( 'Dump.', //(  _substr(cthisproc,1,4), //( '.',  _substr(cnproc,1,4) ) ) )
+  117.       t$42 = 30
+  117.        _substr(t$43,1,7) = 'REPLACE'
+  117.       t$44(1) = 0x100000000000000L
+  117. !dir$ suppress t$42
+  117.       t$44(2) = int( loc( t$42 ), 8 )
+  117.       t$44(3) = 0
+  117.       t$44(4) = 0
+  117. !dir$ suppress  _substr(namedump,1,14)
+  117.       t$44(5) = int( loc(  _substr(namedump,1,14) ), 8 )
+  117.       t$44(6) = 14
+  117. !dir$ suppress  _substr(t$43,1,7)
+  117.       t$44(7) = int( loc(  _substr(t$43,1,7) ), 8 )
+  117.       t$44(8) = 7
+  117.       t$44(9) = 0
+  117.       t$44(11) = 0
+  117.       t$44(13) = 0
+  117.       t$44(14) = 0
+  117.       t$44(16) = 0
+  117.       t$44(18) = 0
+  117.       t$44(20) = 0
+  117.       t$44(22) = 0
+  117.       t$44(24) = 0
+  117.       t$44(25) = 0
+  117.       t$44(27) = 0
+  117.       t$44(29) = 0
+  117.       t$44(31) = 0
+  117.       t$44(33) = 0
+  117.       t$44(35) = 0
+  117.       t$41 = _open( t$44 )
+  121.       _fwrite( _clist( 0, 0, 3,  _substr(cnproc,1,4), Null_Arg, Null_Arg, t$16,  _substr(t$15,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( maxnodes, 0x2000200000000L ) ) )
+  122.       _fwrite( _clist( 0, 0, 3,  _substr(cthisproc,1,4), Null_Arg, Null_Arg, t$18,  _substr(t$17,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( myid, 0x2000200000000L ) ) )
+  123.       _fwrite( _clist( 0, 0, 3,  _substr(caux,1,4), Null_Arg, Null_Arg, t$20,  _substr(t$19,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( numthreads, 0x2000200000000L ) ) )
+  127.       _f90_adjustl(  _substr(t$45,1,4),  _substr(cthisproc,1,4) )
+  128.       _f90_adjustl(  _substr(t$46,1,4),  _substr(cnproc,1,4) )
+  129.       _f90_adjustl(  _substr(t$47,1,4),  _substr(caux,1,4) )
+  127.        _substr(t$48,1,23) = '**(CreateParallelism)**'
+  127.       t$49 = ( _ltrim(  _substr(t$45,1,4) ) ) + ( _ltrim(  _substr(t$46,1,4) ) ) + ( _ltrim(  _substr(t$47,1,4) ) ) + max( 0, compname ) + 52
+  129.       t$51 = int( _alloc( max( 0, t$49 ) ), 8 )
+  129.        _substr(t$50,1,max( 0, t$49 )) = //( ' Process ', //(  _substr(t$45,1,_ltrim(  _substr(t$45,1,4) )), //( ' (', //(  _substr(pname,1,max( 0, compname )), //( ') among ', //(  _substr(t$46,1,_ltrim(  _substr(t$46,1,4) )), //( ' processes with ', //(  _substr(t$47,1,_ltrim(  _substr(t$47,1,4) )), ' threads is alive' ) ) ) ) ) ) ) )
+  127.       t$32 = 23
+  127.       t$33 = ( max( 0, t$49 ) )
+  127.       if ( myid == 0 ) then
+  127.          t$24 = 23
+  127.          t$25 = ( max( 0, t$49 ) )
+  127.          t$21 = ( 23 + max( 0, t$49 ) )
+  127.          t$26 = max( 0, ( 23 + max( 0, t$49 ) ) )
+  127.          t$27 = int( _alloc( max( 0, ( 23 + max( 0, t$49 ) ) ) ), 8 )
+  127.          $thisthread_S0 = omp_get_thread_num
+  127.          if ( $thisthread_S0 == 0 ) then
+  127.              _substr(fullmsg,1,max( 0, ( max( 0, ( 23 + max( 0, t$49 ) ) ) ) )) = //(  _substr(t$48,1,_ltrim(  _substr(t$48,1,23) )),  _substr(t$50,1,_ltrim(  _substr(t$50,1,max( 0, t$49 )) )) )
+  127.             fullmsglen = _ltrim(  _substr(fullmsg,1,max( 0, ( max( 0, ( 23 + max( 0, t$49 ) ) ) ) )) )
+  127.             if ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) > 0 ) then
+  127.                $I_L127_8 = 0
+  127.                do
+  127.                   _fwrite( _clist( 0, 0, 3, 6, Null_Arg, Null_Arg, t$23,  _substr(t$22,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(fullmsg,( 1 + 128 * $I_L127_8 ),max( 0, ( min( fullmsglen, ( 128 + 128 * $I_L127_8 ) ) + -128 * $I_L127_8 ) )), 0x800600000000L ) ) )
+  127.                   ipa$47 = 6
+  127.                   call flush( ipa$47, 0 )
+  127.                   $I_L127_8 = 1 + $I_L127_8
+  127.                   if ( $I_L127_8 >= ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) ) ) exit
+  127.                enddo
+  127.             endif
+  127.          endif
+  127.          _free( t$27 )
+  127.       endif
+  129.       _free( t$51 )
+  131.       _f90_adjustl(  _substr(t$52,1,4),  _substr(cthisproc,1,4) )
+  132.       _f90_adjustl(  _substr(t$53,1,4),  _substr(cnproc,1,4) )
+  133.       _f90_adjustl(  _substr(t$54,1,4),  _substr(caux,1,4) )
+  131.        _substr(t$55,1,23) = '**(CreateParallelism)**'
+  131.       t$56 = ( _ltrim(  _substr(t$52,1,4) ) ) + ( _ltrim(  _substr(t$53,1,4) ) ) + ( _ltrim(  _substr(t$54,1,4) ) ) + max( 0, compname ) + 52
+  133.       t$58 = int( _alloc( max( 0, t$56 ) ), 8 )
+  133.        _substr(t$57,1,max( 0, t$56 )) = //( ' Process ', //(  _substr(t$52,1,_ltrim(  _substr(t$52,1,4) )), //( ' (', //(  _substr(pname,1,max( 0, compname )), //( ') among ', //(  _substr(t$53,1,_ltrim(  _substr(t$53,1,4) )), //( ' processes with ', //(  _substr(t$54,1,_ltrim(  _substr(t$54,1,4) )), ' threads is alive' ) ) ) ) ) ) ) )
+  131.       t$28 = 23
+  131.       t$29 = ( max( 0, t$56 ) )
+  131.       t$24 = 23
+  131.       t$25 = ( max( 0, t$56 ) )
+  131.       t$21 = ( 23 + max( 0, t$56 ) )
+  131.       t$26 = max( 0, ( 23 + max( 0, t$56 ) ) )
+  131.       t$27 = int( _alloc( max( 0, ( 23 + max( 0, t$56 ) ) ) ), 8 )
+  131.       $thisthread_S1 = omp_get_thread_num
+  131.       if ( $thisthread_S1 == 0 ) then
+  131.           _substr(fullmsg,1,max( 0, ( max( 0, ( 23 + max( 0, t$56 ) ) ) ) )) = //(  _substr(t$55,1,_ltrim(  _substr(t$55,1,23) )),  _substr(t$57,1,_ltrim(  _substr(t$57,1,max( 0, t$56 )) )) )
+  131.          fullmsglen = _ltrim(  _substr(fullmsg,1,max( 0, ( max( 0, ( 23 + max( 0, t$56 ) ) ) ) )) )
+  131.          if ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) > 0 ) then
+  131.             $I_L131_10 = 0
+  131.             do
+  131.                $Unit_temp_O1 = unitdump
+  131.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$23,  _substr(t$22,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(fullmsg,( 1 + 128 * $I_L131_10 ),max( 0, ( min( fullmsglen, ( 128 + 128 * $I_L131_10 ) ) + -128 * $I_L131_10 ) )), 0x800600000000L ) ) )
+  131.                call flush( unitdump, 0 )
+  131.                $I_L131_10 = 1 + $I_L131_10
+  131.                if ( $I_L131_10 >= ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) ) ) exit
+  131.             enddo
+  131.          endif
+  131.       endif
+  131.       _free( t$27 )
+  133.       _free( t$58 )
+  135.       return
+  135.       end
+  135.       
+  138.       
+  138.       subroutine createfouriergroup( mygroup_four, myid_four )
+  145.       call mpi_comm_split( 1140850688, mygroup_four, myid_four, comm_four, ierror )
+  147.       return
+  147.       end
+  147.       
+  151.       
+  151.       subroutine msg( unit, h, message )
+  151.       t$24 = _len( h )
+  151.       t$25 = _len( message )
+  151.       t$21 = _len( h ) + _len( message )
+  151.       t$26 = _len( h ) + _len( message )
+  151.       t$27 = int( _alloc( _len( h ) + _len( message ) ), 8 )
+  162.       $thisthread_S0 = omp_get_thread_num
+  163.       if ( $thisthread_S0 == 0 ) then
+  164.           _substr(fullmsg,1,( _len( h ) + _len( message ) )) = //(  _substr(h,1,_ltrim(  _substr(h,1,_len( h )) )),  _substr(message,1,_ltrim(  _substr(message,1,_len( message )) )) )
+  165.          fullmsglen = _ltrim(  _substr(fullmsg,1,( _len( h ) + _len( message ) )) )
+  170.          if ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) > 0 ) then
+  170.             $I_L170_4 = 0
+  170.             do
+  173.                $Unit_temp_O0 = unit
+  173.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$23,  _substr(t$22,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(fullmsg,( 1 + 128 * $I_L170_4 ),_zla( 0, ( min( fullmsglen, ( 128 + 128 * $I_L170_4 ) ) + -128 * $I_L170_4 ) )), 0x800600000000L ) ) )
+  174.                call flush( unit, 0 )
+  175.                $I_L170_4 = 1 + $I_L170_4
+  175.                if ( $I_L170_4 >= ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) ) ) exit
+  175.             enddo
+  175.          endif
+  175.       endif
+  151.       _free( t$27 )
+  177.       return
+  177.       end
+  177.       
+  185.       
+  185.       subroutine msgdump( h, message )
+  185.       t$28 = _len( h )
+  185.       t$29 = _len( message )
+  187.       call msg( unitdump,  _substr(h,1,_len( h )),  _substr(message,1,_len( message )) )
+  188.       return
+  188.       end
+  188.       
+  196.       
+  196.       subroutine msgout( h, message )
+  196.       t$30 = _len( h )
+  196.       t$31 = _len( message )
+  198.       ipa$63 = 6
+  198.       t$24 = _len( h )
+  198.       t$25 = _len( message )
+  198.       t$21 = _len( h ) + _len( message )
+  198.       t$26 = _len( h ) + _len( message )
+  198.       t$27 = int( _alloc( _len( h ) + _len( message ) ), 8 )
+  198.       $thisthread_S0 = omp_get_thread_num
+  198.       if ( $thisthread_S0 == 0 ) then
+  198.           _substr(fullmsg,1,( _len( h ) + _len( message ) )) = //(  _substr(h,1,_ltrim(  _substr(h,1,_len( h )) )),  _substr(message,1,_ltrim(  _substr(message,1,_len( message )) )) )
+  198.          fullmsglen = _ltrim(  _substr(fullmsg,1,( _len( h ) + _len( message ) )) )
+  198.          if ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) > 0 ) then
+  198.             $I_L198_4 = 0
+  198.             do
+  198.                $Unit_temp_O0 = ipa$63
+  198.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$23,  _substr(t$22,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(fullmsg,( 1 + 128 * $I_L198_4 ),_zla( 0, ( min( fullmsglen, ( 128 + 128 * $I_L198_4 ) ) + -128 * $I_L198_4 ) )), 0x800600000000L ) ) )
+  198.                call flush( ipa$63, 0 )
+  198.                $I_L198_4 = 1 + $I_L198_4
+  198.                if ( $I_L198_4 >= ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) ) ) exit
+  198.             enddo
+  198.          endif
+  198.       endif
+  198.       _free( t$27 )
+  199.       return
+  199.       end
+  199.       
+  207.       
+  207.       subroutine msgone( h, message )
+  207.       t$32 = _len( h )
+  207.       t$33 = _len( message )
+  209.       if ( myid == 0 ) then
+  210.          ipa$68 = 6
+  210.          t$24 = _len( h )
+  210.          t$25 = _len( message )
+  210.          t$21 = _len( h ) + _len( message )
+  210.          t$26 = _len( h ) + _len( message )
+  210.          t$27 = int( _alloc( _len( h ) + _len( message ) ), 8 )
+  210.          $thisthread_S0 = omp_get_thread_num
+  210.          if ( $thisthread_S0 == 0 ) then
+  210.              _substr(fullmsg,1,( _len( h ) + _len( message ) )) = //(  _substr(h,1,_ltrim(  _substr(h,1,_len( h )) )),  _substr(message,1,_ltrim(  _substr(message,1,_len( message )) )) )
+  210.             fullmsglen = _ltrim(  _substr(fullmsg,1,( _len( h ) + _len( message ) )) )
+  210.             if ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) > 0 ) then
+  210.                $I_L210_4 = 0
+  210.                do
+  210.                   $Unit_temp_O0 = ipa$68
+  210.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$23,  _substr(t$22,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(fullmsg,( 1 + 128 * $I_L210_4 ),_zla( 0, ( min( fullmsglen, ( 128 + 128 * $I_L210_4 ) ) + -128 * $I_L210_4 ) )), 0x800600000000L ) ) )
+  210.                   call flush( ipa$68, 0 )
+  210.                   $I_L210_4 = 1 + $I_L210_4
+  210.                   if ( $I_L210_4 >= ( fullmsglen / 128 + ( 128 * ( fullmsglen / 128 ) < fullmsglen ) ) ) exit
+  210.                enddo
+  210.             endif
+  210.          endif
+  210.          _free( t$27 )
+  210.       endif
+  212.       return
+  212.       end
+  212.       
+  220.       
+  220.       subroutine fatalerror( message )
+  220.       t$34 = _len( message )
+  225.       call msgout(  _substr(h,1,10),  _substr(message,1,_len( message )) )
+  226.       call msgdump(  _substr(h,1,10),  _substr(message,1,_len( message )) )
+  227.       call mpi_abort( 1140850688, ierror, ierr )
+  228.        _substr(t$63,1,4) = ' '
+  228.       call _stop(  _substr(t$63,1,1) )
+  229.       return
+  229.       end
+  229.       
+  237.       
+  237.       subroutine destroyparallelism( message )
+  237.       t$35 = _len( message )
+  241.       _f90_adjustl(  _substr(t$64,1,4),  _substr(cthisproc,1,4) )
+  241.       t$65 = ( _ltrim(  _substr(t$64,1,4) ) ) + _len( message ) + 10
+  241.       t$67 = int( _alloc( _zla( 0, t$65 ) ), 8 )
+  241.        _substr(t$66,1,_zla( 0, t$65 )) = //( ' Process ', //(  _substr(t$64,1,_ltrim(  _substr(t$64,1,4) )), //( ' ',  _substr(message,1,_len( message )) ) ) )
+  241.       call msgone(  _substr(h,1,24),  _substr(t$66,1,_zla( 0, t$65 )) )
+  241.       _free( t$67 )
+  242.       _f90_adjustl(  _substr(t$68,1,4),  _substr(cthisproc,1,4) )
+  242.       t$69 = ( _ltrim(  _substr(t$68,1,4) ) ) + _len( message ) + 10
+  242.       t$71 = int( _alloc( _zla( 0, t$69 ) ), 8 )
+  242.        _substr(t$70,1,_zla( 0, t$69 )) = //( ' Process ', //(  _substr(t$68,1,_ltrim(  _substr(t$68,1,4) )), //( ' ',  _substr(message,1,_len( message )) ) ) )
+  242.       call msgdump(  _substr(h,1,24),  _substr(t$70,1,_zla( 0, t$69 )) )
+  242.       _free( t$71 )
+  243.       t$73 = unitdump
+  243.       t$74(1) = 0x100000000000000L
+  243. !dir$ suppress t$73
+  243.       t$74(2) = int( loc( t$73 ), 8 )
+  243.       t$74(3) = 0
+  243.       t$74(4) = 0
+  243.       t$74(5) = 0
+  243.       t$74(7) = 0
+  243.       t$74(8) = 0
+  243.       t$72 = _close( t$74 )
+  244.       call mpi_barrier( 1140850688, ierror )
+  245.       call mpi_finalize( ierror )
+  246.       return
+  246.       end
+  246.       
+    1.       
+    1.       module parallelism
+  247.       return
+  247.       end
+  247.       

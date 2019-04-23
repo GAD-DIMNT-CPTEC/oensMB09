@@ -1,0 +1,15 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 $NFDAYS days" +"%%Y%%m%%d%%H")
+
+runRecortes 1 1 %RESOL% %TRC% %LV% $LABELI $LABELF
+
+set +e
+ventodhn.bash %TRC% %LV% $LABELI $LABELF NMC
+set -e
+
+%include <tail.h>

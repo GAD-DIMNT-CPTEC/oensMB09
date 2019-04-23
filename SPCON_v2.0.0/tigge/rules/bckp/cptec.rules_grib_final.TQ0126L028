@@ -1,0 +1,244 @@
+# GRIB edition 2
+editionNumber                   = 2;
+
+# TIGGE prod = 4, test = 5
+
+productionStatusOfProcessedData = 5;
+
+# JPEG-2000 packing
+#typeOfPacking                     = "grid_jpeg";
+typeOfPacking = "grid_simple";
+
+# Shape of the Earth
+shapeOfTheEarth = 6;
+
+# adjust the accuracy of grib1 files from CPTEC post-processing
+latitudeOfFirstGridPoint = 89284228;
+#longitudeOfFirstGridPoint = 0;
+latitudeOfLastGridPoint = -89284228;
+
+longitudeOfLastGridPoint = 359062500;
+
+iDirectionIncrement = 937500;
+
+typeOfGeneratingProcess     = 4; # CF of PF
+numberOfForecastsInEnsemble = 15; # 14 Members + 1 Control
+#productDefinitionTemplateNumber = 1;
+
+
+# Control
+if(type == 1)
+{
+	typeOfProcessedData    = 3;
+	typeOfEnsembleForecast = type - 1; # 1 = High, 2 = Low-res control forecast
+	perturbationNumber     = 0;
+}
+
+# Perturbed
+if(type == 2)
+{
+	typeOfProcessedData    = 4;
+	typeOfEnsembleForecast = 2; # Negatively perturbed forecast
+	perturbationNumber     = identificationNumber;
+}
+
+# Perturbed
+if(type == 3)
+{
+	typeOfProcessedData    = 4;
+	typeOfEnsembleForecast = 3; # Positively perturbed forecast
+	perturbationNumber     = identificationNumber + 7;
+}
+
+# Pressure level
+
+# Temperature
+if( indicatorOfParameter == 11  && indicatorOfTypeOfLevel == 100) 
+{ productDefinitionTemplateNumber=1;
+  tigge_short_name = 't'; 
+}
+
+# Geopotential
+if( indicatorOfParameter == 7 && indicatorOfTypeOfLevel == 100)  
+{ productDefinitionTemplateNumber=1;
+  tigge_short_name = 'gh'; 
+}
+#
+## U-component
+if( indicatorOfParameter == 33 && indicatorOfTypeOfLevel == 100)  
+{ productDefinitionTemplateNumber=1;
+ tigge_short_name = 'u'; 
+}
+if( indicatorOfParameter == 34 && indicatorOfTypeOfLevel == 100)  
+{ productDefinitionTemplateNumber=1;
+ tigge_short_name = 'v';
+}
+#
+## Specific humidity
+if( indicatorOfParameter == 51 && indicatorOfTypeOfLevel == 100)  
+{ productDefinitionTemplateNumber=1;
+  tigge_short_name = 'q'; 
+}
+#
+#
+#
+# Single level
+
+if(indicatorOfParameter == 033 && indicatorOfTypeOfLevel == 105 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = '10u';
+   typeOfFirstFixedSurface         = 103;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 034 && indicatorOfTypeOfLevel == 105 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = '10v';
+   typeOfFirstFixedSurface         = 103;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 81 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'lsm';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 7 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'orog';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 2 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'msl';
+   typeOfFirstFixedSurface         = 101;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+# 
+if(indicatorOfParameter == 1 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'sp';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+#
+ if(indicatorOfParameter == 86 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'sm';
+   typeOfFirstFixedSurface         = 106;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+#
+if(indicatorOfParameter == 11 && indicatorOfTypeOfLevel == 105 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = '2t';
+   typeOfFirstFixedSurface         = 103;
+   scaleFactorOfFirstFixedSurface  = 0;
+   scaledValueOfFirstFixedSurface  = 2;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 85 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'st';
+   typeOfFirstFixedSurface         = 106;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+#
+if(indicatorOfParameter == 235 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'skt';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+# Total Precipitation (CPTEC) UNITS?
+if(indicatorOfParameter == 61 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=11;
+   tigge_short_name = 'tp'; 
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 65 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=11;
+   tigge_short_name = 'sf';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 54 && indicatorOfTypeOfLevel == 200 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'tcw';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 71 && indicatorOfTypeOfLevel == 3 )   {
+   productDefinitionTemplateNumber=1;
+   tigge_short_name = 'tcc';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 114 && indicatorOfTypeOfLevel == 8 )   {
+   productDefinitionTemplateNumber=11;
+   tigge_short_name = 'ttr';
+   typeOfFirstFixedSurface         = 8;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+#
+if(indicatorOfParameter == 121 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=11;
+   tigge_short_name = 'slhf';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 111 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=11;
+   tigge_short_name = 'ssr';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 112 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=11;
+   tigge_short_name = 'str';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}
+if(indicatorOfParameter == 122 && indicatorOfTypeOfLevel == 1 )   {
+   productDefinitionTemplateNumber=11;
+   tigge_short_name = 'sshf';
+   typeOfFirstFixedSurface         = 1;
+#   scaleFactorOfFirstFixedSurface  = 1;
+#   scaledValueOfFirstFixedSurface  = 1;
+#   typeOfStatisticalProcessing=1;
+}

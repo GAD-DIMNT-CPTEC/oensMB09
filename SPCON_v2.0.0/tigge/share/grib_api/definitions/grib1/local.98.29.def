@@ -1,0 +1,91 @@
+# START 1/local.98.21 ----------------------------------------------------------------------
+# LOCAL 98 21
+#
+# localDefinitionTemplate_029
+# ---------------------------
+#
+# Description                Octet    Code    Ksec1    Count
+# -----------                -----    ----    -----    -----
+#localDefinitionNumber          41     I1    37  -
+#class                          42     I1    38  -
+#type                           43     I1    39  -
+#stream                         44     I2    40  -
+#experimentVersionNumber        46     A4    41  -
+#number                         50     I1    42  -
+#totalNumberOfClusters          51     I1    43  -
+#spareSetToZero                 52     PAD   n/a 1
+#clusteringMethod               53     I1    44  -
+#northernLatitudeOfDomain       54     S3    45  -
+#westernLongitudeOfDomain       57     S3    46  -
+#southernLatitudeOfDomain       60     S3    47  -
+#easternLongitudeOfDomain       63     S3    48  -
+#numberOfForecastsInCluster     66     I1    49  -
+#numberOfParametersUsedForClustering         67     I1    50  -
+#numberOfPressureLevelsUsedForClustering     68     I1    51  -
+#numberOfStepsUsedForClustering          69     I1    52  -
+#spareSetToZero                 70     PAD   n/a 10
+#!
+#! EPS members
+#listOfEnsembleForecastNumbers   -     LIST   - numberOfForecastsInCluster
+#baseDateEPS                     -     I4     -  -
+#baseTimeEPS                     -     I2     -  -
+#number                          -     I1     -  -
+#endListOfEnsembleForecastNumbers - ENDLIST   -  listOfEnsembleForecastNumbers
+#!
+#! Variables
+#listOfParametersUsedForClustering   -     LIST   - numberOfParametersUsedForClustering
+#parameterCode                       -     I1     -  -
+#tableCode                           -     I1     -  -
+#endListOfParametersUsedForClustering - ENDLIST   -  listOfParametersUsedForClustering
+#!
+#! Pressure levels
+#listOfPressureLevelsUsedForClustering   -     LIST   - numberOfPressureLevelsUsedForClustering
+#pressureLevel                       -     I2     -  -
+#endListOfPressureLevelsUsedForClustering - ENDLIST   -  listOfPressureLevelsUsedForClustering
+#!
+#! Steps
+#listOfStepsUsedForClustering   -     LIST   - numberOfStepsUsedForClustering
+#step                           -     I2     -  -
+#endListOfStepsUsedForClustering - ENDLIST   -  listOfStepsUsedForClustering
+#!
+#spareToEnsureFixedLength        -   PADTO   n/a 960
+#
+
+template mars_labeling "grib1/mars_labeling.def";
+
+unsigned[1]  clusterNumber;
+
+unsigned[1]  totalNumberOfClusters  ;
+pad  padding_loc29_1(1);
+unsigned[1]  clusteringMethod  ;
+signed[3]  northernLatitudeOfDomain ;
+signed[3]  westernLongitudeOfDomain   ;
+signed[3]  southernLatitudeOfDomain   ;
+signed[3]  easternLongitudeOfDomain    ;
+unsigned[1] numberOfForecastsInCluster  ;
+unsigned[1] numberOfParametersUsedForClustering  ;
+unsigned[1] numberOfPressureLevelsUsedForClustering ;
+unsigned[1] numberOfStepsUsedForClustering  ;
+
+pad padding_loc29_2(10);
+
+listOfEnsembleForecastNumbers list(numberOfForecastsInCluster){
+      unsigned[4] baseDateEPS;
+      unsigned[2] baseTimeEPS;
+      unsigned[1] number;
+}
+
+listOfParametersUsedForClustering list(numberOfParametersUsedForClustering){
+      unsigned[1] parameterCode;
+      unsigned[1] tableCode;
+}
+
+unsigned[2] pressureLevel[numberOfPressureLevelsUsedForClustering];
+
+# Name_change old=step new=stepForClustering
+unsigned[2] stepForClustering[numberOfStepsUsedForClustering];
+
+#spareToEnsureFixedLength        -   PADTO   n/a 960
+padto padding_loc29_3(offsetSection1+960);
+
+alias mars.number = clusterNumber;

@@ -1,0 +1,55 @@
+%include <head.h>
+%include <date.h>
+
+sleep 15 
+
+if [ "%TASK%" = "N" ]; then
+   s=$( echo "%FAMILY1%*10" | bc -l | cut -d. -f1)
+else
+   s=$( echo "%FAMILY1%*5" | bc -l | cut -d. -f1)
+fi
+
+smslabel Info "..." 
+echo sleep $s
+sleep $s
+
+if [ %TASK% = "NMC" ]; then
+	PREFX=NMC
+	nproc=96
+   NFDAYS=16
+else
+	PREFX=%FAMILY1%%TASK%
+	nproc=96
+fi
+
+if [ ${SMSDATEHH:8:2} -eq 06 -o ${SMSDATEHH:8:2} -eq 18 ]; then
+   NFDAYS=1
+fi
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% ${PREFX}
+LABELI=$SMSDATEHH
+
+if [ %TASK% = "NMC" ]; then
+	PREFX=NMC
+	nproc=96
+   NFDAYS=16
+else
+	PREFX=%FAMILY1%%TASK%
+	nproc=96
+fi
+
+if [ ${LABELI:8:2} -eq 06 -o ${LABELI:8:2} -eq 18 ]; then
+   NFDAYS=1
+fi
+
+LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%%Y%%m%%d%%H")
+
+cd %MODELHOME%/run
+echo ./runModel $nproc 24 1 %RESOL% $PREFX ${LABELI} $PREFX
+./runModel $nproc 24 1 %RESOL% $PREFX ${LABELI} $PREFX
+
+echo "Verificando Arquivos: GPOS${PREFX}${LABELI}"
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/model/dataout/%RESOL%/${LABELI}/ ${PREFX} 2358464703
+
+%include <tail.h>

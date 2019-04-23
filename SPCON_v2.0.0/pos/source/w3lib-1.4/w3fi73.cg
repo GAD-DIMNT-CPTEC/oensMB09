@@ -1,0 +1,70 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  w3fi73.f
+       !        File                  :  w3fi73.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    1.       
+    1.       subroutine w3fi73( ibflag, ibmap, iblen, bms, lenbms, ier )
+    1.       $MR_iblen_S2 = 0[loc( iblen ),0]
+   43.       0[loc( ier ),0] = 0
+   45.       $iz_S4 = 0
+   46.       if ( $MR_iblen_S2 > 0 ) then
+   46.          $I_L46_S3 = 0
+   48.          $LIS_E0 = $MR_iblen_S2
+   48.          do
+   47.             if ( 0[loc( ibmap ),$I_L46_S3] == 0 ) then
+   47.                $iz_S4 = 1 + $iz_S4
+   47.             endif
+   48.             $I_L46_S3 = 1 + $I_L46_S3
+   47.             if ( $I_L46_S3 >= $LIS_E0 ) exit
+   47.          enddo
+   47.       endif
+   49.       if ( $MR_iblen_S2 - $iz_S4 == 0 ) then
+   53.          0[loc( ier ),0] = 8
+   53.       else
+   62.          $Con_P6 = 48
+   62.          $Con_P7 = 1
+   62.          $Con_P8 = 0
+   62.          call sbytesc( substr[bms,0:1], 0[loc( ibmap ),0], $Con_P6, $Con_P7, $Con_P8, 0[loc( iblen ),0] )
+   64.          $MR_iblen_S5 = 0[loc( iblen ),0]
+   64.          $LCS_MR_iblen_0 = $MR_iblen_S5 - and( -16, $MR_iblen_S5 + _rsh( _ash( $MR_iblen_S5, 3 ), 28 ) )
+   64.          $LCS_1 = cvmg( 16 - $LCS_MR_iblen_0, 0, $LCS_MR_iblen_0 )
+   64.          nleft = $LCS_1
+   70.          $PRT_P5 = $LCS_1 + $MR_iblen_S5
+   70.          $num_S6 = 6 + _ash( $PRT_P5 + _rsh( _ash( $PRT_P5, 2 ), 29 ), 3 )
+   70.          num = $num_S6
+   76.          $Con_P6 = 0
+   76.          $Con_P7 = 24
+   76.          call sbytec( substr[bms,0:1], num, $Con_P6, $Con_P7 )
+   78.          $Con_P6 = 24
+   78.          $Con_P7 = 8
+   78.          call sbytec( substr[bms,0:1], nleft, $Con_P6, $Con_P7 )
+   80.          $Con_P6 = 32
+   80.          $Con_P7 = 16
+   80.          call sbytec( substr[bms,0:1], 0[loc( ibflag ),0], $Con_P6, $Con_P7 )
+   88.          $nleft_S7 = nleft
+   88.          if ( $nleft_S7 /= 0 ) then
+   91.             t$4 = 48 + $MR_iblen_S5
+   89.             $nleft_S8 = 16 - $nleft_S7
+   89.             nleft = $nleft_S8
+   91.             $Con_P6 = 0
+   91.             call sbytec( substr[bms,0:1], $Con_P6, t$4, nleft )
+   91.          endif
+   96.          $num_S9 = num
+   96.          0[loc( lenbms ),0] = $num_S9
+   96.       endif
+  100.       return
+  100.       end
+  100.       

@@ -1,0 +1,520 @@
+#!/bin/bash -x
+#help#
+#***********************************************************************#
+#                                                                       #
+#     Name:           runspread.una                                     #
+#                                                                       #
+#     Function:       This script evaluate the spread of the            #
+#                     CPTEC global ensemble forecasting.                #
+#                     It runs in Korn Shell.                            #
+#                                                                       #
+#     Date:           Jul 18th, 2005.                                   #
+#     Last change:    Jul 18th, 2005.                                   #
+#                                                                       #
+#     Valid Arguments for runspread.una:                                #
+#                                                                       #
+#      First:    COMPILE: help, make, clean or run                      #
+#     Second:        TRC: three-digit triangular truncation             #
+#      Third:         LV: two-digit number of vertical sigma-layers     #
+#     Fourth:     LABELI: initial forecasting label                     #
+#      Fifth:     NFCTDY: number of forecasting days                    #
+#      Sixth:     NMEMBR: number of members of the ensemble             #
+#    Seventh:      PREFX: preffix for input and output files            #
+#                                                                       #
+#                  LABELx: yyyymmddhh                                   #
+#                          yyyy = four digit year                       #
+#                            mm = two digit month                       #
+#                            dd = two digit day                         #
+#                            hh = two digit hour                        #
+#                                                                       #
+#***********************************************************************#
+#end#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#end#/p'
+exit 0
+fi
+#
+#
+#       Test of Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+
+if [ -z "${2}" ]
+then
+echo "Second argument is not set (TRC)"
+exit
+else
+export TRC=`echo ${2} | awk '{print $1/1}'`
+fi
+
+if [ -z "${3}" ]
+then
+echo "Third argument is not set (LV)"
+exit
+else
+export LV=`echo ${3} | awk '{print $1/1}'` 
+fi
+
+if [ -z "${4}" ]
+then 
+echo "Sixth argument is not set (LABELI: yyyymmddhh)"
+exit
+else
+LABELI=${4}
+fi
+
+if [ -z "${5}" ]
+then
+echo "Seventh argument is not set (NFDAYS)"
+exit
+else
+NFDAYS=${5}
+fi
+if [ -z "${6}" ]
+then
+echo "Eigth argument is not set (NUMPERT)"
+exit
+else
+NPERT=${6}
+fi
+
+if [ -z "${7}" ]
+then
+echo "Eigth argument is not set (NUMPERT)"
+exit
+else
+PREFX=${7}
+fi
+#
+#   Set machine, Run time and Extention
+#
+export COMPILE=${1}
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+HSTMAQ=`hostname`
+MACHINE=una
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+EXT=out
+echo ${MACHINE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   IOPERM is the directory for the input files.
+#
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesMCGA -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE} ${PREFX}
+cd ${HOME_suite}/run
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${IOPERM}
+
+
+if [ -s $LABELI ]; then
+      echo "ERRO: FALTA PARAMETRO.\nrunmodgmpi.una YYYYMMDDHH"
+      exit 1
+else
+      if [ ${#LABELI} -lt 10 ]; then
+            echo "ERRO: PARAMETRO INCORRETO.\nrunmodgmpi.una YYYYMMDDHH"
+            exit 2
+      else
+            YYYY=`echo $LABELI |cut -c 1-4`
+            MM=`echo $LABELI |cut -c 5-6`
+            DD=`echo $LABELI |cut -c 7-8`
+            HH=`echo $LABELI |cut -c 9-10`
+
+            LABELF=`date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}"`
+            YYYYF=`echo $LABELF |cut -c 1-4`
+            MMF=`echo $LABELF |cut -c 5-6`
+            DDF=`echo $LABELF |cut -c 7-8`
+            HHF=`echo $LABELF |cut -c 9-10`
+      fi
+fi
+
+
+if [ -s $PREFX ]; then
+      echo "ERRO - PARAMETRO PERT\nFORMATO: runrectigge.una yyyymmddhh 01N"
+      exit 2
+fi
+NFCTDY=$NFDAYS
+NMEMBR=${NPERT}
+OUT=out
+NPROC=1
+#
+#  End of setting parameters to run
+#
+########
+#
+#
+#   Set final forecasting labels and UTC Hour
+#
+calday ()
+{
+yi=`echo  ${LABELI} | cut -c1-4`
+mi=`echo  ${LABELI} | cut -c5-6`
+di=`echo  ${LABELI} | cut -c7-8`
+hi=`echo  ${LABELI} | cut -c9-10`
+let ybi=${yi}%4
+if [ ${ybi} = 0 ]
+then
+declare -a md=( 31 29 31 30 31 30 31 31 30 31 30 31 )
+else
+declare -a md=( 31 28 31 30 31 30 31 31 30 31 30 31 )
+fi
+let df=${di}+${NFCTDY}
+let mf=${mi}
+let yf=${yi}
+let hf=${hi}
+let n=${mi}-1
+if [ ${df} -gt ${md[${n}]} ]
+then
+let df=${df}-${md[${n}]}
+let mf=${mf}+1
+if [ ${mf} -eq 13 ]
+then
+let mf=1
+let yf=${yf}+1
+fi
+fi
+if [ ${df} -lt 10 ]
+then DF=0${df}
+else DF=${df}
+fi
+if [ ${mf} -lt 10 ]
+then MF=0${mf}
+else MF=${mf}
+fi
+YF=${yf}
+if [ ${hf} -lt 10 ]
+then HF=0${hf}
+else HF=${hf}
+fi
+}
+calday
+LABELF=${YF}${MF}${DF}${HF}
+export LABELI LABELF
+echo "LABELI="${LABELI}
+echo "LABELF="${LABELF}
+#
+#     Select parameter for the resolution:
+#
+if [ "run" = "run" ]
+then
+case ${TRC} in
+21) MR=22 ; IR=64 ; JR=32 ; NPGH=93 ;
+     DT=1800
+;;
+30) MR=31 ; IR=96 ; JR=48 ; NPGH=140 ;
+     DT=1800
+;;
+42) MR=43 ; IR=128 ; JR=64 ; NPGH=187 ;
+     DT=1800
+;;
+47) MR=48 ; IR=144 ; JR=72 ; NPGH=26 ;
+     DT=1200
+;;
+62) MR=63 ; IR=192 ; JR=96 ; NPGH=315 ;
+     DT=1200
+;;
+79) MR=80 ; IR=240 ; JR=120 ; NPGH=26 ;
+     DT=900
+;;
+85) MR=86 ; IR=256 ; JR=128 ; NPGH=26 ;
+     DT=720
+;;
+94) MR=95 ; IR=288 ; JR=144 ; NPGH=591 ;
+     DT=720
+;;
+106) MR=107 ; IR=320 ; JR=160 ; NPGH=711 ;
+     DT=600
+;;
+126) MR=127 ; IR=384 ; JR=192 ; NPGH=284 ;
+     DT=600
+;;
+159) MR=160 ; IR=480 ; JR=240 ; NPGH=1454 ;
+     DT=450
+;;
+170) MR=171 ; IR=512 ; JR=256 ; NPGH=1633 ;
+     DT=450
+;;
+213) MR=214 ; IR=640 ; JR=320 ; NPGH=2466 ;
+     DT=360
+;;
+254) MR=255 ; IR=768 ; JR=384 ; NPGH=3502 ;
+     DT=300
+;;
+319) MR=320 ; IR=960 ; JR=480 ; NPGH=26 ;
+     DT=240
+;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=una
+if [ "run" != "run" ]
+then
+  QUEUE=compila
+else
+  QUEUE=Expressa
+fi
+RUNTM=`date +'%Y%m%d%T'`
+EXT=${OUT}
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERMO is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   DIRBAN is the directory for archive files.
+#
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+#
+#   Set truncation and layers
+#
+export RESOL=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+export NIVEL=`echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' `
+export TRUNC=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+export LEV=`echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' `
+#
+cd ${OPERM}/run
+#
+NPROC=1
+export cpu_mpi=${NPROC}
+export cpu_node=1
+export cpu_tot=${NPROC}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setspread${RESOL}${NIVEL}.${MAQUI}
+#!/bin/bash -x 
+#
+#$ -V
+#$ -q all.q
+#$ -pe mpi-npn${cpu_node} ${cpu_tot}
+#$ -o ${HSTMAQ}:${OPERM}/run/setout/setspread${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#$ -j y
+#$ -S /bin/bash
+#$ -N SPREAD.$LABELI.${TRUNC}${NIVEL}.${COMPILE}
+
+#*****************************************************************#
+#                                                                 #
+#       Name:           setspread${RESOL}${NIVEL}.${MAQUI}        #
+#                                                                 #
+#       Function:       This script file is used to set the       #
+#                       environmental variables and start         #
+#                       the evaluation of the ensemble spread.    #
+#                                                                 #
+#*****************************************************************#
+#
+#  At UNA Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#
+#   Set date (day,month,year) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+export OPERMOD SOPERMOD ROPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+#COMPILE=run
+#export COMPILE
+#echo \${COMPILE}
+#
+# Define variables to generate variable data file names:
+#
+OUT=${EXT}
+export OUT
+#
+EXTS=S.unf
+export EXTS 
+#
+#   Set UNA FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+#FFF=F_FF
+#export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#
+export F_UFMTENDIAN=70,50
+
+#F_UFMTIEEE=70,50
+#export F_UFMTIEEE
+#F_UFMTADJUST50=TYPE2
+#F_UFMTADJUST70=TYPE2
+#export F_UFMTADJUST70 F_UFMTADJUST50
+#
+F_SETBUF=2048
+export F_SETBUF
+echo " F_SETBUF = \${F_SETBUF}"
+#
+#  Now, verify if compile or run
+#
+if [ "\${COMPILE}" != "run" ]
+then
+cd \${OPERMOD}/spread/source
+make -f Makefile clean
+make -f Makefile 
+exit
+#
+else
+#
+#   Run spread
+#
+#Parameter to be read by spread.f90 : namelist file
+#UNDEF     : ( REAL    ) undef value set up according to original grib files
+#IMAX      : ( INTEGER ) number of points in zonal direction
+#JMAX      : ( INTEGER ) number of points in merdional direction
+#LONW      : ( REAL    ) western longitude for region used to evaluate the clusters 
+#LONE      : ( REAL    ) eastern longitude for region used to evaluate the clusters 
+#LATS      : ( REAL    ) southern latitude for region used to evaluate the clusters 
+#LATN      : ( REAL    ) northern latitude for region used to evaluate the clusters 
+#NMEMBERS  : ( INTEGER ) number of members of the ensemble
+#NFCTDY    : ( INTEGER ) number of forecast days
+#FREQCALC  : ( INTEGER ) interval in hours for computing clusters
+#DATALSTDIR: ( CHAR    ) input directory (ensemble members)
+#DATAOUTDIR: ( CHAR    ) output directory (spread outputs)
+#RESOL     : ( CHAR    ) horizontal and vertical model resolution
+#PREFX     : ( CHAR    ) preffix for input and output files 
+
+mkdir -p \${ROPERMOD}/spread/dataout/\${TRUNC}\${LEV}/
+cat <<EOT > \${OPERMOD}/spread/bin/spreadsetup.${LABELI}.nml
+UNDEF     :   9.999E+20
+IMAX      :   ${IR}
+JMAX      :   ${JR}
+LONW      :   -180.00 
+LONE      :    180.00 
+LATS      :    -90.00
+LATN      :     90.00
+NMEMBERS  :   ${NMEMBR}
+NFCTDY    :   ${NFCTDY}
+FREQCALC  :   6
+DATALSTDIR:   \${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}/${LABELI}/
+DATAOUTDIR:   \${ROPERMOD}/spread/dataout/\${TRUNC}\${LEV}/
+RESOL     :   \${TRUNC}\${LEV}
+PREFX     :   ${PREFX}
+EOT
+#
+#-------------------------------------------------------------
+
+#
+#   Run the spread fortran program
+#
+cd \${OPERMOD}/spread/bin
+\${OPERMOD}/spread/bin/spread.exe ${LABELI}
+
+#
+#   Transfer files of spread to bangu and generate the figures
+#
+EXP=Exp1
+cd \${OPERMOD}/run
+echo "\${OPERMOD}/run/runtransfer.spread.una ${TRC} ${LV} ${LABELI} ${NFCTDY} \${EXP}"
+fi
+
+EOT0
+
+chmod +x setspread${RESOL}${NIVEL}.${MAQUI}
+#
+#   Run spread script
+#
+echo 'spread  -- Run script ...'
+#
+echo 'spread  -- SUBMITTED TO NQS QUEUE ...'
+#
+echo "qsub -q ${QUEUE2} ${OPERM}/run/setspread${RESOL}${NIVEL}.${MAQUI}"
+#
+if [ "${COMPILE}" != "run" ]
+then
+. ${OPERM}/run/setspread${RESOL}${NIVEL}.${MAQUI}
+else
+qsub  ${OPERM}/run/setspread${RESOL}${NIVEL}.${MAQUI}
+fi

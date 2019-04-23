@@ -1,0 +1,23 @@
+%include <head.h>
+%include <date.h>
+
+sleep 20
+smslabel Info "Desligado no script, verificar..."
+
+nproc=24
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+echo ./runensmed.bash run $TRC $LV ${LABELI} ${NFDAYS} ${NPERT} NMC
+./runensmed.bash run $TRC $LV ${LABELI} ${NFDAYS} ${NPERT} NMC
+
+echo "Verificando Arquivos: GPOSENM${LABELI}"
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/ensmed/dataout/%RESOL%/${LABELI}/ ENM 989729000
+
+smsevent prod
+
+sleep 120
+
+%include <tail.h>

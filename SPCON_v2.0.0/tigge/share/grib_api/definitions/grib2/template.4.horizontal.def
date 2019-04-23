@@ -1,0 +1,32 @@
+label "Horizontal level or layer";
+
+#  Type of first fixed surface
+codetable[1] typeOfFirstFixedSurface 'grib2/4.5.table';
+
+#  Scale factor of first fixed surface
+signed[1] scaleFactorOfFirstFixedSurface = missing() : can_be_missing;
+
+#  Scaled value of first fixed surface
+unsigned[4] scaledValueOfFirstFixedSurface = missing() : can_be_missing;
+
+#  Type of second fixed surface
+codetable[1] typeOfSecondFixedSurface 'grib2/4.5.table' = 255;
+
+#  Scale factor of second fixed surface
+signed[1] scaleFactorOfSecondFixedSurface = missing() : can_be_missing;
+
+#  Scaled value of second fixed surface
+unsigned[4] scaledValueOfSecondFixedSurface = missing() : can_be_missing;
+
+meta level g2level(typeOfFirstFixedSurface,
+  scaleFactorOfFirstFixedSurface,
+  scaledValueOfFirstFixedSurface,
+  typeOfSecondFixedSurface,
+  scaleFactorOfSecondFixedSurface,
+  scaledValueOfSecondFixedSurface);
+
+alias ls.lev=level;
+
+alias mars.levelist = level;
+alias mars.levtype  = typeOfFirstFixedSurface;
+alias ls.levelType=typeOfFirstFixedSurface;

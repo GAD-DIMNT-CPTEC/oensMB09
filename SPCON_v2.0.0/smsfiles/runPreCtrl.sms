@@ -1,0 +1,25 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% CTR
+
+LABELI=$SMSDATEHH
+LABELF=$(date -d "$SMSDATE $HH:00 36 hours" +"%%Y%%m%%d%%H")
+
+while [ $(ls ${SC2_suite}/model/dataout/%RESOL%/${LABELI}/NMC/GFCTNMC${LABELI}*icn* 2> /dev/null | wc -l) -eq 0 ]; do
+   echo "Aguardando geração do NMI pelo /model/NMC"
+   sleep 30
+done
+
+smsevent ctrl
+./runctrmodgpro.bash 48 24 1 %RESOL% NMC ${LABELI} CTR                           # SCRIPTALONE - APENAS SUBMETE
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/model/dataout/%RESOL%/${LABELI} GFCTCTR${LABELI} 484228422
+
+export PBS_SERVER=aux20-eth4
+
+smsevent decomp
+./runrecfct.bash %RESOL% CTR FCTCTR ${LABELI}                                 # SCRIPTALONE - APENAS SUBMETE
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/recfct/dataout/%RESOL%/ GFCTCTR${LABELI} 396372480
+
+%include <tail.h>

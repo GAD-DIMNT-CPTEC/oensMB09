@@ -1,0 +1,595 @@
+#!/bin/bash -x
+#help#
+#************************************************************************************#
+#                                                                                    #
+# script to run CPTEC Post-processing on PC Clusters under MPI Scali                 #
+# and Sun Grid Engine without OpenMP                                                 #
+#                                                                                    #
+# assumptions: assume present but NOT at the same directory:                         #
+#              $FEXE/PostGrib (Post-processing Executable file)                      #
+#              $FSCR/POSTIN-GRIB (Post-processing input Namelist file)               #
+#                                                                                    #
+# usage: run_post_UNA.sh cpu_mpi  cpu_node name TRC LV LABELI LABELF hold            #
+# where:                                                                             #
+# cpu_mpi: integer, the desired number of mpi processes                              #
+# cpu_node: integer, the desired number of mpi processes per shared memory node      #
+#************************************************************************************#
+#help#
+#
+#       Help:
+#
+
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  exit 1
+fi
+
+if [ -z "${4}" ]
+then
+  echo "TRC is not set" 
+  exit 2
+else
+  TRC=`echo ${4} | awk '{print $1/1}'`   
+fi
+
+if [ -z "${5}" ]
+then
+  echo "LV is not set" 
+  exit 2
+else
+  LV=`echo ${5} | awk '{print $1/1}'`    
+fi
+
+if [ -z "${6}" ]
+then
+  echo "LABELI is not set" 
+  exit 3
+else
+  export LABELI=${6}  
+fi
+if [ -z "${7}" ]
+then
+  echo "LABELF is not set" 
+  exit 3
+else
+  export LABELF=${7}  
+fi
+if [ -z "${7}" ]
+then
+  echo "PREFX is not set" 
+  exit 3
+else
+  export PREFX=${8}  
+fi
+
+hold=0$8
+#
+# SETTING THE APPROPRIATED ENVIRONMENT
+#
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -maxdepth 2 -name EnvironmentalVariablesOENS -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE}
+cd ${HOME_suite}/run
+export PBS_SERVER=aux20-eth4
+
+# script arguments and directory
+DIRRESOL=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+EXECFILEPATH=${SC1_suite}/pos/exec
+SCRIPTFILEPATH=${HOME_suite}/run/postg${DIRRESOL}${PREFX}.${MAQUI}
+NAMELISTFILEPATH=${HOME_suite}/run
+OUTPUTFILEPATH=${SC2_suite}/out_err/${DIRRESOL}/${LABELI}
+
+cpu_mpi=${1};  if [[ -z "${1}"  ]]; then cpu_mpi=1 ; fi
+cpu_node=${2}; if [[ -z "${2}"  ]]; then cpu_node=1; fi
+export cpu_mpi cpu_node
+export RES=$3
+
+# total cpus and nodes
+
+num=$(($cpu_mpi+$cpu_node-1))
+fra=$(($num/$cpu_node))
+cpu_tot=$(($fra*$cpu_node))
+echo fila=mpi-npn${cpu_node} total cpus=${cpu_tot}
+PROC=`echo ${cpu_tot} |awk '{ printf("P%4.4d\n",$1)  }' `
+MAQUI="Linux"
+host=`hostname`
+export aspa="'"  
+export GPOS=GPOS
+export trunc=$TRC
+export lev=$LV
+export nfend=200                                                                    # number of forecasted files to be post-processed
+export datain=${SC2_suite}/model/dataout/${DIRRESOL}/${LABELI}                         # main dataout directory
+export datalib=${SC1_suite}/pos/datain                                               # main dataout directory
+export dataout=${SC2_suite}/pos/dataout/${DIRRESOL}/${LABELI}; mkdir -p ${dataout}     # main dataout directory
+export res=-0.5              # if res >  0 Define output resolution (deg)
+export ENS=".TRUE."         # ensemble products => TRUE, only for AVN, 0?P, 0?N PREFX
+export RegIntIn=".FALSE."    # flag to interpolate outputs on regular grid (.TRUE.)
+                             # .FALSE. to get outputs on Gaussian grid
+
+#set -x
+cat<< EO_>${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+!namelist
+!############################### Change Log ##################################
+! 1.0.0.0
+!
+!  $Author: pkubota $
+!  $Date: 2007/10/26 17:07:02 $
+!  $Revision: 1.9 $
+!
+!
+!#############################################################################
+!
+ &PosInput
+  nffrs=-1,            ! value to indicated if model use or not initialization
+                      !    or to indicate if it is a cold or warm start run:
+                      !    nffrs=-1 - for runs with normal mode initialization
+                      !    nffrs=0  - for runs without normal mode initialization
+                      !    nffrs=1  - for warm start runs
+  nfbeg=1,             ! number of the first forecasted file to be post-processed    PARA RODAR SOLO SEMPRE 1
+  nfend=1,             ! number of forecasted files to be post-processed             PARA RODAR SOLO SEMPRE 1
+  nmand=-1,            ! number of pressure levels listed below in format 10f8.2
+                       !    nmand=-1 means the use of default 18-levels
+  RegIntIn=.FALSE.,            ! if res >  0 Define output resolution (deg)
+                       !    .FALSE. to get outputs on Gaussian grid
+  Linear=.FALSE.,      ! Flag to Gaussian grid type Linear (.TRUE.) or 
+                       !                            Quadratic (.FALSE.)
+  trunc   ='${DIRRESOL:0:6}',  !TRC   : three-digit triangular truncation
+  lev     ='${DIRRESOL:6:4}',       ! vertical layers = LXXX
+  labeli='${LABELI}' , ! initial forecasting label (yyyymmddhh)
+  labelf='9999010100' , ! final forecasting label (yyyymmddhh)
+  kpds13=11,           ! kpds(13) indicator of forecast time unit (warning should be automatic)
+                       ! 1 hour, 2 day, 3 month, 4 year, ... ON388 TABLE 4
+                       ! 10 3 hours, 11 6 hours, 12 12 hours, etc ...
+                       ! for CPTEC ensemble output is 6 hours
+  prefx ='${PREFX}',        ! preffix for input and output files
+  req   ='p',          ! flag to select requested field file (p, s, c, e or nothing)
+                       !   p - use file rfd.pnt
+                       !   s - use file rfd.sfc
+                       !   c - use file rfd.clm
+                       !   e - use file rfd.eta
+                       !     - use file rfd
+                       !   these files are spected to be in the directory:
+                       !   ${roperm}/pos/datain
+                       !   at the same directory there is a dft file for
+                       !   derived fields (this should be included in the
+                       !   code in future)
+  datain='${datain}',! main dataout directory
+  datalib='${datalib}',! main dataout directory
+  dataout='${dataout}',! main dataout directory
+  Binary=.FALSE.,      ! output binary format ! False -> Grib (Default)
+  postclim=.FALSE.,    ! The Option "postclim" only is functional by grib files
+                       ! If postclim=TRUE, post-processing all files as anl.,
+                       ! should be used for climate running
+                       ! If postclim=FALSE,it differentiates anl. of the forecast      
+  res=-0.50000,            ! if res >  0 Define output resolution (deg)
+                       ! if res <= 0 It does not make interpolation
+  ENS=.FALSE.,            ! if res >  0 Define output resolution (deg)
+  ExtrapoAdiabatica=.TRUE., ! .TRUE. = extrapolated adiabatically to the pressure levels 
+  RunRecort=.FALSE.,      !
+  prefy ='POS',          ! preffix for output recort files 3 character
+  RecLat= -89.694,  40.555   ! -90 90
+  RecLon= 270.0, 330.0   ! 0-360
+ /
+ 1000.00  975.00  950.00  925.00  900.00  875.00  850.00  825.00  800.00  775.00 
+  750.00  725.00  700.00  675.00  650.00  600.00  500.00  300.00  250.00  200.00
+  150.00  100.00   70.00   50.00   30.00   20.00   10.00    3.00
+EO_
+
+echo "${SC2_suite}/model/dataout/${CASE}/${LABELI}/GFCT${PREFX}${LABELI}${LABELF}F.dir.${CASE}">  $datain/GFCT${PREFX}${LABELI}9999010100F.dir.${CASE}.files
+echo "${SC2_suite}/model/dataout/${CASE}/${LABELI}/GFCT${PREFX}${LABELI}${LABELF}F.fct.${CASE}">>  $datain/GFCT${PREFX}${LABELI}9999010100F.dir.${CASE}.files
+
+LABELD=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 24 hours ago" +"%Y%m%d%H")
+tamf=$(ls -l ${SC2_suite}/model/dataout/${CASE}/${LABELD}/GFCT${PREFX}${LABELD}${LABELI}F.fct.${CASE} | awk '{print $5}')
+tamd=$(ls -l ${SC2_suite}/model/dataout/${CASE}/${LABELD}/GFCT${PREFX}${LABELD}${LABELI}F.dir.${CASE} | awk '{print $5}')
+tami=$(ls -l ${SC2_suite}/model/dataout/${CASE}/${LABELD}/GFCT${PREFX}${LABELD}${LABELD}F.icn.${CASE} | awk '{print $5}')
+tamn=$(ls -l ${SC2_suite}/model/dataout/${CASE}/${LABELD}/GFCT${PREFX}${LABELD}${LABELD}F.din.${CASE} | awk '{print $5}')
+
+
+JNJOB=1
+ID=$LABELI
+while [ $ID -le $LABELF ]; do
+   filedir=$(ls -ltr $datain/GFCT${PREFX}${LABELI}${ID}*${CASE}  2> /dev/null | egrep "dir" | tail -1 | head -1 | awk '{if($5>='$tamd') printf("%s",$9) }')
+   filefct=$(ls -ltr $datain/GFCT${PREFX}${LABELI}${ID}*${CASE}  2> /dev/null | egrep "fct" | tail -1 | head -1 | awk '{if($5>='$tamf') printf("%s",$9) }')
+
+   if [ ${LABELI} -eq ${ID} ]; then
+      filedir=$(ls -ltr $datain/GFCT${PREFX}${LABELI}${ID}*${CASE}  2> /dev/null | egrep "din" | tail -1 | head -1 | awk '{if($5>='$tamn') printf("%s",$9) }')
+      filefct=$(ls -ltr $datain/GFCT${PREFX}${LABELI}${ID}*${CASE}  2> /dev/null | egrep "inz" | tail -1 | head -1 | awk '{if($5>='$tami') printf("%s",$9) }')
+      filediricn=$(ls -ltr $datain/GFCT${PREFX}${LABELI}${LABELI}*${CASE}  2> /dev/null | egrep "dic" | tail -1 | head -1 | awk '{if($5>='$tamn') printf("%s",$9) }')
+      filefcticn=$(ls -ltr $datain/GFCT${PREFX}${LABELI}${LABELI}*${CASE}  2> /dev/null | egrep "icn" | tail -1 | head -1 | awk '{if($5>='$tami') printf("%s",$9) }')
+      echo "$filediricn" > $datain/GFCT${PREFX}${LABELI}9999010100F.dir.${CASE}.files
+      echo "$filefcticn" >> $datain/GFCT${PREFX}${LABELI}9999010100F.dir.${CASE}.files
+   fi
+
+   if [ \( -n $filedir \) -a \( -n $filefct \) ]; then
+      echo $filedir $filefct
+      
+cat <<EOF1>${SCRIPTFILEPATH}
+#!/bin/bash
+#PBS -V
+#PBS -W umask=026
+#PBS -o ${OUTPUTFILEPATH}/Out.post.${LABELI}.${tmstp}.${nfbf}.MPI${cpu_mpi}.out
+#PBS -e ${OUTPUTFILEPATH}/Out.post.${LABELI}.${tmstp}.${nfbf}.MPI${cpu_mpi}.err
+#PBS -N $RES
+#PBS -q $QUEUE3
+#PBS -S /bin/bash
+#PBS -lselect=1:ncpus=1
+#PBS -N $RES
+#
+
+umask 026
+ti=\$(date +"%s %Y/%m/%d %H:%M:%S") # TEMPO INICIAL
+
+if [[ ${MAQUI} == "Linux" || ${MAQUI} == "linux" ]]; then
+export F_UFMTENDIAN=10,11
+fi
+export KMP_STACKSIZE=128m
+ulimit -s unlimited
+cd ${EXECFILEPATH}
+time ${EXECFILEPATH}/PostGribSolo $filedir $filefct < ${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+if [ ${LABELI} -eq ${ID} ]; then
+   time ${EXECFILEPATH}/PostGribSolo $filediricn $filefcticn < ${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+fi
+
+mkdir -p ${CTRL_HOME}/${CASE}/${LABELI:0:6}
+date +"${HOME_suite}/run/runPos @ aux 1 @ ini \$ti @ fim %s %Y/%m/%d %H:%M:%S" >> ${CTRL_HOME}/${CASE}/${LABELI:0:6}/${LABELI:6:4}.txt
+exit 0
+EOF1
+
+      chmod 700 ${SCRIPTFILEPATH} 
+      ${SCRIPTFILEPATH}
+      exit 0
+      
+      
+      JID=$(qsub ${SCRIPTFILEPATH} | awk -F "." '{print $1}')
+      if [ $JNJOB -eq 6 ]; then
+      echo  ${hold} ${SCRIPTFILEPATH} $JID
+      it=2
+      while [ ${it} -gt 0 ];do
+         it=`qstat | grep $JID | wc -l`
+         sleep 10
+      done
+         JNJOB=1
+      else
+         JNJOB=$(echo $JNJOB+1| bc)
+      fi
+      ID=$(date -d "${ID:0:8} ${ID:8:2}:00 06 hours" +"%Y%m%d%H")
+   else
+      echo "$filedir $filefct" 
+      echo "AGUARDANDO ARQUIVO $(date -d "${ID:0:8} ${ID:8:2}:00 06 hours" +"%Y%m%d%H")"
+      sleep 60
+   fi
+done
+
+it=2
+while [ ${it} -gt 0 ];do
+   it=`qstat | grep $JID | wc -l`
+   sleep 30
+done
+
+#for arq in $(ls -lr ${dataout}/${GPOS}${PREFX}${LABELI}*grb | awk '{print $5":"$9}'); do
+#   sz=$(echo $arq | cut -d: -f1)
+#   nm=$(echo $arq | cut -d: -f2)
+#   nome=$(basename $nm)
+#   echo $sz $nome
+#done
+
+cd $dataout
+for arq in $(ls ${GPOS}${PREFX}${LABELI}*ctl) ; do
+	${GRADSB}/gribmap  -i ${arq}
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+exit 0
+#####################################################################################################################################
+LABELIpos=$LABELI
+set -x
+i=0
+med=1
+while [ 0$(ls -ltr $datain/GFCT${PREFX}${LABELI}${LABELF}*files 2> /dev/null | awk '{print $5}') -lt 1000 ]; do
+	# POS PROCESSA ATE QUE O .files SEJA CRIADO, SINALIZANDO O FIM DA RODADA DO MODELO
+	echo "Verificando.... $i"
+	if [ $(ls -tr $datain/GFCT${PREFX}${LABELI}*${CASE}  2> /dev/null | wc -l) -ge 2 ]; then
+		# ESPERA ATE QUE AS PRIMEIRAS PREVISOES *fct* SEJAM CRIADAS, POR ISSO 10
+		filepos=$(ls -ltr $datain/GFCT???${LABELI}*${CASE}  2> /dev/null | egrep "dir|dic" | tail -1 | head -1 | awk '{if($5>2000) printf("%s",$9) }')
+      # PROCURA APENAS PELOS ARQUIVOS QUE SERAO POS-PROCESSADOS fct e icn
+		echo $filepos
+      LABELFpos=$(basename $filepos | cut -c 18-27)
+		# VERIFICA A DATA DE PREVISAO DO ULTIMO ARQUIVO GERADO
+      if [ ! "X$LABELFpos" = "X$LABELIpos" ]; then
+   		if [ $LABELIpos -lt $LABELFpos ]; then
+   			# IF PARA VERIFICAR SE O ARQUIVO ESTA COMPLETO OU NAO, POS-PROCESSANDO SEMPRE O PENULTIMO ARQUIVO ENCONTRADO.
+   			echo "PROCESSANDO DE: $LABELIpos - $LABELFpos"
+   			while [ $LABELIpos -le $LABELFpos ]; do
+   				# CONTA QUANTAS PREVISOES FORAM GERADAS NO INTERVALO DAS DATAS.
+   				ymd=${LABELIpos:0:8}
+   				h=${LABELIpos:8:2}
+   				if [ ${LABELIpos} -eq ${LABELI} ]; then
+   					# CRIA O .files QUE SERA USADO NO PROCESSAMENTO
+   					# nfbi INFORMA QUAL ARQUIVO DEVE SER INICIALMENTE POS-PROCESSADO
+   					# nfbf INFORMA QUAL O ULTIMO ARQUIVO A SER POS-PROCESSADO
+   					echo "${datain}/GFCT${PREFX}${LABELI}${LABELIpos}F.dic.${DIRRESOL}" >  ${datain}/GFCT${PREFX}${LABELI}9999010100F.dir.${DIRRESOL}.files
+   					echo "${datain}/GFCT${PREFX}${LABELI}${LABELIpos}F.icn.${DIRRESOL}" >> ${datain}/GFCT${PREFX}${LABELI}9999010100F.dir.${DIRRESOL}.files
+   					echo "${datain}/GFCT${PREFX}${LABELI}${LABELIpos}F.din.${DIRRESOL}" >> ${datain}/GFCT${PREFX}${LABELI}9999010100F.dir.${DIRRESOL}.files
+   					echo "${datain}/GFCT${PREFX}${LABELI}${LABELIpos}F.inz.${DIRRESOL}" >> ${datain}/GFCT${PREFX}${LABELI}9999010100F.dir.${DIRRESOL}.files
+   					nfbi=-1 															   
+   					nfbf=$(echo "$nfbi+1" | bc -l | cut -d. -f1)						   
+   				else																	   
+   					echo "${datain}/GFCT${PREFX}${LABELI}${LABELIpos}F.dir.${DIRRESOL}" >> ${datain}/GFCT${PREFX}${LABELI}9999010100F.dir.${DIRRESOL}.files
+   					echo "${datain}/GFCT${PREFX}${LABELI}${LABELIpos}F.fct.${DIRRESOL}" >> ${datain}/GFCT${PREFX}${LABELI}9999010100F.dir.${DIRRESOL}.files
+   					nfbf=$(echo "$nfbf+1" | bc -l | cut -d. -f1)
+      				fi
+   				LABELIpos=$(date -d "$ymd $h:00 06 hours" +"%Y%m%d%H")
+   			done
+   			echo "nfbi=$nfbi - nfbf=$nfbf"
+   			# CRIACAO DO NAMELIST PARA RODAR O POS-PROCESSAMENTO...
+cat<< EO_ >${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+!namelist
+!############################### Change Log ##################################
+! 1.0.0.0
+!
+!  $Author: pkubota $
+!  $Date: 2007/10/26 17:07:02 $
+!  $Revision: 1.9 $
+!
+!
+!#############################################################################
+!
+ &PosInput
+  nffrs=-1,            ! value to indicated if model use or not initialization
+                      !    or to indicate if it is a cold or warm start run:
+                      !    nffrs=-1 - for runs with normal mode initialization
+                      !    nffrs=0  - for runs without normal mode initialization
+                      !    nffrs=1  - for warm start runs
+  nfbeg=${nfbi},           ! number of the first forecasted file to be post-processed
+  nfend=${nfbf},         ! number of forecasted files to be post-processed
+  nmand=-1,            ! number of pressure levels listed below in format 10f8.2
+                       !    nmand=-1 means the use of default 18-levels
+  RegIntIn=.FALSE.,            ! if res >  0 Define output resolution (deg)
+                       !    .FALSE. to get outputs on Gaussian grid
+  Linear=.FALSE.,      ! Flag to Gaussian grid type Linear (.TRUE.) or 
+                       !                            Quadratic (.FALSE.)
+  trunc   ='${DIRRESOL:0:6}',  !TRC   : three-digit triangular truncation
+  lev     ='${DIRRESOL:6:4}',       ! vertical layers = LXXX
+  labeli='${LABELI}' , ! initial forecasting label (yyyymmddhh)
+  labelf='9999010100' , ! final forecasting label (yyyymmddhh)
+  kpds13=11,           ! kpds(13) indicator of forecast time unit (warning should be automatic)
+                       ! 1 hour, 2 day, 3 month, 4 year, ... ON388 TABLE 4
+                       ! 10 3 hours, 11 6 hours, 12 12 hours, etc ...
+                       ! for CPTEC ensemble output is 6 hours
+  prefx ='${PREFX}',        ! preffix for input and output files
+  req   ='p',          ! flag to select requested field file (p, s, c, e or nothing)
+                       !   p - use file rfd.pnt
+                       !   s - use file rfd.sfc
+                       !   c - use file rfd.clm
+                       !   e - use file rfd.eta
+                       !     - use file rfd
+                       !   these files are spected to be in the directory:
+                       !   ${roperm}/pos/datain
+                       !   at the same directory there is a dft file for
+                       !   derived fields (this should be included in the
+                       !   code in future)
+  datain='${datain}',! main dataout directory
+  datalib='${datalib}',! main dataout directory
+  dataout='${dataout}',! main dataout directory
+  Binary=.FALSE.,      ! output binary format ! False -> Grib (Default)
+  postclim=.FALSE.,    ! The Option "postclim" only is functional by grib files
+                       ! If postclim=TRUE, post-processing all files as anl.,
+                       ! should be used for climate running
+                       ! If postclim=FALSE,it differentiates anl. of the forecast      
+  res=-0.50000,            ! if res >  0 Define output resolution (deg)
+                       ! if res <= 0 It does not make interpolation
+  ENS=.FALSE.,            ! if res >  0 Define output resolution (deg)
+  ExtrapoAdiabatica=.TRUE., ! .TRUE. = extrapolated adiabatically to the pressure levels 
+  RunRecort=.FALSE.,      !
+  prefy ='POS',          ! preffix for output recort files 3 character
+  RecLat= -89.694,  40.555   ! -90 90
+  RecLon= 270.0, 330.0   ! 0-360
+ /
+ 1000.00  975.00  950.00  925.00  900.00  875.00  850.00  825.00  800.00  775.00 
+  750.00  725.00  700.00  675.00  650.00  600.00  500.00  300.00  250.00  200.00
+  150.00  100.00   70.00   50.00   30.00   20.00   10.00    3.00
+EO_
+# script invoked by mpirun
+tmstp=$(date +"%s")
+cat <<EOF1>${SCRIPTFILEPATH}
+#!/bin/bash
+#PBS -V
+#PBS -W umask=026
+#PBS -o ${OUTPUTFILEPATH}/Out.post.${LABELI}.${tmstp}.${nfbf}.MPI${cpu_mpi}.out
+#PBS -e ${OUTPUTFILEPATH}/Out.post.${LABELI}.${tmstp}.${nfbf}.MPI${cpu_mpi}.err
+#PBS -N $RES
+#PBS -q $QUEUE3
+#PBS -S /bin/bash
+#PBS -lselect=1:ncpus=1
+#PBS -N $RES
+#
+
+umask 026
+ti=\$(date +"%s %Y/%m/%d %H:%M:%S") # TEMPO INICIAL
+
+if [[ ${MAQUI} == "Linux" || ${MAQUI} == "linux" ]]; then
+export F_UFMTENDIAN=10,11
+fi
+export KMP_STACKSIZE=128m
+ulimit -s unlimited
+cd ${EXECFILEPATH}
+#time aprun -n 1 -N 1  ${EXECFILEPATH}/PostGrib < ${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+time ${EXECFILEPATH}/PostGrib < ${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+
+mkdir -p ${CTRL_HOME}/${CASE}/${LABELI:0:6}
+date +"${HOME_suite}/run/runPos @ aux 1 @ ini \$ti @ fim %s %Y/%m/%d %H:%M:%S" >> ${CTRL_HOME}/${CASE}/${LABELI:0:6}/${LABELI:6:4}.txt
+
+EOF1
+
+	   		chmod +x ${SCRIPTFILEPATH} 
+
+   			JID=$(qsub ${SCRIPTFILEPATH} | awk -F "." '{print $1}')
+   			echo  ${hold} ${SCRIPTFILEPATH} $JID
+   			it=2
+   			while [ ${it} -gt 0 ];do
+   				it=`qstat | grep $JID | wc -l`
+   				smsmeter fcst $(echo $med/$hold*100 | bc -l | cut -d. -f1) 2> /dev/null
+   				med=$(echo $med+30 | bc -l)
+   				sleep 30
+   			done
+   			
+   			p=$(pwd)
+   			cd ${dataout}
+   			for arq in $(ls ${GPOS}${PREFX}${LABELI}*ctl); do
+   				# Mapping the GRIB data
+   				${GRADSB}/gribmap -i ${arq}
+   			done
+   			cd $p 
+
+   			ymd=${LABELFpos:0:8}
+   			h=${LABELFpos:8:2}
+   			LABELIpos=$(date -d "$ymd $h:00 06 hours" +"%Y%m%d%H")
+   			nfbi=$(echo "$nfbf+1" | bc -l | cut -d. -f1)
+   		fi			
+      fi
+	fi
+	sleep 60
+	let i=i+1
+done
+
+nfbi=$(echo "$nfbi-1" | bc -l | cut -d. -f1)
+nfbf=200
+echo "Number of Post: $nfbi - $nfbf"
+cat<< EO_ >${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+!namelist
+!############################### Change Log ##################################
+! 1.0.0.0
+!
+!  $Author: pkubota $
+!  $Date: 2007/10/26 17:07:02 $
+!  $Revision: 1.9 $
+!
+!
+!#############################################################################
+!
+ &PosInput
+  nffrs=-1,            ! value to indicated if model use or not initialization
+                      !    or to indicate if it is a cold or warm start run:
+                      !    nffrs=-1 - for runs with normal mode initialization
+                      !    nffrs=0  - for runs without normal mode initialization
+                      !    nffrs=1  - for warm start runs
+  nfbeg=${nfbi},           ! number of the first forecasted file to be post-processed
+  nfend=${nfbf},         ! number of forecasted files to be post-processed
+  nmand=-1,            ! number of pressure levels listed below in format 10f8.2
+                       !    nmand=-1 means the use of default 18-levels
+  RegIntIn=.FALSE.,            ! if res >  0 Define output resolution (deg)
+                       !    .FALSE. to get outputs on Gaussian grid
+  Linear=.FALSE.,      ! Flag to Gaussian grid type Linear (.TRUE.) or 
+                       !                            Quadratic (.FALSE.)
+  trunc    ='${DIRRESOL:0:6}',  !TRC   : three-digit triangular truncation
+  lev     ='${DIRRESOL:6:4}',       ! vertical layers = LXXX
+  labeli='${LABELI}' , ! initial forecasting label (yyyymmddhh)
+  labelf='${LABELF}' , ! final forecasting label (yyyymmddhh)
+  kpds13=11,           ! kpds(13) indicator of forecast time unit (warning should be automatic)
+                       ! 1 hour, 2 day, 3 month, 4 year, ... ON388 TABLE 4
+                       ! 10 3 hours, 11 6 hours, 12 12 hours, etc ...
+                       ! for CPTEC ensemble output is 6 hours
+  prefx ='${PREFX}',        ! preffix for input and output files
+  req   ='p',          ! flag to select requested field file (p, s, c, e or nothing)
+                       !   p - use file rfd.pnt
+                       !   s - use file rfd.sfc
+                       !   c - use file rfd.clm
+                       !   e - use file rfd.eta
+                       !     - use file rfd
+                       !   these files are spected to be in the directory:
+                       !   ${roperm}/pos/datain
+                       !   at the same directory there is a dft file for
+                       !   derived fields (this should be included in the
+                       !   code in future)
+  datain='${datain}',! main dataout directory
+  datalib='${datalib}',! main dataout directory
+  dataout='${dataout}',! main dataout directory
+  Binary=.FALSE.,      ! output binary format ! False -> Grib (Default)
+  postclim=.FALSE.,    ! The Option "postclim" only is functional by grib files
+                       ! If postclim=TRUE, post-processing all files as anl.,
+                       ! should be used for climate running
+                       ! If postclim=FALSE,it differentiates anl. of the forecast      
+  res=-0.50000,            ! if res >  0 Define output resolution (deg)
+                       ! if res <= 0 It does not make interpolation
+  ENS=.FALSE.,            ! if res >  0 Define output resolution (deg)
+  ExtrapoAdiabatica=.TRUE., ! .TRUE. = extrapolated adiabatically to the pressure levels 
+  RunRecort=.FALSE.,      !
+  prefy ='POS',          ! preffix for output recort files 3 character
+  RecLat= -89.694,  40.555   ! -90 90
+  RecLon= 270.0, 330.0   ! 0-360
+ /
+ 1000.00  975.00  950.00  925.00  900.00  875.00  850.00  825.00  800.00  775.00 
+  750.00  725.00  700.00  675.00  650.00  600.00  500.00  300.00  250.00  200.00
+  150.00  100.00   70.00   50.00   30.00   20.00   10.00    3.00
+EO_
+# script invoked by mpirun
+tmstp=$(date +"%s")
+cat <<EOF1>${SCRIPTFILEPATH}
+#!/bin/bash
+#PBS -W umask=026
+#PBS -o ${OUTPUTFILEPATH}/Out.post.${PREFX}.${LABELI}.${tmstp}.${nfbf}.MPI${cpu_mpi}.out
+#PBS -e ${OUTPUTFILEPATH}/Out.post.${PREFX}.${LABELI}.${tmstp}.${nfbf}.MPI${cpu_mpi}.err
+#PBS -N $RES
+#PBS -q $QUEUE3
+#PBS -V
+#PBS -S /bin/bash
+#PBS -lselect=1:ncpus=1
+#PBS -N $RES
+#
+
+umask 026
+ti=\$(date +"%s %Y/%m/%d %H:%M:%S") # TEMPO INICIAL
+
+if [[ ${MAQUI} == "Linux" || ${MAQUI} == "linux" ]]; then
+export F_UFMTENDIAN=10,11
+fi
+export KMP_STACKSIZE=128m
+ulimit -s unlimited
+cd ${EXECFILEPATH}
+#time aprun -n 1 -N 1  ${EXECFILEPATH}/PostGrib < ${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+time ${EXECFILEPATH}/PostGrib < ${EXECFILEPATH}/POSTIN-GRIB.${PREFX}.$TRC
+
+mkdir -p ${CTRL_HOME}/${CASE}/${LABELI:0:6}
+date +"${HOME_suite}/run/runPos @ aux 1 @ ini \$ti @ fim %s %Y/%m/%d %H:%M:%S" >> ${CTRL_HOME}/${CASE}/${LABELI:0:6}/${LABELI:6:4}.txt
+EOF1
+
+chmod +x ${SCRIPTFILEPATH}
+
+JID=$(qsub ${SCRIPTFILEPATH} | awk -F "." '{print $1}')
+echo  ${hold} ${SCRIPTFILEPATH} $JID
+it=2
+while [ ${it} -gt 0 ] ; do
+	it=0$(qstat | grep $JID | wc -l)
+	smsmeter fcst $(echo $med/$hold*100 | bc -l | cut -d. -f1) 2> /dev/null
+	med=$(echo $med+30 | bc -l)
+	sleep 30
+done
+
+smsmeter fcts 100 2> /dev/null
+
+cd ${dataout}
+# Mapping the GRIB data
+
+
+for arq in $(ls ${GPOS}${PREFX}${LABELI}*ctl) ; do
+	${GRADSB}/gribmap  -i ${arq}
+done
+
+smsmeter fcst 100 2> /dev/null
+
+exit 0
