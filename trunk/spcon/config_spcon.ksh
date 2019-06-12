@@ -89,7 +89,7 @@
 # e instalação do SPCON)
 vars_export() {
 
-  export spcon_name=oensMB09_aval
+  export spcon_name=oensMB09.cray
 
   export home_spcon=${SUBMIT_HOME}/${spcon_name}
   export work_spcon=${WORK_HOME}/${spcon_name}
