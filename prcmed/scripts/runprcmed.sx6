@@ -1,0 +1,344 @@
+#!/bin/ksh
+#help#
+#***********************************************************************#
+#                                                                       #
+#     Name:           runprcmed.sx6                                     #
+#                                                                       #
+#     Function:       This script initiates the variable                #
+#                     so that the program can calculate                 #
+#                     the avarage of the members of a                   #
+#                     forecast.                                         #
+#                     It runs in Korn Shell.                            #
+#                                                                       #
+#     Date:           May 17th, 2004.                                   #
+#     Last change:    May 17th, 2004.                                   #
+#                                                                       #
+#     Valid Arguments for runprcmed.sx6:                                #
+#                                                                       #
+#      First:    COMPILE: help, make, clean or run                      #
+#     Second:        TRC: three-digit triangular truncation             #
+#      Third:         LV: two-digit number of vertical sigma-layers     #
+#     Fourth:     LABELI: initial forecasting label                     #
+#      Fifth:     NFCTDY: number of forecasting days                    #
+#                                                                       #
+#                  LABELx: yyyymmddhh                                   #
+#                          yyyy = four digit year                       #
+#                            mm = two digit month                       #
+#                            dd = two digit day                         #
+#                            hh = two digit hour                        #
+#                                                                       #
+#***********************************************************************#
+#end#
+#
+#       Help:
+#
+#
+. ../../run/config.sx6
+
+LABELI=$1
+if [ -s $LABELI ]; then
+      echo "ERRO: FALTA PARAMETRO.\nrunensmedg.sx6 YYYYMMDDHH"
+      exit 1
+else
+      if [ ${#LABELI} -lt 10 ]; then
+            echo "ERRO: PARAMETRO INCORRETO.\nrunensmedg.sx6 YYYYMMDDHH"
+            exit 2
+      else
+            YYYY=`echo $LABELI |cut -c 1-4`
+            MM=`echo $LABELI |cut -c 5-6`
+            DD=`echo $LABELI |cut -c 7-8`
+            HH=`echo $LABELI |cut -c 9-10`
+
+            LABELF=`date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}"`
+            YYYYF=`echo $LABELF |cut -c 1-4`
+            MMF=`echo $LABELF |cut -c 5-6`
+            DDF=`echo $LABELF |cut -c 7-8`
+            HHF=`echo $LABELF |cut -c 9-10`
+      fi
+fi
+
+PERT=$2
+PREFX=$PERT
+NFCTDY=${FSCT}
+NMEMBR=`echo ${NPERT}*2+1 | bc -l`
+OUT=out
+NPROC=1
+
+export LABELI LABELF
+echo "LABELI="${LABELI}
+echo "LABELF="${LABELF}
+#
+#     Select parameter for the resolution:
+#
+if [ "run" = "run" ]
+then
+case ${TRC} in
+021) MR=22 ; IR=64 ; JR=32 ; NPGH=93 ;
+     DT=1800
+;;
+030) MR=31 ; IR=96 ; JR=48 ; NPGH=140 ;
+     DT=1800
+;;
+042) MR=43 ; IR=128 ; JR=64 ; NPGH=187 ;
+     DT=1800
+;;
+047) MR=48 ; IR=144 ; JR=72 ; NPGH=26 ;
+     DT=1200
+;;
+062) MR=63 ; IR=192 ; JR=96 ; NPGH=315 ;
+     DT=1200
+;;
+079) MR=80 ; IR=240 ; JR=120 ; NPGH=26 ;
+     DT=900
+;;
+085) MR=86 ; IR=256 ; JR=128 ; NPGH=26 ;
+     DT=720
+;;
+094) MR=95 ; IR=288 ; JR=144 ; NPGH=591 ;
+     DT=720
+;;
+106) MR=107 ; IR=320 ; JR=160 ; NPGH=711 ;
+     DT=600
+;;
+126) MR=127 ; IR=384 ; JR=192 ; NPGH=284 ;
+     DT=600
+;;
+159) MR=160 ; IR=480 ; JR=240 ; NPGH=1454 ;
+     DT=450
+;;
+170) MR=171 ; IR=512 ; JR=256 ; NPGH=1633 ;
+     DT=450
+;;
+213) MR=214 ; IR=640 ; JR=320 ; NPGH=2466 ;
+     DT=360
+;;
+254) MR=255 ; IR=768 ; JR=384 ; NPGH=3502 ;
+     DT=300
+;;
+319) MR=320 ; IR=960 ; JR=480 ; NPGH=26 ;
+     DT=240
+;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+if [ "run" != "run" ]
+then
+  QUEUE=compila
+fi
+RUNTM=`date +'%Y%m%d%T'`
+EXT=${PREFX}
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERMO is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   DIRBAN is the directory for archive files.
+#
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+#
+#   Set truncation and layers
+#
+RESOL=T${TRC}
+NIVEL=L${LV}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setprcmed${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh 
+#PBS -l cpunum_prc=1
+#PBS -l tasknum_prc=1
+#PBS -l memsz_job=0.5gb  
+#PBS -l cputim_job=600
+#*****************************************************************#
+#                                                                 #
+#       Name:           setprcmed${RESOL}${NIVEL}.${MAQUI}        #
+#                                                                 #
+#       Function:       This script file is used to set the       #
+#                       environmental variables and start         #
+#                       the week mean precipitation.              #
+#                                                                 #
+#*****************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setprcmed${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#   Set date (day,month,year) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   AOPERMOD is the directory for alternative initial conditions.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+export OPERMOD SOPERMOD ROPERMOD 
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=run
+export COMPILE
+echo \${COMPILE}
+#
+# Define variables to generate variable data file names:
+#
+OUT=${EXT}
+export OUT
+#
+EXTS=S.unf
+export EXTS 
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+F_UFMTIEEE=80,90
+export F_UFMTIEEE
+F_UFMTADJUST80=TYPE2
+F_UFMTADJUST90=TYPE2
+export F_UFMTADJUST80 F_UFMTADJUST90
+#
+F_SETBUF=2048
+export F_SETBUF
+echo " F_SETBUF = \${F_SETBUF}"
+#
+#  Now, verify if compile or run
+#
+if [ "\${COMPILE}" != "run" ]
+then
+cd \${OPERMOD}/prcmed/source
+make -f Makefile clean
+make -f Makefile 
+#
+else
+#
+#   Run prcmed
+#
+#Parameter to be read by prcmed.f90 : namelist file
+#UNDEF     : ( REAL    ) undef value set up according to original grib files
+#IMAX      : ( INTEGER ) number of points in zonal way
+#JMAX      : ( INTEGER ) number of points in merdional way
+#NFCTDY    : ( INTEGER ) number of forecast days
+#FREQCALC  : ( INTEGER ) interval in hours of output ensemble forecast
+#NWEEK     : ( INTEGER ) number of week to compute mean field
+#DATAINDIR : ( CHAR    ) input directory (ensemble mean)
+#DATAOUTDIR: ( CHAR    ) output directory (week mean precipitation)
+#PREFX     : ( CHAR    ) preffix for input and output files 
+#RESOL     : ( CHAR    ) horizontal and vertical model resolution
+cat <<EOT > \${OPERMOD}/prcmed/bin/prcmed.${LABELI}.nml
+UNDEF     :   9.999E+20
+IMAX      :   ${IR}
+JMAX      :   ${JR}
+NFCTDY    :   ${NFCTDY}
+FREQCALC  :   6
+NWEEK     :   2
+DATAINDIR :   \${ROPERMOD}/ensmed/dataout/\${TRUNC}\${LEV}/
+DATAOUTDIR:   \${ROPERMOD}/prcmed/dataout/\${TRUNC}\${LEV}/
+PREFX     :   ENM
+RESOL     :   \${TRUNC}\${LEV}
+EOT
+#
+#-------------------------------------------------------------
+#
+#   Run the prcmed fortran program
+#
+cd \${OPERMOD}/prcmed/bin
+\${OPERMOD}/prcmed/bin/prcmed.exe ${LABELI}
+#
+#   Transfer files of week mean precipitation to bangu and generate the figures
+#
+
+exit
+
+EXP=Exp1
+cd \${OPERMOD}/run
+echo "\${OPERMOD}/run/runtransfer.prcmed.sx6 ${TRC} ${LV} ${LABELI} ${NFCTDY} ${NMEMBR} \${EXP}"
+#\${OPERMOD}/run/runtransfer.prcmed.sx6 ${TRC} ${LV} ${LABELI} ${NFCTDY} ${NMEMBR} \${EXP}
+#
+fi
+#
+EOT0
+#
+chmod +x setprcmed${RESOL}${NIVEL}.${MAQUI}
+#
+#   Run prcmed script
+#
+echo 'prcmed  -- Run script ...'
+#
+echo 'prcmed  -- SUBMITTED TO NQS QUEUE ...'
+#
+echo "qsub -q ${QUEUE} ${OPERM}/run/setprcmed${RESOL}${NIVEL}.${MAQUI}"
+#qsub -q ${QUEUE} ${OPERM}/run/setprcmed${RESOL}${NIVEL}.${MAQUI}
+submit ${OPERM}/run/setprcmed${RESOL}${NIVEL}.${MAQUI} ${QUEUE} Info
+#

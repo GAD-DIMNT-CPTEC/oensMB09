@@ -1,0 +1,12 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+%include <tail.h>
+
+./runskill.bash $LABELI NMC 126 28
+
+%include <tail.h>

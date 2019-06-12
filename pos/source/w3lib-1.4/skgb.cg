@@ -1,0 +1,96 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  skgb.f
+       !        File                  :  skgb.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    2.       
+    2.       subroutine skgb( lugb, iseek, mseek, lskip, lgrib )
+    2.       $CARG_iseek_I1 = 0[loc( iseek ),0]
+    2.       $CARG_mseek_I2 = 0[loc( mseek ),0]
+   42.       0[loc( lgrib ),0] = 0
+   43.       ks = $CARG_iseek_I1
+   44.       $kn_S1 = min( 128, $CARG_mseek_I2 )
+   44.       kn = $kn_S1
+   45.       kz = 128
+   48.       if ( $CARG_mseek_I2 >= 8 ) then
+   66.          $lskip_S10 = 0[loc( lskip ),0]
+   72.          $lgrib_S2 = 0
+   74.          $LIS_E0 = ( $CARG_iseek_I1 + $CARG_mseek_I2 )
+   74.          do
+   50.             call baread( 0[loc( lugb ),0], ks, kn, kz, substr[z,0:1] )
+   52.             $k_S4 = 0
+   54.             $MR_kz_4 = kz
+   54.             $LCS_kz_0 = -7 + $MR_kz_4
+   54.             if ( ( $lgrib_S2 == 0 .and. 0 < $LCS_kz_0 ) /= .false. ) then
+   61.                $ks_S3 = ks
+   61.                $LIS_E1 = ( -4 + $ks_S3 )
+   61.                do
+   55.                   t$2 = _lsh( $k_S4, 3 )
+   55.                   $Con_P10 = 32
+   55.                   call gbytec( substr[z,0:1], i4, t$2, $Con_P10 )
+   56.                   t$2 = 56 + _lsh( $k_S4, 3 )
+   56.                   $Con_P10 = 8
+   56.                   call gbytec( substr[z,0:1], i1, t$2, $Con_P10 )
+   57.                   $i4_S5 = i4
+   57.                   if ( $i4_S5 == 1196575042 ) then
+   57.                      $MR_i1_7 = i1
+   57.                      if ( $MR_i1_7 == 1 ) then
+   57.                         goto 10
+   57.                      else if ( $MR_i1_7 == 2 ) then
+   57.    10                   continue
+   59.                         if ( $MR_i1_7 == 1 ) then
+   59.                            t$2 = 32 + _lsh( $k_S4, 3 )
+   59.                            $Con_P10 = 24
+   59.                            call gbytec( substr[z,0:1], kg, t$2, $Con_P10 )
+   59.                         endif
+   60.                         if ( $MR_i1_7 == 2 ) then
+   60.                            t$2 = 96 + _lsh( $k_S4, 3 )
+   60.                            $Con_P10 = 32
+   60.                            call gbytec( substr[z,0:1], kg, t$2, $Con_P10 )
+   60.                         endif
+   61.                         $MR_kg_8 = kg
+   61.                         t$2 = $LIS_E1 + $MR_kg_8 + $k_S4
+   61.                         $Con_P10 = 4
+   61.                         call baread( 0[loc( lugb ),0], t$2, $Con_P10, k4, substr[z4,0:1] )
+   62.                         if ( k4 == 4 ) then
+   63.                            $Con_P10 = 0
+   63.                            $Con_P11 = 32
+   63.                            call gbytec( substr[z4,0:1], i4, $Con_P10, $Con_P11 )
+   64.                            $i4_S6 = i4
+   64.                            if ( $i4_S6 == 926365495 ) then
+   66.                               $lskip_S10 = $ks_S3 + $k_S4
+   67.                               $lgrib_S2 = $MR_kg_8
+   67.                            endif
+   67.                         endif
+   67.                      endif
+   67.                   endif
+   71.                   $k_S4 = 1 + $k_S4
+   71.                   if ( ( $lgrib_S2 == 0 .and. $k_S4 < $LCS_kz_0 ) == .false. ) exit
+   71.                enddo
+   71.             endif
+   73.             $ks_S7 = ks
+   73.             $ks_S8 = -7 + $MR_kz_4 + $ks_S7
+   73.             ks = $ks_S8
+   74.             $LCS_1 = $LIS_E0 - $ks_S8
+   74.             $kn_S9 = min( 128, $LCS_1 )
+   74.             kn = $kn_S9
+   74.             if ( ( $lgrib_S2 == 0 .and. $LCS_1 >= 8 .and. $MR_kz_4 == 128 ) == .false. ) exit
+   74.          enddo
+   66.          0[loc( lskip ),0] = $lskip_S10
+   67.          0[loc( lgrib ),0] = $lgrib_S2
+   67.       endif
+   78.       return
+   78.       end
+   78.       

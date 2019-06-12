@@ -1,0 +1,3590 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        Notice - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Options.f90
+       !        File                  :  Options.opt
+       !        Network               :  Gemini interconnect
+       !        Target                :  X86, 64-bit, sse3
+       !        
+  759.       
+  759.       subroutine readnamelist
+  619.       $I_A2 = 0
+  619. !dir$ ivdep
+  619.       do
+  619.          t$333(1 + $I_A2) = t$332(1 + $I_A2)
+  619.          $I_A2 = 1 + $I_A2
+  619.          if ( $I_A2 >= 87 ) exit
+  619.       enddo
+  619.       t$333(2) = int( loc(  _substr(t$334,1,6) ), 8 )
+  619.       t$333(5) = int( loc(  _substr(t$335,1,6) ), 8 )
+  619.       t$336(1) = 0x2000200000000L
+  619.       t$336(2) = int( loc( initlz ), 8 )
+  619. !dir$ suppress t$336
+  619.       t$333(7) = int( loc( t$336 ), 8 )
+  619.       t$333(9) = int( loc(  _substr(t$337,1,5) ), 8 )
+  619.       t$338(1) = 0x2000200000000L
+  619.       t$338(2) = int( loc( nstep ), 8 )
+  619. !dir$ suppress t$338
+  619.       t$333(11) = int( loc( t$338 ), 8 )
+  619.       t$333(13) = int( loc(  _substr(t$339,1,4) ), 8 )
+  619.       t$340(1) = 0x804060300000000L
+  619.       t$340(2) = int( loc( fint ), 8 )
+  619. !dir$ suppress t$340
+  619.       t$333(15) = int( loc( t$340 ), 8 )
+  619.       t$333(17) = int( loc(  _substr(t$341,1,6) ), 8 )
+  619.       t$342(1) = 0x2000200000000L
+  619.       t$342(2) = int( loc( intsst ), 8 )
+  619. !dir$ suppress t$342
+  619.       t$333(19) = int( loc( t$342 ), 8 )
+  619.       t$333(21) = int( loc(  _substr(t$343,1,5) ), 8 )
+  619.       t$344(1) = 0x2000200000000L
+  619.       t$344(2) = int( loc( ndord ), 8 )
+  619. !dir$ suppress t$344
+  619.       t$333(23) = int( loc( t$344 ), 8 )
+  619.       t$333(25) = int( loc(  _substr(t$345,1,5) ), 8 )
+  619.       t$346(1) = 0x804060300000000L
+  619.       t$346(2) = int( loc( filta ), 8 )
+  619. !dir$ suppress t$346
+  619.       t$333(27) = int( loc( t$346 ), 8 )
+  619.       t$333(29) = int( loc(  _substr(t$347,1,6) ), 8 )
+  619.       t$348(1) = 0x804060300000000L
+  619.       t$348(2) = int( loc( percut ), 8 )
+  619. !dir$ suppress t$348
+  619.       t$333(31) = int( loc( t$348 ), 8 )
+  619.       t$333(33) = int( loc(  _substr(t$349,1,6) ), 8 )
+  619.       t$350(1) = 0x804060300000000L
+  619.       t$350(2) = int( loc( varcut ), 8 )
+  619. !dir$ suppress t$350
+  619.       t$333(35) = int( loc( t$350 ), 8 )
+  619.       t$333(37) = int( loc(  _substr(t$351,1,5) ), 8 )
+  619.       t$352(1) = 0x2000200000000L
+  619.       t$352(2) = int( loc( ifsst ), 8 )
+  619. !dir$ suppress t$352
+  619.       t$333(39) = int( loc( t$352 ), 8 )
+  619.       t$333(41) = int( loc(  _substr(t$353,1,5) ), 8 )
+  619.       t$354(1) = 0x2000200000000L
+  619.       t$354(2) = int( loc( ifsnw ), 8 )
+  619. !dir$ suppress t$354
+  619.       t$333(43) = int( loc( t$354 ), 8 )
+  619.       t$333(45) = int( loc(  _substr(t$355,1,5) ), 8 )
+  619.       t$356(1) = 0x2000200000000L
+  619.       t$356(2) = int( loc( ifalb ), 8 )
+  619. !dir$ suppress t$356
+  619.       t$333(47) = int( loc( t$356 ), 8 )
+  619.       t$333(49) = int( loc(  _substr(t$357,1,5) ), 8 )
+  619.       t$358(1) = 0x2000200000000L
+  619.       t$358(2) = int( loc( ifslm ), 8 )
+  619. !dir$ suppress t$358
+  619.       t$333(51) = int( loc( t$358 ), 8 )
+  619.       t$333(53) = int( loc(  _substr(t$359,1,6) ), 8 )
+  619.       t$360(1) = 0x2000500000000L
+  619.       t$360(2) = int( loc( allghf ), 8 )
+  619. !dir$ suppress t$360
+  619.       t$333(55) = int( loc( t$360 ), 8 )
+  619.       t$333(57) = int( loc(  _substr(t$361,1,5) ), 8 )
+  619.       t$362(1) = 0x2000200000000L
+  619.       t$362(2) = int( loc( ifco2 ), 8 )
+  619. !dir$ suppress t$362
+  619.       t$333(59) = int( loc( t$362 ), 8 )
+  619.       t$333(61) = int( loc(  _substr(t$363,1,7) ), 8 )
+  619.       t$364(1) = 0x2000200000000L
+  619.       t$364(2) = int( loc( ifozone ), 8 )
+  619. !dir$ suppress t$364
+  619.       t$333(63) = int( loc( t$364 ), 8 )
+  619.       t$333(65) = int( loc(  _substr(t$365,1,6) ), 8 )
+  619.       t$366(1) = 0x804060300000000L
+  619.       t$366(2) = int( loc( dpercu ), 8 )
+  619. !dir$ suppress t$366
+  619.       t$333(67) = int( loc( t$366 ), 8 )
+  619.       t$333(69) = int( loc(  _substr(t$367,1,5) ), 8 )
+  619.       t$368(1) = 0x804060300000000L
+  619.       t$368(2) = int( loc( vcrit ), 8 )
+  619. !dir$ suppress t$368
+  619.       t$333(71) = int( loc( t$368 ), 8 )
+  619.       t$333(73) = int( loc(  _substr(t$369,1,5) ), 8 )
+  619.       t$370(1) = 0x804060300000000L
+  619.       t$370(2) = int( loc( alpha ), 8 )
+  619. !dir$ suppress t$370
+  619.       t$333(75) = int( loc( t$370 ), 8 )
+  619.       t$333(77) = int( loc(  _substr(t$371,1,5) ), 8 )
+  619.       t$372(1) = 0x2000500000000L
+  619.       t$372(2) = int( loc( dodyn ), 8 )
+  619. !dir$ suppress t$372
+  619.       t$333(79) = int( loc( t$372 ), 8 )
+  619.       t$333(81) = int( loc(  _substr(t$373,1,2) ), 8 )
+  619.       t$374(1) = 0x804060300000000L
+  619.       t$374(2) = int( loc( dk ), 8 )
+  619. !dir$ suppress t$374
+  619.       t$333(83) = int( loc( t$374 ), 8 )
+  619.       t$333(85) = int( loc(  _substr(t$375,1,2) ), 8 )
+  619.       t$376(1) = 0x804060300000000L
+  619.       t$376(2) = int( loc( tk ), 8 )
+  619. !dir$ suppress t$376
+  619.       t$333(87) = int( loc( t$376 ), 8 )
+  604.       $I_A2 = 0
+  604. !dir$ ivdep
+  604.       do
+  604.          t$284(1 + $I_A2) = t$283(1 + $I_A2)
+  604.          $I_A2 = 1 + $I_A2
+  604.          if ( $I_A2 >= 95 ) exit
+  604.       enddo
+  604.       t$284(2) = int( loc(  _substr(t$285,1,8) ), 8 )
+  604.       t$284(5) = int( loc(  _substr(t$286,1,5) ), 8 )
+  604.       t$287(1) = 0x2000500000000L
+  604.       t$287(2) = int( loc( slagr ), 8 )
+  604. !dir$ suppress t$287
+  604.       t$284(7) = int( loc( t$287 ), 8 )
+  604.       t$284(9) = int( loc(  _substr(t$288,1,17) ), 8 )
+  604.       t$289(1) = 0x2000500000000L
+  604.       t$289(2) = int( loc( sl_twotime_scheme ), 8 )
+  604. !dir$ suppress t$289
+  604.       t$284(11) = int( loc( t$289 ), 8 )
+  604.       t$284(13) = int( loc(  _substr(t$290,1,8) ), 8 )
+  604.       t$291(1) = 0x2000500000000L
+  604.       t$291(2) = int( loc( nlnminit ), 8 )
+  604. !dir$ suppress t$291
+  604.       t$284(15) = int( loc( t$291 ), 8 )
+  604.       t$284(17) = int( loc(  _substr(t$292,1,8) ), 8 )
+  604.       t$293(1) = 0x2000500000000L
+  604.       t$293(2) = int( loc( diabatic ), 8 )
+  604. !dir$ suppress t$293
+  604.       t$284(19) = int( loc( t$293 ), 8 )
+  604.       t$284(21) = int( loc(  _substr(t$294,1,9) ), 8 )
+  604.       t$295(1) = 0x2000500000000L
+  604.       t$295(2) = int( loc( eigeninit ), 8 )
+  604. !dir$ suppress t$295
+  604.       t$284(23) = int( loc( t$295 ), 8 )
+  604.       t$284(25) = int( loc(  _substr(t$296,1,7) ), 8 )
+  604.       t$297(1) = 0x2000500000000L
+  604.       t$297(2) = int( loc( rsettov ), 8 )
+  604. !dir$ suppress t$297
+  604.       t$284(27) = int( loc( t$297 ), 8 )
+  604.       t$284(29) = int( loc(  _substr(t$298,1,7) ), 8 )
+  604.       t$299(1) = 0x2000500000000L
+  604.       t$299(2) = int( loc( intcosz ), 8 )
+  604. !dir$ suppress t$299
+  604.       t$284(31) = int( loc( t$299 ), 8 )
+  604.       t$284(33) = int( loc(  _substr(t$300,1,7) ), 8 )
+  604.       t$301(1) = 0x2000500000000L
+  604.       t$301(2) = int( loc( model1d ), 8 )
+  604. !dir$ suppress t$301
+  604.       t$284(35) = int( loc( t$301 ), 8 )
+  604.       t$284(37) = int( loc(  _substr(t$302,1,6) ), 8 )
+  604.       t$303(1) = 0x2000500000000L
+  604.       t$303(2) = int( loc( mgiven ), 8 )
+  604. !dir$ suppress t$303
+  604.       t$284(39) = int( loc( t$303 ), 8 )
+  604.       t$284(41) = int( loc(  _substr(t$304,1,10) ), 8 )
+  604.       t$305(1) = 0x2000500000000L
+  604.       t$305(2) = int( loc( gaussgiven ), 8 )
+  604. !dir$ suppress t$305
+  604.       t$284(43) = int( loc( t$305 ), 8 )
+  604.       t$284(45) = int( loc(  _substr(t$306,1,11) ), 8 )
+  604.       t$307(1) = 0x2000500000000L
+  604.       t$307(2) = int( loc( reducedgrid ), 8 )
+  604. !dir$ suppress t$307
+  604.       t$284(47) = int( loc( t$307 ), 8 )
+  604.       t$284(49) = int( loc(  _substr(t$308,1,10) ), 8 )
+  604.       t$309(1) = 0x2000500000000L
+  604.       t$309(2) = int( loc( lineargrid ), 8 )
+  604. !dir$ suppress t$309
+  604.       t$284(51) = int( loc( t$309 ), 8 )
+  604.       t$284(53) = int( loc(  _substr(t$310,1,12) ), 8 )
+  604.       t$311(1) = 0x2000500000000L
+  604.       t$311(2) = int( loc( genrestfiles ), 8 )
+  604. !dir$ suppress t$311
+  604.       t$284(55) = int( loc( t$311 ), 8 )
+  604.       t$284(57) = int( loc(  _substr(t$312,1,11) ), 8 )
+  604.       t$313(1) = 0x2000500000000L
+  604.       t$313(2) = int( loc( rmrestfiles ), 8 )
+  604. !dir$ suppress t$313
+  604.       t$284(59) = int( loc( t$313 ), 8 )
+  604.       t$284(61) = int( loc(  _substr(t$314,1,6) ), 8 )
+  604.       t$315(1) = 0x2000500000000L
+  604.       t$315(2) = int( loc( mascon ), 8 )
+  604. !dir$ suppress t$315
+  604.       t$284(63) = int( loc( t$315 ), 8 )
+  604.       t$284(65) = int( loc(  _substr(t$316,1,9) ), 8 )
+  604.       t$317(1) = 0x2000500000000L
+  604.       t$317(2) = int( loc( mascon_ps ), 8 )
+  604. !dir$ suppress t$317
+  604.       t$284(67) = int( loc( t$317 ), 8 )
+  604.       t$284(69) = int( loc(  _substr(t$318,1,8) ), 8 )
+  604.       t$319(1) = 0x2000200000000L
+  604.       t$319(2) = int( loc( nscalars ), 8 )
+  604. !dir$ suppress t$319
+  604.       t$284(71) = int( loc( t$319 ), 8 )
+  604.       t$284(73) = int( loc(  _substr(t$320,1,11) ), 8 )
+  604.       t$321(1) = 0x800600000000L
+  604.       t$321(2) = int( loc(  _substr(record_type,1,3) ), 8 )
+  604.       t$321(3) = 3
+  604. !dir$ suppress t$321
+  604.       t$284(75) = int( loc( t$321 ), 8 )
+  604.       t$284(77) = int( loc(  _substr(t$322,1,7) ), 8 )
+  604.       t$323(1) = 0x2000200000000L
+  604.       t$323(2) = int( loc( iglsm_w ), 8 )
+  604. !dir$ suppress t$323
+  604.       t$284(79) = int( loc( t$323 ), 8 )
+  604.       t$284(81) = int( loc(  _substr(t$324,1,8) ), 8 )
+  604.       t$325(1) = 0x2000200000000L
+  604.       t$325(2) = int( loc( tamblock ), 8 )
+  604. !dir$ suppress t$325
+  604.       t$284(83) = int( loc( t$325 ), 8 )
+  604.       t$284(85) = int( loc(  _substr(t$326,1,10) ), 8 )
+  604.       t$327(1) = 0x2000200000000L
+  604.       t$327(2) = int( loc( ibdim_size ), 8 )
+  604. !dir$ suppress t$327
+  604.       t$284(87) = int( loc( t$327 ), 8 )
+  604.       t$284(89) = int( loc(  _substr(t$328,1,18) ), 8 )
+  604.       t$329(1) = 0x2000500000000L
+  604.       t$329(2) = int( loc( givenfouriergroups ), 8 )
+  604. !dir$ suppress t$329
+  604.       t$284(91) = int( loc( t$329 ), 8 )
+  604.       t$284(93) = int( loc(  _substr(t$330,1,10) ), 8 )
+  604.       t$331(1) = 0x2000200000000L
+  604.       t$331(2) = int( loc( nproc_vert ), 8 )
+  604. !dir$ suppress t$331
+  604.       t$284(95) = int( loc( t$331 ), 8 )
+  600.       $I_A2 = 0
+  600. !dir$ ivdep
+  600.       do
+  600.          t$241(1 + $I_A2) = t$240(1 + $I_A2)
+  600.          $I_A2 = 1 + $I_A2
+  600.          if ( $I_A2 >= 83 ) exit
+  600.       enddo
+  600.       t$241(2) = int( loc(  _substr(t$242,1,9) ), 8 )
+  600.       t$241(5) = int( loc(  _substr(t$243,1,5) ), 8 )
+  600.       t$244(1) = 0x2000200000000L
+  600.       t$244(2) = int( loc( trunc ), 8 )
+  600. !dir$ suppress t$244
+  600.       t$241(7) = int( loc( t$244 ), 8 )
+  600.       t$241(9) = int( loc(  _substr(t$245,1,4) ), 8 )
+  600.       t$246(1) = 0x2000200000000L
+  600.       t$246(2) = int( loc( vert ), 8 )
+  600. !dir$ suppress t$246
+  600.       t$241(11) = int( loc( t$246 ), 8 )
+  600.       t$241(13) = int( loc(  _substr(t$247,1,2) ), 8 )
+  600.       t$248(1) = 0x804060300000000L
+  600.       t$248(2) = int( loc( dt ), 8 )
+  600. !dir$ suppress t$248
+  600.       t$241(15) = int( loc( t$248 ), 8 )
+  600.       t$241(17) = int( loc(  _substr(t$249,1,6) ), 8 )
+  600. !dir$ suppress idatei(1)
+  600.       t$250%base_addr = pointer to array[1] of integer( loc( idatei(1) ) )
+  600.       t$250%header%el_len = 32
+  600.       t$250%header%assoc = 1
+  600.       t$250%header%ptr_alloc = 0
+  600.       t$250%header%p_or_a = 0
+  600.       t$250%header%a_contig = 0
+  600.       t$250%header%dv_versn = 2
+  600.       t$250%header%dv_smunit = 32
+  600.       t$250%header%d_type = 0
+  600.       t$250%header%n_params = 0
+  600.       t$250%header%pad_codim = 0
+  600.       t$250%header%n_codim = 0
+  600.       t$250%header%pad_dim = 0
+  600.       t$250%header%n_dim = 1
+  600.       t$250%header%d_type_idx = 10
+  600.       t$250%header%typ_code = 131074
+  600.       t$250%header%orig_base = 0
+  600.       t$250%header%orig_size = 0
+  600.       t$250%dim_1%LB = 1
+  600.       t$250%dim_1%EX = 4
+  600.       t$250%dim_1%SM = 1
+  600. !dir$ suppress t$250
+  600.       t$241(19) = int( loc( t$250 ), 8 )
+  600.       t$241(21) = int( loc(  _substr(t$251,1,6) ), 8 )
+  600. !dir$ suppress idatew(1)
+  600.       t$252%base_addr = pointer to array[1] of integer( loc( idatew(1) ) )
+  600.       t$252%header%el_len = 32
+  600.       t$252%header%assoc = 1
+  600.       t$252%header%ptr_alloc = 0
+  600.       t$252%header%p_or_a = 0
+  600.       t$252%header%a_contig = 0
+  600.       t$252%header%dv_versn = 2
+  600.       t$252%header%dv_smunit = 32
+  600.       t$252%header%d_type = 0
+  600.       t$252%header%n_params = 0
+  600.       t$252%header%pad_codim = 0
+  600.       t$252%header%n_codim = 0
+  600.       t$252%header%pad_dim = 0
+  600.       t$252%header%n_dim = 1
+  600.       t$252%header%d_type_idx = 10
+  600.       t$252%header%typ_code = 131074
+  600.       t$252%header%orig_base = 0
+  600.       t$252%header%orig_size = 0
+  600.       t$252%dim_1%LB = 1
+  600.       t$252%dim_1%EX = 4
+  600.       t$252%dim_1%SM = 1
+  600. !dir$ suppress t$252
+  600.       t$241(23) = int( loc( t$252 ), 8 )
+  600.       t$241(25) = int( loc(  _substr(t$253,1,6) ), 8 )
+  600. !dir$ suppress idatef(1)
+  600.       t$254%base_addr = pointer to array[1] of integer( loc( idatef(1) ) )
+  600.       t$254%header%el_len = 32
+  600.       t$254%header%assoc = 1
+  600.       t$254%header%ptr_alloc = 0
+  600.       t$254%header%p_or_a = 0
+  600.       t$254%header%a_contig = 0
+  600.       t$254%header%dv_versn = 2
+  600.       t$254%header%dv_smunit = 32
+  600.       t$254%header%d_type = 0
+  600.       t$254%header%n_params = 0
+  600.       t$254%header%pad_codim = 0
+  600.       t$254%header%n_codim = 0
+  600.       t$254%header%pad_dim = 0
+  600.       t$254%header%n_dim = 1
+  600.       t$254%header%d_type_idx = 10
+  600.       t$254%header%typ_code = 131074
+  600.       t$254%header%orig_base = 0
+  600.       t$254%header%orig_size = 0
+  600.       t$254%dim_1%LB = 1
+  600.       t$254%dim_1%EX = 4
+  600.       t$254%dim_1%SM = 1
+  600. !dir$ suppress t$254
+  600.       t$241(27) = int( loc( t$254 ), 8 )
+  600.       t$241(29) = int( loc(  _substr(t$255,1,5) ), 8 )
+  600.       t$256(1) = 0x800600000000L
+  600.       t$256(2) = int( loc(  _substr(nmsst,1,6) ), 8 )
+  600.       t$256(3) = 6
+  600. !dir$ suppress t$256
+  600.       t$241(31) = int( loc( t$256 ), 8 )
+  600.       t$241(33) = int( loc(  _substr(t$257,1,5) ), 8 )
+  600.       t$258(1) = 0x2000200000000L
+  600.       t$258(2) = int( loc( dhfct ), 8 )
+  600. !dir$ suppress t$258
+  600.       t$241(35) = int( loc( t$258 ), 8 )
+  600.       t$241(37) = int( loc(  _substr(t$259,1,5) ), 8 )
+  600.       t$260(1) = 0x2000200000000L
+  600.       t$260(2) = int( loc( dhres ), 8 )
+  600. !dir$ suppress t$260
+  600.       t$241(39) = int( loc( t$260 ), 8 )
+  600.       t$241(41) = int( loc(  _substr(t$261,1,5) ), 8 )
+  600.       t$262(1) = 0x2000200000000L
+  600.       t$262(2) = int( loc( dhdhn ), 8 )
+  600. !dir$ suppress t$262
+  600.       t$241(43) = int( loc( t$262 ), 8 )
+  600.       t$241(45) = int( loc(  _substr(t$263,1,5) ), 8 )
+  600.       t$264(1) = 0x2000200000000L
+  600.       t$264(2) = int( loc( nhdhn ), 8 )
+  600. !dir$ suppress t$264
+  600.       t$241(47) = int( loc( t$264 ), 8 )
+  600.       t$241(49) = int( loc(  _substr(t$265,1,5) ), 8 )
+  600.       t$266(1) = 0x2000200000000L
+  600.       t$266(2) = int( loc( dhext ), 8 )
+  600. !dir$ suppress t$266
+  600.       t$241(51) = int( loc( t$266 ), 8 )
+  600.       t$241(53) = int( loc(  _substr(t$267,1,5) ), 8 )
+  600.       t$268(1) = 0x2000200000000L
+  600.       t$268(2) = int( loc( nhext ), 8 )
+  600. !dir$ suppress t$268
+  600.       t$241(55) = int( loc( t$268 ), 8 )
+  600.       t$241(57) = int( loc(  _substr(t$269,1,5) ), 8 )
+  600.       t$270(1) = 0x2000500000000L
+  600.       t$270(2) = int( loc( dogrh ), 8 )
+  600. !dir$ suppress t$270
+  600.       t$241(59) = int( loc( t$270 ), 8 )
+  600.       t$241(61) = int( loc(  _substr(t$271,1,5) ), 8 )
+  600.       t$272(1) = 0x2000500000000L
+  600.       t$272(2) = int( loc( doprc ), 8 )
+  600. !dir$ suppress t$272
+  600.       t$241(63) = int( loc( t$272 ), 8 )
+  600.       t$241(65) = int( loc(  _substr(t$273,1,5) ), 8 )
+  600.       t$274(1) = 0x800600000000L
+  600.       t$274(2) = int( loc(  _substr(prefx,1,5) ), 8 )
+  600.       t$274(3) = 5
+  600. !dir$ suppress t$274
+  600.       t$241(67) = int( loc( t$274 ), 8 )
+  600.       t$241(69) = int( loc(  _substr(t$275,1,5) ), 8 )
+  600.       t$276(1) = 0x800600000000L
+  600.       t$276(2) = int( loc(  _substr(prefy,1,5) ), 8 )
+  600.       t$276(3) = 5
+  600. !dir$ suppress t$276
+  600.       t$241(71) = int( loc( t$276 ), 8 )
+  600.       t$241(73) = int( loc(  _substr(t$277,1,5) ), 8 )
+  600.       t$278(1) = 0x800600000000L
+  600.       t$278(2) = int( loc(  _substr(table,1,1) ), 8 )
+  600.       t$278(3) = 1
+  600. !dir$ suppress t$278
+  600.       t$241(75) = int( loc( t$278 ), 8 )
+  600.       t$241(77) = int( loc(  _substr(t$279,1,7) ), 8 )
+  600.       t$280(1) = 0x800600000000L
+  600.       t$280(2) = int( loc(  _substr(path_in,1,199) ), 8 )
+  600.       t$280(3) = 199
+  600. !dir$ suppress t$280
+  600.       t$241(79) = int( loc( t$280 ), 8 )
+  600.       t$241(81) = int( loc(  _substr(t$281,1,14) ), 8 )
+  600.       t$282(1) = 0x800600000000L
+  600.       t$282(2) = int( loc(  _substr(dirfnameoutput,1,200) ), 8 )
+  600.       t$282(3) = 200
+  600. !dir$ suppress t$282
+  600.       t$241(83) = int( loc( t$282 ), 8 )
+  614.       $I_A2 = 0
+  614. !dir$ ivdep
+  614.       do
+  614.          t$202(1 + $I_A2) = t$201(1 + $I_A2)
+  614.          $I_A2 = 1 + $I_A2
+  614.          if ( $I_A2 >= 75 ) exit
+  614.       enddo
+  614.       t$202(2) = int( loc(  _substr(t$203,1,6) ), 8 )
+  614.       t$202(5) = int( loc(  _substr(t$204,1,6) ), 8 )
+  614.       t$205(1) = 0x2000500000000L
+  614.       t$205(2) = int( loc( mxrdcc ), 8 )
+  614. !dir$ suppress t$205
+  614.       t$202(7) = int( loc( t$205 ), 8 )
+  614.       t$202(9) = int( loc(  _substr(t$206,1,5) ), 8 )
+  614.       t$207(1) = 0x2000200000000L
+  614.       t$207(2) = int( loc( lcnvl ), 8 )
+  614. !dir$ suppress t$207
+  614.       t$202(11) = int( loc( t$207 ), 8 )
+  614.       t$202(13) = int( loc(  _substr(t$208,1,6) ), 8 )
+  614.       t$209(1) = 0x2000200000000L
+  614.       t$209(2) = int( loc( lthncl ), 8 )
+  614. !dir$ suppress t$209
+  614.       t$202(15) = int( loc( t$209 ), 8 )
+  614.       t$202(17) = int( loc(  _substr(t$210,1,6) ), 8 )
+  614.       t$211(1) = 0x804060300000000L
+  614.       t$211(2) = int( loc( rccmbl ), 8 )
+  614. !dir$ suppress t$211
+  614.       t$202(19) = int( loc( t$211 ), 8 )
+  614.       t$202(21) = int( loc(  _substr(t$212,1,5) ), 8 )
+  614.       t$213(1) = 0x804060300000000L
+  614.       t$213(2) = int( loc( swint ), 8 )
+  614. !dir$ suppress t$213
+  614.       t$202(23) = int( loc( t$213 ), 8 )
+  614.       t$202(25) = int( loc(  _substr(t$214,1,5) ), 8 )
+  614.       t$215(1) = 0x804060300000000L
+  614.       t$215(2) = int( loc( trint ), 8 )
+  614. !dir$ suppress t$215
+  614.       t$202(27) = int( loc( t$215 ), 8 )
+  614.       t$202(29) = int( loc(  _substr(t$216,1,4) ), 8 )
+  614.       t$217(1) = 0x2000200000000L
+  614.       t$217(2) = int( loc( icld ), 8 )
+  614. !dir$ suppress t$217
+  614.       t$202(31) = int( loc( t$217 ), 8 )
+  614.       t$202(33) = int( loc(  _substr(t$218,1,5) ), 8 )
+  614.       t$219(1) = 0x2000200000000L
+  614.       t$219(2) = int( loc( inalb ), 8 )
+  614. !dir$ suppress t$219
+  614.       t$202(35) = int( loc( t$219 ), 8 )
+  614.       t$202(37) = int( loc(  _substr(t$220,1,6) ), 8 )
+  614.       t$221(1) = 0x2000200000000L
+  614.       t$221(2) = int( loc( mxiter ), 8 )
+  614. !dir$ suppress t$221
+  614.       t$202(39) = int( loc( t$221 ), 8 )
+  614.       t$202(41) = int( loc(  _substr(t$222,1,6) ), 8 )
+  614.       t$223(1) = 0x804060300000000L
+  614.       t$223(2) = int( loc( co2val ), 8 )
+  614. !dir$ suppress t$223
+  614.       t$202(43) = int( loc( t$223 ), 8 )
+  614.       t$202(45) = int( loc(  _substr(t$224,1,6) ), 8 )
+  614.       t$225(1) = 0x804060300000000L
+  614.       t$225(2) = int( loc( sthick ), 8 )
+  614. !dir$ suppress t$225
+  614.       t$202(47) = int( loc( t$225 ), 8 )
+  614.       t$202(49) = int( loc(  _substr(t$226,1,5) ), 8 )
+  614.       t$227(1) = 0x804060300000000L
+  614.       t$227(2) = int( loc( sacum ), 8 )
+  614. !dir$ suppress t$227
+  614.       t$202(51) = int( loc( t$227 ), 8 )
+  614.       t$202(53) = int( loc(  _substr(t$228,1,5) ), 8 )
+  614.       t$229(1) = 0x804060300000000L
+  614.       t$229(2) = int( loc( acum0 ), 8 )
+  614. !dir$ suppress t$229
+  614.       t$202(55) = int( loc( t$229 ), 8 )
+  614.       t$202(57) = int( loc(  _substr(t$230,1,5) ), 8 )
+  614.       t$231(1) = 0x804060300000000L
+  614.       t$231(2) = int( loc( tbase ), 8 )
+  614. !dir$ suppress t$231
+  614.       t$202(59) = int( loc( t$231 ), 8 )
+  614.       t$202(61) = int( loc(  _substr(t$232,1,4) ), 8 )
+  614.       t$233(1) = 0x2000200000000L
+  614.       t$233(2) = int( loc( mlrg ), 8 )
+  614. !dir$ suppress t$233
+  614.       t$202(63) = int( loc( t$233 ), 8 )
+  614.       t$202(65) = int( loc(  _substr(t$234,1,2) ), 8 )
+  614.       t$235(1) = 0x2000200000000L
+  614.       t$235(2) = int( loc( is ), 8 )
+  614. !dir$ suppress t$235
+  614.       t$202(67) = int( loc( t$235 ), 8 )
+  614.       t$202(69) = int( loc(  _substr(t$236,1,2) ), 8 )
+  614.       t$237(1) = 0x2000200000000L
+  614.       t$237(2) = int( loc( ki ), 8 )
+  614. !dir$ suppress t$237
+  614.       t$202(71) = int( loc( t$237 ), 8 )
+  614.       t$202(73) = int( loc(  _substr(t$238,1,6) ), 8 )
+  614.       t$239(1) = 0x804060300000000L
+  614.       t$239(2) = int( loc( cflric ), 8 )
+  614. !dir$ suppress t$239
+  614.       t$202(75) = int( loc( t$239 ), 8 )
+  610.       $I_A2 = 0
+  610. !dir$ ivdep
+  610.       do
+  610.          t$165(1 + $I_A2) = t$164(1 + $I_A2)
+  610.          $I_A2 = 1 + $I_A2
+  610.          if ( $I_A2 >= 71 ) exit
+  610.       enddo
+  610.       t$165(2) = int( loc(  _substr(t$166,1,8) ), 8 )
+  610.       t$165(5) = int( loc(  _substr(t$167,1,6) ), 8 )
+  610.       t$168(1) = 0x800600000000L
+  610.       t$168(2) = int( loc(  _substr(iswrad,1,3) ), 8 )
+  610.       t$168(3) = 3
+  610. !dir$ suppress t$168
+  610.       t$165(7) = int( loc( t$168 ), 8 )
+  610.       t$165(9) = int( loc(  _substr(t$169,1,6) ), 8 )
+  610.       t$170(1) = 0x800600000000L
+  610.       t$170(2) = int( loc(  _substr(ilwrad,1,3) ), 8 )
+  610.       t$170(3) = 3
+  610. !dir$ suppress t$170
+  610.       t$165(11) = int( loc( t$170 ), 8 )
+  610.       t$165(13) = int( loc(  _substr(t$171,1,5) ), 8 )
+  610.       t$172(1) = 0x800600000000L
+  610.       t$172(2) = int( loc(  _substr(iccon,1,3) ), 8 )
+  610.       t$172(3) = 3
+  610. !dir$ suppress t$172
+  610.       t$165(15) = int( loc( t$172 ), 8 )
+  610.       t$165(17) = int( loc(  _substr(t$173,1,5) ), 8 )
+  610.       t$174(1) = 0x800600000000L
+  610.       t$174(2) = int( loc(  _substr(ilcon,1,3) ), 8 )
+  610.       t$174(3) = 3
+  610. !dir$ suppress t$174
+  610.       t$165(19) = int( loc( t$174 ), 8 )
+  610.       t$165(21) = int( loc(  _substr(t$175,1,5) ), 8 )
+  610.       t$176(1) = 0x800600000000L
+  610.       t$176(2) = int( loc(  _substr(iqdif,1,4) ), 8 )
+  610.       t$176(3) = 4
+  610. !dir$ suppress t$176
+  610.       t$165(23) = int( loc( t$176 ), 8 )
+  610.       t$165(25) = int( loc(  _substr(t$177,1,5) ), 8 )
+  610.       t$178(1) = 0x800600000000L
+  610.       t$178(2) = int( loc(  _substr(iscon,1,4) ), 8 )
+  610.       t$178(3) = 4
+  610. !dir$ suppress t$178
+  610.       t$165(27) = int( loc( t$178 ), 8 )
+  610.       t$165(29) = int( loc(  _substr(t$179,1,4) ), 8 )
+  610.       t$180(1) = 0x800600000000L
+  610.       t$180(2) = int( loc(  _substr(igwd,1,4) ), 8 )
+  610.       t$180(3) = 4
+  610. !dir$ suppress t$180
+  610.       t$165(31) = int( loc( t$180 ), 8 )
+  610.       t$165(33) = int( loc(  _substr(t$181,1,5) ), 8 )
+  610.       t$182(1) = 0x800600000000L
+  610.       t$182(2) = int( loc(  _substr(isimp,1,4) ), 8 )
+  610.       t$182(3) = 4
+  610. !dir$ suppress t$182
+  610.       t$165(35) = int( loc( t$182 ), 8 )
+  610.       t$165(37) = int( loc(  _substr(t$183,1,6) ), 8 )
+  610.       t$184(1) = 0x800600000000L
+  610.       t$184(2) = int( loc(  _substr(enhdif,1,4) ), 8 )
+  610.       t$184(3) = 4
+  610. !dir$ suppress t$184
+  610.       t$165(39) = int( loc( t$184 ), 8 )
+  610.       t$165(41) = int( loc(  _substr(t$185,1,5) ), 8 )
+  610.       t$186(1) = 0x804060300000000L
+  610.       t$186(2) = int( loc( asolc ), 8 )
+  610. !dir$ suppress t$186
+  610.       t$165(43) = int( loc( t$186 ), 8 )
+  610.       t$165(45) = int( loc(  _substr(t$187,1,5) ), 8 )
+  610.       t$188(1) = 0x804060300000000L
+  610.       t$188(2) = int( loc( asolm ), 8 )
+  610. !dir$ suppress t$188
+  610.       t$165(47) = int( loc( t$188 ), 8 )
+  610.       t$165(49) = int( loc(  _substr(t$189,1,6) ), 8 )
+  610.       t$190(1) = 0x804060300000000L
+  610.       t$190(2) = int( loc( crdcld ), 8 )
+  610. !dir$ suppress t$190
+  610.       t$165(51) = int( loc( t$190 ), 8 )
+  610.       t$165(53) = int( loc(  _substr(t$191,1,7) ), 8 )
+  610.       t$192(1) = 0x2000200000000L
+  610.       t$192(2) = int( loc( grepar1 ), 8 )
+  610. !dir$ suppress t$192
+  610.       t$165(55) = int( loc( t$192 ), 8 )
+  610.       t$165(57) = int( loc(  _substr(t$193,1,7) ), 8 )
+  610.       t$194(1) = 0x2000200000000L
+  610.       t$194(2) = int( loc( grepar2 ), 8 )
+  610. !dir$ suppress t$194
+  610.       t$165(59) = int( loc( t$194 ), 8 )
+  610.       t$165(61) = int( loc(  _substr(t$195,1,7) ), 8 )
+  610.       t$196(1) = 0x804060300000000L
+  610.       t$196(2) = int( loc( grepar3 ), 8 )
+  610. !dir$ suppress t$196
+  610.       t$165(63) = int( loc( t$196 ), 8 )
+  610.       t$165(65) = int( loc(  _substr(t$197,1,7) ), 8 )
+  610.       t$198(1) = 0x804060300000000L
+  610.       t$198(2) = int( loc( grepar4 ), 8 )
+  610. !dir$ suppress t$198
+  610.       t$165(67) = int( loc( t$198 ), 8 )
+  610.       t$165(69) = int( loc(  _substr(t$199,1,7) ), 8 )
+  610.       t$200(1) = 0x2000200000000L
+  610.       t$200(2) = int( loc( iglsm_w ), 8 )
+  610. !dir$ suppress t$200
+  610.       t$165(71) = int( loc( t$200 ), 8 )
+  630.        _substr(fnamelist,1,253) = 'MODELIN'
+  635.       ierr = 0
+  635.       t$386 = nnamelist
+  635.        _substr(t$387,1,4) = 'OLD'
+  635.        _substr(t$388,1,4) = 'READ'
+  635.       t$389(1) = 0x100000000000000L
+  635. !dir$ suppress t$386
+  635.       t$389(2) = int( loc( t$386 ), 8 )
+  635. !dir$ suppress ierr
+  635.       t$389(3) = int( loc( ierr ), 8 )
+  635.       t$389(4) = 0
+  635. !dir$ suppress  _substr(fnamelist,1,253)
+  635.       t$389(5) = int( loc(  _substr(fnamelist,1,253) ), 8 )
+  635.       t$389(6) = 253
+  635. !dir$ suppress  _substr(t$387,1,3)
+  635.       t$389(7) = int( loc(  _substr(t$387,1,3) ), 8 )
+  635.       t$389(8) = 3
+  635.       t$389(9) = 0
+  635.       t$389(11) = 0
+  635.       t$389(13) = 0
+  635.       t$389(14) = 0
+  635.       t$389(16) = 0
+  635. !dir$ suppress  _substr(t$388,1,4)
+  635.       t$389(18) = int( loc(  _substr(t$388,1,4) ), 8 )
+  635.       t$389(19) = 4
+  635.       t$389(20) = 0
+  635.       t$389(22) = 0
+  635.       t$389(24) = 0x2000200000000L
+  635.       t$389(25) = 0
+  635.       t$389(27) = 0
+  635.       t$389(29) = 0
+  635.       t$389(31) = 0
+  635.       t$389(33) = 0
+  635.       t$389(35) = 0
+  635.       t$385 = _open( t$389 )
+  636.       if ( ierr /= 0 ) then
+  637.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$4,  _substr(t$3,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  638.          _f90_adjustl(  _substr(t$390,1,253),  _substr(fnamelist,1,253) )
+  639.          _f90_adjustl(  _substr(t$391,1,8),  _substr(c0,1,8) )
+  638.          t$392 = ( _ltrim(  _substr(t$390,1,253) ) ) + ( _ltrim(  _substr(t$391,1,8) ) ) + 55
+  639.          t$394 = int( _alloc( max( 0, t$392 ) ), 8 )
+  639.           _substr(t$393,1,max( 0, t$392 )) = //( '**(ReadNameList)** open namelist file ', //(  _substr(t$390,1,_ltrim(  _substr(t$390,1,253) )), //( ' returned iostat=',  _substr(t$391,1,_ltrim(  _substr(t$391,1,8) )) ) ) )
+  638.          call fatalerror(  _substr(t$393,1,max( 0, t$392 )) )
+  639.          _free( t$394 )
+  639.       endif
+  641. !dir$ suppress t$241
+  641.       !  use before definition suppress
+  641. !dir$ suppress
+  641.       $Unit_temp_O0 = nnamelist
+  641.       t$395 = _nread( _clist( 0, 1, 3, $Unit_temp_O0, ierr, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0x2000200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( t$241 ) )
+  642.       if ( ierr /= 0 ) then
+  643.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$6,  _substr(t$5,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  645.          _f90_adjustl(  _substr(t$396,1,253),  _substr(fnamelist,1,253) )
+  646.          _f90_adjustl(  _substr(t$397,1,8),  _substr(c0,1,8) )
+  644.          t$398 = ( _ltrim(  _substr(t$396,1,253) ) ) + ( _ltrim(  _substr(t$397,1,8) ) ) + 70
+  645.          t$400 = int( _alloc( max( 0, t$398 ) ), 8 )
+  645.           _substr(t$399,1,max( 0, t$398 )) = //( '**(ReadNameList)** read namelist MODEL_RES from file ', //(  _substr(t$396,1,_ltrim(  _substr(t$396,1,253) )), //( ' returned iostat=',  _substr(t$397,1,_ltrim(  _substr(t$397,1,8) )) ) ) )
+  644.          call fatalerror(  _substr(t$399,1,max( 0, t$398 )) )
+  645.          _free( t$400 )
+  645.       endif
+  648. !dir$ suppress t$284
+  648.       !  use before definition suppress
+  648. !dir$ suppress
+  648.       $Unit_temp_O1 = nnamelist
+  648.       t$401 = _nread( _clist( 0, 1, 3, $Unit_temp_O1, ierr, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0x2000200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( t$284 ) )
+  649.       if ( ierr /= 0 ) then
+  650.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$8,  _substr(t$7,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  652.          _f90_adjustl(  _substr(t$402,1,253),  _substr(fnamelist,1,253) )
+  653.          _f90_adjustl(  _substr(t$403,1,8),  _substr(c0,1,8) )
+  651.          t$404 = ( _ltrim(  _substr(t$402,1,253) ) ) + ( _ltrim(  _substr(t$403,1,8) ) ) + 69
+  652.          t$406 = int( _alloc( max( 0, t$404 ) ), 8 )
+  652.           _substr(t$405,1,max( 0, t$404 )) = //( '**(ReadNameList)** read namelist MODEL_IN from file ', //(  _substr(t$402,1,_ltrim(  _substr(t$402,1,253) )), //( ' returned iostat=',  _substr(t$403,1,_ltrim(  _substr(t$403,1,8) )) ) ) )
+  651.          call fatalerror(  _substr(t$405,1,max( 0, t$404 )) )
+  652.          _free( t$406 )
+  652.       endif
+  655. !dir$ suppress t$165
+  655.       !  use before definition suppress
+  655. !dir$ suppress
+  655.       $Unit_temp_O2 = nnamelist
+  655.       t$407 = _nread( _clist( 0, 1, 3, $Unit_temp_O2, ierr, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0x2000200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( t$165 ) )
+  656.       if ( ierr /= 0 ) then
+  657.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$10,  _substr(t$9,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  659.          _f90_adjustl(  _substr(t$408,1,253),  _substr(fnamelist,1,253) )
+  660.          _f90_adjustl(  _substr(t$409,1,8),  _substr(c0,1,8) )
+  658.          t$410 = ( _ltrim(  _substr(t$408,1,253) ) ) + ( _ltrim(  _substr(t$409,1,8) ) ) + 69
+  659.          t$412 = int( _alloc( max( 0, t$410 ) ), 8 )
+  659.           _substr(t$411,1,max( 0, t$410 )) = //( '**(ReadNameList)** read namelist PHYSPROC from file ', //(  _substr(t$408,1,_ltrim(  _substr(t$408,1,253) )), //( ' returned iostat=',  _substr(t$409,1,_ltrim(  _substr(t$409,1,8) )) ) ) )
+  658.          call fatalerror(  _substr(t$411,1,max( 0, t$410 )) )
+  659.          _free( t$412 )
+  659.       endif
+  662. !dir$ suppress t$202
+  662.       !  use before definition suppress
+  662. !dir$ suppress
+  662.       $Unit_temp_O3 = nnamelist
+  662.       t$413 = _nread( _clist( 0, 1, 3, $Unit_temp_O3, ierr, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0x2000200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( t$202 ) )
+  663.       if ( ierr /= 0 ) then
+  664.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$12,  _substr(t$11,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  666.          _f90_adjustl(  _substr(t$414,1,253),  _substr(fnamelist,1,253) )
+  667.          _f90_adjustl(  _substr(t$415,1,8),  _substr(c0,1,8) )
+  665.          t$416 = ( _ltrim(  _substr(t$414,1,253) ) ) + ( _ltrim(  _substr(t$415,1,8) ) ) + 67
+  666.          t$418 = int( _alloc( max( 0, t$416 ) ), 8 )
+  666.           _substr(t$417,1,max( 0, t$416 )) = //( '**(ReadNameList)** read namelist PHYSCS from file ', //(  _substr(t$414,1,_ltrim(  _substr(t$414,1,253) )), //( ' returned iostat=',  _substr(t$415,1,_ltrim(  _substr(t$415,1,8) )) ) ) )
+  665.          call fatalerror(  _substr(t$417,1,max( 0, t$416 )) )
+  666.          _free( t$418 )
+  666.       endif
+  669. !dir$ suppress t$333
+  669.       !  use before definition suppress
+  669. !dir$ suppress
+  669.       $Unit_temp_O4 = nnamelist
+  669.       t$419 = _nread( _clist( 0, 1, 3, $Unit_temp_O4, ierr, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0x2000200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( t$333 ) )
+  670.       if ( ierr /= 0 ) then
+  671.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$14,  _substr(t$13,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  673.          _f90_adjustl(  _substr(t$420,1,253),  _substr(fnamelist,1,253) )
+  674.          _f90_adjustl(  _substr(t$421,1,8),  _substr(c0,1,8) )
+  672.          t$422 = ( _ltrim(  _substr(t$420,1,253) ) ) + ( _ltrim(  _substr(t$421,1,8) ) ) + 67
+  673.          t$424 = int( _alloc( max( 0, t$422 ) ), 8 )
+  673.           _substr(t$423,1,max( 0, t$422 )) = //( '**(ReadNameList)** read namelist COMCON from file ', //(  _substr(t$420,1,_ltrim(  _substr(t$420,1,253) )), //( ' returned iostat=',  _substr(t$421,1,_ltrim(  _substr(t$421,1,8) )) ) ) )
+  672.          call fatalerror(  _substr(t$423,1,max( 0, t$422 )) )
+  673.          _free( t$424 )
+  673.       endif
+  679.        _substr(trcg,1,6) = ' '
+  680.        _substr(trc,1,6) = ' '
+  681.       if ( lineargrid == 0 ) then
+  682.          if ( trunc < 1000 ) then
+  683.             _fwrite( _clist( 0, 0, 3,  _substr(trcg,1,6), Null_Arg, Null_Arg, t$16,  _substr(t$15,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'TQ', 0x800600000000L ), _iotype( trunc, 0x2000200000000L ) ) )
+  684.             _fwrite( _clist( 0, 0, 3,  _substr(trc,1,6), Null_Arg, Null_Arg, t$18,  _substr(t$17,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'T', 0x800600000000L ), _iotype( trunc, 0x2000200000000L ) ) )
+  684.          else
+  686.             _fwrite( _clist( 0, 0, 3,  _substr(trcg,1,6), Null_Arg, Null_Arg, t$20,  _substr(t$19,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'TQ', 0x800600000000L ), _iotype( trunc, 0x2000200000000L ) ) )
+  687.             _fwrite( _clist( 0, 0, 3,  _substr(trc,1,6), Null_Arg, Null_Arg, t$22,  _substr(t$21,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'T', 0x800600000000L ), _iotype( trunc, 0x2000200000000L ) ) )
+  687.          endif
+  689.       else if ( trunc < 1000 ) then
+  691.          _fwrite( _clist( 0, 0, 3,  _substr(trcg,1,6), Null_Arg, Null_Arg, t$24,  _substr(t$23,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'TL', 0x800600000000L ), _iotype( trunc, 0x2000200000000L ) ) )
+  692.          _fwrite( _clist( 0, 0, 3,  _substr(trc,1,6), Null_Arg, Null_Arg, t$26,  _substr(t$25,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'T', 0x800600000000L ), _iotype( trunc, 0x2000200000000L ) ) )
+  692.       else
+  694.          _fwrite( _clist( 0, 0, 3,  _substr(trcg,1,6), Null_Arg, Null_Arg, t$28,  _substr(t$27,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'TL', 0x800600000000L ), _iotype( trunc, 0x2000200000000L ) ) )
+  695.          _fwrite( _clist( 0, 0, 3,  _substr(trc,1,6), Null_Arg, Null_Arg, t$30,  _substr(t$29,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'T', 0x800600000000L ), _iotype( trunc, 0x2000200000000L ) ) )
+  695.       endif
+  699.        _substr(lv,1,4) = ' '
+  700.       if ( vert < 100 ) then
+  701.          _fwrite( _clist( 0, 0, 3,  _substr(lv,1,4), Null_Arg, Null_Arg, t$32,  _substr(t$31,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'L', 0x800600000000L ), _iotype( vert, 0x2000200000000L ) ) )
+  701.       else
+  703.          _fwrite( _clist( 0, 0, 3,  _substr(lv,1,4), Null_Arg, Null_Arg, t$34,  _substr(t$33,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'L', 0x800600000000L ), _iotype( vert, 0x2000200000000L ) ) )
+  703.       endif
+  706.        _substr(trunclev,1,10) = //(  _substr(trcg,1,_ltrim(  _substr(trcg,1,6) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) )
+  710.       grhflg = dogrh
+  711.       doprec = doprc
+  712.        _substr(path_in1,1,200) = //(  _substr(path_in,1,_ltrim(  _substr(path_in,1,199) )), '/' )
+  713.       ddelt = int( dt )
+  714.       delt = dt
+  715.       $Reduc_A34 = .false.
+  715.       $I_A35 = 0
+  715. !dir$ ivdep
+  715.       do
+  715.          if ( idatef(1 + $I_A35) + -idatew(1 + $I_A35) /= 0 ) then
+  715.             $Reduc_A34 = .true.
+  715.             goto 10
+  715.          endif
+  715.          $I_A35 = 1 + $I_A35
+  715.          if ( $I_A35 >= 4 ) exit
+  715.       enddo
+  715.    10 continue
+  715.       if ( $Reduc_A34 ) then
+  716.           _substr(start,1,200) = 'warm'
+  716.       else
+  718.           _substr(start,1,200) = 'cold'
+  718.       endif
+  720.       if (  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'warm' ) then
+  721.          call settimeoutput( idatew(1), idatef(1), dhfct, nhdhn, dhdhn, nhext, dhext )
+  721.       else
+  723.          call settimeoutput( idatei(1), idatef(1), dhfct, nhdhn, dhdhn, nhext, dhext )
+  723.       endif
+  725.       reststep = _anint( ( 1.0/dt * dhres * 3600.0 ) )
+  727.       call checkoptions
+  729.        _substr(record_type,1,3) = 'vfm'
+  730.       ifslm = cvmg( ifslm, 0, iglsm_w /= 1 )
+  732.       if (  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'cold' ) then
+  732.          first = .true.
+  732.       else if (  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'warm' ) then
+  732.          nlnminit = .false.
+  732.          diabatic = .false.
+  732.          eigeninit = .false.
+  732.          rsettov = .false.
+  732.          first = .false.
+  732.          nfin1 = 19
+  732.          nfcnv0 = 31
+  732.          initlz = 0
+  732.          ifsnw = 0
+  732.          ifalb = 0
+  732.          ifslm = 0
+  732.       endif
+  734.       dtc3x = 0.0
+  735.       maxtid = int( ( 1612742400.0 * 1.0/dt ) )
+  736.       filtb = 5.0e-1 * ( 1.0 + -filta )
+  743.       intg = 2
+  744.       epsflt = 5.0e-1 * ( 1.0 + -filta )
+  749.       cdhl%header%a_contig = 1
+  749.       cdhl%dim_1%LB = 0
+  749.       cdhl%dim_1%EX = ( max( 0, 1 + int( ( 1612742400.0 * 1.0/dt ) ) ) )
+  749.       cdhl%dim_1%SM = 1
+  749.       $_allo_P1(0) = 0x1000000000001L
+  749.       $_allo_P1(1) = loc( cdhl )
+  749.       call __allocate( $_allo_P1, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  750.       if ( ierr /= 0 ) then
+  751.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$36,  _substr(t$35,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  752.          _f90_adjustl(  _substr(t$425,1,8),  _substr(c0,1,8) )
+  752.          t$426 = 49 + ( _ltrim(  _substr(t$425,1,8) ) )
+  752.          t$428 = int( _alloc( max( 0, t$426 ) ), 8 )
+  752.           _substr(t$427,1,max( 0, t$426 )) = //( '**(ReadNameList)** allocate cdhl fails with stat=',  _substr(t$425,1,_ltrim(  _substr(t$425,1,8) )) )
+  752.          call fatalerror(  _substr(t$427,1,max( 0, t$426 )) )
+  752.          _free( t$428 )
+  752.       endif
+  754.       cthl%header%a_contig = 1
+  754.       cthl%dim_1%LB = 0
+  754.       cthl%dim_1%EX = ( max( 0, 1 + maxtid ) )
+  754.       cthl%dim_1%SM = 1
+  754.       $_allo_P2(0) = 0x1000000000001L
+  754.       $_allo_P2(1) = loc( cthl )
+  754.       call __allocate( $_allo_P2, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  755.       if ( ierr /= 0 ) then
+  756.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$38,  _substr(t$37,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  757.          _f90_adjustl(  _substr(t$429,1,8),  _substr(c0,1,8) )
+  757.          t$430 = 49 + ( _ltrim(  _substr(t$429,1,8) ) )
+  757.          t$432 = int( _alloc( max( 0, t$430 ) ), 8 )
+  757.           _substr(t$431,1,max( 0, t$430 )) = //( '**(ReadNameList)** allocate cthl fails with stat=',  _substr(t$429,1,_ltrim(  _substr(t$429,1,8) )) )
+  757.          call fatalerror(  _substr(t$431,1,max( 0, t$430 )) )
+  757.          _free( t$432 )
+  757.       endif
+  759.       return
+  759.       end
+  759.       
+  892.       
+  892.       subroutine checkoptions
+  776.       if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) /= 'NON' ) then
+  776.          if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) /= 'LCH' ) then
+  776.             if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) /= 'CRD' ) then
+  776.                if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) /= 'UKM' ) then
+  780.                   t$433 = 80 + ( _ltrim(  _substr(iswrad,1,3) ) )
+  780.                   t$435 = int( _alloc( _zla( 0, t$433 ) ), 8 )
+  780.                    _substr(t$434,1,_zla( 0, t$433 )) = //( '**(CheckOptions)** Unknown option iswrad=', //(  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )), '; Known options are: NON, LCH, CRD, UKM' ) )
+  780.                   call fatalerror(  _substr(t$434,1,_zla( 0, t$433 )) )
+  780.                   _free( t$435 )
+  780.                endif
+  780.             endif
+  780.          endif
+  780.       endif
+  786.       if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) == 'CRD' ) then
+  787.          if ( crdcld == 1 ) then
+  787.             goto 10
+  787.          else if ( crdcld /= 4 ) then
+  788.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$40,  _substr(t$39,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( crdcld, 0x804060300000000L ) ) )
+  790.             _f90_adjustl(  _substr(t$436,1,8),  _substr(c0,1,8) )
+  789.             t$437 = 103 + ( _ltrim(  _substr(t$436,1,8) ) )
+  790.             t$439 = int( _alloc( _zla( 0, t$437 ) ), 8 )
+  790.              _substr(t$438,1,_zla( 0, t$437 )) = //( '**(CheckOptions)** Wrong cloud scheme option crdcld=', //(  _substr(t$436,1,_ltrim(  _substr(t$436,1,8) )), //( '; Valid options are: ', '1 (stable) or 4 (experimental)' ) ) )
+  789.             call fatalerror(  _substr(t$438,1,_zla( 0, t$437 )) )
+  790.             _free( t$439 )
+  790.          else
+  790.    10       continue
+  792.             if ( crdcld == 4 ) then
+  793.                 _substr(t$440,1,18) = '**(CheckOptions)**'
+  793.                 _substr(t$441,1,54) = ' WARN: CCM3 clouds + Clirad used for research only !!!'
+  793.                call msgone(  _substr(t$440,1,18),  _substr(t$441,1,54) )
+  793.             endif
+  793.          endif
+  795.          if ( 0.0 > asolc ) then
+  794.             goto 20
+  795.          else if ( asolc > 50.0 ) then
+  795.    20       continue
+  796.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$42,  _substr(t$41,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( asolc, 0x804060300000000L ) ) )
+  798.             _f90_adjustl(  _substr(t$442,1,8),  _substr(c0,1,8) )
+  797.             t$443 = 66 + ( _ltrim(  _substr(t$442,1,8) ) )
+  798.             t$445 = int( _alloc( _zla( 0, t$443 ) ), 8 )
+  798.              _substr(t$444,1,_zla( 0, t$443 )) = //( '**(CheckOptions)** Invalid option asolc=', //(  _substr(t$442,1,_ltrim(  _substr(t$442,1,8) )), '; Valid range: [0.0, 50.0]' ) )
+  797.             call fatalerror(  _substr(t$444,1,_zla( 0, t$443 )) )
+  798.             _free( t$445 )
+  798.          endif
+  800.          if ( 0.0 > asolm ) then
+  799.             goto 30
+  800.          else if ( asolm > 50.0 ) then
+  800.    30       continue
+  801.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$44,  _substr(t$43,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( asolm, 0x804060300000000L ) ) )
+  803.             _f90_adjustl(  _substr(t$446,1,8),  _substr(c0,1,8) )
+  802.             t$447 = 66 + ( _ltrim(  _substr(t$446,1,8) ) )
+  803.             t$449 = int( _alloc( _zla( 0, t$447 ) ), 8 )
+  803.              _substr(t$448,1,_zla( 0, t$447 )) = //( '**(CheckOptions)** Invalid option asolm=', //(  _substr(t$446,1,_ltrim(  _substr(t$446,1,8) )), '; Valid range: [0.0, 50.0]' ) )
+  802.             call fatalerror(  _substr(t$448,1,_zla( 0, t$447 )) )
+  803.             _free( t$449 )
+  803.          endif
+  803.       endif
+  811.       if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) /= 'NON' ) then
+  811.          if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) /= 'HRS' ) then
+  811.             if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) /= 'CRD' ) then
+  811.                if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) /= 'UKM' ) then
+  815.                   t$450 = 81 + ( _ltrim(  _substr(iswrad,1,3) ) )
+  815.                   t$452 = int( _alloc( _zla( 0, t$450 ) ), 8 )
+  815.                    _substr(t$451,1,_zla( 0, t$450 )) = //( '**(CheckOptions)** Unknown option iswrad= ', //(  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )), '; Known options are: NON, HRS, CRD, UKM' ) )
+  815.                   call fatalerror(  _substr(t$451,1,_zla( 0, t$450 )) )
+  815.                   _free( t$452 )
+  815.                endif
+  815.             endif
+  815.          endif
+  815.       endif
+  821.       if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) == 'CRD' ) then
+  822.           _substr(t$453,1,59) = '**(CheckOptions)** Clirad-LW (ilwrad=CRD) not yet available'
+  822.          call fatalerror(  _substr(t$453,1,59) )
+  822.       endif
+  827.       if ( ifco2 < -1 .orelse. ifco2 > 4 ) then
+  828.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$46,  _substr(t$45,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ifco2, 0x2000200000000L ) ) )
+  829.          _f90_adjustl(  _substr(t$454,1,8),  _substr(c0,1,8) )
+  829.          t$455 = 79 + ( _ltrim(  _substr(t$454,1,8) ) )
+  829.          t$457 = int( _alloc( _zla( 0, t$455 ) ), 8 )
+  829.           _substr(t$456,1,_zla( 0, t$455 )) = //( '**(CheckOptions)** Invalid option ifco2=', //(  _substr(t$454,1,_ltrim(  _substr(t$454,1,8) )), '; valid values are: -1, 0, 1, 2, 3 or 4' ) )
+  829.          call fatalerror(  _substr(t$456,1,_zla( 0, t$455 )) )
+  829.          _free( t$457 )
+  829.       else
+  831.          if ( ifco2 > 0 ) then
+  832.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$48,  _substr(t$47,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ifco2, 0x2000200000000L ) ) )
+  833.             _f90_adjustl(  _substr(t$458,1,8),  _substr(c0,1,8) )
+  833.             t$459 = 80 + ( _ltrim(  _substr(t$458,1,8) ) )
+  833.             t$461 = int( _alloc( _zla( 0, t$459 ) ), 8 )
+  833.              _substr(t$460,1,_zla( 0, t$459 )) = //( '**(CheckOptions)** Invalid option ifco2=', //(  _substr(t$458,1,_ltrim(  _substr(t$458,1,8) )), '; reading co2 field not implemented yet!' ) )
+  833.             call fatalerror(  _substr(t$460,1,_zla( 0, t$459 )) )
+  833.             _free( t$461 )
+  833.          endif
+  833.       endif
+  836.       if ( ifozone < 0 ) then
+  835.          goto 40
+  836.       else if ( ifozone > 4 ) then
+  836.    40    continue
+  837.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$50,  _substr(t$49,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ifozone, 0x2000200000000L ) ) )
+  838.          _f90_adjustl(  _substr(t$462,1,8),  _substr(c0,1,8) )
+  838.          t$463 = 78 + ( _ltrim(  _substr(t$462,1,8) ) )
+  838.          t$465 = int( _alloc( _zla( 0, t$463 ) ), 8 )
+  838.           _substr(t$464,1,_zla( 0, t$463 )) = //( '**(CheckOptions)** Invalid option ifozone=', //(  _substr(t$462,1,_ltrim(  _substr(t$462,1,8) )), '; valid values are: -0, 1, 2, 3 or 4' ) )
+  838.          call fatalerror(  _substr(t$464,1,_zla( 0, t$463 )) )
+  838.          _free( t$465 )
+  838.       endif
+  844.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) /= 'NON' ) then
+  844.          if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) /= 'ARA' ) then
+  844.             if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) /= 'KUO' ) then
+  844.                if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) /= 'GRE' ) then
+  848.                   t$466 = 77 + ( _ltrim(  _substr(iccon,1,3) ) )
+  848.                   t$468 = int( _alloc( _zla( 0, t$466 ) ), 8 )
+  848.                    _substr(t$467,1,_zla( 0, t$466 )) = //( '**(CheckOptions)** Unknown option iccon= ', //(  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )), '; Known options are: ARA, KUO or GRE' ) )
+  848.                   call fatalerror(  _substr(t$467,1,_zla( 0, t$466 )) )
+  848.                   _free( t$468 )
+  848.                endif
+  848.             endif
+  848.          endif
+  848.       endif
+  854.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+  855.          if ( grepar1 /= 0 ) then
+  855.             if ( grepar1 /= 1 ) then
+  855.                if ( grepar1 /= 4 ) then
+  855.                   if ( grepar1 /= 7 ) then
+  855.                      if ( grepar1 /= 10 ) then
+  855.                         if ( grepar1 /= 13 ) then
+  855.                            if ( grepar1 /= 24 ) then
+  862.                               _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$52,  _substr(t$51,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( grepar1, 0x2000200000000L ) ) )
+  863.                               _f90_adjustl(  _substr(t$469,1,8),  _substr(c0,1,8) )
+  863.                               t$470 = 87 + ( _ltrim(  _substr(t$469,1,8) ) )
+  863.                               t$472 = int( _alloc( _zla( 0, t$470 ) ), 8 )
+  863.                                _substr(t$471,1,_zla( 0, t$470 )) = //( '**(CheckOptions)** Unknown option grepar1=', //(  _substr(t$469,1,_ltrim(  _substr(t$469,1,8) )), '; known options are: 0, 1, 4, 7, 10, 13 or 24' ) )
+  863.                               call fatalerror(  _substr(t$471,1,_zla( 0, t$470 )) )
+  863.                               _free( t$472 )
+  863.                            endif
+  863.                         endif
+  863.                      endif
+  863.                   endif
+  863.                endif
+  863.             endif
+  863.          endif
+  866.          if ( grepar2 /= 1 ) then
+  866.             if ( grepar2 /= 2 ) then
+  866.                if ( grepar2 /= 3 ) then
+  869.                   _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$54,  _substr(t$53,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( grepar2, 0x2000200000000L ) ) )
+  870.                   _f90_adjustl(  _substr(t$473,1,8),  _substr(c0,1,8) )
+  870.                   t$474 = 72 + ( _ltrim(  _substr(t$473,1,8) ) )
+  870.                   t$476 = int( _alloc( _zla( 0, t$474 ) ), 8 )
+  870.                    _substr(t$475,1,_zla( 0, t$474 )) = //( '**(CheckOptions)** Unknown option grepar2=', //(  _substr(t$473,1,_ltrim(  _substr(t$473,1,8) )), '; known options are: 1, 2 or 3' ) )
+  870.                   call fatalerror(  _substr(t$475,1,_zla( 0, t$474 )) )
+  870.                   _free( t$476 )
+  870.                endif
+  870.             endif
+  870.          endif
+  873.          if ( 25.0 > grepar3 ) then
+  872.             goto 50
+  873.          else if ( grepar3 > 125.0 ) then
+  873.    50       continue
+  874.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$56,  _substr(t$55,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( grepar3, 0x804060300000000L ) ) )
+  875.             _f90_adjustl(  _substr(t$477,1,8),  _substr(c0,1,8) )
+  875.             t$478 = 77 + ( _ltrim(  _substr(t$477,1,8) ) )
+  875.             t$480 = int( _alloc( _zla( 0, t$478 ) ), 8 )
+  875.              _substr(t$479,1,_zla( 0, t$478 )) = //( '**(CheckOptions)** Invalid option grepar3=', //(  _substr(t$477,1,_ltrim(  _substr(t$477,1,8) )), '; valid values range: [25.0, 125.0]' ) )
+  875.             call fatalerror(  _substr(t$479,1,_zla( 0, t$478 )) )
+  875.             _free( t$480 )
+  875.          endif
+  878.          if ( 15.0 > grepar4 ) then
+  877.             goto 60
+  878.          else if ( grepar4 > 75.0 ) then
+  878.    60       continue
+  879.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,8), Null_Arg, Null_Arg, t$58,  _substr(t$57,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( grepar4, 0x804060300000000L ) ) )
+  880.             _f90_adjustl(  _substr(t$481,1,8),  _substr(c0,1,8) )
+  880.             t$482 = 76 + ( _ltrim(  _substr(t$481,1,8) ) )
+  880.             t$484 = int( _alloc( _zla( 0, t$482 ) ), 8 )
+  880.              _substr(t$483,1,_zla( 0, t$482 )) = //( '**(CheckOptions)** Invalid option grepar4=', //(  _substr(t$481,1,_ltrim(  _substr(t$481,1,8) )), '; valid values range: [15.0, 75.0]' ) )
+  880.             call fatalerror(  _substr(t$483,1,_zla( 0, t$482 )) )
+  880.             _free( t$484 )
+  880.          endif
+  880.       endif
+  885.       if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) /= 'NON' ) then
+  885.          if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) /= 'TIED' ) then
+  885.             if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) /= 'SOUZ' ) then
+  889.                t$485 = 73 + ( _ltrim(  _substr(iscon,1,4) ) )
+  889.                t$487 = int( _alloc( _zla( 0, t$485 ) ), 8 )
+  889.                 _substr(t$486,1,_zla( 0, t$485 )) = //( '**(CheckOptions)** Unknown option iscon=', //(  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )), '; known options are: TIED or SOUZ' ) )
+  889.                call fatalerror(  _substr(t$486,1,_zla( 0, t$485 )) )
+  889.                _free( t$487 )
+  889.             endif
+  889.          endif
+  889.       endif
+  892.       return
+  892.       end
+  892.       
+ 1085.       
+ 1085.       subroutine dumpoptions
+  909.        _substr(t$488,1,17) = '**(DumpOptions)**'
+  909.        _substr(t$489,1,4) = '    '
+  909.       call msgone(  _substr(t$488,1,17),  _substr(t$489,1,4) )
+  913.        _substr(runsinitial,1,14) = '  Z   /  /    '
+  914.       $IOitem_O0 = idatei(1)
+  914.       _fwrite( _clist( 0, 0, 3,  _substr(runsinitial,1,2), Null_Arg, Null_Arg, t$60,  _substr(t$59,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O0, 0x2000200000000L ) ) )
+  915.       $IOitem_O1 = idatei(2)
+  915.       _fwrite( _clist( 0, 0, 3,  _substr(runsinitial,5,2), Null_Arg, Null_Arg, t$62,  _substr(t$61,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O1, 0x2000200000000L ) ) )
+  916.       $IOitem_O2 = idatei(3)
+  916.       _fwrite( _clist( 0, 0, 3,  _substr(runsinitial,8,2), Null_Arg, Null_Arg, t$64,  _substr(t$63,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O2, 0x2000200000000L ) ) )
+  917.       $IOitem_O3 = idatei(4)
+  917.       _fwrite( _clist( 0, 0, 3,  _substr(runsinitial,11,4), Null_Arg, Null_Arg, t$66,  _substr(t$65,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O3, 0x2000200000000L ) ) )
+  918.        _substr(runsto,1,14) = '  Z   /  /    '
+  919.       $IOitem_O4 = idatef(1)
+  919.       _fwrite( _clist( 0, 0, 3,  _substr(runsto,1,2), Null_Arg, Null_Arg, t$68,  _substr(t$67,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O4, 0x2000200000000L ) ) )
+  920.       $IOitem_O5 = idatef(2)
+  920.       _fwrite( _clist( 0, 0, 3,  _substr(runsto,5,2), Null_Arg, Null_Arg, t$70,  _substr(t$69,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O5, 0x2000200000000L ) ) )
+  921.       $IOitem_O6 = idatef(3)
+  921.       _fwrite( _clist( 0, 0, 3,  _substr(runsto,8,2), Null_Arg, Null_Arg, t$72,  _substr(t$71,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O6, 0x2000200000000L ) ) )
+  922.       $IOitem_O7 = idatef(4)
+  922.       _fwrite( _clist( 0, 0, 3,  _substr(runsto,11,4), Null_Arg, Null_Arg, t$74,  _substr(t$73,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O7, 0x2000200000000L ) ) )
+  923.        _substr(runsfrom,1,14) = '  Z   /  /    '
+  924.       if (  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'cold' ) then
+  925.          $IOitem_O8 = $IOitem_O0
+  925.          _fwrite( _clist( 0, 0, 3,  _substr(runsfrom,1,2), Null_Arg, Null_Arg, t$76,  _substr(t$75,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O8, 0x2000200000000L ) ) )
+  926.          $IOitem_O9 = $IOitem_O1
+  926.          _fwrite( _clist( 0, 0, 3,  _substr(runsfrom,5,2), Null_Arg, Null_Arg, t$78,  _substr(t$77,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O9, 0x2000200000000L ) ) )
+  927.          $IOitem_O10 = $IOitem_O2
+  927.          _fwrite( _clist( 0, 0, 3,  _substr(runsfrom,8,2), Null_Arg, Null_Arg, t$80,  _substr(t$79,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O10, 0x2000200000000L ) ) )
+  928.          $IOitem_O11 = $IOitem_O3
+  928.          _fwrite( _clist( 0, 0, 3,  _substr(runsfrom,11,4), Null_Arg, Null_Arg, t$82,  _substr(t$81,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O11, 0x2000200000000L ) ) )
+  928.       else
+  930.          $IOitem_O12 = idatew(1)
+  930.          _fwrite( _clist( 0, 0, 3,  _substr(runsfrom,1,2), Null_Arg, Null_Arg, t$84,  _substr(t$83,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O12, 0x2000200000000L ) ) )
+  931.          $IOitem_O13 = idatew(2)
+  931.          _fwrite( _clist( 0, 0, 3,  _substr(runsfrom,5,2), Null_Arg, Null_Arg, t$86,  _substr(t$85,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O13, 0x2000200000000L ) ) )
+  932.          $IOitem_O14 = idatew(3)
+  932.          _fwrite( _clist( 0, 0, 3,  _substr(runsfrom,8,2), Null_Arg, Null_Arg, t$88,  _substr(t$87,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O14, 0x2000200000000L ) ) )
+  933.          $IOitem_O15 = idatew(4)
+  933.          _fwrite( _clist( 0, 0, 3,  _substr(runsfrom,11,4), Null_Arg, Null_Arg, t$90,  _substr(t$89,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O15, 0x2000200000000L ) ) )
+  933.       endif
+  935.        _substr(t$490,1,17) = '**(DumpOptions)**'
+  935.       t$491 = 89 + ( _ltrim(  _substr(trunclev,1,10) ) )
+  937.       t$493 = int( _alloc( max( 0, t$491 ) ), 8 )
+  937.        _substr(t$492,1,max( 0, t$491 )) = //( ' model ', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( ' runs from ', //(  _substr(runsfrom,1,14), //( ' to ', //(  _substr(runsto,1,14), //( ' with initial state from ',  _substr(runsinitial,1,14) ) ) ) ) ) ) )
+  935.       call msgone(  _substr(t$490,1,17),  _substr(t$492,1,max( 0, t$491 )) )
+  937.       _free( t$493 )
+  941.       _fwrite( _clist( 0, 0, 3,  _substr(c0,1,16), Null_Arg, Null_Arg, t$92,  _substr(t$91,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( maxtim, 0x2000200000000L ) ) )
+  942.       _fwrite( _clist( 0, 0, 3,  _substr(c1,1,16), Null_Arg, Null_Arg, t$94,  _substr(t$93,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ddelt, 0x2000200000000L ) ) )
+  943.       _f90_adjustl(  _substr(t$494,1,16),  _substr(c0,1,16) )
+  944.       _f90_adjustl(  _substr(t$495,1,16),  _substr(c1,1,16) )
+  943.        _substr(t$496,1,17) = '**(DumpOptions)**'
+  943.       t$497 = ( _ltrim(  _substr(t$494,1,16) ) ) + ( _ltrim(  _substr(t$495,1,16) ) ) + 46
+  944.       t$499 = int( _alloc( max( 0, t$497 ) ), 8 )
+  944.        _substr(t$498,1,max( 0, t$497 )) = //( ' model executes ', //(  _substr(t$494,1,_ltrim(  _substr(t$494,1,16) )), //( ' timesteps of length ', //(  _substr(t$495,1,_ltrim(  _substr(t$495,1,16) )), ' seconds ' ) ) ) )
+  943.       call msgone(  _substr(t$496,1,17),  _substr(t$498,1,max( 0, t$497 )) )
+  944.       _free( t$499 )
+  948.       if ( slagr ) then
+  949.           _substr(line,1,128) = 'Semi-Lagrangean'
+  950.          if ( sl_twotime_scheme ) then
+  951.              _substr($as_A0,1,128) = //(  _substr(line,1,_ltrim(  _substr(line,1,128) )), ', two-time level scheme' )
+  951.              _substr(line,1,128) =  _substr($as_A0,1,128)
+  951.          else
+  953.              _substr($as_A1,1,128) = //(  _substr(line,1,_ltrim(  _substr(line,1,128) )), ', three-time level scheme' )
+  953.              _substr(line,1,128) =  _substr($as_A1,1,128)
+  953.          endif
+  953.       else
+  956.           _substr(line,1,128) = 'Eulerian'
+  956.       endif
+  958.       if ( reducedgrid ) then
+  959.           _substr($as_A2,1,128) = //(  _substr(line,1,_ltrim(  _substr(line,1,128) )), ', Reduced Gaussian and' )
+  959.           _substr(line,1,128) =  _substr($as_A2,1,128)
+  959.       else
+  961.           _substr($as_A3,1,128) = //(  _substr(line,1,_ltrim(  _substr(line,1,128) )), ', Full Gaussian and' )
+  961.           _substr(line,1,128) =  _substr($as_A3,1,128)
+  961.       endif
+  963.       if ( lineargrid ) then
+  964.           _substr($as_A4,1,128) = //(  _substr(line,1,_ltrim(  _substr(line,1,128) )), ' Linear Grid' )
+  964.           _substr(line,1,128) =  _substr($as_A4,1,128)
+  964.       else
+  966.           _substr($as_A5,1,128) = //(  _substr(line,1,_ltrim(  _substr(line,1,128) )), ' Quadratic Grid' )
+  966.           _substr(line,1,128) =  _substr($as_A5,1,128)
+  966.       endif
+  968.        _substr(t$500,1,17) = '**(DumpOptions)**'
+  968.       t$501 = 34 + ( _ltrim(  _substr(line,1,128) ) )
+  968.       t$503 = int( _alloc( max( 0, t$501 ) ), 8 )
+  968.        _substr(t$502,1,max( 0, t$501 )) = //( ' model dynamics configuration is  ',  _substr(line,1,_ltrim(  _substr(line,1,128) )) )
+  968.       call msgone(  _substr(t$500,1,17),  _substr(t$502,1,max( 0, t$501 )) )
+  968.       _free( t$503 )
+  972.        _substr(t$504,1,17) = '**(DumpOptions)**'
+  972.       t$505 = 20 + ( _ltrim(  _substr(fnameinput0,1,251) ) )
+  972.       t$507 = int( _alloc( max( 0, t$505 ) ), 8 )
+  972.        _substr(t$506,1,max( 0, t$505 )) = //( ' input file name is ',  _substr(fnameinput0,1,_ltrim(  _substr(fnameinput0,1,251) )) )
+  972.       call msgone(  _substr(t$504,1,17),  _substr(t$506,1,max( 0, t$505 )) )
+  972.       _free( t$507 )
+  973.        _substr(t$508,1,17) = '**(DumpOptions)**'
+  973.       t$509 = 26 + ( _ltrim(  _substr(dirfnameoutput,1,200) ) )
+  973.       t$511 = int( _alloc( max( 0, t$509 ) ), 8 )
+  973.        _substr(t$510,1,max( 0, t$509 )) = //( ' output file directory is ',  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )) )
+  973.       call msgone(  _substr(t$508,1,17),  _substr(t$510,1,max( 0, t$509 )) )
+  973.       _free( t$511 )
+  977.        _substr(t$512,1,17) = '**(DumpOptions)**'
+  977.        _substr(t$513,1,29) = ' model physics configuration:'
+  977.       call msgone(  _substr(t$512,1,17),  _substr(t$513,1,29) )
+  981.       if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) == 'NON' ) then
+  982.           _substr(t$514,1,17) = '**(DumpOptions)**'
+  982.           _substr(t$515,1,26) = '    No Shortwave Radiation'
+  982.          call msgone(  _substr(t$514,1,17),  _substr(t$515,1,26) )
+  983.       else if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) == 'LCH' ) then
+  984.           _substr(t$516,1,17) = '**(DumpOptions)**'
+  984.           _substr(t$517,1,41) = '    Shortwave Radiation is Lacis & Hansen'
+  984.          call msgone(  _substr(t$516,1,17),  _substr(t$517,1,41) )
+  984.       else if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) == 'CRD' ) then
+  986.           _substr(t$518,1,17) = '**(DumpOptions)**'
+  986.           _substr(t$519,1,36) = '    Shortwave Radiation is CLIRAD-SW'
+  986.          call msgone(  _substr(t$518,1,17),  _substr(t$519,1,36) )
+  987.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,16), Null_Arg, Null_Arg, t$96,  _substr(t$95,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( asolm, 0x804060300000000L ) ) )
+  988.          _f90_adjustl(  _substr(t$520,1,16),  _substr(c0,1,16) )
+  988.           _substr(t$521,1,17) = '**(DumpOptions)**'
+  988.          t$522 = 24 + ( _ltrim(  _substr(t$520,1,16) ) )
+  988.          t$524 = int( _alloc( max( 0, t$522 ) ), 8 )
+  988.           _substr(t$523,1,max( 0, t$522 )) = //( '    Maritime aerosol is ',  _substr(t$520,1,_ltrim(  _substr(t$520,1,16) )) )
+  988.          call msgone(  _substr(t$521,1,17),  _substr(t$523,1,max( 0, t$522 )) )
+  988.          _free( t$524 )
+  989.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,16), Null_Arg, Null_Arg, t$98,  _substr(t$97,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( asolc, 0x804060300000000L ) ) )
+  990.          _f90_adjustl(  _substr(t$525,1,16),  _substr(c0,1,16) )
+  990.           _substr(t$526,1,17) = '**(DumpOptions)**'
+  990.          t$527 = 27 + ( _ltrim(  _substr(t$525,1,16) ) )
+  990.          t$529 = int( _alloc( max( 0, t$527 ) ), 8 )
+  990.           _substr(t$528,1,max( 0, t$527 )) = //( '    Continental aerosol is ',  _substr(t$525,1,_ltrim(  _substr(t$525,1,16) )) )
+  990.          call msgone(  _substr(t$526,1,17),  _substr(t$528,1,max( 0, t$527 )) )
+  990.          _free( t$529 )
+  991.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,16), Null_Arg, Null_Arg, t$100,  _substr(t$99,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( crdcld, 0x804060300000000L ) ) )
+  992.          _f90_adjustl(  _substr(t$530,1,16),  _substr(c0,1,16) )
+  992.           _substr(t$531,1,17) = '**(DumpOptions)**'
+  992.          t$532 = 20 + ( _ltrim(  _substr(t$530,1,16) ) )
+  992.          t$534 = int( _alloc( max( 0, t$532 ) ), 8 )
+  992.           _substr(t$533,1,max( 0, t$532 )) = //( '    Cloud Scheme is ',  _substr(t$530,1,_ltrim(  _substr(t$530,1,16) )) )
+  992.          call msgone(  _substr(t$531,1,17),  _substr(t$533,1,max( 0, t$532 )) )
+  992.          _free( t$534 )
+  992.       else if (  _substr(iswrad,1,_ltrim(  _substr(iswrad,1,3) )) == 'UKM' ) then
+  994.           _substr(t$535,1,17) = '**(DumpOptions)**'
+  994.           _substr(t$536,1,34) = '    Shortwave Radiation is UKMO-SW'
+  994.          call msgone(  _substr(t$535,1,17),  _substr(t$536,1,34) )
+  995.           _substr(t$537,1,17) = '**(DumpOptions)**'
+  995.          t$538 = 23 + ( _ltrim(  _substr(fnamespecsw,1,206) ) )
+  995.          t$540 = int( _alloc( max( 0, t$538 ) ), 8 )
+  995.           _substr(t$539,1,max( 0, t$538 )) = //( '        spectral-file: ',  _substr(fnamespecsw,1,_ltrim(  _substr(fnamespecsw,1,206) )) )
+  995.          call msgone(  _substr(t$537,1,17),  _substr(t$539,1,max( 0, t$538 )) )
+  995.          _free( t$540 )
+  995.       endif
+ 1000.       if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) == 'NON' ) then
+ 1001.           _substr(t$541,1,17) = '**(DumpOptions)**'
+ 1001.           _substr(t$542,1,25) = '    No Longwave Radiation'
+ 1001.          call msgone(  _substr(t$541,1,17),  _substr(t$542,1,25) )
+ 1002.       else if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) == 'HRS' ) then
+ 1003.           _substr(t$543,1,17) = '**(DumpOptions)**'
+ 1003.           _substr(t$544,1,38) = '    Longwave Radiation is Harshvardhan'
+ 1003.          call msgone(  _substr(t$543,1,17),  _substr(t$544,1,38) )
+ 1003.       else if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) == 'CRD' ) then
+ 1005.           _substr(t$545,1,17) = '**(DumpOptions)**'
+ 1005.           _substr(t$546,1,35) = '    Longwave Radiation is Clirad-LW'
+ 1005.          call msgone(  _substr(t$545,1,17),  _substr(t$546,1,35) )
+ 1005.       else if (  _substr(ilwrad,1,_ltrim(  _substr(ilwrad,1,3) )) == 'UKM' ) then
+ 1007.           _substr(t$547,1,17) = '**(DumpOptions)**'
+ 1007.           _substr(t$548,1,33) = '    Longwave Radiation is UKMO-LW'
+ 1007.          call msgone(  _substr(t$547,1,17),  _substr(t$548,1,33) )
+ 1008.           _substr(t$549,1,17) = '**(DumpOptions)**'
+ 1008.          t$550 = 23 + ( _ltrim(  _substr(fnamespeclw,1,206) ) )
+ 1008.          t$552 = int( _alloc( max( 0, t$550 ) ), 8 )
+ 1008.           _substr(t$551,1,max( 0, t$550 )) = //( '        spectral-file: ',  _substr(fnamespeclw,1,_ltrim(  _substr(fnamespeclw,1,206) )) )
+ 1008.          call msgone(  _substr(t$549,1,17),  _substr(t$551,1,max( 0, t$550 )) )
+ 1008.          _free( t$552 )
+ 1008.       endif
+ 1013.       if ( ifco2 <= 0 ) then
+ 1014.           _substr(t$553,1,17) = '**(DumpOptions)**'
+ 1014.           _substr(t$554,1,54) = '    Using a single global value for co2 concentration,'
+ 1014.          call msgone(  _substr(t$553,1,17),  _substr(t$554,1,54) )
+ 1015.          if ( ifco2 == 0 ) then
+ 1016.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,16), Null_Arg, Null_Arg, t$102,  _substr(t$101,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( co2val, 0x804060300000000L ) ) )
+ 1018.             _f90_adjustl(  _substr(t$555,1,16),  _substr(c0,1,16) )
+ 1017.              _substr(t$556,1,17) = '**(DumpOptions)**'
+ 1017.             t$557 = 44 + ( _ltrim(  _substr(t$555,1,16) ) )
+ 1018.             t$559 = int( _alloc( max( 0, t$557 ) ), 8 )
+ 1018.              _substr(t$558,1,max( 0, t$557 )) = //( '        with constant concentration of ', //(  _substr(t$555,1,_ltrim(  _substr(t$555,1,16) )), ' ppmv' ) )
+ 1017.             call msgone(  _substr(t$556,1,17),  _substr(t$558,1,max( 0, t$557 )) )
+ 1018.             _free( t$559 )
+ 1019.          else if ( ifco2 == -1 ) then
+ 1020.              _substr(t$560,1,17) = '**(DumpOptions)**'
+ 1020.              _substr(t$561,1,80) = '        with variable co2val following 2nd order fit to Mauna Loa data (1958-04)'
+ 1020.             call msgone(  _substr(t$560,1,17),  _substr(t$561,1,80) )
+ 1020.          endif
+ 1020.       else
+ 1023.           _substr(t$562,1,17) = '**(DumpOptions)**'
+ 1023.           _substr(t$563,1,47) = '    Reading global co2 field from external file'
+ 1023.          call msgone(  _substr(t$562,1,17),  _substr(t$563,1,47) )
+ 1024.          if ( ifco2 == 1 ) then
+ 1025.              _substr(t$564,1,17) = '**(DumpOptions)**'
+ 1025.              _substr(t$565,1,29) = '        CO2 field is constant'
+ 1025.             call msgone(  _substr(t$564,1,17),  _substr(t$565,1,29) )
+ 1026.          else if ( ifco2 == 2 ) then
+ 1027.              _substr(t$566,1,17) = '**(DumpOptions)**'
+ 1027.              _substr(t$567,1,32) = '        CO2 field is climatology'
+ 1027.             call msgone(  _substr(t$566,1,17),  _substr(t$567,1,32) )
+ 1027.          else if ( ifco2 == 3 ) then
+ 1029.              _substr(t$568,1,17) = '**(DumpOptions)**'
+ 1029.              _substr(t$569,1,30) = '        CO2 field is predicted'
+ 1029.             call msgone(  _substr(t$568,1,17),  _substr(t$569,1,30) )
+ 1029.          else if ( ifco2 == 4 ) then
+ 1031.              _substr(t$570,1,17) = '**(DumpOptions)**'
+ 1031.              _substr(t$571,1,34) = '        CO2 field is direct access'
+ 1031.             call msgone(  _substr(t$570,1,17),  _substr(t$571,1,34) )
+ 1031.          endif
+ 1031.       endif
+ 1037.       if ( ifozone == 0 ) then
+ 1038.           _substr(t$572,1,17) = '**(DumpOptions)**'
+ 1038.           _substr(t$573,1,56) = '    Using old 4-month zonally averaged OZONE climatology'
+ 1038.          call msgone(  _substr(t$572,1,17),  _substr(t$573,1,56) )
+ 1038.       else
+ 1040.           _substr(t$574,1,17) = '**(DumpOptions)**'
+ 1040.           _substr(t$575,1,49) = '    Reading global OZONE field from external file'
+ 1040.          call msgone(  _substr(t$574,1,17),  _substr(t$575,1,49) )
+ 1041.          if ( ifozone == 1 ) then
+ 1042.              _substr(t$576,1,17) = '**(DumpOptions)**'
+ 1042.              _substr(t$577,1,27) = '    OZONE field is constant'
+ 1042.             call msgone(  _substr(t$576,1,17),  _substr(t$577,1,27) )
+ 1043.          else if ( ifozone == 2 ) then
+ 1044.              _substr(t$578,1,17) = '**(DumpOptions)**'
+ 1044.              _substr(t$579,1,30) = '    OZONE field is climatology'
+ 1044.             call msgone(  _substr(t$578,1,17),  _substr(t$579,1,30) )
+ 1044.          else if ( ifozone == 3 ) then
+ 1046.              _substr(t$580,1,17) = '**(DumpOptions)**'
+ 1046.              _substr(t$581,1,28) = '    OZONE field is predicted'
+ 1046.             call msgone(  _substr(t$580,1,17),  _substr(t$581,1,28) )
+ 1046.          else if ( ifozone == 4 ) then
+ 1048.              _substr(t$582,1,17) = '**(DumpOptions)**'
+ 1048.              _substr(t$583,1,29) = '    OZONE field is continuous'
+ 1048.             call msgone(  _substr(t$582,1,17),  _substr(t$583,1,29) )
+ 1048.          endif
+ 1048.       endif
+ 1054.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'NON' ) then
+ 1055.           _substr(t$584,1,17) = '**(DumpOptions)**'
+ 1055.           _substr(t$585,1,31) = '    No Deep Convection selected'
+ 1055.          call msgone(  _substr(t$584,1,17),  _substr(t$585,1,31) )
+ 1056.       else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'ARA' ) then
+ 1057.           _substr(t$586,1,17) = '**(DumpOptions)**'
+ 1057.           _substr(t$587,1,30) = '    Deep Convection is Arakawa'
+ 1057.          call msgone(  _substr(t$586,1,17),  _substr(t$587,1,30) )
+ 1057.       else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'KUO' ) then
+ 1059.           _substr(t$588,1,17) = '**(DumpOptions)**'
+ 1059.           _substr(t$589,1,26) = '    Deep Convection is KUO'
+ 1059.          call msgone(  _substr(t$588,1,17),  _substr(t$589,1,26) )
+ 1059.       else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+ 1061.           _substr(t$590,1,17) = '**(DumpOptions)**'
+ 1061.           _substr(t$591,1,45) = '    Deep Convection is GRELL with parameters:'
+ 1061.          call msgone(  _substr(t$590,1,17),  _substr(t$591,1,45) )
+ 1062.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,16), Null_Arg, Null_Arg, t$104,  _substr(t$103,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( grepar1, 0x2000200000000L ) ) )
+ 1063.          _fwrite( _clist( 0, 0, 3,  _substr(c1,1,16), Null_Arg, Null_Arg, t$106,  _substr(t$105,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( grepar2, 0x2000200000000L ) ) )
+ 1064.          _f90_adjustl(  _substr(t$592,1,16),  _substr(c0,1,16) )
+ 1065.          _f90_adjustl(  _substr(t$593,1,16),  _substr(c1,1,16) )
+ 1064.           _substr(t$594,1,17) = '**(DumpOptions)**'
+ 1064.          t$595 = ( _ltrim(  _substr(t$592,1,16) ) ) + ( _ltrim(  _substr(t$593,1,16) ) ) + 26
+ 1065.          t$597 = int( _alloc( max( 0, t$595 ) ), 8 )
+ 1065.           _substr(t$596,1,max( 0, t$595 )) = //( '        grepar1=', //(  _substr(t$592,1,_ltrim(  _substr(t$592,1,16) )), //( '; grepar2=',  _substr(t$593,1,_ltrim(  _substr(t$593,1,16) )) ) ) )
+ 1064.          call msgone(  _substr(t$594,1,17),  _substr(t$596,1,max( 0, t$595 )) )
+ 1065.          _free( t$597 )
+ 1066.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,16), Null_Arg, Null_Arg, t$108,  _substr(t$107,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( grepar3, 0x804060300000000L ) ) )
+ 1067.          _fwrite( _clist( 0, 0, 3,  _substr(c1,1,16), Null_Arg, Null_Arg, t$110,  _substr(t$109,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( grepar4, 0x804060300000000L ) ) )
+ 1068.          _f90_adjustl(  _substr(t$598,1,16),  _substr(c0,1,16) )
+ 1069.          _f90_adjustl(  _substr(t$599,1,16),  _substr(c1,1,16) )
+ 1068.           _substr(t$600,1,17) = '**(DumpOptions)**'
+ 1068.          t$601 = ( _ltrim(  _substr(t$598,1,16) ) ) + ( _ltrim(  _substr(t$599,1,16) ) ) + 26
+ 1069.          t$603 = int( _alloc( max( 0, t$601 ) ), 8 )
+ 1069.           _substr(t$602,1,max( 0, t$601 )) = //( '        grepar3=', //(  _substr(t$598,1,_ltrim(  _substr(t$598,1,16) )), //( '; grepar4=',  _substr(t$599,1,_ltrim(  _substr(t$599,1,16) )) ) ) )
+ 1068.          call msgone(  _substr(t$600,1,17),  _substr(t$602,1,max( 0, t$601 )) )
+ 1069.          _free( t$603 )
+ 1069.       endif
+ 1074.       if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'NON' ) then
+ 1075.           _substr(t$604,1,17) = '**(DumpOptions)**'
+ 1075.           _substr(t$605,1,34) = '    No Shallow Convection selected'
+ 1075.          call msgone(  _substr(t$604,1,17),  _substr(t$605,1,34) )
+ 1076.       else if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'TIED' ) then
+ 1077.           _substr(t$606,1,17) = '**(DumpOptions)**'
+ 1077.           _substr(t$607,1,32) = '    Shallow Convection is Tiedke'
+ 1077.          call msgone(  _substr(t$606,1,17),  _substr(t$607,1,32) )
+ 1077.       else if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'SOUZ' ) then
+ 1079.           _substr(t$608,1,17) = '**(DumpOptions)**'
+ 1079.           _substr(t$609,1,31) = '    Shallow Convection is Souza'
+ 1079.          call msgone(  _substr(t$608,1,17),  _substr(t$609,1,31) )
+ 1079.       endif
+ 1084.        _substr(t$610,1,17) = '**(DumpOptions)**'
+ 1084.        _substr(t$611,1,4) = '    '
+ 1084.       call msgone(  _substr(t$610,1,17),  _substr(t$611,1,4) )
+ 1085.       return
+ 1085.       end
+ 1085.       
+ 1094.       
+ 1094.       subroutine settimeoutput( idate, idatec, dhfct, nhdhn, dhdhn, nhext, dhext )
+ 1127.       hi = idate(1)
+ 1128.       di = idate(2)
+ 1129.       mi = idate(3)
+ 1130.       yi = idate(4)
+ 1131.       hf = idatec(1)
+ 1132.       df = idatec(2)
+ 1133.       mf = idatec(3)
+ 1134.       yf = idatec(4)
+ 1136.       $I_L1136_24 = 0
+ 1136. !dir$ ivdep
+ 1136.       do
+ 1136.          monl(1 + $I_L1136_24) = t$616(1 + $I_L1136_24)
+ 1136.          $I_L1136_24 = 1 + $I_L1136_24
+ 1136.          if ( $I_L1136_24 >= 12 ) exit
+ 1136.       enddo
+ 1136.       monday(1) = 0
+ 1136.       $monday_WR0_R0 = 0
+ 1136.       $I_L1136_18 = 0
+ 1136. !dir$ unroll 4
+ 1136.       do
+ 1136.          $monday_WR0_R0 = $monday_WR0_R0 + monl(1 + $I_L1136_18)
+ 1136.          monday(2 + $I_L1136_18) = $monday_WR0_R0
+ 1136.          $I_L1136_18 = 1 + $I_L1136_18
+ 1136.          if ( $I_L1136_18 >= 11 ) exit
+ 1136.       enddo
+ 1136.       $xday_S1 = ( di + monday(mi) ) + 4.1666666666666664e-2 * hi + -2.5e-1 * mod( 3 + yi, 4 )
+ 1136.       if ( mod( yi, 4 ) == 0 ) then
+ 1136.          if ( mi > 2 ) then
+ 1136.             $xday_S1 = 1.0 + $xday_S1
+ 1136.          endif
+ 1136.       endif
+ 1137.       $datehr_S7 = yi + ( 2.7378507871321013e-3 * mod( -1.0 + $xday_S1, 365.25 ) )
+ 1138.       $I_L1138_26 = 0
+ 1138. !dir$ ivdep
+ 1138.       do
+ 1138.          monl(1 + $I_L1138_26) = t$616(1 + $I_L1138_26)
+ 1138.          $I_L1138_26 = 1 + $I_L1138_26
+ 1138.          if ( $I_L1138_26 >= 12 ) exit
+ 1138.       enddo
+ 1138.       monday(1) = 0
+ 1138.       $monday_WR0_R1 = 0
+ 1138.       $I_L1138_20 = 0
+ 1138. !dir$ unroll 4
+ 1138.       do
+ 1138.          $monday_WR0_R1 = $monday_WR0_R1 + monl(1 + $I_L1138_20)
+ 1138.          monday(2 + $I_L1138_20) = $monday_WR0_R1
+ 1138.          $I_L1138_20 = 1 + $I_L1138_20
+ 1138.          if ( $I_L1138_20 >= 11 ) exit
+ 1138.       enddo
+ 1138.       $xday_S4 = ( df + monday(mf) ) + 4.1666666666666664e-2 * hf + -2.5e-1 * mod( 3 + yf, 4 )
+ 1138.       if ( mod( yf, 4 ) == 0 ) then
+ 1138.          if ( mf > 2 ) then
+ 1138.             $xday_S4 = 1.0 + $xday_S4
+ 1138.          endif
+ 1138.       endif
+ 1139.       $datehf_S6 = yf + ( 2.7378507871321013e-3 * mod( -1.0 + $xday_S4, 365.25 ) )
+ 1140.       $nday_S8 = 0
+ 1141.       if ( yf + -yi /= 0 ) then
+ 1138.          goto 10
+ 1141.       else if ( mf + -mi /= 0 ) then
+ 1141.          goto 10
+ 1141.       else if ( df + -di == 0 ) then
+ 1142.          $nday_S8 = 0
+ 1142.       else
+ 1142.    10    continue
+ 1144.          if ( $datehr_S7 < $datehf_S6 ) then
+ 1144.             do
+ 1145.                $nday_S8 = 1 + $nday_S8
+ 1147.                if ( real( mod( yi, 4 ), 8 ) == 0.0 ) then
+ 1148.                   $I_L1148_28 = 0
+ 1148. !dir$ ivdep
+ 1148.                   do
+ 1148.                      md(1 + $I_L1148_28) = t$612(1 + $I_L1148_28)
+ 1148.                      $I_L1148_28 = 1 + $I_L1148_28
+ 1148.                      if ( $I_L1148_28 >= 12 ) exit
+ 1148.                   enddo
+ 1148.                else
+ 1150.                   $I_L1150_30 = 0
+ 1150. !dir$ ivdep
+ 1150.                   do
+ 1150.                      md(1 + $I_L1150_30) = t$613(1 + $I_L1150_30)
+ 1150.                      $I_L1150_30 = 1 + $I_L1150_30
+ 1150.                      if ( $I_L1150_30 >= 12 ) exit
+ 1150.                   enddo
+ 1150.                endif
+ 1152.                di = 1 + di
+ 1153.                if ( di > md(mi) ) then
+ 1154.                   di = 1
+ 1155.                   mi = 1 + mi
+ 1156.                   if ( mi > 12 ) then
+ 1157.                      mi = 1
+ 1158.                      yi = 1 + yi
+ 1158.                   endif
+ 1158.                endif
+ 1161.                $I_L1161_32 = 0
+ 1161. !dir$ ivdep
+ 1161.                do
+ 1161.                   monl(1 + $I_L1161_32) = t$616(1 + $I_L1161_32)
+ 1161.                   $I_L1161_32 = 1 + $I_L1161_32
+ 1161.                   if ( $I_L1161_32 >= 12 ) exit
+ 1161.                enddo
+ 1161.                monday(1) = 0
+ 1161.                $monday_WR0_R2 = 0
+ 1161.                $I_L1161_22 = 0
+ 1161. !dir$ unroll 4
+ 1161.                do
+ 1161.                   $monday_WR0_R2 = $monday_WR0_R2 + monl(1 + $I_L1161_22)
+ 1161.                   monday(2 + $I_L1161_22) = $monday_WR0_R2
+ 1161.                   $I_L1161_22 = 1 + $I_L1161_22
+ 1161.                   if ( $I_L1161_22 >= 11 ) exit
+ 1161.                enddo
+ 1161.                xday = ( di + monday(mi) ) + 4.1666666666666664e-2 * hi + -2.5e-1 * mod( 3 + yi, 4 )
+ 1161.                if ( mod( yi, 4 ) == 0 ) then
+ 1161.                   if ( mi > 2 ) then
+ 1161.                      xday = 1.0 + xday
+ 1161.                   endif
+ 1161.                endif
+ 1161.                if ( ( yi + ( 2.7378507871321013e-3 * mod( -1.0 + xday, 365.25 ) ) ) >= $datehf_S6 ) exit
+ 1161.             enddo
+ 1161.          endif
+ 1161.       endif
+ 1165.       ntstep = int( ( 1.0/dt * $nday_S8 * 86400.0 ) )
+ 1166.       if ( dhfct /= 0 ) then
+ 1167.          $mhfct_S13 = 24 * $nday_S8 / dhfct
+ 1167.       else
+ 1169.          $mhfct_S13 = 17
+ 1169.       endif
+ 1172.       if ( nhdhn == 0 ) then
+ 1173.          dhdhn = 0
+ 1174.          $mhdhn_S14 = 0
+ 1175.       else if ( dhdhn /= 0 ) then
+ 1176.          $mhdhn_S14 = nhdhn / dhdhn
+ 1176.       else
+ 1178.          $mhdhn_S14 = 0
+ 1179.          nhdhn = 0
+ 1179.       endif
+ 1181.       if ( nhext == 0 ) then
+ 1182.          dhext = 0
+ 1184.          $mhext_S15 = 0
+ 1185.       else if ( dhext /= 0 ) then
+ 1186.          $mhext_S15 = nhext / dhext
+ 1186.       else
+ 1188.          $mhext_S15 = 0
+ 1189.          nhext = 0
+ 1189.       endif
+ 1191.       if ( dhfct == 0 ) then
+ 1190.          goto 20
+ 1192.       else if ( hf + -hi /= 0 ) then
+ 1194.          $nts_S11 = ( 1.0/dt * real( hf + -hi, 8 ) * 3600.0 )
+ 1195.          $mhf_S12 = ( real( hf + -hi, 8 ) * 1.0/dhfct )
+ 1197.          if ( ( ( real( hf + -hi, 8 ) * 1.0/dhfct ) * dhfct ) /= real( hf + -hi, 8 ) ) then
+ 1198.             $Unit_temp_O0 = nfprt
+ 1198.             $_IOitem_P0(0) = yf
+ 1198.             $_IOitem_P0(1) = mf
+ 1198.             $_IOitem_P0(2) = df
+ 1198.             $_IOitem_P0(3) = hf
+ 1198.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'Wrong Request for the Hour in datef =', 0x800600000000L ), _iotype( $_IOitem_P0(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1199.             $Unit_temp_O1 = nfprt
+ 1199.             $_IOitem_P1(0) = yi
+ 1199.             $_IOitem_P1(1) = mi
+ 1199.             $_IOitem_P1(2) = di
+ 1199.             $_IOitem_P1(3) = hi
+ 1199.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'Difference of Hours in datei = ', 0x800600000000L ), _iotype( $_IOitem_P1(:( 0, 3, 1 )), 0x2000200000000L ), _iotype( 'and ', 0x800600000000L ) ) )
+ 1200.             $Unit_temp_O2 = nfprt
+ 1200.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'datef is Not Compatible With dhfct =', 0x800600000000L ), _iotype( dhfct, 0x2000200000000L ) ) )
+ 1201.              _substr(t$614,1,4) = ' '
+ 1201.             call _stop(  _substr(t$614,1,1) )
+ 1201.          else
+ 1203.             ntstep = int( ntstep + $nts_S11 )
+ 1204.             $mhfct_S13 = int( $mhfct_S13 + $mhf_S12 )
+ 1204.             goto 20
+ 1204.          endif
+ 1204.       else
+ 1204.    20    continue
+ 1207.          maxtim = ntstep
+ 1208.          maxtfm = $mhfct_S13
+ 1209.          cth0 = real( dhfct, 8 )
+ 1210.          mdxtfm = $mhdhn_S14
+ 1211.          ctdh0 = real( dhdhn, 8 )
+ 1212.          mextfm = $mhext_S15
+ 1213.          cteh0 = real( dhext, 8 )
+ 1214.          ntstepmax = int( ( 1612742400.0 * 1.0/dt ) )
+ 1215.          if ( ntstep > int( ( 1612742400.0 * 1.0/dt ) ) ) then
+ 1216.             $Unit_temp_O3 = nfprt
+ 1216.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'nstep = ', 0x800600000000L ), _iotype( ntstep, 0x2000200000000L ), _iotype( ' is greater than ntstepmax = ', 0x800600000000L ), _iotype( ntstepmax, 0x2000200000000L ) ) )
+ 1217.              _substr(t$615,1,4) = ' '
+ 1217.             call _stop(  _substr(t$615,1,1) )
+ 1217.          else
+ 1219.             dct = real( dhfct, 8 )
+ 1220.             dctd = real( dhdhn, 8 )
+ 1221.             dcte = real( dhext, 8 )
+ 1221.          endif
+ 1221.       endif
+ 1222.       return
+ 1222.       end
+ 1222.       
+ 1229.       
+ 1229.       subroutine jull( yi, mi, di, hi, xday )
+ 1244.       $I_L1244_8 = 0
+ 1244. !dir$ ivdep
+ 1244.       do
+ 1244.          monl(1 + $I_L1244_8) = t$616(1 + $I_L1244_8)
+ 1244.          $I_L1244_8 = 1 + $I_L1244_8
+ 1244.          if ( $I_L1244_8 >= 12 ) exit
+ 1244.       enddo
+ 1248.       monday(1) = 0
+ 1249.       $monday_WR0_R0 = 0
+ 1249.       $I_L1249_6 = 0
+ 1249. !dir$ unroll 4
+ 1249.       do
+ 1250.          $monday_WR0_R0 = $monday_WR0_R0 + monl(1 + $I_L1249_6)
+ 1250.          monday(2 + $I_L1249_6) = $monday_WR0_R0
+ 1251.          $I_L1249_6 = 1 + $I_L1249_6
+ 1249.          if ( $I_L1249_6 >= 11 ) exit
+ 1249.       enddo
+ 1255.       $xday_S1 = ( monday(mi) + di ) + 4.1666666666666664e-2 * hi + -2.5e-1 * mod( 3 + yi, 4 )
+ 1256.       if ( mod( yi, 4 ) == 0 ) then
+ 1256.          if ( mi > 2 ) then
+ 1256.             $xday_S1 = 1.0 + $xday_S1
+ 1256.          endif
+ 1256.       endif
+ 1257.       xday = mod( -1.0 + $xday_S1, 365.25 )
+ 1258.       return
+ 1258.       end
+ 1258.       
+ 1261.       
+ 1261.       subroutine coldwarm
+ 1263.       if (  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'cold' ) then
+ 1264.          first = .true.
+ 1265.       else if (  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'warm' ) then
+ 1266.          nlnminit = .false.
+ 1267.          diabatic = .false.
+ 1268.          eigeninit = .false.
+ 1269.          rsettov = .false.
+ 1270.          first = .false.
+ 1271.          nfin1 = 19
+ 1272.          nfcnv0 = 31
+ 1273.          initlz = 0
+ 1274.          ifsnw = 0
+ 1275.          ifalb = 0
+ 1276.          ifslm = 0
+ 1276.       endif
+ 1278.       return
+ 1278.       end
+ 1278.       
+ 1363.       
+ 1363.       subroutine setsst( c0 )
+ 1283.       t$377 = _len( c0 )
+ 1292.       if ( ( _ltrim(  _substr(nmsst,1,6) ) ) /= 6 ) then
+ 1293.          t$618 = 34 + ( _ltrim(  _substr(nmsst,1,6) ) )
+ 1293.          t$620 = int( _alloc( _zla( 0, t$618 ) ), 8 )
+ 1293.           _substr(t$619,1,_zla( 0, t$618 )) = //( '**(setsst)** NMSST file (', //(  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )), ') not set' ) )
+ 1293.          call fatalerror(  _substr(t$619,1,_zla( 0, t$618 )) )
+ 1293.          _free( t$620 )
+ 1293.       endif
+ 1296.       $_IOitem_P0(0) = idate(4)
+ 1296.       $_IOitem_P0(1) = idate(2)
+ 1296.       $_IOitem_P0(2) = idate(3)
+ 1296.       _fwrite( _clist( 0, 0, 3,  _substr(labels,1,8), Null_Arg, Null_Arg, t$112,  _substr(t$111,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P0(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1297.       $IOitem_O0 = idate(4)
+ 1297.       _fwrite( _clist( 0, 0, 3,  _substr(labelsi,1,4), Null_Arg, Null_Arg, t$114,  _substr(t$113,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O0, 0x2000200000000L ) ) )
+ 1298.       _fwrite( _clist( 0, 0, 3,  _substr(labelsi,5,2), Null_Arg, Null_Arg, t$116,  _substr(t$115,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 1, 0x2000200000000L ) ) )
+ 1299.       _fwrite( _clist( 0, 0, 3,  _substr(labelsi,7,2), Null_Arg, Null_Arg, t$118,  _substr(t$117,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 16, 0x2000200000000L ) ) )
+ 1300.       _fwrite( _clist( 0, 0, 3,  _substr(labelsi,9,2), Null_Arg, Null_Arg, t$120,  _substr(t$119,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 12, 0x2000200000000L ) ) )
+ 1301.       $IOitem_O1 = $IOitem_O0
+ 1301.       _fwrite( _clist( 0, 0, 3,  _substr(labelsj,1,4), Null_Arg, Null_Arg, t$122,  _substr(t$121,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O1, 0x2000200000000L ) ) )
+ 1302.       _fwrite( _clist( 0, 0, 3,  _substr(labelsj,5,2), Null_Arg, Null_Arg, t$124,  _substr(t$123,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 2, 0x2000200000000L ) ) )
+ 1303.       _fwrite( _clist( 0, 0, 3,  _substr(labelsj,7,2), Null_Arg, Null_Arg, t$126,  _substr(t$125,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 14, 0x2000200000000L ) ) )
+ 1304.       _fwrite( _clist( 0, 0, 3,  _substr(labelsj,9,2), Null_Arg, Null_Arg, t$128,  _substr(t$127,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 0, 0x2000200000000L ) ) )
+ 1306.       if (  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )) == 'sstwkl' ) then
+ 1307.           _substr(fnamesstaoi,1,200) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'SSTWeekly', //(  _substr(labels,1,8), //( '.G',  _substr(c0,1,_ltrim(  _substr(c0,1,_len( c0 )) )) ) ) ) )
+ 1308.          t$622(1) = 0x100000000000000L
+ 1308.          t$622(2) = 0
+ 1308. !dir$ suppress  _substr(fnamesstaoi,1,_ltrim(  _substr(fnamesstaoi,1,200) ))
+ 1308.          t$622(3) = int( loc(  _substr(fnamesstaoi,1,_ltrim(  _substr(fnamesstaoi,1,200) )) ), 8 )
+ 1308.          t$622(4) = _ltrim(  _substr(fnamesstaoi,1,200) )
+ 1308.          t$622(5) = 0
+ 1308.          t$622(6) = 0
+ 1308. !dir$ suppress lexist
+ 1308.          t$622(7) = int( loc( lexist ), 8 )
+ 1308.          t$622(8) = 0
+ 1308.          t$622(9) = 0
+ 1308.          t$622(10) = 0
+ 1308.          t$622(11) = 0
+ 1308.          t$622(13) = 0
+ 1308.          t$622(15) = 0
+ 1308.          t$622(17) = 0
+ 1308.          t$622(19) = 0
+ 1308.          t$622(21) = 0
+ 1308.          t$622(23) = 0
+ 1308.          t$622(25) = 0
+ 1308.          t$622(26) = 0
+ 1308.          t$622(27) = 0
+ 1308.          t$622(29) = 0
+ 1308.          t$622(31) = 0
+ 1308.          t$622(33) = 0
+ 1308.          t$622(35) = 0
+ 1308.          t$622(37) = 0
+ 1308.          t$622(39) = 0
+ 1308.          t$622(41) = 0
+ 1308.          t$622(43) = 0
+ 1308.          t$622(44) = 0x2000500000000L
+ 1308.          t$622(45) = 0
+ 1308.          t$622(46) = 0
+ 1308.          t$622(47) = 0
+ 1308.          t$622(48) = 0
+ 1308.          t$622(49) = 0
+ 1308.          t$622(50) = 0
+ 1308.          t$622(52) = 0
+ 1308.          t$622(54) = 0
+ 1308.          t$622(56) = 0
+ 1308.          t$622(57) = 0
+ 1308.          t$622(58) = 0
+ 1308.          t$622(60) = 0
+ 1308.          t$622(61) = 0
+ 1308.          t$622(62) = 0
+ 1308.          t$622(63) = 0
+ 1308.          t$622(64) = 0
+ 1308.          t$622(66) = 0
+ 1308.          t$622(68) = 0
+ 1308.          t$622(69) = 0
+ 1308.          t$622(70) = 0
+ 1308.          t$621 = _inquire( t$622 )
+ 1309.          if ( lexist ) then
+ 1310.              _substr(fnamesstaoi,1,200) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'SSTWeekly', //(  _substr(labels,1,8), //( '.G',  _substr(c0,1,_ltrim(  _substr(c0,1,_len( c0 )) )) ) ) ) )
+ 1310.          else
+ 1312.              _substr(nmsst,1,6) = 'sstaoi'
+ 1313.              _substr(t$623,1,12) = '**(setsst)**'
+ 1313.              _substr(t$624,1,55) = '*******************************************************'
+ 1313.             call msgone(  _substr(t$623,1,12),  _substr(t$624,1,55) )
+ 1314.              _substr(t$625,1,12) = '**(setsst)**'
+ 1314.              _substr(t$626,1,57) = '* NMSST changed from weekly running mean (sstwkl) to    *'
+ 1314.             call msgone(  _substr(t$625,1,12),  _substr(t$626,1,57) )
+ 1315.              _substr(t$627,1,12) = '**(setsst)**'
+ 1315.              _substr(t$628,1,55) = '* climatology (sstaoi), since sstwkl are unavailable  *'
+ 1315.             call msgone(  _substr(t$627,1,12),  _substr(t$628,1,55) )
+ 1316.              _substr(t$629,1,12) = '**(setsst)**'
+ 1316.              _substr(t$630,1,55) = '* for the last 15 days                                *'
+ 1316.             call msgone(  _substr(t$629,1,12),  _substr(t$630,1,55) )
+ 1317.              _substr(t$631,1,12) = '**(setsst)**'
+ 1317.              _substr(t$632,1,55) = '*******************************************************'
+ 1317.             call msgone(  _substr(t$631,1,12),  _substr(t$632,1,55) )
+ 1318.              _substr(fnamesstaoi,1,200) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'SSTClima', //(  _substr(labels,1,8), //( '.G',  _substr(c0,1,_ltrim(  _substr(c0,1,_len( c0 )) )) ) ) ) )
+ 1318.          endif
+ 1320.       else if (  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )) == 'sstwkd' ) then
+ 1321.           _substr(fnamesstaoi,1,200) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //(  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )), //(  _substr(labels,1,8), //( '.',  _substr(trc,1,_ltrim(  _substr(trc,1,6) )) ) ) ) )
+ 1321.       else if (  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )) == 'sstmtd' ) then
+ 1323.           _substr(fnamesstaoi,1,200) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //(  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )), //(  _substr(labels,1,8), //( '.',  _substr(trc,1,_ltrim(  _substr(trc,1,6) )) ) ) ) )
+ 1323.       else if (  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )) == 'sstanp' ) then
+ 1325.           _substr(fnamesstaoi,1,200) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //(  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )), //(  _substr(labels,1,8), //( '.',  _substr(trc,1,_ltrim(  _substr(trc,1,6) )) ) ) ) )
+ 1325.       else
+ 1327.           _substr(nmsst,1,6) = 'sstaoi'
+ 1328.           _substr(fnamesstaoi,1,200) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'SSTClima', //(  _substr(labels,1,8), //( '.G',  _substr(c0,1,_ltrim(  _substr(c0,1,_len( c0 )) )) ) ) ) )
+ 1328.       endif
+ 1331.       t$634(1) = 0x100000000000000L
+ 1331.       t$634(2) = 0
+ 1331. !dir$ suppress  _substr(fnamesstaoi,1,_ltrim(  _substr(fnamesstaoi,1,200) ))
+ 1331.       t$634(3) = int( loc(  _substr(fnamesstaoi,1,_ltrim(  _substr(fnamesstaoi,1,200) )) ), 8 )
+ 1331.       t$634(4) = _ltrim(  _substr(fnamesstaoi,1,200) )
+ 1331.       t$634(5) = 0
+ 1331.       t$634(6) = 0
+ 1331. !dir$ suppress lexist
+ 1331.       t$634(7) = int( loc( lexist ), 8 )
+ 1331.       t$634(8) = 0
+ 1331.       t$634(9) = 0
+ 1331.       t$634(10) = 0
+ 1331.       t$634(11) = 0
+ 1331.       t$634(13) = 0
+ 1331.       t$634(15) = 0
+ 1331.       t$634(17) = 0
+ 1331.       t$634(19) = 0
+ 1331.       t$634(21) = 0
+ 1331.       t$634(23) = 0
+ 1331.       t$634(25) = 0
+ 1331.       t$634(26) = 0
+ 1331.       t$634(27) = 0
+ 1331.       t$634(29) = 0
+ 1331.       t$634(31) = 0
+ 1331.       t$634(33) = 0
+ 1331.       t$634(35) = 0
+ 1331.       t$634(37) = 0
+ 1331.       t$634(39) = 0
+ 1331.       t$634(41) = 0
+ 1331.       t$634(43) = 0
+ 1331.       t$634(44) = 0x2000500000000L
+ 1331.       t$634(45) = 0
+ 1331.       t$634(46) = 0
+ 1331.       t$634(47) = 0
+ 1331.       t$634(48) = 0
+ 1331.       t$634(49) = 0
+ 1331.       t$634(50) = 0
+ 1331.       t$634(52) = 0
+ 1331.       t$634(54) = 0
+ 1331.       t$634(56) = 0
+ 1331.       t$634(57) = 0
+ 1331.       t$634(58) = 0
+ 1331.       t$634(60) = 0
+ 1331.       t$634(61) = 0
+ 1331.       t$634(62) = 0
+ 1331.       t$634(63) = 0
+ 1331.       t$634(64) = 0
+ 1331.       t$634(66) = 0
+ 1331.       t$634(68) = 0
+ 1331.       t$634(69) = 0
+ 1331.       t$634(70) = 0
+ 1331.       t$633 = _inquire( t$634 )
+ 1332.       if ( lexist == 0 ) then
+ 1333.          t$635 = 33 + ( _ltrim(  _substr(fnamesstaoi,1,200) ) )
+ 1333.          t$637 = int( _alloc( max( 0, t$635 ) ), 8 )
+ 1333.           _substr(t$636,1,max( 0, t$635 )) = //( '**(setsst)** file ', //(  _substr(fnamesstaoi,1,_ltrim(  _substr(fnamesstaoi,1,200) )), ' does not exist' ) )
+ 1333.          call fatalerror(  _substr(t$636,1,max( 0, t$635 )) )
+ 1333.          _free( t$637 )
+ 1334.           _substr(t$638,1,4) = ' '
+ 1334.          call _stop(  _substr(t$638,1,1) )
+ 1334.       else
+ 1338.          $lfsst_S0 = cvmg( 2, -1,  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )) /= 'sstwkl' )
+ 1344.          if (  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )) == 'sstwkd' ) then
+ 1345.             $lfsst_S1 = 4
+ 1345.          else
+ 1346.             $lfsst_S1 = cvmg( $lfsst_S0, 4,  _substr(nmsst,1,_ltrim(  _substr(nmsst,1,6) )) /= 'sstmtd' )
+ 1346.          endif
+ 1350.          $lwsst_S2 = cvmg( lwsst, cvmg( $lfsst_S1, 0, $lfsst_S1 /= -1 ),  _substr(start,1,_ltrim(  _substr(start,1,200) )) /= 'warm' )
+ 1358.          ifsst = cvmg( $lwsst_S2, $lfsst_S1,  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'warm' )
+ 1358.       endif
+ 1363.       return
+ 1363.       end
+ 1363.       
+ 1630.       
+ 1630.       subroutine setfilenamegausspoints( jmax )
+ 1376.       $_IOitem_P0(0) = idatei(4)
+ 1376.       $_IOitem_P0(1) = idatei(3)
+ 1376.       $_IOitem_P0(2) = idatei(2)
+ 1376.       $_IOitem_P0(3) = idatei(1)
+ 1376.       _fwrite( _clist( 0, 0, 3,  _substr(labeli,1,10), Null_Arg, Null_Arg, t$130,  _substr(t$129,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P0(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1377.       $_IOitem_P1(0) = idatew(4)
+ 1377.       $_IOitem_P1(1) = idatew(3)
+ 1377.       $_IOitem_P1(2) = idatew(2)
+ 1377.       $_IOitem_P1(3) = idatew(1)
+ 1377.       _fwrite( _clist( 0, 0, 3,  _substr(labelc,1,10), Null_Arg, Null_Arg, t$132,  _substr(t$131,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P1(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1378.       $_IOitem_P2(0) = idatef(4)
+ 1378.       $_IOitem_P2(1) = idatef(3)
+ 1378.       $_IOitem_P2(2) = idatef(2)
+ 1378.       $_IOitem_P2(3) = idatef(1)
+ 1378.       _fwrite( _clist( 0, 0, 3,  _substr(labelf,1,10), Null_Arg, Null_Arg, t$134,  _substr(t$133,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P2(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1379.        _substr(exts,1,5) = 'S.unf'
+ 1381.       _fwrite( _clist( 0, 0, 3,  _substr(c0,1,5), Null_Arg, Null_Arg, t$136,  _substr(t$135,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( jmax, 0x2000200000000L ) ) )
+ 1382.       if ( gaussgiven ) then
+ 1383.           _substr(fnamegauss,1,211) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( '/gaussp', //( '.G',  _substr(c0,1,5) ) ) )
+ 1384.          t$640(1) = 0x100000000000000L
+ 1384.          t$640(2) = 0
+ 1384. !dir$ suppress  _substr(fnamegauss,1,_ltrim(  _substr(fnamegauss,1,211) ))
+ 1384.          t$640(3) = int( loc(  _substr(fnamegauss,1,_ltrim(  _substr(fnamegauss,1,211) )) ), 8 )
+ 1384.          t$640(4) = _ltrim(  _substr(fnamegauss,1,211) )
+ 1384.          t$640(5) = 0
+ 1384.          t$640(6) = 0
+ 1384. !dir$ suppress lexist
+ 1384.          t$640(7) = int( loc( lexist ), 8 )
+ 1384.          t$640(8) = 0
+ 1384.          t$640(9) = 0
+ 1384.          t$640(10) = 0
+ 1384.          t$640(11) = 0
+ 1384.          t$640(13) = 0
+ 1384.          t$640(15) = 0
+ 1384.          t$640(17) = 0
+ 1384.          t$640(19) = 0
+ 1384.          t$640(21) = 0
+ 1384.          t$640(23) = 0
+ 1384.          t$640(25) = 0
+ 1384.          t$640(26) = 0
+ 1384.          t$640(27) = 0
+ 1384.          t$640(29) = 0
+ 1384.          t$640(31) = 0
+ 1384.          t$640(33) = 0
+ 1384.          t$640(35) = 0
+ 1384.          t$640(37) = 0
+ 1384.          t$640(39) = 0
+ 1384.          t$640(41) = 0
+ 1384.          t$640(43) = 0
+ 1384.          t$640(44) = 0x2000500000000L
+ 1384.          t$640(45) = 0
+ 1384.          t$640(46) = 0
+ 1384.          t$640(47) = 0
+ 1384.          t$640(48) = 0
+ 1384.          t$640(49) = 0
+ 1384.          t$640(50) = 0
+ 1384.          t$640(52) = 0
+ 1384.          t$640(54) = 0
+ 1384.          t$640(56) = 0
+ 1384.          t$640(57) = 0
+ 1384.          t$640(58) = 0
+ 1384.          t$640(60) = 0
+ 1384.          t$640(61) = 0
+ 1384.          t$640(62) = 0
+ 1384.          t$640(63) = 0
+ 1384.          t$640(64) = 0
+ 1384.          t$640(66) = 0
+ 1384.          t$640(68) = 0
+ 1384.          t$640(69) = 0
+ 1384.          t$640(70) = 0
+ 1384.          t$639 = _inquire( t$640 )
+ 1385.          if ( lexist == 0 ) then
+ 1386.             t$641 = 49 + ( _ltrim(  _substr(fnamegauss,1,211) ) )
+ 1386.             t$643 = int( _alloc( max( 0, t$641 ) ), 8 )
+ 1386.              _substr(t$642,1,max( 0, t$641 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamegauss,1,_ltrim(  _substr(fnamegauss,1,211) )), ' does not exist' ) )
+ 1386.             call fatalerror(  _substr(t$642,1,max( 0, t$641 )) )
+ 1386.             _free( t$643 )
+ 1386.          endif
+ 1386.       else
+ 1389.           _substr(fnamegauss,1,211) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( '/gaussp', //( '.G',  _substr(c0,1,5) ) ) )
+ 1389.       endif
+ 1394.        _substr(fnamesibmsk,1,211) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'VegetationMask', //( '.G',  _substr(c0,1,5) ) ) )
+ 1398.        _substr(fnamesnow,1,226) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'Snow', //(  _substr(labeli,1,10), //(  _substr(exts,1,5), //( '.G',  _substr(c0,1,5) ) ) ) ) )
+ 1402.        _substr(fnamesoilms,1,211) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'SoilMoisture', //( '.G',  _substr(c0,1,5) ) ) )
+ 1406.        _substr(fnameorgvar,1,211) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'TopoVariance', //( '.G',  _substr(c0,1,5) ) ) )
+ 1410.        _substr(fnamesibalb,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'AlbedoSSiB' )
+ 1414.        _substr(fnamealbedo,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'AlbedoSSiB' )
+ 1418.        _substr(fnameunittb,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'Units' )
+ 1422.        _substr(fnamelooktb,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'UnitsLookUpTable' )
+ 1426.        _substr(fnamecnftbl,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'UnitsConvFactor1Table' )
+ 1430.        _substr(fnamecnf2tb,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'UnitsConvFactor2Table' )
+ 1434.        _substr(fnameghtable,1,209) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'GridHistDesiredTable' )
+ 1438.        _substr(fnamesibveg,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'VegetationSSiB' )
+ 1442.        _substr(fnametg3zrl,1,211) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'DeepSoilTemperature', //( '.G',  _substr(c0,1,5) ) ) )
+ 1446.        _substr(fnameroulen,1,255) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'RoughnessLength', //( '.G',  _substr(c0,1,5) ) ) )
+ 1450.       if (  _substr(table,1,_ltrim(  _substr(table,1,1) )) == 'p' ) then
+ 1451.           _substr(fnamedtable,1,214) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'DiagDesiredTable.pnt' )
+ 1452.       else if (  _substr(table,1,_ltrim(  _substr(table,1,1) )) == 'c' ) then
+ 1453.           _substr(fnamedtable,1,214) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'DiagDesiredTable.clm' )
+ 1453.       else if (  _substr(table,1,_ltrim(  _substr(table,1,1) )) == 'n' ) then
+ 1455.           _substr(fnamedtable,1,214) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'DiagDesiredTable' )
+ 1455.       else
+ 1457.           _substr(fnamedtable,1,214) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'DiagDesiredTable' )
+ 1457.       endif
+ 1462.        _substr(fnameghloc,1,212) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'GridHistLocations', //( '.G',  _substr(c0,1,_ltrim(  _substr(c0,1,5) )) ) ) )
+ 1466.        _substr(fnamesoiltype,1,225) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'GL_FAO_01patches', //( '.', //(  _substr(record_type,1,_ltrim(  _substr(record_type,1,3) )), //( '.G',  _substr(c0,1,_ltrim(  _substr(c0,1,5) )) ) ) ) ) )
+ 1470.        _substr(fnamevegtype,1,229) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'GL_VEG_SIB_05patches', //( '.', //(  _substr(record_type,1,_ltrim(  _substr(record_type,1,3) )), //( '.G',  _substr(c0,1,_ltrim(  _substr(c0,1,5) )) ) ) ) ) )
+ 1474.        _substr(fnamesoilmoist,1,225) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'GL_SM', //( '.', //(  _substr(record_type,1,_ltrim(  _substr(record_type,1,3) )), //( '.', //(  _substr(labeli,1,_ltrim(  _substr(labeli,1,10) )), //( '.G',  _substr(c0,1,_ltrim(  _substr(c0,1,5) )) ) ) ) ) ) ) )
+ 1478.       if ( ifco2 > 0 ) then
+ 1479.          if ( ifco2 <= 4 ) then
+ 1480.             if ( ifco2 == 1 ) then
+ 1481.                 _substr(fnameco2,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'co2', //(  _substr(labeli,1,10), //( '.G', //(  _substr(c0,1,_ltrim(  _substr(c0,1,5) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) ) )
+ 1482.             else if ( ifco2 == 2 ) then
+ 1483.                 _substr(fnameco2,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'co2clm', //( '.G', //(  _substr(c0,1,_ltrim(  _substr(c0,1,5) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) )
+ 1483.             else if ( ifco2 == 3 ) then
+ 1485.                 _substr(fnameco2,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'co2fct', //( '.G', //(  _substr(c0,1,_ltrim(  _substr(c0,1,5) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) )
+ 1485.             else if ( ifco2 == 4 ) then
+ 1487.                 _substr(fnameco2,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'co2mtd', //( '.G', //(  _substr(c0,1,_ltrim(  _substr(c0,1,5) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) )
+ 1487.             endif
+ 1487.          endif
+ 1487.       endif
+ 1494.       if ( ifozone > 0 ) then
+ 1494.          if ( ifozone <= 4 ) then
+ 1495.             if ( ifozone == 1 ) then
+ 1496.                 _substr(fnameozone,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'OZON', //(  _substr(prefy,1,_ltrim(  _substr(prefy,1,5) )), //(  _substr(labeli,1,10), //( 'S.grd.', //( 'G', //(  _substr(c0,1,_ltrim(  _substr(c0,1,5) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) ) ) ) )
+ 1497.             else if ( ifozone == 2 ) then
+ 1498.                 _substr(fnameozone,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'ozoneclm', //( '.G', //(  _substr(c0,1,_ltrim(  _substr(c0,1,5) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) )
+ 1498.             else if ( ifozone == 3 ) then
+ 1500.                 _substr(fnameozone,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'ozonefct', //( '.G', //(  _substr(c0,1,_ltrim(  _substr(c0,1,5) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) )
+ 1500.             else if ( ifozone == 4 ) then
+ 1502.                 _substr(fnameozone,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'ozonemtd', //( '.G', //(  _substr(c0,1,_ltrim(  _substr(c0,1,5) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) )
+ 1502.             endif
+ 1502.          endif
+ 1502.       endif
+ 1508.        _substr(fnamespecsw,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'sp_sw_hadgem1_3r' )
+ 1509.        _substr(fnamespeclw,1,206) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), 'sp_lw_hadgem1_3' )
+ 1513.       call setsst(  _substr(c0,1,5) )
+ 1515.       if ( grhflg ) then
+ 1516.          t$645(1) = 0x100000000000000L
+ 1516.          t$645(2) = 0
+ 1516. !dir$ suppress  _substr(fnameghloc,1,_ltrim(  _substr(fnameghloc,1,212) ))
+ 1516.          t$645(3) = int( loc(  _substr(fnameghloc,1,_ltrim(  _substr(fnameghloc,1,212) )) ), 8 )
+ 1516.          t$645(4) = _ltrim(  _substr(fnameghloc,1,212) )
+ 1516.          t$645(5) = 0
+ 1516.          t$645(6) = 0
+ 1516. !dir$ suppress lexist
+ 1516.          t$645(7) = int( loc( lexist ), 8 )
+ 1516.          t$645(8) = 0
+ 1516.          t$645(9) = 0
+ 1516.          t$645(10) = 0
+ 1516.          t$645(11) = 0
+ 1516.          t$645(13) = 0
+ 1516.          t$645(15) = 0
+ 1516.          t$645(17) = 0
+ 1516.          t$645(19) = 0
+ 1516.          t$645(21) = 0
+ 1516.          t$645(23) = 0
+ 1516.          t$645(25) = 0
+ 1516.          t$645(26) = 0
+ 1516.          t$645(27) = 0
+ 1516.          t$645(29) = 0
+ 1516.          t$645(31) = 0
+ 1516.          t$645(33) = 0
+ 1516.          t$645(35) = 0
+ 1516.          t$645(37) = 0
+ 1516.          t$645(39) = 0
+ 1516.          t$645(41) = 0
+ 1516.          t$645(43) = 0
+ 1516.          t$645(44) = 0x2000500000000L
+ 1516.          t$645(45) = 0
+ 1516.          t$645(46) = 0
+ 1516.          t$645(47) = 0
+ 1516.          t$645(48) = 0
+ 1516.          t$645(49) = 0
+ 1516.          t$645(50) = 0
+ 1516.          t$645(52) = 0
+ 1516.          t$645(54) = 0
+ 1516.          t$645(56) = 0
+ 1516.          t$645(57) = 0
+ 1516.          t$645(58) = 0
+ 1516.          t$645(60) = 0
+ 1516.          t$645(61) = 0
+ 1516.          t$645(62) = 0
+ 1516.          t$645(63) = 0
+ 1516.          t$645(64) = 0
+ 1516.          t$645(66) = 0
+ 1516.          t$645(68) = 0
+ 1516.          t$645(69) = 0
+ 1516.          t$645(70) = 0
+ 1516.          t$644 = _inquire( t$645 )
+ 1517.          if ( lexist == 0 ) then
+ 1518.             t$646 = 49 + ( _ltrim(  _substr(fnameghloc,1,212) ) )
+ 1518.             t$648 = int( _alloc( max( 0, t$646 ) ), 8 )
+ 1518.              _substr(t$647,1,max( 0, t$646 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnameghloc,1,_ltrim(  _substr(fnameghloc,1,212) )), ' does not exist' ) )
+ 1518.             call fatalerror(  _substr(t$647,1,max( 0, t$646 )) )
+ 1518.             _free( t$648 )
+ 1518.          endif
+ 1520.          t$650(1) = 0x100000000000000L
+ 1520.          t$650(2) = 0
+ 1520. !dir$ suppress  _substr(fnameghtable,1,_ltrim(  _substr(fnameghtable,1,209) ))
+ 1520.          t$650(3) = int( loc(  _substr(fnameghtable,1,_ltrim(  _substr(fnameghtable,1,209) )) ), 8 )
+ 1520.          t$650(4) = _ltrim(  _substr(fnameghtable,1,209) )
+ 1520.          t$650(5) = 0
+ 1520.          t$650(6) = 0
+ 1520. !dir$ suppress lexist
+ 1520.          t$650(7) = int( loc( lexist ), 8 )
+ 1520.          t$650(8) = 0
+ 1520.          t$650(9) = 0
+ 1520.          t$650(10) = 0
+ 1520.          t$650(11) = 0
+ 1520.          t$650(13) = 0
+ 1520.          t$650(15) = 0
+ 1520.          t$650(17) = 0
+ 1520.          t$650(19) = 0
+ 1520.          t$650(21) = 0
+ 1520.          t$650(23) = 0
+ 1520.          t$650(25) = 0
+ 1520.          t$650(26) = 0
+ 1520.          t$650(27) = 0
+ 1520.          t$650(29) = 0
+ 1520.          t$650(31) = 0
+ 1520.          t$650(33) = 0
+ 1520.          t$650(35) = 0
+ 1520.          t$650(37) = 0
+ 1520.          t$650(39) = 0
+ 1520.          t$650(41) = 0
+ 1520.          t$650(43) = 0
+ 1520.          t$650(44) = 0x2000500000000L
+ 1520.          t$650(45) = 0
+ 1520.          t$650(46) = 0
+ 1520.          t$650(47) = 0
+ 1520.          t$650(48) = 0
+ 1520.          t$650(49) = 0
+ 1520.          t$650(50) = 0
+ 1520.          t$650(52) = 0
+ 1520.          t$650(54) = 0
+ 1520.          t$650(56) = 0
+ 1520.          t$650(57) = 0
+ 1520.          t$650(58) = 0
+ 1520.          t$650(60) = 0
+ 1520.          t$650(61) = 0
+ 1520.          t$650(62) = 0
+ 1520.          t$650(63) = 0
+ 1520.          t$650(64) = 0
+ 1520.          t$650(66) = 0
+ 1520.          t$650(68) = 0
+ 1520.          t$650(69) = 0
+ 1520.          t$650(70) = 0
+ 1520.          t$649 = _inquire( t$650 )
+ 1521.          if ( lexist == 0 ) then
+ 1522.             t$651 = 49 + ( _ltrim(  _substr(fnameghtable,1,209) ) )
+ 1522.             t$653 = int( _alloc( max( 0, t$651 ) ), 8 )
+ 1522.              _substr(t$652,1,max( 0, t$651 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnameghtable,1,_ltrim(  _substr(fnameghtable,1,209) )), ' does not exist' ) )
+ 1522.             call fatalerror(  _substr(t$652,1,max( 0, t$651 )) )
+ 1522.             _free( t$653 )
+ 1522.          endif
+ 1522.       endif
+ 1526.       t$655(1) = 0x100000000000000L
+ 1526.       t$655(2) = 0
+ 1526. !dir$ suppress  _substr(fnamedtable,1,_ltrim(  _substr(fnamedtable,1,214) ))
+ 1526.       t$655(3) = int( loc(  _substr(fnamedtable,1,_ltrim(  _substr(fnamedtable,1,214) )) ), 8 )
+ 1526.       t$655(4) = _ltrim(  _substr(fnamedtable,1,214) )
+ 1526.       t$655(5) = 0
+ 1526.       t$655(6) = 0
+ 1526. !dir$ suppress lexist
+ 1526.       t$655(7) = int( loc( lexist ), 8 )
+ 1526.       t$655(8) = 0
+ 1526.       t$655(9) = 0
+ 1526.       t$655(10) = 0
+ 1526.       t$655(11) = 0
+ 1526.       t$655(13) = 0
+ 1526.       t$655(15) = 0
+ 1526.       t$655(17) = 0
+ 1526.       t$655(19) = 0
+ 1526.       t$655(21) = 0
+ 1526.       t$655(23) = 0
+ 1526.       t$655(25) = 0
+ 1526.       t$655(26) = 0
+ 1526.       t$655(27) = 0
+ 1526.       t$655(29) = 0
+ 1526.       t$655(31) = 0
+ 1526.       t$655(33) = 0
+ 1526.       t$655(35) = 0
+ 1526.       t$655(37) = 0
+ 1526.       t$655(39) = 0
+ 1526.       t$655(41) = 0
+ 1526.       t$655(43) = 0
+ 1526.       t$655(44) = 0x2000500000000L
+ 1526.       t$655(45) = 0
+ 1526.       t$655(46) = 0
+ 1526.       t$655(47) = 0
+ 1526.       t$655(48) = 0
+ 1526.       t$655(49) = 0
+ 1526.       t$655(50) = 0
+ 1526.       t$655(52) = 0
+ 1526.       t$655(54) = 0
+ 1526.       t$655(56) = 0
+ 1526.       t$655(57) = 0
+ 1526.       t$655(58) = 0
+ 1526.       t$655(60) = 0
+ 1526.       t$655(61) = 0
+ 1526.       t$655(62) = 0
+ 1526.       t$655(63) = 0
+ 1526.       t$655(64) = 0
+ 1526.       t$655(66) = 0
+ 1526.       t$655(68) = 0
+ 1526.       t$655(69) = 0
+ 1526.       t$655(70) = 0
+ 1526.       t$654 = _inquire( t$655 )
+ 1527.       if ( lexist == 0 ) then
+ 1528.          t$656 = 49 + ( _ltrim(  _substr(fnamedtable,1,214) ) )
+ 1528.          t$658 = int( _alloc( max( 0, t$656 ) ), 8 )
+ 1528.           _substr(t$657,1,max( 0, t$656 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamedtable,1,_ltrim(  _substr(fnamedtable,1,214) )), ' does not exist' ) )
+ 1528.          call fatalerror(  _substr(t$657,1,max( 0, t$656 )) )
+ 1528.          _free( t$658 )
+ 1528.       endif
+ 1531.       t$660(1) = 0x100000000000000L
+ 1531.       t$660(2) = 0
+ 1531. !dir$ suppress  _substr(fnameunittb,1,_ltrim(  _substr(fnameunittb,1,206) ))
+ 1531.       t$660(3) = int( loc(  _substr(fnameunittb,1,_ltrim(  _substr(fnameunittb,1,206) )) ), 8 )
+ 1531.       t$660(4) = _ltrim(  _substr(fnameunittb,1,206) )
+ 1531.       t$660(5) = 0
+ 1531.       t$660(6) = 0
+ 1531. !dir$ suppress lexist
+ 1531.       t$660(7) = int( loc( lexist ), 8 )
+ 1531.       t$660(8) = 0
+ 1531.       t$660(9) = 0
+ 1531.       t$660(10) = 0
+ 1531.       t$660(11) = 0
+ 1531.       t$660(13) = 0
+ 1531.       t$660(15) = 0
+ 1531.       t$660(17) = 0
+ 1531.       t$660(19) = 0
+ 1531.       t$660(21) = 0
+ 1531.       t$660(23) = 0
+ 1531.       t$660(25) = 0
+ 1531.       t$660(26) = 0
+ 1531.       t$660(27) = 0
+ 1531.       t$660(29) = 0
+ 1531.       t$660(31) = 0
+ 1531.       t$660(33) = 0
+ 1531.       t$660(35) = 0
+ 1531.       t$660(37) = 0
+ 1531.       t$660(39) = 0
+ 1531.       t$660(41) = 0
+ 1531.       t$660(43) = 0
+ 1531.       t$660(44) = 0x2000500000000L
+ 1531.       t$660(45) = 0
+ 1531.       t$660(46) = 0
+ 1531.       t$660(47) = 0
+ 1531.       t$660(48) = 0
+ 1531.       t$660(49) = 0
+ 1531.       t$660(50) = 0
+ 1531.       t$660(52) = 0
+ 1531.       t$660(54) = 0
+ 1531.       t$660(56) = 0
+ 1531.       t$660(57) = 0
+ 1531.       t$660(58) = 0
+ 1531.       t$660(60) = 0
+ 1531.       t$660(61) = 0
+ 1531.       t$660(62) = 0
+ 1531.       t$660(63) = 0
+ 1531.       t$660(64) = 0
+ 1531.       t$660(66) = 0
+ 1531.       t$660(68) = 0
+ 1531.       t$660(69) = 0
+ 1531.       t$660(70) = 0
+ 1531.       t$659 = _inquire( t$660 )
+ 1532.       if ( lexist == 0 ) then
+ 1533.          t$661 = 49 + ( _ltrim(  _substr(fnameunittb,1,206) ) )
+ 1533.          t$663 = int( _alloc( max( 0, t$661 ) ), 8 )
+ 1533.           _substr(t$662,1,max( 0, t$661 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnameunittb,1,_ltrim(  _substr(fnameunittb,1,206) )), ' does not exist' ) )
+ 1533.          call fatalerror(  _substr(t$662,1,max( 0, t$661 )) )
+ 1533.          _free( t$663 )
+ 1533.       endif
+ 1536.       t$665(1) = 0x100000000000000L
+ 1536.       t$665(2) = 0
+ 1536. !dir$ suppress  _substr(fnamelooktb,1,_ltrim(  _substr(fnamelooktb,1,206) ))
+ 1536.       t$665(3) = int( loc(  _substr(fnamelooktb,1,_ltrim(  _substr(fnamelooktb,1,206) )) ), 8 )
+ 1536.       t$665(4) = _ltrim(  _substr(fnamelooktb,1,206) )
+ 1536.       t$665(5) = 0
+ 1536.       t$665(6) = 0
+ 1536. !dir$ suppress lexist
+ 1536.       t$665(7) = int( loc( lexist ), 8 )
+ 1536.       t$665(8) = 0
+ 1536.       t$665(9) = 0
+ 1536.       t$665(10) = 0
+ 1536.       t$665(11) = 0
+ 1536.       t$665(13) = 0
+ 1536.       t$665(15) = 0
+ 1536.       t$665(17) = 0
+ 1536.       t$665(19) = 0
+ 1536.       t$665(21) = 0
+ 1536.       t$665(23) = 0
+ 1536.       t$665(25) = 0
+ 1536.       t$665(26) = 0
+ 1536.       t$665(27) = 0
+ 1536.       t$665(29) = 0
+ 1536.       t$665(31) = 0
+ 1536.       t$665(33) = 0
+ 1536.       t$665(35) = 0
+ 1536.       t$665(37) = 0
+ 1536.       t$665(39) = 0
+ 1536.       t$665(41) = 0
+ 1536.       t$665(43) = 0
+ 1536.       t$665(44) = 0x2000500000000L
+ 1536.       t$665(45) = 0
+ 1536.       t$665(46) = 0
+ 1536.       t$665(47) = 0
+ 1536.       t$665(48) = 0
+ 1536.       t$665(49) = 0
+ 1536.       t$665(50) = 0
+ 1536.       t$665(52) = 0
+ 1536.       t$665(54) = 0
+ 1536.       t$665(56) = 0
+ 1536.       t$665(57) = 0
+ 1536.       t$665(58) = 0
+ 1536.       t$665(60) = 0
+ 1536.       t$665(61) = 0
+ 1536.       t$665(62) = 0
+ 1536.       t$665(63) = 0
+ 1536.       t$665(64) = 0
+ 1536.       t$665(66) = 0
+ 1536.       t$665(68) = 0
+ 1536.       t$665(69) = 0
+ 1536.       t$665(70) = 0
+ 1536.       t$664 = _inquire( t$665 )
+ 1537.       if ( lexist == 0 ) then
+ 1538.          t$666 = 49 + ( _ltrim(  _substr(fnamelooktb,1,206) ) )
+ 1538.          t$668 = int( _alloc( max( 0, t$666 ) ), 8 )
+ 1538.           _substr(t$667,1,max( 0, t$666 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamelooktb,1,_ltrim(  _substr(fnamelooktb,1,206) )), ' does not exist' ) )
+ 1538.          call fatalerror(  _substr(t$667,1,max( 0, t$666 )) )
+ 1538.          _free( t$668 )
+ 1538.       endif
+ 1541.       t$670(1) = 0x100000000000000L
+ 1541.       t$670(2) = 0
+ 1541. !dir$ suppress  _substr(fnamecnftbl,1,_ltrim(  _substr(fnamecnftbl,1,206) ))
+ 1541.       t$670(3) = int( loc(  _substr(fnamecnftbl,1,_ltrim(  _substr(fnamecnftbl,1,206) )) ), 8 )
+ 1541.       t$670(4) = _ltrim(  _substr(fnamecnftbl,1,206) )
+ 1541.       t$670(5) = 0
+ 1541.       t$670(6) = 0
+ 1541. !dir$ suppress lexist
+ 1541.       t$670(7) = int( loc( lexist ), 8 )
+ 1541.       t$670(8) = 0
+ 1541.       t$670(9) = 0
+ 1541.       t$670(10) = 0
+ 1541.       t$670(11) = 0
+ 1541.       t$670(13) = 0
+ 1541.       t$670(15) = 0
+ 1541.       t$670(17) = 0
+ 1541.       t$670(19) = 0
+ 1541.       t$670(21) = 0
+ 1541.       t$670(23) = 0
+ 1541.       t$670(25) = 0
+ 1541.       t$670(26) = 0
+ 1541.       t$670(27) = 0
+ 1541.       t$670(29) = 0
+ 1541.       t$670(31) = 0
+ 1541.       t$670(33) = 0
+ 1541.       t$670(35) = 0
+ 1541.       t$670(37) = 0
+ 1541.       t$670(39) = 0
+ 1541.       t$670(41) = 0
+ 1541.       t$670(43) = 0
+ 1541.       t$670(44) = 0x2000500000000L
+ 1541.       t$670(45) = 0
+ 1541.       t$670(46) = 0
+ 1541.       t$670(47) = 0
+ 1541.       t$670(48) = 0
+ 1541.       t$670(49) = 0
+ 1541.       t$670(50) = 0
+ 1541.       t$670(52) = 0
+ 1541.       t$670(54) = 0
+ 1541.       t$670(56) = 0
+ 1541.       t$670(57) = 0
+ 1541.       t$670(58) = 0
+ 1541.       t$670(60) = 0
+ 1541.       t$670(61) = 0
+ 1541.       t$670(62) = 0
+ 1541.       t$670(63) = 0
+ 1541.       t$670(64) = 0
+ 1541.       t$670(66) = 0
+ 1541.       t$670(68) = 0
+ 1541.       t$670(69) = 0
+ 1541.       t$670(70) = 0
+ 1541.       t$669 = _inquire( t$670 )
+ 1542.       if ( lexist == 0 ) then
+ 1543.          t$671 = 49 + ( _ltrim(  _substr(fnamecnftbl,1,206) ) )
+ 1543.          t$673 = int( _alloc( max( 0, t$671 ) ), 8 )
+ 1543.           _substr(t$672,1,max( 0, t$671 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamecnftbl,1,_ltrim(  _substr(fnamecnftbl,1,206) )), ' does not exist' ) )
+ 1543.          call fatalerror(  _substr(t$672,1,max( 0, t$671 )) )
+ 1543.          _free( t$673 )
+ 1543.       endif
+ 1546.       t$675(1) = 0x100000000000000L
+ 1546.       t$675(2) = 0
+ 1546. !dir$ suppress  _substr(fnamecnf2tb,1,_ltrim(  _substr(fnamecnf2tb,1,206) ))
+ 1546.       t$675(3) = int( loc(  _substr(fnamecnf2tb,1,_ltrim(  _substr(fnamecnf2tb,1,206) )) ), 8 )
+ 1546.       t$675(4) = _ltrim(  _substr(fnamecnf2tb,1,206) )
+ 1546.       t$675(5) = 0
+ 1546.       t$675(6) = 0
+ 1546. !dir$ suppress lexist
+ 1546.       t$675(7) = int( loc( lexist ), 8 )
+ 1546.       t$675(8) = 0
+ 1546.       t$675(9) = 0
+ 1546.       t$675(10) = 0
+ 1546.       t$675(11) = 0
+ 1546.       t$675(13) = 0
+ 1546.       t$675(15) = 0
+ 1546.       t$675(17) = 0
+ 1546.       t$675(19) = 0
+ 1546.       t$675(21) = 0
+ 1546.       t$675(23) = 0
+ 1546.       t$675(25) = 0
+ 1546.       t$675(26) = 0
+ 1546.       t$675(27) = 0
+ 1546.       t$675(29) = 0
+ 1546.       t$675(31) = 0
+ 1546.       t$675(33) = 0
+ 1546.       t$675(35) = 0
+ 1546.       t$675(37) = 0
+ 1546.       t$675(39) = 0
+ 1546.       t$675(41) = 0
+ 1546.       t$675(43) = 0
+ 1546.       t$675(44) = 0x2000500000000L
+ 1546.       t$675(45) = 0
+ 1546.       t$675(46) = 0
+ 1546.       t$675(47) = 0
+ 1546.       t$675(48) = 0
+ 1546.       t$675(49) = 0
+ 1546.       t$675(50) = 0
+ 1546.       t$675(52) = 0
+ 1546.       t$675(54) = 0
+ 1546.       t$675(56) = 0
+ 1546.       t$675(57) = 0
+ 1546.       t$675(58) = 0
+ 1546.       t$675(60) = 0
+ 1546.       t$675(61) = 0
+ 1546.       t$675(62) = 0
+ 1546.       t$675(63) = 0
+ 1546.       t$675(64) = 0
+ 1546.       t$675(66) = 0
+ 1546.       t$675(68) = 0
+ 1546.       t$675(69) = 0
+ 1546.       t$675(70) = 0
+ 1546.       t$674 = _inquire( t$675 )
+ 1547.       if ( lexist == 0 ) then
+ 1548.          t$676 = 49 + ( _ltrim(  _substr(fnamecnf2tb,1,206) ) )
+ 1548.          t$678 = int( _alloc( max( 0, t$676 ) ), 8 )
+ 1548.           _substr(t$677,1,max( 0, t$676 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamecnf2tb,1,_ltrim(  _substr(fnamecnf2tb,1,206) )), ' does not exist' ) )
+ 1548.          call fatalerror(  _substr(t$677,1,max( 0, t$676 )) )
+ 1548.          _free( t$678 )
+ 1548.       endif
+ 1552.       if (  _substr(isimp,1,_ltrim(  _substr(isimp,1,4) )) == 'NO' ) then
+ 1553.          t$680(1) = 0x100000000000000L
+ 1553.          t$680(2) = 0
+ 1553. !dir$ suppress  _substr(fnamesibalb,1,_ltrim(  _substr(fnamesibalb,1,206) ))
+ 1553.          t$680(3) = int( loc(  _substr(fnamesibalb,1,_ltrim(  _substr(fnamesibalb,1,206) )) ), 8 )
+ 1553.          t$680(4) = _ltrim(  _substr(fnamesibalb,1,206) )
+ 1553.          t$680(5) = 0
+ 1553.          t$680(6) = 0
+ 1553. !dir$ suppress lexist
+ 1553.          t$680(7) = int( loc( lexist ), 8 )
+ 1553.          t$680(8) = 0
+ 1553.          t$680(9) = 0
+ 1553.          t$680(10) = 0
+ 1553.          t$680(11) = 0
+ 1553.          t$680(13) = 0
+ 1553.          t$680(15) = 0
+ 1553.          t$680(17) = 0
+ 1553.          t$680(19) = 0
+ 1553.          t$680(21) = 0
+ 1553.          t$680(23) = 0
+ 1553.          t$680(25) = 0
+ 1553.          t$680(26) = 0
+ 1553.          t$680(27) = 0
+ 1553.          t$680(29) = 0
+ 1553.          t$680(31) = 0
+ 1553.          t$680(33) = 0
+ 1553.          t$680(35) = 0
+ 1553.          t$680(37) = 0
+ 1553.          t$680(39) = 0
+ 1553.          t$680(41) = 0
+ 1553.          t$680(43) = 0
+ 1553.          t$680(44) = 0x2000500000000L
+ 1553.          t$680(45) = 0
+ 1553.          t$680(46) = 0
+ 1553.          t$680(47) = 0
+ 1553.          t$680(48) = 0
+ 1553.          t$680(49) = 0
+ 1553.          t$680(50) = 0
+ 1553.          t$680(52) = 0
+ 1553.          t$680(54) = 0
+ 1553.          t$680(56) = 0
+ 1553.          t$680(57) = 0
+ 1553.          t$680(58) = 0
+ 1553.          t$680(60) = 0
+ 1553.          t$680(61) = 0
+ 1553.          t$680(62) = 0
+ 1553.          t$680(63) = 0
+ 1553.          t$680(64) = 0
+ 1553.          t$680(66) = 0
+ 1553.          t$680(68) = 0
+ 1553.          t$680(69) = 0
+ 1553.          t$680(70) = 0
+ 1553.          t$679 = _inquire( t$680 )
+ 1554.          if ( lexist == 0 ) then
+ 1555.             t$681 = 49 + ( _ltrim(  _substr(fnamesibalb,1,206) ) )
+ 1555.             t$683 = int( _alloc( max( 0, t$681 ) ), 8 )
+ 1555.              _substr(t$682,1,max( 0, t$681 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamesibalb,1,_ltrim(  _substr(fnamesibalb,1,206) )), ' does not exist' ) )
+ 1555.             call fatalerror(  _substr(t$682,1,max( 0, t$681 )) )
+ 1555.             _free( t$683 )
+ 1555.          endif
+ 1558.          t$685(1) = 0x100000000000000L
+ 1558.          t$685(2) = 0
+ 1558. !dir$ suppress  _substr(fnamealbedo,1,_ltrim(  _substr(fnamealbedo,1,206) ))
+ 1558.          t$685(3) = int( loc(  _substr(fnamealbedo,1,_ltrim(  _substr(fnamealbedo,1,206) )) ), 8 )
+ 1558.          t$685(4) = _ltrim(  _substr(fnamealbedo,1,206) )
+ 1558.          t$685(5) = 0
+ 1558.          t$685(6) = 0
+ 1558. !dir$ suppress lexist
+ 1558.          t$685(7) = int( loc( lexist ), 8 )
+ 1558.          t$685(8) = 0
+ 1558.          t$685(9) = 0
+ 1558.          t$685(10) = 0
+ 1558.          t$685(11) = 0
+ 1558.          t$685(13) = 0
+ 1558.          t$685(15) = 0
+ 1558.          t$685(17) = 0
+ 1558.          t$685(19) = 0
+ 1558.          t$685(21) = 0
+ 1558.          t$685(23) = 0
+ 1558.          t$685(25) = 0
+ 1558.          t$685(26) = 0
+ 1558.          t$685(27) = 0
+ 1558.          t$685(29) = 0
+ 1558.          t$685(31) = 0
+ 1558.          t$685(33) = 0
+ 1558.          t$685(35) = 0
+ 1558.          t$685(37) = 0
+ 1558.          t$685(39) = 0
+ 1558.          t$685(41) = 0
+ 1558.          t$685(43) = 0
+ 1558.          t$685(44) = 0x2000500000000L
+ 1558.          t$685(45) = 0
+ 1558.          t$685(46) = 0
+ 1558.          t$685(47) = 0
+ 1558.          t$685(48) = 0
+ 1558.          t$685(49) = 0
+ 1558.          t$685(50) = 0
+ 1558.          t$685(52) = 0
+ 1558.          t$685(54) = 0
+ 1558.          t$685(56) = 0
+ 1558.          t$685(57) = 0
+ 1558.          t$685(58) = 0
+ 1558.          t$685(60) = 0
+ 1558.          t$685(61) = 0
+ 1558.          t$685(62) = 0
+ 1558.          t$685(63) = 0
+ 1558.          t$685(64) = 0
+ 1558.          t$685(66) = 0
+ 1558.          t$685(68) = 0
+ 1558.          t$685(69) = 0
+ 1558.          t$685(70) = 0
+ 1558.          t$684 = _inquire( t$685 )
+ 1559.          if ( lexist == 0 ) then
+ 1560.             t$686 = 49 + ( _ltrim(  _substr(fnamealbedo,1,206) ) )
+ 1560.             t$688 = int( _alloc( max( 0, t$686 ) ), 8 )
+ 1560.              _substr(t$687,1,max( 0, t$686 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamealbedo,1,_ltrim(  _substr(fnamealbedo,1,206) )), ' does not exist' ) )
+ 1560.             call fatalerror(  _substr(t$687,1,max( 0, t$686 )) )
+ 1560.             _free( t$688 )
+ 1560.          endif
+ 1563.          t$690(1) = 0x100000000000000L
+ 1563.          t$690(2) = 0
+ 1563. !dir$ suppress  _substr(fnamesnow,1,_ltrim(  _substr(fnamesnow,1,226) ))
+ 1563.          t$690(3) = int( loc(  _substr(fnamesnow,1,_ltrim(  _substr(fnamesnow,1,226) )) ), 8 )
+ 1563.          t$690(4) = _ltrim(  _substr(fnamesnow,1,226) )
+ 1563.          t$690(5) = 0
+ 1563.          t$690(6) = 0
+ 1563. !dir$ suppress lexist
+ 1563.          t$690(7) = int( loc( lexist ), 8 )
+ 1563.          t$690(8) = 0
+ 1563.          t$690(9) = 0
+ 1563.          t$690(10) = 0
+ 1563.          t$690(11) = 0
+ 1563.          t$690(13) = 0
+ 1563.          t$690(15) = 0
+ 1563.          t$690(17) = 0
+ 1563.          t$690(19) = 0
+ 1563.          t$690(21) = 0
+ 1563.          t$690(23) = 0
+ 1563.          t$690(25) = 0
+ 1563.          t$690(26) = 0
+ 1563.          t$690(27) = 0
+ 1563.          t$690(29) = 0
+ 1563.          t$690(31) = 0
+ 1563.          t$690(33) = 0
+ 1563.          t$690(35) = 0
+ 1563.          t$690(37) = 0
+ 1563.          t$690(39) = 0
+ 1563.          t$690(41) = 0
+ 1563.          t$690(43) = 0
+ 1563.          t$690(44) = 0x2000500000000L
+ 1563.          t$690(45) = 0
+ 1563.          t$690(46) = 0
+ 1563.          t$690(47) = 0
+ 1563.          t$690(48) = 0
+ 1563.          t$690(49) = 0
+ 1563.          t$690(50) = 0
+ 1563.          t$690(52) = 0
+ 1563.          t$690(54) = 0
+ 1563.          t$690(56) = 0
+ 1563.          t$690(57) = 0
+ 1563.          t$690(58) = 0
+ 1563.          t$690(60) = 0
+ 1563.          t$690(61) = 0
+ 1563.          t$690(62) = 0
+ 1563.          t$690(63) = 0
+ 1563.          t$690(64) = 0
+ 1563.          t$690(66) = 0
+ 1563.          t$690(68) = 0
+ 1563.          t$690(69) = 0
+ 1563.          t$690(70) = 0
+ 1563.          t$689 = _inquire( t$690 )
+ 1564.          if ( lexist == 0 ) then
+ 1565.             t$691 = 49 + ( _ltrim(  _substr(fnamesnow,1,226) ) )
+ 1565.             t$693 = int( _alloc( max( 0, t$691 ) ), 8 )
+ 1565.              _substr(t$692,1,max( 0, t$691 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamesnow,1,_ltrim(  _substr(fnamesnow,1,226) )), ' does not exist' ) )
+ 1565.             call fatalerror(  _substr(t$692,1,max( 0, t$691 )) )
+ 1565.             _free( t$693 )
+ 1565.          endif
+ 1568.          t$695(1) = 0x100000000000000L
+ 1568.          t$695(2) = 0
+ 1568. !dir$ suppress  _substr(fnamesoilms,1,_ltrim(  _substr(fnamesoilms,1,211) ))
+ 1568.          t$695(3) = int( loc(  _substr(fnamesoilms,1,_ltrim(  _substr(fnamesoilms,1,211) )) ), 8 )
+ 1568.          t$695(4) = _ltrim(  _substr(fnamesoilms,1,211) )
+ 1568.          t$695(5) = 0
+ 1568.          t$695(6) = 0
+ 1568. !dir$ suppress lexist
+ 1568.          t$695(7) = int( loc( lexist ), 8 )
+ 1568.          t$695(8) = 0
+ 1568.          t$695(9) = 0
+ 1568.          t$695(10) = 0
+ 1568.          t$695(11) = 0
+ 1568.          t$695(13) = 0
+ 1568.          t$695(15) = 0
+ 1568.          t$695(17) = 0
+ 1568.          t$695(19) = 0
+ 1568.          t$695(21) = 0
+ 1568.          t$695(23) = 0
+ 1568.          t$695(25) = 0
+ 1568.          t$695(26) = 0
+ 1568.          t$695(27) = 0
+ 1568.          t$695(29) = 0
+ 1568.          t$695(31) = 0
+ 1568.          t$695(33) = 0
+ 1568.          t$695(35) = 0
+ 1568.          t$695(37) = 0
+ 1568.          t$695(39) = 0
+ 1568.          t$695(41) = 0
+ 1568.          t$695(43) = 0
+ 1568.          t$695(44) = 0x2000500000000L
+ 1568.          t$695(45) = 0
+ 1568.          t$695(46) = 0
+ 1568.          t$695(47) = 0
+ 1568.          t$695(48) = 0
+ 1568.          t$695(49) = 0
+ 1568.          t$695(50) = 0
+ 1568.          t$695(52) = 0
+ 1568.          t$695(54) = 0
+ 1568.          t$695(56) = 0
+ 1568.          t$695(57) = 0
+ 1568.          t$695(58) = 0
+ 1568.          t$695(60) = 0
+ 1568.          t$695(61) = 0
+ 1568.          t$695(62) = 0
+ 1568.          t$695(63) = 0
+ 1568.          t$695(64) = 0
+ 1568.          t$695(66) = 0
+ 1568.          t$695(68) = 0
+ 1568.          t$695(69) = 0
+ 1568.          t$695(70) = 0
+ 1568.          t$694 = _inquire( t$695 )
+ 1569.          if ( lexist == 0 ) then
+ 1570.             t$696 = 49 + ( _ltrim(  _substr(fnamesoilms,1,211) ) )
+ 1570.             t$698 = int( _alloc( max( 0, t$696 ) ), 8 )
+ 1570.              _substr(t$697,1,max( 0, t$696 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamesoilms,1,_ltrim(  _substr(fnamesoilms,1,211) )), ' does not exist' ) )
+ 1570.             call fatalerror(  _substr(t$697,1,max( 0, t$696 )) )
+ 1570.             _free( t$698 )
+ 1570.          endif
+ 1573.          t$700(1) = 0x100000000000000L
+ 1573.          t$700(2) = 0
+ 1573. !dir$ suppress  _substr(fnameorgvar,1,_ltrim(  _substr(fnameorgvar,1,211) ))
+ 1573.          t$700(3) = int( loc(  _substr(fnameorgvar,1,_ltrim(  _substr(fnameorgvar,1,211) )) ), 8 )
+ 1573.          t$700(4) = _ltrim(  _substr(fnameorgvar,1,211) )
+ 1573.          t$700(5) = 0
+ 1573.          t$700(6) = 0
+ 1573. !dir$ suppress lexist
+ 1573.          t$700(7) = int( loc( lexist ), 8 )
+ 1573.          t$700(8) = 0
+ 1573.          t$700(9) = 0
+ 1573.          t$700(10) = 0
+ 1573.          t$700(11) = 0
+ 1573.          t$700(13) = 0
+ 1573.          t$700(15) = 0
+ 1573.          t$700(17) = 0
+ 1573.          t$700(19) = 0
+ 1573.          t$700(21) = 0
+ 1573.          t$700(23) = 0
+ 1573.          t$700(25) = 0
+ 1573.          t$700(26) = 0
+ 1573.          t$700(27) = 0
+ 1573.          t$700(29) = 0
+ 1573.          t$700(31) = 0
+ 1573.          t$700(33) = 0
+ 1573.          t$700(35) = 0
+ 1573.          t$700(37) = 0
+ 1573.          t$700(39) = 0
+ 1573.          t$700(41) = 0
+ 1573.          t$700(43) = 0
+ 1573.          t$700(44) = 0x2000500000000L
+ 1573.          t$700(45) = 0
+ 1573.          t$700(46) = 0
+ 1573.          t$700(47) = 0
+ 1573.          t$700(48) = 0
+ 1573.          t$700(49) = 0
+ 1573.          t$700(50) = 0
+ 1573.          t$700(52) = 0
+ 1573.          t$700(54) = 0
+ 1573.          t$700(56) = 0
+ 1573.          t$700(57) = 0
+ 1573.          t$700(58) = 0
+ 1573.          t$700(60) = 0
+ 1573.          t$700(61) = 0
+ 1573.          t$700(62) = 0
+ 1573.          t$700(63) = 0
+ 1573.          t$700(64) = 0
+ 1573.          t$700(66) = 0
+ 1573.          t$700(68) = 0
+ 1573.          t$700(69) = 0
+ 1573.          t$700(70) = 0
+ 1573.          t$699 = _inquire( t$700 )
+ 1574.          if ( lexist == 0 ) then
+ 1575.             t$701 = 49 + ( _ltrim(  _substr(fnameorgvar,1,211) ) )
+ 1575.             t$703 = int( _alloc( max( 0, t$701 ) ), 8 )
+ 1575.              _substr(t$702,1,max( 0, t$701 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnameorgvar,1,_ltrim(  _substr(fnameorgvar,1,211) )), ' does not exist' ) )
+ 1575.             call fatalerror(  _substr(t$702,1,max( 0, t$701 )) )
+ 1575.             _free( t$703 )
+ 1575.          endif
+ 1578.          t$705(1) = 0x100000000000000L
+ 1578.          t$705(2) = 0
+ 1578. !dir$ suppress  _substr(fnamesibmsk,1,_ltrim(  _substr(fnamesibmsk,1,211) ))
+ 1578.          t$705(3) = int( loc(  _substr(fnamesibmsk,1,_ltrim(  _substr(fnamesibmsk,1,211) )) ), 8 )
+ 1578.          t$705(4) = _ltrim(  _substr(fnamesibmsk,1,211) )
+ 1578.          t$705(5) = 0
+ 1578.          t$705(6) = 0
+ 1578. !dir$ suppress lexist
+ 1578.          t$705(7) = int( loc( lexist ), 8 )
+ 1578.          t$705(8) = 0
+ 1578.          t$705(9) = 0
+ 1578.          t$705(10) = 0
+ 1578.          t$705(11) = 0
+ 1578.          t$705(13) = 0
+ 1578.          t$705(15) = 0
+ 1578.          t$705(17) = 0
+ 1578.          t$705(19) = 0
+ 1578.          t$705(21) = 0
+ 1578.          t$705(23) = 0
+ 1578.          t$705(25) = 0
+ 1578.          t$705(26) = 0
+ 1578.          t$705(27) = 0
+ 1578.          t$705(29) = 0
+ 1578.          t$705(31) = 0
+ 1578.          t$705(33) = 0
+ 1578.          t$705(35) = 0
+ 1578.          t$705(37) = 0
+ 1578.          t$705(39) = 0
+ 1578.          t$705(41) = 0
+ 1578.          t$705(43) = 0
+ 1578.          t$705(44) = 0x2000500000000L
+ 1578.          t$705(45) = 0
+ 1578.          t$705(46) = 0
+ 1578.          t$705(47) = 0
+ 1578.          t$705(48) = 0
+ 1578.          t$705(49) = 0
+ 1578.          t$705(50) = 0
+ 1578.          t$705(52) = 0
+ 1578.          t$705(54) = 0
+ 1578.          t$705(56) = 0
+ 1578.          t$705(57) = 0
+ 1578.          t$705(58) = 0
+ 1578.          t$705(60) = 0
+ 1578.          t$705(61) = 0
+ 1578.          t$705(62) = 0
+ 1578.          t$705(63) = 0
+ 1578.          t$705(64) = 0
+ 1578.          t$705(66) = 0
+ 1578.          t$705(68) = 0
+ 1578.          t$705(69) = 0
+ 1578.          t$705(70) = 0
+ 1578.          t$704 = _inquire( t$705 )
+ 1579.          if ( lexist == 0 ) then
+ 1580.             t$706 = 49 + ( _ltrim(  _substr(fnamesibmsk,1,211) ) )
+ 1580.             t$708 = int( _alloc( max( 0, t$706 ) ), 8 )
+ 1580.              _substr(t$707,1,max( 0, t$706 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamesibmsk,1,_ltrim(  _substr(fnamesibmsk,1,211) )), ' does not exist' ) )
+ 1580.             call fatalerror(  _substr(t$707,1,max( 0, t$706 )) )
+ 1580.             _free( t$708 )
+ 1580.          endif
+ 1583.          t$710(1) = 0x100000000000000L
+ 1583.          t$710(2) = 0
+ 1583. !dir$ suppress  _substr(fnametg3zrl,1,_ltrim(  _substr(fnametg3zrl,1,211) ))
+ 1583.          t$710(3) = int( loc(  _substr(fnametg3zrl,1,_ltrim(  _substr(fnametg3zrl,1,211) )) ), 8 )
+ 1583.          t$710(4) = _ltrim(  _substr(fnametg3zrl,1,211) )
+ 1583.          t$710(5) = 0
+ 1583.          t$710(6) = 0
+ 1583. !dir$ suppress lexist
+ 1583.          t$710(7) = int( loc( lexist ), 8 )
+ 1583.          t$710(8) = 0
+ 1583.          t$710(9) = 0
+ 1583.          t$710(10) = 0
+ 1583.          t$710(11) = 0
+ 1583.          t$710(13) = 0
+ 1583.          t$710(15) = 0
+ 1583.          t$710(17) = 0
+ 1583.          t$710(19) = 0
+ 1583.          t$710(21) = 0
+ 1583.          t$710(23) = 0
+ 1583.          t$710(25) = 0
+ 1583.          t$710(26) = 0
+ 1583.          t$710(27) = 0
+ 1583.          t$710(29) = 0
+ 1583.          t$710(31) = 0
+ 1583.          t$710(33) = 0
+ 1583.          t$710(35) = 0
+ 1583.          t$710(37) = 0
+ 1583.          t$710(39) = 0
+ 1583.          t$710(41) = 0
+ 1583.          t$710(43) = 0
+ 1583.          t$710(44) = 0x2000500000000L
+ 1583.          t$710(45) = 0
+ 1583.          t$710(46) = 0
+ 1583.          t$710(47) = 0
+ 1583.          t$710(48) = 0
+ 1583.          t$710(49) = 0
+ 1583.          t$710(50) = 0
+ 1583.          t$710(52) = 0
+ 1583.          t$710(54) = 0
+ 1583.          t$710(56) = 0
+ 1583.          t$710(57) = 0
+ 1583.          t$710(58) = 0
+ 1583.          t$710(60) = 0
+ 1583.          t$710(61) = 0
+ 1583.          t$710(62) = 0
+ 1583.          t$710(63) = 0
+ 1583.          t$710(64) = 0
+ 1583.          t$710(66) = 0
+ 1583.          t$710(68) = 0
+ 1583.          t$710(69) = 0
+ 1583.          t$710(70) = 0
+ 1583.          t$709 = _inquire( t$710 )
+ 1584.          if ( lexist == 0 ) then
+ 1585.             t$711 = 49 + ( _ltrim(  _substr(fnametg3zrl,1,211) ) )
+ 1585.             t$713 = int( _alloc( max( 0, t$711 ) ), 8 )
+ 1585.              _substr(t$712,1,max( 0, t$711 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnametg3zrl,1,_ltrim(  _substr(fnametg3zrl,1,211) )), ' does not exist' ) )
+ 1585.             call fatalerror(  _substr(t$712,1,max( 0, t$711 )) )
+ 1585.             _free( t$713 )
+ 1585.          endif
+ 1588.          t$715(1) = 0x100000000000000L
+ 1588.          t$715(2) = 0
+ 1588. !dir$ suppress  _substr(fnameroulen,1,_ltrim(  _substr(fnameroulen,1,255) ))
+ 1588.          t$715(3) = int( loc(  _substr(fnameroulen,1,_ltrim(  _substr(fnameroulen,1,255) )) ), 8 )
+ 1588.          t$715(4) = _ltrim(  _substr(fnameroulen,1,255) )
+ 1588.          t$715(5) = 0
+ 1588.          t$715(6) = 0
+ 1588. !dir$ suppress lexist
+ 1588.          t$715(7) = int( loc( lexist ), 8 )
+ 1588.          t$715(8) = 0
+ 1588.          t$715(9) = 0
+ 1588.          t$715(10) = 0
+ 1588.          t$715(11) = 0
+ 1588.          t$715(13) = 0
+ 1588.          t$715(15) = 0
+ 1588.          t$715(17) = 0
+ 1588.          t$715(19) = 0
+ 1588.          t$715(21) = 0
+ 1588.          t$715(23) = 0
+ 1588.          t$715(25) = 0
+ 1588.          t$715(26) = 0
+ 1588.          t$715(27) = 0
+ 1588.          t$715(29) = 0
+ 1588.          t$715(31) = 0
+ 1588.          t$715(33) = 0
+ 1588.          t$715(35) = 0
+ 1588.          t$715(37) = 0
+ 1588.          t$715(39) = 0
+ 1588.          t$715(41) = 0
+ 1588.          t$715(43) = 0
+ 1588.          t$715(44) = 0x2000500000000L
+ 1588.          t$715(45) = 0
+ 1588.          t$715(46) = 0
+ 1588.          t$715(47) = 0
+ 1588.          t$715(48) = 0
+ 1588.          t$715(49) = 0
+ 1588.          t$715(50) = 0
+ 1588.          t$715(52) = 0
+ 1588.          t$715(54) = 0
+ 1588.          t$715(56) = 0
+ 1588.          t$715(57) = 0
+ 1588.          t$715(58) = 0
+ 1588.          t$715(60) = 0
+ 1588.          t$715(61) = 0
+ 1588.          t$715(62) = 0
+ 1588.          t$715(63) = 0
+ 1588.          t$715(64) = 0
+ 1588.          t$715(66) = 0
+ 1588.          t$715(68) = 0
+ 1588.          t$715(69) = 0
+ 1588.          t$715(70) = 0
+ 1588.          t$714 = _inquire( t$715 )
+ 1589.          if ( lexist == 0 ) then
+ 1590.             t$716 = 49 + ( _ltrim(  _substr(fnameroulen,1,255) ) )
+ 1590.             t$718 = int( _alloc( max( 0, t$716 ) ), 8 )
+ 1590.              _substr(t$717,1,max( 0, t$716 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnameroulen,1,_ltrim(  _substr(fnameroulen,1,255) )), ' does not exist' ) )
+ 1590.             call fatalerror(  _substr(t$717,1,max( 0, t$716 )) )
+ 1590.             _free( t$718 )
+ 1590.          endif
+ 1593.          t$720(1) = 0x100000000000000L
+ 1593.          t$720(2) = 0
+ 1593. !dir$ suppress  _substr(fnamesibveg,1,_ltrim(  _substr(fnamesibveg,1,206) ))
+ 1593.          t$720(3) = int( loc(  _substr(fnamesibveg,1,_ltrim(  _substr(fnamesibveg,1,206) )) ), 8 )
+ 1593.          t$720(4) = _ltrim(  _substr(fnamesibveg,1,206) )
+ 1593.          t$720(5) = 0
+ 1593.          t$720(6) = 0
+ 1593. !dir$ suppress lexist
+ 1593.          t$720(7) = int( loc( lexist ), 8 )
+ 1593.          t$720(8) = 0
+ 1593.          t$720(9) = 0
+ 1593.          t$720(10) = 0
+ 1593.          t$720(11) = 0
+ 1593.          t$720(13) = 0
+ 1593.          t$720(15) = 0
+ 1593.          t$720(17) = 0
+ 1593.          t$720(19) = 0
+ 1593.          t$720(21) = 0
+ 1593.          t$720(23) = 0
+ 1593.          t$720(25) = 0
+ 1593.          t$720(26) = 0
+ 1593.          t$720(27) = 0
+ 1593.          t$720(29) = 0
+ 1593.          t$720(31) = 0
+ 1593.          t$720(33) = 0
+ 1593.          t$720(35) = 0
+ 1593.          t$720(37) = 0
+ 1593.          t$720(39) = 0
+ 1593.          t$720(41) = 0
+ 1593.          t$720(43) = 0
+ 1593.          t$720(44) = 0x2000500000000L
+ 1593.          t$720(45) = 0
+ 1593.          t$720(46) = 0
+ 1593.          t$720(47) = 0
+ 1593.          t$720(48) = 0
+ 1593.          t$720(49) = 0
+ 1593.          t$720(50) = 0
+ 1593.          t$720(52) = 0
+ 1593.          t$720(54) = 0
+ 1593.          t$720(56) = 0
+ 1593.          t$720(57) = 0
+ 1593.          t$720(58) = 0
+ 1593.          t$720(60) = 0
+ 1593.          t$720(61) = 0
+ 1593.          t$720(62) = 0
+ 1593.          t$720(63) = 0
+ 1593.          t$720(64) = 0
+ 1593.          t$720(66) = 0
+ 1593.          t$720(68) = 0
+ 1593.          t$720(69) = 0
+ 1593.          t$720(70) = 0
+ 1593.          t$719 = _inquire( t$720 )
+ 1594.          if ( lexist == 0 ) then
+ 1595.             t$721 = 49 + ( _ltrim(  _substr(fnamesibveg,1,206) ) )
+ 1595.             t$723 = int( _alloc( max( 0, t$721 ) ), 8 )
+ 1595.              _substr(t$722,1,max( 0, t$721 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamesibveg,1,_ltrim(  _substr(fnamesibveg,1,206) )), ' does not exist' ) )
+ 1595.             call fatalerror(  _substr(t$722,1,max( 0, t$721 )) )
+ 1595.             _free( t$723 )
+ 1595.          endif
+ 1598.          if ( iglsm_w /= 0 ) then
+ 1599.             t$725(1) = 0x100000000000000L
+ 1599.             t$725(2) = 0
+ 1599. !dir$ suppress  _substr(fnamesoiltype,1,_ltrim(  _substr(fnamesoiltype,1,225) ))
+ 1599.             t$725(3) = int( loc(  _substr(fnamesoiltype,1,_ltrim(  _substr(fnamesoiltype,1,225) )) ), 8 )
+ 1599.             t$725(4) = _ltrim(  _substr(fnamesoiltype,1,225) )
+ 1599.             t$725(5) = 0
+ 1599.             t$725(6) = 0
+ 1599. !dir$ suppress lexist
+ 1599.             t$725(7) = int( loc( lexist ), 8 )
+ 1599.             t$725(8) = 0
+ 1599.             t$725(9) = 0
+ 1599.             t$725(10) = 0
+ 1599.             t$725(11) = 0
+ 1599.             t$725(13) = 0
+ 1599.             t$725(15) = 0
+ 1599.             t$725(17) = 0
+ 1599.             t$725(19) = 0
+ 1599.             t$725(21) = 0
+ 1599.             t$725(23) = 0
+ 1599.             t$725(25) = 0
+ 1599.             t$725(26) = 0
+ 1599.             t$725(27) = 0
+ 1599.             t$725(29) = 0
+ 1599.             t$725(31) = 0
+ 1599.             t$725(33) = 0
+ 1599.             t$725(35) = 0
+ 1599.             t$725(37) = 0
+ 1599.             t$725(39) = 0
+ 1599.             t$725(41) = 0
+ 1599.             t$725(43) = 0
+ 1599.             t$725(44) = 0x2000500000000L
+ 1599.             t$725(45) = 0
+ 1599.             t$725(46) = 0
+ 1599.             t$725(47) = 0
+ 1599.             t$725(48) = 0
+ 1599.             t$725(49) = 0
+ 1599.             t$725(50) = 0
+ 1599.             t$725(52) = 0
+ 1599.             t$725(54) = 0
+ 1599.             t$725(56) = 0
+ 1599.             t$725(57) = 0
+ 1599.             t$725(58) = 0
+ 1599.             t$725(60) = 0
+ 1599.             t$725(61) = 0
+ 1599.             t$725(62) = 0
+ 1599.             t$725(63) = 0
+ 1599.             t$725(64) = 0
+ 1599.             t$725(66) = 0
+ 1599.             t$725(68) = 0
+ 1599.             t$725(69) = 0
+ 1599.             t$725(70) = 0
+ 1599.             t$724 = _inquire( t$725 )
+ 1600.             if ( lexist == 0 ) then
+ 1601.                t$726 = 49 + ( _ltrim(  _substr(fnamesoiltype,1,225) ) )
+ 1601.                t$728 = int( _alloc( max( 0, t$726 ) ), 8 )
+ 1601.                 _substr(t$727,1,max( 0, t$726 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamesoiltype,1,_ltrim(  _substr(fnamesoiltype,1,225) )), ' does not exist' ) )
+ 1601.                call fatalerror(  _substr(t$727,1,max( 0, t$726 )) )
+ 1601.                _free( t$728 )
+ 1601.             endif
+ 1604.             t$730(1) = 0x100000000000000L
+ 1604.             t$730(2) = 0
+ 1604. !dir$ suppress  _substr(fnamevegtype,1,_ltrim(  _substr(fnamevegtype,1,229) ))
+ 1604.             t$730(3) = int( loc(  _substr(fnamevegtype,1,_ltrim(  _substr(fnamevegtype,1,229) )) ), 8 )
+ 1604.             t$730(4) = _ltrim(  _substr(fnamevegtype,1,229) )
+ 1604.             t$730(5) = 0
+ 1604.             t$730(6) = 0
+ 1604. !dir$ suppress lexist
+ 1604.             t$730(7) = int( loc( lexist ), 8 )
+ 1604.             t$730(8) = 0
+ 1604.             t$730(9) = 0
+ 1604.             t$730(10) = 0
+ 1604.             t$730(11) = 0
+ 1604.             t$730(13) = 0
+ 1604.             t$730(15) = 0
+ 1604.             t$730(17) = 0
+ 1604.             t$730(19) = 0
+ 1604.             t$730(21) = 0
+ 1604.             t$730(23) = 0
+ 1604.             t$730(25) = 0
+ 1604.             t$730(26) = 0
+ 1604.             t$730(27) = 0
+ 1604.             t$730(29) = 0
+ 1604.             t$730(31) = 0
+ 1604.             t$730(33) = 0
+ 1604.             t$730(35) = 0
+ 1604.             t$730(37) = 0
+ 1604.             t$730(39) = 0
+ 1604.             t$730(41) = 0
+ 1604.             t$730(43) = 0
+ 1604.             t$730(44) = 0x2000500000000L
+ 1604.             t$730(45) = 0
+ 1604.             t$730(46) = 0
+ 1604.             t$730(47) = 0
+ 1604.             t$730(48) = 0
+ 1604.             t$730(49) = 0
+ 1604.             t$730(50) = 0
+ 1604.             t$730(52) = 0
+ 1604.             t$730(54) = 0
+ 1604.             t$730(56) = 0
+ 1604.             t$730(57) = 0
+ 1604.             t$730(58) = 0
+ 1604.             t$730(60) = 0
+ 1604.             t$730(61) = 0
+ 1604.             t$730(62) = 0
+ 1604.             t$730(63) = 0
+ 1604.             t$730(64) = 0
+ 1604.             t$730(66) = 0
+ 1604.             t$730(68) = 0
+ 1604.             t$730(69) = 0
+ 1604.             t$730(70) = 0
+ 1604.             t$729 = _inquire( t$730 )
+ 1605.             if ( lexist == 0 ) then
+ 1606.                t$731 = 49 + ( _ltrim(  _substr(fnamevegtype,1,229) ) )
+ 1606.                t$733 = int( _alloc( max( 0, t$731 ) ), 8 )
+ 1606.                 _substr(t$732,1,max( 0, t$731 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamevegtype,1,_ltrim(  _substr(fnamevegtype,1,229) )), ' does not exist' ) )
+ 1606.                call fatalerror(  _substr(t$732,1,max( 0, t$731 )) )
+ 1606.                _free( t$733 )
+ 1606.             endif
+ 1609.             t$735(1) = 0x100000000000000L
+ 1609.             t$735(2) = 0
+ 1609. !dir$ suppress  _substr(fnamesoilmoist,1,_ltrim(  _substr(fnamesoilmoist,1,225) ))
+ 1609.             t$735(3) = int( loc(  _substr(fnamesoilmoist,1,_ltrim(  _substr(fnamesoilmoist,1,225) )) ), 8 )
+ 1609.             t$735(4) = _ltrim(  _substr(fnamesoilmoist,1,225) )
+ 1609.             t$735(5) = 0
+ 1609.             t$735(6) = 0
+ 1609. !dir$ suppress lexist
+ 1609.             t$735(7) = int( loc( lexist ), 8 )
+ 1609.             t$735(8) = 0
+ 1609.             t$735(9) = 0
+ 1609.             t$735(10) = 0
+ 1609.             t$735(11) = 0
+ 1609.             t$735(13) = 0
+ 1609.             t$735(15) = 0
+ 1609.             t$735(17) = 0
+ 1609.             t$735(19) = 0
+ 1609.             t$735(21) = 0
+ 1609.             t$735(23) = 0
+ 1609.             t$735(25) = 0
+ 1609.             t$735(26) = 0
+ 1609.             t$735(27) = 0
+ 1609.             t$735(29) = 0
+ 1609.             t$735(31) = 0
+ 1609.             t$735(33) = 0
+ 1609.             t$735(35) = 0
+ 1609.             t$735(37) = 0
+ 1609.             t$735(39) = 0
+ 1609.             t$735(41) = 0
+ 1609.             t$735(43) = 0
+ 1609.             t$735(44) = 0x2000500000000L
+ 1609.             t$735(45) = 0
+ 1609.             t$735(46) = 0
+ 1609.             t$735(47) = 0
+ 1609.             t$735(48) = 0
+ 1609.             t$735(49) = 0
+ 1609.             t$735(50) = 0
+ 1609.             t$735(52) = 0
+ 1609.             t$735(54) = 0
+ 1609.             t$735(56) = 0
+ 1609.             t$735(57) = 0
+ 1609.             t$735(58) = 0
+ 1609.             t$735(60) = 0
+ 1609.             t$735(61) = 0
+ 1609.             t$735(62) = 0
+ 1609.             t$735(63) = 0
+ 1609.             t$735(64) = 0
+ 1609.             t$735(66) = 0
+ 1609.             t$735(68) = 0
+ 1609.             t$735(69) = 0
+ 1609.             t$735(70) = 0
+ 1609.             t$734 = _inquire( t$735 )
+ 1610.             if ( lexist == 0 ) then
+ 1611.                t$736 = 49 + ( _ltrim(  _substr(fnamesoilmoist,1,225) ) )
+ 1611.                t$738 = int( _alloc( max( 0, t$736 ) ), 8 )
+ 1611.                 _substr(t$737,1,max( 0, t$736 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnamesoilmoist,1,_ltrim(  _substr(fnamesoilmoist,1,225) )), ' does not exist' ) )
+ 1611.                call fatalerror(  _substr(t$737,1,max( 0, t$736 )) )
+ 1611.                _free( t$738 )
+ 1611.             endif
+ 1611.          endif
+ 1611.       endif
+ 1616.       if ( ifco2 > 0 ) then
+ 1617.          t$740(1) = 0x100000000000000L
+ 1617.          t$740(2) = 0
+ 1617. !dir$ suppress  _substr(fnameco2,1,_ltrim(  _substr(fnameco2,1,206) ))
+ 1617.          t$740(3) = int( loc(  _substr(fnameco2,1,_ltrim(  _substr(fnameco2,1,206) )) ), 8 )
+ 1617.          t$740(4) = _ltrim(  _substr(fnameco2,1,206) )
+ 1617.          t$740(5) = 0
+ 1617.          t$740(6) = 0
+ 1617. !dir$ suppress lexist
+ 1617.          t$740(7) = int( loc( lexist ), 8 )
+ 1617.          t$740(8) = 0
+ 1617.          t$740(9) = 0
+ 1617.          t$740(10) = 0
+ 1617.          t$740(11) = 0
+ 1617.          t$740(13) = 0
+ 1617.          t$740(15) = 0
+ 1617.          t$740(17) = 0
+ 1617.          t$740(19) = 0
+ 1617.          t$740(21) = 0
+ 1617.          t$740(23) = 0
+ 1617.          t$740(25) = 0
+ 1617.          t$740(26) = 0
+ 1617.          t$740(27) = 0
+ 1617.          t$740(29) = 0
+ 1617.          t$740(31) = 0
+ 1617.          t$740(33) = 0
+ 1617.          t$740(35) = 0
+ 1617.          t$740(37) = 0
+ 1617.          t$740(39) = 0
+ 1617.          t$740(41) = 0
+ 1617.          t$740(43) = 0
+ 1617.          t$740(44) = 0x2000500000000L
+ 1617.          t$740(45) = 0
+ 1617.          t$740(46) = 0
+ 1617.          t$740(47) = 0
+ 1617.          t$740(48) = 0
+ 1617.          t$740(49) = 0
+ 1617.          t$740(50) = 0
+ 1617.          t$740(52) = 0
+ 1617.          t$740(54) = 0
+ 1617.          t$740(56) = 0
+ 1617.          t$740(57) = 0
+ 1617.          t$740(58) = 0
+ 1617.          t$740(60) = 0
+ 1617.          t$740(61) = 0
+ 1617.          t$740(62) = 0
+ 1617.          t$740(63) = 0
+ 1617.          t$740(64) = 0
+ 1617.          t$740(66) = 0
+ 1617.          t$740(68) = 0
+ 1617.          t$740(69) = 0
+ 1617.          t$740(70) = 0
+ 1617.          t$739 = _inquire( t$740 )
+ 1618.          if ( lexist == 0 ) then
+ 1619.             t$741 = 49 + ( _ltrim(  _substr(fnameco2,1,206) ) )
+ 1619.             t$743 = int( _alloc( max( 0, t$741 ) ), 8 )
+ 1619.              _substr(t$742,1,max( 0, t$741 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnameco2,1,_ltrim(  _substr(fnameco2,1,206) )), ' does not exist' ) )
+ 1619.             call fatalerror(  _substr(t$742,1,max( 0, t$741 )) )
+ 1619.             _free( t$743 )
+ 1619.          endif
+ 1619.       endif
+ 1623.       if ( ifozone /= 0 ) then
+ 1624.          t$745(1) = 0x100000000000000L
+ 1624.          t$745(2) = 0
+ 1624. !dir$ suppress  _substr(fnameozone,1,_ltrim(  _substr(fnameozone,1,206) ))
+ 1624.          t$745(3) = int( loc(  _substr(fnameozone,1,_ltrim(  _substr(fnameozone,1,206) )) ), 8 )
+ 1624.          t$745(4) = _ltrim(  _substr(fnameozone,1,206) )
+ 1624.          t$745(5) = 0
+ 1624.          t$745(6) = 0
+ 1624. !dir$ suppress lexist
+ 1624.          t$745(7) = int( loc( lexist ), 8 )
+ 1624.          t$745(8) = 0
+ 1624.          t$745(9) = 0
+ 1624.          t$745(10) = 0
+ 1624.          t$745(11) = 0
+ 1624.          t$745(13) = 0
+ 1624.          t$745(15) = 0
+ 1624.          t$745(17) = 0
+ 1624.          t$745(19) = 0
+ 1624.          t$745(21) = 0
+ 1624.          t$745(23) = 0
+ 1624.          t$745(25) = 0
+ 1624.          t$745(26) = 0
+ 1624.          t$745(27) = 0
+ 1624.          t$745(29) = 0
+ 1624.          t$745(31) = 0
+ 1624.          t$745(33) = 0
+ 1624.          t$745(35) = 0
+ 1624.          t$745(37) = 0
+ 1624.          t$745(39) = 0
+ 1624.          t$745(41) = 0
+ 1624.          t$745(43) = 0
+ 1624.          t$745(44) = 0x2000500000000L
+ 1624.          t$745(45) = 0
+ 1624.          t$745(46) = 0
+ 1624.          t$745(47) = 0
+ 1624.          t$745(48) = 0
+ 1624.          t$745(49) = 0
+ 1624.          t$745(50) = 0
+ 1624.          t$745(52) = 0
+ 1624.          t$745(54) = 0
+ 1624.          t$745(56) = 0
+ 1624.          t$745(57) = 0
+ 1624.          t$745(58) = 0
+ 1624.          t$745(60) = 0
+ 1624.          t$745(61) = 0
+ 1624.          t$745(62) = 0
+ 1624.          t$745(63) = 0
+ 1624.          t$745(64) = 0
+ 1624.          t$745(66) = 0
+ 1624.          t$745(68) = 0
+ 1624.          t$745(69) = 0
+ 1624.          t$745(70) = 0
+ 1624.          t$744 = _inquire( t$745 )
+ 1625.          if ( lexist == 0 ) then
+ 1626.             t$746 = 49 + ( _ltrim(  _substr(fnameozone,1,206) ) )
+ 1626.             t$748 = int( _alloc( max( 0, t$746 ) ), 8 )
+ 1626.              _substr(t$747,1,max( 0, t$746 )) = //( '**(SetFileNameGaussPoints)** file ', //(  _substr(fnameozone,1,_ltrim(  _substr(fnameozone,1,206) )), ' does not exist' ) )
+ 1626.             call fatalerror(  _substr(t$747,1,max( 0, t$746 )) )
+ 1626.             _free( t$748 )
+ 1626.          endif
+ 1626.       endif
+ 1630.       return
+ 1630.       end
+ 1630.       
+ 1661.       
+ 1661.       subroutine setfilenamewavesperlat( trunc, jmax )
+ 1642.       _fwrite( _clist( 0, 0, 3,  _substr(c0,1,5), Null_Arg, Null_Arg, t$138,  _substr(t$137,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( jmax, 0x2000200000000L ) ) )
+ 1643.       _fwrite( _clist( 0, 0, 3,  _substr(c1,1,4), Null_Arg, Null_Arg, t$140,  _substr(t$139,1,6), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( trunc, 0x2000200000000L ) ) )
+ 1645.       if ( mgiven ) then
+ 1646.           _substr(fnamewaves,1,211) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( '/mwaves.T', //(  _substr(c1,1,4), //( 'G',  _substr(c0,1,5) ) ) ) )
+ 1647.          t$750(1) = 0x100000000000000L
+ 1647.          t$750(2) = 0
+ 1647. !dir$ suppress  _substr(fnamewaves,1,_ltrim(  _substr(fnamewaves,1,211) ))
+ 1647.          t$750(3) = int( loc(  _substr(fnamewaves,1,_ltrim(  _substr(fnamewaves,1,211) )) ), 8 )
+ 1647.          t$750(4) = _ltrim(  _substr(fnamewaves,1,211) )
+ 1647.          t$750(5) = 0
+ 1647.          t$750(6) = 0
+ 1647. !dir$ suppress lexist
+ 1647.          t$750(7) = int( loc( lexist ), 8 )
+ 1647.          t$750(8) = 0
+ 1647.          t$750(9) = 0
+ 1647.          t$750(10) = 0
+ 1647.          t$750(11) = 0
+ 1647.          t$750(13) = 0
+ 1647.          t$750(15) = 0
+ 1647.          t$750(17) = 0
+ 1647.          t$750(19) = 0
+ 1647.          t$750(21) = 0
+ 1647.          t$750(23) = 0
+ 1647.          t$750(25) = 0
+ 1647.          t$750(26) = 0
+ 1647.          t$750(27) = 0
+ 1647.          t$750(29) = 0
+ 1647.          t$750(31) = 0
+ 1647.          t$750(33) = 0
+ 1647.          t$750(35) = 0
+ 1647.          t$750(37) = 0
+ 1647.          t$750(39) = 0
+ 1647.          t$750(41) = 0
+ 1647.          t$750(43) = 0
+ 1647.          t$750(44) = 0x2000500000000L
+ 1647.          t$750(45) = 0
+ 1647.          t$750(46) = 0
+ 1647.          t$750(47) = 0
+ 1647.          t$750(48) = 0
+ 1647.          t$750(49) = 0
+ 1647.          t$750(50) = 0
+ 1647.          t$750(52) = 0
+ 1647.          t$750(54) = 0
+ 1647.          t$750(56) = 0
+ 1647.          t$750(57) = 0
+ 1647.          t$750(58) = 0
+ 1647.          t$750(60) = 0
+ 1647.          t$750(61) = 0
+ 1647.          t$750(62) = 0
+ 1647.          t$750(63) = 0
+ 1647.          t$750(64) = 0
+ 1647.          t$750(66) = 0
+ 1647.          t$750(68) = 0
+ 1647.          t$750(69) = 0
+ 1647.          t$750(70) = 0
+ 1647.          t$749 = _inquire( t$750 )
+ 1648.          if ( lexist == 0 ) then
+ 1649.             t$751 = 49 + ( _ltrim(  _substr(fnamewaves,1,211) ) )
+ 1649.             t$753 = int( _alloc( max( 0, t$751 ) ), 8 )
+ 1649.              _substr(t$752,1,max( 0, t$751 )) = //( '**(SetFileNameWavesPerLat)** file ', //(  _substr(fnamewaves,1,_ltrim(  _substr(fnamewaves,1,211) )), ' does not exist' ) )
+ 1649.             call fatalerror(  _substr(t$752,1,max( 0, t$751 )) )
+ 1649.             _free( t$753 )
+ 1649.          endif
+ 1649.       else
+ 1652.           _substr(fnamewaves,1,211) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( '/mwaves.T', //(  _substr(c1,1,4), //( 'G',  _substr(c0,1,5) ) ) ) )
+ 1652.       endif
+ 1655.        _substr(fnamenmi,1,212) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'NMI.T', //(  _substr(c1,1,_ltrim(  _substr(c1,1,4) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) )
+ 1656.       t$755(1) = 0x100000000000000L
+ 1656.       t$755(2) = 0
+ 1656. !dir$ suppress  _substr(fnamenmi,1,_ltrim(  _substr(fnamenmi,1,212) ))
+ 1656.       t$755(3) = int( loc(  _substr(fnamenmi,1,_ltrim(  _substr(fnamenmi,1,212) )) ), 8 )
+ 1656.       t$755(4) = _ltrim(  _substr(fnamenmi,1,212) )
+ 1656.       t$755(5) = 0
+ 1656.       t$755(6) = 0
+ 1656. !dir$ suppress lexist
+ 1656.       t$755(7) = int( loc( lexist ), 8 )
+ 1656.       t$755(8) = 0
+ 1656.       t$755(9) = 0
+ 1656.       t$755(10) = 0
+ 1656.       t$755(11) = 0
+ 1656.       t$755(13) = 0
+ 1656.       t$755(15) = 0
+ 1656.       t$755(17) = 0
+ 1656.       t$755(19) = 0
+ 1656.       t$755(21) = 0
+ 1656.       t$755(23) = 0
+ 1656.       t$755(25) = 0
+ 1656.       t$755(26) = 0
+ 1656.       t$755(27) = 0
+ 1656.       t$755(29) = 0
+ 1656.       t$755(31) = 0
+ 1656.       t$755(33) = 0
+ 1656.       t$755(35) = 0
+ 1656.       t$755(37) = 0
+ 1656.       t$755(39) = 0
+ 1656.       t$755(41) = 0
+ 1656.       t$755(43) = 0
+ 1656.       t$755(44) = 0x2000500000000L
+ 1656.       t$755(45) = 0
+ 1656.       t$755(46) = 0
+ 1656.       t$755(47) = 0
+ 1656.       t$755(48) = 0
+ 1656.       t$755(49) = 0
+ 1656.       t$755(50) = 0
+ 1656.       t$755(52) = 0
+ 1656.       t$755(54) = 0
+ 1656.       t$755(56) = 0
+ 1656.       t$755(57) = 0
+ 1656.       t$755(58) = 0
+ 1656.       t$755(60) = 0
+ 1656.       t$755(61) = 0
+ 1656.       t$755(62) = 0
+ 1656.       t$755(63) = 0
+ 1656.       t$755(64) = 0
+ 1656.       t$755(66) = 0
+ 1656.       t$755(68) = 0
+ 1656.       t$755(69) = 0
+ 1656.       t$755(70) = 0
+ 1656.       t$754 = _inquire( t$755 )
+ 1657.       if ( lexist == 0 ) then
+ 1658.           _substr(t$756,1,28) = '**(SetFileNameWavesPerLat)**'
+ 1658.          t$757 = 21 + ( _ltrim(  _substr(fnamenmi,1,212) ) )
+ 1658.          t$759 = int( _alloc( max( 0, t$757 ) ), 8 )
+ 1658.           _substr(t$758,1,max( 0, t$757 )) = //( ' file ', //(  _substr(fnamenmi,1,_ltrim(  _substr(fnamenmi,1,212) )), ' does not exist' ) )
+ 1658.          call msgone(  _substr(t$756,1,28),  _substr(t$758,1,max( 0, t$757 )) )
+ 1658.          _free( t$759 )
+ 1658.       endif
+ 1661.       return
+ 1661.       end
+ 1661.       
+ 1663.       
+ 1663.       subroutine filenameanalis
+ 1668.       $_IOitem_P0(0) = idatei(4)
+ 1668.       $_IOitem_P0(1) = idatei(3)
+ 1668.       $_IOitem_P0(2) = idatei(2)
+ 1668.       $_IOitem_P0(3) = idatei(1)
+ 1668.       _fwrite( _clist( 0, 0, 3,  _substr(labeli,1,10), Null_Arg, Null_Arg, t$142,  _substr(t$141,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P0(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1669.       $_IOitem_P1(0) = idatew(4)
+ 1669.       $_IOitem_P1(1) = idatew(3)
+ 1669.       $_IOitem_P1(2) = idatew(2)
+ 1669.       $_IOitem_P1(3) = idatew(1)
+ 1669.       _fwrite( _clist( 0, 0, 3,  _substr(labelc,1,10), Null_Arg, Null_Arg, t$144,  _substr(t$143,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P1(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1670.       $_IOitem_P2(0) = idatef(4)
+ 1670.       $_IOitem_P2(1) = idatef(3)
+ 1670.       $_IOitem_P2(2) = idatef(2)
+ 1670.       $_IOitem_P2(3) = idatef(1)
+ 1670.       _fwrite( _clist( 0, 0, 3,  _substr(labelf,1,10), Null_Arg, Null_Arg, t$146,  _substr(t$145,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P2(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1671.       if (  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'cold' ) then
+ 1672.           _substr(exts,1,5) = 'S.unf'
+ 1673.           _substr(extw,1,5) = 'F.unf'
+ 1674.           _substr(exdw,1,5) = 'F.dir'
+ 1675.           _substr(exth,1,5) = 'F.unf'
+ 1676.           _substr(exdh,1,5) = 'F.dir'
+ 1678.           _substr(fnameinput0,1,251) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'GANL', //(  _substr(prefy,1,_ltrim(  _substr(prefy,1,5) )), //(  _substr(labeli,1,10), //(  _substr(exts,1,5), //( '.', //(  _substr(trcg,1,_ltrim(  _substr(trcg,1,6) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) ) ) ) )
+ 1679.           _substr(fnameinput1,1,251) = //(  _substr(path_in1,1,_ltrim(  _substr(path_in1,1,200) )), //( 'GANL', //(  _substr(prefy,1,_ltrim(  _substr(prefy,1,5) )), //(  _substr(labeli,1,10), //(  _substr(exts,1,5), //( '.', //(  _substr(trcg,1,_ltrim(  _substr(trcg,1,6) )),  _substr(lv,1,_ltrim(  _substr(lv,1,4) )) ) ) ) ) ) ) )
+ 1680.       else if (  _substr(start,1,_ltrim(  _substr(start,1,200) )) == 'warm' ) then
+ 1681.           _substr(exts,1,5) = 'S.unf'
+ 1682.           _substr(extw,1,5) = 'F.unf'
+ 1683.           _substr(exdw,1,5) = 'F.dir'
+ 1684.           _substr(exth,1,5) = 'F.unf'
+ 1685.           _substr(exdh,1,5) = 'F.dir'
+ 1686.           _substr(fnameinput0,1,251) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trcg,1,_ltrim(  _substr(trcg,1,6) )), //(  _substr(lv,1,_ltrim(  _substr(lv,1,4) )), '.outmdt' ) ) ) ) ) ) ) ) ) )
+ 1687.           _substr(fnameinput1,1,251) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trcg,1,_ltrim(  _substr(trcg,1,6) )), //(  _substr(lv,1,_ltrim(  _substr(lv,1,4) )), '.outatt' ) ) ) ) ) ) ) ) ) )
+ 1687.       endif
+ 1689.       return
+ 1689.       end
+ 1689.       
+ 1692.       
+ 1692.       subroutine filenamerest( prc, opt )
+ 1692.       t$378 = _len( prc )
+ 1699.       $_IOitem_P0(0) = idate(4)
+ 1699.       $_IOitem_P0(1) = idate(2)
+ 1699.       $_IOitem_P0(2) = idate(3)
+ 1699.       $_IOitem_P0(3) = idate(1)
+ 1699.       _fwrite( _clist( 0, 0, 3,  _substr(labeli,1,10), Null_Arg, Null_Arg, t$148,  _substr(t$147,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P0(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1700.       $_IOitem_P1(0) = idatec(4)
+ 1700.       $_IOitem_P1(1) = idatec(2)
+ 1700.       $_IOitem_P1(2) = idatec(3)
+ 1700.       $_IOitem_P1(3) = idatec(1)
+ 1700.       _fwrite( _clist( 0, 0, 3,  _substr(labelc,1,10), Null_Arg, Null_Arg, t$150,  _substr(t$149,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P1(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1701.       $_IOitem_P2(0) = idatec(4)
+ 1701.       $_IOitem_P2(1) = idatec(2)
+ 1701.       $_IOitem_P2(2) = idatec(3)
+ 1701.       $_IOitem_P2(3) = idatec(1)
+ 1701.       _fwrite( _clist( 0, 0, 3,  _substr(labelf,1,10), Null_Arg, Null_Arg, t$152,  _substr(t$151,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P2(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1702.       if ( opt == 1 ) then
+ 1703.           _substr(fnamerestinput1,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '.outmdt',  _substr(prc,1,_ltrim(  _substr(prc,1,_len( prc )) )) ) ) ) ) ) ) ) ) ) )
+ 1706.           _substr(fnamerestinput2,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '.outatt',  _substr(prc,1,_ltrim(  _substr(prc,1,_len( prc )) )) ) ) ) ) ) ) ) ) ) )
+ 1709.           _substr(fnameconvclinp0,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '.convcl',  _substr(prc,1,_ltrim(  _substr(prc,1,_len( prc )) )) ) ) ) ) ) ) ) ) ) )
+ 1712.           _substr(fnamesibprginp0,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '.sibprg',  _substr(prc,1,_ltrim(  _substr(prc,1,_len( prc )) )) ) ) ) ) ) ) ) ) ) )
+ 1712.       else
+ 1715.           _substr(fnamesibprgout1,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '.sibprg',  _substr(prc,1,_ltrim(  _substr(prc,1,_len( prc )) )) ) ) ) ) ) ) ) ) ) )
+ 1718.           _substr(fnameconvclout1,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '.convcl',  _substr(prc,1,_ltrim(  _substr(prc,1,_len( prc )) )) ) ) ) ) ) ) ) ) ) )
+ 1721.           _substr(fnamerestoutput2,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '.outatt',  _substr(prc,1,_ltrim(  _substr(prc,1,_len( prc )) )) ) ) ) ) ) ) ) ) ) )
+ 1724.           _substr(fnamerestoutput1,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //( 'GFCT', //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '.outmdt',  _substr(prc,1,_ltrim(  _substr(prc,1,_len( prc )) )) ) ) ) ) ) ) ) ) ) )
+ 1724.       endif
+ 1727.       return
+ 1727.       end
+ 1727.       
+ 1730.       
+ 1730.       subroutine filenamegeral( prc, opt )
+ 1730.       t$379 = _len( prc )
+ 1730.       t$380 = _len( opt )
+ 1737.       $_IOitem_P0(0) = idatei(4)
+ 1737.       $_IOitem_P0(1) = idatei(3)
+ 1737.       $_IOitem_P0(2) = idatei(2)
+ 1737.       $_IOitem_P0(3) = idatei(1)
+ 1737.       _fwrite( _clist( 0, 0, 3,  _substr(labeli,1,10), Null_Arg, Null_Arg, t$154,  _substr(t$153,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P0(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1738.       $_IOitem_P1(0) = idatew(4)
+ 1738.       $_IOitem_P1(1) = idatew(3)
+ 1738.       $_IOitem_P1(2) = idatew(2)
+ 1738.       $_IOitem_P1(3) = idatew(1)
+ 1738.       _fwrite( _clist( 0, 0, 3,  _substr(labelc,1,10), Null_Arg, Null_Arg, t$156,  _substr(t$155,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P1(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1739.       $_IOitem_P2(0) = idatef(4)
+ 1739.       $_IOitem_P2(1) = idatef(3)
+ 1739.       $_IOitem_P2(2) = idatef(2)
+ 1739.       $_IOitem_P2(3) = idatef(1)
+ 1739.       _fwrite( _clist( 0, 0, 3,  _substr(labelf,1,10), Null_Arg, Null_Arg, t$158,  _substr(t$157,1,12), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $_IOitem_P2(:( 0, 3, 1 )), 0x2000200000000L ) ) )
+ 1740.       if (  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )) == 'GDHN' ) then
+ 1741.           _substr(fnamegdhn,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //(  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )), //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.',  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )) ) ) ) ) ) ) ) )
+ 1743.       else if (  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )) == 'GDYN' ) then
+ 1744.           _substr(fnamegdyn,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //(  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )), //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelf,1,10), //(  _substr(extw,1,5), //( '.',  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )) ) ) ) ) ) ) ) )
+ 1744.       else if (  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )) == 'GPRC' ) then
+ 1747.           _substr(fnamegprc,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //(  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )), //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.',  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )) ) ) ) ) ) ) ) )
+ 1747.       else if (  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )) == 'GFGH' ) then
+ 1750.           _substr(fnameoutgh,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //(  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )), //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(extw,1,5), //( '.',  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )) ) ) ) ) ) ) ) )
+ 1752.           _substr(fnametopgh,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //(  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )), //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //( 'F.top', //( '.',  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )) ) ) ) ) ) ) ) )
+ 1754.           _substr(fnamendrgh,1,253) = //(  _substr(dirfnameoutput,1,_ltrim(  _substr(dirfnameoutput,1,200) )), //( '/', //(  _substr(opt,1,_ltrim(  _substr(opt,1,_len( opt )) )), //(  _substr(prefx,1,_ltrim(  _substr(prefx,1,5) )), //(  _substr(labeli,1,10), //(  _substr(labelc,1,10), //(  _substr(exdh,1,5), //( '.',  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )) ) ) ) ) ) ) ) )
+ 1754.       endif
+ 1757.       return
+ 1757.       end
+ 1757.       
+ 1760.       
+ 1760.       subroutine setoutput( tod1, idate )
+ 1760.       t$159 = maxtim
+ 1773.       t$381 = _zla( 0, maxtim )
+ 1773.       t$384 = 8 * _zla( 0, maxtim )
+ 1760.       t$382 = int( _alloc( 8 * _zla( 0, maxtim ) ), 8 )
+ 1773.       t$383 = t$382
+ 1779.       tod = tod1
+ 1780.       if ( dhfct >= 0 ) then
+ 1781.          if ( dhfct > 0 ) then
+ 1782.             maxtfm2 = maxtim
+ 1783.             $F_A33 = maxtim
+ 1783.             if ( maxtim > 0 ) then
+ 1783.                $I_L1783_31 = 0
+ 1783. !dir$ ivdep
+ 1783.                do
+ 1783.                   cthr(1 + $I_L1783_31) = 0.0
+ 1783.                   $I_L1783_31 = 1 + $I_L1783_31
+ 1783.                   if ( $I_L1783_31 >= $F_A33 ) exit
+ 1783.                enddo
+ 1783.             endif
+ 1784.             cthr(1) = real( dhfct, 8 )
+ 1785.             if ( -2 + maxtim >= 0 ) then
+ 1785.                $I_L1785_24 = 0
+ 1785. !dir$ unroll 4
+ 1785.                do
+ 1786.                   cthr(2 + $I_L1785_24) = ( real( dhfct, 8 ) + real( 1 + $I_L1785_24, 8 ) * real( dhfct, 8 ) )
+ 1787.                   $I_L1785_24 = 1 + $I_L1785_24
+ 1785.                   if ( $I_L1785_24 >= -1 + maxtim ) exit
+ 1785.                enddo
+ 1785.             endif
+ 1788.          else if ( dhfct == 0 ) then
+ 1789.             $Unit_temp_O0 = nnamelist
+ 1789.             _fread( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( maxtfm2, 0x2000200000000L ) ) )
+ 1790.             if ( maxtfm2 > 0 ) then
+ 1791.                if ( ( maxtim <= 0 .or. maxtfm2 <= 0 .or. maxtfm2 > maxtim ) .and. maxtfm2 > 0 ) then
+ 1791.                    _substr(t$764,1,12) = 'Options.f90'
+ 1791.                    _substr(t$765,1,5) = 'CTHR'
+ 1791.                   t$766 = maxtfm2
+ 1791.                   call _rbounds_error(  _substr(t$764,1,12), 1791,  _substr(t$765,1,5), 1, 1, t$159, 1, t$766, 1, t$763 )
+ 1791.                endif
+ 1791.                $Unit_temp_O1 = nnamelist
+ 1791.                _fread( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( cthr(:( 1, maxtfm2, 1 )), 0x804060300000000L ) ) )
+ 1791.             else
+ 1793.                maxtfm2 = 17
+ 1794.                $F_A34 = maxtim
+ 1794.                if ( maxtim > 0 ) then
+ 1794.                   $I_L1794_33 = 0
+ 1794. !dir$ ivdep
+ 1794.                   do
+ 1794.                      cthr(1 + $I_L1794_33) = 0.0
+ 1794.                      $I_L1794_33 = 1 + $I_L1794_33
+ 1794.                      if ( $I_L1794_33 >= $F_A34 ) exit
+ 1794.                   enddo
+ 1794.                endif
+ 1795.                cthr(1) = 6.0
+ 1795.                cthr(2) = 12.0
+ 1795.                cthr(3) = 18.0
+ 1795.                cthr(4) = 24.0
+ 1796.                cthr(5) = 30.0
+ 1796.                cthr(6) = 36.0
+ 1796.                cthr(7) = 42.0
+ 1796.                cthr(8) = 48.0
+ 1797.                cthr(9) = 54.0
+ 1797.                cthr(10) = 60.0
+ 1797.                cthr(11) = 66.0
+ 1797.                cthr(12) = 72.0
+ 1798.                cthr(13) = 84.0
+ 1798.                cthr(14) = 96.0
+ 1798.                cthr(15) = 120.0
+ 1798.                cthr(16) = 144.0
+ 1799.                cthr(17) = 168.0
+ 1799.             endif
+ 1799.          endif
+ 1802.          t$766 = nnamelist
+ 1802.          t$768(1) = 0x100000000000000L
+ 1802. !dir$ suppress t$766
+ 1802.          t$768(2) = int( loc( t$766 ), 8 )
+ 1802.          t$768(3) = 0
+ 1802.          t$768(4) = 0
+ 1802.          t$768(5) = 0
+ 1802.          t$768(7) = 0
+ 1802.          t$768(8) = 0
+ 1802.          t$767 = _close( t$768 )
+ 1803.          $ihour_S1 = 0
+ 1804.          if ( maxtim > 0 ) then
+ 1808.             if ( maxtfm2 > 0 ) then
+ 1804.                $I_L1804_35 = 0
+ 1804.                do
+ 1805.                   tod = tod + delt
+ 1806.                   if ( mod( tod, 3600.0 ) == 0.0 ) then
+ 1807.                      $ihour_S1 = 1 + $ihour_S1
+ 1808.                      $I_L1808_29 = 0
+ 1808. !dir$ ivdep
+ 1808.                      do
+ 1809.                         if ( abs( cthr(1 + $I_L1808_29) + -$ihour_S1 ) <= 1.0000000000000001e-5 ) then
+ 1810.                            (cthl%base_addr)(1 + $I_L1804_35, 0) = .true.
+ 1810.                         endif
+ 1813.                         $I_L1808_29 = 1 + $I_L1808_29
+ 1812.                         if ( $I_L1808_29 >= maxtfm2 ) exit
+ 1812.                      enddo
+ 1814.                      tod = 0.0
+ 1814.                   endif
+ 1816.                   $I_L1804_35 = 1 + $I_L1804_35
+ 1815.                   if ( $I_L1804_35 >= maxtim ) exit
+ 1815.                enddo
+ 1815.             endif
+ 1815.          endif
+ 1815.       else
+ 1819.          ihour = idate(1)
+ 1820.          idays = idate(3)
+ 1821.          imont = idate(2)
+ 1822.          iyear = idate(4)
+ 1824.          $t_S4 = maxtim
+ 1824.          if ( maxtim > 0 ) then
+ 1824.             $I_L1824_27 = 0
+ 1824.             do
+ 1825.                tod = tod + delt
+ 1827.                if ( mod( tod, 3600.0 ) == 0.0 ) then
+ 1829.                   ihour = cvmg( 1 + ihour, 0, ihour /= 23 )
+ 1829.                endif
+ 1832.                if ( mod( tod, 86400.0 ) == 0.0 ) then
+ 1833.                   tod = 0.0
+ 1834.                   idays = 1 + idays
+ 1834.                endif
+ 1837.                if ( mod( iyear, 4.0 ) == 0.0 ) then
+ 1839.                   if ( idays > nday2(imont) ) then
+ 1840.                      idays = 1
+ 1841.                      imont = 1 + imont
+ 1842.                      (cthl%base_addr)(1 + $I_L1824_27, 0) = .true.
+ 1843.                      if ( imont > 12 ) then
+ 1844.                         imont = 1
+ 1845.                         iyear = 1 + iyear
+ 1845.                      endif
+ 1847.                      if ( ( 1 + $I_L1824_27 ) < cthl%dim_1%LB .or. ( 1 + $I_L1824_27 ) > cthl%dim_1%LB + cthl%dim_1%EX + -1 ) then
+ 1847.                          _substr(t$779,1,12) = 'Options.f90'
+ 1847.                          _substr(t$780,1,5) = 'CTHL'
+ 1847.                         t$766 = cthl%dim_1%LB
+ 1847.                         t$781 = cthl%dim_1%LB + cthl%dim_1%EX + -1
+ 1847.                         t$782 = 1 + $I_L1824_27
+ 1847.                         call _bounds_error(  _substr(t$779,1,12), 1847,  _substr(t$780,1,5), 1, t$766, t$781, t$782, t$778 )
+ 1847.                      endif
+ 1847.                      $_IOitem_P0(0) = iyear
+ 1847.                      $_IOitem_P0(1) = imont
+ 1847.                      $_IOitem_P0(2) = 1
+ 1847.                      $_IOitem_P0(3) = ihour
+ 1847.                      _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (cthl%base_addr)(1 + $I_L1824_27, 0), 0x2000500000000L ), _iotype( $_IOitem_P0(:( 0, 3, 1 )), 0x2000200000000L ), _iotype( tod, 0x804060300000000L ) ) )
+ 1847.                   endif
+ 1850.                else if ( idays > nday1(imont) ) then
+ 1853.                   idays = 1
+ 1854.                   imont = 1 + imont
+ 1855.                   (cthl%base_addr)(1 + $I_L1824_27, 0) = .true.
+ 1856.                   if ( imont > 12 ) then
+ 1857.                      imont = 1
+ 1858.                      iyear = 1 + iyear
+ 1858.                   endif
+ 1860.                   if ( ( 1 + $I_L1824_27 ) < cthl%dim_1%LB .or. ( 1 + $I_L1824_27 ) > cthl%dim_1%LB + cthl%dim_1%EX + -1 ) then
+ 1860.                       _substr(t$784,1,12) = 'Options.f90'
+ 1860.                       _substr(t$785,1,5) = 'CTHL'
+ 1860.                      t$766 = cthl%dim_1%LB
+ 1860.                      t$781 = cthl%dim_1%LB + cthl%dim_1%EX + -1
+ 1860.                      t$782 = 1 + $I_L1824_27
+ 1860.                      call _bounds_error(  _substr(t$784,1,12), 1860,  _substr(t$785,1,5), 1, t$766, t$781, t$782, t$783 )
+ 1860.                   endif
+ 1860.                   $_IOitem_P1(0) = iyear
+ 1860.                   $_IOitem_P1(1) = imont
+ 1860.                   $_IOitem_P1(2) = 1
+ 1860.                   $_IOitem_P1(3) = ihour
+ 1860.                   _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (cthl%base_addr)(1 + $I_L1824_27, 0), 0x2000500000000L ), _iotype( $_IOitem_P1(:( 0, 3, 1 )), 0x2000200000000L ), _iotype( tod, 0x804060300000000L ) ) )
+ 1860.                endif
+ 1864.                $I_L1824_27 = 1 + $I_L1824_27
+ 1863.                if ( $I_L1824_27 >= $t_S4 ) exit
+ 1863.             enddo
+ 1863.          endif
+ 1863.       endif
+ 1760.       _free( t$382 )
+ 1866.       return
+ 1866.       end
+ 1866.       
+  573.       
+  573.       module options
+ 1868.       return
+ 1868.       end
+ 1868.       

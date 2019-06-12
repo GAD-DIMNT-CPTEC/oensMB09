@@ -1,0 +1,19 @@
+# For grib1 -> grib2
+constant dataRepresentationTemplateNumber = 50;
+
+ibmfloat realPart ;
+position offsetBeforeData;
+
+meta codedValues data_g1simple_packing(
+   section4Length,
+   offsetBeforeData,
+   offsetSection4,
+   nbp,
+   referenceValue,
+   binaryScaleFactor,
+   decimalScaleFactor,
+   halfByte
+): read_only;
+
+meta values data_g1shsimple_packing(codedValues,realPart);
+

@@ -1,0 +1,28 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+set +e
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probability/dataout/%RESOL%/${LABELI} prob 67400000
+if [ $? -eq 0 ]; then
+   smslabel Info "Ok: ${LABELI}"
+%include <tail.h>
+fi
+set -e
+
+
+NMEMBR=$(echo "${NPERT}*2+1" | bc -l )
+
+echo ./runprobability.bash ${TRC} ${LV} ${LABELI} ${NFDAYS} $NMEMBR NMC
+./runprobability.bash run ${TRC} ${LV} ${LABELI} ${NFDAYS} $NMEMBR NMC
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probability/dataout/%RESOL%/${LABELI} prob 67400000
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probability/dataout/%RESOL%/${LABELI} prob 67400000
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probability/dataout/%RESOL%/${LABELI}/gif png 0939698
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/probability/dataout/%RESOL%/${LABELI}/gif png 0939698
+
+%include <tail.h>

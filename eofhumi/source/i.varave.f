@@ -1,0 +1,27 @@
+      SUBROUTINE VARAVE(V,LM,VMIN,VMAX,VARMN,VSIG)
+C*
+      INTEGER LM
+      REAL VMIN,VMAX,VARMN,VSIG
+      REAL V(LM)
+C*
+      INTEGER L
+C*
+      VARMN=0.0
+      VMIN=V(1)
+      VMAX=V(1)
+      DO L=1,LM
+      VMIN=MIN(VMIN,V(L))
+      VMAX=MAX(VMAX,V(L))
+      VARMN=VARMN+V(L)
+      ENDDO
+      VARMN=VARMN/REAL(LM)
+C*
+      VSIG=0.0
+      DO L=1,LM
+      VSIG=VSIG+(V(L)-VARMN)**2
+      ENDDO
+C
+      VSIG=SQRT(VSIG/REAL(LM))
+C*
+      RETURN
+      END

@@ -1,0 +1,193 @@
+      PROGRAM FIXGRB
+C*
+      INTEGER LGRB,LREC,LENF,IN,MD(12),C,
+     *        I,T,YI,MI,DI,HI,Y,M,D,H,FF
+      CHARACTER FNAME*256
+      LOGICAL EX
+      DATA MD /31,28,31,30,31,30,31,31,30,31,30,31/
+C*
+      CALL GETARG(1,FNAME)
+      IN=INDEX(FNAME//' ',' ')-1
+      T=INDEX(FNAME//' ','G')+7
+C*
+      READ(FNAME(T:T+3),'(I4)')YI
+      READ(FNAME(T+4:T+5),'(I2)')MI
+      READ(FNAME(T+6:T+7),'(I2)')DI
+      READ(FNAME(T+8:T+9),'(I2)')HI
+      READ(FNAME(T+10:T+19),'(I11)')FF
+      Y=YI
+      M=MI
+      D=DI
+      H=HI
+      C=0
+      DOWHILE((YI*1000000+MI*10000+DI*100+HI).LT.FF)
+      C=C+1
+      HI=HI+1
+      IF(HI.GT.23) THEN
+      HI=0
+      DI=DI+1
+      IF (MOD(YI,4).EQ.0) THEN
+      MD(2)=29
+      ELSE
+      MD(2)=28
+      ENDIF
+      IF(DI.GT.MD(MI)) THEN
+      DI=1
+      MI=MI+1
+      IF(MI.GT.12)THEN
+      MI=1
+      YI=YI+1
+      ENDIF
+      ENDIF
+      ENDIF
+      ENDDO
+C*
+      OPEN(12,FILE=FNAME(1:IN),STATUS='OLD',
+     *        FORM='UNFORMATTED',
+     *        RECORDTYPE='STREAM')
+      INQUIRE(FILE=FNAME(1:IN)//'.new',EXIST=EX)
+      IF (EX) CALL SYSTEM('rm -f '//FNAME(1:IN)//'.new'//char(0))
+      OPEN(13,FILE=FNAME(1:IN)//'.new',STATUS='NEW',
+     *        FORM='UNFORMATTED',
+     *        RECORDTYPE='STREAM')
+   10 CALL HDRGRB(LGRB,LREC,LENF,FNAME(1:IN))
+      CALL UPKGRB(LGRB-8,LREC,LENF,FNAME(1:IN),Y,M,D,H,C,T-7)
+      GOTO 10
+C*
+      END
+C*
+      SUBROUTINE HDRGRB(LGRB,LREC,LENF,FNAME)
+C*
+      INTEGER I,LGRB,LREC
+      CHARACTER*4 CH,GRIB,GRBL
+      CHARACTER*(*) FNAME
+      INTEGER ISTAT,STAT,LENF,NSTAT(64)
+      INTEGER LG(4)
+      CHARACTER*1 GRBI(4)
+      EQUIVALENCE (GRBI,GRBL)
+C*
+      ISTAT=STAT(FNAME,NSTAT)
+C*
+      READ(12,END=99)GRIB
+      IF (GRIB .NE. 'GRIB') 
+     *    STOP' *** ERROR FROM HDRGRB: IT IS NOT A GRIB FILE ***'
+      READ(12)GRBL
+      DO I=1,4
+      WRITE(CH,'(Z2)')GRBI(I)
+      READ(CH,'(Z2)')LG(I)
+      ENDDO
+      LGRB=LG(1)*256*256+LG(2)*256+LG(3)
+      LREC=LGRB/4
+      LENF=NSTAT(8)/LGRB
+C*
+C*      WRITE(*,'(A,A,A4,A,I8,A,I3,2(A,I8))')' FROM HDRGRB:',
+C*     *        ' GRIB = ',GRIB,' LGRB = ',LGRB,
+C*     *        ' EDITION = ',LG(4),' LREC = ',LREC,' LENF = ',LENF
+C*
+      WRITE(13)GRIB
+      WRITE(13)GRBL
+      RETURN
+   99 CLOSE(12)
+      CLOSE(13)
+      CALL SYSTEM('mv -f '//FNAME//'.new '//FNAME//char(0))
+      STOP' *** END GRIB FILE ***'
+      END
+C*
+      SUBROUTINE UPKGRB(LGRB,LREC,LENF,FNAME,Y,M,D,H,C,T)
+C*
+      INTEGER I,J,K,T,LGRB,LREC,LENF,ITYLEV,IPRM,
+     *        Y,M,D,H,C,JMAX,JH,JA,JB,IC
+      CHARACTER*1 GRD(LGRB)*1,LATTMP1,LATTMP2,LATTMP3
+      CHARACTER*4 CH
+      CHARACTER*(*) FNAME
+      PARAMETER S=8
+C*
+      READ(12)GRD
+      WRITE(CH,'(Z2)')GRD(17-S)
+      READ(CH,'(Z2)')IPRM
+C*    GRD(12) -> PDS(4) -> NUMERO DA VERSAO DA TABELA DE PARAMETROS
+      IF (IPRM .GE. 128) THEN
+      WRITE(GRD(12-S),'(A1)')254
+      ELSE
+      WRITE(GRD(12-S),'(A1)')1
+      ENDIF
+
+C*    GRD(21) -> PDS(13) -> ANO DO SECULO
+      WRITE(GRD(21-S),'(A1)')MOD(Y,100)
+      IF (MOD(Y,100).EQ.0) WRITE(GRD(21-S),'(A1)')100
+C*    GRD(21) -> PDS(25) -> SECULO
+      IC=INT(((Y-1)*.01)+1)
+      WRITE(GRD(33-S),'(A1)')IC
+
+C*    GRD(22) -> PDS(14) -> MES DO ANO
+      WRITE(GRD(22-S),'(A1)')M
+C*    GRD(23) -> PDS(15) -> DIA DO MES
+      WRITE(GRD(23-S),'(A1)')D
+C*    GRD(24) -> PDS(16) -> HORA DO DIA
+      WRITE(GRD(24-S),'(A1)')H
+C*    GRD(27) -> PDS(19) -> P1: PERIODO DE TEMPO (0-ANALISE)
+      WRITE(GRD(27-S),'(A1)')C
+C*    GDS(26)-GDS(27) -> NUMERO DE LATITUDES EM UM HEM. NA GR. GAUSSIANA
+C*    GRD(62) -> GDS(26)
+C*    GRD(63) -> GDS(27)
+      CALL GETJMX(FNAME,JMAX)
+      JH=JMAX/2
+      JA=JH/256
+      JB=JH-JA*256
+      WRITE(GRD(62-S),'(A1)')JA
+      WRITE(GRD(63-S),'(A1)')JB
+C*    SWAPPING LATITUDE
+      IF (FNAME(T:T+6).EQ.'GPOSNMC'.OR.FNAME(T:T+6).EQ.'GPOSCPT'.OR.
+     *    FNAME(T:T+6).EQ.'GPOSPAD'.OR.FNAME(T:T+6).EQ.'GPOSCHP') THEN
+      LATTMP1=GRD(47-S)
+      LATTMP2=GRD(48-S)
+      LATTMP3=GRD(49-S)
+C*    GRD(47) -> GDS(11) -> LATITUDE OF FIRST GRID POINT (1st BITS GROUP)
+      WRITE(GRD(47-S),'(A1)')GRD(54-S)
+C*    GRD(48) -> GDS(12) -> LATITUDE OF FIRST GRID POINT (2nd BITS GROUP)
+      WRITE(GRD(48-S),'(A1)')GRD(55-S)
+C*    GRD(49) -> GDS(13) -> LATITUDE OF FIRST GRID POINT (3rd BITS GROUP)
+      WRITE(GRD(49-S),'(A1)')GRD(56-S)
+C*    GRD(54) -> GDS(18) -> LATITUDE OF LAST GRID POINT (1st BITS GROUP)
+      WRITE(GRD(54-S),'(A1)')LATTMP1
+C*    GRD(55) -> GDS(19) -> LATITUDE OF LAST GRID POINT (2nd BITS GROUP)
+      WRITE(GRD(55-S),'(A1)')LATTMP2
+C*    GRD(56) -> GDS(20) -> LATITUDE OF LAST GRID POINT (3rd BITS GROUP)
+      WRITE(GRD(56-S),'(A1)')LATTMP3
+C*    GRD(64) -> GDS(28) -> INDICADOR DO MODO DE VARREDURA
+      WRITE(GRD(64-S),'(A1)')0
+      ELSE
+C*    GRD(64) -> GDS(28) -> INDICADOR DO MODO DE VARREDURA
+      WRITE(GRD(64-S),'(A1)')64
+      ENDIF
+      WRITE(13)GRD
+C*
+      RETURN
+      END
+C*
+      SUBROUTINE GETJMX(FNAME,JMAX)
+C*
+      INTEGER JMAX
+      CHARACTER*(*) FNAME
+C*
+      INTEGER IT,I
+      INTEGER JR(13)
+      CHARACTER JMC(13)*3
+      DATA JMC/'021','030','042','047','062','079','095',
+     *         '106','126','159','170','213','319'/
+      DATA JR /  32 ,  48 ,  64 ,  72 ,  96 , 120 , 144 ,
+     *          160 , 192 , 240 , 256 , 320 , 480 /
+C*
+      IT=INDEX(FNAME,'.T')+2
+C*
+      DO I=1,13
+      IF (FNAME(IT:IT+2) .EQ. JMC(I)) THEN
+      JMAX=JR(I)
+      RETURN
+      ENDIF
+      ENDDO
+C*
+      WRITE(*,'(A)')
+     *' DISASTER IN GETJMX: DO NOT FIND -> '//FNAME(IT:IT+2)
+      STOP999
+      END

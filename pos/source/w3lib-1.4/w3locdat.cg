@@ -1,0 +1,43 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  w3locdat.f
+       !        File                  :  w3locdat.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    2.       
+    2.       subroutine w3locdat( idat )
+   40. !dir$ suppress 0[loc( idat ),0]
+   40.       t$3 = $_StaticDV_P0
+   40.       0[loc( t$3 ),0].L = pointer to array[1] of integer( loc( 0[loc( idat ),0] ) )
+   40.       1[loc( t$3 ),0].L = 32
+   40.       2[loc( t$3 ),0].L = or( 17, and( 0xfffffffffffffff1UL, 2[loc( t$3 ),0].L ) )
+   40.       23[loc( t$3 )].B = 1
+   40.       4[loc( t$3 ),0].L = 0
+   40.       5[loc( t$3 ),0].L = 0
+   40.       21[loc( t$3 )].B = 0
+   40.       6[loc( t$3 ),0] = 10
+   40.       6[loc( t$3 ),0].L = 1
+   40.       7[loc( t$3 ),0].L = 8
+   40.       8[loc( t$3 ),0].L = 1
+   40.       2[loc( t$3 ),0].L = or( 65600, and( -4294967265UL, 2[loc( t$3 ),0].L ) )
+   40.       call _f90_date_and_time( substr[cdate,0:8], substr[ctime,0:10], substr[czone,0:5], t$3 )
+   41.       $_StackCntrl_O2 = $_StaticCntrl_O1
+   41.       1[loc( $_StackCntrl_O2 ),0].L = loc( substr[czone,0:5] )
+   41.       $_StackIolist_O4 = $_StaticIolist_O3
+   41.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O4 ),0].L ) ), 8 ),0].L = loc( $IOitem_O0 )
+   41.       _frf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O4 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+   41.       3[loc( idat ),0] = $IOitem_O0
+   43.       return
+   43.       end
+   43.       

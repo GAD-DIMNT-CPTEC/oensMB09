@@ -1,0 +1,107 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  putgbn.f
+       !        File                  :  putgbn.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    2.       
+    2.       subroutine putgbn( lugb, kf, kpds, kgds, ibs, nbits, lb, f, iret )
+    2.       $CARG_kf_I1 = 0[loc( kf ),0]
+    2.       $CARG_nbits_I3 = 0[loc( nbits ),0]
+    2.       $PRT_P6 = 17 * $CARG_kf_I1
+    2.       t$2 = ( 1000 + _ash( $PRT_P6 + _rsh( _ash( $PRT_P6, 2 ), 29 ), 3 ) )
+    2.       t$8 = int( _alloc( max( 0, t$2 ) ), 8 )
+    2.       $CS_0 = max( 0, $CARG_kf_I1 )
+    2.       t$4 = int( _alloc( _lsh( $CS_0, 3 ) ), 8 )
+  162.       t$5 = t$4
+  161.       t$9 = t$4 + _lsh( $CS_0, 2 )
+  166.       call r63w72( 0[loc( kpds ),0], 0[loc( kgds ),0], 0[loc( ipds ),0], 0[loc( igds ),0] )
+  167.       $LC_S6 = -50
+  167.       $SI_S5 = 0
+  167.       $LIS_S4[0:4:1] = _bcst( 0, 4 )
+  167.       do
+  167.          0[$SI_S5 + loc( ibds ):4:1] = $LIS_S4[0:4:1]
+  167.          $SI_S5 = 16 + $SI_S5
+  167.          $LC_S6 = 1 + $LC_S6
+  167.          if ( $LC_S6 >= 0 ) exit
+  167.       enddo
+  170.       $kbm_S8 = $CARG_kf_I1
+  171.       if ( 6[loc( ipds ),0] /= 0 ) then
+  172.          $kbm_S8 = 0
+  173.          if ( $CARG_kf_I1 > 0 ) then
+  173.             $I_L173_S7 = 0
+  175.             $LIS_E2 = ( -1 + $CARG_kf_I1 )
+  180.             $LIS_E1 = $CARG_kf_I1
+  180.             do
+  174.                if ( 0[$I_L173_S7 + loc( lb )].B /= .false. ) then
+  175.                   if ( $LIS_E2 - $I_L173_S7 < 0 ) then
+  175.                      $LB_Y0 = 1
+  175.                      $UB_Y1 = $LIS_E1
+  175.                      $Subscript_Y5 = 1 + $I_L173_S7
+  175.                      _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+  175.                   endif
+  175.                   0[t$9,$I_L173_S7] = 1
+  176.                   $kbm_S8 = 1 + $kbm_S8
+  176.                else
+  178.                   if ( $LIS_E2 - $I_L173_S7 < 0 ) then
+  178.                      $LB_Y0 = 1
+  178.                      $UB_Y1 = $LIS_E1
+  178.                      $Subscript_Y5 = 1 + $I_L173_S7
+  178.                      _bounds_error( $_File_Y40, $Line_Y47, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y48 )
+  178.                   endif
+  178.                   0[t$9,$I_L173_S7] = 0
+  178.                endif
+  180.                $I_L173_S7 = 1 + $I_L173_S7
+  179.                if ( $I_L173_S7 >= $LIS_E1 ) exit
+  179.             enddo
+  179.          endif
+  181.          if ( $kbm_S8 - $CARG_kf_I1 == 0 ) then
+  181.             6[loc( ipds ),0] = 0
+  181.          endif
+  181.       endif
+  185.       if ( $CARG_nbits_I3 > 0 ) then
+  186.          if ( $CARG_kf_I1 > 0 ) then
+  187.             __scopy_cce( 0[t$5,0], 0[loc( f ),0], $CARG_kf_I1 )
+  187.          endif
+  189.          nbit = $CARG_nbits_I3
+  190.       else if ( $kbm_S8 == 0 ) then
+  192.          if ( $CARG_kf_I1 > 0 ) then
+  193.             $W1 = 0.0
+  193.             $LCS_CARG_kf_0 = $CARG_kf_I1
+  193.             __sset_cce( 0[t$5,0], $W1, $LCS_CARG_kf_0 )
+  193.          endif
+  195.          nbit = 0
+  195.       else
+  197.          $LCS_ipds_1 = loc( ipds )
+  197.          call getbit( 6[$LCS_ipds_1,0], 0[loc( ibs ),0], 24[$LCS_ipds_1,0], 0[loc( kf ),0], 0[t$9,0], 0[loc( f ),0], 0[t$5,0], fmin, fmax, nbit )
+  198.          $nbit_S9 = nbit
+  198.          $nbit_S10 = min( 16, $nbit_S9 )
+  198.          nbit = $nbit_S10
+  198.       endif
+  203.       $Con_P7 = 0
+  203.       $Con_P8 = 0
+  203.       $Con_P9 = 0
+  203.       $Con_P10 = 1
+  203.       $Con_P11 = 255
+  203.       $Con_P12 = 0
+  203.       $Con_P13 = 0
+  203.       call w3fi72( $Con_P7, 0[t$5,0], $Con_P8, nbit, $Con_P9, 0[loc( ipds ),0], substr[pds,0:1], $Con_P10, $Con_P11, 0[loc( igds ),0], $Con_P12, $Con_P13, 0[t$9,0], 0[loc( kf ),0], 0[loc( ibds ),0], kfo, substr[0,t$8:1], lgrib, 0[loc( iret ),0] )
+  206.       if ( 0[loc( iret ),0] == 0 ) then
+  206.          call wryte( 0[loc( lugb ),0], lgrib, substr[0,t$8:1] )
+  206.       endif
+    2.       _free( t$8 )
+    2.       _free( t$4 )
+  209.       return
+  209.       end
+  209.       

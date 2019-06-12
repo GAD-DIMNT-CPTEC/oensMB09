@@ -1,0 +1,714 @@
+  MODULE HorizontalInterp
+
+   PRIVATE
+   PUBLIC :: horintfld
+
+
+CONTAINS
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! Subroutine horintfld
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      SUBROUTINE horintfld(fielda,lonin,latin,fieldb,lonout,latout)
+
+!     PROBABILIT horintfld(field,imax,jmax,accumint,imaxint,jmaxint)
+
+      INTEGER :: LONS,LATS
+
+      DIMENSION FIELDA(LONIN,LATIN),FIELDB(LONOUT,LATOUT),WORK(LONOUT,LATOUT)
+      REAL, ALLOCATABLE, DIMENSION(:) :: WTLON,WTLAT
+
+      DIMENSION MSKIN(LONIN,LATIN)
+      INTEGER, ALLOCATABLE, DIMENSION(:,:) :: MPLON,MPLAT
+
+      LOGICAL FLGIN(5),FLGOUT(5)
+      LOGICAL LSMTH
+      REAL A, B
+
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DWORK
+      DATA A, B /0.5, 0.3/
+
+!AMM       Namelist /nfile1/ numbf, infile /nfile2/ outfile  /nfile3/ outgrd
+
+! Allocate vars
+
+      LONS=LONOUT+LONIN+2; LATS=LATOUT+LATIN+2
+
+      ALLOCATE(wtlon(lons), STAT=ierr)
+      IF (ierr .NE. 0) STOP 'NAO ALOCOU CORRETAMENTE: wtlon'
+      ALLOCATE(wtlat(lats), STAT=ierr)
+      IF (ierr .NE. 0) STOP 'NAO ALOCOU CORRETAMENTE: wtlat'
+      ALLOCATE(mplon(lons,2), STAT=ierr)
+      IF (ierr .NE. 0) STOP 'NAO ALOCOU CORRETAMENTE: mplon'
+      ALLOCATE(mplat(lats,2), STAT=ierr)
+      IF (ierr .NE. 0) STOP 'NAO ALOCOU CORRETAMENTE: mplat'
+      ALLOCATE(dwork(2*lons), STAT=ierr)
+      IF (ierr .NE. 0) STOP 'NAO ALOCOU CORRETAMENTE: dwork'
+
+      LSMTH=.FALSE.
+!
+!    GENERAL PURPOSE HORIZONTAL INTERPOLATOR                            
+!    CAN INTERPOLATE REGULAR TO REGULAR (COARSE OR FINE)                
+!                    REGULAR TO GAUSSIAN                                
+!                    GAUSSIAN TO REGULAR                                
+!                    GAUSSIAN TO GAUSSIAN                               
+!    WILL REORIENT REGULAR INPUT DATA AS NEEDED AND PUT DATA OUT ON     
+!    GRID ORIENTED WITH THE NORTH POLE AND GREENWICH AS THE FIRST POINT 
+!    DATA CAN BE SUBSEQUENTLY MASKED FOR LAND-SEA DEPENDENCE OR         
+!    OTHER RELATIONSHIPS                                                
+!                                                                       
+!
+!
+!     SET UNDEFINED VALUE FOR INPUT DATA FOUND AT LOCATIONS WHICH
+!     ARE NOT TO BE INCLUDED IN INTERPOLATION AND WHICH WILL BE
+!     USE ON OUTPUT DATA IF NO VALID DATA LOCATIONS ARE FOUND WITHIN
+!     OUTPUT LOCATION
+      UNDEF=1.0E+20
+      DO J=1,LATIN
+      DO I=1,LONIN
+      MSKIN(I,J)=1
+      ENDDO
+      ENDDO
+!
+!     FLAGS: (IN OR OUT)
+!     1     START AT NORTH POLE (TRUE) START AT SOUTH POLE (FALSE)
+!     2     START AT PRIME MERIDIAN (TRUE) START AT I.D.L. (FALSE)
+!     3     LATITUDES ARE AT CENTER OF BOX (TRUE)
+!           LATITUDES ARE AT EDGE (FALSE) NORTH EDGE IF 1=TRUE
+!                                         SOUTH EDGE IF 1=FALSE 
+!     4     LONGITUDES ARE AT CENTER OF BOX (TRUE)
+!           LONGITUDES ARE AT WESTERN EDGE OF BOX (FALSE) 
+!     5     GAUSSIAN (TRUE) REGULAR (FALSE)
+!                                                                       
+      FLGIN(1)=.TRUE.
+      FLGIN(2)=.TRUE.
+      FLGIN(3)=.TRUE.
+      FLGIN(4)=.TRUE.
+      FLGIN(5)=.TRUE.
+      FLGOUT(1)=.TRUE.
+      FLGOUT(2)=.TRUE.
+      FLGOUT(3)=.FALSE.
+      FLGOUT(4)=.TRUE.
+      FLGOUT(5)=.FALSE.
+
+!                                                                       
+!     CALL WTERP ONCE TO SETUP WEIGHTING FACTORS AND INDICES FOR
+!     GRID INTERPOLATION
+!
+
+      CALL WTERP(LONIN,LATIN,LONOUT,LATOUT,FLGIN,FLGOUT,WTLON,WTLAT, &
+                 MPLON,MPLAT,LOND,LATD,DWORK)
+
+!                                                                       
+!                                                                       
+!     READ IN INPUT FIELD                                               
+!                                                                       
+!
+
+!  
+!     INTERPOLATE INPUT FIELD TO OUTPUT FIELD                           
+!                                                                       
+      CALL NTERP(FIELDA,LONIN,LATIN,FIELDB,LONOUT,LATOUT,WTLON,WTLAT, &
+                 MPLON,MPLAT,LOND,LATD,MSKIN,UNDEF,WORK)
+
+!AMM C                                                                       
+!AMM C     WRITE OUT ADJUSTED INTERPOLATED FIELD FOR PHYSICAL INIT.                          
+!AMM C
+!AMM       do j=1,latout
+!AMM        do i=1,lonout
+!AMM         if(fieldb(i,j).le.1.0e-10) fieldb(i,j)=0.0
+!AMM        enddo
+!AMM       enddo
+!AMM 
+!AMM       IF (LSMTH) THEN
+!AMM       C=4.*A+4.*B+1.
+!AMM       PRINT*,'C = ',C
+!AMM       CI=1./C
+!AMM C
+!AMM       DO J=1,JMAX
+!AMM          DO I=1,IMAX
+!AMM             RAINM(I,J)=0.0 
+!AMM          ENDDO
+!AMM       ENDDO
+!AMM C
+!AMM C     RAINFALL AT POLES ARE NOT DEFINED
+!AMM C
+!AMM       DO J=2,LATOUT-1
+!AMM          DO I=2,LONOUT-1
+!AMM             SOMAT=B*FIELDB(I-1,J-1)+A*FIELDB(I,J-1)+B*FIELDB(I+1,J-1)+
+!AMM      1      A*FIELDB(I-1,J)+A*FIELDB(I+1,J)+B*FIELDB(I-1,J+1)+
+!AMM      2      A*FIELDB(I,J+1)+B*FIELDB(I+1,J+1)+FIELDB(I,J)
+!AMM             RAINM(I,J)=CI*SOMAT
+!AMM          ENDDO
+!AMM             SOMAT=B*FIELDB(LONOUT-1,J-1)+A*FIELDB(1,J-1)+
+!AMM      1      B*FIELDB(2,J-1)+
+!AMM      2      A*FIELDB(LONOUT-1,J)+A*FIELDB(2,J)+B*FIELDB(LONOUT-1,J+1)+
+!AMM      3      A*FIELDB(1,J+1)+B*FIELDB(2,J+1)+FIELDB(1,J)
+!AMM             RAINM(1,J)=CI*SOMAT
+!AMM       ENDDO
+!AMM       ENDIF
+!AMM C
+!AMM       IF (LSMTH) THEN
+!AMM          WRITE(12) RAINM
+!AMM       ELSE
+!AMM          WRITE(12) FIELDB
+!AMM       ENDIF
+!AMM C
+!AMM       CLOSE(12)
+!AMM C
+!AMM       FLGOUT(1)=.TRUE.
+!AMM       FLGOUT(2)=.TRUE.
+!AMM       FLGOUT(3)=.TRUE.
+!AMM       FLGOUT(4)=.TRUE.
+!AMM       FLGOUT(5)=.TRUE.
+!AMM C
+!AMM C     WRITE OUT ADJUSTED INTERPOLATED FIELD FOR VERIFICATION                             
+!AMM C
+!AMM       CALL WTERP(LONIN,LATIN,IMAX,JMAX,FLGIN,FLGOUT,WTLON,WTLAT,
+!AMM      *           MPLON,MPLAT,LOND,LATD,DWORK)
+!AMM C                                                                       
+!AMM C  
+!AMM C     INTERPOLATE INPUT FIELD TO OUTPUT FIELD                           
+!AMM C
+!AMM       do j=1,jmax
+!AMM       do i=1,imax
+!AMM       fieldv(i,j)=0.0
+!AMM       enddo
+!AMM       enddo
+!AMM C                                                                       
+!AMM       CALL NTERP(FIELDA,LONIN,LATIN,FIELDV,IMAX,JMAX,WTLON,WTLAT,
+!AMM      *           MPLON,MPLAT,LOND,LATD,MSKIN,UNDEF,WORK)
+!AMM C                                                                       
+!AMM C     WRITE OUT ADJUSTED INTERPOLATED FIELD                             
+!AMM C
+!AMM       do j=1,JMAX
+!AMM        do i=1,IMAX
+!AMM         if(fieldv(i,j).le.1.0e-10) fieldv(i,j)=0.0
+!AMM        enddo
+!AMM       enddo
+!AMM C
+!AMM       WRITE(13) FIELDV
+!AMM 
+!AMM       CLOSE(11)
+!AMM       CLOSE(13)
+!AMM C
+!AMM       ENDDO
+!AMM 
+!AMM       STOP                                                              
+      
+      DEALLOCATE(wtlon,wtlat,mplon,mplat,dwork)
+       
+      RETURN 
+
+      END SUBROUTINE horintfld                                                             
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! Subroutine wterp
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      SUBROUTINE WTERP(LONIN,LATIN,LONOUT,LATOUT,FLGIN,FLGOUT, &
+                       WTLON,WTLAT,MPLON,MPLAT,LOND,LATD,DWORK)
+
+      IMPLICIT DOUBLE PRECISION (D)
+
+      DIMENSION WTLON(LONIN+LONOUT+2),WTLAT(LATIN+LATOUT+2), &
+      MPLON(LONIN+LONOUT+2,2),MPLAT(LATIN+LATOUT+2,2)
+      LOGICAL FLGIN(*),FLGOUT(*)
+ 
+      DOUBLE PRECISION DWORK(*)
+
+!     NEW INTERPOLATION WEIGHT CALCULATION
+!     THIS SUBROUTINE SHOULD BE CALLED ONCE TO DETERMINE THE AREA
+!     WEIGHTS AND INDEX MAPPING BETWEEN A PAIR OF GRIDS ON A
+!     SPHERE.  THE WEIGHTS AND MAP INDICES ARE USED BY SUBROUTINE
+!     NTERP TO PERFOM THE ACTUAL INTERPOLATION.  SEE FILE grid.interp
+!     FOR A FURTHER DISCUSSION.
+!
+!     SUBROUTINE ARGUMENTS:
+!
+!     USER SUPPLIED INPUT ARGUMENTS AND FLAGS:
+!     LONIN  NUMBER OF LONGITUDE POINTS FOR THE INPUT GRID
+!     LATIN  NUMBER OF LATITUDE POINTS FOR THE INPUT GRID
+!     LONOUT NUMBER OF LONGITUDE POINTS FOR THE OUTPUT GRID
+!     LATOUT NUMBER OF LATITUDE POINTS FOR THE OUTPUT GRID
+!     FLGIN  INPUT GRID FLAGS (SEE BELOW)
+!     FLGOUT OUTPUT GRID FLAGS (SEE BELOW)
+!
+!     COMPUTED OUTPUT ARRAYS AND ARGUMENTS (NOTE DIMENSIONS):
+!     WTLON  AREA WEIGHTS IN THE LONGITUDINAL DIRECTION
+!     WTLAT  AREA WEIGHTS IN THE LATITUDINAL DIRECTION
+!     MPLON  LONGITUDE INDEX MAPPING FROM INPUT (,1) TO OUTPUT (,2)
+!     MPLAT  LATITUDE INDEX MAPPING FROM INPUT (,1) TO OUTPUT (,2)
+!     LOND   TOTAL NUMBER OF LONGITUDE WEIGHTS
+!     LATD   TOTAL NUMBER OF LATITUDE WEIGTHS
+!
+!     USER SUPPLIED WORK ARRAY:
+!     DWORK  DOUBLE PRECISION WORK ARRAY WHICH SHOULD BE DIMENSIONED
+!            THE LARGER OF 2*(LATIN+LATOUT+2) OR 2*(LONIN+LONOUT+2)
+!
+!     FLAGS: (IN OR OUT)
+!     1     START AT NORTH POLE (TRUE) START AT SOUTH POLE (FALSE)
+!     2     START AT PRIME MERIDIAN (TRUE) START AT I.D.L. (FALSE)
+!     3     LATITUDES ARE AT CENTER OF BOX (TRUE)
+!           LATITUDES ARE AT EDGE (FALSE) NORTH EDGE IF 1=TRUE
+!                                         SOUTH EDGE IF 1=FALSE
+!     4     LONGITUDES ARE AT CENTER OF BOX (TRUE)
+!           LONGITUDES ARE AT WESTERN EDGE OF BOX (FALSE)
+!     5     GAUSSIAN (TRUE) REGULAR (FALSE)
+      DPI=3.1415926535897932384626433832795D0
+!
+!    INPUT GRID LATITUDES
+!
+      JOI=LATIN+LATOUT+2
+      IF(FLGIN(5))THEN
+      LATH=LATIN/2
+      CALL GL(LATH,DWORK)
+!
+!    GAUSSIAN GRID CASE
+!
+      DO 10 J=2,LATIN
+      IF(J.LE.LATH)THEN
+      DRLTM=-DPI/2.0D0+DWORK(J-1)
+      DRLTP=-DPI/2.0D0+DWORK(J)
+      ELSE IF(J.GT.LATH+1)THEN
+      DRLTM=DPI/2.0D0-DWORK(LATIN-J+2)
+      DRLTP=DPI/2.0D0-DWORK(LATIN-J+1)
+      ELSE
+      DRLTM=0.0D0
+      DRLTP=0.0D0
+      END IF
+      DWORK(J+JOI)=DSIN((DRLTM+DRLTP)/2.0D0)
+   10 CONTINUE
+      DWORK(1+JOI)=-1.0D0
+      DWORK(LATH+1+JOI)=0.0D0
+      DWORK(LATIN+1+JOI)=1.0D0
+      ELSE
+!
+!    REGULAR GRID CASE
+!
+      IF(FLGIN(3))THEN
+      DLAT=DPI/DFLOAT(LATIN-1)
+      DOF=-(DPI+DLAT)/2.0D0
+      ELSE
+      DLAT=DPI/DFLOAT(LATIN)
+      DOF=-DPI/2.0D0
+      END IF
+      DO 20 J=2,LATIN
+      DWORK(JOI+J)=DSIN(DOF+DLAT*DFLOAT(J-1))
+   20 CONTINUE
+      DWORK(1+JOI)=-1.0D0
+      DWORK(LATIN+1+JOI)=1.0D0
+      END IF
+!
+!    OUTPUT GRID LATITUDES
+!
+      JOO=2*LATIN+LATOUT+3
+      IF(FLGOUT(5))THEN
+      LATH=LATOUT/2
+      CALL GL(LATH,DWORK)
+!
+!    GAUSSIAN GRID CASE
+!
+      DO 30 J=2,LATOUT
+      IF(J.LE.LATH)THEN
+      DRLTM=-DPI/2.0D0+DWORK(J-1)
+      DRLTP=-DPI/2.0D0+DWORK(J)
+      ELSE IF(J.GT.LATH+1)THEN
+      DRLTM=DPI/2.0D0-DWORK(LATOUT-J+2)
+      DRLTP=DPI/2.0D0-DWORK(LATOUT-J+1)
+      ELSE
+      DRLTM=0.0D0
+      DRLTP=0.0D0
+      END IF
+      DWORK(J+JOO)=DSIN((DRLTM+DRLTP)/2.0D0)
+   30 CONTINUE
+      DWORK(1+JOO)=-1.0D0
+      DWORK(LATH+1+JOO)=0.0D0
+      DWORK(LATOUT+1+JOO)=1.0D0
+      ELSE
+!
+!    REGULAR GRID CASE
+!
+      IF(FLGOUT(3))THEN
+      DLAT=DPI/DFLOAT(LATOUT-1)
+      DOF=-(DPI+DLAT)/2.0D0
+      ELSE
+      DLAT=DPI/DFLOAT(LATOUT)
+      DOF=-DPI/2.0D0
+      END IF
+      DO 40 J=2,LATOUT
+      DWORK(JOO+J)=DSIN(DOF+DLAT*DFLOAT(J-1))
+   40 CONTINUE
+      DWORK(1+JOO)=-1.0D0
+      DWORK(LATOUT+1+JOO)=1.0D0
+      END IF
+!
+!    PRODUCE SINGLE ORDERED SET OF SIN(LAT) FOR BOTH GRIDS
+!    DETERMINE LATITUDE WEIGHTING AND INDEX MAPPING
+!
+      J1=1
+      J2=1
+      J3=1
+!     WRITE(6,49)(FLGIN(I),I=1,5),(FLGOUT(I),I=1,5),JOI,JOO
+!  49 FORMAT(' FLGIN=',5L2,' FLGOUT=',5L2,' JOI=',I4,' JOO=',I4)
+   50 IF(DWORK(J1+JOI).EQ.DWORK(J2+JOO))THEN
+      DWORK(J3)=DWORK(J1+JOI)
+      IF(J3.NE.1)THEN
+      WTLAT(J3-1)=DWORK(J3)-DWORK(J3-1)
+      MPLAT(J3-1,1)=J1-1
+      IF(FLGIN(1))MPLAT(J3-1,1)=LATIN+2-J1
+      MPLAT(J3-1,2)=J2-1
+      IF(FLGOUT(1))MPLAT(J3-1,2)=LATOUT+2-J2
+      END IF
+      J1=J1+1
+      J2=J2+1
+      J3=J3+1
+!     IF(J3.NE.2)WRITE(6,51)J1,J2,J3,DWORK(J3-1),DWORK(J3-2),
+!    *WTLAT(J3-2),MPLAT(J3-2,1),MPLAT(J3-2,2)
+!  51 FORMAT(' J1,2,3=',3I4,' DWORK=',2G16.8/10X,' WTLAT=',G16.8,
+!    *' MPLAT(1&2)=',2I4)
+      ELSE IF(DWORK(J1+JOI).LT.DWORK(J2+JOO))THEN
+      DWORK(J3)=DWORK(J1+JOI)
+      IF(J3.NE.1)THEN
+      WTLAT(J3-1)=DWORK(J3)-DWORK(J3-1)
+      MPLAT(J3-1,1)=J1-1
+      IF(FLGIN(1))MPLAT(J3-1,1)=LATIN+2-J1
+      MPLAT(J3-1,2)=J2-1
+      IF(FLGOUT(1))MPLAT(J3-1,2)=LATOUT+2-J2
+      END IF
+      J1=J1+1
+      J3=J3+1
+!     IF(J3.NE.2)WRITE(6,51)J1,J2,J3,DWORK(J3-1),DWORK(J3-2),
+!    *WTLAT(J3-2),MPLAT(J3-2,1),MPLAT(J3-2,2)
+      ELSE
+      DWORK(J3)=DWORK(J2+JOO)
+      IF(J3.NE.1)THEN
+      WTLAT(J3-1)=DWORK(J3)-DWORK(J3-1)
+      MPLAT(J3-1,1)=J1-1
+      IF(FLGIN(1))MPLAT(J3-1,1)=LATIN+2-J1
+      MPLAT(J3-1,2)=J2-1
+      IF(FLGOUT(1))MPLAT(J3-1,2)=LATOUT+2-J2
+      END IF
+      J2=J2+1
+      J3=J3+1
+!     IF(J3.NE.2)WRITE(6,51)J1,J2,J3,DWORK(J3-1),DWORK(J3-2),
+!    *WTLAT(J3-2),MPLAT(J3-2,1),MPLAT(J3-2,2)
+      END IF
+      IF(J1.LE.LATIN+1.AND.J2.LE.LATOUT+1)GO TO 50
+      LATD=J3-2
+!
+!     LATITUDES DONE, NOW DO LONGITUDES
+!
+!
+!    INPUT GRID LONGITUDES
+!
+      IOI=LONIN+LONOUT+2
+      DELRDI=(2.0D0*DPI)/DFLOAT(LONIN)
+      IF(FLGIN(5).OR.FLGIN(4))THEN
+      ICI=0
+      DOF=0.5D0
+      ELSE
+      ICI=1
+      DOF=0.0D0
+      END IF
+      DO 60 I=1,LONIN
+      DWORK(I+IOI)= (DOF+DFLOAT(I-1))*DELRDI
+   60 CONTINUE
+!
+!    OUTPUT GRID LONGITUDES
+!
+      IOO=2*LONIN+LONOUT+3
+      DELRDO=(2.0D0*DPI)/DFLOAT(LONOUT)
+      IF(FLGOUT(5).OR.FLGOUT(4))THEN
+      ICO=0
+      DOF=0.5D0
+      ELSE
+      ICO=1
+      DOF=0.0D0
+      END IF
+      DO 70 I=1,LONOUT
+      DWORK(I+IOO)= (DOF+DFLOAT(I-1))*DELRDO
+   70 CONTINUE
+!
+!    PRODUCE SINGLE ORDERED SET OF LONGITUDES FOR BOTH GRIDS
+!    DETERMINE LONGITUDE WEIGHTING AND INDEX MAPPING
+!
+      I1=1
+      I2=1
+      I3=1
+   80 IF(DWORK(I1+IOI).EQ.DWORK(I2+IOO))THEN
+      DWORK(I3)=DWORK(I1+IOI)
+      IF(I3.NE.1)THEN
+      WTLON(I3-1)=DWORK(I3)-DWORK(I3-1)
+      MPLON(I3-1,1)=I1-ICI
+      IF(.NOT.FLGIN(2))THEN
+      MPLON(I3-1,1)=LONIN/2+I1-ICI
+      IF(I1-ICI.GT.LONIN/2)MPLON(I3-1,1)=I1-ICI-LONIN/2
+      END IF
+      MPLON(I3-1,2)=I2-ICO
+      IF(.NOT.FLGOUT(2))THEN
+      MPLON(I3-1,2)=LONOUT/2+I2-ICO
+      IF(I2-ICO.GT.LONOUT/2)MPLON(I3-1,2)=I2-ICO-LONOUT/2
+      END IF
+      END IF
+      I1=I1+1
+      I2=I2+1
+      I3=I3+1
+!     IF(I3.NE.2)WRITE(6,81)I1,I2,I3,DWORK(I3-1),DWORK(I3-2), &
+!     WTLON(I3-2),MPLON(I3-2,1),MPLON(I3-2,2)
+!  81 FORMAT(' I1,2,3=',3I4,' DWORK=',2G16.8/10X,' WTLON=',G16.8, &
+!     ' MPLON(1&2)=',2I4)
+      ELSE IF(DWORK(I1+IOI).LT.DWORK(I2+IOO))THEN
+      DWORK(I3)=DWORK(I1+IOI)
+      IF(I3.NE.1)THEN
+      WTLON(I3-1)=DWORK(I3)-DWORK(I3-1)
+      MPLON(I3-1,1)=I1-ICI
+      IF(.NOT.FLGIN(2))THEN
+      MPLON(I3-1,1)=LONIN/2+I1-ICI
+      IF(I1-ICI.GT.LONIN/2)MPLON(I3-1,1)=I1-ICI-LONIN/2
+      END IF
+      MPLON(I3-1,2)=I2-ICO
+      IF(.NOT.FLGOUT(2))THEN
+      MPLON(I3-1,2)=LONOUT/2+I2-ICO
+      IF(I2-ICO.GT.LONOUT/2)MPLON(I3-1,2)=I2-ICO-LONOUT/2
+      END IF
+      END IF
+      I1=I1+1
+      I3=I3+1
+!     IF(I3.NE.2)WRITE(6,81)I1,I2,I3,DWORK(I3-1),DWORK(I3-2), &
+!     WTLON(I3-2),MPLON(I3-2,1),MPLON(I3-2,2)
+      ELSE
+      DWORK(I3)=DWORK(I2+IOO)
+      IF(I3.NE.1)THEN
+      WTLON(I3-1)=DWORK(I3)-DWORK(I3-1)
+      MPLON(I3-1,1)=I1-ICI
+      IF(.NOT.FLGIN(2))THEN
+      MPLON(I3-1,1)=LONIN/2+I1-ICI
+      IF(I1-ICI.GT.LONIN/2)MPLON(I3-1,1)=I1-ICI-LONIN/2
+      END IF
+      MPLON(I3-1,2)=I2-ICO
+      IF(.NOT.FLGOUT(2))THEN
+      MPLON(I3-1,2)=LONOUT/2+I2-ICO
+      IF(I2-ICO.GT.LONOUT/2)MPLON(I3-1,2)=I2-ICO-LONOUT/2
+      END IF
+      END IF
+      I2=I2+1
+      I3=I3+1
+!     IF(I3.NE.2)WRITE(6,81)I1,I2,I3,DWORK(I3-1),DWORK(I3-2), &
+!     WTLON(I3-2),MPLON(I3-2,1),MPLON(I3-2,2)
+      END IF
+      IF(I1.LE.LONIN.AND.I2.LE.LONOUT)GO TO 80
+      IF(I1.GT.LONIN)I1=1
+      IF(I2.GT.LONOUT)I2=1
+   90 IF(I2.NE.1)THEN
+      DWORK(I3)=DWORK(I2+IOO)
+      WTLON(I3-1)=DWORK(I3)-DWORK(I3-1)
+      MPLON(I3-1,1)=1
+      IF(.NOT.(FLGIN(4).OR.FLGIN(5)))MPLON(I3-1,1)=LONIN
+      IF(.NOT.FLGIN(2))THEN
+      MPLON(I3-1,1)=LONIN/2+1
+      IF(.NOT.(FLGIN(4).OR.FLGIN(5)))MPLON(I3-1,1)=LONIN/2
+      END IF
+      MPLON(I3-1,2)=I2-ICO
+      IF(.NOT.FLGOUT(2))THEN
+      MPLON(I3-1,2)=LONOUT/2+I2-ICO
+      IF(I2-ICO.GT.LONOUT/2)MPLON(I3-1,2)=I2-ICO-LONOUT/2
+      END IF
+      I2=I2+1
+      IF(I2.GT.LONOUT)I2=1
+      I3=I3+1
+!     IF(I3.NE.2)WRITE(6,81)I1,I2,I3,DWORK(I3-1),DWORK(I3-2), &
+!     WTLON(I3-2),MPLON(I3-2,1),MPLON(I3-2,2)
+      END IF
+      IF(I1.NE.1)THEN
+      DWORK(I3)=DWORK(I1+IOI)
+      WTLON(I3-1)=DWORK(I3)-DWORK(I3-1)
+      MPLON(I3-1,1)=I1-ICI
+      IF(.NOT.FLGIN(2))THEN
+      MPLON(I3-1,1)=LONIN/2+I1-ICI
+      IF(I1-ICI.GT.LONIN/2)MPLON(I3-1,1)=I1-ICI-LONIN/2
+      END IF
+      MPLON(I3-1,2)=1
+      IF(.NOT.(FLGOUT(4).OR.FLGOUT(5)))MPLON(I3-1,2)=LONOUT
+      IF(.NOT.FLGOUT(2))THEN
+      MPLON(I3-1,2)=LONOUT/2+1
+      IF(.NOT.(FLGOUT(4).OR.FLGOUT(5)))MPLON(I3-1,2)=LONOUT/2
+      END IF
+      I1=I1+1
+      IF(I1.GT.LONIN)I1=1
+      I3=I3+1
+!     IF(I3.NE.2)WRITE(6,81)I1,I2,I3,DWORK(I3-1),DWORK(I3-2), &
+!     WTLON(I3-2),MPLON(I3-2,1),MPLON(I3-2,2)
+      END IF
+      IF(I1.NE.1.OR.I2.NE.1)GO TO 90
+      WTLON(I3-1)=2.0D0*DPI+DWORK(1)-DWORK(I3-1)
+      MPLON(I3-1,1)=1
+      IF(.NOT.(FLGIN(4).OR.FLGIN(5)))MPLON(I3-1,1)=LONIN
+      IF(.NOT.FLGIN(2))THEN
+      MPLON(I3-1,1)=LONIN/2+1
+      IF(.NOT.(FLGIN(4).OR.FLGIN(5)))MPLON(I3-1,1)=LONIN/2
+      END IF
+      MPLON(I3-1,2)=1
+      IF(.NOT.(FLGOUT(4).OR.FLGOUT(5)))MPLON(I3-1,2)=LONOUT
+      IF(.NOT.FLGOUT(2))THEN
+      MPLON(I3-1,2)=LONOUT/2+1
+      IF(.NOT.(FLGOUT(4).OR.FLGOUT(5)))MPLON(I3-1,2)=LONOUT/2
+      END IF
+!     IF(I3.NE.1)WRITE(6,81)I1,I2,I3,DWORK(1),DWORK(I3-1), &
+!     WTLON(I3-1),MPLON(I3-1,1),MPLON(I3-1,2)
+      LOND=I3-1
+      RETURN
+
+      END SUBROUTINE WTERP
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! Subroutine nterp
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      SUBROUTINE NTERP(FIELDA,LONIN,LATIN,FIELDB,LONOUT,LATOUT, &
+                       WTLON,WTLAT,MPLON,MPLAT,LOND,LATD,MSKIN,UNDEF,WORK)
+
+      DIMENSION WTLON(LONIN+LONOUT+2),WTLAT(LATIN+LATOUT+2),     &
+                MPLON(LONIN+LONOUT+2,2),MPLAT(LATIN+LATOUT+2,2), &
+                FIELDA(LONIN,LATIN),FIELDB(LONOUT,LATOUT),       &
+                MSKIN(LONIN,LATIN),WORK(LONOUT,LATOUT)
+
+!     NEW INTERPOLATION SUBROUTINE.
+!     SHOULD ONLY BE CALLED AFTER SUBROUTINE WTERP HAS BEEN CALLED.
+!     AFTER INTERPOLATION USER IS RESPONSIBLE FOR OUTPUT MASKING AND
+!     POLE INTERPOLATION FOR TYPE 2 (POLE CENTERED) GRIDS.  POLE
+!     INTERPOLATION CAN BE DONE WITH SUBROUTINE POLAVG.
+!
+!     SUBROUTINE ARGUMENTS:
+!
+!     FIELDA INPUT FIELD TO BE INTERPOLATED
+!     LONIN  NUMBER OF LONGITUDE POINTS FOR THE INPUT GRID
+!     LATIN  NUMBER OF LATITUDE POINTS FOR THE INPUT GRID
+!     FIELDB OUTPUT FIELD RESULTING FROM INTERPOLATION
+!     LONOUT NUMBER OF LONGITUDE POINTS FOR THE OUTPUT GRID
+!     LATOUT NUMBER OF LATITUDE POINTS FOR THE OUTPUT GRID
+!     WTLON  AREA WEIGHTS IN THE LONGITUDINAL DIRECTION
+!     WTLAT  AREA WEIGHTS IN THE LATITUDIANL DIRECTION
+!     MPLON  LONGITUDE INDEX MAPPING FROM INPUT (,1) TO OUTPUT (,2)
+!     MPLAT  LATITUDE INDEX MAPPING FROM INPUT (,1) TO OUTPUT (,2)
+!     LOND   TOTAL NUMBER OF LONGITUDE WEIGHTS
+!     LATD   TOTAL NUMBER OF LATITUDE WEIGTHS
+!     MSKIN  INPUT GRID MASK TO CONFINE INTERPOLATION OF INPUT
+!            DATA TO CERTAIN AREAS (1=INTERPOLATE, 0=DON'T)
+!     UNDEF  UNDEFINED VALUE WHICH IF FOUND IN INPUT ARRAY CAUSES
+!            THAT LOCATION TO BE IGNORED IN INTERPOLATION.  USED
+!            AS THE OUTPUT VALUE FOR OUTPUT POINTS WITH NO DEFINED
+!            AND/OR UNMASKED DATA
+!     WORK   WORK ARRAY DIMENSIONED AS OUTPUT ARRAY USED AS A
+!            DENOMINATOR
+!
+!
+      DO 200 J=1,LATOUT
+      DO 100 I=1,LONOUT
+      FIELDB(I,J)=0.0
+      WORK(I,J)=0.0
+  100 CONTINUE
+  200 CONTINUE
+      DO 1000 J=1,LATD
+      WLT=WTLAT(J)
+      LTI=MPLAT(J,1)
+      LTO=MPLAT(J,2)
+      DO 900 I=1,LOND
+      LNI=MPLON(I,1)
+      IF(MSKIN(LNI,LTI).EQ.0)GO TO 900
+!RWB      write(*,*) 'fielda(',lni,',',lti,')=',fielda(lni,lti)
+      IF(FIELDA(LNI,LTI).EQ.UNDEF)GO TO 900
+      WLN=WTLON(I)
+      LNO=MPLON(I,2)
+      FIELDB(LNO,LTO)=FIELDB(LNO,LTO)+FIELDA(LNI,LTI)*WLT*WLN
+      WORK(LNO,LTO)=WORK(LNO,LTO)+WLT*WLN
+  900 CONTINUE
+ 1000 CONTINUE
+      DO 1200 J=1,LATOUT
+      DO 1100 I=1,LONOUT
+      IF(WORK(I,J).EQ.0)THEN
+      FIELDB(I,J)=UNDEF
+      ELSE
+      FIELDB(I,J)=FIELDB(I,J)/WORK(I,J)
+      END IF
+ 1100 CONTINUE
+ 1200 CONTINUE
+      RETURN
+
+      END SUBROUTINE NTERP
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! Subroutine gl
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      SUBROUTINE GL(KHALF,COLRAD)
+      DIMENSION COLRAD(*)
+      DOUBLE PRECISION COLRAD, EPS, SI, RK2, SCALE, PI, DRADZ, RAD, &
+                       DRAD, P1, P2, PHI, W, X, SN, DATAN,DSIN,DCOS,DSIGN
+      EPS=1.D-12
+      SI=1.D+00
+      K2=2*KHALF
+      RK2=K2
+      SCALE=2.D+00/(RK2**2)
+      K1=K2-1
+      PI=DATAN(SI)*4.D+00
+      DRADZ=PI/360.D+00
+      RAD=0.D+00
+      DO 1000 K=1,KHALF
+      ITR=0
+      DRAD=DRADZ
+1     CALL PLY(K2,RAD,P2)
+2     P1 =P2
+      ITR=ITR+1
+      RAD=RAD+DRAD
+      CALL PLY(K2,RAD,P2)
+      IF(DSIGN(SI,P1).EQ.DSIGN(SI,P2))GO TO 2
+      IF(DRAD.LT.EPS)GO TO 3
+      RAD=RAD-DRAD
+      DRAD=DRAD*0.25D+00
+      GO TO 1
+3     CONTINUE
+      COLRAD(K)=RAD
+      PHI=RAD   *180.D+00/PI
+      CALL PLY(K1,RAD,P1)
+      X=DCOS(RAD)
+      W=SCALE*(1.D+00-X*X)/(P1*P1)
+      SN=DSIN(RAD)
+      W=W/(SN*SN)
+      CALL PLY(K2,RAD,P1)
+1000  CONTINUE
+      RETURN
+      END SUBROUTINE GL
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! Subroutine ply
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      SUBROUTINE PLY(N,RAD,P)
+      DOUBLE PRECISION X,RAD,P,Y1,Y2,Y3,G,DCOS
+      X=DCOS(RAD)
+      Y1=1.D+0
+      Y2=X
+      DO 1 I=2,N
+      G=X*Y2
+      Y3=G-Y1+G-(G-Y1)/FLOAT(I)
+      Y1=Y2
+      Y2=Y3
+1     CONTINUE
+      P=Y3
+      RETURN
+      END SUBROUTINE PLY
+
+
+END MODULE HorizontalInterp

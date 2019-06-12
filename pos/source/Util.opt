@@ -1,0 +1,368 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Util.f90
+       !        File                  :  Util.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   20.       
+   20.       subroutine scase( kflo, ldim, nfe, iclcd, gausin )
+   20.       t$3 = imax
+   20.       t$4 = jmax
+   20.       t$5 = ldim
+   35.       t$11 = _zla( 0, imax )
+   20.       t$12 = _zla( 0, imax )
+   35.       t$13 = _zla( 0, jmax )
+   20.       t$14 = _zla( 0, imax ) * _zla( 0, jmax )
+   35.       t$15 = _zla( 0, ldim )
+   20.       t$16 = _zla( 0, ldim ) * _zla( 0, imax ) * _zla( 0, jmax )
+   39.       if ( iclcd(nfe(kflo)) == 1 ) then
+   40.          if ( ldim > 0 ) then
+   41.             if ( jmax > 0 ) then
+   42.                if ( imax > 0 ) then
+   40.                   $I_L40_34 = 0
+   40.                   do
+   41.                      $I_L41_30 = 0
+   41.                      do
+   42.                         $I_L42_26 = 0
+   42. !dir$ ivdep
+   42. !dir$ loop_info (automatic) cache_nt( gausin )
+   42.                         do
+   43.                            gausin(1 + $I_L42_26, 1 + $I_L41_30, 1 + $I_L40_34) = abs( gausin(1 + $I_L42_26, 1 + $I_L41_30, 1 + $I_L40_34) )
+   44.                            $I_L42_26 = 1 + $I_L42_26
+   42.                            if ( $I_L42_26 >= imax ) exit
+   42.                         enddo
+   45.                         $I_L41_30 = 1 + $I_L41_30
+   44.                         if ( $I_L41_30 >= jmax ) exit
+   44.                      enddo
+   46.                      $I_L40_34 = 1 + $I_L40_34
+   45.                      if ( $I_L40_34 >= ldim ) exit
+   45.                   enddo
+   45.                endif
+   45.             endif
+   45.          endif
+   47.       else if ( iclcd(nfe(kflo)) == 2 ) then
+   48.          if ( ldim > 0 ) then
+   49.             if ( jmax > 0 ) then
+   50.                if ( imax > 0 ) then
+   48.                   $I_L48_32 = 0
+   48.                   do
+   49.                      $I_L49_28 = 0
+   49.                      do
+   50.                         $I_L50_24 = 0
+   50. !dir$ ivdep
+   50. !dir$ loop_info (automatic) cache_nt( gausin )
+   50.                         do
+   51.                            gausin(1 + $I_L50_24, 1 + $I_L49_28, 1 + $I_L48_32) = ( gausin(1 + $I_L50_24, 1 + $I_L49_28, 1 + $I_L48_32) * 1.0/cvlhev )
+   52.                            $I_L50_24 = 1 + $I_L50_24
+   50.                            if ( $I_L50_24 >= imax ) exit
+   50.                         enddo
+   53.                         $I_L49_28 = 1 + $I_L49_28
+   52.                         if ( $I_L49_28 >= jmax ) exit
+   52.                      enddo
+   54.                      $I_L48_32 = 1 + $I_L48_32
+   53.                      if ( $I_L48_32 >= ldim ) exit
+   53.                   enddo
+   53.                endif
+   53.             endif
+   53.          endif
+   53.       endif
+   58.       return
+   58.       end
+   58.       
+   61.       
+   61.       subroutine uvtodz( u, v, qrot, qdiv )
+   61.       t$6 = imax
+   61.       t$7 = jmax
+   61.       t$8 = lmax
+   70.       t$17 = _zla( 0, imax )
+   61.       t$18 = _zla( 0, imax )
+   70.       t$19 = _zla( 0, jmax )
+   61.       t$20 = _zla( 0, imax ) * _zla( 0, jmax )
+   70.       t$21 = _zla( 0, lmax )
+   61.       t$22 = _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax )
+   61.       t$9 = mnwv2
+   72.       t$23 = _zla( 0, mnwv2 )
+   61.       t$24 = _zla( 0, mnwv2 )
+   61.       t$25 = _zla( 0, lmax ) * _zla( 0, mnwv2 )
+   77.       t$28 = 8 * _zla( 0, jmax )
+   61.       t$10 = imx
+   78.       t$29 = _zla( 0, imx )
+   61.       t$30 = _zla( 0, imx )
+   61.       t$31 = _zla( 0, jmax ) * _zla( 0, imx )
+   61.       t$32 = _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx )
+   78.       t$33 = 8 * ( 7 + 8 * _zla( 0, jmax ) ) / 8
+   78.       t$35 = t$33 + 8 * _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx )
+   78.       t$36 = 8 * ( 7 + t$33 + 8 * _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx ) ) / 8
+   78.       t$38 = t$36 + 8 * _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx )
+   78.       t$39 = 8 * ( 7 + t$36 + 8 * _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx ) ) / 8
+   78.       t$41 = t$39 + 8 * _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx )
+   78.       t$42 = 8 * ( 7 + t$39 + 8 * _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx ) ) / 8
+   78.       t$44 = t$42 + 8 * _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx )
+   61.       t$26 = int( _alloc( t$42 + 8 * _zla( 0, jmax ) * _zla( 0, lmax ) * _zla( 0, imx ) ), 8 )
+   77.       t$27 = t$26
+   78.       t$34 = t$33 + t$26
+   78.       t$37 = t$36 + t$26
+   78.       t$40 = t$39 + t$26
+   78.       t$43 = t$42 + t$26
+   81.       if ( jmaxhf > 0 ) then
+   82.          $SC_colrad_I0 = colrad%dim_1%EX
+   82.          $SC_colrad_I1 = colrad%dim_1%LB
+   81.          $I_L81_16 = 0
+   81.          do
+   82.             $Flat_S1 = sin( (colrad%base_addr)(1 + $I_L81_16, 0) )
+   82.             coslat(1 + $I_L81_16) = $Flat_S1
+   83.             coslat(jmax + -$I_L81_16) = $Flat_S1
+   84.             $I_L81_16 = 1 + $I_L81_16
+   81.             if ( $I_L81_16 >= jmaxhf ) exit
+   81.          enddo
+   81.       endif
+   86.       if ( lmax > 0 ) then
+   87.          if ( jmax > 0 ) then
+   88.             if ( imax > 0 ) then
+   87.                $I_L87_26 = 0
+   87.                do
+   86.                   $SCA_coslat_I2 = coslat(1 + $I_L87_26)
+   86.                   $I_L86_24 = 0
+   86.                   do
+   88.                      $I_L88_18 = 0
+   88. !dir$ ivdep
+   88. !dir$ loop_info (automatic) cache_nt( v, u, v1 )
+   88.                      do
+   89.                         u1(1 + $I_L88_18, 1 + $I_L87_26, 1 + $I_L86_24) = $SCA_coslat_I2 * u(1 + $I_L88_18, 1 + $I_L87_26, 1 + $I_L86_24)
+   90.                         v1(1 + $I_L88_18, 1 + $I_L87_26, 1 + $I_L86_24) = $SCA_coslat_I2 * v(1 + $I_L88_18, 1 + $I_L87_26, 1 + $I_L86_24)
+   91.                         $I_L88_18 = 1 + $I_L88_18
+   88.                         if ( $I_L88_18 >= imax ) exit
+   88.                      enddo
+   93.                      $I_L86_24 = 1 + $I_L86_24
+   91.                      if ( $I_L86_24 >= lmax ) exit
+   91.                   enddo
+   92.                   $I_L87_26 = 1 + $I_L87_26
+   92.                   if ( $I_L87_26 >= jmax ) exit
+   92.                enddo
+   92.             endif
+   92.          endif
+   92.       endif
+   95. !dir$ suppress u1(1, 1, 1)
+   95.       t$75 = $_StaticDV_P1
+   95.       t$75%base_addr = pointer to array[1] of array[1] of array[1] of real (kind=8)( loc( u1(1, 1, 1) ) )
+   95.       t$75%header%el_len = 64
+   95.       t$75%header%assoc = 1
+   95.       t$75%header%ptr_alloc = 0
+   95.       t$75%header%p_or_a = 0
+   95.       t$75%header%a_contig = 1
+   95.       t$75%header%n_dim = 3
+   95.       t$75%header%orig_base = 0
+   95.       t$75%header%orig_size = 0
+   95.       t$75%header%n_codim = 0
+   95.       t$75%header%dv_versn = 2
+   95.       t$75%header%dv_smunit = 64
+   95.       t$75%header%d_type = 0
+   95.       t$75%header%n_params = 0
+   95.       t$75%header%d_type_idx = 13
+   95.       t$75%dim_1%LB = 1
+   95.       t$75%dim_1%EX = _zla( 0, imx )
+   95.       t$75%dim_1%SM = 1
+   95.       t$75%dim_2%LB = 1
+   95.       t$75%dim_2%EX = _zla( 0, jmax )
+   95.       t$75%dim_2%SM = _zla( 0, imx )
+   95.       t$75%dim_3%LB = 1
+   95.       t$75%dim_3%EX = _zla( 0, lmax )
+   95.       t$75%dim_3%SM = _zla( 0, jmax ) * _zla( 0, imx )
+   95. !dir$ suppress uf(1, 1, 1)
+   95.       t$76 = $_StaticDV_P2
+   95.       t$76%base_addr = pointer to array[1] of array[1] of array[1] of real (kind=8)( loc( uf(1, 1, 1) ) )
+   95.       t$76%header%el_len = 64
+   95.       t$76%header%assoc = 1
+   95.       t$76%header%ptr_alloc = 0
+   95.       t$76%header%p_or_a = 0
+   95.       t$76%header%a_contig = 1
+   95.       t$76%header%n_dim = 3
+   95.       t$76%header%orig_base = 0
+   95.       t$76%header%orig_size = 0
+   95.       t$76%header%n_codim = 0
+   95.       t$76%header%dv_versn = 2
+   95.       t$76%header%dv_smunit = 64
+   95.       t$76%header%d_type = 0
+   95.       t$76%header%n_params = 0
+   95.       t$76%header%d_type_idx = 13
+   95.       t$76%dim_1%LB = 1
+   95.       t$76%dim_1%EX = _zla( 0, imx )
+   95.       t$76%dim_1%SM = 1
+   95.       t$76%dim_2%LB = 1
+   95.       t$76%dim_2%EX = _zla( 0, jmax )
+   95.       t$76%dim_2%SM = _zla( 0, imx )
+   95.       t$76%dim_3%LB = 1
+   95.       t$76%dim_3%EX = _zla( 0, lmax )
+   95.       t$76%dim_3%SM = _zla( 0, jmax ) * _zla( 0, imx )
+   95.       call dird3( t$75, t$76 )
+   96. !dir$ suppress v1(1, 1, 1)
+   96.       t$77 = $_StaticDV_P3
+   96.       t$77%base_addr = pointer to array[1] of array[1] of array[1] of real (kind=8)( loc( v1(1, 1, 1) ) )
+   96.       t$77%header%el_len = 64
+   96.       t$77%header%assoc = 1
+   96.       t$77%header%ptr_alloc = 0
+   96.       t$77%header%p_or_a = 0
+   96.       t$77%header%a_contig = 1
+   96.       t$77%header%n_dim = 3
+   96.       t$77%header%orig_base = 0
+   96.       t$77%header%orig_size = 0
+   96.       t$77%header%n_codim = 0
+   96.       t$77%header%dv_versn = 2
+   96.       t$77%header%dv_smunit = 64
+   96.       t$77%header%d_type = 0
+   96.       t$77%header%n_params = 0
+   96.       t$77%header%d_type_idx = 13
+   96.       t$77%dim_1%LB = 1
+   96.       t$77%dim_1%EX = _zla( 0, t$10 )
+   96.       t$77%dim_1%SM = 1
+   96.       t$77%dim_2%LB = 1
+   96.       t$77%dim_2%EX = _zla( 0, t$7 )
+   96.       t$77%dim_2%SM = _zla( 0, t$10 )
+   96.       t$77%dim_3%LB = 1
+   96.       t$77%dim_3%EX = _zla( 0, t$8 )
+   96.       t$77%dim_3%SM = _zla( 0, t$7 ) * _zla( 0, t$10 )
+   96. !dir$ suppress vf(1, 1, 1)
+   96.       t$78 = $_StaticDV_P4
+   96.       t$78%base_addr = pointer to array[1] of array[1] of array[1] of real (kind=8)( loc( vf(1, 1, 1) ) )
+   96.       t$78%header%el_len = 64
+   96.       t$78%header%assoc = 1
+   96.       t$78%header%ptr_alloc = 0
+   96.       t$78%header%p_or_a = 0
+   96.       t$78%header%a_contig = 1
+   96.       t$78%header%n_dim = 3
+   96.       t$78%header%orig_base = 0
+   96.       t$78%header%orig_size = 0
+   96.       t$78%header%n_codim = 0
+   96.       t$78%header%dv_versn = 2
+   96.       t$78%header%dv_smunit = 64
+   96.       t$78%header%d_type = 0
+   96.       t$78%header%n_params = 0
+   96.       t$78%header%d_type_idx = 13
+   96.       t$78%dim_1%LB = 1
+   96.       t$78%dim_1%EX = _zla( 0, t$10 )
+   96.       t$78%dim_1%SM = 1
+   96.       t$78%dim_2%LB = 1
+   96.       t$78%dim_2%EX = _zla( 0, t$7 )
+   96.       t$78%dim_2%SM = _zla( 0, t$10 )
+   96.       t$78%dim_3%LB = 1
+   96.       t$78%dim_3%EX = _zla( 0, t$8 )
+   96.       t$78%dim_3%SM = _zla( 0, t$7 ) * _zla( 0, t$10 )
+   96.       call dird3( t$77, t$78 )
+   97. !dir$ suppress uf(1, 1, 1)
+   97.       t$79 = $_StaticDV_P5
+   97.       t$79%base_addr = pointer to array[1] of array[1] of array[1] of real (kind=8)( loc( uf(1, 1, 1) ) )
+   97.       t$79%header%el_len = 64
+   97.       t$79%header%assoc = 1
+   97.       t$79%header%ptr_alloc = 0
+   97.       t$79%header%p_or_a = 0
+   97.       t$79%header%a_contig = 1
+   97.       t$79%header%n_dim = 3
+   97.       t$79%header%orig_base = 0
+   97.       t$79%header%orig_size = 0
+   97.       t$79%header%n_codim = 0
+   97.       t$79%header%dv_versn = 2
+   97.       t$79%header%dv_smunit = 64
+   97.       t$79%header%d_type = 0
+   97.       t$79%header%n_params = 0
+   97.       t$79%header%d_type_idx = 13
+   97.       t$79%dim_1%LB = 1
+   97.       t$79%dim_1%EX = _zla( 0, t$10 )
+   97.       t$79%dim_1%SM = 1
+   97.       t$79%dim_2%LB = 1
+   97.       t$79%dim_2%EX = _zla( 0, t$7 )
+   97.       t$79%dim_2%SM = _zla( 0, t$10 )
+   97.       t$79%dim_3%LB = 1
+   97.       t$79%dim_3%EX = _zla( 0, t$8 )
+   97.       t$79%dim_3%SM = _zla( 0, t$7 ) * _zla( 0, t$10 )
+   97. !dir$ suppress vf(1, 1, 1)
+   97.       t$80 = $_StaticDV_P6
+   97.       t$80%base_addr = pointer to array[1] of array[1] of array[1] of real (kind=8)( loc( vf(1, 1, 1) ) )
+   97.       t$80%header%el_len = 64
+   97.       t$80%header%assoc = 1
+   97.       t$80%header%ptr_alloc = 0
+   97.       t$80%header%p_or_a = 0
+   97.       t$80%header%a_contig = 1
+   97.       t$80%header%n_dim = 3
+   97.       t$80%header%orig_base = 0
+   97.       t$80%header%orig_size = 0
+   97.       t$80%header%n_codim = 0
+   97.       t$80%header%dv_versn = 2
+   97.       t$80%header%dv_smunit = 64
+   97.       t$80%header%d_type = 0
+   97.       t$80%header%n_params = 0
+   97.       t$80%header%d_type_idx = 13
+   97.       t$80%dim_1%LB = 1
+   97.       t$80%dim_1%EX = _zla( 0, t$10 )
+   97.       t$80%dim_1%SM = 1
+   97.       t$80%dim_2%LB = 1
+   97.       t$80%dim_2%EX = _zla( 0, t$7 )
+   97.       t$80%dim_2%SM = _zla( 0, t$10 )
+   97.       t$80%dim_3%LB = 1
+   97.       t$80%dim_3%EX = _zla( 0, t$8 )
+   97.       t$80%dim_3%SM = _zla( 0, t$7 ) * _zla( 0, t$10 )
+   97. !dir$ suppress qdiv(1, 1)
+   97.       t$81 = $_StaticDV_P7
+   97.       t$81%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( qdiv(1, 1) ) )
+   97.       t$81%header%el_len = 64
+   97.       t$81%header%assoc = 1
+   97.       t$81%header%ptr_alloc = 0
+   97.       t$81%header%p_or_a = 0
+   97.       t$81%header%a_contig = 1
+   97.       t$81%header%n_dim = 2
+   97.       t$81%header%orig_base = 0
+   97.       t$81%header%orig_size = 0
+   97.       t$81%header%n_codim = 0
+   97.       t$81%header%dv_versn = 2
+   97.       t$81%header%dv_smunit = 64
+   97.       t$81%header%d_type = 0
+   97.       t$81%header%n_params = 0
+   97.       t$81%header%d_type_idx = 13
+   97.       t$81%dim_1%LB = 1
+   97.       t$81%dim_1%EX = _zla( 0, t$9 )
+   97.       t$81%dim_1%SM = 1
+   97.       t$81%dim_2%LB = 1
+   97.       t$81%dim_2%EX = _zla( 0, t$8 )
+   97.       t$81%dim_2%SM = _zla( 0, t$9 )
+   97. !dir$ suppress qrot(1, 1)
+   97.       t$82 = $_StaticDV_P8
+   97.       t$82%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( qrot(1, 1) ) )
+   97.       t$82%header%el_len = 64
+   97.       t$82%header%assoc = 1
+   97.       t$82%header%ptr_alloc = 0
+   97.       t$82%header%p_or_a = 0
+   97.       t$82%header%a_contig = 1
+   97.       t$82%header%n_dim = 2
+   97.       t$82%header%orig_base = 0
+   97.       t$82%header%orig_size = 0
+   97.       t$82%header%n_codim = 0
+   97.       t$82%header%dv_versn = 2
+   97.       t$82%header%dv_smunit = 64
+   97.       t$82%header%d_type = 0
+   97.       t$82%header%n_params = 0
+   97.       t$82%header%d_type_idx = 13
+   97.       t$82%dim_1%LB = 1
+   97.       t$82%dim_1%EX = _zla( 0, t$9 )
+   97.       t$82%dim_1%SM = 1
+   97.       t$82%dim_2%LB = 1
+   97.       t$82%dim_2%EX = _zla( 0, t$8 )
+   97.       t$82%dim_2%SM = _zla( 0, t$9 )
+   97.       call divrot( t$79, t$80, t$81, t$82 )
+   61.       _free( t$26 )
+   99.       return
+   99.       end
+   99.       
+    6.       
+    6.       module util
+    6.       end
+    6.       

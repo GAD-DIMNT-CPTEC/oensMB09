@@ -1,0 +1,14 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+
+LABELI=$SMSDATEHH
+
+#./runense.bash ${COMPILE} ${TRC} ${LV} ${LABELI} ${NFDAYS} ${NPERT} ${HUMID} "NMC"
+./runrecanl.bash %RESOL% NMC ANLNMC ${LABELI}                                    # SCRIPTALONE - APENAS SUBMETE
+./runrdpt.bash %RESOL% NMC YES ${LABELI}                                         # SCRIPTALONE - APENAS SUBMETE
+./rundrpt.bash %RESOL% NMC YES ${LABELI}                                         # SCRIPTALONE - APENAS SUBMETE
+
+%include <tail.h>

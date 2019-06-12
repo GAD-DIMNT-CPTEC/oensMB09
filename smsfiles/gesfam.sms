@@ -1,0 +1,23 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+set +e
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/recortes/GESFAM/%RESOL%/${LABELI}/ GESF 125546444
+if [ $? -eq 0 ]; then
+   smslabel Info "Ok: ${LABELI}"
+%include <tail.h>
+fi
+set -e
+
+
+echo ./runsurfacerec.bash ${LABELI} $TRC $LV NMC
+./runsurfacerec.bash ${LABELI} $TRC $LV NMC
+
+echo "Verificando Arquivos: GESF???${LABELI}"
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/recortes/GESFAM/%RESOL%/${LABELI}/ GESF 125546444
+
+%include <tail.h>

@@ -1,0 +1,28 @@
+%include <head.h>
+%include <date.h>
+
+cd %MODELHOME%/run
+. ./EnvironmentalVariablesOENS %RESOL% NMC
+LABELI=$SMSDATEHH
+
+set +e
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/cluster/dataout/%RESOL%/${LABELI}/clusters clusters 29637
+if [ $? -eq 0 ]; then
+   smslabel Info "Ok: ${LABELI}"
+%include <tail.h>
+fi
+set -e
+
+
+NMEMBR=$(echo "${NPERT}*2+1" | bc -l )
+
+echo ./runcluster.bash ${LABELI} NMC ${TRC} ${LV}
+./runcluster.bash ${LABELI} NMC ${TRC} ${LV}
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/cluster/dataout/%RESOL%/${LABELI}/clusters clusters 25637
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/cluster/dataout/%RESOL%/${LABELI}/clusters clusters 25637
+
+echo ./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/cluster/dataout/%RESOL%/${LABELI}/gif png 0939698
+./runVerif 1 1 %RESOL% %RESOL% ${LABELI} ${SC2_suite}/produtos/cluster/dataout/%RESOL%/${LABELI}/gif png 0939698
+
+%include <tail.h>

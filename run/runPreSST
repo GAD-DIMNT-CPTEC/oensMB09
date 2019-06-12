@@ -1,0 +1,632 @@
+#!/bin/bash -x
+#help#
+#************************************************************************************#
+#                                                                                    #
+# script to run CPTEC OPERATION                                                      #
+# runPre      ggTRClLV  LABELI PARM1 PARM2 ... PARMn                                 #
+#                                                                                    #
+#              ggTRClLV   => gg :  TQ / TL                                           #
+#                            TRC:  4 digits truncation	   		             #
+#		                     l  :  L                                         #
+#			     LV :        3 digits level                              #
+#   	       LABELI     => 10 digits date, format yyyymmddhh	                     #
+#                                                                                    #
+#   PARM:                                                                            #
+#                                                                                    #
+#   ALL - RODA TODOS OS PARAMETROS                                                   #
+#   CHOPPING                                                                         #
+#   CHOPPING_PARALLEL                                                                #
+#   TOPOGRAPHYGRADIENT       
+#   SNOWCLIMA                                                                        #
+#   SSTWEEKLYNCEP                                                                    #
+#   SSTWEEKLY                                                                        #
+#   TOPOWATERPERCNAVY                                                                #
+#   TOPOWATERPERCGT30                                                                #
+#   LANDSEAMASK                                                                      #
+#   VARTOPO                                                                          #
+#   TOPOSPECTRAL                                                                     #
+#   VEGETATIONMASKSSIB                                                               #
+#   VEGETATIONMASK                                                                   #
+#   VEGETATIONALBEDOSSIB                                                             #
+#   DEEPSOILTEMPERATURECLIMA                                                         #
+#   DEEPSOILTEMPERATURE                                                              #
+#   ROUGHNESSLENGHTCLIMA                                                             #
+#   ROUGHNESSLENGHT                                                                  #
+#   SOILMOISTURECLIMA                                                                #
+#   SOILMOISTURE                                                                     #
+#   ALBEDOCLIMA                                                                      #
+#   ALBEDO                                                                           #
+#   SSTCLIMA                                                                         #
+#************************************************************************************#
+#help#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  	cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  	exit 1
+else
+	export CASE=$1
+	if [ ${#CASE} -lt 10 ]; then
+		cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  		exit 1
+	fi
+fi
+
+export DATA=$2
+if [ ${#DATA} -lt 10 ]; then
+	cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+	exit 3
+else
+	echo $DATA
+fi
+
+if [ $# -lt 3 ]; then
+    echo "NENHUM PARAMETRO INFORMADO, SAINDO"
+    exit 3
+fi
+
+# Set  Res for Chopping
+typeset -x prefi
+export RESOUT=`echo $CASE | cut -dL -f1 | cut -c3-6`
+export KMOUT=`echo $CASE  | cut -dL -f2            `
+export RESO=`echo $CASE   | cut -dL -f1 | cut -c3-6`
+export GRID=`echo $CASE   | cut -c1-2              `
+
+PREFXO=NMC
+
+ENVVARFILE=EnvironmentalVariablesOENS
+
+
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -maxdepth 2 -name ${ENVVARFILE} -print`
+export PATHENV=`dirname ${FILEENV}`
+. ${FILEENV} ${CASE} ${PREFXO}
+cd ${HOME_suite}/run
+
+if [ $RESOUT -eq 21 ]; then
+ export IM=64
+ export JM=32
+ export timestep=3600
+fi 
+if [ $RESOUT -eq 31 ]; then
+ export IM=96
+ export JM=48
+ export timestep=1800
+fi 
+if [ $RESOUT -eq 42 ]; then
+ export IM=128
+ export JM=64
+ export timestep=1800
+fi 
+if [ $RESOUT -eq 62 ]; then
+ export IM=192
+ export JM=96
+ export timestep=1200
+fi
+if [ $RESOUT -eq 106 ]; then
+ export IM=320
+ export JM=160
+ export timestep=900
+fi
+if [ $RESOUT -eq 126 ]; then
+ export IM=384
+ export JM=192
+ export timestep=600
+fi
+if [ $RESOUT -eq 133 ]; then
+ export IM=400
+ export JM=200
+ export timestep=600
+fi
+if [ $RESOUT -eq 159 ]; then
+ export IM=480
+ export JM=240
+ export timestep=600
+fi
+if [ $RESOUT -eq 170 ]; then
+ export IM=512
+ export JM=256
+ export timestep=450
+fi
+if [ $RESOUT -eq 213 ]; then
+ export IM=640
+ export JM=320
+ export timestep=450
+fi
+if [ $RESOUT -eq 213 ]; then
+ export IM=640
+ export JM=320
+ export timestep=360
+fi
+if [ $RESOUT -eq 254 ]; then
+ export IM=768
+ export JM=384
+ export timestep=300
+fi
+if [ $RESOUT -eq 299 ]; then
+ export IM=900
+ export JM=450
+ export timestep=300
+fi
+if [ $RESOUT -eq 319 ]; then
+ export IM=960
+ export JM=480
+ export timestep=225
+fi
+if [ $RESOUT -eq 341 ]; then
+ export IM=1024
+ export JM=512
+ export timestep=200
+fi
+if [ $RESOUT -eq 382 ]; then
+ export IM=1152
+ export JM=576
+ export timestep=180
+fi
+if [ $RESOUT -eq 511 ]; then
+ export IM=1536
+ export JM=768
+ export timestep=150
+fi
+if [ $RESOUT -eq 533 ]; then
+ export IM=1600
+ export JM=800
+ export timestep=150
+fi
+if [ $RESOUT -eq 666 ]; then
+ export IM=2000
+ export JM=1000
+ export timestep=150
+fi
+if [ $RESOUT -eq 863 ]; then
+ export IM=2592
+ export JM=1296
+ export timestep=150
+fi
+if [ $RESOUT -eq 1279 ]; then
+ export IM=3840
+ export JM=1920
+ export timestep=20
+fi
+
+export TRUNC=`echo $CASE | cut -dL -f1`
+export MRES=$CASE
+
+echo $TRUNC $MRES
+
+prefix=`printf "%5.5d" ${JM}`
+
+#set run date
+
+if [ -z "${AnlPref}" ] ;then
+export AnlPref=gblav
+fi 
+
+export dirhome=${HOME_suite}/pre
+export dirdata=${SC1_suite}
+export dirgrads=/opt/grads/2.0.a8
+
+# Machine options: SX6; Linux
+export MAQUI=Linux
+
+#    TOPOWATERPERCNAVY        \
+#    TOPOWATERPERCGT30        \
+if [ "`echo $3 | tr a-z A-Z`" = "ALL" ]; then
+    parmin="RESOL DATA       \
+    LANDSEAMASK              \
+    VARTOPO                  \
+    TOPOSPECTRAL             \
+    TOPOGRAPHYGRADIENT       \
+    VEGETATIONMASKSSIB       \
+    VEGETATIONMASK           \
+    VEGETATIONALBEDOSSIB     \
+    DEEPSOILTEMPERATURECLIMA \
+    DEEPSOILTEMPERATURE      \
+    ROUGHNESSLENGHTCLIMA     \
+    ROUGHNESSLENGHT          \
+    SOILMOISTURECLIMA        \
+    SOILMOISTURE             \
+    ALBEDOCLIMA              \
+    ALBEDO                   \
+    CHOPPING                 \
+    SSTCLIMA                 \
+    SNOWCLIMA                \ 
+    SSTWEEKLYNCEP            \
+    SSTWEEKLY                "
+    numparm=22
+else
+    numparm=$#
+    parmin=$*
+fi
+
+i=3
+
+while [ $i -le $numparm ]; do
+   var=`echo $parmin | awk '{print $'$i'}' | tr a-z A-Z`
+   printf "PARAMETRO: %s\n" $var
+
+   case $var in
+   TOPOWATERPERCNAVY)
+      echo executando: ${dirhome}/scripts/run_TopoWaterPercNavy.bash 1 1 TopoNavy hold
+      ${dirhome}/scripts/run_TopoWaterPercNavy.bash  1 1 TopoNavy hold
+      file_out=${dirdata}/pre/dataout/TopoNavy.dat
+      file_out2=${dirdata}/pre/dataout/WaterNavy.dat
+      sleep 15
+      if test ! -s ${file_out} ; then 
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else if test ! -s ${file_out2} ; then
+         echo "Problema!!! Nao foi gerado ${file_out2} "
+         exit 1
+      else
+         echo
+         echo "Fim do TopoWaterPercNavy"
+         echo
+      fi
+      fi
+   ;;
+   TOPOWATERPERCGT30)
+      echo executando: ${dirhome}/scripts/run_TopoWaterPercGT30.bash  1 1 GT30 hold
+      ${dirhome}/scripts/run_TopoWaterPercGT30.bash 1 1 GT30 hold
+      file_out=${dirdata}/pre/dataout/TopoGT30.dat
+      file_out2=${dirdata}/pre/dataout/WaterGT30.dat
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else if test ! -s ${file_out2} ; then
+         echo "Problema!!! Nao foi gerado ${file_out2} "
+         exit 1
+      else
+         echo
+         echo "Fim do TopoWaterPercGT30"
+         echo
+      fi
+      fi
+   ;;
+
+   LANDSEAMASK)
+      echo executando: ${dirhome}/scripts/run_LandSeaMask.bash  1 1 SeaMask hold 
+      ${dirhome}/scripts/run_LandSeaMask.bash  1 1 SeaMask hold
+      file_out=${dirdata}/pre/dataout/LandSeaMaskNavy.G${prefix}.dat
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do LandSeaMask"
+         echo
+      fi
+   ;;
+
+   CHOPPING_PARALLEL)
+     rm -f ${dirdata}/model/datain/GANL???${DATA}S.unf.${MRES}
+     export UTC=${DATA:8:2}
+     echo executando: ${dirhome}/scripts/run_Chopping.bash  24 24 Chopping hold
+
+     ${dirhome}/scripts/run_Chopping.bash  24 24 Chopping hold
+     file_out=${dirdata}/model/datain/GANL${PREFXI}${DATA}S.unf.${MRES}
+	  set +e
+	  set -x
+	  mv ${dirdata}/model/datain/GANLSMT${DATA}S.unf.${MRES} $file_out
+	  oz=$(ls -tr ${dirdata}/model/datain/OZONSMT${DATA}*.grd* | tail -1)
+	  ozon_out=$(ls -tr ${dirdata}/model/datain/OZONSMT${DATA}*.grd* | tail -1 | sed -e s%SMT%${PREFXI}%g)
+	  mv ${oz} ${ozon_out}
+	  set +x
+	  set -e
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do Chopping"
+         echo
+      fi
+      rm -f ${dirdata}/model/datain/*TQ0574L064
+   ;; 
+   CHOPPING)
+     rm -f ${dirdata}/model/datain/GANLSMT${DATA}S.unf.${MRES}
+     export UTC=${DATA:8:2}
+     echo executando: ${dirhome}/scripts/run_Chopping_serial.bash  24 24 Chopping hold
+
+     ${dirhome}/scripts/run_Chopping_serial.bash  24 24 Chopping hold
+     file_out=${dirdata}/model/datain/GANL${PREFXI}${DATA}S.unf.${MRES}
+	  set +e
+	  set -x
+	  mv ${dirdata}/model/datain/GANLSMT${DATA}S.unf.${MRES} $file_out
+	  oz=$(ls -tr ${dirdata}/model/datain/OZONSMT${DATA}*.grd* | tail -1)
+	  ozon_out=$(ls -tr ${dirdata}/model/datain/OZONSMT${DATA}*.grd* | tail -1 | sed -e s%SMT%${PREFXI}%g)
+	  mv ${oz} ${ozon_out}
+	  set +x
+	  set -e
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do Chopping"
+         echo
+      fi
+      rm -f ${dirdata}/model/datain/*TQ0574L064
+   ;; 
+   VARTOPO)
+      echo executando: ${dirhome}/scripts/run_VarTopo.bash  1 1 VarTop hold
+      ${dirhome}/scripts/run_VarTopo.bash  1 1 VarTop  hold
+      file_out=${dirdata}/pre/dataout/Topography.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do VarTopo"
+         echo
+      fi
+   ;;
+
+   TOPOSPECTRAL)
+      echo executando: ${dirhome}/scripts/run_TopoSpectral.bash   1 1 TopoSpectra hold
+      ${dirhome}/scripts/run_TopoSpectral.bash    1 1 TopoSpectra hold
+      file_out=${dirdata}/model/datain/TopoVariance.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do TopoSpectral"
+         echo
+      fi
+   ;; 
+
+   TOPOGRAPHYGRADIENT)
+      echo executando: ${dirhome}/scripts/run_TopographyGradient.bash   1 1 TopoSpectra hold
+      ${dirhome}/scripts/run_TopographyGradient.bash    1 1 TopoGrad hold
+      file_out=${dirdata}/model/datain/TopographyGradient${DATA}.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do TOPOGRAPHYGRADIENT"
+         echo
+      fi
+   ;; 
+   VEGETATIONMASKSSIB)
+      echo executando: ${dirhome}/scripts/run_VegetationMaskSSiB.bash 1 1 VegMasSSiB hold
+      ${dirhome}/scripts/run_VegetationMaskSSiB.bash  1 1 VegMasSSiB hold
+      file_out=${dirdata}/pre/dataout/VegetationMaskClima.dat
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do VegetationMaskSSiB"
+         echo
+      fi
+   ;; 
+
+   VEGETATIONMASK)
+      echo executando: ${dirhome}/scripts/run_VegetationMask.bash  1 1 VegetationMask  hold
+      ${dirhome}/scripts/run_VegetationMask.bash   1 1 VegetationMask  hold
+      file_out=${dirdata}/pre/dataout/VegetationMask.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do VegetationMask"
+         echo
+      fi
+   ;; 
+
+   VEGETATIONALBEDOSSIB)
+      echo executando: ${dirhome}/scripts/run_VegetationAlbedoSSiB.bash  1 1 VegAlbSSiB  hold
+      ${dirhome}/scripts/run_VegetationAlbedoSSiB.bash   1 1 VegAlbSSiB  hold
+      file_out=${dirdata}/model/datain/VegetationMask.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do VegetationAlbedoSSiB"
+         echo
+      fi
+   ;; 
+
+   DEEPSOILTEMPERATURECLIMA)
+      echo executando: ${dirhome}/scripts/run_DeepSoilTemperatureClima.bash 1 1 DeepSoilTemClim hold
+      ${dirhome}/scripts/run_DeepSoilTemperatureClima.bash 1 1 DeepSoilTemClim hold
+      file_out=${dirdata}/pre/dataout/DeepSoilTemperatureClima.dat
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do DeepSoilTemperatureClima"
+         echo
+      fi
+   ;; 
+
+   DEEPSOILTEMPERATURE)
+      echo executando: ${dirhome}/scripts/run_DeepSoilTemperature.bash  1 1 DeepSoilTemp hold
+      ${dirhome}/scripts/run_DeepSoilTemperature.bash 1 1 DeepSoilTemp hold
+      file_out=${dirdata}/model/datain/DeepSoilTemperature.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do DeepSoilTemperature"
+         echo
+      fi
+   ;; 
+   
+   ROUGHNESSLENGHTCLIMA)
+   echo executando: ${dirhome}/scripts/run_RoughnessLengthClima.bash 1 1 RouLenClm hold
+   ${dirhome}/scripts/run_RoughnessLengthClima.bash 1 1 RouLenClm hold 
+   file_out=${dirdata}/pre/dataout/RoughnessLengthClima.dat
+   if test ! -s ${file_out} ; then
+      echo "Problema!!! Nao foi gerado ${file_out} "
+      exit 1
+   else
+      echo
+      echo "Fim do RoughnessLengthClima"
+      echo
+   fi
+   ;; 
+
+   ROUGHNESSLENGHT)
+      echo executando: ${dirhome}/scripts/run_RoughnessLength.bash  1 1 RougLeng hold
+      ${dirhome}/scripts/run_RoughnessLength.bash 1 1 RougLeng hold
+      file_out=${dirdata}/model/datain/RoughnessLength.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do RoughnessLength"
+         echo
+      fi
+   ;;
+
+   SOILMOISTURECLIMA)
+      echo executando: ${dirhome}/scripts/run_SoilMoistureClima.bash  1 1 SoilMoisClm hold
+      ${dirhome}/scripts/run_SoilMoistureClima.bash 1 1 SoilMoisClm hold
+      file_out=${dirdata}/pre/dataout/SoilMoistureClima.dat
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do SoilMoistureClima"
+         echo
+      fi
+   ;; 
+
+   SOILMOISTURE)
+      echo executando: ${dirhome}/scripts/run_SoilMoisture.bash  1 1 SoilMoist hold
+      ${dirhome}/scripts/run_SoilMoisture.bash 1 1 SoilMoist hold
+      file_out=${dirdata}/model/datain/SoilMoisture.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do SoilMoisture"
+         echo
+      fi
+   ;; 
+
+   ALBEDOCLIMA)
+      echo executando: ${dirhome}/scripts/run_AlbedoClima.bash 1 1 AlbClm hold
+      ${dirhome}/scripts/run_AlbedoClima.bash 1 1 AlbClm hold
+      file_out=${dirdata}/pre/dataout/AlbedoClima.dat
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do AlbedoClima"
+         echo
+      fi
+   ;; 
+
+   ALBEDO)
+      echo executando: ${dirhome}/scripts/run_Albedo.bash 1 1 Alb hold
+      ${dirhome}/scripts/run_Albedo.bash 1 1 Alb hold
+      file_out=${dirdata}/pre/dataout/Albedo.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do Albedo"
+         echo
+      fi
+   ;; 
+
+   SNOWCLIMA)
+      echo executando: ${dirhome}/scripts/run_SnowClima.bash  1 1 SnowClm hold 
+      ${dirhome}/scripts/run_SnowClima.bash 1 1 SnowClm hold 
+      file_out=${dirdata}/model/datain/Snow${DATA}S.unf.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do SnowClima"
+         echo
+      fi
+   ;; 
+
+   SSTCLIMA)
+      echo executando: ${dirhome}/scripts/run_SSTClima.bash   1 1 SSTClim hold
+      ${dirhome}/scripts/run_SSTClima.bash  1 1 SSTClim hold
+      datt=`echo ${DATA} |cut -c 1-8`
+      file_out=${dirdata}/model/datain/SSTClima$datt.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do SSTClima"
+         echo
+      fi
+   ;; 
+
+   SSTWEEKLYNCEP)
+      echo executando: ${dirhome}/scripts/run_SSTWeeklyNCEP.bash 1 1 SSTWeeklyNCEP NMC hold
+      ${dirhome}/scripts/run_SSTWeeklyNCEP.bash 1 1 SSTWeeklyNCEP hold
+      datt=`echo ${DATA} |cut -c 1-8`
+      file_out=${dirdata}/pre/dataout/SSTWeekly.$datt
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+
+         echo
+         echo "Fim do SSTWeeklyNCEP"
+         echo
+      fi
+   ;; 
+
+   SSTWEEKLY)
+      echo executando: ${dirhome}/scripts/run_SSTWeekly.bash  1 1 SSTWeekly ${PREFXO}
+      ${dirhome}/scripts/run_SSTWeekly.bash 1 1 SSTWeekly ${PREFXO}
+      datt=`echo ${DATA} |cut -c 1-8`
+      file_out=${dirdata}/model/datain/SSTWeekly$datt.G${prefix}
+      sleep 15
+      if test ! -s ${file_out} ; then
+         echo "Problema!!! Nao foi gerado ${file_out} "
+         exit 1
+      else
+         echo
+         echo "Fim do SSTWeekly"
+         echo
+      fi
+   ;;
+   *)
+   printf "PARAMETRO: %s DESCONHECIDO\n" $var
+   ;;
+   esac
+ let i=$i+1
+done
+
+exit 0
