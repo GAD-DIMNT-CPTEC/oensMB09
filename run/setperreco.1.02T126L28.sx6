@@ -1,0 +1,79 @@
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        setperreco02T126L28.sx6#
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  recomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o tupan00:/gfs/home3/modoper/tempo/global/oens/run/setout/setperreco.1.02T126L28.sx6.2012021406:26.out
+#PBS -j o
+# 
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=20120214
+HOUR=06:26
+echo 'Date: '${DATE}
+echo 'Hour: '${HOUR}
+export DATE HOUR
+#
+NUM=02
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+LABELI=2012021400
+echo ${LABELI}
+export LABELI
+NFDAYS=15
+export NFDAYS
+#
+cd /gfs/dk22/modoper/tempo/global/oens/model/dataout/T126L28
+#rm -f GFCT${NUM}R${LABELI}${LABELI}*
+#rm -f GFCT${NUM}R${LABELI}*.dir.T126L28
+#rm -f GFCT${NUM}R${LABELI}*.dir.T126L28.files
+
+for arq in `ls GFCT${NUM}R${LABELI}*F.fct.T126L28`
+do
+      ln -sf /gfs/dk22/modoper/tempo/global/oens/model/dataout/T126L28/$arq /gfs/dk22/modoper/tempo/global/oens/model/datain/
+done
+#
+ext=R.fct.T126L28
+echo 
+cd  /gfs/dk22/modoper/tempo/global/oens/model/datain
+rm -f lst.GFCT${NUM}R${LABELI}.dr
+ls -l GFCT${NUM}R${LABELI}* > lst.GFCT${NUM}R${LABELI}.dr
+awk '{ print $9 }' lst.GFCT${NUM}R${LABELI}.dr  >  lst.GFCT${NUM}R${LABELI}
+xx=`awk '{ print substr($1,18,10) }' lst.GFCT${NUM}R${LABELI}`
+echo 
+cd /gfs/home3/modoper/tempo/global/oens/eof/datain
+\rm templ${NUM}${LABELI} 
+for i in ${xx} 
+do
+cd /gfs/home3/modoper/tempo/global/oens/eof/datain
+cat <<EOT1 >> templ${NUM}${LABELI}
+/gfs/dk22/modoper/tempo/global/oens/recfct/dataout/T126L28/GFCTCTR${LABELI}${i}${ext}
+/gfs/dk22/modoper/tempo/global/oens/recfct/dataout/T126L28/GFCT${NUM}R${LABELI}${i}${ext}
+EOT1
+
+ls -ltr /gfs/home3/modoper/tempo/global/oens/eof/datain/templ${NUM}${LABELI}
+
+cd /gfs/home3/modoper/tempo/global/oens/run
+for arq in `ls /gfs/dk22/modoper/tempo/global/oens/recfct/dataout/T126L28/GFCT${NUM}R${LABELI}*.fct*`
+do
+      ln -sf $arq /gfs/dk22/modoper/tempo/global/oens/model/datain/
+done
+/gfs/home3/modoper/tempo/global/oens/run/runrecfct1.sx6 run 126 28 FCT${NUM}R ${LABELI} ${i}     
+done
+
+cd /gfs/home3/modoper/tempo/global/oens/run
+/gfs/home3/modoper/tempo/global/oens/run/runeofs1.sx6 run 126 28 NO ${NUM} ${LABELI} ${NFDAYS} 07
+#

@@ -1,0 +1,205 @@
+%include <head.h>
+%include <config.h>
+
+f=0
+i=0
+ms=0
+
+ms01n=0
+ms01p=0
+ms02n=0
+ms02p=0
+ms03n=0
+ms03p=0
+ms04n=0
+ms04p=0
+ms05n=0
+ms05p=0
+ms06n=0
+ms06p=0
+ms07n=0
+ms07p=0
+msavn=0
+
+es=0
+ps=0
+set +x
+while [ $f -ne 1 ]; do
+
+/usr/local/sms/cdp << EOF > .temp01
+status -f %SUITE%
+exit
+EOF
+
+/usr/local/sms/cdp << EOF > .temp012
+status -f %SUITE%/T${TRC}/Modelo/Membros/01/N
+status -f %SUITE%/T${TRC}/Modelo/Membros/01/P
+status -f %SUITE%/T${TRC}/Modelo/Membros/02/N
+status -f %SUITE%/T${TRC}/Modelo/Membros/02/P
+status -f %SUITE%/T${TRC}/Modelo/Membros/03/N
+status -f %SUITE%/T${TRC}/Modelo/Membros/03/P
+status -f %SUITE%/T${TRC}/Modelo/Membros/04/N
+status -f %SUITE%/T${TRC}/Modelo/Membros/04/P
+status -f %SUITE%/T${TRC}/Modelo/Membros/05/N
+status -f %SUITE%/T${TRC}/Modelo/Membros/05/P
+status -f %SUITE%/T${TRC}/Modelo/Membros/06/N
+status -f %SUITE%/T${TRC}/Modelo/Membros/06/P
+status -f %SUITE%/T${TRC}/Modelo/Membros/07/N
+status -f %SUITE%/T${TRC}/Modelo/Membros/07/P
+status -f %SUITE%/T${TRC}/Modelo/Controle/AVN
+exit
+EOF
+
+######
+cat .temp012
+set +x
+      Modelo_status_01n=`cat .temp012 | grep Modelo/Membros/01/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_01p=`cat .temp012 | grep Modelo/Membros/01/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_02n=`cat .temp012 | grep Modelo/Membros/02/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_02p=`cat .temp012 | grep Modelo/Membros/02/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_03n=`cat .temp012 | grep Modelo/Membros/03/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_03p=`cat .temp012 | grep Modelo/Membros/03/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_04n=`cat .temp012 | grep Modelo/Membros/04/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_04p=`cat .temp012 | grep Modelo/Membros/04/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_05n=`cat .temp012 | grep Modelo/Membros/05/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_05p=`cat .temp012 | grep Modelo/Membros/05/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_06n=`cat .temp012 | grep Modelo/Membros/06/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_06p=`cat .temp012 | grep Modelo/Membros/06/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_07n=`cat .temp012 | grep Modelo/Membros/07/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_07p=`cat .temp012 | grep Modelo/Membros/07/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_avn=`cat .temp012 | grep Modelo/Controle/AVN | awk '{print $2}' | grep com | wc -l`
+###### 01n 01p
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.01n ${LABELI}
+      if [ \( ${Modelo_status_01n} -eq 1 \) -a \( ${ms01n} -ne 1 \) ]; then
+            ms01n=1
+      fi
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.01p ${LABELI}
+      if [ \( ${Modelo_status_01p} -eq 1 \) -a \( ${ms01p} -ne 1 \) ]; then
+            ms01p=1
+      fi
+
+###### 02n 02p
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.02n ${LABELI}
+      if [ \( ${Modelo_status_02n} -eq 1 \) -a \( ${ms02n} -ne 1 \) ]; then
+            ms02n=1
+      fi
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.02p ${LABELI}
+      if [ \( ${Modelo_status_02p} -eq 1 \) -a \( ${ms02p} -ne 1 \) ]; then
+            ms02p=1
+      fi
+
+###### 03n 03p
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.03n ${LABELI}
+      if [ \( ${Modelo_status_03n} -eq 1 \) -a \( ${ms03n} -ne 1 \) ]; then
+            ms03n=1
+      fi
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.03p ${LABELI}
+      if [ \( ${Modelo_status_03p} -eq 1 \) -a \( ${ms03p} -ne 1 \) ]; then
+            ms03p=1
+      fi
+
+###### 04n 04p
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.04n ${LABELI}
+      if [ \( ${Modelo_status_04n} -eq 1 \) -a \( ${ms04n} -ne 1 \) ]; then
+            ms04n=1
+      fi
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.04p ${LABELI}
+      if [ \( ${Modelo_status_04p} -eq 1 \) -a \( ${ms04p} -ne 1 \) ]; then
+            ms04p=1
+      fi
+
+###### 05n 05p
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.05n ${LABELI}
+      if [ \( ${Modelo_status_05n} -eq 1 \) -a \( ${ms05n} -ne 1 \) ]; then
+            ms05n=1
+      fi
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.05p ${LABELI}
+      if [ \( ${Modelo_status_05p} -eq 1 \) -a \( ${ms05p} -ne 1 \) ]; then
+            ms05p=1
+      fi
+
+###### 06n 06p
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.06n ${LABELI}
+      if [ \( ${Modelo_status_06n} -eq 1 \) -a \( ${ms06n} -ne 1 \) ]; then
+            ms06n=1
+      fi
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.06p ${LABELI}
+      if [ \( ${Modelo_status_06p} -eq 1 \) -a \( ${ms06p} -ne 1 \) ]; then
+            ms06p=1
+      fi
+
+###### 07n 07p
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.07n ${LABELI}
+      if [ \( ${Modelo_status_07n} -eq 1 \) -a \( ${ms07n} -ne 1 \) ]; then
+            ms07n=1
+      fi
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.07p ${LABELI}
+      if [ \( ${Modelo_status_07p} -eq 1 \) -a \( ${ms07p} -ne 1 \) ]; then
+            ms07p=1
+      fi
+
+###### Controle
+      $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu.avn ${LABELI}
+      if [ \( ${Modelo_status_avn} -eq 1 \) -a \( ${msavn} -ne 1 \) ]; then
+            msavn=1
+      fi
+set +x
+######
+
+      Modelo_status=`cat .temp01 | grep Modelo | awk '{print $2}' | grep com | wc -l`
+      Ens_Medio_status=`cat .temp01 | grep Ens_Medio | awk '{print $4}' | grep com | wc -l`
+      Plumas_status=`cat .temp01 | grep Plumas | awk '{print $2}' | grep com | wc -l`
+      rm -f .temp01
+      
+      if [ \( ${Modelo_status} -eq 1 \) -a \( $ms -ne 1 \) ]; then
+#            $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu ${LABELI}
+            smsevent Modelo
+            ms=1
+      fi
+      if [ \( ${Ens_Medio_status} -eq 1 \) -a \( $es -ne 1 \) ]; then
+            $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu ${LABELI}
+            smsevent Medio
+            es=1
+      fi
+      if [ \( ${Plumas_status} -eq 1 \) -a \( $ps -ne 1 \) ]; then
+            $DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu ${LABELI}
+            smsevent Plumas
+            ps=1
+      fi
+      
+      if [ \( ${Modelo_status} -eq 1 \) -a \( ${Ens_Medio_status} -eq 1 \) -a \( ${Plumas_status} -eq 1 \) ]; then
+            if [ \( ${es} -eq 1 \) -a \( ${es} -eq 1 \) -a \( ${ps} -eq 1 \) ]; then
+                  f=1
+            fi
+      fi
+      
+      let i=$i+1
+      echo "Rodada - $i"
+      sleep 60
+
+done
+rm -f .temp01 .temp012
+set -x
+
+%include <tail.h>
+
+
+
+set +e
+set +u
+OENSDK=$ROPERM
+BANGU=$OENSPROBG
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+
+cp -rpf ${OENSDK}/pos/dataout/T126L28/*${LABELI}2*i*                     ${BANGU}/ANL/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/ensmed/dataout/T126L28/*${LABELI}2*i*                  ${BANGU}/ANL/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/model/dataout/T126L28/GFCT*${LABELI}2*                 ${BANGU}/GFCT/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/model/dataout/T126L28/GFGH*${LABELI}2*                 ${BANGU}/GFGH/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOSENM${LABELI}*    ${BANGU}/ENSMED/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOS??[NP]${LABELI}* ${BANGU}/GPOS/${YYYY}/${MM}/${DD}/
+mkdir -p ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/plumes/dataout/T126L28/*${LABELI}2*                    ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/
+
+%include <tail.h>

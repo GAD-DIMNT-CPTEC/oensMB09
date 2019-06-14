@@ -1,0 +1,60 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        sibveg.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   resolution independent unformated         #
+#                   vegetation parameters file.               #
+#                   It runs on batch.                         #
+#                                                             #
+#      Date       : Feb. 09th, 1994.                          #
+#      Last change: June 26th, 1995.                          #
+#                                                             #
+#*************************************************************#
+#
+# Set directories
+#
+source=$OPERMOD/pre/source
+input=$SOPERMOD/databcs
+minput=$SOPERMOD/model/datain
+bin=$SOPERMOD/pre/bin/sibveg
+out=$OPERMOD/pre/output
+#
+echo 'Vegetation Parameters  -- RUNNING ...'
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/sibveg
+make -f sibveg.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/sibveg
+make -f sibveg.mk clean
+make -f sibveg.mk
+exit
+  fi
+#
+#  Input  files: 19.
+#  Output files: 10.
+#
+eval $FFF'19'=$input/sibveg.form
+eval $FFF'10'=$minput/sibveg
+export $FFF'19' $FFF'10'
+#
+cd $bin
+./sibveg > $out/sibveg.$DATE.$HOUR
+#

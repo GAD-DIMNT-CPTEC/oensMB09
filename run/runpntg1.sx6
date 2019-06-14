@@ -1,0 +1,366 @@
+#!/bin/ksh 
+#help#
+#*******************************************************************#
+#                                                                   #
+#     Name:           runpntg.sx6                                   #
+#                                                                   #
+#     Function:       This script generated and submit              #
+#                     a script to start the global model            #
+#                     at a given date/time to integration           #
+#                     from initial date till final date.            #
+#                                                                   #
+#     Date:           June   02th, 2003.                            #
+#     Last change:    June   02th, 2003.                            #
+#                                                                   #
+#     Valid Arguments for runpntg.sx6                               #
+#                                                                   #
+#     First :   HELP: help or nothing for getting help              #
+#     First :    TRC: three-digit triangular truncation             #
+#     Second:     LV: two-digit number of vertical sigma-layers     #
+#     Third : LABELI: initial forecasting label                     #
+#     Fourth: NFDAYS: number of forecasting days                    #
+#     Fifth :   PERT: perturbation                                  #
+#     Sixth :NUMPERT: number of random perturbations                #
+#   Seventh :  NMSST: SST file name or nothing                      #
+#                                                                   #
+#     Obs.  : NMSST : default sstaoi                                #
+#             PERT  : NMC,01P,01N,02P,02N,...                       #
+#             LABELx: yyyymmddhh                                    #
+#                     yyyy = four digit year                        #
+#                       mm = two digit month                        #
+#                       dd = two digit day                          #
+#                       hh = two digit UTC hour                     #
+#*******************************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+    cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+    exit 0
+fi
+if [ -z "${2}" ]
+then
+echo "Second argument is not set: LV"
+exit
+fi
+if [ -z "${3}" ]
+then
+echo "Third argument is not set (LABELI: yyyymmddhh)"
+exit
+fi
+if [ -z "${4}" ]
+then
+echo "Fourth argument is not set NFDAYS"
+exit
+fi
+if [ -z "${5}" ]
+then
+echo "Fifth argument is not set PERT"
+exit
+else
+PERR=${5}
+fi
+if [ -z "${6}" ]
+then
+echo "Sixth argument is not set NUMPERT"
+exit
+else
+NUMPERT=${6}
+fi
+if [ -z "${7}" ]
+then
+echo "Warning NMSST is not set. Using default: sstaoi"
+fi
+#
+#       Testing Valid Arguments
+#
+if [ -z "${1}" ]
+then
+TRC=062
+else
+TRC=${1}
+fi
+if [ -z "${2}" ]
+then
+LV=28
+else
+LV=${2}
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=Inter
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT=out
+export HSTMAQ MAQUI RUNTM EXT
+#
+#   Set directories and remote machines
+#
+#   OPERM : is the directory for sources, scripts and printouts 
+#           at SX6.
+#   SOPERM: is the directory for input and output files at SX6.
+#   ROPERM: is the directory for big selected output files at SX6.
+#   CTLDIR: is the directory where the outputs will be available
+#           after they where send to the machine RMTCPF.
+#   DIRPRD: is the directory of the machine RMTCPR where there
+#           are the programs to generate special products.
+#   RMTUSR: is the remote user at the telecom machine RMTCPR.
+#   RMTCPR: is the remote machine to run the special products.
+#   RMTCPF: is the remote archieve machine.
+#   RMUSCF: is the remote archieve machine user.
+#   RMPWCF: is the remote archieve machine password.
+#   RMTCPY: is the remote products machine for external users.
+#
+. ../include/config.sx6
+#################################################
+CTLDIR=
+DIRPRD=
+RMTUSR=
+RMTCPR=
+RMTCPF=
+RMUSCF=
+RMPWCF=
+RMTCPY=
+#################################################
+export OPERM SOPERM ROPERM CTLDIR DIRPRD
+export RMTUSR RMTCPR RMTCPF RMUSCF RMPWCF RMTCPY
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+TRUNC=T${TRC}
+LEV=L${LV}
+NIVELP=K15
+export TRUNC LEV NIVELP
+#
+#   Set initial and final forecasting labels and UTC Hour
+#
+LABELI=${3}
+export LABELI
+#
+NFDAYS=${4}
+#
+calday ()
+{
+echo ${LABELI} > labeli${PERR}.out
+yi=`awk '{ print substr($1,1,4) }' labeli${PERR}.out`
+mi=`awk '{ print substr($1,5,2) }' labeli${PERR}.out`
+di=`awk '{ print substr($1,7,2) }' labeli${PERR}.out`
+hi=`awk '{ print substr($1,9,2) }' labeli${PERR}.out`
+rm -f labeli${PERR}.out
+let ybi=${yi}%4
+if [ ${ybi} = 0 ]
+then
+set -A md 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+let df=${di}+${NFDAYS}
+let mf=${mi}
+let yf=${yi}
+let hf=${hi}
+let n=${mi}-1
+if [ df -gt md[${n}] ]
+then
+let df=df-md[${n}]
+let mf=mf+1
+if [ mf -eq 13 ]
+then
+let mf=1
+let yf=yf+1
+fi
+fi
+if [ df -lt 10 ]
+then DF=0${df}
+else DF=${df}
+fi
+if [ mf -lt 10 ]
+then MF=0${mf}
+else MF=${mf}
+fi
+YF=${yf}
+if [ hf -lt 10 ]
+then HF=0${hf}
+else HF=${hf}
+fi
+}
+#
+caldaya ()
+{
+echo ${LABELI} > labeli${PERR}.out
+yi=`awk '{ print substr($1,1,4) }' labeli${PERR}.out`
+mi=`awk '{ print substr($1,5,2) }' labeli${PERR}.out`
+di=`awk '{ print substr($1,7,2) }' labeli${PERR}.out`
+hi=`awk '{ print substr($1,9,2) }' labeli${PERR}.out`
+rm -f labeli${PERR}.out
+let ybi=${yi}%4
+if [ ${ybi} = 0 ]
+then
+set -A md 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+let df=${di}
+let mf=${mi}
+let yf=${yi}
+let hf=${hi}+12
+let n=${mi}-1
+if [ hf -gt 23 ]
+then
+let hf=hf-24
+let df=df+1
+if [ df -gt md[${n}] ]
+then
+let df=df-md[${n}]
+let mf=mf+1
+if [ mf -eq 13 ]
+then
+let mf=1
+let yf=yf+1
+fi
+fi
+fi
+if [ df -lt 10 ]
+then DF=0${df}
+else DF=${df}
+fi
+if [ mf -lt 10 ]
+then MF=0${mf}
+else MF=${mf}
+fi
+YF=${yf}
+if [ hf -lt 10 ]
+then HF=0${hf}
+else HF=${hf}
+fi
+}
+#
+#############Set number (fct) post-processing (out's each 12 hs) #########
+calday
+UTC=${hi}
+if [ "${UTC}" = "00" -o "${UTC}" = "12" ]
+then
+let NF=2*${NFDAYS}
+echo "NF="${NF}
+else
+caldaya
+NF=2
+fi
+let NFILEOUT=${NF}+2
+export UTC NF
+####################################################### 
+LABELF=${YF}${MF}${DF}${HF}
+export LABELF
+#
+#   Set Perturbation
+#
+PERT=${5}
+export PERT
+#
+#   Set SST file name
+#
+if [ -z "${7}" ]
+then
+NMSST=sstaoi
+else
+NMSST=${7}
+fi
+export NMSST
+#
+######Set some parameters to run ensemble members#########
+dhfct=06
+dhdhn=0
+nhdhn=0
+dhext=6
+nhext=120
+prefx=${PERT}
+prefy=${PERT}
+nproc=1
+##########################################################
+#
+######Set parameters to run probability plumes############
+let NMEMB=2*${NUMPERT}+1
+NPRPLM=4
+##########################################################
+#
+cd ${OPERM}/run
+#
+#   Run spectral global model forecast
+#
+set -x
+arqfiles=`ls ${ROPERM}/model/dataout/T${TRC}L${LV}/GFCT${prefx}${LABELI}${LABELF}*.files`
+if [ -s $arqfiles ]; then
+      echo "\n+++ Rodando Modelo AGCMCPT T${TRC}L${LV}"
+      echo "runmodgprompi.${MAQUI} ${TRC} ${LV} ${LABELI} ${LABELF} ${dhfct} ${prefx}"
+      runmodgprompi.${MAQUI} ${TRC} ${LV} ${LABELI} ${LABELF} ${dhfct} ${prefx}
+else
+      echo "Modelo ja Rodado .files Gerado Corretamente..."
+fi
+#
+#CONTROLE DE ARQUIVOS DE SAIDA DO MODELO
+#
+
+sleep 60
+arqctrl=`ls -l ${ROPERM}/model/dataout/T${TRC}L${LV}/GFCT${prefx}${LABELI}* | awk 'BEGIN { s=0 } { s+=$5 } END { printf ( "%17d",s)}'`
+if [ $arqctrl -lt 874481800 ]; then
+      echo "ERRO NO CONTROLE DE ARQUIVOS DO MODELO, VERIFICANDO NOVAMENTE..."
+      sleep 30
+      arqctrl=`ls -l ${ROPERM}/model/dataout/T${TRC}L${LV}/GFCT${prefx}${LABELI}* | awk 'BEGIN { s=0 } { s+=$5 } END { printf ( "%17d",s)}'`
+      if [ $arqctrl -lt 874481800 ]; then
+            rm -f ${ROPERM}/model/dataout/T${TRC}L${LV}/G???${prefx}${LABELI}*
+            exit 2
+      fi
+fi
+arqctrl=`ls -l ${ROPERM}/model/dataout/T${TRC}L${LV}/GFGH${prefx}${LABELI}* | awk 'BEGIN { s=0 } { s+=$5 } END { printf ( "%17d",s)}'`
+if [ $arqctrl -lt 84037300 ]; then
+      echo "ERRO NO CONTROLE DE ARQUIVOS DO MODELO"
+      sleep 30
+      arqctrl=`ls -l ${ROPERM}/model/dataout/T${TRC}L${LV}/GFGH${prefx}${LABELI}* | awk 'BEGIN { s=0 } { s+=$5 } END { printf ( "%17d",s)}'`
+      if [ $arqctrl -lt 84037300 ]; then
+            rm -f ${ROPERM}/model/dataout/T${TRC}L${LV}/G???${prefx}${LABELI}*
+            exit 2
+      fi
+fi
+
+set -x
+#
+#   Run upper-level post-processing
+#
+echo "\n+++ Pos-Processando Modelo AGCMCPT T${TRC}L${LV} em Formato Binario"
+echo "COMENTADO runposb.${MAQUI} ${LABELI} ${prefx}\nRODANDO APENAS GRIB..."
+#AAFrunposb.${MAQUI} ${LABELI} ${prefx}
+
+echo "runposg.${MAQUI} ${LABELI} ${prefx}"
+runposg.${MAQUI} ${LABELI} ${prefx}
+#
+
+a=`pwd`
+cd ${ROPERM}/pos/dataout/T${TRC}L${LV}
+for arq in `ls GPOS${prefx}${LABELI}*.ctl`
+do
+#      /usr/local/grads-1.9b4/bin/gribmap -i ${arq}
+      /usr/local/grads-1.9b3/bin/gribmap -i ${arq}
+
+done
+
+sleep 60
+arqctrl=`ls -l ${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${prefx}${LABELI}* | awk 'BEGIN { s=0 } { s+=$5 } END { printf ( "%17d",s)}'`
+#if [ $arqctrl -lt 2037870824 ]; then
+if [ $arqctrl -lt 1534618064 ]; then
+      echo "ERRO NO CONTROLE DE ARQUIVOS DO POS"
+      exit 2
+fi
+
+cd $a
+
+LABELF=`${CALDATE} ${LABELI} + 15d 'yyyymmddhh'`
+
+echo "\n+++ Pos-Processando GRH do Modelo AGCMCPT T${TRC}L${LV} em Formato Binario"
+echo "rungrhprompi.ksh ${LABELI} ${prefx}"
+rungrhprompi.ksh ${LABELI} ${prefx}
+
+exit 0
+### F I M ###

@@ -1,0 +1,47 @@
+include "template.3.grid.def";
+
+#  Di - i direction increment
+unsigned[4] iDirectionIncrement : can_be_missing,optional;
+alias Di = iDirectionIncrement;
+
+#  N - number of parallels between a pole and the equator
+unsigned[4] numberOfParallelsBetweenAPoleAndTheEquator ;
+alias N =  numberOfParallelsBetweenAPoleAndTheEquator;
+
+include "template.3.scanning_mode.def";
+
+modify numberOfPointsAlongAParallel : can_be_missing;
+
+
+meta g2grid g2grid(
+    latitudeOfFirstGridPoint,
+    longitudeOfFirstGridPoint,
+    latitudeOfLastGridPoint,
+    longitudeOfLastGridPoint,
+    iDirectionIncrement,
+    null,
+    basicAngleOfTheInitialProductionDomain,
+    subdivisionsOfBasicAngle
+    );
+
+meta      latitudeOfFirstGridPointInDegrees    g2latlon(g2grid,0);
+meta      longitudeOfFirstGridPointInDegrees   g2latlon(g2grid,1);
+meta      latitudeOfLastGridPointInDegrees     g2latlon(g2grid,2);
+meta      longitudeOfLastGridPointInDegrees    g2latlon(g2grid,3);
+meta      iDirectionIncrementInDegrees         g2latlon(g2grid,4,
+    iDirectionIncrementGiven) : can_be_missing;
+
+alias geography.laFirst = latitudeOfFirstGridPointInDegrees;
+alias geography.loFirst = longitudeOfFirstGridPointInDegrees;
+alias geography.laLast = latitudeOfLastGridPointInDegrees;
+alias geography.loLast = longitudeOfLastGridPointInDegrees;
+alias geography.iInc = iDirectionIncrementInDegrees;
+alias geography.Nj = numberOfPointsAlongAMeridian;
+alias geography.Ni = numberOfPointsAlongAParallel;
+
+if(missing(numberOfPointsAlongAParallel) && PLPresent == 1){
+    iterator gaussian_reduced(missingValue,values,laFirst,loFirst,laLast,loLast,
+      numberOfParallelsBetweenAPoleAndTheEquator,iInc,pl,Nj);
+} else {
+    iterator gaussian(missingValue,values,loFirst,iInc  ,Ni   ,Nj, laFirst, laLast, numberOfParallelsBetweenAPoleAndTheEquator);
+}

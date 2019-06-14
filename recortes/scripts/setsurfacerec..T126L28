@@ -1,0 +1,497 @@
+#!/bin/ksh 
+
+####################################################################
+#
+#   function calday
+#
+####################################################################
+
+calday ()
+{
+yi=`awk 'BEGIN {print substr("'${LABELI}'",1,4)}'`
+mi=`awk 'BEGIN {print substr("'${LABELI}'",5,2)}'`
+di=`awk 'BEGIN {print substr("'${LABELI}'",7,2)}'`
+hi=`awk 'BEGIN {print substr("'${LABELI}'",9,2)}'`
+#
+let ybi=${yi}%4
+if [ ${ybi} = 0 ]
+then
+set -A md 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+let dr=${di}-${nrdays}
+let mr=${mi}
+let yr=${yi}
+let hr=${hi}
+if [ dr -le 0 ]
+then
+let nr=${mi}-2
+if [ nr -lt 0 ]
+then let nr=11
+fi
+let dr=dr+md[${nr}]
+let mr=${mi}-1
+fi
+if [ mr -le 0 ]
+then
+let mr=12
+let yr=yr-1
+fi
+if [ dr -lt 10 ]
+then DR=0${dr}
+else DR=${dr}
+fi
+if [ mr -lt 10 ]
+then MR=0${mr}
+else MR=${mr}
+fi
+YR=${yr}
+if [ hr -lt 10 ]
+then HR=0${hr}
+else HR=${hr}
+fi
+let str=${MR}-1
+LSTD=${md[${str}]}
+}
+#
+# Set initial current hour
+#
+HOUR=`date +'%H:%M'`
+export HOUR
+echo "  HOUR = $HOUR"
+#
+# Set labels
+#
+LABELI=2012021400
+LABELF=2012022900
+echo "LABELI = $LABELI"
+echo "LABELF = $LABELF"
+#
+#
+# Set directories
+#
+yydir=`awk 'BEGIN {print substr("'$LABELI'",1,4)}'`
+mmdir=`awk 'BEGIN {print substr("'$LABELI'",5,2)}'`
+dddir=`awk 'BEGIN {print substr("'$LABELI'",7,2)}'`
+export yydir mmdir dddir
+resol=`awk 'BEGIN {print tolower("'T126'")}'`
+nivel=`awk 'BEGIN {print tolower("'L28'")}'`
+echo "resol="$resol
+echo "nivel="$nivel
+#
+DIRBANG=/bangu/samfs/modoper/tempo/global/oens/nmc/T126L28
+#DIRCTL1=${DIRBANG}/GPOS/$yydir/$mmdir/$dddir
+DIRCTL1=/gfs/dk22/modoper/tempo/global/oens/pos/dataout/T126L28
+DIRCTL2=${DIRBANG}/RECPRD/GESFAM/$yydir/$mmdir/$dddir
+DIRCTLM=/gfs/dk22/modoper/tempo/global/oens/ensmed/dataout/T126L28
+DIRGESF=/web1/ftp/pub/produtos/ensemble/GESFAM
+DIRSCR=/gfs/home3/modoper/tempo/global/oens/recortes/scripts
+DIRLATS=/usr/local/grads/bin
+dirgrb=/gfs/dk22/modoper/tempo/global/oens/produtos/recortes/dataout/t126l28
+#dirgrb=/dataout/t126l28
+#dirgrb=/bangu/samfs/modoper/tempo/global/oens/nmc/T126L28/../t126l28/recprd
+
+export DIRCTL1 DIRCTL2 dirgrb DIRBANG DIRLATS DIRSCR
+CASE=T126L28
+echo "CASE   = $CASE"
+echo "DIRCTL1 = $DIRCTL1"
+echo "DIRCTL2 = $DIRCTL2"
+
+#
+#-------------------------------------------------------------
+#
+# Remove old files
+#
+#-------------------------------------------------------------
+
+NMEMBRP=15
+let NP=NMEMBRP-1
+let NPR=NP/2
+
+cd /gfs/home3/modoper/tempo/global/oens/recortes/scripts
+
+for nrdays in 2 3 4 5 6
+do
+calday
+LABELR=${YR}${MR}${DR}${HR};export LABELR
+LASTDAY=${LSTD}
+echo "LABELR  = ${LABELR}"
+yydirold=`awk 'BEGIN {print substr("'$LABELR'",1,4)}'`
+mmdirold=`awk 'BEGIN {print substr("'$LABELR'",5,2)}'`
+dddirold=`awk 'BEGIN {print substr("'$LABELR'",7,2)}'`
+export yydirold mmdirold dddirold
+#
+DIRSFCREC=${DIRBANG}/RECPRD/GESFAM/$yydirold/$mmdirold/$dddirold
+export DIRSFCREC
+#
+echo "rm -f ${DIRSFCREC}/GESF*${LABELR}*"
+nk=1
+   while [ ${nk} -le ${NPR}  ]
+   do 
+      if [ ${nk} -lt 10 ]
+      then
+         nk='0'${nk}
+      fi
+      rm -f ${DIRSFCREC}/GESF${nk}P${LABELR}*lst
+      rm -f ${DIRSFCREC}/GESF${nk}P${LABELR}*ctl
+      rm -f ${DIRSFCREC}/GESF${nk}P${LABELR}*gmp
+      rm -f ${DIRSFCREC}/GESF${nk}P${LABELR}*grb
+      rm -f ${DIRSFCREC}/GESF${nk}N${LABELR}*lst
+      rm -f ${DIRSFCREC}/GESF${nk}N${LABELR}*ctl
+      rm -f ${DIRSFCREC}/GESF${nk}N${LABELR}*gmp
+      rm -f ${DIRSFCREC}/GESF${nk}N${LABELR}*grb
+      let nk=nk+1
+   done
+      rm -f ${DIRSFCREC}/GESFAVN${LABELR}*lst
+      rm -f ${DIRSFCREC}/GESFAVN${LABELR}*ctl
+      rm -f ${DIRSFCREC}/GESFAVN${LABELR}*gmp
+      rm -f ${DIRSFCREC}/GESFAVN${LABELR}*grb
+
+      rm -f ${DIRSFCREC}/GESFENM${LABELR}*lst
+      rm -f ${DIRSFCREC}/GESFENM${LABELR}*ctl
+      rm -f ${DIRSFCREC}/GESFENM${LABELR}*gmp
+      rm -f ${DIRSFCREC}/GESFENM${LABELR}*grb
+      
+rmdir ${DIRSFCREC}
+if [ ${dddirold} -eq ${LASTDAY} ]
+then
+   rmdir ${DIRBANG}/RECPRD/GESFAM/$yydirold/$mmdirold
+   if [ ${mmdirold} -eq 12 ]
+   then
+      rmdir ${DIRBANG}/RECPRD/GESFAM/$yydirold
+   fi
+fi
+
+done
+
+################################################################
+#
+# Grads:  (turi)
+#
+################################################################
+
+export GAUDFT=/usr/local/grads/udf/udft
+export GADDIR=/usr/local/grads/dat
+export GRADSB=/usr/local/grads/bin
+export GASCRP=/usr/local/grads/lib
+
+
+################################################################
+#
+# Run task
+#
+# Set characteristics of the product
+################################################################
+
+tit='CPTEC GLOBAL ENSEMBLE SURFACE PRODUCTS '$CASE'  COLD'
+lon1=-101.250
+lon2=-11.250
+lat1=-60.62040
+lat2=13.98945
+fields='topo psnm uves vves tems tsfc umrs prec'
+
+################################################################
+#
+# Does rec to members (1 to 15)
+#
+################################################################
+
+echo "rm -f $dirgrb/GESF*${LABELI}*"
+
+for TIPO in P.fct
+do
+for arq in `ls ${DIRCTL1}/GPOS???${LABELI}??????????${TIPO}.$CASE.ctl`
+do
+#AAF for arq in `cat ${arqlst} |grep ctl`
+#AAF do
+
+arq1=`basename $arq`
+strmb=`awk 'BEGIN { print substr("'$arq1'",5,3) }'`
+strg1=`awk 'BEGIN { print substr("'$arq1'",8,33) }'`
+arqout=GESF${strmb}${strg1}
+
+op="-i $DIRCTL1/$arq1 -o $dirgrb/$arqout -center cptec002 -grid gaussian -format grads_grib -ftype ctl -lat ${lat1} ${lat2} -lon ${lon1}
+${lon2}  -table cptec.table -v -vars ${fields} -title ${tit}"
+
+echo "lats4d $op"
+
+subup=$arqout
+sublo=`awk 'BEGIN {print tolower("'$subup'")}'`
+#
+rep=0
+until [ -s $dirgrb/$sublo.ctl ]
+do
+let rep=rep+1
+echo "=> Grib Repet: $rep"
+if [ $rep -ge 5 ]
+then rm -f WARNNING.${LABELI}
+echo "#####################################">WARNNING.${LABELI}
+echo "  rec product execution problem encontered">>WARNNING.${LABELI}
+echo "  Repeted more then $rep times">>WARNNING.${LABELI}
+echo "  Please execute the command below:">>WARNNING.${LABELI}
+echo "  ./setsurfacerec.scr">>WARNNING.${LABELI}
+echo "#####################################">>WARNNING.${LABELI}
+exit 1
+fi
+rm -f $dirgrb/$arqout.ctl
+rm -f $dirgrb/$arqout.gmp
+rm -f $dirgrb/$arqout.grb
+${DIRLATS}/lats4d $op
+done
+
+cat $dirgrb/$sublo.ctl | sed "s/$sublo/$subup/g" > $dirgrb/ctl.tmp
+
+mv  $dirgrb/ctl.tmp $dirgrb/$sublo.ctl
+mv $dirgrb/$sublo.ctl $dirgrb/$subup.ctl
+mv $dirgrb/$sublo.gmp $dirgrb/$subup.gmp
+mv $dirgrb/$sublo.grb $dirgrb/$subup.grb
+
+head -3 $dirgrb/$subup.ctl>$dirgrb/$subup.ctl.tmp
+let l=`wc -l $dirgrb/$subup.ctl|awk '{print $1}'`-3
+tail -$l $dirgrb/$subup.ctl>>$dirgrb/$subup.ctl.tmp
+mv -f $dirgrb/$subup.ctl.tmp $dirgrb/$subup.ctl
+
+#/recortes/scripts/fixgrb $dirgrb/$subup.grb
+rm -f ${arq}.tmp
+
+#AAF done
+done
+done
+#-------------------------------------------------------------
+#
+# Does rec to ensemble mean 
+#
+#-------------------------------------------------------------
+
+for TIPO in P.fct
+do
+#AAF for arqlst in `ls ${DIRCTLM}/GPOS*${LABELI}${LABELF}${TIPO}.$CASE.lst`
+#AAF do
+#AAF for arq in `cat ${arqlst} |grep ctl`
+for arq in `ls ${DIRCTLM}/GPOSENM${LABELI}2*.ctl`
+do
+arq1=`basename $arq`
+strmb=`awk 'BEGIN { print substr("'$arq1'",5,3) }'`
+strg1=`awk 'BEGIN { print substr("'$arq1'",8,33) }'`
+arqout=GESF${strmb}${strg1}
+#
+op="-i $DIRCTLM/$arq1 -o $dirgrb/$arqout -center cptec002 -grid gaussian -format grads_grib -ftype ctl -lat ${lat1} ${lat2} -lon ${lon1}
+${lon2}  -table /gfs/home3/modoper/tempo/global/oens/recortes/scripts/cptec.table -v -vars ${fields} -title ${tit}"
+echo "lats4d $op"
+subup=$arqout
+sublo=`awk 'BEGIN {print tolower("'$subup'")}'`
+#
+rep=0
+until [ -s $dirgrb/$sublo.ctl ]
+do
+let rep=rep+1
+echo "=> Grib Repet: $rep"
+if [ $rep -ge 5 ]
+then rm -f WARNNING.${LABELI}
+echo "#####################################">WARNNING.${LABELI}
+echo "  rec product execution problem encontered">>WARNNING.${LABELI}
+echo "  Repeted more then $rep times">>WARNNING.${LABELI}
+echo "  Please execute the command below:">>WARNNING.${LABELI}
+echo "  ./setsurfacerec.scr">>WARNNING.${LABELI}
+echo "#####################################">>WARNNING.${LABELI}
+exit 1
+fi
+rm -f $dirgrb/$arqout.ctl
+rm -f $dirgrb/$arqout.gmp
+rm -f $dirgrb/$arqout.grb
+
+${DIRLATS}/lats4d $op
+
+done
+
+cat $dirgrb/$sublo.ctl | sed "s/$sublo/$subup/g" > $dirgrb/ctl.tmp
+mv  $dirgrb/ctl.tmp $dirgrb/$sublo.ctl
+mv $dirgrb/$sublo.ctl $dirgrb/$subup.ctl
+mv $dirgrb/$sublo.gmp $dirgrb/$subup.gmp
+mv $dirgrb/$sublo.grb $dirgrb/$subup.grb
+
+head -3 $dirgrb/$subup.ctl>$dirgrb/$subup.ctl.tmp
+let l=`wc -l $dirgrb/$subup.ctl|awk '{print $1}'`-3
+tail -$l $dirgrb/$subup.ctl>>$dirgrb/$subup.ctl.tmp
+mv -f $dirgrb/$subup.ctl.tmp $dirgrb/$subup.ctl
+rm -f ${arq}.tmp
+
+#AAF done
+done
+done
+
+
+exit 0
+#-------------------------------------------------------------
+#   Move grib files to archive directory
+#-------------------------------------------------------------
+
+#AAFecho "cp -f $dirgrb/GESF*${LABELI}* $DIRCTL2"
+
+#AAFnk=1
+#AAFwhile [ ${nk} -le ${NPR}  ]
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAF
+#AAFdo 
+#AAF   if [ ${nk} -lt 10 ]
+#AAF   then
+#AAF      nk='0'${nk}
+#AAF   fi
+#AAF   for listarq in `ls $dirgrb/GESF${nk}P*ctl`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESF${nk}P*gmp`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESF${nk}P*grb`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESF${nk}N*ctl`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESF${nk}N*gmp`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESF${nk}N*grb`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   let nk=nk+1
+#AAFdone
+#AAF
+# AVN
+#AAF
+#AAF   for listarq in `ls $dirgrb/GESFAVN*ctl`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESFAVN*gmp`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESFAVN*grb`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF
+# ENM
+
+#AAF   for listarq in `ls $dirgrb/GESFENM*ctl`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESFENM*gmp`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF   for listarq in `ls $dirgrb/GESFENM*grb`
+#AAF   do
+#AAF      cp -f ${listarq} $DIRCTL2
+#AAF   done
+#AAF
+#-------------------------------------------------------------
+#
+# Put recs at external machine
+#
+#-------------------------------------------------------------
+
+nrdays=4
+calday
+labelr4=${YR}${MR}${DR}${HR}
+nrdays=3
+calday
+labelr3=${YR}${MR}${DR}${HR}
+nrdays=2
+calday
+labelr2=${YR}${MR}${DR}${HR}
+nk=1
+while [ ${nk} -le ${NPR}  ]
+do 
+   if [ ${nk} -lt 10 ]
+   then
+      nk='0'${nk}
+   fi
+rm -f putrec.${nk}..T126L28
+
+cat << EOT >> putrec.${nk}..T126L28
+user pnt &arun/a*
+bin 
+cd ${DIRGESF}
+mdelete GESF${nk}P*
+mdelete GESF${nk}P*
+mdelete GESF${nk}P*
+mdelete GESF${nk}N*
+mdelete GESF${nk}N*
+mdelete GESF${nk}N*
+lcd ${DIRCTL2}
+mput GESF${nk}P${LABELI}*
+mput GESF${nk}N${LABELI}*
+EOT
+
+
+ftp -in tucupi < putrec.${nk}..T126L28
+rm -f putrec.${nk}..T126L28
+
+let nk=nk+1
+done
+
+#AVN
+
+rm -f putrec.AVN..T126L28
+cat << EOT >> putrec.AVN..T126L28
+user pnt &arun/a*
+bin 
+cd ${DIRGESF}
+mdelete GESFAVN*
+mdelete GESFAVN*
+mdelete GESFAVN*
+mdelete GESFAVN*
+mdelete GESFAVN*
+mdelete GESFAVN*
+lcd ${DIRCTL2}
+mput GESFAVN${LABELI}*
+EOT
+
+
+ftp -in tucupi < putrec.AVN..T126L28
+rm -f putrec.AVN..T126L28
+
+#ENM
+rm -f putrec.ENM..T126L28
+cat << EOT >> putrec.ENM..T126L28
+user pnt &arun/a*
+bin 
+cd ${DIRGESF}
+mdelete GESFENM*
+mdelete GESFENM*
+mdelete GESFENM*
+mdelete GESFENM*
+mdelete GESFENM*
+mdelete GESFENM*
+lcd ${DIRCTL2}
+mput GESFENM${LABELI}*
+EOT
+
+
+ftp -in tucupi < putrec.ENM..T126L28
+rm -f putrec.ENM..T126L28
+
+
+rm -f setsurfacerec..T126L28
+

@@ -1,0 +1,162 @@
+#!/bin/ksh
+#help#
+#*******************************************************************#
+#                                                                   #
+#      Name:           runctrpntg.sx6                               #
+#                                                                   #
+#      Function:       This script generated and submit             #
+#                      a script to start the global model           #
+#                      at a given date/time to integration          #
+#                      from initial date till 36 hours to           #
+#                      obtain the control forecast                  #
+#                                                                   #
+#      Date:           May    27th, 2003.                           #
+#      Last change:    May    27th, 2003.                           #
+#                                                                   #
+#      Valid Arguments for runctrpntg.sx6                           #
+#                                                                   #
+#     First :   HELP: help or nothing for getting help              #
+#     First :    TRC: three-digit triangular truncation             #
+#     Second:     LV: two-digit number of vertical sigma-layers     #
+#     Third : LABELI: initial forecasting label                     #
+#     Fourth: LABELF: final perturbation label                      #
+#     Fifth :  NMSST: SST file name or nothing                      #
+#                                                                   #
+#      Obs.  : NMSST : default sstint                               #
+#              LABELx: yyyymmddhh                                   #
+#                    yyyy = four digit year                         #
+#                      mm = two  digit month                        #
+#                      dd = two  digit day                          #
+#                      hh = two  digit UTC hour                     #
+#                                                                   #
+#*******************************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+    cat < $0 | sed -n '/^#help#/,/^#help#/p'
+    exit 0
+fi
+if [ -z "${2}" ]
+then
+echo "Second argument is not set (LV)"
+exit
+fi
+if [ -z "${3}" ]
+then
+echo "Third argument is not set (LABELI: yyyymmddhh)"
+exit
+fi
+if [ -z "${4}" ]
+then
+echo "Fourth argument is not set (LABELF: yyyymmddhh)"
+exit
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=Inter
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+EXT=out
+export HSTMAQ MAQUI RUNTM EXT
+#
+#   Set directories and remote machines
+#
+#   OPERM : is the directory for sources, scripts and printouts 
+#           at SX6.
+#   SOPERM: is the directory for input and output files at SX6.
+#   ROPERM: is the directory for big selected output files at SX6.
+#
+. ../include/config.sx6
+export OPERM SOPERM ROPERM 
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+TRC=${1}
+LV=${2}
+TRUNC=T${TRC}
+LEV=L${LV}
+export TRUNC LEV
+#
+#   Set initial and final forecasting labels and UTC Hour
+#
+LABELI=${3}
+LABELF=${4}
+UTC=`echo ${LABELI} | awk '{ print substr($1,9,2) }'`
+export LABELI LABELF
+#
+#   Set SST file name
+#
+if [ -z "${5}" ]
+then
+NMSST=sstint
+else
+NMSST=${5}
+fi
+export NMSST
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setctrpntg.1.${TRUNC}${LEV}.${MAQUI}
+#!/bin/ksh
+#
+#***************************************************#
+#                                                   #
+#      Name:     setctrpntg.${MAQUI}                #
+#                                                   #
+#      Function: This script runs the spectral      #
+#                global numerical weather           #
+#                forecasting (control) at ${MAQUI}. #
+#                                                   #
+#***************************************************#
+#PBS -l cpunum_prc=4
+#PBS -l memsz_job=4gb
+#PBS -l cputim_job=8000
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setctrpntg.1.${TRUNC}${LEV}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#
+#   Change directory to run
+#
+cd ${OPERM}/run
+#
+#   Set current sst file name for model run
+#
+SSTNM=${NMSST}
+#
+#   Run spectral global model forecast
+#   Not in MPI Version
+#
+#echo "runctrmodgpro.${MAQUI} ${TRC} ${LV} ${LABELI} ${LABELF} 03" 
+#runctrmodgpro.${MAQUI} ${TRC} ${LV} ${LABELI} ${LABELF} 03
+#mv $ROPERM/model/dataout/T126L28/GFCTCTR${LABELI}*.fct.T126L28 ${ROPERM}/recfct/dataout/T126L28/
+#
+#   Run recomposition script to files of control forecast 
+#
+echo "runctrreco1.${MAQUI} ${TRC} ${LV} ${LABELI}"
+runctrreco1.${MAQUI} ${TRC} ${LV} ${LABELI}
+#
+EOT0
+#
+echo "chmod a+x setctrpntg1${TRUNC}${LEV}.${MAQUI}"
+chmod a+x setctrpntg.1.${TRUNC}${LEV}.${MAQUI}
+#
+#   Submit setctrpntg${TRUNC}${LEV}.${MAQUI} to NQS ${QUEUE}
+#
+#AMM echo "qsub -x -s /bin/ksh -q ${QUEUE} ${OPERM}/run/setctrpntg${TRUNC}${LEV}.${MAQUI}"
+#AMM qsub -x -s /bin/ksh -q ${QUEUE} ${OPERM}/run/setctrpntg${TRUNC}${LEV}.${MAQUI}
+#echo "${OPERM}/run/setctrpntg.1.${TRUNC}${LEV}.${MAQUI}"
+#/usr/bin/nqsII/qsub -q $QUEUE -N CTROENS ${OPERM}/run/setctrpntg.1.${TRUNC}${LEV}.${MAQUI}
+submit ${OPERM}/run/setctrpntg.1.${TRUNC}${LEV}.${MAQUI} $QUEUE Info
+#
+sleep 30
+cd ${OPERM}/run
+runctrmodgpro.${MAQUI} ${TRC} ${LV} ${LABELI} ${LABELF} 03
+#${OPERM}/run/setctrpntg.1.${TRUNC}${LEV}.${MAQUI}
+
+mv ${mDK}/model/dataout/GFCTCTR${LABELI}* ${mDK}/model/datain/

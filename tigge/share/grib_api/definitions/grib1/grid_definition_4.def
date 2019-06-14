@@ -1,0 +1,53 @@
+# For grib1 -> grib2
+constant gridDefinitionTemplateNumber     = 40;
+
+
+
+# START 1/grid_definition.gaussian_latitude_longitude_grid ----------------------------------------------------------------------
+# GRID DEFINITION Gaussian latitude/longitude grid  = including rotated, stretched, or stretched and rotated)
+#  Ni - number of points along a parallel
+unsigned[2] numberOfPointsAlongAParallel : can_be_missing;
+
+
+#  Nj - number of points along a meridian
+unsigned[2] numberOfPointsAlongAMeridian;
+
+# Latitudes and Longitudes of the first and the last points
+# Resolution and component flags
+include "grid_first_last_resandcomp.def";
+
+#  Di - i direction increment
+unsigned[2] iDirectionIncrement : can_be_missing,optional;
+meta iDirectionIncrementInDegrees scale(iDirectionIncrement,oneConstant,grib1divider) : can_be_missing;
+alias Di = iDirectionIncrement;
+
+#  N - number of parallels between a pole and the equator
+unsigned[2] numberOfParallelsBetweenAPoleAndTheEquator ;
+
+include "scanning_mode.def";
+
+#  Set to zero
+#  = reserved
+pad padding_grid4_1(4);
+
+alias geography.laFirst = latitudeOfFirstGridPointInDegrees;
+alias geography.loFirst = longitudeOfFirstGridPointInDegrees;
+alias geography.laLast = latitudeOfLastGridPointInDegrees;
+alias geography.loLast = longitudeOfLastGridPointInDegrees;
+alias geography.iInc = iDirectionIncrementInDegrees;
+alias geography.Nj = numberOfPointsAlongAMeridian;
+alias geography.Ni = numberOfPointsAlongAParallel;
+
+when (missing(numberOfPointsAlongAParallel)) {
+       set PLPresent = 1;
+}
+
+if(missing(numberOfPointsAlongAParallel)){
+    iterator gaussian_reduced(missingValue,values,laFirst,loFirst,laLast,loLast,
+      numberOfParallelsBetweenAPoleAndTheEquator,iInc,pl,Nj);
+} else {
+        iterator   gaussian(missingValue,values,loFirst,iInc  ,Ni   ,Nj, laFirst, laLast, numberOfParallelsBetweenAPoleAndTheEquator);
+}
+
+
+# END   1/grid_definition.gaussian_latitude_longitude_grid ----------------------------------------------------------------------

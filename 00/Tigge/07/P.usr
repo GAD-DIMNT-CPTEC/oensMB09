@@ -1,0 +1,79 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Tigge/07
+FAMILY1          =   07
+SMSDATE          =   2011081512
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Tigge/07/P
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   1
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   P
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+echo "INICIANDO RECORTES TIGGE"
+
+HH=`echo $LABELI | cut -c 9-10`
+LABELS=`echo $LABELI | cut -c 1-8`
+LABELF=`date -d "${LABELS} 15 days" +"%%Y%%m%%d${HH}"`
+PREFX="%FAMILY1%""%TASK%"
+
+cd $OPERM/run
+
+. %SMSINCLUDE%/config.sx6
+
+typeset -RZ3 tiggeconf="%FAMILY1%"
+if [ "%TASK%" = "P" ]; then
+      let tiggeconf=$tiggeconf+07
+fi
+
+s=`date +"%%s"`
+
+cat << EOF > ${OPERM}/run/TIGGE${PREFX}.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/TIGGE${PREFX}${LABELI}.${s}.out
+#PBS -j o
+
+cd ${OPERM}/run
+./runrectigge.1.4.sx6 $LABELI $PREFX
+
+exit 0
+EOF
+
+ARQINI=z_tigge_c_sbsj_${LABELI}0000_glob
+DIRINI=sbsj_${LABELI}00_glob_prod
+tiggedirmopora=/usr/local/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/${DIRINI}
+
+if [ `ls -ltr ${ROPERM}/tigge/dataout/T126L28/${tiggeconf}/${ARQINI}*prod* | wc -l` -eq 3228 ]; then
+      echo "\n\n++ RODADA COMPLETA..."
+else
+      ssh tigge-ldm.cptec.inpe.br -l ldm "find /usr/local/ldm/tigge/data/scratch -name \"z_tigge_c_sbsj_${LABELI}00*prod*_${tiggeconf}_*.grib\" -exec rm -f {} \;"
+      submit ${OPERM}/run/TIGGE${PREFX}.sub pesq Info
+      arqoutset=${OPERM}/run/setout/TIGGE${PREFX}${LABELI}.${s}.out
+fi
+
+rm -f ${OPERM}/run/TIGGE${PREFX}.sub
+
+cd ${OPERM}/run
+./vescptigge.ksh $LABELI ${tiggeconf}
+
+set -e
+narq=`ssh tigge-ldm.cptec.inpe.br -l ldm "find /usr/local/ldm/tigge/data/scratch -name \"z_tigge_c_sbsj_${LABELI}00*prod*_${tiggeconf}_*.grib\" | wc -l"`
+if [ $narq -eq 3228 ]; then
+      echo "\n\n++ RODADA COMPLETA, REFAZENDO APENAS COPIA..."
+      echo "CASO ABORTE APOS TODAS AS TENTATIVAS, APAGUE OS ARQUIVOS DE:"
+      echo "${ROPERM}/tigge/dataout/T126L28/${tiggeconf}/\n\n REINICIE O MEMBRO COM PROBLEMAS."
+      ./vescptigge.ksh $LABELI ${tiggeconf}
+else
+      ssh tigge-ldm.cptec.inpe.br -l ldm "find /usr/local/ldm/tigge/data/scratch -name \"z_tigge_c_sbsj_${LABELI}00*prod*_${tiggeconf}_*.grib\" -exec rm -f {} \;"
+      exit 3
+fi
+
+%include <tail.h>

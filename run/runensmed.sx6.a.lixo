@@ -1,0 +1,581 @@
+#!/bin/ksh
+#help#
+#***********************************************************************#
+#                                                                       #
+#     Name:           runensmed.sx6                                     #
+#                                                                       #
+#     Function:       This script initiares the variable                #
+#                     so that the program can calculate                 #
+#                     the avarage of the members of a                   #
+#                     forecast.                                         #
+#                     It runs in Korn Shell.                            #
+#                                                                       #
+#     Date:           May 17th, 2004.                                   #
+#     Last change:    May 17th, 2004.                                   #
+#                                                                       #
+#     Valid Arguments for runensmed.sx6:                                #
+#                                                                       #
+#     First:     COMPILE: help, make, clean or run                      #
+#     Second:        TRC: three-digit triangular truncation             #
+#     Third:          LV: two-digit number of vertical sigma-layers     #
+#     Fourth:     LABELI: initial forecasting label                     #
+#     Fifth:      NFDAYS: number of forecasting days                    #
+#     Sixth:      NRBINS: number (fct) post-processing                  #
+#     seventh     NMEMBR: number of members of the ensemble             #
+#     eighth:      NPROC: number of processors (1 to 8)                 #
+#                                                                       #
+#                  LABELx: yyyymmddhh                                   #
+#                          yyyy = four digit year                       #
+#                            mm = two digit month                       #
+#                            dd = two digit day                         #
+#                            hh = two digit hour                        #
+#                                                                       #
+#***********************************************************************#
+#end#
+#
+#       Help:
+#
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#end#/p'
+exit 0
+fi
+#
+#       Testing Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit 0
+fi
+fi
+fi
+#
+#       Set parameters to run
+#
+if [ "${1}" = "run" ]
+then
+if [ -z "${2}" ]
+then
+echo "TRC is not set"
+exit
+else
+TRC=${2}
+fi
+if [ -z "${3}" ]
+then
+echo "LV is not set"
+exit
+else
+LV=${3}
+fi
+if [ -z "${4}" ]
+then
+echo "LABELI is not set"
+exit
+fi
+if [ -z "${5}" ]
+then
+echo "NFDAYS is not set"
+exit
+else
+NFDAYS=${5}
+fi
+if [ -z "${6}" ]
+then
+echo "NRBINS is not set"
+exit
+fi
+if [ -z "${7}" ]
+then
+echo "NMEMBR is not set."
+exit
+else
+NMEMBR=${7}
+fi
+if [ -z "${8}" ]
+then
+echo "NPROC is not set."
+exit
+else
+NPROC=${8}
+fi
+#
+else
+#
+NPROC=1
+fi
+PREFX=out
+#
+#     End of setting parameters to run
+#####
+#
+#   Set initial and final forecasting labels and UTC Hour
+#
+LABELI=${4}
+#
+#   Set number of bin's and ctl's in the sizetupan* files
+#   Sum 2 (for icn and inz files)
+#
+NRBINS=${6}
+let NRBINS=NRBINS+2
+#
+calday ()
+{
+echo ${LABELI} > labeli.plumes.out
+yi=`awk '{ print substr($1,1,4) }' labeli.plumes.out`
+mi=`awk '{ print substr($1,5,2) }' labeli.plumes.out`
+di=`awk '{ print substr($1,7,2) }' labeli.plumes.out`
+hi=`awk '{ print substr($1,9,2) }' labeli.plumes.out`
+rm -f labeli.plumes.out
+let ybi=${yi}%4
+if [ ${ybi} = 0 ]
+then
+set -A md 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+let df=${di}+${NFDAYS}
+let mf=${mi}
+let yf=${yi}
+let hf=${hi}
+let n=${mi}-1
+if [ df -gt md[${n}] ]
+then
+let df=df-md[${n}]
+let mf=mf+1
+if [ mf -eq 13 ]
+then
+let mf=1
+let yf=yf+1
+fi
+fi
+if [ df -lt 10 ]
+then DF=0${df}
+else DF=${df}
+fi
+if [ mf -lt 10 ]
+then MF=0${mf}
+else MF=${mf}
+fi
+YF=${yf}
+if [ hf -lt 10 ]
+then HF=0${hf}
+else HF=${hf}
+fi
+}
+calday
+LABELF=${YF}${MF}${DF}${HF}
+export LABELI LABELF
+echo "LABELI="${LABELI}
+echo "LABELF="${LABELF}
+#
+#     Select parameter for the resolution:
+#
+if [ "${1}" = "run" ]
+then
+case ${TRC} in
+021) MR=22 ; IR=64 ; JR=32 ; NPGH=93 ;
+     DT=1800
+;;
+030) MR=31 ; IR=96 ; JR=48 ; NPGH=140 ;
+     DT=1800
+;;
+042) MR=43 ; IR=128 ; JR=64 ; NPGH=187 ;
+     DT=1800
+;;
+047) MR=48 ; IR=144 ; JR=72 ; NPGH=26 ;
+     DT=1200
+;;
+062) MR=63 ; IR=192 ; JR=96 ; NPGH=315 ;
+     DT=1200
+;;
+079) MR=80 ; IR=240 ; JR=120 ; NPGH=26 ;
+     DT=900
+;;
+085) MR=86 ; IR=256 ; JR=128 ; NPGH=26 ;
+     DT=720
+;;
+094) MR=95 ; IR=288 ; JR=144 ; NPGH=591 ;
+     DT=720
+;;
+106) MR=107 ; IR=320 ; JR=160 ; NPGH=711 ;
+     DT=600
+;;
+126) MR=127 ; IR=384 ; JR=192 ; NPGH=284 ;
+     DT=600
+;;
+159) MR=160 ; IR=480 ; JR=240 ; NPGH=1454 ;
+     DT=450
+;;
+170) MR=171 ; IR=512 ; JR=256 ; NPGH=1633 ;
+     DT=450
+;;
+213) MR=214 ; IR=640 ; JR=320 ; NPGH=2466 ;
+     DT=360
+;;
+254) MR=255 ; IR=768 ; JR=384 ; NPGH=3502 ;
+     DT=300
+;;
+319) MR=320 ; IR=960 ; JR=480 ; NPGH=26 ;
+     DT=240
+;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=Inter
+RUNTM=`date +'%Y%m%d%T'`
+EXT=${PREFX}
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERMO is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   AOPERM is the directory for alternative initial conditions.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/dk21/modoper/tempo/global/oens
+ROPERM=/gfs/dk21/modoper/tempo/global/oens
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+#
+#   Set truncation and layers
+#
+RESOL=T${TRC}
+NIVEL=L${LV}
+#
+#   CTLDIR is the directory where the outputs will be available
+#          after they were send to archive machine ygara.
+#
+yydir=`awk 'BEGIN {print substr("'$LABELI'",1,4)}'`
+mmdir=`awk 'BEGIN {print substr("'$LABELI'",5,2)}'`
+dddir=`awk 'BEGIN {print substr("'$LABELI'",7,2)}'`
+CTLDIR=/bangu/samfs/modoper/tempo/global/oens/nmc/${RESOL}${NIVEL}/ANL/${yydir}/${mmdir}/${dddir}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setensmed${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh 
+#*****************************************************************#
+#                                                                 #
+#       Name:           setensmed${RESOL}${NIVEL}.${MAQUI}        #
+#                                                                 #
+#       Function:       This script file is used to set the       #
+#                       environmental variables and start         #
+#                       the global model scripts.                 #
+#                                                                 #
+#*****************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -N ${JNAME}
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setensmed${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (day,month,year) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   AOPERMOD is the directory for alternative initial conditions.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+export OPERMOD SOPERMOD ROPERMOD 
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE
+echo \${COMPILE}
+#
+# Define variables to generate variable data file names:
+#
+OUT=${EXT}
+export OUT
+#
+EXTS=S.unf
+export EXTS 
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+F_SETBUF=2048
+export F_SETBUF
+echo " F_SETBUF = \${F_SETBUF}"
+#
+#   Set number of processors to use on the execution of the script
+#
+OMP_NUM_THREADS=${NPROC}
+export OMP_NUM_THREADS
+#
+#  Now, verify if compile or run
+#
+if [ "\${COMPILE}" != "run" ]
+then
+cd \${OPERMOD}/ensmed/source
+rm -f *.L
+rm -f *.mod
+rm -f *.o
+make
+#
+else
+#
+#   Run AGCM
+#
+echo 'MODEL  -- SUBMITTED ...'
+#
+####################################################################
+#                         				           #
+#        Os dados devem sempre ser organizados de forma            #
+#        que os dados fiquem separados por blocos dos tipos:       #            
+#        1o. Inteiros                                              #
+#        2o. Floats                                                #
+#	 3o. Chars                                                 #
+#								   #
+####################################################################
+#
+#
+#Parametros a serem lidos pelo programa ensmed.f90
+#MEMB      : ( INTEIRO ) n.o de membros do ensemble
+#IMAX      : ( INTEIRO ) n.o de pontos na direcao zonal
+#JMAX      : ( INTEIRO ) n.o de pontos na direcao meridional
+#NBINS     : ( INTEIRO ) n.o de arquivos binarios de previsao (fct)
+#NUMTHREADS: ( INTEIRO ) n.o de processadores a ser utilizado para o processamento
+#DATAINDIR : ( CHAR    ) diretorio dos dados de entrada (membros do ensemble)
+#DATAOUTDIR: ( CHAR    ) diretorio dos dados de saida (ensemble medio)
+#DIRCTL    : ( CHAR    ) diretorio dos dados de saida na servidora de arquivos (bangu)
+cat <<EOT > \${OPERMOD}/ensmed/bin/ensmed.${LABELI}.nml
+MEMB      :   ${NMEMBR}
+IMAX      :   ${IR}
+JMAX      :   ${JR}
+NBINS     :   ${NRBINS}
+NUMTHREADS:   ${NPROC}
+DATAINDIR :   \${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}/
+DATAOUTDIR:   \${SOPERMOD}/ensmed/dataout/\${TRUNC}\${LEV}/
+DIRCTL    :   ${CTLDIR}/
+EOT
+#
+########
+#
+#
+#-------------------------------------------------------------
+#
+# Verify if all files of grid-history ensemble forecast were produced
+# If is True, it calculates the plumes. If is False, makes 600 trials (each trial equal 1 minute)
+# 
+ntrialmax=600
+NMEMBRP=${NMEMBR}
+let NP=NMEMBRP-1
+let NPR=NP/2
+
+echo "NP="\$NP
+echo "NPR="\$NPR
+
+nk=1
+while [ \${nk} -le ${NMEMBR}  ]
+do 
+  if [ \${nk} -lt 10 ]
+  then
+    nk='0'\${nk}
+  fi
+  stat[\${nk}]=0
+#  echo "stat[\${nk}]="\${stat[\${nk}]}
+let nk=nk+1
+done
+
+
+cd \${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}
+rm -f \${OPERMOD}/ensmed/bin/name.${LABELI}.list
+ntrial=1
+nk=1
+while [ \${nk} -le \${NPR} ]
+do 
+   if [ \${nk} -lt 10 ]
+   then
+      nk='0'\${nk}
+   fi
+
+   #--------------verify to GPOS*P---------
+
+   while [ \${stat[\${nk}]} -eq 0 ]
+   do
+#      if [ -s  SizeTupanII\${nk}P${LABELI} ]
+      if [ -s  SizeTupanII\${nk}P${LABELI} ]
+      then
+         echo "Files GPOS\${nk}P${LABELI}* were correctly produced"
+         echo "SizeTupanII\${nk}P${LABELI}" >> \${OPERMOD}/ensmed/bin/name.${LABELI}.list
+         stat[\${nk}]=1
+      else
+         echo "ntrial="\${ntrial}
+         echo "Files GPOS\${nk}P${LABELI}* weren't correctly produced"
+         if [ \${ntrial} -lt \${ntrialmax} ]
+         then
+	    echo "sleep 60"
+            let ntrial=ntrial+1
+            sleep 60
+         else
+            echo "number of trials exceed the maximum number of trials"
+            exit
+         fi
+      fi
+   done
+
+   #--------------verify to GPOS*N---------
+
+   let nkn=NPR+nk
+   while [ \${stat[\${nkn}]} -eq 0 ]
+   do
+      if [ -s SizeTupanII\${nk}N${LABELI} ]
+      then
+         echo "Files GPOS\${nk}N${LABELI}* were correctly produced"
+         echo "SizeTupanII\${nk}N${LABELI}" >> \${OPERMOD}/ensmed/bin/name.${LABELI}.list
+         stat[\${nkn}]=1
+      else
+         echo "ntrial="\${ntrial}
+         echo "Files GPOS\${nk}N${LABELI}* weren't correctly produced"
+         if [ \${ntrial} -lt \${ntrialmax} ]
+         then
+	    echo "sleep 60"
+            let ntrial=ntrial+1
+            sleep 60
+         else
+            echo "number of trials exceed the maximum number of trials"
+            exit
+         fi
+      fi
+   done
+
+let nk=nk+1
+done
+
+   #--------------verify to GPOSNMC---------
+
+let nkn=nkn+1
+while [ \${stat[\${nkn}]} -eq 0 ]
+do
+   if [ -s SizeTupanIINMC${LABELI} ]
+   then
+      echo "Files GPOSNMC${LABELI}* were correctly produced"
+      echo "SizeTupanIINMC${LABELI}" >> \${OPERMOD}/ensmed/bin/name.${LABELI}.list
+      stat[\${nkn}]=1
+   else
+      echo "ntrial="\${ntrial}
+      echo "Files GPOSNMC${LABELI}* weren't correctly produced"
+      if [ \${ntrial} -lt \${ntrialmax} ]
+      then
+	 echo "sleep 60"
+	 let ntrial=ntrial+1
+	 sleep 60
+      else
+	 echo "number of trials exceed the maximum number of trials"
+	 exit
+      fi
+   fi
+done
+#
+cd \${OPERMOD}/ensmed/bin
+#
+#   Run the ensmed fortran program
+#
+\${OPERMOD}/ensmed/bin/ensmed.exe ${LABELI} ${LABELF}
+#
+#   Transfer files of ensemble mean to DEC
+#
+cd \${OPERMOD}/run
+
+
+echo "runtransfer.ensmed.${MAQUI} ${TRC} ${LV} ${LABELI}"   
+#runtransfer.ensmed.${MAQUI} ${TRC} ${LV} ${LABELI}   
+
+#
+fi
+#
+EOT0
+#
+chmod +x setensmed${RESOL}${NIVEL}.${MAQUI}
+#
+#   Run ensmed script
+#
+echo 'ensmed  -- Run script ...'
+#
+echo 'ensmed  -- SUBMITTED TO NQS QUEUE ...'
+#
+echo "/usr/bin/nqsII/qsub -q ${QUEUE} -c ${NPROC} ${OPERM}/run/setensmed${RESOL}${NIVEL}.${MAQUI}"
+/usr/bin/nqsII/qsub -q ${QUEUE} -l cpunum_prc=${NPROC} ${OPERM}/run/setensmed${RESOL}${NIVEL}.${MAQUI}
+#

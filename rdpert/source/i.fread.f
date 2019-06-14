@@ -1,0 +1,20 @@
+      SUBROUTINE FREAD(N,A)
+C*
+      INTEGER IMAX,JMAX,MEND,KMAX,IDM
+      PARAMETER (IMAX=384,JMAX=192,MEND=126,KMAX=28,IDM=7)
+C*
+      INTEGER N,K,J,I
+      REAL A(IMAX,JMAX,KMAX)
+      REAL*4 BUF(IMAX,JMAX)
+C*
+      DO K=1,KMAX
+      READ(N)BUF
+      DO J=1,JMAX
+      DO I=1,IMAX
+      A(I,J,K)=BUF(I,J)
+      ENDDO
+      ENDDO
+      ENDDO
+C*
+      RETURN
+      END

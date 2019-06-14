@@ -1,0 +1,29 @@
+      SUBROUTINE RECORD(NF,NX,NC,NM,WW,XX,PP,GG)
+C*
+      INTEGER NF,NX,NC,NM
+      REAL WW(NX),XX(NX,NX)
+      REAL PP(NC),GG(NC,NM)
+C*
+      INTEGER N,NN
+      REAL ZERO,ONE
+      DATA ZERO /0.0E0/, ONE /1.0E0/
+C*
+      WRITE(*,*)' FROM RECORD: NX,NC,NM:',NX,NC,NM
+      WRITE(NF)NC,NM
+      IF (NC .EQ. 0) RETURN
+C*
+      CALL RESET(NC,PP,ZERO)
+      CALL RESET(NC*NM,GG,ZERO)
+C*
+      DO N=1,NC
+      PP(N)=ONE/WW(N)
+      DO NN=1,NM
+C*JPB GG(N,NN)=XX(N,NN)
+      GG(N,NN)=XX(NN,N)
+      ENDDO
+      ENDDO
+C*
+      WRITE(NF)PP,GG
+C*
+      RETURN
+      END

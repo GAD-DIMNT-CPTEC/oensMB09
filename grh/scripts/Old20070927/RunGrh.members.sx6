@@ -1,0 +1,419 @@
+#!/bin/ksh -x
+# MODO DE RODAR RunGrh.members.sx6 run 126 28 2005042812 2005051312 01N
+
+. /gfs/home3/modoper/tempo/global/oenspro/produtos/scripts/config.oens.prod
+#help#
+#********************************************************************#
+#                                                                    #
+#     Name:           RunGrh.sx6.dec                                 #
+#                                                                    #
+#     Function:       This script submits the grid                   #
+#                     history scripts to the at queue.               #
+#                     It runs in Korn Shell.                         #
+#                                                                    #
+#     Date:                Jul 12th, 1999.                           #
+#     Last change:         Mar 03rd, 2003.                           #
+#                                                                    #
+#     Arguments:                                                     #
+#                                                                    #
+#     First : COMPILE: help, make, clean or run                      #
+#     Second:     TRC: three-digit triangular truncation             #
+#     Third :      LV: two-digit number of vertical sigma-layers     #
+#     Fourth:  LABELI: initial forecasting label                     #
+#     Fifth :  LABELF: final forecasting label                       #
+#     Sixth :   PREFX: I/O prefix                                    #
+#                                                                    #
+#     LABELx: yyyymmddhh                                             #
+#             yyyy = four digit year                                 #
+#               mm = two digit month                                 #
+#               dd = two digit day                                   #
+#               hh = two digit hour                                  #
+#                                                                    #
+#********************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Testing Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit 2
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+TRC=062
+else
+TRC=${2}
+fi
+if [ -z "${3}" ]
+then
+LV=28
+else
+LV=${3}
+fi
+if [ "${1}" = "run" ]
+then
+if [ -z "${4}" ]
+then
+echo "LABELI is not set"
+exit 2
+fi
+if [ -z "${5}" ]
+then
+echo "LABELF is not set"
+exit 2
+fi
+fi
+if [ -z "${6}" ]
+then
+echo "PREFX is not set"
+exit 2
+else
+PREFX=$6
+fi
+#
+# Set initial current hour
+#
+HOUR=`date +'%H:%M'`
+echo "  HOUR = $HOUR"
+#
+#     Select parameter for the resolution:
+#
+case ${TRC} in
+021) MR=22  ; IR=64  ; JR=32  ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=1800.0 ;;
+030) MR=32  ; IR=96  ; JR=48  ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=1800.0 ;;
+042) MR=43  ; IR=128 ; JR=64  ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=1200.0 ;;
+047) MR=48  ; IR=144 ; JR=72  ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=1200.0 ;;
+062) MR=63  ; IR=192 ; JR=96  ; NPGH=315 ; NFSGH=10 ; NFKGH=0  ; DT=1200.0  ;;
+079) MR=80  ; IR=240 ; JR=120 ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=720.0  ;;
+095) MR=96  ; IR=288 ; JR=144 ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=600.0  ;;
+106) MR=107 ; IR=320 ; JR=160 ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=600.0  ;;
+126) MR=127 ; IR=384 ; JR=192 ; NPGH=545 ; NFSGH=10 ; NFKGH=0  ; DT=600.0  ;;
+159) MR=160 ; IR=480 ; JR=240 ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=400.0  ;;
+170) MR=171 ; IR=512 ; JR=256 ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=360.0  ;;
+213) MR=214 ; IR=640 ; JR=320 ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=240.0  ;;
+319) MR=320 ; IR=960 ; JR=480 ; NPGH=26  ; NFSGH=62 ; NFKGH=17 ; DT=180.0  ;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+case ${LV} in
+09) KR=09 ;;
+18) KR=18 ;;
+28) KR=28 ;;
+42) KR=42 ;;
+*) echo "Wrong request for vertical resolution: ${LV}" ; exit 1;
+esac
+#
+#   Set machine, Run time and Extention
+#
+MAQUI=dec
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT=out
+echo ${MAQUI}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for output grid-hystory files.
+#   GOPERM is the directory with the model output grid history file.
+#   IOPERM is the directory with the model post-processed initial condition file (GRIB).
+#   BOPERM is the directory with the model post-processed topography file (BINARY/STREAM).
+#
+DIRCTL=${BANGU}
+DIRWEB=/web1/ftp/pub/produtos
+DIRGRH=${HOMEPROD}/grh
+RESOL=T${TRC}
+NIVEL=L${LV}
+export DIRCTL DIRWEB DIRGRH RESOL NIVEL
+#
+OPERM=$DIRGRH
+#SOPERM=$DIRGRH
+#ROPERM=$DIRGRH
+GOPERM=$DIRCTL
+IOPERM=$DIRCTL
+#BOPERM=$DIRGRH/grh/dataout/T${TRC}L${LV}
+BOPERM=${DKPROD}/grh/dataout/T${TRC}L${LV}
+SOPERM=${DKPROD}
+ROPERM=${DKPROD}
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${GOPERM}
+echo ${IOPERM}
+echo ${BOPERM}
+#
+#   Set Grid History Name and Surface Pressure Kind (local or reduzida)
+#
+GHNAME=GFGN${PREFX}
+PSKIND=psuperf
+echo ${GHNAME} ${PSKIND}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > SetGrh${RESOL}${NIVEL}.$PREFX.${MAQUI}
+#!/bin/ksh
+#*********************************************************#
+#                                                         #
+#    Name:        SetGrh${RESOL}${NIVEL}.${MAQUI}        #
+#                                                         #
+#    Function:    This script file is used to set the     #
+#                 environmental variables and start       #
+#                 the grid history script.                #
+#                                                         #
+#*********************************************************#
+#PBS -o ${HOMEPROD}/grh/output/SetGrh${RESOL}${NIVEL}.${PREFX}.${MAQUI}.${4}.out
+#PBS -j o
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%H:%M'`
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD is the directory for sources, scripts and printouts.
+#   SOPERMOD is the directory for input and output files.
+#   ROPERMOD is the directory for output grid-hystory files.
+#   GOPERMOD is the directory with the model output grid history file.
+#   IOPERMOD is the directory with the model post-processed initial condition file (GRIB).
+#   BOPERM is the directory with the model post-processed topography file (BINARY/STREAM).
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+GOPERMOD=${GOPERM}
+IOPERMOD=${IOPERM}
+BOPERMOD=${BOPERM}
+export OPERMOD SOPERMOD ROPERMOD GOPERMOD IOPERMOD BOPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+echo \${GOPERMOD}
+echo \${IOPERMOD}
+echo \${BOPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set horizontal truncation, vertical layers and machine
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+MACH=${MAQUI}
+export TRUNC LEV MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE
+echo \${COMPILE}
+#
+#   Set labels (date, UTC hour)
+#
+#   LABELn = yyyymmddhh
+#   LABELI = initial run forecast label
+#   LABELF = final run forecast label
+#
+LABELI=${4}
+LABELF=${5}
+export LABELI LABELF
+echo \${LABELI} \${LABELF}
+#
+#   Define variables to generate variable data file names:
+#
+#   NAMEF - Forecast file's prefix
+#   NAMEH - Grid-history file's prefix
+#   NAMEM - Modified grid-history file's prefix
+#   NAMECTL - GrADS descriptor file's prefix
+#
+NAMEF=GPOS${PREFX}
+NAMEH=GFGH${PREFX}
+NAMEM=GFGN${PREFX}
+export NAMEF NAMEH NAMEM
+#
+#   Suffix names for the FORTRAN files
+#
+#   EXTP - Post-processed initial condition file's extension
+#   EXTH - Grid-history file's extension
+#   EXDH - Grid-history diretives file's extension
+#   EXTM - Modified grid-history file's extension
+#   EXDM - Modified grid-history diretives file's extension
+#
+EXTP=P.icn
+EXTH=F.unf
+EXDH=F.dir
+EXTM=M.unf
+EXTC=ctl
+export EXTP EXTH EXDH EXTM EXTC
+#
+#   Set FORTRAN compilation flags
+#
+#   -integer_size 32 sets the integer basic numeric size to 4 bytes
+#   -real_size 32    sets the real basic numeric size to 4 bytes
+#
+#FTNFLAG='-u -integer_size 32 -real_size 32'
+FTNFLAG='-u'
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=\${OPERMOD}/include/\${TRUNC}\${LEV}
+CPP="-cpp -I\${INC}"
+export INC CPP
+echo \${INC}
+#
+#   Set FORTRAN compiler name
+#
+F77="efc -Vaxlib"
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#   $FFFn is associated with FORTRAN file unit = n
+#
+FFF=FORT
+#FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#FORT_CONVERT44=BIG_ENDIAN
+#FORT_CONVERT45=BIG_ENDIAN
+#F_UFMTENDIAN=44,45
+export F_UFMTENDIAN=44,45
+#export FORT_CONVERT42 FORT_CONVERT44 FORT_CONVERT45
+#
+#  Now, build the necessary INCLUDE for the choosen truncation and 
+#       vertical resolution.. 
+#
+  if [ "\${COMPILE}" != "run" ]
+  then
+#
+cd \${INC}
+#
+cat <<EOT1 > grhyres.n
+      INTEGER NPMX,NFSF,NFKM
+      PARAMETER(NPMX=${NPGH},NFSF=${NFSGH},NFKM=${NFKGH})
+EOT1
+if (diff grhyres.n grhyres.h > /dev/null)
+then
+    echo "grhyres.n and grhyres.h are the same"
+    rm -f grhyres.n
+else
+    echo "grhyres.n and grhyres.h are different"
+    mv grhyres.n grhyres.h
+fi
+#
+cat <<EOT2 > grhysrl.n
+      INTEGER IMAX,JMAX,KMAX
+      PARAMETER(IMAX=${IR},JMAX=${JR},KMAX=${KR})
+EOT2
+if (diff grhysrl.n grhysrl.h > /dev/null)
+then 
+    echo "grhysrl.n and grhysrl.h are the same"
+    rm -f grhysrl.n
+else
+    echo "grhysrl.n and grhysrl.h are different"
+    mv grhysrl.n grhysrl.h
+fi
+#
+#  End of includes
+#
+fi
+#
+#  Now, build the necessary NAMELIST input:
+#
+cat <<EOT3 > \${SOPERMOD}/grh/datain/grhy.nml
+ &GRHNML
+  DELT=${DT}
+ &END
+EOT3
+#
+#   Run grid history
+#
+\${OPERMOD}/scripts/grhy.scr
+#
+#   Generation of gif files:
+#
+if [ "${1}" = "run" ]
+then
+if [ -s \${BOPERMOD}/\${NAMEM}\${LABELI}\${LABELF}\${EXTM}.${RESOL}${NIVEL} ]
+then
+echo "File \${BOPERMOD}/\${NAMEM}\${LABELI}\${LABELF}\${EXTM}.${RESOL}${NIVEL} exist"
+
+LABELI=$4
+bangu=${BANGU}
+YYYY=\`echo \$LABELI | cut -c 1-4\`
+MM=\`echo \$LABELI | cut -c 5-6\`
+DD=\`echo \$LABELI | cut -c 7-8\`
+
+set -x
+mkdir -p \$bangu/GRH/\$YYYY/\$MM/\$DD
+cp -pf ${DKPROD}/grh/dataout/T126L28/*\${LABELI}* \$bangu/GRH/\$YYYY/\$MM/\$DD
+
+exit 0
+else
+echo "File \${BOPERMOD}/\${NAMEM}\${LABELI}\${LABELF}\${EXTM}.${RESOL}${NIVEL} does not exist"
+exit 99
+fi
+fi
+#
+#
+EOT0
+#
+#   Change mode to be executable and submit Grid-history
+#
+chmod +x SetGrh${RESOL}${NIVEL}.$PREFX.${MAQUI}
+#
+echo "+++ RODANDO GRH PARA o MEMBRO ${PREFX}"
+#rsh turi-e "/usr/bin/nqsII/qsub -q oper ${OPERM}/run/SetGrh${RESOL}${NIVEL}.$PREFX.${MAQUI}"
+${OPERM}/run/SetGrh${RESOL}${NIVEL}.$PREFX.${MAQUI}
+#
+# Set final current hour
+#
+HOURF=`date +'%H:%M'`
+echo "  HOUR = $HOURF"
+LABELI=$4
+
+echo "+++ APAGANDO DIRETORIOS ANTIGOS\n"
+set -A NDIAS 05 06 07 08 09 10 11 12 13 14 15
+i=0
+while [ $i -lt 11 ]
+do
+      LABELR=`$HOME/bin/caldate.3.0.1 $LABELI - ${NDIAS[$i]}d 'yyyymmddhh'`
+      echo "rm -f ${HOMEPROD}/grh/output/SetGrh${RESOL}${NIVEL}.${MAQUI}.${LABELR}.out"
+      echo "rm -f ${DKPROD}/grh/dataout/T126L28/*${LABELR}2*"
+      rm -f ${HOMEPROD}/grh/output/SetGrh${RESOL}${NIVEL}.${MAQUI}.${LABELR}.out
+      rm -f ${DKPROD}/grh/dataout/T126L28/*${LABELR}2*
+i=$(($i+1))
+done
+
+

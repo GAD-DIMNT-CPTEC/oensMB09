@@ -1,0 +1,44 @@
+#!/bin/ksh
+#####################################
+#
+# Script para copiar listagens de 
+# fitas DAT para a homepage da 
+# operacao
+#
+# Por Fabiano em 03/03/2006
+# Chamada: transf <Label fita>
+#####################################
+fita=$1
+# print "\n" >> $fita 
+echo "-------------------------------------------------------------------------------------" >> $fita
+#print "\n" >> $fita
+./total_transf $fita >> $fita 
+#print "\n" >> $fita 
+echo "-------------------------------------------------------------------------------------" >> $fita 
+
+compress $fita 
+
+cat << EOT > ftp_fita
+user operacao cecapau7
+bin
+cd /extra02/operacao/fitas/DAT
+lcd /gfs/home3/modoper/tempo/global/oens/BACKUP 
+put $fita.Z
+EOT
+
+ftp -inv tupinamba.cptec.inpe.br < ftp_fita
+
+cat << EOT > ftp_fita
+user operacao cecapau7
+bin
+cd /home/operacao/fitas_dat
+lcd /gfs/home3/modoper/tempo/global/oens/BACKUP
+put $fita.Z
+EOT
+ 
+ftp -inv capivary.cptec.inpe.br < ftp_fita
+
+rm -f $fita.Z
+exit
+
+   

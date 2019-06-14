@@ -1,0 +1,21 @@
+%include <head.h>
+%include <config.h>
+
+LABELF=`${CALDATE} $LABELI + 36h 'yyyymmddhh'`
+PERT=%FAMILY1%
+cd $OPERM/run
+./runperpnt1.sx6 126 28 $PERT R $LABELI $LABELF 15 NO 07 sstwkl
+
+set +x
+JNAME=ENSANL${PERT}
+SLEEPTIM=23
+%include <filectrl.h>
+
+sleep 60
+%include <ctrl_analise.h>
+
+set -x
+find ${ROPERM}/ -name "GFCT${PERT}R*" -print -exec rm -f {} \;
+set +x
+
+%include <tail.h>

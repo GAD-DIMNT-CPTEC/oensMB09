@@ -1,0 +1,82 @@
+#!/bin/sh -x
+#
+#****************************************************#
+#                                                    #
+#      Name:        pad.scr                          #
+#                                                    #
+#      Function:    This script file is used to      #
+#                   pad the initial condition.       #
+#                   It runs on batch.                #
+#                                                    #
+#      Date:        April 12th, 1995.                #
+#      Last change: April 12th, 1995.                #
+#                                                    #
+#****************************************************#
+#
+echo 'Initial Conditions Padding  -x-  RUNNING ...'
+#
+#  Set directories:
+#
+source=$OPERMOD/padtr/source
+input=$SOPERMOD/padtr/datain
+minput=$IOPERMOD/model/datain
+minputp=$ROPERMOD/model/datain
+preout=$SOPERMOD/pre/dataout
+bin=$SOPERMOD/padtr/bin/$TRUNC$LEV
+out=$OPERMOD/padtr/output
+#
+#
+#   Check if the makefile will have to be run or not:
+#
+echo $COMPILE
+#
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Touch rotines:
+#
+cd $source
+  make -f padic.mk
+#
+  exit
+  fi
+#
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Touch rotines:
+#
+cd $source
+  make -f padic.mk clean
+  make -f padic.mk
+#
+  exit
+  fi
+#
+#   Input Files:
+#
+eval $FFF'11'=$minput/$NAME$LABELI$EXTS.$TRUNCR$LEVR
+export $FFF'11'
+#
+#   Output Files:
+#
+if [ "$minputp/$NAMEP$LABELI$EXTS.$TRUNC$LEV" = "$minput/$NAME$LABELI$EXTS.$TRUNCR$LEVR" ]
+then
+if [ "$NAME" != "GANLSMT" ]
+then
+NAMEP=GANLSMT
+else
+NAMEP=GANLPAD
+fi
+echo "**************************************"
+echo "Output File Name Changed:"
+echo "$minputp/$NAMEP$LABELI$EXTS.$TRUNC$LEV"
+echo "**************************************"
+fi
+eval $FFF'12'=$minputp/$NAMEP$LABELI$EXTS.$TRUNC$LEV
+eval $FFF'13'=$preout/$TRUNC/orgwav.$TRUNC
+export $FFF'12' $FFF'13'
+#
+cd $bin
+./padic.$TRUNC$LEV < $input/padsmt.nml > $out/padic.$LABELI.$HOUR.$TRUNC$LEV
+#

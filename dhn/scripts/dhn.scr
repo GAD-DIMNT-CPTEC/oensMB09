@@ -1,0 +1,45 @@
+#!/bin/ksh -x
+#*************************************************************#
+#                                                             #
+#      Name:        dhn.scr                                   #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   the DHN U* and V* files.                  #
+#                   It generates GrADS output files.          #
+#                   It runs on batch.                         #
+#                                                             #
+#      Date       : November 04th, 1999.                      #
+#      Last change: November 04th, 1999.                      #
+#                                                             #
+#*************************************************************#
+#
+# Set directories
+#
+source=${OPERMOD}/dhn/source
+bin=${SOPERMOD}/dhn/bin/${TRUNC}${LEV}
+input=${SOPERMOD}/dhn/datain
+#
+echo "DHN Post  -x-  RUNNING ..."
+#
+#   Check if the makefile will be run or not:
+#
+echo ${COMPILE}
+#
+  if [ "${COMPILE}" = "make" ]
+  then
+cd ${source}
+  make -f dhn.mk
+  exit
+  fi
+#
+  if [ "${COMPILE}" = "clean" ]
+  then
+cd ${source}
+  make -f dhn.mk clean
+  make -f dhn.mk
+  exit
+  fi
+#
+cd ${bin}
+./dhn.${TRUNC}${LEV} < ${input}/dhn.nml
+#

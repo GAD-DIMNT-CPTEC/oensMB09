@@ -1,0 +1,1457 @@
+#!/bin/ksh
+#help#
+#***********************************************************************#
+#                                                                       #
+#     Name:           runmodg.sx6                                       #
+#                                                                       #
+#     Function:       This script submits the global                    #
+#                     model script to the NQS queue.                    #
+#                     It runs in Korn Shell.                            #
+#                                                                       #
+#     Date:           October 08th, 2002.                               #
+#     Last change:    October 08th, 2002.                               #
+#                                                                       #
+#     Valid Arguments for runmodg.sx6:                                  #
+#                                                                       #
+#     First:     COMPILE: help, make, clean or run                      #
+#     Second:        TRC: three-digit triangular truncation             #
+#     Third:          LV: two-digit number of vertical sigma-layers     #
+#     Fourth:      START: flag for model start:                         #
+#                         cold, cold2, warm or warm2                    #
+#     Fifth:      LABELI: initial forecasting label                     #
+#     Sixth:      LABELC: final forecasting label for cold              #
+#     Seventh:    LABELF: final forecasting label for warm              #
+#                         if cold, then LABELF=LABELC                   #
+#     Eighth:      NMSST: sst file name                                 #
+#     Nineth:      DHFCT: interval in hours to output diagnostics,      #
+#                         equal zero to use default list                #
+#     Tenth:       DHDHN: interval in hours to output DHN diagnostics   #
+#     Eleventh:    NHDHN: time in hours to stop DHN diagnostics,        # 
+#                         equal zero to not execute DHN diagnostics     #
+#     Twelveth:    DHEXT: interval in hours to output extra diagnostics #
+#     Thirteenth:  NHEXT: time in hours to stop extra diagnostics,      # 
+#                         equal zero to not execute extra diagnostics   #
+#     Fourteenth:  DOGRH: logical (T or F) to do grid history for       #
+#                         selected points                               #
+#     Fifteenth:   DOPRC: logical (T or F) to do time step output       #
+#                         of global precipitation                       # 
+#     Sixteenth:   DODYN: logical (T or F) to do time step output       #
+#                         of prognostic variables (spectral)            #
+#     Seventeenth: DOSMC: logical (T or F) to do extra smoothing        #
+#                         of spectral coefficients (Hoskins)            #
+#     Eighteenth:  PREFX: preffix for name of output files              #
+#     Nineteenth:  PREFY: preffix for name of input files               #
+#     Twentieth:   NPROC: number of processors (1 to 8)                 #
+#     Twentieth 1: TABLE: indicator of the desire table:                #
+#                         n for desirtable                              #
+#                         p for desirtable.pnt                          #
+#                         c for desirtable.clm                          #
+#                                                                       #
+#                  LABELx: yyyymmddhh                                   #
+#                          yyyy = four digit year                       #
+#                            mm = two digit month                       #
+#                            dd = two digit day                         #
+#                            hh = two digit hour                        #
+#                                                                       #
+#        cold  : for a single cold start run (no warm run after)        #
+#        cold2 : for a run with warm run after                          #
+#        warm  : after a cold2 start run                                #
+#        warm2 : after a warm start run a new warm start run            #
+#                                                                       #
+#        NMSST : sstaoi : for optimum interpolated SST                  #
+#                         climatology (original 1x1 degree)             #
+#              : sstanp : for optimum interpolated SST                  #
+#                         climatology plus persisted SST anomaly        #
+#              : sstwkl : for weekly run mean of SST for                #
+#                         the week finished at initial day              #
+#                         minus one (original 1x1 degree)               #
+#              : sstwkd : for weekly run mean of SST                    #
+#                         direct access file (original 1x1 degree)      #
+#              : sstmtd : for monthly run mean of SST                   #
+#                         direct access file (original 1x1 degree)      #
+#                                                                       #
+#***********************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Testing Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+echo "TRC is not set"
+exit
+else
+TRC=${2}
+fi
+if [ -z "${3}" ]
+then
+echo "LV is not set"
+exit
+else
+LV=${3}
+fi
+if [ "${1}" = "run" ]
+then
+if [ "${4}" != "cold" ]
+then
+if [ "${4}" != "cold2" ]
+then
+if [ "${4}" != "warm" ]
+then
+if [ "${4}" != "warm2" ]
+then
+echo "Second argument: ${4}, is wrong. Must be: cold, cold2, warm or warm2"
+exit
+fi
+fi
+fi
+fi
+if [ -z "${5}" ]
+then
+echo "LABELI is not set"
+exit
+fi
+if [ -z "${6}" ]
+then
+echo "LABELC is not set"
+exit
+fi
+if [ -z "${7}" ]
+then
+echo "LABELF is not set"
+exit
+fi
+if [ -z "${8}" ]
+then
+echo "NMSST is not set."
+exit
+fi
+if [ -z "${9}" ]
+then
+echo "DHFCT is not set."
+exit
+fi
+if [ -z "${10}" ]
+then
+echo "DHDHN is not set."
+exit
+fi
+if [ -z "${11}" ]
+then
+echo "NHDHN is not set."
+exit
+fi
+if [ -z "${12}" ]
+then
+echo "DHEXT is not set."
+exit
+fi
+if [ -z "${13}" ]
+then
+echo "NHEXT is not set."
+exit
+fi
+if [ "${14}" != "T" ]
+then
+if [ "${14}" != "F" ]
+then
+echo "DOGRH (14) is wrong: must be T or F"
+exit
+fi
+fi
+if [ "${15}" != "T" ]
+then
+if [ "${15}" != "F" ]
+then
+echo "DOPRC (15) is wrong: must be T or F"
+exit
+fi
+fi
+if [ "${16}" != "T" ]
+then
+if [ "${16}" != "F" ]
+then
+echo "DODYN (16) is wrong: must be T or F"
+exit
+fi
+fi
+if [ "${17}" != "T" ]
+then
+if [ "${17}" != "F" ]
+then
+echo "DOSMC (17) is wrong: must be T or F"
+exit
+fi
+fi
+if [ -z "${18}" ]
+then
+echo "PREFX is not set"
+exit
+else
+PREFX=${18}
+fi
+if [ -z "${19}" ]
+then
+echo "PREFY is not set"
+exit
+else
+PREFY=${19}
+fi
+if [ -z "${20}" ]
+then
+echo "NPROC is not set"
+exit
+else
+NPROC=${20}
+fi
+if [ "${21}" = "n" ]
+then
+TABLE='desirtable'
+else
+if [ "${21}" = "p" ]
+then
+TABLE='desirtable.pnt'
+else
+if [ "${21}" = "c" ]
+then
+TABLE='desirtable.clm'
+else
+echo "TABLE is not set."
+exit
+fi
+fi
+fi
+#
+else
+NPROC=1
+LABOUT=Compilation
+PREFX=out
+#
+fi
+if [ -z "${LABOUT}" ]
+then
+  LABOUT=${5}${7}NP${NPROC}
+fi
+#
+#     Select parameter for the resolution:
+#
+case ${TRC} in
+021) MR=22 ; IR=64 ; JR=32 ; NPGH=93 ;
+     DT=1800.0 ; DIFD=266.166 ; DIFT=354.888 ;
+     DT=1800.0 ; DIFD=267.844 ; DIFT=357.125 ;
+     case ${LV} in
+     09) IWR=10240 ;;
+     18) IWR=23552 ;;
+     28) IWR=44032 ;;
+     42) IWR=83968 ;;
+     64) IWR=172032 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+030) MR=31 ; IR=96 ; JR=48 ; NPGH=140 ;
+     DT=1800.0 ; DIFD=65.6856 ; DIFT=87.5808 ;
+     DT=1800.0 ; DIFD=66.0997 ; DIFT=88.1329 ;
+     case ${LV} in
+     09) IWR=14336 ;;
+     18) IWR=34816 ;;
+     28) IWR=65536 ;;
+     42) IWR=124928 ;;
+     64) IWR=257024 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+042) MR=43 ; IR=128 ; JR=64 ; NPGH=187 ;
+     DT=1800.0 ; DIFD=17.4181 ; DIFT=23.2241 ;
+     DT=1800.0 ; DIFD=17.5279 ; DIFT=23.3705 ;
+     case ${LV} in
+     09) IWR=19456 ;;
+     18) IWR=45056 ;;
+     28) IWR=87040 ;;
+     42) IWR=166912 ;;
+     64) IWR=343040 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+047) MR=48 ; IR=144 ; JR=72 ; NPGH=26 ;
+     DT=1200.0 ; DIFD=11.1624 ; DIFT=14.8832 ;
+     DT=1200.0 ; DIFD=11.2328 ; DIFT=14.9770 ;
+     case ${LV} in
+     09) IWR=24576 ;;
+     18) IWR=51200 ;;
+     28) IWR=98304 ;;
+     42) IWR=187392 ;;
+     64) IWR=386048 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+062) MR=63 ; IR=192 ; JR=96 ; NPGH=315 ;
+     DT=1200.0 ; DIFD=3.72367 ; DIFT=4.96490 ;
+     DT=1200.0 ; DIFD=3.74715 ; DIFT=4.99620 ;
+     case ${LV} in
+     09) IWR=41984 ;;
+     18) IWR=83968 ;;
+     28) IWR=130048 ;;
+     42) IWR=249856 ;;
+     64) IWR=514048 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+079) MR=80 ; IR=240 ; JR=120 ; NPGH=26 ;
+     DT=720.0 ; DIFD=1.42233 ; DIFT=1.89645 ;
+     DT=900.0 ; DIFD=1.43130 ; DIFT=1.90840 ;
+     case ${LV} in
+     09) IWR=65536 ;;
+     18) IWR=130048 ;;
+     28) IWR=202752 ;;
+     42) IWR=312320 ;;
+     64) IWR=645120 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+085) MR=86 ; IR=256 ; JR=128 ; NPGH=26 ;
+     DT=720.0 ; DIFD=0.446526 ; DIFT=0.595368 ;
+     DT=720.0 ; DIFD=1.06987 ; DIFT=1.42649 ;
+     case ${LV} in
+     09) IWR=94208 ;;
+     18) IWR=187392 ;;
+     28) IWR=290816 ;;
+     42) IWR=436224 ;;
+     64) IWR=770048 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+094) MR=95 ; IR=288 ; JR=144 ; NPGH=591 ;
+     DT=600.0 ; DIFD=0.683040 ; DIFT=0.910720 ;
+     DT=720.0 ; DIFD=0.955875 ; DIFT=1.274500 ;
+     DT=720.0 ; DIFD=0.716906 ; DIFT=0.955875 ;
+     case ${LV} in
+     09) IWR=94208 ;;
+     18) IWR=187392 ;;
+     28) IWR=290816 ;;
+     42) IWR=436224 ;;
+     64) IWR=770048 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+106) MR=107 ; IR=320 ; JR=160 ; NPGH=711 ;
+     DT=600.0 ; DIFD=0.441628 ; DIFT=0.588837 ;
+     DT=600.0 ; DIFD=0.444412 ; DIFT=0.592550 ;
+     case ${LV} in
+     09) IWR=115712 ;;
+     18) IWR=231424 ;;
+     28) IWR=359424 ;;
+     42) IWR=538624 ;;
+     64) IWR=856064 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+126) MR=127 ; IR=384 ; JR=192 ; NPGH=284 ;
+     DT=600.0 ; DIFD=0.446526 ; DIFT=0.595368 ;
+     DT=600.0 ; DIFD=0.223263 ; DIFT=0.297684 ;
+     case ${LV} in
+     09) IWR=166912 ;;
+     18) IWR=332800 ;;
+     28) IWR=517120 ;;
+     42) IWR=775168 ;;
+     64) IWR=1180672 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+159) MR=160 ; IR=480 ; JR=240 ; NPGH=1454 ;
+     DT=450.0 ; DIFD=0.3511248 ; DIFT=0.468168 ;
+     DT=450.0 ; DIFD=0.0883346 ; DIFT=0.117780 ;
+     case ${LV} in
+     09) IWR=260096 ;;
+     18) IWR=519168 ;;
+     28) IWR=806912 ;;
+     42) IWR=1210368 ;;
+     64) IWR=1844224 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+170) MR=171 ; IR=512 ; JR=256 ; NPGH=1633 ;
+     DT=300.0 ; DIFD=0.216484 ; DIFT=0.541209 ;
+     DT=450.0 ; DIFD=0.405907 ; DIFT=0.541209 ;
+     DT=450.0 ; DIFD=0.446526 ; DIFT=0.595368 ;
+     DT=450.0 ; DIFD=0.00676511 ; DIFT=0.00902015 ;
+     DT=450.0 ; DIFD=0.0676512 ; DIFT=0.0902015 ;
+     case ${LV} in
+     09) IWR=295936 ;;
+     18) IWR=590848 ;;
+     28) IWR=918528 ;;
+     42) IWR=1377280 ;;
+     64) IWR=2098176 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+213) MR=214 ; IR=640 ; JR=320 ; NPGH=2466 ;
+     DT=240.0 ; DIFD=0.0273432 ; DIFT=0.0364576 ;
+     DT=360.0 ; DIFD=0.0275156 ; DIFT=0.0366874 ;
+     case ${LV} in
+     09) IWR=461824 ;;
+     18) IWR=922624 ;;
+     28) IWR=1434624 ;;
+     42) IWR=2151424 ;;
+     64) IWR=3277824 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+254) MR=255 ; IR=768 ; JR=384 ; NPGH=3502 ;
+     DT=180.0 ; DIFD=0.00545198 ; DIFT=0.00726931 ;
+     DT=300.0 ; DIFD=0.136276 ; DIFT=0.181701 ;
+     DT=300.0 ; DIFD=0.545102 ; DIFT=0.726802 ;
+     DT=300.0 ; DIFD=0.272551 ; DIFT=0.363401 ;
+     DT=300.0 ; DIFD=0.0136275 ; DIFT=0.0181701 ;
+     case ${LV} in
+     09) IWR=664576 ;;
+     18) IWR=1328128 ;;
+     28) IWR=2065408 ;;
+     42) IWR=3097600 ;;
+     64) IWR=4719616 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+319) MR=320 ; IR=960 ; JR=480 ; NPGH=26 ;
+     DT=180.0 ; DIFD=0.00545198 ; DIFT=0.00726931 ;
+     DT=240.0 ; DIFD=0.00548636 ; DIFT=0.00731514 ;
+     case ${LV} in
+     09) IWR=1037312 ;;
+     18) IWR=2074624 ;;
+     28) IWR=3226624 ;;
+     42) IWR=4839424 ;;
+     64) IWR=7373824 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+#
+case ${LV} in
+09) MOD=2 ; NIT=2 ; CRAS=0.20 ;;
+18) MOD=3 ; NIT=3 ; CRAS=0.15 ;;
+28) MOD=3 ; NIT=3 ; CRAS=0.10 ;;
+42) MOD=3 ; NIT=3 ; CRAS=0.05 ;;
+64) MOD=4 ; NIT=3 ; CRAS=0.03 ;;
+*) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+esac
+#
+#  Number of time steps (MAXTIM) between two date labels:
+#  LABELi and LABELf:  yyyymmddhh
+#
+ntimesteps ()
+{
+typeset -Z4 yi yf
+typeset -Z2 mi di hi mf df hf
+let yi=`awk 'BEGIN {print substr("'${datei}'",1,4)}'`
+let mi=`awk 'BEGIN {print substr("'${datei}'",5,2)}'`
+let di=`awk 'BEGIN {print substr("'${datei}'",7,2)}'`
+let hi=`awk 'BEGIN {print substr("'${datei}'",9,2)}'`
+let yf=`awk 'BEGIN {print substr("'${datef}'",1,4)}'`
+let mf=`awk 'BEGIN {print substr("'${datef}'",5,2)}'`
+let df=`awk 'BEGIN {print substr("'${datef}'",7,2)}'`
+let hf=`awk 'BEGIN {print substr("'${datef}'",9,2)}'`
+#
+let datehr=${yi}${mi}${di}
+let datehf=${yf}${mf}${df}
+let nday=0
+until [ datehr -ge datehf ]
+do
+let nday=nday+1
+let ybi=yi%4
+#
+#
+if [ ybi -eq 0 ]
+then
+set -A md 0 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 0 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+#
+let di=di+1
+if [ di -gt md[mi] ]
+then
+let di=1
+let mi=mi+1
+if [ mi -gt 12 ]
+then
+let mi=1
+let yi=yi+1
+fi
+fi
+let datehr=${yi}${mi}${di}
+done
+let ntstep=nday*86400/deltim
+if [ dhfct -ne 0 ]
+then
+let mhfct=nday*24/dhfct
+else
+let mhfct=40
+fi
+if [ nhdhn -eq 0 ]
+then
+let dhdhn=0
+fi
+if [ dhdhn -ne 0 ]
+then
+let mhdhn=nhdhn/dhdhn
+else
+let mhdhn=0
+let nhdhn=0
+fi
+if [ nhext -eq 0 ]
+then
+let dhext=0
+fi
+if [ dhext -ne 0 ]
+then
+let mhext=nhext/dhext
+else
+let mhext=0
+let nhext=0
+fi
+if [ dhfct -eq 0 ]
+then
+  if [ hi -ne hf ]
+  then
+    let adh=hf-hi
+    let ants=adh*3600/deltim
+    let ntstep=ntstep+ants
+  fi
+fi
+if [ dhfct -ne 0 ]
+then
+  echo " ntstep=${ntstep}  mhfct=${mhfct}"
+  if [ hi -ne hf ]
+  then
+    let dh=hf-hi
+    let nts=dh*3600/deltim
+    let mhf=dh/dhfct
+    let chk=mhf*dhfct
+    echo " hi=${hi}  hf=${hf}  dh=${dh}  nts=${nts}  mhf=${mhf}  chk=${chk}"
+    if [ chk -ne dh ]
+    then
+      echo "Wrong Request for the Hour in datef = ${datef}"
+      echo "Difference of Hours in datei = ${datei} and "
+      echo "datef is Not Compatible With dhfct = ${dhfct}"
+      exit 66
+    fi
+    let ntstep=ntstep+nts
+    let mhfct=mhfct+mhf
+  fi
+  echo " ntstep=${ntstep}  mhfct=${mhfct}"
+fi
+TIMMAX=${ntstep}
+echo " TIMMAX = ${TIMMAX}"
+TIMFCT=${mhfct}
+HRFCT=${dhfct}.0
+echo " TIMFCT = ${TIMFCT}   :   HRFCT = ${HRFCT}"
+TIMDHN=${mhdhn}
+HRDHN=${dhdhn}.0
+echo " TIMDHN = ${TIMDHN}   :   HRDHN = ${HRDHN}"
+TIMEXT=${mhext}
+HREXT=${dhext}.0
+echo " TIMEXT = ${TIMEXT}   :   HREXT = ${HREXT}"
+}
+#
+let deltim=${DT}
+let ntstepmax=51*366*86400/deltim
+TIDMAX=${ntstepmax}
+if [ "${1}" = "run" ]
+then
+if [ "${4}" = "cold" -o "${4}" = "cold2" ]
+then
+datei=${5}
+datef=${6}
+else
+datei=${6}
+datef=${7}
+fi
+echo $datei
+echo $datef
+let dhfct=${9}
+let dhdhn=${10}
+let nhdhn=${11}
+let dhext=${12}
+let nhext=${13}
+ntimesteps
+if [ ntstep -gt ntstepmax ]
+then
+echo "nstep = ${ntstep} is greater than ntstepmax = ${ntstepmax}"
+exit
+fi
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y%m%d%T'`
+EXT=${PREFX}
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERMO is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   AOPERM is the directory for alternative initial conditions.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/dk20/modoper/tempo/global/oens
+AOPERM=/gfs/dk20/modoper/tempo/global/oens
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${AOPERM}
+#
+#   Set truncation and layers
+#
+RESOL=T${TRC}
+NIVEL=L${LV}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setmodg${PREFX}${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh
+#*****************************************************************#
+#                                                                 #
+#       Name:           setmodg${PREFX}${RESOL}${NIVEL}.${MAQUI}  #
+#                                                                 #
+#       Function:       This script file is used to set the       #
+#                       environmental variables and start         #
+#                       the global model scripts.                 #
+#                                                                 #
+#*****************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setmodg${PREFX}${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${LABOUT}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (day,month,year) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+export DATE HOUR
+#
+#  Memory Verification
+#
+me=0
+m=\`/usr/sbin/rsginfo /dev/rsg/0 | grep LP | awk '{gsub(/Umem:/," "); gsub(/Max:/," "); print (\$8-\$5)*4 } '\`
+while [ \$m -le 1200 ]
+do
+me=1
+write operacao \`finger|grep vxt5|awk '{print \$5}'\`<<eot
+\`tput smso\`
+****************************************************************
+*                                                              *
+*   FAVOR, PARAR AS FILAS DOS JOBS DE PESQUISA EM EXECUCAO     *
+*   PREVISAO TEMPO GLOBAL POR ENSEMBLE SEM MEMORIA PARA RODAR. *
+*   MEMORIA LIVRE:\${m}                                         *
+*   MAQUINA: tupan02                                           *
+*                                                              *
+****************************************************************
+\`tput rmso\`
+eot
+sleep 120
+m=\`/usr/sbin/rsginfo /dev/rsg/0 | grep LP | awk '{gsub(/Umem:/," "); gsub(/Max:/," "); print (\$8-\$5)*4 } '\`
+cat <<EOT > ${OPERM}/run/memory.n
+\${me}
+EOT
+done
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   AOPERMOD is the directory for alternative initial conditions.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+AOPERMOD=${AOPERM}
+export OPERMOD SOPERMOD ROPERMOD AOPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+echo \${AOPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE
+echo \${COMPILE}
+#
+#   Set start: cold or warm
+#
+if [ "${4}" = "cold2" ]
+then
+START=cold
+RMREFL=no
+else
+START=${4}
+if [ "${4}" = "cold" ]
+then
+RMREFL=yes
+else
+RMREFL=no
+fi
+fi
+export START RMREFL
+echo \${START} \${RMREFL}
+#
+#   Set a label (date,hour UTC)
+#
+#   LABEL=yyyymmddhz
+#
+LABELI=${5}
+LABELC=${6}
+LABELF=${7}
+if [ "\${START}" = "cold" ]
+then
+LABELF=\${LABELC}
+fi
+export LABELI LABELC LABELF
+#
+SST=${8}
+echo \${LABELI} > label${PREFX}.out
+LABELS=\`awk '{ print substr(\$1,1,8) }' label${PREFX}.out\`
+UTC=\`awk '{ print substr(\$1,9,2) }' label${PREFX}.out\`
+rm -f label${PREFX}.out
+export UTC LABELS
+#
+#   Check sstwkl file availability
+#
+if [ "\${SST}" = "sstwkl" ]
+then
+if [ ! -s \$ROPERMOD/model/datain/sstwkl\${LABELS}.\${TRUNC} ]
+then
+SST=sstaoi
+echo "*****************************************************"
+echo "*                                                   *"
+echo "*   SST changed from weekly running mean (sstwkl)   *"
+echo "*               to climatology (sstaoi)             *"
+echo "*   sstwkl's are unavailable for the last 15 days   *"
+echo "*                                                   *"
+echo "*****************************************************"
+else
+SST=sstwkl\${LABELS}
+fi
+fi
+if [ "\${SST}" = "sstwkd" ]
+then
+SST=sstwkd\${LABELS}
+fi
+if [ "\${SST}" = "sstmtd" ]
+then
+SST=sstmtd\${LABELS}
+fi
+if [ "\${SST}" = "sstanp" ]
+then
+SST=sstanp\${LABELS}
+fi
+#
+# Define variables to generate variable data file names:
+#
+NAMEI=GANL${PREFY}
+NAMEA=GANL${PREFY}
+NAMEF=GFCT${PREFX}
+NAMEE=GPRG${PREFX}
+NAMED=GDHN${PREFX}
+NAMER=GPRC${PREFX}
+NAMEY=GDYN${PREFX}
+NAMEH=GFGH${PREFX}
+DESIRTAB=${TABLE}
+NMSST=\${SST}
+if [ -z "\${NMSST}" ]
+then
+NMSST=${SSTD}
+fi
+echo \${NMSST} > nsst${PREFX}.out
+NSST=\`awk '{ print substr(\$1,1,6) }' nsst${PREFX}.out\`
+rm -f nsst${PREFX}.out
+if [ "\${NSST}" = "sstwkl" ]
+then
+LFSST=-1
+else
+LFSST=2
+fi
+if [ "\${NSST}" = "sstwkd" ]
+then
+LFSST=4
+fi
+if [ "\${NSST}" = "sstmtd" ]
+then
+LFSST=4
+fi
+if [ "\${START}" != "cold" ]
+then
+if [ "\${LFSST}" = "-1" ]
+then
+LWSST=0
+else
+LWSST=\${LFSST}
+fi
+fi
+#
+export NAMEI NAMEA NAMEF NAMEE NAMED NAMER NAMEY NAMEH NMSST DESIRTAB
+#
+OUT=${EXT}
+export OUT
+#
+EXTS=S.unf
+if [ "\${START}" = "warm2" ]
+then
+EXTF=W.unf
+EXDF=W.dir
+else
+EXTF=F.unf
+EXDF=F.dir
+fi
+if [ "\${START}" = "cold" ]
+then
+EXTW=\${EXTF}
+EXDW=\${EXDF}
+EXTH=F.unf
+EXDH=F.dir
+else
+EXTW=W.unf
+EXDW=W.dir
+EXTH=W.unf
+EXDH=W.dir
+fi
+export EXTS EXTF EXTH EXDF EXDH EXTW EXDW
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#F_FILEINF=DETAIL
+#export F_FILEINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+FTNFLAG=' '
+export FTNFLAG
+#
+MSTAD2FLAG=' '
+KUOLCLFLAG=' '
+SFLXESFLAG=' '
+RQVIRTFLAG=' '
+CLOUDYFLAG=' '
+CRUNCHFLAG=' '
+GWDDFLAG=' '
+GLOOPFLAG=' '
+GWATERFLAG=' '
+MASCONFLAG=' '
+STRESFLAG=' '
+CLEARFLAG=' '
+YMPBL0FLAG=' -pi exp=gauss0 expin=gauss0.f90 '
+LRGSCLFLAG=' '
+SEMICDFLAG=' '
+FFT991FLAG=' '
+CLOUDFLAG=' -C vopt -pi noauto exp=qsat expin=qsat.f90 '
+RASFLAG=' -pi noauto exp=qsat expin=qsat.f90 '
+SWRADFLAG=' -pi noauto exp=r8vgat,r8vsct,r8vctr,r8btge,r8scnt,b8eq,b8nor,i8vint,i8vcmp expin=r8vgat.f90,r8vctr.f90,r8scnt.f90,r8btgt.f90,r8vsct.f90,b8or.f90,i8vint.f90,i8vcmp.f90 '
+SETSWFLAG=' -pi noauto exp=r8vgat expin=r8vgat.f90 '
+#
+export MSTAD2FLAG RQVIRTFLAG CLOUDYFLAG SFLXESFLAG CRUNCHFLAG KUOLCLFLAG 
+export GWDDFLAG GLOOPFLAG GWATERFLAG MASCONFLAG STRESFLAG
+export CLEARFLAG YMPBL0FLAG LRGSCLFLAG SEMICDFLAG FFT991FLAG
+export CLOUDFLAG RASFLAG SWRADFLAG SETSWFLAG
+#
+#   Set C pre-processing flags
+#
+INC=\${OPERMOD}/include90/\${TRUNC}\${LEV}
+CPP=" -I\${INC}"
+export INC CPP
+#
+#   Set FORTRAN compiler name
+#
+F90='f90 -float0 -ew -P multi -G local -Wf" -pvctl noassume vwork=stack -tasklocal micro -common local "  '
+FLD='-Wl" -ZL 8192 " '
+# =================
+F90G='f90 -float0 -ew -P multi -G local -Wf" -pvctl noassume vwork=stack -tasklocal micro -common local -cont " '
+export F90 F90G FLD
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+if [ "\${START}" = "cold" ]
+then
+F_UFMTIEEE=18,26,33,44,50,51,81,92,93,94
+F_UFMTADJUST18=TYPE2
+export F_UFMTADJUST18
+else
+F_UFMTIEEE=26,33,44,50,51,81,92,93,94
+fi
+export F_UFMTIEEE
+F_UFMTADJUST26=TYPE2
+F_UFMTADJUST33=TYPE2
+F_UFMTADJUST44=TYPE2
+F_UFMTADJUST50=TYPE2
+F_UFMTADJUST51=TYPE2
+F_UFMTADJUST81=TYPE2
+F_UFMTADJUST92=TYPE2
+F_UFMTADJUST93=TYPE2
+F_UFMTADJUST94=TYPE2
+export F_UFMTADJUST26 F_UFMTADJUST33 F_UFMTADJUST44 F_UFMTADJUST50 F_UFMTADJUST51
+export F_UFMTADJUST81 F_UFMTADJUST92 F_UFMTADJUST93 F_UFMTADJUST94
+#
+F_SETBUF=4096
+export F_SETBUF
+echo " F_SETBUF = \${F_SETBUF}"
+#
+#   Set number of processors to be used in SX6
+#
+F_RSVTASK=${NPROC}
+F_PMTUNE=10
+export F_RSVTASK F_PMTUNE
+export F_RSVTASK
+#
+#   Run initial condition and snow
+#
+#  Now, build the necessary INCLUDES for the choosen truncation and 
+#       vertical resolution..
+#
+if [ "\${COMPILE}" != "run" ]
+then
+cd \${INC}
+#
+cat <<EOT > reshor.new
+PARAMETER(mend1=${MR},nend1=${MR},jend1=${MR},imax=${IR},jmax=${JR})
+EOT
+cat <<EOT > reshor.inc90
+INTEGER, PARAMETER :: mend1=${MR}
+INTEGER, PARAMETER :: nend1=${MR}
+INTEGER, PARAMETER :: jend1=${MR}
+INTEGER, PARAMETER :: imax=${IR}
+INTEGER, PARAMETER :: jmax=${JR}
+EOT
+if (diff reshor.new reshor.inc > /dev/null)
+then 
+    echo "reshor.new and reshor.inc are the same"
+    rm -f reshor.new
+else
+    echo "reshor.new and reshor.inc are different"
+    mv reshor.new reshor.inc
+fi
+#
+case \${LEV} in
+L09)
+cat << EOT > delsig.new
+      DATA delsig &
+         / 0.010000, 0.017000, 0.025000, 0.148000, 0.200000, &
+           0.300000, 0.200000, 0.020000, 0.080000 /
+EOT
+cat << EOT > ctcqvl.new
+      DATA ct &
+         / 38.10000, 38.20000, 38.70000, 40.40000, 44.60000, &
+           46.40000, 21.90000,  0.00000,  0.00000 /
+      DATA cq &
+         / 0.027000, 0.029000, 0.029000, 0.020700, 0.008300, &
+           0.002700, 0.000000, 0.000000, 0.000000 /
+EOT
+KR=09 ; NRS=02 ; NRC=11 ;;
+L18)
+cat << EOT > delsig.new
+! NCEP pre 1993
+!      DATA delsig &
+!         / 0.010000, 0.017000, 0.025000, 0.055000, 0.073000, &
+!           0.085000, 0.093000, 0.096000, 0.096000, 0.050000, &
+!           0.050000, 0.050000, 0.050000, 0.050000, 0.050000, &
+!           0.050000, 0.050000, 0.050000 /
+! CPTEC pos 2003
+      DATA delsig &
+         / 0.010000, 0.017000, 0.025000, 0.043000, 0.063000, &
+           0.080000, 0.091000, 0.097000, 0.098000, 0.096000, &
+           0.092000, 0.083000, 0.074000, 0.063000, 0.037000, &
+           0.015000, 0.009000, 0.007000 /
+EOT
+cat << EOT > ctcqvl.new
+      DATA ct &
+         / 38.10000, 38.20000, 38.70000, 39.30000, 40.50000, &
+           42.50000, 44.80000, 46.80000, 47.10000, 47.90000, &
+           47.60000, 43.20000, 37.20000, 29.90000, 23.30000, &
+            9.70000,  0.00000,  0.00000 /
+      DATA cq &
+         / 0.027000, 0.029000, 0.029000, 0.027000, 0.019000, &
+           0.011000, 0.007900, 0.005700, 0.003800, 0.002400, &
+           0.001400, 0.001000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000 /
+EOT
+# NCEP pre 1993
+#KR=18 ; NRS=02 ; NRC=20 ;;
+# CPTEC pos 2003
+KR=18 ; NRS=05 ; NRC=20 ;;
+L28)
+cat << EOT > delsig.new
+      DATA delsig &
+         / 0.010000, 0.015820, 0.019590, 0.024050, 0.029190, &
+           0.034930, 0.041150, 0.047540, 0.053720, 0.059190, &
+           0.063470, 0.066060, 0.066690, 0.065260, 0.061970, &
+           0.057160, 0.051350, 0.045030, 0.038670, 0.032620, &
+           0.027090, 0.022220, 0.018030, 0.014510, 0.011600, &
+           0.009230, 0.007290, 0.006570 /
+EOT
+cat << EOT > ctcqvl.new
+      DATA ct &
+         / 38.10000, 38.20000, 38.70000, 39.10000, 39.30000, &
+           40.20000, 40.50000, 42.30000, 43.00000, 44.80000, &
+           46.10000, 46.90000, 47.10000, 47.70000, 47.00000, &
+           41.40000, 34.60000, 28.00000, 23.00000,  9.70000, &
+            5.60000,  0.00000,  0.00000,  0.00000,  0.00000, &
+            0.00000,  0.00000,  0.00000 /
+      DATA cq &
+         / 0.027000, 0.029000, 0.029000, 0.027500, 0.027000, &
+           0.020900, 0.019000, 0.011900, 0.010300, 0.007900, &
+           0.006500, 0.005400, 0.003800, 0.002800, 0.001400, &
+           0.000700, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000 /
+EOT
+KR=28 ; NRS=07 ; NRC=30 ;;
+L42)
+cat << EOT > delsig.new
+! NCEP
+      DATA delsig &
+         / 0.008030, 0.009230, 0.010580, 0.012100, 0.013800, &
+           0.015650, 0.017680, 0.019870, 0.022200, 0.024660, &
+           0.027170, 0.029720, 0.032230, 0.034620, 0.036810, &
+           0.038740, 0.040300, 0.041450, 0.042110, 0.042280, &
+           0.041910, 0.041060, 0.039750, 0.038040, 0.036000, &
+           0.033720, 0.031280, 0.028750, 0.026200, 0.023700, &
+           0.021300, 0.019010, 0.016890, 0.014920, 0.013120, &
+           0.011500, 0.010050, 0.008750, 0.007600, 0.006590, &
+           0.005710, 0.004920 /
+! CPTEC
+!      DATA delsig &
+!         / 0.010000, 0.015820, 0.019590, 0.024050, 0.013800, &
+!           0.015650, 0.017680, 0.019870, 0.022200, 0.024660, &
+!           0.027170, 0.029720, 0.032230, 0.034620, 0.036810, &
+!           0.038740, 0.039320, 0.040460, 0.038820, 0.038980, &
+!           0.037410, 0.036550, 0.033780, 0.032060, 0.036000, &
+!           0.033720, 0.031280, 0.028750, 0.026200, 0.023700, &
+!           0.021300, 0.019010, 0.016890, 0.014920, 0.013120, &
+!           0.011500, 0.010050, 0.008750, 0.007600, 0.006590, &
+!           0.005710, 0.004920 /
+EOT
+cat << EOT > ctcqvl.new
+      DATA ct &
+         / 38.10000, 38.20000, 38.20000, 38.70000, 38.80000, &
+           39.30000, 39.30000, 39.30000, 40.50000, 40.50000, &
+           40.60000, 42.50000, 42.50000, 43.30000, 44.80000, &
+           44.80000, 46.60000, 46.80000, 47.00000, 47.10000, &
+           47.30000, 47.90000, 47.60000, 44.10000, 40.40000, &
+           37.20000, 30.00000, 27.60000, 23.30000, 17.50000, &
+            9.70000,  9.70000,  0.00000,  0.00000,  0.00000, &
+            0.00000,  0.00000,  0.00000,  0.00000,  0.00000, &
+            0.00000,  0.00000 /
+      DATA cq &
+         / 0.027000, 0.028600, 0.029000, 0.029000, 0.028700, &
+           0.027000, 0.027000, 0.027000, 0.019000, 0.019000, &
+           0.018700, 0.011000, 0.011000, 0.009900, 0.007900, &
+           0.007900, 0.006000, 0.005700, 0.004600, 0.003800, &
+           0.003400, 0.002300, 0.001400, 0.001100, 0.000500, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000 /
+EOT
+KR=42 ; NRS=10 ; NRC=44 ;;
+L64)
+cat << EOT > delsig.new
+      DATA delsig &
+         / 0.005329, 0.006039, 0.006832, 0.007717, 0.008698, &
+           0.009782, 0.010972, 0.012271, 0.013682, 0.015198, &
+           0.016817, 0.018524, 0.020309, 0.022145, 0.024008, &
+           0.025866, 0.027678, 0.029404, 0.030998, 0.032415, &
+           0.033611, 0.034545, 0.035186, 0.035511, 0.035508, &
+           0.035177, 0.034529, 0.033590, 0.032390, 0.030969, &
+           0.029372, 0.027644, 0.025830, 0.023972, 0.022110, &
+           0.020273, 0.018491, 0.016785, 0.015168, 0.013653, &
+           0.012246, 0.010948, 0.009759, 0.008679, 0.007699, &
+           0.006816, 0.006024, 0.005316, 0.004685, 0.004122, &
+           0.003624, 0.003183, 0.002794, 0.002449, 0.002147, &
+           0.001880, 0.001646, 0.001441, 0.001260, 0.001101, &
+           0.000963, 0.000842, 0.000736, 0.000642 /
+EOT
+cat << EOT > ctcqvl.new
+      DATA ct &
+         / 38.10000, 38.10000, 38.20000, 38.20000, 38.60000, &
+           38.70000, 38.90000, 39.30000, 39.30000, 39.30000, &
+           39.80000, 40.50000, 40.50000, 40.50000, 42.00000, &
+           42.50000, 42.50000, 43.80000, 44.80000, 44.80000, &
+           46.00000, 46.80000, 46.80000, 47.10000, 47.10000, &
+           47.20000, 47.90000, 47.70000, 46.90000, 43.20000, &
+           40.00000, 37.20000, 31.90000, 29.90000, 25.50000, &
+           23.30000, 20.70000,  9.70000,  9.70000,  9.70000, &
+            0.70000,  0.00000,  0.00000,  0.00000,  0.00000, &
+            0.00000,  0.00000,  0.00000,  0.00000,  0.00000, &
+            0.00000,  0.00000,  0.00000,  0.00000,  0.00000, &
+            0.00000,  0.00000,  0.00000,  0.00000,  0.00000, &
+            0.00000,  0.00000,  0.00000,  0.00000 /
+      DATA cq &
+         / 0.027000, 0.027500, 0.029000, 0.029000, 0.029000, &
+           0.029000, 0.028400, 0.027000, 0.027000, 0.027000, &
+           0.024000, 0.019000, 0.019000, 0.019000, 0.012900, &
+           0.011000, 0.011000, 0.009300, 0.007900, 0.007900, &
+           0.006600, 0.005700, 0.005700, 0.004100, 0.003800, &
+           0.003600, 0.002400, 0.001700, 0.001300, 0.001000, &
+           0.000500, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000, 0.000000, &
+           0.000000, 0.000000, 0.000000, 0.000000 /
+EOT
+KR=64 ; NRS=24 ; NRC=66 ;;
+*) echo "Wrong request for vertical resolution: \${LEV}" ; exit 1 ;;
+esac
+if (diff delsig.new delsig.inc > /dev/null)
+then
+    echo "delsig.new and delsig.inc are the same"
+    rm -f delsig.new
+else
+    echo "delsig.new and delsig.inc are different"
+    mv delsig.new delsig.inc
+fi
+if (diff ctcqvl.new ctcqvl.inc > /dev/null)
+then 
+    echo "ctcqvl.new and ctcqvl.inc are the same"
+    rm -f ctcqvl.new
+else
+    echo "ctcqvl.new and ctcqvl.inc are different"
+    mv ctcqvl.new ctcqvl.inc
+fi
+#
+cat <<EOT > resver.new
+PARAMETER (kmax=\${KR},nls=\${NRS},nlcs=\${NRC})
+EOT
+cat <<EOT > resver.inc90
+INTEGER, PARAMETER :: kmax=\${KR}
+INTEGER, PARAMETER :: nls=\${NRS}
+INTEGER, PARAMETER :: nlcs=\${NRC}
+EOT
+if (diff resver.new resver.inc > /dev/null)
+then 
+    echo "resver.new and resver.inc are the same"
+    rm -f resver.new
+else
+    echo "resver.new and resver.inc are different"
+    mv resver.new resver.inc
+fi
+#
+cat <<EOT > reswrk.new
+PARAMETER (iwrkdm=${IWR})
+EOT
+cat <<EOT > reswrk.inc90
+INTEGER, PARAMETER :: iwrkdm=${IWR}
+EOT
+if (diff reswrk.new reswrk.inc > /dev/null)
+then 
+    echo "reswrk.new and reswrk.inc are the same"
+    rm -f reswrk.new
+else
+    echo "reswrk.new and reswrk.inc are different"
+    mv reswrk.new reswrk.inc
+fi
+#
+cat <<EOT > spcgau.new
+PARAMETER (mgaus=1,ngaus=21,mspec=4,nspec=0)
+EOT
+cat <<EOT > spcgau.inc90
+INTEGER, PARAMETER :: mgaus=1
+INTEGER, PARAMETER :: ngaus=21
+INTEGER, PARAMETER :: mspec=4
+INTEGER, PARAMETER :: nspec=0
+EOT
+if (diff spcgau.new spcgau.inc > /dev/null)
+then 
+    echo "spcgau.new and spcgau.inc are the same"
+    rm -f spcgau.new
+else
+    echo "spcgau.new and spcgau.inc are different"
+    mv spcgau.new spcgau.inc
+fi
+#
+cat <<EOT > resgrh.new
+PARAMETER (npmx=${NPGH},nfsf=62,nfkm=17)
+EOT
+cat <<EOT > resgrh.inc90
+INTEGER, PARAMETER :: npmx=${NPGH}
+INTEGER, PARAMETER :: nfsf=62
+INTEGER, PARAMETER :: nfkm=17
+EOT
+if (diff resgrh.new resgrh.inc > /dev/null)
+then 
+    echo "resgrh.new and resgrh.inc are the same"
+    rm -f resgrh.new
+else
+    echo "resgrh.new and resgrh.inc are different"
+    mv resgrh.new resgrh.inc
+fi
+#
+cat <<EOT > restim.new
+      INTEGER, PARAMETER :: maxtid=${TIDMAX}
+EOT
+if (diff restim.new restim.inc > /dev/null)
+then
+    echo "restim.new and restim.inc are the same"
+    rm -f restim.new
+else
+    echo "restim.new and restim.inc are different"
+    mv restim.new restim.inc
+fi
+#
+cat <<EOT > clock1.new
+      call clock(t1)
+!     t1=secnds(clck)
+EOT
+if (diff clock1.new clock1.inc > /dev/null)
+then
+    echo "clock1.new and clock1.inc are the same"
+    rm -f clock1.new
+else
+    echo "clock1.new and clock1.inc are different"
+    mv clock1.new clock1.inc
+fi
+#
+cat <<EOT > clock2.new
+      call clock(t2)
+!     t2=secnds(clck)
+EOT
+if (diff clock2.new clock2.inc > /dev/null)
+then
+    echo "clock2.new and clock2.inc are the same"
+    rm -f clock2.new
+else
+    echo "clock2.new and clock2.inc are different"
+    mv clock2.new clock2.inc
+fi
+#
+cat <<EOT > clock3.new
+      call clock(t3)
+!     t3=secnds(clck)
+EOT
+if (diff clock3.new clock3.inc > /dev/null)
+then
+    echo "clock3.new and clock3.inc are the same"
+    rm -f clock3.new
+else
+    echo "clock3.new and clock3.inc are different"
+    mv clock3.new clock3.inc
+fi
+#
+fi
+#
+#   End of includes
+#
+#   Run AGCM
+#
+echo 'MODEL  -- SUBMITTED ...'
+#
+#  Build the necessary NAMELIST input..
+#
+if [ "\${START}" = "cold" ]
+then
+#
+cat <<EOT > \${SOPERMOD}/model/datain/smf${PREFX}.nml
+ &namcon
+  nfin1=18,nfout2=21,nftgz0=61,ptime=.TRUE.,
+  initlz=2,nstep=1,grhflg=${14},allghf=.FALSE.,
+  igfdu=41,iptu=42,ighdr=43,ighou=44,igrfu=45,
+  rhdifd=${DIFD},rhdift=${DIFT},ndord=4,nfiles=1,
+  ifin=0,mods=${MOD},niter=${NIT},dfilta=0.92,ddelt=${DT},dpercu=27502.,
+  ifsst=\${LFSST},ifsnw=3,ifalb=0,ifslm=3,fint=6.,swint=1.,trint=3.,
+  ucrit=100.0,taucfl=86400.0,masci=1,intsst=7,sstlag=3.5
+ /
+ &namctl
+  iccon='YES ',igwd='YES ',ickcfl='NO  ',enhdif='YES ',impdif='YES ',icld=1,inalb=2
+ /
+ &namttL
+  nexp= '0003',jttl='CPTEC AGCM R1.2 2001  T${TRC}L${LV}  cold'
+ /
+ &namras
+  cflric=${CRAS}
+ /
+ &namcfl
+  vcrit=85.0,
+  alpha=2.5,
+  ucstr=85.0,
+  tcflst=21600.0,
+  ucupp=70.0,
+  tcflup=2160.0,
+  slupp=0.020,
+  ifddp=10
+ /
+ &namgrh
+  dodyn=${15},
+  doprec=${16},
+  smthcft=${17},
+  redcft=10.0,
+  nsmtcft=5,
+  tsmtcft=1.0
+ /
+EOT
+cat <<EOT >> \${SOPERMOD}/model/datain/smf${PREFX}.nml
+ &namtim
+  maxtim=${TIMMAX},
+  cth0=${HRFCT},dct=${HRFCT},maxtfm=${TIMFCT},
+  ctdh0=${HRDHN},dctd=${HRDHN},mdxtfm=${TIMDHN},
+  cteh0=${HREXT},dcte=${HREXT},mextfm=${TIMEXT}
+ /
+EOT
+if [ "${9}" = "0" ]
+then
+cat <<EOT >> \${SOPERMOD}/model/datain/smf${PREFX}.nml
+ &namtjm
+  cthr(1)=6.0,cthr(2)=9.0,cthr(3)=12.0,cthr(4)=15.0,
+  cthr(5)=18.0,cthr(6)=21.0,cthr(7)=24.0,cthr(8)=27.0,
+  cthr(9)=30.0,cthr(10)=33.0,cthr(11)=36.0
+ /
+EOT
+else
+cat <<EOT >> \${SOPERMOD}/model/datain/smf${PREFX}.nml
+ &namtjm
+ /
+EOT
+fi
+#
+else
+#
+cat <<EOT > \${SOPERMOD}/model/datain/smf${PREFX}.nml
+ &namcon
+  nfin0=18,nfin1=19,nfout2=21,nftgz0=61,ptime=.TRUE.,
+  initlz=0,nstep=1,grhflg=${14},allghf=.FALSE.,
+  igfdu=41,iptu=42,ighdr=43,ighou=44,nfcnv0=31,igrfu=45,
+  rhdifd=${DIFD},rhdift=${DIFT},ndord=4,nfiles=1,
+  ifin=0,mods=${MOD},niter=${NIT},dfilta=0.92,ddelt=${DT},dpercu=27502.,
+  ifsst=\${LWSST},ifsnw=0,ifalb=0,ifslm=0,fint=6.,swint=1.,trint=3.,
+  ucrit=100.0,taucfl=86400.0,masci=1,intsst=7,sstlag=3.5
+ /
+ &namctl
+  iccon='YES ',igwd='YES ',ickcfl='NO  ',enhdif='YES ',impdif='YES ',icld=1,inalb=2
+ /
+ &namttl
+  nexp= '0003',JTTL='CPTEC AGCM R1.2 2001  T${TRC}L${LV}  warm'
+ /
+ &namras
+  cflric=${CRAS}
+ /
+ &NAMCFL
+  vcrit=85.0,
+  alpha=2.50,
+  ucstr=85.0,
+  tcflst=21600.0,
+  ucupp=70.0,
+  tcflup=2160.0,
+  slupp=0.020,
+  ifddp=10
+ /
+ &namgrh
+  dodyn=${15},
+  doprec=${16},
+  smthcft=${17},
+  redcft=10.0,
+  nsmtcft=5,
+  tsmtcft=1.0
+ /
+ &namtim
+  maxtim=${TIMMAX},
+  cth0=${HRFCT},dct=${HRFCT},maxtfm=${TIMFCT},
+  ctdh0=${HRDHN},dctd=${HRDHN},mdxtfm=${TIMDHN},
+  cteh0=${HREXT},dcte=${HREXT},mextfm=${TIMEXT}
+ /
+ &namtjm
+ /
+EOT
+#
+fi
+#
+cd \${OPERMOD}/run
+#
+\${OPERMOD}/model/scripts/mod.scr
+#
+EOT0
+#
+chmod +x setmodg${PREFX}${RESOL}${NIVEL}.${MAQUI}
+#
+#   Run AGCM script
+#
+echo 'AGCM  -- Run script ...'
+#
+echo 'AGCM  -- SUBMITTED TO NQS QUEUE ...'
+#
+#AMM echo "qsub -q ${QUEUE} ${OPERM}/run/setmodg${PREFX}${RESOL}${NIVEL}.${MAQUI}"
+#AMM qsub -q ${QUEUE} ${OPERM}/run/setmodg${PREFX}${RESOL}${NIVEL}.${MAQUI}
+echo "${OPERM}/run/setmodg${PREFX}${RESOL}${NIVEL}.${MAQUI}"
+${OPERM}/run/setmodg${PREFX}${RESOL}${NIVEL}.${MAQUI}
+#

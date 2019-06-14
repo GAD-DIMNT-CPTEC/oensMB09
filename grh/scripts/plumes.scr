@@ -1,0 +1,172 @@
+#!/bin/ksh 
+#help#
+#**********************************************************#
+#                                                          #
+#     Name:           plumes.scr                           #
+#                                                          #
+#     Function:       This script makes the gifs of        #
+#                     probabilistic grid history forecast  #
+#                     It runs in K shell.                  #
+#                                                          #
+#     LABELI:           November  2007                     #
+#     Last change:    November  2007                       #
+#                                                          #
+#     Valid Arguments for plumes.scr                       #
+#                                                          #
+#     First :         : nothing for help or                #
+#     First : trcm    : horizontal resolution              #
+#    Second : lv      : vertical resolution                #
+#     Third : LABELI  : initial forecasting label          #
+#    Fourth : fctdays : number of forecast days            #
+#      Fifth: nmembers: number of members of ensemble      #
+#      Sixth:    prefx: preffix for input and output files #
+#                                                          #
+#             LABELx : yyyymmddhh                          #
+#                      yyyy = four digit year              #
+#                        mm = two digit month              #
+#                        dd = two digit day                #
+#                        hh = two digit hour               #
+#                                                          #
+#**********************************************************#
+#help#
+#
+# Help:
+#
+. ../../include/config.sx6
+
+LABELI=$1
+if [ -s $LABELI ]; then
+      echo "ERRO: FALTA PARAMETRO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+      exit 1
+else
+      if [ ${#LABELI} -lt 10 ]; then
+            echo "ERRO: PARAMETRO INCORRETO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+            exit 2
+      else
+            YYYY=`echo $LABELI |cut -c 1-4`
+            MM=`echo $LABELI |cut -c 5-6`
+            DD=`echo $LABELI |cut -c 7-8`
+            HH=`echo $LABELI |cut -c 9-10`
+
+            LABELF=`date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}"`
+            YYYYF=`echo $LABELF |cut -c 1-4`
+            MMF=`echo $LABELF |cut -c 5-6`
+            DDF=`echo $LABELF |cut -c 7-8`
+            HHF=`echo $LABELF |cut -c 9-10`
+      fi
+fi
+
+PREFX=$2
+NFCTDY=${NFDAYS}
+let NMEMBR=${NPERT}*2+1
+OUT=out
+
+#
+# Set model resolution
+#
+
+trunc=T${TRC}
+lev=L${LV}
+resol=${trunc}${lev}
+#LABELF=`${CALDATE} ${LABELI} + ${fctdays}d 'yyyymmddhh'`
+labelf=$LABELF
+gname=GFGN
+fileloc=LOCMM${LABELI}${LABELF}.${resol}
+ps=local
+
+#
+# Set directories
+#
+
+yy=`echo ${LABELI} | cut -c 1-4`
+mm=`echo ${LABELI} | cut -c 5-6`
+dd=`echo ${LABELI} | cut -c 7-8`
+hh=`echo ${LABELI} | cut -c 9-10`
+
+#dirbct=/${BANGU}/PLUMES/${yy}/${mm}/${dd}
+dirbct=${ROPERM}/plumes/dataout/${trunc}${lev}
+dirfig=${ROPERM}/produtos/grh
+
+
+if [ -z "${ps}" ]
+then
+ps=psuperf
+fi
+
+#
+# Set GADDIR
+#
+
+export GAUDFT=/usr/local/grads/udf/udft
+export GADDIR=/usr/local/grads/dat
+export GRADSB=/usr/local/grads/bin
+export GASCRP=/usr/local/grads/lib
+
+#
+# Generate the figures of plumes
+#
+echo ${LABELI} ${LABELF} ${gname} ${resol} ${ps} ${NMEMBR} ${fileloc} ${dirbct} ${dirfig} 1 360
+
+/usr/local/grads/bin/gradsc -bp << EOT
+run plumes.gs
+${LABELI} ${LABELF} ${gname} ${resol} ${ps} ${NMEMBR} ${fileloc} ${dirbct} ${dirfig} 1 360
+quit
+EOT
+#
+label=${LABELI}${LABELF}
+labeld=${labelr}${labels}
+#
+cat <<EOT > puttag.${label}
+user pnt &arun/a*
+bin
+quote site umask 0122
+cd /web1/ftp/pub/produtos/ensemble/GGH${trunc}
+EOT
+cat deltag.${label}.out >> puttag.${label}
+cat puttag.${label}.out >> puttag.${label}
+cat <<EOT >> puttag.${label}
+quit
+EOT
+
+#Adma - Comentado temporariamente
+#echo "ftp -in tucupi.cptec.inpe.br < puttag.${label}"
+#AMM ftp -in tucupi.cptec.inpe.br < puttag.${label}
+
+rm -f puttag.${label}
+rm -f puttag.${label}*.out
+rm -f deltag.${label}*.out
+rm -f prefixn${label}*.${resol}
+rm -f localn${label}*.${resol}
+rm -f identn${label}*.${resol}
+#
+#AMM for i in `awk '{ print $2}' puttag.${label}.out`
+#AMM do
+#AMM rm -f $i
+#AMM done
+#AMM rm -f deltag.${label}.out puttag.${label}.out
+#AMM rm -f identn${labeld}.${resol} localn${labeld}.${resol} prefixn${labeld}.${resol}
+#AMM echo rm -f GFGNNMC${labeld}M.unf.${resol}
+#AMM rm -f GFGNNMC${labeld}M.unf.${resol}
+#AMM echo rm -f GFGNNMC${labeld}M.unf.${resol}.ctl
+#AMM rm -f GFGNNMC${labeld}M.unf.${resol}.ctl
+#
+#REMOVE ARQUIVOS ANTIGOS
+#
+#
+labelr9=`${CALDATE} ${LABELI} - 9d 'yyyymmddhh'`
+echo "labelr9="${labelr9}   
+labelr10=`${CALDATE} ${LABELI} - 10d 'yyyymmddhh'`
+echo "labelr10="${labelr10}   
+labelr11=`${CALDATE} ${LABELI} - 11d 'yyyymmddhh'`
+echo "labelr11="${labelr11}   
+rm -f GFGN*${labelr11}*M.unf.${trunc}${lev}*
+rm -f GFGN*${labelr10}*M.unf.${trunc}${lev}*
+rm -f GFGN*${labelr9}*M.unf.${trunc}${lev}*
+#Adma - Comentado temporariamente
+#rm -f ./*/*${labelr11}*.gif
+#rm -f ./*/*${labelr10}*.gif
+#rm -f ./*/*${labelr9}*.gif
+#
+
+exit 0
+

@@ -1,0 +1,291 @@
+#!/bin/ksh 
+
+##########################################################
+#                                                        #
+#   Script para backup dos produtos do Modelo Ensemble   #
+#                                                        #  
+#                                                        #
+# Apos gerar um arquivo ensemble_<anomesdia>.tar         #
+#  realiza ftp para a area /cpvry07/oper/ensemble        #
+#                                                        #
+# Responsavel: Fabiano - fabiano@cptec.inpe.br           #
+# Data:        01/03/2006                                #
+#                                                        #
+# Chamada: backup_ens.turi <YYYY><MM><DD>                #
+#							 #
+# === Alteracao no SCRIPTS em 13/03/2006 ===             #
+#							 #
+# O scripts cria um arquivo *.lst dos dados a serem a    #
+# gravados na {areahome}/oenspro/Backup que sera usado   #
+# pelo tar.						 #
+#							 #
+#  Chamada: backup_ens.turi-DDS4_lst <YYYY> <MM> <DD>    #
+#							 #
+#                                                        #
+##########################################################
+
+ clear
+ 
+ # Definindo informacoes fornecidas
+
+ ano=$1
+ mes=$2
+ dia=$3
+
+# Definindo constantes
+ 
+ area1=/gfs/dk22/modoper/tempo/global/oens
+ area_bkp=/gfs/dk20/modoper/tempo/global/oens/BACKUP
+ area_scr=/gfs/home3/modoper/tempo/global/oens/BACKUP
+ area_hsm=/rede/hsm/oens/nmc/T126L28/produtos
+ area_nas=/rede/nas/modoper/tempo/global/oens/nmc/t126l28/produtos 
+ 
+ # Gerando cabecalho
+ 
+ print "\n\n+-------------------------------------------------------+"
+ print "+                                                       +"
+ print "+   Backup dos produtos do Modelo ENSEMBLE              +"
+ print "+                                                       +"
+ print "+-------------------------------------------------------+"
+ print "+                                                       +"
+ print "+      Arquivos referentes a: $dia/$mes/$ano                +"
+ print "+                                                       +"
+ print "+-------------------------------------------------------+"
+
+
+ host=`hostname -s`
+
+ if [ "$host" -ne "asama" ]; then
+
+      print "\n Favor realizar o backup na maquina asama \n"
+      print " Backup abortado . \n\n"
+      exit
+
+ fi
+
+
+ 
+ print "\n Gerando arquivos de apoio. Por favor, aguarde ...\n"   
+
+ rm -fr $area_scr/arqens_apoio* 
+ 
+ data=$ano$mes$dia
+ 
+ # Gerando arquivo de apoio
+ 
+ cd $area1
+
+ \ls -1R probability/dataout/T126L28/prob$data*.*.* >> $area_scr/arqens_apoio_$data
+ \ls -1R probability/gif/prec$data*.png >> $area_scr/arqens_apoio_$data
+
+
+ n_prob=`cat $area_scr/arqens_apoio_$data | grep probability | wc -l | awk '{print $1}'`
+
+  \ls -1R spread/dataout/T126L28/spread$data* >> $area_scr/arqens_apoio_$data
+ 
+ n_spre=`cat $area_scr/arqens_apoio_$data | grep spread | wc -l | awk '{print $1}'`
+
+ \ls -1R spread/gif/geop???$data*20[0-1]*.png >> $area_scr/arqens_apoio_gif_$data
+ \ls -1R spread/gif/psnm$data*20[0-1]*.png >> $area_scr/arqens_apoio_gif_$data
+ \ls -1R spread/gif/temp???$data*20[0-1]*.png >> $area_scr/arqens_apoio_gif_$data
+ 
+ 
+ n_gif=`cat $area_scr/arqens_apoio_gif_$data | grep gif | wc -l | awk '{print $1}'`
+ 
+ cat $area_scr/arqens_apoio_gif_$data >> $area_scr/arqens_apoio_$data
+
+ # Rotina para adequar nome de arquivo para o subdiretorio SKILL
+ 
+ 
+ 
+    if [ $mes -eq 01 ]; then
+    
+           MES="JAN"
+
+    fi 
+          
+    if [ $mes -eq 02 ]; then
+    
+          MES="FEB"
+
+    fi
+
+    if [ $mes -eq 03 ]; then
+    
+          MES="MAR"
+
+    fi
+          
+    if [ $mes -eq 04 ]; then
+    
+          MES="APR"
+
+    fi         
+    
+    if [ $mes -eq 05 ]; then
+    
+          MES="MAY"
+
+    fi
+          
+    if [ $mes -eq 06 ]; then
+    
+          MES="JUN"
+
+    fi
+          
+    if [ $mes -eq 07 ]; then
+    
+          MES="JUL"
+
+    fi
+          
+    if [ $mes -eq 08 ]; then
+    
+          MES="AUG"
+
+    fi  
+          
+    if [ $mes -eq 09 ]; then
+    
+          MES="SEP"
+
+    fi 
+          
+    if [ $mes -eq 10 ]; then
+    
+          MES="OCT"
+
+    fi   
+   
+   
+    if  [ $mes -eq 11 ]; then
+    
+          MES="NOV"
+
+    fi
+          
+    if  [ $mes -eq 12 ]; then
+    
+          MES="DEC"
+
+    fi 
+
+ \ls -1R skill/*.??Z"$dia$MES$ano".*.* >> $area_scr/arqens_apoio_$data
+ \ls -1R skill/*.*.??Z"$dia$MES$ano".*.* >> $area_scr/arqens_apoio_$data
+ 
+ n_skill=`cat $area_scr/arqens_apoio_$data | grep skill | wc -l | awk '{print $1}'`
+ 
+ \ls -1R spaguetti/gif/*$data*20[0-1]*.png >> $area_scr/arqens_apoio_$data
+  
+ n_spa=`cat $area_scr/arqens_apoio_$data | grep spaguetti | wc -l | awk '{print $1}'`
+ 
+ 
+ \ls -1R cluster/gif/*$data*20[01-1]*.png >> $area_scr/arqens_apoio2_$data
+ 
+ \ls -1R cluster/dataout/T126L28/clusters/clusters$data*20[0-1]*.T126* >> $area_scr/arqens_apoio2_$data
+ 
+ n_cluster=`cat $area_scr/arqens_apoio2_$data | grep cluster | wc -l | awk '{print $1}'`
+
+ \ls -1R chievol/gif/chi_evol$data*20[0-1]*.png >> $area_scr/arqens_apoio_$data 
+
+ n_chievol=`cat $area_scr/arqens_apoio_$data| grep chievol | wc -l | awk '{print $1}'` 
+
+# cd $area_hsm 
+
+ \ls -1R $area_nas/prcmed/$ano/$mes/$dia/GPRCENM$data*20[0-1]* >> $area_scr/arqens_apoio_$data
+ \ls -1R $area_nas/prcmed/$ano/$mes/$dia/cprec*$data*20[0-1]* >> $area_scr/arqens_apoio_$data
+ \ls -1R $area_nas/prcmed/$ano/$mes/$dia/clim_*$data*20[0-1]* >> $area_scr/arqens_apoio_$data
+
+# cd $area1
+
+ n_prcmed=`cat $area_scr/arqens_apoio_$data | grep prcmed | wc -l | awk '{print $1}'`
+
+  let tot_arq=$n_prob+$n_spre+$n_gif+$n_skill+$n_spa+$n_cluster+$n_chievol+$n_prcmed
+ 
+ 
+ print "+-------------------------------------------------------+"
+ print "+			              	                +"
+ print "+ Por favor, confirme os arquivos a serem gravados      +"
+ print "+                                                       +"
+ print "+-------------------------------------------------------+"
+ print "+    Diretorio    | Arquivos Existentes  |      Normal  +" 
+ print "+-------------------------------------------------------+"
+ print "+   PROBABILITY   |         $n_prob          |       346    +"
+ print "+        SPREAD   |         $n_spre          |       250    +"
+ print "+           GIF   |         $n_gif          |       488    +"
+ print "+         SKILL   |         $n_skill           |        22    +"
+ print "+     SPAGUETTI   |         $n_spa          |       854    +"
+ print "+       CLUSTER   |         $n_cluster         |      1346    +"
+ print "+        PRCMED   |         $n_prcmed           |        42    +"
+ print "+       CHIEVOL   |         $n_chievol           |         2    +"    
+ print "+-------------------------------------------------------+"
+ print "+ Total arquivos  |        $tot_arq          |      3350    +" 
+ print "+-------------------------------------------------------+"
+ print "+  Pressione < ENTER > para confirmar ...               +"
+ print "+  <CTRL+C> para abortar ...                            +"
+ print "+-------------------------------------------------------+"
+ read
+ 
+# Gerando arquivo grava-ensemble_<anomesdia>.lst
+ 
+ print " Gerando grava-ensemble_$data.lst . Por favor aguarde ... \n"
+ 
+         cd $area_scr
+	 
+	 cat arqens_apoio_$data arqens_apoio2_$data >> grava-ensemble_$data.lst
+	 
+	 cp grava-ensemble_$data.lst $area1
+     
+
+# Rotina para pular blocos da fita
+
+print "+-------------------------------------------------------+"
+print "+ Pulando blocos na fita. Por favor, aguarde .....      +"
+print "+-------------------------------------------------------+"
+
+   mt -f /dev/nst0 rewind
+
+blocos=1
+ESTADO=0 #para entrar na condicao abaixo
+
+while [ $ESTADO -ne 2 ]; do
+
+   mt -f /dev/nst0 fsf 1 >> /dev/null
+   ESTADO=$?
+
+   if [ $ESTADO -eq 2 ]; then
+      let blocos=$blocos+1
+      break
+   fi
+
+   let blocos=$blocos+1
+
+done
+
+print "+-------------------------------------------------------+"
+print "+ FINAL DA FITA ENCONTRADO: $blocos blocos pulados \033[57G |"
+print "+-------------------------------------------------------+"
+print " "
+  
+
+# Rotina de gravacao dos dados
+
+print "+-------------------------------------------------------+"
+print "+ Pressione <Enter> para gravar dados do dia $data   +"
+print "+-------------------------------------------------------+"
+read
+
+    cd $area1
+  
+    tar -cvf /dev/nst0 `cat grava-ensemble_$data.lst`
+  
+    mt -f /dev/nst0 rewind
+  
+rm -fr $area_scr/arqens_apoio*
+#rm -fr $area_bkp/ensemble_$data.tar
+#rm -fr $area_bkp/arqs/*
+rm -fr $area_scr/grava-ensemble_$data.lst
+rm -fr $area1/grava-ensemble_$data.lst
+
+exit

@@ -1,0 +1,12 @@
+%include <head.h>
+%include <config.h>
+
+ARQINI=sbsj_${LABELI}00_glob_test
+
+tiggedirmopora=/home2/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/${ARQINI}
+tiggeoutgoing=${tiggedirmopora}/outgoing
+
+ssh mopora -l ldm -i ~/.ssh/id_rsa "mv $tiggescratch $tiggeoutgoing"
+
+%include <tail.h>

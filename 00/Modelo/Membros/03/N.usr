@@ -1,0 +1,27 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Modelo/Membros/03
+FAMILY1          =   03
+SMSDATE          =   20090219
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Modelo/Membros/03/N
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   2
+SMS_PROG         =   1
+TASK             =   N
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+LABELF=`${CALDATE} $LABELI + 36h 'yyyymmddhh'`
+PERT=%FAMILY1%%TASK%
+NFDAYS=15
+NUMPERT=07
+cd $OPERM/run
+%include <ctrl_model.h>
+
+
+%include <tail.h>

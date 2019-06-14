@@ -1,0 +1,65 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Pos/Ens_Medio
+FAMILY1          =   Ens_Medio
+SMSDATE          =   2009040912
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Pos/Ens_Medio/Medio
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   2
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   Medio
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+PREFX=ENM
+
+# APAGA ARQUIVOS DA RODADA DE CONTROLE PARA GERACAO DE ANALISE
+# NAO UTILIZADOS A PARTIR DESTA TASK
+find ${ROPERM} -name "GFCTCTR*" -exec rm -f {} \;
+
+cd $OPERM/run
+#NAO FUNCIONA PARA GRIB ./criasize.ksh ${LABELI}
+
+./runensmed.sx6 ${LABELI} AVN
+
+
+for ext in grb ctl idx; do
+lsoma=0
+
+for arqtam in `ls -ltr ${mDK}/ensmed/dataout/T${TRC}L${LV}/GPOSENM${LABELI}*${ext} | awk '{print $5}'`; do
+
+      lsoma=`echo "${lsoma}+${arqtam}" | bc -l`
+
+done
+
+if [ "${ext}" = "grb" ]; then
+soma=1484252400
+fi
+if [ "${ext}" = "idx" ]; then
+soma=254030
+fi
+if [ "${ext}" = "ctl" ]; then
+soma=246300
+fi
+
+
+if [ $lsoma -ge $soma ]; then
+      echo "Ok"
+else
+      echo "ERRO"
+      smsabort
+      trap 0
+      exit 1
+fi
+
+done
+
+
+
+%include <tail.h>

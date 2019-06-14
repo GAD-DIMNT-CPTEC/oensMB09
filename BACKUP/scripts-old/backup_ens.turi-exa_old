@@ -1,0 +1,232 @@
+#!/bin/ksh
+
+##########################################################
+#                                                        #
+#   Script para backup dos produtos do Modelo Ensemble   #
+#                                                        #  
+#                                                        #
+# Apos gerar um arquivo ensemble_<anomesdia>.tar         #
+#  realiza ftp para a area /cpvry07/oper/ensemble        #
+#                                                        #
+# Responsavel: Fabiano - fabiano@cptec.inpe.br           #
+# Data:        22/03/2005                                #
+#                                                        #
+# Modificacao: Savio - 12/08/2005 (cluster e spread)     #
+# Modificacao: Fabiano - 16/09 - oenspro                 #
+# Chamada: backup_ens.ksh <YYYY><MM><DD><rota>           #
+#                                                        #
+##########################################################
+
+ clear
+ 
+ # Definindo informacoes fornecidas
+
+ ano=$1
+ mes=$2
+ dia=$3
+
+# Definindo constantes
+ 
+ area1=/gfs/dk20/modoper/tempo/global/oenspro/produtos
+ area_bkp=/gfs/dk20/modoper/tempo/global/oenspro/produtos/BACKUP
+ area_scr=/gfs/home3/modoper/tempo/global/oenspro/BACKUP
+  
+ # Gerando cabecalho
+ 
+ print "\n\n+-------------------------------------------------------+"
+ print "+                                                       +"
+ print "+   Backup dos produtos do Modelo ENSEMBLE              +"
+ print "+                                                       +"
+ print "+-------------------------------------------------------+"
+ print "+                                                       +"
+ print "+      Arquivos referentes a: $dia/$mes/$ano                +"
+ print "+                                                       +"
+ print "+-------------------------------------------------------+"
+
+ 
+ print "\n Gerando arquivos de apoio. Por favor, aguarde ...\n"   
+
+ rm -fr $area_bkp/arqens_apoio* 
+ 
+ data=$ano$mes$dia
+ 
+ # Gerando arquivo de apoio
+ 
+ cd $area1
+
+ \ls -1R probability/dataout/T126L28/prob$data*.*.* >> $area_bkp/arqens_apoio_$data
+ \ls -1R probability/gif/prec$data*.gif >> $area_bkp/arqens_apoio_$data
+ 
+ n_prob=`cat $area_bkp/arqens_apoio_$data | grep probability | wc -l | awk '{print $1}'`
+
+  \ls -1R spread/dataout/T126L28/spread$data* >> $area_bkp/arqens_apoio_$data
+ 
+ n_spre=`cat $area_bkp/arqens_apoio_$data | grep spread | wc -l | awk '{print $1}'`
+
+ \ls -1R gif/dataout/T126L28/geop???$data*200*.gif >> $area_bkp/arqens_apoio_gif_$data
+ \ls -1R gif/dataout/T126L28/psnm$data*200*.gif >> $area_bkp/arqens_apoio_gif_$data
+ \ls -1R gif/dataout/T126L28/temp???$data*200*.gif >> $area_bkp/arqens_apoio_gif_$data
+ 
+ n_gif=`cat $area_bkp/arqens_apoio_gif_$data | grep gif | wc -l | awk '{print $1}'`
+ 
+ cat $area_bkp/arqens_apoio_gif_$data >> $area_bkp/arqens_apoio_$data
+
+ # Rotina para adequar nome de arquivo para o subdiretorio SKILL
+ 
+ 
+ 
+     if [ $mes -eq 01 ]; then
+    
+           MES="JAN"
+
+    fi 
+          
+    if [ $mes -eq 02 ]; then
+    
+          MES="FEB"
+
+    fi
+
+    if [ $mes -eq 03 ]; then
+    
+          MES="MAR"
+
+    fi
+          
+    if [ $mes -eq 04 ]; then
+    
+          MES="APR"
+
+    fi         
+    
+    if [ $mes -eq 05 ]; then
+    
+          MES="MAY"
+
+    fi
+          
+    if [ $mes -eq 06 ]; then
+    
+          MES="JUN"
+
+    fi
+          
+    if [ $mes -eq 07 ]; then
+    
+          MES="JUL"
+
+    fi
+          
+    if [ $mes -eq 08 ]; then
+    
+          MES="AUG"
+
+    fi  
+          
+    if [ $mes -eq 09 ]; then
+    
+          MES="SEP"
+
+    fi 
+          
+    if [ $mes -eq 10 ]; then
+    
+          MES="OCT"
+
+    fi   
+   
+   
+    if  [ $mes -eq 11 ]; then
+    
+          MES="NOV"
+
+    fi
+          
+    if  [ $mes -eq 12 ]; then
+    
+          MES="DEC"
+
+    fi 
+
+ \ls -1R skill/*.??Z$dia$MES$ano.*.* >> $area_bkp/arqens_apoio_$data
+ 
+ n_skill=`cat $area_bkp/arqens_apoio_$data | grep skill | wc -l | awk '{print $1}'`
+ 
+ \ls -1R spaguetti/dataout/T126L28/*$data*200*.gif >> $area_bkp/arqens_apoio_$data
+  
+ n_spa=`cat $area_bkp/arqens_apoio_$data | grep spaguetti | wc -l | awk '{print $1}'`
+ 
+ \ls -1R cluster/dataout/T126L28/gif/*$data*200*.gif >> $area_bkp/arqens_apoio2_$data
+ 
+ \ls -1R cluster/dataout/T126L28/clusters/clusters$data*200*.T126* >> $area_bkp/arqens_apoio2_$data
+ 
+ n_cluster=`cat $area_bkp/arqens_apoio2_$data | wc -l | awk '{print $1}'`
+
+ \ls -1R CHIEVOL/gif/chi_evol$data*200*.png >> $area_bkp/arqens_apoio_$data 
+
+ n_chievol=`cat $area_bkp/arqens_apoio_$data| grep CHIEVOL | wc -l | awk '{print $1}'` 
+
+ \ls -1R prcmed/dataout/T126L28/GPRCENM$data*200* >> $area_bkp/arqens_apoio_$data
+ \ls -1R prcmed/gif/prec_anomaly*$data*200* >> $area_bkp/arqens_apoio_$data
+ 
+ n_prcmed=`cat $area_bkp/arqens_apoio_$data | grep prcmed | wc -l | awk '{print $1}'`
+
+ let tot_arq=$n_prob+$n_spre+$n_gif+$n_skill+$n_spa+$n_cluster+n_chievol+n_prcmed
+ 
+ 
+ print "+-------------------------------------------------------+"
+ print "+			              	                +"
+ print "+ Por favor, confirme os arquivos a serem gravados      +"
+ print "+                                                       +"
+ print "+-------------------------------------------------------+"
+ print "+    Diretorio    | Arquivos Existentes  |      Normal  +" 
+ print "+-------------------------------------------------------+"
+ print "+   PROBABILITY   |         $n_prob          |       176    +"
+ print "+        SPREAD   |         $n_spre          |       130    +"
+ print "+           GIF   |         $n_gif          |       248    +"
+ print "+         SKILL   |         $n_skill           |        14    +"
+ print "+     SPAGUETTI   |         $n_spa          |       434    +"
+ print "+       CLUSTER   |         $n_cluster          |       640    +"
+ print "+        PRCMED   |         $n_prcmed           |        26    +"
+ print "+       CHIEVOL   |         $n_chievol            |         2    +"    
+ print "+-------------------------------------------------------+"
+ print "+ Total arquivos  |        $tot_arq          |      1670   +" 
+ print "+-------------------------------------------------------+"
+ print "+  Pressione < ENTER > para confirmar ...               +"
+ print "+  <CTRL+C> para abortar ...                            +"
+ print "+-------------------------------------------------------+"
+ read
+ 
+ # Gerando arquivo ensemble_<anomesdia>.tar
+ 
+ print " Gerando ensemble_$data.tar. Por favor aguarde ... \n"
+       
+        cd $area1
+	
+        tar -cvf $area_bkp/ensemble_$data.tar `cat $area_bkp/arqens_apoio_$data`
+	
+ 	tar -uvf $area_bkp/ensemble_$data.tar `cat $area_bkp/arqens_apoio2_$data` 
+     
+
+ # Realizando ftp para a area /rede/oper
+
+
+print "+-------------------------------------------------------+"
+print "+ Por favor, verifique se ha espaco suficiente na area  +"
+print "+ /rede/oper antes de confirmar transferencia           +"
+print "+-------------------------------------------------------+"
+print "+ Pressione <Enter> para transferir arquivo .tar gerado +"
+print "+-------------------------------------------------------+"
+read
+
+cd /gfs/home3/modoper/tempo/global/oenspro/BACKUP
+
+$area_scr/ftp_ens.ksh $data 
+
+
+ # Removendo arquivos de apoio
+ 
+  rm -f $area_scr/ftp_arqtar
+  rm -f $area_bkp/ensemble_$ano$mes$dia.tar
+  rm -fr $area_bkp/arqens_apoio*_$data
+exit

@@ -1,0 +1,264 @@
+%include <head.h>
+%include <config.h>
+
+##################################################################
+#
+#BANGU = DIRETORIO HOME DA BANGU
+#NOUP = IDENTIFICACAO DO MEMBRO (ex. 01N)
+#
+##################################################################
+
+##################################################################
+#
+#PRODUTOS
+#
+#AMM DIRPRDN=/home/ensglob
+#
+# ---------------  VISUALIZACAO  ------------------
+RMTGRU=grads
+RMTGRM=cossoca
+DIRGRA=/home/grads/scripts/modelos/bin
+RMTVIS=desenv
+RMTVIS=cossoca
+DIRVIS=/home/desenv/chart/ensemble/crontab
+#
+# ------------------  METOP  ----------------------
+#AMM RMTOPE=metop
+#AMM RMTOPM=tutoya
+#AMM RMHOST=rape
+#AMM DIROPE=/metop1/previsao/modelos/bin
+#AMM DIRREC=/previsao3/aval_t126/scripts
+#
+# ------------------   WAM   ----------------------
+#AMM RMMWAM=tutoya
+#AMM RMTWAM=wam
+#AMM DIRWAM=/home/wam/t126_sx6/scripts
+#--------------------------------------------------
+#
+##################################################################
+
+cd ${BANGU}
+if [ ! -L t126l28 ]
+then
+	ln -sf T126L28 t126l28
+fi
+
+yyyy=`echo ${LABELI} | cut -c 1-4`
+mm=`echo ${LABELI} | cut -c 5-6`
+dd=`echo ${LABELI} | cut -c 7-8`
+
+TRUNC=T${TRC}
+LEV=L${LV}
+CASE=${TRUNC}${LEV}
+QUEUE=${QUEUE}
+
+DIRIN=${BANGU}/${CASE}/ANL/${yyyy}/${mm}/${dd}
+DIROUT=${BANGU}/${CASE}/GPOS
+DIRGRB=${BANGU}/t126l28/grib
+ARQIN=`ls ${DIRIN}/GPOS${NOUP}${LABELI}*.lst`
+MODELID=cptec002
+DESC='PRESSURE HISTORY    CPTEC AGCM V3.0 1999  '$CASE'  COLD'
+
+export GAUDFT=/usr/local/grads/udf/udft
+export GADDIR=/usr/local/grads/dat
+export GRADSB=/usr/local/grads/bin
+export GASCRP=/usr/local/grads/lib
+
+JNAME=GRIBA${NOUP}
+
+set -e
+set -u
+
+cat << EOF > ${OPERM}/produtos/scripts/SetGposGribOens.${NOUP}.sx6
+#! /bin/ksh
+#PBS -N ${JNAME}
+#PBS -o ${OPERM}/produtos/scripts/setout/SetGposGribOens.${NOUP}.${LABELI}.out
+#PBS -j o
+
+ARQIN=${ARQIN}
+
+##################################################################
+##### LATS4D
+
+for arq in \`cat \${ARQIN} | grep ctl\`
+do
+	arqout=\`basename \$arq | cut -c 1-40\`
+	arqsub=\`awk 'BEGIN {print tolower("'\$arqout'")}'\`
+	op="-i \$arq -o $DIRGRB/\$arqout -center $MODELID -format grads_grib -ftype ctl -grid gaussian -table $GRADSB/cptec.table -v -title $DESC"
+
+	$GRADSB/lats4d \$op
+
+	echo "\n\n++++++++++++++++++++++"
+	echo "+++ MOVE $DIRGRB/\$arqsub $DIROUT/${yyyy}/${mm}/${dd}/\$arqout\n"
+	echo "+++ mv $DIRGRB/\${arqsub}.ctl $DIROUT/${yyyy}/${mm}/${dd}/\${arqout}.ctl"
+	echo "+++ mv $DIRGRB/\${arqsub}.gmp $DIROUT/${yyyy}/${mm}/${dd}/\${arqout}.gmp"
+	echo "+++ mv $DIRGRB/\${arqsub}.grb $DIROUT/${yyyy}/${mm}/${dd}/\${arqout}.grb"
+	echo "++++++++++++++++++++++\n\n"
+
+	sed -e s#\${arqsub}#\${arqout}#g $DIRGRB/\${arqsub}.ctl > $DIRGRB/temp${NOUP}.ctl
+	rm -f $DIRGRB/\${arqsub}.ctl
+
+	mv $DIRGRB/\temp${NOUP}.ctl $DIROUT/${yyyy}/${mm}/${dd}/\${arqout}.ctl
+	mv $DIRGRB/\${arqsub}.gmp $DIROUT/${yyyy}/${mm}/${dd}/\${arqout}.gmp
+	mv $DIRGRB/\${arqsub}.grb $DIROUT/${yyyy}/${mm}/${dd}/\${arqout}.grb
+
+done
+
+##################################################################
+##### APAGA OS ARQUIVOS ANTIGOS
+
+for i in 16 17 18 19 20
+do
+	LABELR=\`%SMSFILES%/bin/caldate.3.0.1 ${LABELI} - \${i}d 'yyyymmddhh'\`
+	yyyyr=\`echo \${LABELR} | cut -c 1-4\` 
+	mmr=\`echo \${LABELR} | cut -c 5-6\` 
+	ddr=\`echo \${LABELR} | cut -c 7-8\`
+
+	echo "rm -f ${DIROUT}/\${yyyyr}/\${mmr}/\${ddr}/GPOS${NOUP}\${LABELR}*"
+	rm -f ${DIROUT}/\${yyyyr}/\${mmr}/\${ddr}/GPOS${NOUP}\${LABELR}*
+done
+
+exit 0
+EOF
+
+set +e
+set +u
+
+
+
+
+##############################################################################################
+# QSUB
+#
+
+chmod 755 ${OPERM}/produtos/scripts/SetGposGribOens.${NOUP}.sx6
+/usr/bin/nqsII/qsub -q ${QUEUE} ${OPERM}/produtos/scripts/SetGposGribOens.${NOUP}.sx6
+
+
+##############################################################################################
+# QUEUE CONTROL
+#
+
+NFILE=${JNAME}
+cerr=0
+
+while [ 1 ]
+do
+
+CONTRL=`qstat |grep ${NFILE} | wc -l`
+
+if [ ${CONTRL} -eq 0 ]
+then
+        ERRNO=`qstat | grep "errno" | wc -l`
+
+        if [ ${ERRNO} -ge 01 ]
+        then
+                smslabel Info "Can't connect to BatchServer"
+        else
+		cerr=$(($cerr+1))
+                if [ ${cerr} -ge 3 ]
+                then
+                        smslabel Info "Verifing Files"
+                        break
+                fi
+	fi
+else
+        EXS=`qstat | grep ${NFILE} | awk '{print $6}'`          # Captura o status da fila
+        ERRNO=`qstat | grep "errno" | wc -l`
+
+        if [ ${ERRNO} -ge 01 ]
+        then
+                smslabel Info "Can't connect to BatchServer"
+        else
+
+	        case ${EXS} in
+
+	        QUE)                                                   # Status de Fila
+	                echo "QUEUED..."
+	                smslabel Info "Queued ..."
+			cerr=0
+	        ;; 
+	        RUN)                                                   # Status de Rodando
+	                TIME=`qstat | grep ${NFILE} | awk '{print $9}'` # Captura a quanto tempo estah rodando
+	                TIME=`echo ${TIME} | cut -d"." -f1`
+	                echo "RUNNING..."
+	                echo "TIME: "${TIME}
+	                       smslabel Info "Running ..."
+			cerr=0
+	        ;;
+	        STG)                                                   # Status de Stage
+	                echo "STAGED..."
+	                smslabel Info "Staged ..."
+			cerr=0
+	        ;;
+	        *)                                                     # Default para outros status
+	                echo "Status Unknow..."
+	                smslabel Info "Status: ${EXS}"
+			cerr=0
+	        ;;
+	
+	        esac
+        fi
+fi
+
+sleep 11
+done
+more ${OPERM}/produtos/scripts/setout/SetGposGribOens.${NOUP}.${LABELI}.out
+
+##############################################################################################
+# FILE CONTROL
+#
+
+set -A TYP icn inz fct
+set -A EXT grb gmp ctl
+set -A QTD  3   3   90
+
+set -x
+i=0
+while [ $i -lt 3 ]
+do
+	case $i in
+	0) set -A SIZ 17704800 2900 2900
+	;;
+	1) set -A SIZ 17704800 2900 2900
+	;;
+	2) set -A SIZ 18294960 3000 3000
+	;;  
+	esac
+	
+	j=0
+	l=0
+	while [ $j -lt 3 ]
+	do
+		for arq in `ls -ltr $DIROUT/${yyyy}/${mm}/${dd}/GPOS${NOUP}${LABELI}*${TYP[$i]}*${EXT[$j]} | awk '{print $5}'`
+		do
+			if [ $arq -ge ${SIZ[$j]} ]
+			then
+				smslabel Info " Ok - ${LABELI}"
+				l=$(($l+1))
+			else
+				smslabel Info " ERRO - ${LABELI}"
+			fi
+		done
+	j=$(($j+1))
+	done
+	if [ $l -ge ${QTD[$i]} ]
+	then
+		smslabel Info " Ok - ${LABELI}"
+	else
+		smslabel Info " ERRO - ${LABELI}"
+		exit 1
+	fi
+	
+i=$(($i+1))
+done
+
+##############################################################################################
+# REMOVE FCT FILES
+#
+
+#\rm ${DIRIN}/GPOS${NOUP}${LABELI}*fct*
+
+
+%include <tail.h>
+

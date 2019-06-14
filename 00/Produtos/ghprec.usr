@@ -1,0 +1,60 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Produtos
+FAMILY1          =   Produtos
+SMSDATE          =   20110924
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Produtos/ghprec
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   3
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   ghprec
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+cd ${OPERM}/recortes/scripts
+
+dateo=`date +"%%s"`
+
+cat << EOF > tempasljhd.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/setghprec.${LABELI}.${dateo}.out
+#PBS -j o
+#PBS -N PRECSC
+cd ${OPERM}/recortes/scripts
+./runghrec.scr ${LABELI}
+exit 0
+EOF
+
+submit tempasljhd.sub ${QUEUEP}
+rm -f tempasljhd.sub
+
+if [ `ls -ltr ${ROPERM}/produtos/recortes/dataout/t${TRC}l${LV}/PRECSC${LABELI}*.grb | awk '{print $5}'` -lt 81000 ]; then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+if [ `ls -ltr ${ROPERM}/produtos/recortes/dataout/t${TRC}l${LV}/PRECSC${LABELI}*.gmp | awk '{print $5}'` -lt 8713 ]; then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+if [ `ls -ltr ${ROPERM}/produtos/recortes/dataout/t${TRC}l${LV}/PRECSC${LABELI}*.ctl | awk '{print $5}'` -lt 364 ]; then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+
+
+%include <tail.h>

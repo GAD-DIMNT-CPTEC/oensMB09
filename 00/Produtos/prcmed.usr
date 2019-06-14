@@ -1,0 +1,48 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Produtos
+FAMILY1          =   Produtos
+SMSDATE          =   20100408
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Produtos/prcmed
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   2
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   prcmed
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+HH=${HH}
+LABELI=$YYYY$MM$DD$HH
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+let NMEMBR=\($NPERT*2\)+1
+
+cd ${OPERM}/prcmed/scripts/
+
+dateo=`date +"%%s"`
+
+cat << EOF > tempmncviw.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/setprcmed.${LABELI}.${dateo}.out
+#PBS -N PRCMED
+cd ${OPERM}/prcmed/scripts/
+./runprcmed.sx6 ${LABELI} ${PREFX}
+./week_mean_prec.scr ${LABELI} ${PREFX}
+exit 0
+EOF
+
+submit tempmncviw.sub ${QUEUEP}
+rm -f tempmncviw.sub
+
+
+%include <tail.h>

@@ -1,0 +1,256 @@
+##################################################
+#
+# Objetivo: Lista de padroes de arquivos/diretorios 
+#                 para backup e remocao
+#
+# Autor: EBMB e DSM, 20070110
+#
+#<--#
+#
+#     SINTAXE:
+#           Email = endereco de mail para envio notificacoes, separar
+#                       enderecos por virgulas
+#
+#           To    = listas de arquivos com parametros para envio de dados
+#                   remotos (ftp ou scp), separadas por virgulas
+#           
+#           Run   = diretorio onde serao gravadas as saidas do script
+#
+#           FLAG  ACOES
+#           0     - Nenhuma
+#           1     - Copia arquivos para disco remoto
+#                   Remove arquivos antigos (> N dias) do disco Local
+#           2     - Copia arquivos para disco remoto
+#                   Remove arquivos antigos (> N dias) do disco Local
+#                   Remove arquivos antigos (> M dias) do disco remoto
+#           3     - Remove arquivos antigos (> N dias) do disco Local 
+#                   SEM copiar para disco remoto
+#           1?    - Envia arquivos via FTP para host remoto definido
+#                   na variavel TO
+#                   , onde 11 => envia para a 1a. lista,
+#                          12 => envia para a 2a. lista...
+#                   PS: coloque "<date>" nos diretorios para representar a data 
+#           2?    - Envia arquivos via SCP para host remoto definido
+#                   na variavel TO
+#                   , onde 21 => envia para a 1a. lista,
+#                          22 => envia para a 2a. lista...
+#                   PS: coloque "<date>" nos diretorios para representar a data 
+#
+#                 +---------------------------------------------+
+#                 => ATENCAO: Utilize Flag = 0 OU 1 para bangu <=
+#                 +---------------------------------------------+
+#
+#           N = numero de dias mantidos no diretorio local
+#           M = numero de dias mantidos no diretorio remoto
+#                       soh considerado se Flag = 2
+#           U = valor INDEFINIDO
+#
+#           Local = diretorio local com arquivos originais
+#           File  = padrao para o nome de arquivo
+#           Remote= diretorio remoto para onde os arquivos serao copiados
+#
+#     PADROES:
+#           1o. Local, NAO deve conter interrogacoes
+#           2o. Remoto, se necessario colocar interrogacoes para gerar
+#                 estrutura de diretorios corretamente
+#
+#                 Exemplo: Local: /gfs/home3/io_dop/tmp
+#                          File : arqname????????.txt
+#                             Arquivo para copiar: 
+#                             /gfs/home3/io_dop/tmp/200701/arqname20070101.txt
+#
+#                          Remote: /bangu/samfs/io_dop/tmp/??????
+#                             O arquivo sera copiado para:
+#                             /bangu/samfs/io_dop/tmp/200701
+#
+#-->#
+#
+##################################################
+Email: alexalm@cptec.inpe.br
+   To: io.ftp1.cptec.inpe.br, io.img0.cptec.inpe.br
+  Run: /gfs/home3/modoper/tempo/global/oens/include/logs
+#
+#Flag N     M     Local/File/Remote
+3     1     U    /gfs/home3/modoper/tempo/global/oens/include/logs
+                 report*.log
+                 U
+11    2     5    /gfs/dk22/modoper/tempo/global/oens/plumes/dataout/T126L28
+                 CONT<AAAA><MM><DD><HH>2*
+                 /tempo/global/ensemble/<AAAA><MM><DD><HH>
+11    2     5    /gfs/dk22/modoper/tempo/global/oens/plumes/dataout/T126L28
+                 LOCMM<AAAA><MM><DD><HH>2*
+                 /tempo/global/ensemble/<AAAA><MM><DD><HH>
+#
+#ARQUIVOS GHPREC
+#
+11    2     5    /gfs/dk22/modoper/tempo/global/oens/produtos/recortes/dataout/t126l28
+                 PRECSC<AAAA><MM><DD><HH>2*
+                 /tempo/global/ensemble/<AAAA><MM><DD><HH>
+#
+#ARQUIVOS GESFAM
+#
+11    2     5    /gfs/dk22/modoper/tempo/global/oens/produtos/recortes/dataout/t126l28
+                 GESF???<AAAA><MM><DD><HH>2*
+                 /tempo/global/ensemble/<AAAA><MM><DD><HH>
+#
+#FIGURAS DO SPAGUETTI
+#
+12    2     5    /gfs/dk22/modoper/tempo/global/oens/spaguetti/gif
+                 sptgl*<AAAA><MM><DD><HH>2*.png
+                 /tempo/global/ensemble/estatisticas/<AAAA><MM><DD><HH>/
+12    2     5    /gfs/dk22/modoper/tempo/global/oens/spaguetti/gif
+                 sptas*<AAAA><MM><DD><HH>2*.png
+                 /tempo/global/ensemble/estatisticas/<AAAA><MM><DD><HH>/
+#
+#FIGURAS DO CLUSTER
+#
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/cluster/gif
+                 cluster*<AAAA><MM><DD><HH>2*.png
+                 /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+#
+#FIGURAS DO SPREAD
+#
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/spread/gif
+                  *<AAAA><MM><DD><HH>2*.png
+                  /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+#
+#FIGURAS DO SPREAD RMV
+#
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/removies/gif
+                  *<AAAA><MM><DD><HH>2*.png
+                  /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+#
+#FIGURAS DO PROBABILITY
+#
+12    2     5    /gfs/dk22/modoper/tempo/global/oens/probability/gif
+                  prec*<AAAA><MM><DD><HH>2*.png
+                  /tempo/global/ensemble/estatisticas/<AAAA><MM><DD><HH>/
+12    2     5    /gfs/dk22/modoper/tempo/global/oens/probagr/gif
+                  prec_agric_*.png
+                  /tempo/global/ensemble/fixos/
+12    2     5    /gfs/dk22/modoper/tempo/global/oens/probability/gif
+                  lprec*<AAAA><MM><DD><HH>2*.png
+                  /tempo/global/ensemble/estatisticas/<AAAA><MM><DD><HH>/
+12    2     5    /gfs/dk22/modoper/tempo/global/oens/probagr/gif
+                  lprec_agric_*.png
+                  /tempo/global/ensemble/fixos/
+#
+#FIGURAS DO CHIEVOL
+#
+12    2     5    /gfs/dk22/modoper/tempo/global/oens/chievol/gif
+                  chi_evol<AAAA><MM><DD><HH>2*
+                  /tempo/global/ensemble/diversos/<AAAA><MM><DD><HH>/
+#
+#FIGURAS DO PRCMED
+#
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/prcmed/gif
+                 prec_anomaly*<AAAA><MM><DD><HH>2*
+                 /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/prcmed/gif
+                 lprec_anom*<AAAA><MM><DD><HH>2*
+                 /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/prcmed/gif
+                 prec_anomaly_as_[12]week.png
+                 /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/prcmed/gif
+                 lprec_anomaly_as_[12]week.png
+                 /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/prcmed/gif
+                 prec_anomaly_[12]week.png
+                 /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/prcmed/gif
+                 lprec_anomaly_[12]week.png
+                 /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+#
+#FIGURAS DO PERTURBATIONS
+#
+12    2     6    /gfs/dk22/modoper/tempo/global/oens/perturbations/gif
+                  perturbations*_<AAAA><MM><DD><HH>2*.png
+                  /tempo/global/ensemble/campos/<AAAA><MM><DD><HH>/
+#
+#FIGURAS DO GRH
+#
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/MA
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/TO
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/RO
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/RN
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/PI
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/PE
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/PB
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/CE
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/AC
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/SE
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/MT
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/BA
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/AL
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/MS
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/MG
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/GO
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/ES
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/DF
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/SP
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/SC
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/RS
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/RJ
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/PR
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/AP
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/PA
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/WW
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/AM
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/
+12    2     5     /gfs/dk22/modoper/tempo/global/oens/produtos/grh/RR
+                  *.png
+                  /tempo/global/ensemble/meteogramas/<AAAA><MM><DD><HH>/

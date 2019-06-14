@@ -1,0 +1,438 @@
+#!/bin/ksh
+#help#
+#*****************************************************************#
+#                                                                 #
+#       Name:         runsstw.sx6                                 #
+#                                                                 #
+#       Function:     This script submits the Optimum             #
+#                     PNT-ENpolation 1 X 1 degree                 #
+#                     weekly running mean SST script              #
+#                     to the NQS queue.                           #
+#                     It runs in Korn Shell.                      #
+#                                                                 #
+#       Date:         October 08th, 2002.                         #
+#       Last change:  October 08th, 2002.                         #
+#                                                                 #
+#       Valid Arguments for runsstw.sx6:                          #
+#                                                                 #
+#       First : COMPILE: help, make, clean or run.                #
+#       Second:     TRC: three-digit triangular truncation        #
+#       Third :      LV: two-digit number of vertical layers      #
+#       Fourth:  LABELI: initial forecasting label.               #
+#       Fifth:    PREFY: preffix for name of input files          #
+#       Sixth :    SICE: indicator for sea-ice temperature        #
+#                        NCEP (-1.749C) or CAC (-1.799C)          #
+#                        Defaut: NCEP                             #
+#                                                                 #
+#                LABELn: yyyymmddhh                               #
+#                        yyyy = four digit year                   #
+#                          mm = two digit month                   #
+#                          dd = two digit day                     #
+#                          hh = two digit UTC hour                #
+#                                                                 #
+#       Use Second argument only for First Argument run.          #
+#                                                                 #
+#       Obs.: Run first runorog.sx6 and runsibm.sx6.              #
+#                                                                 #
+#*****************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#set -x
+#
+#       Test of Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+TRC=062
+else
+TRC=${2}
+fi
+if [ -z "${3}" ]
+then
+LV=28
+else
+LV=${3}
+fi
+if [ "${1}" = "run" ]
+then
+if [ -z "${4}" ]
+then
+echo "LABELI is not set"
+exit
+fi
+if [ -z "${5}" ]
+then
+PREFY='AVN'
+else
+PREFY=${5}
+fi
+fi
+if [ -z "${6}" ]
+then
+SICE='-1.749'
+else
+if [ "${6}" = "NCEP" ]
+then
+SICE='-1.749'
+else
+SICE='-1.799'
+fi
+fi
+#
+#     Select parameter for the resolution:
+#
+case ${TRC} in
+021) MR=22  ; IR=64  ; JR=32  ;;
+030) MR=32  ; IR=96  ; JR=48  ;;
+042) MR=43  ; IR=128 ; JR=64  ;;
+047) MR=48  ; IR=144 ; JR=72  ;;
+062) MR=63  ; IR=192 ; JR=96  ;;
+079) MR=80  ; IR=240 ; JR=120 ;;
+085) MR=86  ; IR=256 ; JR=128 ;;
+094) MR=95  ; IR=288 ; JR=144 ;;
+106) MR=107 ; IR=320 ; JR=160 ;;
+126) MR=127 ; IR=384 ; JR=192 ;;
+159) MR=160 ; IR=480 ; JR=240 ;;
+170) MR=171 ; IR=512 ; JR=256 ;;
+213) MR=214 ; IR=640 ; JR=320 ;;
+254) MR=255 ; IR=768 ; JR=384 ;;
+319) MR=320 ; IR=960 ; JR=480 ;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=Inter
+RUNTM=`date +'%Y%m%d%T'`
+EXT=out
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   AOPERM is the directory for alternative initial conditions.
+#   ROPERMI is the directory for sstwkl 1X1 degree file.
+#
+. ./config.sx6
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${AOPERM}
+echo ${ROPERMI}
+#
+#   Set truncation and layers
+#
+RESOL=T${TRC}
+NIVEL=L${LV}
+echo ${RESOL}${NIVEL}
+#
+cd ${OPERM}/run
+#
+export TERM=vt100
+cat <<EOT0 > setsstw.1.${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh
+#*****************************************************************#
+#                                                                 #
+#       Name:      setsstw${RESOL}${NIVEL}.${MAQUI}               #
+#                                                                 #
+#       Function:  This script file is used to set the            #
+#                  environmental variables and start the          #
+#                  weekly running mean SST script.                #
+#                                                                 #
+#*****************************************************************#
+#
+#  At NEC Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setsstw.1.${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR
+#
+#   Set a label (date, UTC hour)
+#
+#   LABELI=yyyymmddhh
+#   LABELS=yyyymmdd
+#
+LABELI=${4}
+echo \${LABELI} > label.out
+LABELS=\`awk '{ print substr(\$1,1,8) }' label.out\`
+rm -f label.out
+export LABELI LABELS
+#
+#   Check for sstwkl.${LABELS} file
+#
+if [ "${1}" = "run" ]
+then
+if [ ! -s ${ROPERMI}/sstwkl.\${LABELS} ]
+then
+echo \${LABELS} > label.out
+YR=\`awk '{ print substr(\$1,1,4) }' label.out\`
+MR=\`awk '{ print substr(\$1,5,2) }' label.out\`
+DR=\`awk '{ print substr(\$1,7,2) }' label.out\`
+rm -f label.out
+let ybi=\${YR}%4
+if [ \${ybi} = 0 ]
+then
+set -A MLR 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A MLR 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+let dr=\${DR}
+let mr=\${MR}
+let yr=\${YR}
+let nsst=0
+let nsstx=15
+while [ ! -s ${ROPERMI}/sstwkl.\${LABELS} -a nsst -lt nsstx ]
+do
+let dr=dr-1
+if [ dr -le 0 ]
+then
+let nr=mr-2
+if [ nr -lt 0 ]
+then let nr=11
+fi
+let dr=dr+MLR[\${nr}]
+let mr=mr-1
+fi
+if [ mr -le 0 ]
+then
+let mr=12
+let yr=yr-1
+fi
+if [ dr -lt 10 ]
+then DR=0\${dr}
+else DR=\${dr}
+fi
+if [ mr -lt 10 ]
+then MR=0\${mr}
+else MR=\${mr}
+fi
+YR=\${yr}
+LABELR=\${YR}\${MR}\${DR}
+export LABELR
+echo "LABELR = \${LABELR}"
+let nsst=nsst+1
+if [ -s ${ROPERMI}/sstwkl.\${LABELR} ]
+then
+echo "Tentative number = \${nsst} : ${ROPERMI}/sstwkl.\${LABELR} does exist, then"
+echo "cp ${ROPERMI}/sstwkl.\${LABELR} ${ROPERMI}/sstwkl.\${LABELS}"
+cp ${ROPERMI}/sstwkl.\${LABELR} ${ROPERMI}/sstwkl.\${LABELS}
+else
+echo "Tentative number = \${nsst} : ${ROPERMI}/sstwkl.\${LABELR} does not exist"
+fi
+done
+if [ ! -s ${ROPERMI}/sstwkl.\${LABELR} -a nsst -eq nsstx ]
+then
+echo "Tentatives exceeded limit of \${nsstx}"
+echo "File ${ROPERMI}/sstwkl.\${LABELS} does not exist"
+echo "File ${ROPERM}/model/datain/sstwkl\${LABELS}.${RESOL} does not generated"
+echo "rm -f ${ROPERM}/model/datain/sstwkl\${LABELS}.${RESOL}"
+rm -f ${ROPERM}/model/datain/sstwkl\${LABELS}.${RESOL}
+echo "Use Climatological SST for model"
+exit 99
+fi
+#
+fi
+fi
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   AOPERMOD is the directory for alternative initial conditions.
+#   ROPERMODI is the directory for sstwkl 1X1 degree file.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+AOPERMOD=${AOPERM}
+ROPERMODI=${ROPERMI}
+export OPERMOD SOPERMOD ROPERMOD AOPERMOD ROPERMODI
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+echo \${AOPERMOD}
+echo \${ROPERMODI}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+#
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE
+echo \${COMPILE}
+#
+#      Define variables to generate variable data file names:
+#
+NAMEI=GANL${PREFY}
+NAMEA=GANL${PREFY}
+EXTS=S.unf
+export NAMEI NAMEA EXTS
+#
+#   Set NEC FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#F_FILEINF=DETAIL
+#export F_FILEINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -pvctl noaltcode either scalar or vector code is generated at compilation
+#   -O nodiv         division may not be changed to reciprocal multiplication
+#   -O nomove        not move invariant expression outside the loop
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+FTNFLAG='-C vsafe -float0 -ew -Wf" -pvctl noaltcode nomatmul -O nodiv nomove " '
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=\${OPERMOD}/include/\${TRUNC}\${LEV}
+export INC
+echo \${INC}
+#
+#   Set FORTRAN compiler name
+#
+F77=f90
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#   $FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+F_UFMTIEEE=23,50,52,54
+export F_UFMTIEEE
+F_UFMTADJUST23=TYPE2
+F_UFMTADJUST50=TYPE2
+F_UFMTADJUST52=TYPE2
+F_UFMTADJUST54=TYPE2
+export F_UFMTADJUST23 F_UFMTADJUST50 F_UFMTADJUST52 F_UFMTADJUST54
+#
+#  Now, build the necessary INCLUDE for the choosen truncation
+#       and vertical resolution..
+#
+  if [ "\${COMPILE}" != "run" ]
+  then
+#
+cd \${INC}
+#
+cat <<EOT1 > reshsst.n
+      INTEGER MEND1,NEND1,JEND1,JMAX,IMAX
+      PARAMETER(MEND1=${MR},NEND1=${MR},JEND1=${MR})
+      PARAMETER(IMAX=${IR})
+      PARAMETER(JMAX=${JR})
+EOT1
+if (diff reshsst.n reshsst.h > /dev/null)
+then 
+    echo "reshsst.n and reshsst.h are the same"
+    rm -f reshsst.n
+else
+    echo "reshsst.n and reshsst.h are different"
+    mv reshsst.n reshsst.h
+fi
+#
+fi
+#
+#  End of includes
+#
+#  Build the necessary NAMELIST input..
+#
+cat <<EOT3 > \${SOPERMOD}/pre/datain/sstwkl.nml
+ &SSTNML
+  CLMWDW=.FALSE.
+  SICE=${SICE}
+ &END
+EOT3
+#
+cd \${OPERMOD}/run
+#
+#   Run weekly sst
+#
+echo 'WEEKLY SST -- SUBMITTED TO BATCH ...'
+#
+\$OPERMOD/pre/scripts/sstwkl.scr
+#
+EOT0
+#
+chmod +x setsstw.1.${RESOL}${NIVEL}.${MAQUI}
+#
+#   Submit weekly sst scripts to Batch
+#
+echo 'Weekly SST -- SUBMITTED TO Batch ...'
+#
+#AMM echo "qsub -q ${QUEUE} ${OPERM}/run/setsstw${RESOL}${NIVEL}.${MAQUI}"
+#AMM qsub -q ${QUEUE} ${OPERM}/run/setsstw${RESOL}${NIVEL}.${MAQUI}
+echo "${OPERM}/run/setsstw.1.${RESOL}${NIVEL}.${MAQUI}"
+${OPERM}/run/setsstw.1.${RESOL}${NIVEL}.${MAQUI}
+#

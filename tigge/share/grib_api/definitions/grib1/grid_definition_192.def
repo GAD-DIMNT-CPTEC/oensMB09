@@ -1,0 +1,17 @@
+# START 1/grid_definition ocean ----------------------------------------------------------------------
+# GRID DEFINITION ocean ECMWF convention
+
+unsigned[2] numberOfPointsAlongFirstAxis ;
+unsigned[2] numberOfPointsAlongSecondAxis ;
+
+alias geography.Ni = numberOfPointsAlongFirstAxis;  
+alias geography.Nj = numberOfPointsAlongSecondAxis;
+
+#  La1 - latitude of first grid point
+signed[3] latitudeOfFirstGridPoint : optional, edition_specific;
+meta latitudeOfFirstGridPointInDegrees scale(latitudeOfFirstGridPoint,oneConstant,grib1divider);
+alias La1 = latitudeOfFirstGridPoint;
+
+include "scanning_mode.def";
+
+# END   1/grid_definition.ECMWF OCEAN ----------------------------------------------------------------------

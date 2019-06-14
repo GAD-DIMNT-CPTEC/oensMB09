@@ -1,0 +1,35 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Modelo/Controle
+FAMILY1          =   Controle
+SMSDATE          =   2011082412
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Modelo/Controle/AVN
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   2
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   AVN
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+PERT=AVN
+export PERT
+
+cd $OPERM/run
+export OPERM SOPERM ROPERM CTLDIR DIRPRD
+export RMTUSR RMTCPR RMTCPF RMUSCF RMPWCF RMTCPY
+./runpntg1.sx6 126 28 $LABELI 15 ${PERT} 07 sstwkl
+set +x
+JNAME=OENSAVN
+SLEEPTIM=127
+%include <filectrl.h>
+
+sleep 90
+%include <ctrl_model.h>
+
+%include <tail.h>

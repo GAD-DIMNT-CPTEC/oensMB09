@@ -1,0 +1,136 @@
+%include <head.h>
+%include <config.h>
+
+HH=`echo $LABELI | cut -c 9-10`
+LABELS=`echo $LABELI | cut -c 1-8`
+LABELF=`date -d "${LABELS} 15 days" +"%%Y%%m%%d${HH}"`
+
+cd $OPERM/run
+
+. ./config.sx6
+
+NFFRS=-1
+NFBEG=-1
+NFEND=31
+PREFX="%TASK%"
+REQ=p
+OUTBIN=0
+
+if [ $OUTBIN -eq 0 ]; then
+        OUTBIN='.False.'
+else
+        OUTBIN='.True.'
+fi
+
+rm -f $SOPERM/newpos/scripts/POSTIN_T126L28a${PREFX}
+cat > $SOPERM/newpos/scripts/POSTIN_T126L28a${PREFX} << EOF
+!namelist
+!############################### Change Log ##################################
+! 1.0.0.0
+!
+!  \$Author: bonatti \$
+!  \$Date: 2005/05/30 18:15:44 \$
+!  \$Revision: 1.2 \$
+!
+!
+!#############################################################################
+!
+ &PosInput
+  nffrs=$NFFRS,            ! value to indicated if model use or not initialization
+                       !    or to indicate if it is a cold or warm start run:
+                       !    nffrs=-1 - for runs with normal mode initialization
+                       !    nffrs=0  - for runs without normal mode initialization
+                       !    nffrs=1  - for warm start runs
+  nfbeg=$NFBEG             ! number of the first forecasted file to be post-processed
+  nfend=$NFEND,            ! number of forecasted files to be post-processed
+  nmand=09,            ! number of pressure levels listed below in format 10f8.2
+                       !    nmand=-1 means the use of default 18-levels
+  RegIntIn=.FALSE.,    ! flag to interpolate outputs on regular grid (.TRUE.)
+                       !    .FALSE. to get outputs on Gaussian grid
+  Linear=.FALSE.,      ! Flag to Gaussian grid type Linear (.TRUE.) or 
+                       !                            Quadratic (.FALSE.)
+  trunc ='T${TRC}',       ! horizontal truncation = Txxx
+  lev   ='L${LV}',        ! vertical layers = Lxx
+  labeli='${LABELI}', ! initial forecasting label (yyyymmddhh)
+  labelf='${LABELF}', ! final forecasting label (yyyymmddhh)
+  prefx ='${PREFX}',        ! preffix for input and output files
+  req   ='${REQ}',          ! flag to select requested field file (p, s, c, e or nothing)
+                       !   p - use file rfd.pnt
+                       !   s - use file rfd.sfc
+                       !   c - use file rfd.clm
+                       !   e - use file rfd.eta
+                       !     - use file rfd
+                       !   these files are spected to be in the directory:
+                       !   \${roperm}/pos/datain
+                       !   at the same directory there is a dft file for
+                       !   derived fields (this should be included in the
+                       !   code in future)
+  roperm='$ROPERM'     ! main dataout directory
+                       !   should be the same for model and post-processing
+  Binary=${OUTBIN}     ! output binary format ! False -> Grib (Default)
+ /
+ 1000.00  925.00  850.00  700.00  500.00  300.00  250.00  200.00   50.00
+EOF
+
+# 1000.00  925.00  850.00  700.00  500.00  400.00  300.00  250.00  200.00  150.00
+#  100.00   70.00   50.00   30.00   20.00   10.00    3.00
+
+cd $SOPERM/newpos
+pwd
+itime=`echo "24*3600" | bc -l`
+BUFFER=20480
+
+cpu=1
+MEM=5gb
+
+BASE=`pwd`
+echo $BASE
+rm -f xmit_pos.*.POS
+FSCR=$BASE"/scripts"
+FEXEMODEL=$BASE"/model"
+FEXEPOSGL=$BASE
+
+cat << EOT1 > ./scripts/xmit_pos.sh
+#!/usr/bin/ksh
+#PBS -l cpunum_prc=$cpu
+#PBS -l tasknum_prc=${cpu}
+#PBS -l memsz_job=${MEM}
+#PBS -l cputim_job=${itime}
+#PBS -o turi-e:${FSCR}/setposgrib${LABELI}.out
+#PBS -j o
+#
+F_RSVTASK=$cpu
+
+OMP_NUM_THREADS=$cpu
+F_ERRCNT=1
+F_SETBUF=20480
+export F_ERRCNT F_SETBUF F_RSVTASK OMP_NUM_THREADS
+
+cd ${FEXEPOSGL}/exec
+
+F_RSVTASK=$cpu
+
+OMP_NUM_THREADS=$cpu
+F_ERRCNT=1
+F_SETBUF=20480
+export F_ERRCNT F_SETBUF F_RSVTASK OMP_NUM_THREADS
+
+cd ${FEXEPOSGL}/exec
+Post < ${FSCR}/POSTIN_T126L28a${PREFX} > ${ROPERM}/run/setout/xmit_pos${PREFX}.`date +'%%Y%%m%%d'`_`date +'%%Y%%m%%d'`.POS
+echo "Post Ended..."
+EOT1
+
+qsub -q ${QUEUE} -N GRIB${PREFX} ./scripts/xmit_pos.sh
+sleep 03; rm -f ./scripts/xmit_pos.sh
+
+set +x
+while [ `qstat | grep GRIB${PREFX} | wc -l` -ne 0 ]
+do
+      TIME=`qstat | grep GRIB${PREFX} | awk '{print $9}'`
+      echo "RODANDO GRIB TIGGE...TEMPO: ${TIME}"
+sleep 13
+done
+set -x
+
+
+%include <tail.h>

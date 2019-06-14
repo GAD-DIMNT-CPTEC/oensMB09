@@ -1,0 +1,210 @@
+#!/bin/ksh
+
+. ../../run/config.sx6
+
+LABELI=$1
+LABELF=$2
+PREFX=$3
+REQ=$4
+LABELS=`echo $LABELI | cut -c 1-8`
+GRADS=/usr/local/grads/bin
+
+tiggedirmopora=/home2/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/z_tigge_c_SBSJ_${LABELI}0000_glob_prod
+tiggeoutgoing=${tiggedirmopora}/outgoing
+ssh mopora -l ldm -i ~/.ssh/id_rsa "mkdir -p $tiggescratch"
+
+typeset -RZ4 HOR
+typeset -RZ3 nnn
+typeset -RZ4 llll
+
+mkdir -p ${ROPERM}/pos/dataout/T${TRC}L${LV}/${PREFX}
+
+REQ=`awk 'BEGIN {print toupper("'$REQ'")}'`
+cd ${ROPERM}/pos/dataout/T${TRC}L${LV}
+
+ARQLST=GPOS${PREFX}${LABELI}${LABELF}${REQ}.fct.T${TRC}L${LV}.lst
+rm -f  $ARQLST cptec.*.${LABELI}.grb
+
+ls -ltr GPOS${PREFX}${LABELI}*grb | awk '{print $9}' > ${ARQLST}
+
+set -A hh 00 12
+i=0
+HORo=0
+
+# PEGA TODOS OS ARQUIVOS DO .lst PARA RECORTE
+for arq in `cat ${ARQLST}`
+do
+HORo=`echo $arq | cut -c 18-25`
+HORa=${hh[$i]}
+TEMP=`echo $LABELF | cut -c 1-8`
+if [ ${HORo} -eq ${TEMP} ]
+then
+        HORa=00
+fi
+MM=`echo $LABELI | cut -c 5-6`
+MMe=`echo $HORo | cut -c 5-6`
+if [ $MM -eq $MMe ]
+then
+      MMa=$HORo
+      HOR=`echo "($HORo-$LABELS)*24+$HORa" | bc -l`
+else
+      DDe=`echo $HORo | cut -c 7-8`
+      HOR=`echo "($MMa-$LABELS+$DDe)*24+$HORa" | bc -l`
+fi
+if [ $HOR -ge 360 ]; then
+       HOR=360
+fi
+
+# VERIFICA VARIAVEIS E NIVEIS DE CADA REGISTRO
+/gfs/home3/io_dop/tools/wgrib.1.8 -s $arq |cut -d: -f1,4,5 | awk '{print $1}' > .temp${PREFX}.txt
+
+# CRIA TABELAS DE CONVERSAO
+# VARIAVEIS
+cat > .tab1${PREFX} << EOF
+zgeo   gh   9
+uvel   u    8
+vvel   v    8
+temp   t    8
+umes   q    8
+topo   orog 1
+lsmk   lsm  1
+pslc   sp   1
+psnm   msl  1
+prec   tp   1
+cbnv   tcc  1
+mask   lsm  1
+ussl   sm   1
+neve   sf   1
+tcas   2t   1
+tgsc   skt  1
+umrl   umrl
+uves   uves
+vves   vves
+tems   tems
+umrs   umrs
+agpl   agpl
+tsfc   tsfc
+prcv   prcv
+role   role
+omeg   omeg
+divg   divg
+vort   vort
+fcor   fcor
+potv   potv
+stmt   stmt
+psmt   psmt
+mkmt   mkmt
+tvmt   tvmt
+EOF
+# FIM TABELA
+
+for varlev in `cat .temp${PREFX}.txt`
+do
+        REC=`echo $varlev | cut -d: -f1` # RECORD
+        VAR=`echo $varlev | cut -d: -f2` # VARIAVEL CORRESPONDENTE AO RECORD
+        LEV=`echo $varlev | cut -d: -f3` # NIVEL CORRESPONDENTE AO RECORD
+
+        if [ \( "$VAR" = "umrl" \) -o \
+        \( "$VAR" = "uves" \) -o \
+        \( "$VAR" = "vves" \) -o \
+        \( "$VAR" = "tems" \) -o \
+        \( "$VAR" = "umrs" \) -o \
+        \( "$VAR" = "agpl" \) -o \
+        \( "$VAR" = "tsfc" \) -o \
+        \( "$VAR" = "prcv" \) -o \
+        \( "$VAR" = "role" \) -o \
+        \( "$VAR" = "omeg" \) -o \
+        \( "$VAR" = "divg" \) -o \
+        \( "$VAR" = "vort" \) -o \
+        \( "$VAR" = "fcor" \) -o \
+        \( "$VAR" = "potv" \) -o \
+        \( "$VAR" = "stmt" \) -o \
+        \( "$VAR" = "psmt" \) -o \
+        \( "$VAR" = "mkmt" \) -o \
+        \( "$VAR" = "tvmt" \) ]; then
+        .
+        else
+        VARWGRIB=$VAR
+        if [ $PREFX = "AVN" ]
+        then
+            nnn=000
+            tt=cf
+        else
+            tt=pf
+            NP=`echo $PREFX | cut -c 3`
+            NUMM=`echo $PREFX | cut -c 1-2`
+            if [ $NP = "P" ]
+            then
+                  let nnn=$NUMM+7
+            else
+                  let nnn=$NUMM
+            fi
+        fi
+        if [ \( $LEV -gt 0 \) -a \( $LEV -lt 1001 \) ]
+        then
+            ll=pl
+            llll=$LEV
+        else
+            ll=sl
+            llll=0000
+        fi      
+
+#echo "z_tigge_c_SBSJ_${LABELI}0000_glob_prod_${tt}_${ll}_${HOR}_${nnn}_${llll}_${VAR}.grib"
+
+# PASSA O NOME DA VARIAVEL DO NCEP PARA CPTEC
+        a=$VAR
+        VAR=`grep -i \^$VAR .tab1${PREFX} | awk '{print $2}'`
+        ARQOUT=${ROPERM}/pos/dataout/T${TRC}L${LV}/z_tigge_c_SBSJ_${LABELI}0000_glob_prod_${tt}_${ll}_${HOR}_${nnn}_${llll}_${VAR}.grib1
+        ARQOUT2=${ROPERM}/pos/dataout/T${TRC}L${LV}/z_tigge_c_SBSJ_${LABELI}0000_glob_prod_${tt}_${ll}_${HOR}_${nnn}_${llll}_${VAR}.grib
+        DIROUT=`dirname $ARQOUT`
+        mkdir -p $DIROUT
+# GERA RECORTES UTILIZANDO O wgrib
+        if [ ! -z $VAR ]    #1
+        then
+                 /gfs/home3/io_dop/tools/wgrib.1.8 -s -4yr $arq -d ${REC} -grib -o ${ARQOUT} > /dev/null
+#                  sleep 1
+#                 /gfs/home3/io_dop/tempo/global/oenspro/model/tigge/scripts/cnvgrib -g12 -p0 $ARQOUT $ARQOUT2 > /dev/null
+                ARQOUTS=`basename ${ARQOUT}`
+                ARQOUT2=`echo $ARQOUT | sed -e s%grib1%grib%`
+                ARQOUT2=`basename $ARQOUT2`
+#                /gfs/home3/io_dop/tempo/global/oenspro/model/tigge/scripts/cnvgrib -g12 -p0 $ARQOUTS $ARQOUT2
+                rm -f $ARQOUT
+        fi                  #1
+        fi
+
+done
+
+if [ $i -eq 0 ]
+then
+        i=1
+else
+        i=0
+fi
+
+done
+set -x
+for arq in `ls z_tigge_c_SBSJ_${LABELI}0000_glob_prod*`
+do
+      ARQOUT=`basename $arq`
+      read a
+done
+exit 0
+#FAZ A COPIA DOS RECORTES PARA A MOPORA e DEPOIS MOVE PARA O DIRETORIO DE SAIDA.
+scp -q -i ~/.ssh/id_rsa z_tigge_c_SBSJ_${LABELI}0000_glob_prod_${tt}_??_????_${nnn}_*.grib ldm@mopora:$tiggescratch
+ssh mopora -l ldm -i ~/.ssh/id_rsa "mv $tiggescratch $tiggeoutgoing"
+
+sleep 01
+c=`ps -fu io_dop |grep scp | wc -l`
+
+while [ $c -gt 1 ]; do
+      sleep 10
+      c=`ps -fu io_dop |grep scp | wc -l`
+done
+
+# APAGA ARQUIVOS ANTIGOS
+LABELR=`date -d "$LABELS 1 day ago" +"%Y%m%d"`
+find ${ROPERM}/pos/dataout/T${TRC}L${LV} -name "*$LABELR*" -exec rm -f {} \;
+find ${ROPERM}/model/dataout/T${TRC}L${LV} -name "*$LABELR*" -exec rm -f {} \;
+
+exit 0

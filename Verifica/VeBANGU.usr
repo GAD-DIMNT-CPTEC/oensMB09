@@ -1,0 +1,43 @@
+%comment - sms edit variables
+
+FAMILY           =   Verifica
+FAMILY1          =   Verifica
+SMSDATE          =   2012020400
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/Verifica/VeBANGU
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   1
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   VeBANGU
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+set +x
+cd ${OPERM}/run
+
+# VERIFICACAO DOS ARQUIVOS NA BANGU
+
+set +e
+./verificagrbensmed.ksh ${LABELI}
+set -e
+
+smslabel Info "Ok"
+smslabel Rodada "${LABELI}"
+
+cd $OPERM/run
+for PERT in `echo 01N 02N 03N 04N 05N 06N 07N AVN 01P 02P 03P 04P 05P 06P 07P`
+do
+      cd ${OPERM}/run
+      smslabel STATUS "VERIFICANDO ${PERT}..."
+      sleep 15
+      ./vermodpos.ksh ${LABELI} ${PERT} n h
+done
+
+smslabel STATUS "Todos os Membros do Ensemble Verificados"
+
+%include <tail.h>

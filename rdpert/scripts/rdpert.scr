@@ -1,0 +1,53 @@
+#!/bin/ksh -x
+#
+#********************************************************#
+#                                                        #
+#     Name:     rdpert.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               generation of a global model initial     #
+#               conditions randomly perturbed.           #
+#                                                        #
+#     Date:        February 11, 1998.                    #
+#     Last change: July 06th,   1999.                    #
+#                                                        #
+#********************************************************#
+#
+echo 'Random Perturbation  -x-  RUNNING ...'
+#
+#    Set directories:
+#
+source=$OPERMOD/rdpert/source
+bin=$SOPERMOD/rdpert/bin/$TRUNC$LEV
+input=$SOPERMOD/rdpert/datain
+out=$OPERMOD/rdpert/output
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f rdpert.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f rdpert.mk clean
+make -f rdpert.mk
+exit
+  fi
+#
+cd $bin
+#
+./rdpert.$TRUNC$LEV < $input/rdpert.nml > $out/rdpert.out.$LABELI.$HOUR.$TRUNC$LEV
+#

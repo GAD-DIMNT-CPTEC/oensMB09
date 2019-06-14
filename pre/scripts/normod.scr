@@ -1,0 +1,58 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        normod.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   the normal mode coefficients file for     #
+#                   the normal mode initialization.           #
+#                   It runs on batch.                         #
+#                                                             #
+#      Date       : Feb. 22nd, 1994.                          #
+#      Last change: June 26th, 1995.                          #
+#                                                             #
+#*************************************************************#
+#
+# Set directories
+#
+source=$OPERMOD/pre/source
+minput=$SOPERMOD/model/datain
+bin=$SOPERMOD/pre/bin/normod/$TRUNC$LEV
+out=$OPERMOD/pre/output
+#
+echo 'Normal Mode -- RUNNING ...'
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/normod
+make -f normod.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/normod
+make -f normod.mk clean
+make -f normod.mk
+exit
+  fi
+#
+#  Output files: 80.
+#
+eval $FFF'80'=$minput/normod.$TRUNC$LEV
+export $FFF'80' 
+#
+cd $bin
+#
+./normod.$TRUNC$LEV > $out/normod.$DATE.$HOUR.$TRUNC$LEV
+#	

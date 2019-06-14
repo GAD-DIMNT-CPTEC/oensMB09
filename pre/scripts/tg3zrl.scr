@@ -1,0 +1,62 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        tg3zrl.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   the 3-layer soil temperature and the      #
+#                   roughness lenght file.                    #
+#                   It generates GrADS output files.          #
+#                   It runs on batch.                         #
+#                                                             #
+#      Date       : Feb. 09th, 1994.                          #
+#      Last change: June 26th, 1995.                          #
+#                                                             #
+#*************************************************************#
+#
+# Set directories
+#
+source=$OPERMOD/pre/source
+outtrc=$SOPERMOD/pre/dataout/$TRUNC
+minput=$SOPERMOD/model/datain
+bin=$SOPERMOD/pre/bin/tg3zrl/$TRUNC
+#
+echo '3-layer soil temperature and roughness lenght -- RUNNING ...'
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/tg3zrl
+make -f tg3zrl.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/tg3zrl
+make -f tg3zrl.mk clean
+make -f tg3zrl.mk
+exit
+  fi
+#
+#  Input  files: 18 and 19.
+#  Output files: 10.
+#
+eval $FFF'18'=$outtrc/tgdeep.$TRUNC
+eval $FFF'19'=$outtrc/zorlng.$TRUNC
+eval $FFF'10'=$minput/tg3zrl.$TRUNC
+export $FFF'18' $FFF'19' $FFF'10'
+#
+cd $bin
+#
+./tg3zrl.$TRUNC
+#	

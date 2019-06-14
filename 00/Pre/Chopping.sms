@@ -1,0 +1,34 @@
+%include <head.h>
+%include <config.h>
+
+set +x
+cd ${OPERM}/run
+
+#CHOPPING PARA T254L64
+#./runchopsms.ksh run 254 64 ${TRC} ${LV} ${LABELI} ${PREFX} ${PREFX} YES NO F F F F F T
+
+
+#CHOPPING PARA T382L64
+#./runchopsms.ksh run 382 64 ${TRC} ${LV} ${LABELI} ${PREFX} ${PREFX} YES NO F F F F F T
+
+#CHOPPING PARA T574L64
+./runchopsms.ksh run 574 64 ${TRC} ${LV} ${LABELI} ${PREFX} ${PREFX} YES NO F F F F F T
+
+JNAME=CHOPT126
+SLEEPTIM=17
+%include <filectrl.h>
+
+set +x
+ARQ=GANLAVN${LABELI}S.unf.T${TRC}L${LV}
+
+if [ -s ${ROPERM}/model/datain/${ARQ} ]
+then
+	echo "ANALISE T${TRC}L${LV} GERADA CORRETAMENTE..."
+      smslabel Info " ANALISE T${TRC}L${LV} GERADA CORRETAMENTE... ${LABELI}"
+else
+	echo "ANALISE T${TRC}L${LV} NAO GERADA... ABORTANDO"
+      smslabel Info "ANALISE T${TRC}L${LV} NAO GERADA... ABORTANDO"
+	exit 1
+fi
+
+%include <tail.h>

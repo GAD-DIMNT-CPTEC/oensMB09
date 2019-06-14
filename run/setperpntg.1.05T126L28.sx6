@@ -1,0 +1,40 @@
+#!/bin/ksh
+#
+#*********************************************************#
+#                                                         #
+#      Name:     setperpntg05T126L28.sx6  #
+#                                                         #
+#      Function: This script runs the spectral            #
+#                global numerical weather                 #
+#                forecasting at sx6.                 #
+#                                                         #
+#*********************************************************#
+#
+#PBS -o turi:/gfs/home3/modoper/tempo/global/oens/run/setout/setperpntg.1.05T126L28.sx6.2012021404:48.out
+#PBS -j o
+#PBS -N ENSANL05
+#PBS -l cpunum_prc=1 
+#
+#
+#   Change directory to run
+#
+cd /gfs/home3/modoper/tempo/global/oens/run
+#
+#   Set current sst file name for model run
+#
+SSTNM=sstwkl
+#echo "+++ cp -rpf /gfs/dk22/modoper/tempo/global/oens/model/dataout/T126L28/GFCT05R2012021400*fct* /gfs/dk22/modoper/tempo/global/oens/model/datain"
+#
+#  Run scripts of recomposition         
+#
+echo "runperreco1.sx6 126 28 05 2012021400 15 NO 07 "
+runperreco1.sx6 126 28 05 2012021400 15 NO 07
+#
+#  grib files
+#
+#echo "rungpgrib.sx6 2012021400 "
+#rungpgrib.sx6 2012021400 
+#
+### F I M ###
+
+exit 0

@@ -1,0 +1,27 @@
+%include <head.h>
+
+cd /gfs/home3/io_dop/tempo/global/oenspro/produtos/SKILL/scripts
+#./rodatudo.ksh %YMD%12
+./runskillens.T126.scr %YMD%12 15 15
+
+while [ 0 ]
+do
+
+status=`qstat |grep setskill | wc -l`
+if [ $status -gt 0 ]
+then
+	time=`qstat | grep setskill | awk '{print $9}'`
+	smslabel Info "RODANDO SKILL - $time"
+	sleep 100
+else
+	smslabel Info "SAINDO - %YMD%12"
+	sleep 100
+	break
+fi 
+
+done
+
+
+smslabel Info "$?"
+
+%include <tail.h>

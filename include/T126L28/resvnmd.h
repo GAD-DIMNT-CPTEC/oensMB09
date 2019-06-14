@@ -1,0 +1,2 @@
+      INTEGER KMAX
+      PARAMETER(KMAX=28)

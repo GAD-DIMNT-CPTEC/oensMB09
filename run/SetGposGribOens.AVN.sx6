@@ -1,0 +1,52 @@
+#! /bin/ksh
+#PBS -N GRIBAAVN
+#PBS -o /gfs/home3/io_dop/tempo/global/oenspro/run/setout/SetGposGribOens.AVN.2005051700.out
+#PBS -j o
+
+ARQIN=
+
+##################################################################
+##### LATS4D
+
+for arq in `cat ${ARQIN} | grep ctl`
+do
+	arq=`basename $arq`
+	arq=/gfs/dk19/io_dop/tempo/global/oenspro/pos/dataout/T126L28/$arq
+	mkdir -p /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/2005/05/17/
+	arqout=`basename $arq | cut -c 1-40`
+	arqsub=`awk 'BEGIN {print tolower("'$arqout'")}'`
+	op="-i $arq -o /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/$arqout -center cptec002 -format grads_grib -ftype ctl -grid gaussian -table /usr/local/grads/bin/cptec.table -v -title PRESSURE HISTORY    CPTEC AGCM V3.0 1999  T126L28  COLD"
+
+	/usr/local/grads/bin/lats4d $op
+
+	echo "\n\n++++++++++++++++++++++"
+	echo "+++ MOVE /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/$arqsub /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/2005/05/17/$arqout\n"
+	echo "+++ mv /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${arqsub}.ctl /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/2005/05/17/${arqout}.ctl"
+	echo "+++ mv /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${arqsub}.gmp /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/2005/05/17/${arqout}.gmp"
+	echo "+++ mv /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${arqsub}.grb /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/2005/05/17/${arqout}.grb"
+	echo "++++++++++++++++++++++\n\n"
+
+	sed -e s#${arqsub}#${arqout}#g /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${arqsub}.ctl > /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/tempAVN.ctl
+	rm -f /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${arqsub}.ctl
+
+	mv /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/\tempAVN.ctl /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/2005/05/17/${arqout}.ctl
+	mv /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${arqsub}.gmp /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/2005/05/17/${arqout}.gmp
+	mv /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${arqsub}.grb /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/2005/05/17/${arqout}.grb
+
+done
+
+##################################################################
+##### APAGA OS ARQUIVOS ANTIGOS
+
+#for i in 16 17 18 19 20
+#do
+#	LABELR=`%SMSFILES%/bin/caldate.3.0.1 2005051700 - ${i}d 'yyyymmddhh'`
+##	yyyyr=`echo ${LABELR} | cut -c 1-4` 
+#	mmr=`echo ${LABELR} | cut -c 5-6` 
+#	ddr=`echo ${LABELR} | cut -c 7-8`
+#
+#	echo "rm -f /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${yyyyr}/${mmr}/${ddr}/GPOSAVN${LABELR}*"
+#	rm -f /gfs/dk19/io_dop/tempo/global/oenspro/produtos/grib/${yyyyr}/${mmr}/${ddr}/GPOSAVN${LABELR}*
+#done
+
+exit 0

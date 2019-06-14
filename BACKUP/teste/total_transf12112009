@@ -1,0 +1,45 @@
+#!/bin/ksh
+#################################################
+# Script para calcular quantidade de dados
+# contidos em fita
+# Conta tambem o numero de arquivos de cada fita
+#
+# Alterado por Fabiano em 20/05/2005
+#
+# Chamada: transf <numero da fita>
+################################################
+
+
+nfita=$1
+
+if [[ ! -a $nfita ]]; then
+	#
+	print "Fita `tput bold`$nfita`tput sgr0` nao encontrada.\n\n"
+	exit
+	#
+fi
+
+lin=0
+
+for lin in $nfita 
+do
+
+totlin=`cat $nfita | wc -l`
+numdir=`cat $nfita | grep dr | wc -l`
+
+let lin=lin+1
+
+done
+
+const=5
+
+let totarq='(totlin-numdir)-const'
+
+cat $nfita | awk '{sum+=$3} END {print "Total :",sum," Bytes"; kb=sum/1024; mb=kb/1024; gb=mb/1024; print "      :",kb," KBytes"; print "      :",mb," MBytes"; print "      :",gb," GBytes"}'
+# print "\n"
+
+print "Total de arquivos:" $totarq
+print "Total de diretorios:" $numdir
+
+exit
+

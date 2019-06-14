@@ -1,0 +1,175 @@
+#!/bin/ksh 
+#PBS -l cpunum_prc=1
+#PBS -l tasknum_prc=1
+#PBS -l memsz_job=0.5gb  
+#PBS -l cputim_job=600
+#*****************************************************************#
+#                                                                 #
+#       Name:           setprobagrT126L28.sx6       #
+#                                                                 #
+#       Function:       This script file is used to set the       #
+#                       environmental variables and start         #
+#                       the week mean precipitation.              #
+#                                                                 #
+#*****************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#
+#PBS -o tupay:/gfs/home3/modoper/tempo/global/oens/run/setout/setprobagrT126L28.sx6.2012021409:35:31.
+#PBS -j o
+#
+#   Set date (day,month,year) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=20120214
+HOUR=09:35:31
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#
+OPERMOD=/gfs/home3/modoper/tempo/global/oens
+SOPERMOD=/gfs/home3/modoper/tempo/global/oens
+ROPERMOD=/gfs/dk22/modoper/tempo/global/oens
+export OPERMOD SOPERMOD ROPERMOD
+echo ${OPERMOD}
+echo ${SOPERMOD}
+echo ${ROPERMOD}
+#
+cd ${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=L28
+TRUNC=T126
+export TRUNC LEV
+#
+#   Set machine
+MACH=sx6
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=run
+export COMPILE
+echo ${COMPILE}
+#
+# Define variables to generate variable data file names:
+#
+OUT=
+export OUT
+#
+EXTS=S.unf
+export EXTS 
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#
+F_UFMTIEEE=80,90
+export F_UFMTIEEE
+F_UFMTADJUST80=TYPE2
+F_UFMTADJUST90=TYPE2
+export F_UFMTADJUST80 F_UFMTADJUST90
+#
+F_SETBUF=2048
+export F_SETBUF
+echo " F_SETBUF = ${F_SETBUF}"
+#
+#  Now, verify if compile or run
+#
+if [ "${COMPILE}" != "run" ]
+then
+cd ${OPERMOD}/probagr/source
+make -f Makefile clean
+make -f Makefile
+#
+else
+#
+#   Run prcmed
+#
+#Parameter to be read by prcmed.f90 : namelist file
+#UNDEF     : ( REAL    ) undef value set up according to original grib files
+#IMAX      : ( INTEGER ) number of points in zonal direction
+#JMAX      : ( INTEGER ) number of points in merdional direction
+#NMEMBERS  : ( INTEGER ) number of members of the ensemble
+#NFCTDY    : ( INTEGER ) number of forecast days
+#FREQCALC  : ( INTEGER ) interval in hours of output ensemble forecast
+#NWEEK     : ( INTEGER ) number of times that will be accumulate the precipitation
+#NDACC     : ( INTEGER ) number of days to accumlate the precipitation 
+#DATALSTDIR: ( CHAR    ) input directory (ensemble members)
+#DATAOUTDIR: ( CHAR    ) output directory (probability outputs)
+#PREFX     : ( CHAR    ) preffix for input and output files 
+#RESOL     : ( CHAR    ) horizontal and vertical model resolution
+cat <<EOT > ${OPERMOD}/probagr/bin/probagr.2012021400.nml
+UNDEF     :   9.999E+20
+IMAX      :   384
+JMAX      :   192
+NMEMBERS  :   15
+NFCTDY    :   15
+FREQCALC  :   6
+NWEEK     :   3
+NDACC     :   5
+DATAINDIR :   ${ROPERMOD}/pos/dataout/${TRUNC}${LEV}/
+DATAOUTDIR:   ${ROPERMOD}/probagr/dataout/${TRUNC}${LEV}/
+PREFX     :   AVN
+RESOL     :   ${TRUNC}${LEV}
+EOT
+#
+#-------------------------------------------------------------
+
+#
+#   Run the probability fortran program
+#
+cd ${OPERMOD}/probagr/bin
+${OPERMOD}/probagr/bin/probagr.exe 2012021400
+
+#
+#   Transfer files of probability to bangu and generate the figures
+#
+EXP=Exp1
+cd ${OPERMOD}/run
+#echo "${OPERMOD}/run/runtransfer.probab.sx6 126 28 2012021400 15 ${EXP}"
+#${OPERMOD}/run/runtransfer.probab.sx6 126 28 2012021400 15 ${EXP}
+#
+fi
+#

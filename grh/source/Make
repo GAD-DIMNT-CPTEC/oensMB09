@@ -1,0 +1,21 @@
+#!/bin/ksh
+#
+dir=/gfs/home3/io_dop/users/alex/oenspro/grh/
+#
+rm -f Make.sub
+cat << eot > Make.sub
+#!/bin/ksh
+#
+#PBS -o turi:${dir}Make.out.%s
+#PBS -j o
+#
+cd ${dir}
+#
+make -f Makefile
+#
+eot
+#
+qsub -q compila -N Make Make.sub
+#
+rm -f Make.sub
+#

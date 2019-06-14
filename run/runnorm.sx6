@@ -1,0 +1,356 @@
+#!/bin/ksh
+#help#
+#*****************************************************************#
+#                                                                 #
+#       Name:           runnorm.sx6                               #
+#                                                                 #
+#       Function:     This script submits the                     #
+#                     normal mode script                          #
+#                     to the NQS queue.                           #
+#                     It runs in Korn Shell.                      #
+#                                                                 #
+#       Date:         October 08th, 2002.                         #
+#       Last change:  October 08th, 2002.                         #
+#                                                                 #
+#       Valid Arguments for runnorm.sx6:                          #
+#                                                                 #
+#       First : COMPILE: help, make, clean or run                 #
+#       Second:     TRC: three-digit triangular truncation        #
+#       Third :      LV: two-digit number of vertical layers      #
+#                                                                 #
+#*****************************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+    cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+    exit 0
+fi
+#
+#       Testing Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+TRC=062
+else
+TRC=${2}
+fi
+if [ -z "${3}" ]
+then
+LV=28
+else
+LV=${3}
+fi
+#
+#     Select parameter for the resolution:
+#
+case ${TRC} in
+021) MR=22  ;;
+030) MR=32  ;;
+042) MR=43  ;;
+047) MR=48  ;;
+062) MR=63  ;;
+079) MR=80  ;;
+085) MR=86  ;;
+094) MR=95  ;;
+106) MR=107 ;;
+126) MR=127 ;;
+159) MR=160 ;;
+170) MR=171 ;;
+213) MR=214 ;;
+254) MR=255 ;;
+319) MR=320 ;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y%m%d%T'`
+EXT=out
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#   
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/home3/modoper/tempo/global/oens
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+#
+#   Set truncation and layers
+#
+RESOL=T${TRC}
+NIVEL=L${LV}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setnorm${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh
+#
+#*****************************************************************#
+#                                                                 #
+#       Name:     setnorm${RESOL}${NIVEL}.${MAQUI}                #
+#                                                                 #
+#       Function: This script file is used to set the             #
+#                 environmental variables and start the           #
+#                 normal mode script.                             #
+#                                                                 #
+#*****************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setnorm${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute)
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+export OPERMOD SOPERMOD ROPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+#
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE
+echo \${COMPILE}
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#F_FILEINF=DETAIL
+#export F_FILEINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+FTNFLAG='-C vsafe -float0 -ew -Wf" -pvctl noaltcode nomatmul -O nodiv nomove " '
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=\${OPERMOD}/include/\${TRUNC}\${LEV}
+export INC
+echo \${INC}
+#
+#   Set FORTRAN compiler name
+#
+F77=f90
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#  Now, build the necessary INCLUDE for the choosen truncation and 
+#       vertical resolution.. 
+#
+  if [ "\${COMPILE}" != "run" ]
+  then
+#
+cd \${INC}
+#
+cat <<EOT1 > reshnmd.n
+      INTEGER MEND1,NEND1,JEND1
+      PARAMETER(MEND1=${MR},NEND1=${MR},JEND1=${MR})
+EOT1
+if (diff reshnmd.n reshnmd.h > /dev/null)
+then 
+    echo "reshnmd.n and reshnmd.h are the same"
+    rm -f reshnmd.n
+else
+    echo "reshnmd.n and reshnmd.h are different"
+    mv reshnmd.n reshnmd.h
+fi
+#
+case \${LEV} in
+L09)
+cat << EOT2 > delsnmd.n
+      DATA delsig
+     &   / 0.010000, 0.017000, 0.025000, 0.148000, 0.200000,
+     &     0.300000, 0.200000, 0.020000, 0.080000 /
+EOT2
+KR=09 ;;
+L18)
+cat << EOT3 > delsnmd.n
+      DATA delsig
+     &   / 0.010000, 0.017000, 0.025000, 0.055000, 0.073000,
+     &     0.085000, 0.093000, 0.096000, 0.096000, 0.050000,
+     &     0.050000, 0.050000, 0.050000, 0.050000, 0.050000,
+     &     0.050000, 0.050000, 0.050000 /
+EOT3
+KR=18 ;;
+L28)
+cat << EOT4 > delsnmd.n
+      DATA delsig
+     &   / 0.010000, 0.015820, 0.019590, 0.024050, 0.029190,
+     &     0.034930, 0.041150, 0.047540, 0.053720, 0.059190,
+     &     0.063470, 0.066060, 0.066690, 0.065260, 0.061970,
+     &     0.057160, 0.051350, 0.045030, 0.038670, 0.032620,
+     &     0.027090, 0.022220, 0.018030, 0.014510, 0.011600,
+     &     0.009230, 0.007290, 0.006570 /
+EOT4
+KR=28 ;;
+L42)
+cat << EOT5 > delsnmd.n
+      DATA delsig
+     &   / 0.008030, 0.009230, 0.010580, 0.012100, 0.013800,
+     &     0.015650, 0.017680, 0.019870, 0.022200, 0.024660,
+     &     0.027170, 0.029720, 0.032230, 0.034620, 0.036810,
+     &     0.038740, 0.040300, 0.041450, 0.042110, 0.042280,
+     &     0.041910, 0.041060, 0.039750, 0.038040, 0.036000,
+     &     0.033720, 0.031280, 0.028750, 0.026200, 0.023700,
+     &     0.021300, 0.019010, 0.016890, 0.014920, 0.013120,
+     &     0.011500, 0.010050, 0.008750, 0.007600, 0.006590,
+     &     0.005710, 0.004920 /
+C      DATA delsig
+C     &   / 0.010000, 0.015820, 0.019590, 0.024050, 0.013800,
+C     &     0.015650, 0.017680, 0.019870, 0.022200, 0.024660,
+C     &     0.027170, 0.029720, 0.032230, 0.034620, 0.036810,
+C     &     0.038740, 0.039320, 0.040460, 0.038820, 0.038980,
+C     &     0.037410, 0.036550, 0.033780, 0.032060, 0.036000,
+C     &     0.033720, 0.031280, 0.028750, 0.026200, 0.023700,
+C     &     0.021300, 0.019010, 0.016890, 0.014920, 0.013120,
+C     &     0.011500, 0.010050, 0.008750, 0.007600, 0.006590,
+C     &     0.005710, 0.004920 /
+EOT5
+KR=42 ;;
+L64)
+cat << EOT6 > delsnmd.n
+      DATA delsig
+     &   / 0.005329, 0.006039, 0.006832, 0.007717, 0.008698,
+     &     0.009782, 0.010972, 0.012271, 0.013682, 0.015198,
+     &     0.016817, 0.018524, 0.020309, 0.022145, 0.024008,
+     &     0.025866, 0.027678, 0.029404, 0.030998, 0.032415,
+     &     0.033611, 0.034545, 0.035186, 0.035511, 0.035508,
+     &     0.035177, 0.034529, 0.033590, 0.032390, 0.030969,
+     &     0.029372, 0.027644, 0.025830, 0.023972, 0.022110,
+     &     0.020273, 0.018491, 0.016785, 0.015168, 0.013653,
+     &     0.012246, 0.010948, 0.009759, 0.008679, 0.007699,
+     &     0.006816, 0.006024, 0.005316, 0.004685, 0.004122,
+     &     0.003624, 0.003183, 0.002794, 0.002449, 0.002147,
+     &     0.001880, 0.001646, 0.001441, 0.001260, 0.001101,
+     &     0.000963, 0.000842, 0.000736, 0.000642 /
+EOT6
+KR=64 ;;
+*) echo "Wrong request for vertical resolution: \${LEV}" ; exit 1 ;;
+esac
+if (diff delsnmd.n delsnmd.h > /dev/null)
+then 
+    echo "delsnmd.n and delsnmd.h are the same"
+    rm -f delsnmd.n
+else
+    echo "delsnmd.n and delsnmd.h are different"
+    mv delsnmd.n delsnmd.h
+fi
+#
+cat <<EOT6 > resvnmd.n
+      INTEGER KMAX
+      PARAMETER(KMAX=\${KR})
+EOT6
+if (diff resvnmd.n resvnmd.h > /dev/null)
+then 
+    echo "resvnmd.n and resvnmd.h are the same"
+    rm -f resvnmd.n
+else
+    echo "resvnmd.n and resvnmd.h are different"
+    mv resvnmd.n resvnmd.h
+fi
+#
+#  End of includes
+#
+fi
+#
+#   Run script
+#
+\${OPERMOD}/pre/scripts/normod.scr
+#
+EOT0
+#
+#   End of ${OPERM}/run/setnorm${RESOL}${NIVEL}.${MAQUI} generation
+#
+echo 'Pre-Processing - B.C. -- RUNNING ...'
+#
+chmod +x setnorm${RESOL}${NIVEL}.${MAQUI}
+#
+/usr/bin/nqsII/qsub -q ${QUEUE} ${OPERM}/run/setnorm${RESOL}${NIVEL}.${MAQUI}
+#AMM ${OPERM}/run/setnorm${RESOL}${NIVEL}.${MAQUI}
+#

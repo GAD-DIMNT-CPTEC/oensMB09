@@ -1,0 +1,46 @@
+#!/bin/ksh -x
+#
+cd ../
+BASE=`pwd`
+echo $BASE
+rm -f xmit_pos.*.POS
+FSCR=$BASE"/scripts"
+FEXEMODEL=$BASE"/model"
+FEXEPOSGL=$BASE
+
+cd $FSCR
+rm -f xmit_pos.*.POS
+
+cpu=1
+MEM=8gb
+itime=`echo "24*3600" | bc -l`
+#itime=15200
+BUFFER=20480
+cat <<EOT1 > ${FSCR}/setposT299L64.sh
+#!/usr/bin/ksh
+#PBS -l cpunum_prc=$cpu
+#PBS -l tasknum_prc=${cpu}
+#PBS -l memsz_job=${MEM}
+#PBS -l cputim_job=${itime}
+#PBS -o tupay:${FSCR}/run${out}.out
+#PBS -e tupay:${FSCR}/run${out}.out
+#PBS -j o
+#
+F_RSVTASK=$cpu
+
+OMP_NUM_THREADS=$cpu
+F_ERRCNT=1
+F_SETBUF=20480
+export F_ERRCNT F_SETBUF F_RSVTASK OMP_NUM_THREADS
+
+cd ${FEXEPOSGL}/exec
+Post < ${FSCR}/POSTIN_T299L64 > ${FSCR}/setposg.`date +'%Y%m%d'`.T299L64.POS
+
+#
+EOT1
+
+qsub -q  Inter -N POSGT299 ${FSCR}/setposT299L64.sh
+
+rm -f ${FSCR}/setposT299L64.sh
+
+exit 0

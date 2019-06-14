@@ -1,0 +1,542 @@
+#!/bin/ksh
+#help#
+#***********************************************************************#
+#                                                                       #
+#     Name:           runpost.sx6                                       #
+#                                                                       #
+#     Function:       This script submits the post                      #
+#                     processing scripts to the NQS queue.              #
+#                     It runs in Bourne Shell.                          #
+#                                                                       #
+#     Date:           October 08th, 2002.                               #
+#     Last change:    October 08th, 2002.                               #
+#                                                                       #
+#     Valid Arguments for runpost.sx6                                   #
+#                                                                       #
+#     First   : COMPILE: help, make, clean or run                       #
+#     Second  :     TRC: three-digit triangular truncation              #
+#     Third   :      LV: two-digit number of vertical sigma-layers      #
+#     Fourth  :   START: flag to post-proc model start: cold or warm    #
+#     Fifth   :  LABELI: initial forecasting label                      #
+#     Sixth   :  LABELF: final forecasting label                        #
+#     Seventh :   NFBEG: first field post-processed: -1,0,1,2,...       #
+#     Eighth  :   NFEND: last field post-processed : -1,0,1,2,...       #
+#     Nineth  :    MFGS: flag for first-guess: 0 (not), 1 (yes)         #
+#     Tenth   : MFGSOPN: flag to open first-guess file:                 #
+#                        -1 - open first-guess file for ppar            #
+#                         0 - do not open first-guess file              #
+#                         1 - open first-guess file for opar            #
+#     Eleventh:   PREFX: preffix for input and output files             #
+#     Twelveth:     REQ: flag to select requested field file:           #
+#                        nothing for rfd, s for rfd.sfc (surface)       #
+#                        or e for rfd.eta (etafiles)                    #
+#                                                                       #
+#               LABELx : yyyymmddhh                                     #
+#                        yyyy = four digit year                         #
+#                          mm = two digit month                         #
+#                          dd = two digit day                           #
+#                          hh = two digit hour                          #
+#                                                                       #
+#***********************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Test of Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ "${1}" = "run" ]
+then
+if [ -z "${2}" ]
+then
+TRC=062
+else
+TRC=${2}
+fi
+if [ -z "${3}" ]
+then
+LV=28
+else
+LV=${3}
+fi
+if [ -z "${4}" ]
+then
+echo "START is not set (cold or warm)"
+exit
+fi
+if [ -z "${5}" ]
+then
+echo "LABELI is not set (yyyymmddhh)"
+exit
+else
+LABELD=${5}
+fi
+if [ -z "${6}" ]
+then
+echo "LABELF is not set (yyyymmddhh)"
+exit
+fi
+if [ -z "${7}" ]
+then
+echo "NFBEG is not set (-1,0,1 ...)"
+exit
+fi
+if [ -z "${8}" ]
+then
+echo "NFEND is not set (-1,0,1 ...)"
+exit
+fi
+if [ -z "${9}" ]
+then
+echo "MFGS is not set (0,1)"
+exit
+fi
+if [ -z "${10}" ]
+then
+echo "MFGSOPN is not set (-1,0,1)"
+exit
+fi
+if [ -z "${11}" ]
+then
+PREFX='AVN'
+else
+PREFX=${11}
+fi
+if [ -z "${12}" ]
+then
+EXS=${9}p
+else
+EXS=${9}${12}
+fi
+EXL=${5}${6}
+else
+TRC=${2}
+LV=${3}
+EXL=out
+EXS=Complilation
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=Inter
+RUNTM=`date +'%Y%m%d%T'`
+EXT=${PREFX}${EXS}
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   AOPERM is the directory for the first guess file.
+#   GOPERM is the alternative directory for the first guess file.
+#
+. ./config.sx6
+GOPERM=${ROPERM}
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${AOPERM}
+echo ${GOPERM}
+#
+#   Set truncation and layers
+#
+RESOL=T${TRC}
+NIVEL=L${LV}
+#
+#   CTLDIR is the directory where the outputs will be available
+#          after they where send to archive machine ygara.
+#
+yydir=`awk 'BEGIN {print substr("'$LABELD'",1,4)}'`
+mmdir=`awk 'BEGIN {print substr("'$LABELD'",5,2)}'`
+dddir=`awk 'BEGIN {print substr("'$LABELD'",7,2)}'`
+if [ "${12}" = "e" ]
+then
+CTLDIR=${BANGU}/${RESOL}${LEV}/GPRG/${yydir}/${mmdir}/${dddir}
+else
+CTLDIR=${BANGU}/${RESOL}${LEV}/ANL/${yydir}/${mmdir}/${dddir}
+fi
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setpost${PREFX}${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        setpost${PREFX}${RESOL}${NIVEL}.${MAQUI}  #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  post-processing script.                   #
+#                                                            #
+#************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setpost${PREFX}${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXL}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+EXO=${EXT}
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+echo 'Case: '\${EXO}
+export DATE HOUR EXO
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELF = yyyymmddhh
+#   LABELI = initial run forecast label
+#   LABELF = final run forecast label
+#
+LABELI=${5}
+LABELF=${6}
+export LABELI LABELF
+echo \${LABELI} \${LABELF}
+#
+#   Prefix names for the FORTRAN files
+#
+#   NAMEF - Forecasted file's prefix
+#   NAMEP - Pos-processed file's prefix
+#   NAMEG - First Guess file's prefix
+#
+if [ "${12}" = "e" ]
+then
+NAMEF=GPRGAVN
+NAMEP=GPOSETA
+else
+NAMEF=GFCT${PREFX}
+NAMEP=GPOS${PREFX}
+fi
+NAMEG=GANLGES
+export NAMEF NAMEP NAMEG
+#
+#   Suffix names for the FORTRAN files
+#
+#   EXTF - Forecasted file's extension
+#   EXDF - Forecasted diretives file's extension
+#
+#   EXTP - Post-processed file's extension
+#   EXDP - Post-processed diretives file's extension
+#
+#   EXTZ - First Guess file's extension
+#
+if [ "${4}" = "cold" -o "${4}" = "cold2" ]
+then
+NFFST=-1
+EXTF=F.unf
+EXDF=F.dir
+else
+NFFST=1
+EXTF=W.unf
+EXDF=W.dir
+fi
+export EXTF EXDF
+if [ "${12}" != "p" -a "${12}" != "s" -a "${12}" != "e" -a "${12}" != "c" ]
+then
+RFD=rfd
+EXTP=P.unf
+EXDP=P.ctl
+else
+if [ "${12}" = "p" ]
+then
+RFD=rfd.pnt
+EXTP=P.unf
+EXDP=P.ctl
+fi
+if [ "${12}" = "s" ]
+then
+RFD=rfd.sfc
+EXTP=S.unf
+EXDP=S.ctl
+fi
+if [ "${12}" = "e" ]
+then
+RFD=rfd.eta
+EXTP=E.unf
+EXDP=E.ctl
+fi
+if [ "${12}" = "c" ]
+then
+RFD=rfd.clm
+EXTP=P.unf
+EXDP=P.ctl
+fi
+fi
+export EXTP EXDP RFD
+EXTZ=Z.unf
+export EXTZ
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   AOPERMOD is the directory for the first guess file.
+#   GOPERMOD is the alternative directory for the first guess file.
+#   DIRCTL   is the directory where the outputs will be available
+#            after they where send to archive machine.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+AOPERMOD=${AOPERM}
+GOPERMOD=${GOPERM}
+DIRCTL=${CTLDIR}
+export OPERMOD SOPERMOD ROPERMOD AOPERMOD GOPERMOD DIRCTL
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+echo \${AOPERMOD}
+echo \${GOPERMOD}
+echo \${DIRCTL}
+#
+#   If FCTFILES is not generated by model set its name here.
+#
+FCTFILES=fctfiles_name
+export FCTFILES
+echo \${FCTFILES}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+TRUNC=${RESOL}
+LEV=${NIVEL}
+export TRUNC LEV
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE
+echo \${COMPILE}
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#F_FILEINF=DETAIL
+#export F_FILEINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -pvctl noaltcode either scalar or vector code is generated at compilation
+#   -O nodiv         division may not be changed to reciprocal multiplication
+#   -O nomove        not move invariant expression outside the loop
+#   -float0          floating-point data format IEEE is enabled
+#   -ew              sets the basic numeric size to 8 bytes
+#
+FTNFLAG='-w -Wf" -pvctl noaltcode noassume vwork=stack -O nodiv nomove " '
+export FTNFLAG
+#
+#   Set FORTRAN compiler name
+#
+FTN='f90 -float0 -ew '
+export FTN
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+F_UFMTIEEE=10,11,21,30
+export F_UFMTIEEE
+F_UFMTADJUST10=TYPE2
+F_UFMTADJUST11=TYPE2
+F_UFMTADJUST21=TYPE2
+F_UFMTADJUST30=TYPE2
+export F_UFMTADJUST10 F_UFMTADJUST11 F_UFMTADJUST21 F_UFMTADJUST30
+#
+F_SETBUF=4096
+export F_SETBUF
+echo " F_SETBUF = \${F_SETBUF}"
+#
+#  Now, build the necessary NAMELIST input:
+#
+#            Hits for NAMELIST (NFFRS, NFBEG, NFEND and MFGS see below):
+#
+#          - cold start:
+#            with initialization:
+#            NFFRS=-1
+#            no initialization:
+#            NFFRS=0
+#          - warm start:
+#            NFFRS=1
+#
+#            first guess:
+#            MFGS=1
+#            no first guess:
+#            MFGS=0
+#
+#   hp=IC - for initial condition
+#            with initialization:
+#            NFBEG=-1
+#            NFEND=-1
+#            no initialization:
+#            NFBEG=0
+#            NFEND=0
+#   hp=IN - for initialized initial condition
+#            NFBEG=0
+#            NFEND=0
+#   hp=FG - for first guess
+#            NFBEG=1
+#            NFEND=1
+#
+#   hp=hh - for forecasting (hh UTC hour two digits)
+#            NFBEG >=1
+#            NFEND >=NFBEG
+#
+#   nmand <= 0 : Use default pmand
+#   nmand >  0 : Use given pmand in format 10F8.2 just after namelist pstin
+#                In the case of asking for:
+#                . virtual temperature  - dopf(16)
+#                . geopotential height  - dopf(17)
+#                . sea level pressure   - dopf(18)
+#                . absolute temperature - dopf(20)
+#                . relative humidity    - dopf(22)
+#                . specific humidity    - dopf(23)
+#                the post-processing uses the sub-routine lowtmp
+#                and nmand must be at least 3.
+#                To get sea level pressure two of then must be 1000 and 500 hPa.
+#   Example :
+#
+#cat <<EOTB > \${SOPERMOD}/pos/datain/pos.nml
+# &pstin
+# nffrs=\${NFFST},
+# nfbeg=${7},
+# nfend=${8},
+# nmand=12
+# /
+# 1000.00  925.00  850.00  700.00  500.00  300.00  200.00  100.00   70.00   50.00
+#   30.00   10.00
+# &frsges
+# mfgs=${9},
+# mfgsopn=${10},
+# lrcl=1
+# /
+#EOTB
+#
+cat <<EOTB > \${SOPERMOD}/pos/datain/pos.nml
+ &pstin
+ nffrs=\${NFFST},
+ nfbeg=${7},
+ nfend=${8},
+ nmand=10
+ /
+ 1000.00  925.00  850.00  700.00  500.00  250.00  200.00  100.00   50.00   10.00 
+ &frsges
+ mfgs=${9},
+ mfgsopn=${10},
+ lrcl=1
+ /
+EOTB
+#
+cd \${OPERMOD}/run
+#
+#   Run post-processing sigma to pressure
+#
+\${OPERMOD}/pos/scripts/post.scr
+#
+#
+# Release Memory 
+#
+#
+if [ "\${PERT}" = "07N" ]
+then
+#
+if [ -a \${OPERMOD}/run/memory.n ]
+then
+#
+me=\`cat \${OPERMOD}/run/memory.n\`
+if [ "\$me" = "1" ]
+then
+m=\`/usr/sbin/rsginfo /dev/rsg/0 | grep LP | awk '{gsub(/Umem:/," "); gsub(/Max:/," "); print (\$8-\$5)*4 } '\`
+write operacao \`finger|grep vxt5|awk '{print \$5}'\`<<eot
+\`tput smso\`
+****************************************************************
+*                                                              *
+*   FIM DA EXECUCAO DA PREVISAO DE TEMPO GLOBAL POR ENSEMBLE   *
+*   FAVOR, LIBERAR TODOS OS PROCESSOS DE PESQUISA PARADOS.     *
+*   MEMORIA LIVRE:\${m}                                         *
+*   MAQUINA: tupan02                                           *
+*                                                              *
+****************************************************************
+\`tput rmso\`
+eot
+fi
+#
+rm -f \${OPERMOD}/run/memory.n
+fi
+#
+fi
+#
+EOT0
+#
+#   Change mode to be executable
+#
+chmod +x setpost${PREFX}${RESOL}${NIVEL}.${MAQUI}
+#
+#   Submit Post-Processing scripts to Batch
+#
+echo 'Post-P  -- SUBMITTED TO Batch ...'
+#
+#AMM echo "qsub -q ${QUEUE} ${OPERM}/run/setpost${PREFX}${RESOL}${NIVEL}.${MAQUI}"
+#AMM qsub -q ${QUEUE} ${OPERM}/run/setpost${PREFX}${RESOL}${NIVEL}.${MAQUI}
+echo "${OPERM}/run/setpost${PREFX}${RESOL}${NIVEL}.${MAQUI}"
+${OPERM}/run/setpost${PREFX}${RESOL}${NIVEL}.${MAQUI}
+#

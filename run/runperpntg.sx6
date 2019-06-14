@@ -1,0 +1,227 @@
+#!/bin/ksh
+#help#
+#********************************************************************#
+#                                                                    #
+#     Name:           runperpntg.sx6                                 #
+#                                                                    #
+#     Function:       This script generated and submit               #
+#                     a script to start the global model             #
+#                     at a given date/time to integration            #
+#                     from initial date till final date.             #
+#                                                                    #
+#     Date:           May    28th, 2003.                             #
+#     Last change:    May    28th, 2003.                             #
+#                                                                    #
+#     Valid Arguments for runperpntg.sx6                             #
+#                                                                    #
+#     First  :   HELP: help or nothing for getting help              #
+#     First  :    TRC: three-digit triangular truncation             #
+#     Second :     LV: two-digit number of vertical sigma-layers     #
+#     Third  :    NUM: pertubation number                            #
+#     Fourth :     PT: pertubation suffix                            #        
+#     Fifth  : LABELI: initial forecasting label                     #
+#     Sixth  : LABELF: final perturbation forecasting label          #
+#     Seventh: NFDAYS: number of forecasting days                    #
+#     Eighth :  HUMID: YES or NO (humidity will be perturbed)        #
+#     Nineth :NUMPERT: number of random perturbations                #
+#      Tenth :  NMSST: SST file name or nothing                      #
+#                                                                    #
+#     Obs.   : NMSST : default sstaoi                                #
+#              LABELx: yyyymmddhh                                    #
+#                      yyyy = four digit year                        #
+#                        mm = two digit month                        #
+#                        dd = two digit day                          #
+#                        hh = two digit UTC hour                     #
+#********************************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+    cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+    exit 0
+else
+TRC=${1}
+fi
+#
+#       Testing Valid Arguments
+#
+if [ -z "${2}" ]
+then
+echo "Second argument is not set: LV"
+exit
+else
+LV=${2}
+fi
+if [ -z "${3}" ]
+then
+echo "Third argument is not set: NUM"
+exit
+fi
+if [ -z "${4}" ]
+then
+echo "Fourth argument is not set: PT"
+exit
+fi
+if [ -z "${5}" ]
+then
+echo "Fifth argument is not set (LABELI: yyyymmddhh)"
+exit
+fi
+if [ -z "${6}" ]
+then
+echo "Sixth argument is not set (LABELF: yyyymmddhh)"
+exit
+fi
+if [ -z "${7}" ]
+then
+echo "Seventh argument is not set: NFDAYS"
+exit
+fi
+if [ -z "${8}" ]
+then
+echo "Eighth argument is not set: HUMID"
+exit
+else
+HUMID=${8}
+fi
+if [ -z "${9}" ]
+then
+echo "Nineth argument is not set: NUMPERT"
+exit
+else
+NUMPERT=${9}
+fi
+if [ -z "${10}" ]
+then
+echo "Warning NMSST is not set. Using default: sstaoi"
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT=out
+export HSTMAQ MAQUI RUNTM EXT
+#
+#   Set directories and remote machines
+#
+#   OPERM : is the directory for sources, scripts and printouts 
+#           at SX6.
+#   SOPERM: is the directory for input and output files at SX6.
+#   ROPERM: is the directory for big selected output files at SX6.
+#   CTLDIR: is the directory where the outputs will be available
+#           after they where send to the machine RMTCPF.
+#   DIRPRD: is the directory of the machine RMTCPR where there
+#           are the programs to generate special products.
+#   RMTUSR: is the remote user at the telecom machine RMTCPR.
+#   RMTCPR: is the remote machine to run the special products.
+#   RMTCPF: is the remote archieve machine.
+#   RMUSCF: is the remote archieve machine user.
+#   RMPWCF: is the remote archieve machine password.
+#   RMTCPY: is the remote products machine for external users.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/dk20/modoper/tempo/global/oens
+#
+CTLDIR=
+DIRPRD=
+RMTUSR=
+RMTCPR=
+RMTCPF=
+RMUSCF=
+RMPWCF=
+RMTCPY=
+#
+export OPERM SOPERM ROPERM CTLDIR DIRPRD
+export RMTUSR RMTCPR RMTCPF RMUSCF RMPWCF RMTCPY
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+TRUNC=T${TRC}
+LEV=L${LV}
+NIVELP=K15
+export TRUNC LEV NIVELP
+NUM=${3}
+PT=${4}
+export NUM PT
+#
+#   Set initial and final forecasting labels and UTC Hour
+#
+LABELI=${5}
+LABELF=${6}
+NFDAYS=${7}
+export LABELI LABELF NFDAYS
+#
+#############Set number (fct) post-processing #########
+NF=24
+export NF
+####################################################### 
+#
+#   Set Perturbation
+#
+#   Set SST file name
+#
+if [ -z "${10}" ]
+then
+NMSST=sstaoi
+else
+NMSST=${10}
+fi
+export NMSST
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}
+#!/bin/ksh
+#
+#*********************************************************#
+#                                                         #
+#      Name:     setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}  #
+#                                                         #
+#      Function: This script runs the spectral            #
+#                global numerical weather                 #
+#                forecasting at ${MAQUI}.                 #
+#                                                         #
+#*********************************************************#
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Change directory to run
+#
+cd ${OPERM}/run
+#
+#   Set current sst file name for model run
+#
+SSTNM=${NMSST}
+#
+#   Run spectral global model forecast   
+#
+echo "runpermodg.${MAQUI} run ${TRC} ${LV} cold ${LABELI} ${LABELF} ${LABELF} \${SSTNM} 0 0 0 0 0 F F F F ${NUM}${PT} ${NUM}${PT} 1 n" 
+runpermodg.${MAQUI} run ${TRC} ${LV} cold ${LABELI} ${LABELF} ${LABELF} \${SSTNM} 0 0 0 0 0 F F F F ${NUM}${PT} ${NUM}${PT} 1 n 
+#
+#  Run scripts of recomposition         
+#
+echo "runperreco.${MAQUI} ${TRC} ${LV} ${NUM} ${LABELI} ${NFDAYS} ${HUMID} ${NUMPERT}"
+runperreco.${MAQUI} ${TRC} ${LV} ${NUM} ${LABELI} ${NFDAYS} ${HUMID} ${NUMPERT}
+#
+#
+### F I M ###
+EOT0
+#
+echo "chmod a+x setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}"
+chmod a+x setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}
+#
+#   Submit setperpntg${NUM}${TRUNC}${LEV}.${MAQUI} to NQS ${QUEUE}
+#
+echo "/usr/bin/nqsII/qsub -q ${QUEUE} -l cpunum_prc=1 ${OPERM}/run/setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}"
+/usr/bin/nqsII/qsub -q ${QUEUE} -l cpunum_prc=1 ${OPERM}/run/setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}
+#AMM echo "${OPERM}/run/setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}"
+#AMM ${OPERM}/run/setperpntg${NUM}${TRUNC}${LEV}.${MAQUI}
+#

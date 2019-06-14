@@ -1,0 +1,233 @@
+%include <head.h>
+%include <config.h>
+#
+set +e
+set +u
+OENSDK=$ROPERM
+BANGU=$OENSPROBG
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+#
+LABELSKI=`date -d "${YYYY}-${MM}-${DD}" +"%%d%%b%%Y"`
+LABELSKI=`awk 'BEGIN {print toupper("'$LABELSKI'")}'`
+
+$DATAMAN %SMSINCLUDE%/dataman.oenspro.produtos.bangu ${LABELI}
+
+cd ${OPERM}/run/
+./runtemplate.ksh ${LABELI} AVN
+./runtemplate.ksh ${LABELI} 01N
+./runtemplate.ksh ${LABELI} 02N
+./runtemplate.ksh ${LABELI} 03N
+./runtemplate.ksh ${LABELI} 04N
+./runtemplate.ksh ${LABELI} 05N
+./runtemplate.ksh ${LABELI} 06N
+./runtemplate.ksh ${LABELI} 07N
+./runtemplate.ksh ${LABELI} 01P
+./runtemplate.ksh ${LABELI} 02P
+./runtemplate.ksh ${LABELI} 03P
+./runtemplate.ksh ${LABELI} 04P
+./runtemplate.ksh ${LABELI} 05P
+./runtemplate.ksh ${LABELI} 06P
+./runtemplate.ksh ${LABELI} 07P
+./runtemplate.ksh ${LABELI} ENM
+
+$DATAMAN %SMSINCLUDE%/dataman.oenspro.bangu
+
+%include <tail.h>
+
+
+
+set -A bg ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/spread/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/cluster/${YYYY}/${MM}/${DD}/gif/ ${BANGU}/produtos/cluster/${YYYY}/${MM}/${DD}/clusters/ ${BANGU}/produtos/gif/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/probability/gif/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/probability/binctl/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/spaguetti/${YYYY}/${MM}/${DD}/
+set -A sz 0 0 0 0 0 0 0 0
+set -A qt 0 0 0 0 0 0 0 0
+#
+set -x
+#
+i=0
+while [ $i -lt 8 ]
+do
+DIRVER=${bg[$i]}
+SOMATOTAL=${sz[$i]}
+QTDTOTAL=${qt[$i]}
+%include <ctrl_prod.h>
+let i=$i+1
+done
+#
+# DATAS DE REMOCAO
+#
+LABELR01=`date -d "${YYYY}-${MM}-${DD} 02 day ago" +'%%Y%%m%%d'`
+LABELR02=`date -d "${YYYY}-${MM}-${DD} 03 day ago" +'%%Y%%m%%d'`
+LABELR07=`date -d "${YYYY}-${MM}-${DD} 08 day ago" +'%%Y%%m%%d'`
+LABELR10=`date -d "${YYYY}-${MM}-${DD} 11 day ago" +'%%Y%%m%%d'`
+LABELR20=`date -d "${YYYY}-${MM}-${DD} 21 day ago" +'%%Y%%m%%d'`
+LABELR21=`date -d "${YYYY}-${MM}-${DD} 22 day ago" +'%%Y%%m%%d'`
+LABELR22=`date -d "${YYYY}-${MM}-${DD} 23 day ago" +'%%Y%%m%%d'`
+LABELR23=`date -d "${YYYY}-${MM}-${DD} 24 day ago" +'%%Y%%m%%d'`
+#
+Y20=`echo $LABELR20 | cut -c 1-4`
+M20=`echo $LABELR20 | cut -c 5-6`
+D20=`echo $LABELR20 | cut -c 7-8`
+#
+Y21=`echo $LABELR21 | cut -c 1-4`
+M21=`echo $LABELR21 | cut -c 5-6`
+D21=`echo $LABELR21 | cut -c 7-8`
+#
+Y22=`echo $LABELR22 | cut -c 1-4`
+M22=`echo $LABELR22 | cut -c 5-6`
+D22=`echo $LABELR22 | cut -c 7-8`
+#
+Y23=`echo $LABELR23 | cut -c 1-4`
+M23=`echo $LABELR23 | cut -c 5-6`
+D23=`echo $LABELR23 | cut -c 7-8`
+#
+Y10=`echo $LABELR10 | cut -c 1-4`
+M10=`echo $LABELR10 | cut -c 5-6`
+D10=`echo $LABELR10 | cut -c 7-8`
+#
+# LIMPA DIRETORIOS do DK
+#
+rm -f ${OENSDK}/pos/dataout/T126L28/*${LABELI}2* 
+rm -f ${OENSDK}/model/dataout/T126L28/GFCT*${LABELI}2*
+rm -f ${OENSDK}/model/dataout/T126L28/GPRG*${LABELI}2*
+rm -f ${OENSDK}/model/dataout/T126L28/GFGH*${LABELI}2*
+rm -f ${OENSDK}/model/datain/GFCTCTR${LABELI}*
+rm -f ${OENSDK}/recfct/dataout/T126L28/GFCTCTR${LABELR01}*
+rm -f ${OENSDK}/ensmed/dataout/T126L28/GPOSENM${LABELR01}*
+rm -f ${OENSDK}/plumes/dataout/T126L28/*${LABELR01}*
+rm -f ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOSENM${LABELI}*
+rm -f ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOS???${LABELI}*
+#
+# LIMPA DIRETORIOS DA BANGU
+#
+rm -Rf ${BANGU}/GPOS/$Y20/$M20/$D20
+rm -Rf ${BANGU}/GPOS/$Y21/$M21/$D21
+rm -Rf ${BANGU}/GPOS/$Y22/$M22/$D22
+rm -Rf ${BANGU}/GPOS/$Y23/$M23/$D23
+rm -Rf ${BANGU}/PLUMES/$Y20/$M20/$D20
+rm -Rf ${BANGU}/produtos/spread/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/cluster/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/gif/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/probability/gif/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/probability/binctl/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/spaguetti/${Y10}/${M10}/${D10}
+#
+# LIMPA DIRETORIOS DO HOME
+#
+cd ${OPERM}
+find . -name "*${LABELR10}*" -exec rm -f {} \;
+
+%include <tail.h>
+
+
+mkdir -p ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/
+mkdir -p ${BANGU}/produtos/spread/${YYYY}/${MM}/${DD}/
+mkdir -p ${BANGU}/produtos/cluster/${YYYY}/${MM}/${DD}/gif/
+mkdir -p ${BANGU}/produtos/cluster/${YYYY}/${MM}/${DD}/clusters/
+mkdir -p ${BANGU}/produtos/gif/${YYYY}/${MM}/${DD}/
+mkdir -p ${BANGU}/produtos/probability/gif/${YYYY}/${MM}/${DD}/
+mkdir -p ${BANGU}/produtos/probability/binctl/${YYYY}/${MM}/${DD}/
+#
+ cp -rpf ${OENSDK}/plumes/dataout/T126L28/*${LABELI}2*                    ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/
+ cp -rpf ${OENSDK}/produtos/spread/dataout/T126L28/*${LABELI}2*           ${BANGU}/produtos/spread/${YYYY}/${MM}/${DD}/
+ cp -rpf ${OENSDK}/produtos/cluster/dataout/T126L28/gif/*${LABELI}2*      ${BANGU}/produtos/cluster/${YYYY}/${MM}/${DD}/gif/
+ cp -rpf ${OENSDK}/produtos/cluster/dataout/T126L28/clusters/*${LABELI}2* ${BANGU}/produtos/cluster/${YYYY}/${MM}/${DD}/clusters/
+ cp -rpf ${OENSDK}/produtos/gif/dataout/T126L28/*${LABELI}2*              ${BANGU}/produtos/gif/${YYYY}/${MM}/${DD}/
+ cp -rpf ${OENSDK}/produtos/probability/gif/*${LABELI}2*                  ${BANGU}/produtos/probability/gif/${YYYY}/${MM}/${DD}/
+ cp -rpf ${OENSDK}/produtos/probability/dataout/T126L28/*${LABELI}2*      ${BANGU}/produtos/probability/binctl/${YYYY}/${MM}/${DD}/
+#
+set +e
+set +u
+#
+LABELSKI=`date -d "${YYYY}-${MM}-${DD}" +"%%d%%b%%Y"`
+LABELSKI=`awk 'BEGIN {print toupper("'$LABELSKI'")}'`
+#
+set -e
+set -u
+#
+mkdir -p ${BANGU}/produtos/skill/${YYYY}/${MM}/${DD}/
+mkdir -p ${BANGU}/produtos/spaguetti/${YYYY}/${MM}/${DD}/
+#
+ cp -rpf ${OENSDK}/produtos/skill/*$LABELSKI*                              ${BANGU}/produtos/skill/${YYYY}/${MM}/${DD}/
+ cp -rpf ${OENSDK}/produtos/spaguetti/dataout/T126L28/*${LABELI}2*         ${BANGU}/produtos/spaguetti/${YYYY}/${MM}/${DD}/
+#
+set -A bg ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/spread/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/cluster/${YYYY}/${MM}/${DD}/gif/ ${BANGU}/produtos/cluster/${YYYY}/${MM}/${DD}/clusters/ ${BANGU}/produtos/gif/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/probability/gif/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/probability/binctl/${YYYY}/${MM}/${DD}/ ${BANGU}/produtos/spaguetti/${YYYY}/${MM}/${DD}/
+set -A sz 0 0 0 0 0 0 0 0
+set -A qt 0 0 0 0 0 0 0 0
+#
+set -x
+#
+i=0
+while [ $i -lt 8 ]
+do
+DIRVER=${bg[$i]}
+SOMATOTAL=${sz[$i]}
+QTDTOTAL=${qt[$i]}
+%include <ctrl_prod.h>
+let i=$i+1
+done
+#
+# DATAS DE REMOCAO
+#
+LABELR01=`date -d "${YYYY}-${MM}-${DD} 02 day ago" +'%%Y%%m%%d'`
+LABELR02=`date -d "${YYYY}-${MM}-${DD} 03 day ago" +'%%Y%%m%%d'`
+LABELR07=`date -d "${YYYY}-${MM}-${DD} 08 day ago" +'%%Y%%m%%d'`
+LABELR10=`date -d "${YYYY}-${MM}-${DD} 11 day ago" +'%%Y%%m%%d'`
+LABELR20=`date -d "${YYYY}-${MM}-${DD} 21 day ago" +'%%Y%%m%%d'`
+LABELR21=`date -d "${YYYY}-${MM}-${DD} 22 day ago" +'%%Y%%m%%d'`
+LABELR22=`date -d "${YYYY}-${MM}-${DD} 23 day ago" +'%%Y%%m%%d'`
+LABELR23=`date -d "${YYYY}-${MM}-${DD} 24 day ago" +'%%Y%%m%%d'`
+#
+Y20=`echo $LABELR20 | cut -c 1-4`
+M20=`echo $LABELR20 | cut -c 5-6`
+D20=`echo $LABELR20 | cut -c 7-8`
+#
+Y21=`echo $LABELR21 | cut -c 1-4`
+M21=`echo $LABELR21 | cut -c 5-6`
+D21=`echo $LABELR21 | cut -c 7-8`
+#
+Y22=`echo $LABELR22 | cut -c 1-4`
+M22=`echo $LABELR22 | cut -c 5-6`
+D22=`echo $LABELR22 | cut -c 7-8`
+#
+Y23=`echo $LABELR23 | cut -c 1-4`
+M23=`echo $LABELR23 | cut -c 5-6`
+D23=`echo $LABELR23 | cut -c 7-8`
+#
+Y10=`echo $LABELR10 | cut -c 1-4`
+M10=`echo $LABELR10 | cut -c 5-6`
+D10=`echo $LABELR10 | cut -c 7-8`
+#
+# LIMPA DIRETORIOS do DK
+#
+rm -f ${OENSDK}/pos/dataout/T126L28/*${LABELI}2* 
+rm -f ${OENSDK}/model/dataout/T126L28/GFCT*${LABELI}2*
+rm -f ${OENSDK}/model/dataout/T126L28/GPRG*${LABELI}2*
+rm -f ${OENSDK}/model/dataout/T126L28/GFGH*${LABELI}2*
+rm -f ${OENSDK}/model/datain/GFCTCTR${LABELI}*
+rm -f ${OENSDK}/recfct/dataout/T126L28/GFCTCTR${LABELR01}*
+rm -f ${OENSDK}/ensmed/dataout/T126L28/GPOSENM${LABELR01}*
+rm -f ${OENSDK}/plumes/dataout/T126L28/*${LABELR01}*
+rm -f ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOSENM${LABELI}*
+rm -f ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOS???${LABELI}*
+#
+# LIMPA DIRETORIOS DA BANGU
+#
+rm -Rf ${BANGU}/GPOS/$Y20/$M20/$D20
+rm -Rf ${BANGU}/GPOS/$Y21/$M21/$D21
+rm -Rf ${BANGU}/GPOS/$Y22/$M22/$D22
+rm -Rf ${BANGU}/GPOS/$Y23/$M23/$D23
+rm -Rf ${BANGU}/PLUMES/$Y20/$M20/$D20
+rm -Rf ${BANGU}/produtos/spread/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/cluster/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/gif/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/probability/gif/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/probability/binctl/${Y10}/${M10}/${D10}
+rm -Rf ${BANGU}/produtos/spaguetti/${Y10}/${M10}/${D10}
+#
+# LIMPA DIRETORIOS DO HOME
+#
+cd ${OPERM}
+find . -name "*${LABELR10}*" -exec rm -f {} \;
+#
+%include <tail.h>

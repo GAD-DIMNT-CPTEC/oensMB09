@@ -1,0 +1,20 @@
+%include <head.h>
+%include <config.h>
+
+LABELF=`${CALDATE} $LABELI + 36h 'yyyymmddhh'`
+PERT=%FAMILY1%%TASK%
+NFDAYS=15
+NUMPERT=07
+cd $OPERM/run
+./runpntg1.sx6 ${TRC} ${LV} ${LABELI} ${NFDAYS} ${PERT} ${NUMPERT} sstwkl
+
+set +x
+#JNAME=OENS${PERT}
+#SLEEPTIM=23
+#%%include <filectrl.h>
+
+sleep 30
+%include <ctrl_model.h>
+
+
+%include <tail.h>

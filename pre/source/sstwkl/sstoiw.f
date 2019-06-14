@@ -1,0 +1,91 @@
+      SUBROUTINE SSTOIW(SSTA)
+C*
+C*   IT READS THE OI 1950-1979 1X1 SST GLOBAL NMC CLIMATOLOGY
+C*
+      INTEGER ISST,JSST
+      PARAMETER (ISST=360,JSST=180)
+C*
+      INTEGER M,J,I
+      INTEGER IDAY,MON,IYR,IUTC,MA,MB
+      REAL*4 YDAY,ADD,FA,FB
+C*JPB      CHARACTER*8 LABELI
+      CHARACTER LABELI*10
+      INTEGER MONL(12),IDENT(8)
+      REAL*4 SSTR(ISST,JSST),SSTA(ISST,JSST),SSTB(ISST,JSST)
+C*
+      DATA MONL /31,28,31,30,31,30,31,31,30,31,30,31/
+C*
+      CALL GETENV('LABELI',LABELI)
+C*JPB      READ(LABELI,'(4I2)')IYR,MON,IDAY,IUTC
+      READ(LABELI,'(I4,3I2)')IYR,MON,IDAY,IUTC
+      IF (MOD(IYR,4) .EQ. 0) MONL(2)=29
+      YDAY=FLOAT(IDAY)+FLOAT(IUTC)/24.0
+      MA=MON-1
+      IF (YDAY .GT. (1.0+FLOAT(MONL(MON))/2.0)) MA=MON
+      MB=MA+1
+      IF (MA .LT. 1) MA=12
+      IF (MB .GT. 12) MB=1
+      ADD=FLOAT(MONL(MA))/2.0-1.0
+      IF (MA .EQ. MON) ADD=-ADD-2.0
+      FB=2.0*(YDAY+ADD)/FLOAT(MONL(MA)+MONL(MB))
+      FA=1.0-FB
+      WRITE(*,*)' '
+      WRITE(*,*)' FROM SSTOIW:'
+      WRITE(*,*)' DAY=',IDAY,' MONTH=',MON,
+     *          ' YEAR=',IYR,' HOUR=',IUTC
+      WRITE(*,*)' MONTH A=',MA,' MONTH B=',MB
+      WRITE(*,*)' FACTOR A=',FA,' FACTOR B=',FB
+C*
+C*
+C*    INPUT:  UNIT 40 - sstaoi.form
+C*
+      OPEN(40,FORM='FORMATTED',STATUS='UNKNOWN')
+C*
+C*    BEGIN MONTH LOOP
+C*
+      DO M=1,12
+C*
+C*    READ OI MONTHLY CLIMO 1 DEG X 1 DEG SST
+C*
+      READ(40,'(8I5)')IDENT
+      WRITE(*,'(1X,8I5)')IDENT
+C*
+C*    GRID ORIENTATION (SSTR):
+C*    OI SST INPUT DATA: (1,1) = (0.5W,89.5N) 
+C*                 (ISST,JSST) = (0.5E,89.5S)
+C*
+      READ(40,'(16F5.2)')SSTR
+C*
+      IF (M .EQ. MA) THEN
+      WRITE(*,*)' MONTH A=',MA,' M=',M
+      DO J=1,JSST
+      DO I=1,ISST
+      SSTA(I,J)=SSTR(I,J)
+      ENDDO
+      ENDDO
+      ENDIF
+C*
+      IF (M .EQ. MB) THEN
+      WRITE(*,*)' MONTH B=',MB,' M=',M
+      DO J=1,JSST
+      DO I=1,ISST
+      SSTB(I,J)=SSTR(I,J)
+      ENDDO
+      ENDDO
+      ENDIF
+C*
+C*    END MONTH LOOP
+C*
+      ENDDO
+C*
+      DO J=1,JSST
+      DO I=1,ISST
+      SSTA(I,J)=FA*SSTA(I,J)+FB*SSTB(I,J)
+      ENDDO
+      ENDDO
+C*
+      WRITE(*,*)' '
+      CLOSE(40)
+C*
+      RETURN
+      END

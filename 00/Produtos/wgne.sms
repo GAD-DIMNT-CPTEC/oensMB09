@@ -1,0 +1,43 @@
+%include <head.h>
+%include <config.h>
+
+HH=`echo $LABELI | cut -c 9-10`
+
+if [ $HH -eq 00 ]; then
+set +x
+      YYYY=`echo $LABELI | cut -c 1-4`
+      MM=`echo $LABELI | cut -c 5-6`
+      DD=`echo $LABELI | cut -c 7-8`
+      HH=`echo $LABELI | cut -c 9-10`
+      set +e; set +u
+#      cp -rpfv ${BANGU}/GPOS/$YYYY/$MM/$DD/GPOS???${LABELI}*grb           ${ROPERM}/pos/dataout/T${TRC}L${LV}/
+      set -e; set -u
+      LABELF2=`date -d "$YYYY$MM$DD 1 day ago" +"%%Y%%m%%d${HH}"`
+      YYYY=`echo $LABELF2 | cut -c 1-4`
+      MM=`echo $LABELF2 | cut -c 5-6`
+      DD=`echo $LABELF2 | cut -c 7-8`
+      HH=`echo $LABELF2 | cut -c 9-10`
+      echo $LABELF2
+#      cp -rpfv ${BANGU}/GPOS/$YYYY/$MM/$DD/GPOS???${LABELF2}*grb ${ROPERM}/pos/dataout/T${TRC}L${LV}/
+      cd ${OPERM}/wgne/scripts
+
+      ./runaccumulated.sx6 ${LABELI} AVN
+      NARQVERIF=`find ${ROPERM}/wgne/dataout/T${TRC}L${LV} -name "${LABELI}_CPTC_????" -exec ls -ltr {} \; | awk 'BEGIN {i=0} {if ($5==415440) i+=1} END {printf ("%%d",i)}'`
+
+      if [ $NARQVERIF -eq 3 ]; then
+            echo "++ ARQUIVOS WGNE OK"
+      else
+            echo "++ ARQUIVOS WGNE COM PROBLEMAS"
+            exit 1
+      fi
+
+else
+      echo "ESTE PRODUTO RODA APENAS PARA 00Z..."
+      sleep 30
+%include <tail.h>
+fi
+
+cd ${OPERM}/wgne/scripts
+./ftp.sh
+
+%include <tail.h>

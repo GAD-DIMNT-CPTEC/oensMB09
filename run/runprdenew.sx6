@@ -1,0 +1,165 @@
+#!/bin/ksh
+#help#
+#*******************************************************************#
+#                                                                   #
+#     Name:           runprden.sx6                                  #
+#                                                                   #
+#     Function:       This script generated and submit              #
+#                     a script to start the global model            #
+#                     at a given date/time to integration           #
+#                     from initial date till final date.            #
+#                                                                   #
+#     Date:           October 27th, 1999.                           #
+#     Last change:    October 27th, 1999.                           #
+#                                                                   #
+#     Valid Arguments for runprden.sx4                              #
+#                                                                   #
+#     First : HELP  : help or nothing for getting help              #
+#     First : TRC   : three-digit triangular truncation             #
+#     Second: LV    : two-digit number of vertical sigma-layers     #
+#     Third : LABELI: initial forecasting label                     #
+#     Fourth: LABELF: final forecasting label                       #
+#     Fifth :  NFDAYS: number of forecast days                      #
+#     Sixth : NUMPERT: number of random perturbations               #
+#                                                                   #
+#             LABELx: yyyymmddhh                                    #
+#                     yyyy = four digit year                        #
+#                       mm = two digit month                        #
+#                       dd = two digit day                          #
+#                       hh = two digit UTC hour                     #
+#                                                                   #
+#*******************************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+    cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+    exit 0
+fi
+#
+#       Testing Valid Arguments
+#
+if [ -z "${1}" ]
+then
+echo "First argument is not set TRC)"
+exit
+else
+TRC=${1}
+fi
+if [ -z "${2}" ]
+then
+echo "Second argument is not set LV)"
+exit
+else
+LV=${2}
+fi
+if [ -z "${3}" ]
+then
+echo "Third argument is not set (LABELI: yyyymmddhh)"
+exit
+fi
+if [ -z "${4}" ]
+then
+echo "Fourth argument is not set (LABELF: yyyymmddhh)"
+exit
+fi
+if [ -z "${5}" ]
+then
+echo "Fifith argument is not set: NFDAYS"
+exit
+else
+NFDAYS=${5}
+fi
+if [ -z "${6}" ]
+then
+echo "Sixth argument is not set: NUMPERT"
+exit
+else
+NUMPERT=${6}
+fi
+#
+#   Set number of members of the ensemble
+#
+let NMEMBERS=2*${NUMPERT}+1
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+QUEUET=oper
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT=out
+export HSTMAQ MAQUI RUNTM EXT
+#
+#   Set directories and remote machines
+#
+#   OPERM : is the directory for sources, scripts and printouts 
+#           at SX6.
+#   RMTCPR: is the remote machine to run the special products.
+#   RMUSCF: is the remote archieve machine user.
+#   DIRSCR: is the directory of the machine RMTCPR where there
+#           are the scripts to generate grib files.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+RMTCPR=turi
+RMUSCF=`whoami`
+DIRSCR=/gfs/home3/modoper/tempo/global/oens/produtos/scripts
+#
+export OPERM RMTCPR RMUSCF DIRSCR
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+TRUNC=T${TRC}
+LEV=L${LV}
+export TRUNC LEV
+#
+#   Set initial and final forecasting labels and UTC Hour
+#
+LABELI=${3}
+LABELF=${4}
+export LABELI LABELF
+#
+cd ${OPERM}/run
+PWDIR=${OPERM}/run
+#
+echo setprden${TRUNC}${LEV}.${MAQUI}
+cat <<EOT1 > setprden${TRUNC}${LEV}.${MAQUI}
+#!/bin/ksh
+#
+#***************************************************#
+#                                                   #
+#      Name:     setprden${TRUNC}${LEV}.${MAQUI}    #
+#                                                   #
+#      Function: This script put post-processed     #
+#                fields at ${RMTCPF} and generate   #
+#                special products at ${RMTCPR}      #
+#                                                   #
+#***************************************************#
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setprden${TRUNC}${LEV}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+# 
+#
+let hh=`awk 'BEGIN {print substr("'${LABELI}'",9,2)}'`
+#
+echo $hh
+#
+cd ${PWDIR}
+#
+#   Generate GPOSNMC grib
+#
+
+echo "${DIRSCR}/GposGribT${TRC}L${LV}ens.scr run ${LABELI} ${LABELF} ${TRC} ${LV} ${NMEMBERS} ${NFDAYS}"
+${DIRSCR}/GposGribT${TRC}L${LV}ens.scr run ${LABELI} ${LABELF} ${TRC} ${LV} ${NMEMBERS} ${NFDAYS}
+
+EOT1
+#
+echo "chmod a+x setprden${TRUNC}${LEV}.${MAQUI}"
+chmod a+x setprden${TRUNC}${LEV}.${MAQUI}
+#
+echo "/usr/bin/nqsII/qsub -q ${QUEUET} ${OPERM}/run/setprden${TRUNC}${LEV}.${MAQUI}"
+/usr/bin/nqsII/qsub -q ${QUEUET} ${OPERM}/run/setprden${TRUNC}${LEV}.${MAQUI}
+#

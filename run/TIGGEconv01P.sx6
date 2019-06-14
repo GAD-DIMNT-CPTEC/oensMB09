@@ -1,0 +1,165 @@
+#!/bin/ksh
+
+export GRIB_DEFINITION_PATH=/gfs/home3/io_dop/users/alex/oenspro/tigge/share/grib_api/definitions
+export GRIB_TEMPLATES_PATH=/gfs/home3/io_dop/users/alex/oenspro/tigge/share/grib_api/templates
+
+cd /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008
+
+# Cria arquivo concatenado para arquivamento
+touch /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/z_tigge_c_sbsj_20080923120000_glob.008.tmp
+
+echo "\nCONVERTENDO PARA GRIB2 e RENOMEANDO\n"
+for arqgrib1 in `ls /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/01P/tigge*_??????????.grb`
+do
+      /gfs/home3/io_dop/users/alex/oenspro/tigge/bin/grib_convert /gfs/home3/io_dop/users/alex/oenspro/tigge/rules/cptec.rules_grib_final.prod ${arqgrib1} ${arqgrib1}.008.2
+      tiggename=`/gfs/home3/io_dop/users/alex/oenspro/tigge/bin/tigge_name ${arqgrib1}.008.2 | grep "CORRECT" | cut -d: -f2`
+# IF PARA VARIAVEIS QUE NAO ESTAO EM "PROD" MAS AINDA EM "TEST"
+# ATUALMENTE ttr, slhf, str e sshf
+      if [ \( `echo $tiggename | grep "ttr.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "slhf.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "str.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "sshf.grib" | wc -l` -eq 1 \) ]; then
+set +e
+            tiggeconf=`echo $tiggename | cut -c 50-52`
+            rm -f /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/01P/*prod*ttr.grib
+            rm -f /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/01P/*prod*slhf.grib
+            rm -f /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/01P/*prod*str.grib
+            rm -f /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/01P/*prod*sshf.grib
+
+set -e
+            /gfs/home3/io_dop/users/alex/oenspro/tigge/bin/grib_convert /gfs/home3/io_dop/users/alex/oenspro/tigge/rules/cptec.rules_grib_final ${arqgrib1} ${arqgrib1}.008.2
+            tiggename=`/gfs/home3/io_dop/users/alex/oenspro/tigge/bin/tigge_name ${arqgrib1}.008.2 | grep "CORRECT" | cut -d: -f2`
+      fi
+      tiggename=`echo $tiggename | sed -e s%"c_46"%"c_sbsj"%g`
+      tiggeconf=`echo $tiggename | cut -c 52-54`
+# FIM IF DAS VARIAVEIS TEST
+#      set +x
+#      echo "membro: $tiggeconf"
+      mv ${arqgrib1}.008.2 /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008/$tiggename
+      set +e
+      /gfs/home3/io_dop/users/alex/oenspro/tigge/bin/tigge_check /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008/$tiggename
+      if [ $? -ne 0 ]; then
+            echo "ERRO - /gfs/home3/io_dop/users/alex/oenspro/tigge/bin/tigge_check /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008/$tiggename"
+            rm -f /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008/$tiggename
+            rm -f /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008/$tiggename
+      fi
+#      set +x
+      set +e
+#      echo `basename ${arqgrib1}` - $tiggename
+
+# Concatena arquivos para armazenamento
+      smslabel Info "$tiggename"
+done
+
+# Move o arquivo temporario da concatenacao para o arquivos de armazenamento.
+
+cd /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008/
+
+#sleep 60
+tt=pf
+
+if [ ! "01P" = "AVN" ]; then
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_001_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_002_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_003_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_004_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_005_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_006_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_007_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_008_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_009_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_010_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_011_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_012_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_013_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_014_*lsm.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_015_*lsm.grib
+
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_001_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_002_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_003_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_004_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_005_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_006_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_007_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_008_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_009_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_010_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_011_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_012_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_013_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_014_*orog.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_015_*orog.grib
+
+rm -f z_tigge_c_sbsj_20080923120000_glob_prod_??_??_????_???_*ttr.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_prod_??_??_????_???_*slhf.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_prod_??_??_????_???_*str.grib
+rm -f z_tigge_c_sbsj_20080923120000_glob_prod_??_??_????_???_*sshf.grib
+
+NARQTIN=3468
+#NARQTIN=0
+else
+NARQTIN=3590
+#NARQTIN=0
+fi
+
+# VERIFICACAO DE ARQUIVOS
+echo "\n\n"
+set -x
+NARQVERIF=`find . -name "z_tigge_c_sbsj_20080923120000_glob_????_??_??_????_${tiggeconf}*.grib" -exec ls -ltr {} \; | awk \'BEGIN {i=0} {if ($5==147643 || $5==147667 ) i+=1} END {printf ("%d",i)}\'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      echo "ERRO NO NUMERO DE ARQUIVOS!"
+      exit 2
+fi
+echo "\n\n"
+
+derr=366
+while [ $derr -le 558 ]; do
+
+      VER366=`find . -name "z_tigge_c_sbsj_20080923120000_glob_????_??_??_0${derr}_${tiggeconf}*.grib" -print | wc -l`
+
+      if [ $VER366 -ge 1 ]; then
+            cd ..
+            rm -Rf /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008
+            echo " saindo... erro arquivo 366"
+            sleep 67
+            exit 2
+      fi
+
+let derr=${derr}+06
+done
+
+
+#FAZ A COPIA DOS RECORTES PARA A MOPORA e DEPOIS MOVE PARA O DIRETORIO DE SAIDA.
+smslabel Info "Copiando Arquivos..."
+set +e
+ssh ldm@mopora "mkdir /usr/local/ldm/tigge/data/scratch/sbsj_200809231200_glob_prod"
+set -e
+scp -q z_tigge_c_sbsj_20080923120000_glob_prod_??_??_00??_${tiggeconf}_*.grib ldm@mopora:/usr/local/ldm/tigge/data/scratch/sbsj_200809231200_glob_prod
+scp -q z_tigge_c_sbsj_20080923120000_glob_prod_??_??_01??_${tiggeconf}_*.grib ldm@mopora:/usr/local/ldm/tigge/data/scratch/sbsj_200809231200_glob_prod
+scp -q z_tigge_c_sbsj_20080923120000_glob_prod_??_??_02??_${tiggeconf}_*.grib ldm@mopora:/usr/local/ldm/tigge/data/scratch/sbsj_200809231200_glob_prod
+scp -q z_tigge_c_sbsj_20080923120000_glob_prod_??_??_03??_${tiggeconf}_*.grib ldm@mopora:/usr/local/ldm/tigge/data/scratch/sbsj_200809231200_glob_prod
+
+set +e; set +u
+
+mkdir -p /rede/nas/io_dop/tigge/z_tigge_c_sbsj_20080923120000_glob/
+cp -rpf z_tigge_c_sbsj_20080923120000_glob_prod_??_??_????_${tiggeconf}_*.grib /rede/nas/io_dop/tigge/z_tigge_c_sbsj_20080923120000_glob/
+
+
+
+set +e; set +u
+
+set +e
+#rm -Rf /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/01P
+#rm -Rf /gfs/dk19/io_dop/users/alex/oenspro/tigge/dataout/T126L28/008
+# APAGA ARQUIVOS ANTIGOS
+LABELR=`date -d "20080923 1 day ago" +"%%Y%%m%%d"`
+LABELR2=`date -d "20080923 2 day ago" +"%%Y%%m%%d"`
+
+set +e; set +u
+mkdir -p /rede/nas/io_dop/tigge/pos/20080923
+cp -rpf /gfs/dk19/io_dop/users/alex/oenspro/pos/dataout/T126L28/GPOS???2008092312* /rede/nas/io_dop/tigge/pos/20080923
+rm -Rf /rede/nas/io_dop/tigge/pos/${LABELR2}
+exit 0
+

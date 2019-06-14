@@ -1,0 +1,46 @@
+%include <head.h>
+%include <config.h>
+
+LABELF=`${CALDATE} $LABELI + 36h 'yyyymmddhh'`
+cd ${OPERM}/run
+#./runctrpntg1.sx6 126 28 $LABELI $LABELF sstwkl
+
+./runctrmodgpro.sx6 ${TRC} ${LV} $LABELI $LABELF 03
+#cp $ROPERM/model/dataout/GFCTCTR${LABELI}*.fct.T126L28 ${ROPERM}/recfct/dataout/T126L28/
+for arq in `ls $ROPERM/model/dataout/GFCTCTR${LABELI}*.fct.T126L28`
+do
+set +x
+      echo "ln -sf $arq ${ROPERM}/recfct/dataout/T126L28/"
+      ln -sf $arq ${ROPERM}/recfct/dataout/T126L28/
+      echo "ln -sf $arq ${ROPERM}/model/datain/"
+      ln -sf $arq ${ROPERM}/model/datain/
+set -x
+done
+
+./runctrreco1.sx6 ${TRC} ${LV} ${LABELI}
+set +x
+set -x
+JNAME=CTROENS
+SLEEPTIM=15
+%include <filectrl.h>
+set -x
+echo "\n\n+++ VERIFICANDO SAIDAS... \n"
+cont=0
+
+for SIZ in `ls -l ${ROPERM}/model/datain/GFCTCTR${LABELI}*T${TRC}L${LV} | awk '{print $5}'`
+do
+	if [ $SIZ -ge 90 ]
+	then
+		cont=$(($cont+1))
+	fi
+done
+
+if [ $cont -ge 12 ]
+then
+	echo "RODADA DE CONTROLE OK!\n\n"
+else
+	echo "PROBLEMAS NA RODADA DE CONTROLE ${LABELI}\n\n"
+	exit 1
+fi
+
+%include <tail.h>

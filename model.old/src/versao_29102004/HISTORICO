@@ -1,0 +1,185 @@
+===============================================================================
+HISTORICO:
+  OBJETIVO: 
+    Documentar todas as alteracoes nos arquivos do controle de versao
+  METODOLOGIA:
+   - Toda alteracao a ser incluida no controle de versoes devera ser comentada
+     nesta arquivo. Para simplicidade de uso, pede-se somente a data, o autor
+     e a mensagem utilizada no comando commit do cvs para o cabecalho.
+   - Este cabecalho deve ser copiado e alterado de acordo com a atualizacao.
+   - Apos o cabecalho deve ser incluido os comentarios sobre as alteracoes.
+
+  OBSERVACAO GERAL:
+   - Inclua seu historico no final destas instrucoes e antes do primeiro 
+     comentario. Desta forma, a alteracao mais recente estara' sempre no
+     inicio do arquivo e ao avancar a leitura dos historicos, tem-se 
+     acesso `as modificacoes mais recentes.
+
+Inclua seus comentarios apos esta linha, deixando os comentarios mais
+velhos abaixo.
+===============================================================================
+
+
+
+===============================================================================
+ATUALIZACAO:
+
+  DATA :  14/10/2004
+  AUTOR:  Jose Paulo Bonatti
+  
+  MENSAGEM:
+  "Solidificacao do Re-start e Eliminacao de restricao para conversao em IEEE"
+
+===============================================================================
+
+1-) Mudancas no Restart:
+    - Eliminacao de options cold, cold2, warm
+      externamente ao codigo; com as datas de
+      entrada pode-se decidir se eh um caso ou
+      outro:
+      Options.f90, MODELIN
+    - Eliminacao do caso cold2: todas as saidas
+      tem extensao F.dir ou F.fct:
+      Options.f90
+    - Introducao de opcao para geracao de arquivos
+      de processamento interrompido com recomeco
+      do ponto de parada (re-start) GenRestFiles:
+      Model.f90, Options.f90, MODELIN
+    - Introducao de opcao para remocao de arquivo 
+      de restart apos leitura rmRestFiles:
+      Model.f90, Options.f90, MODELIN
+    - Posicionamento de anulacao do vmax
+      (Problema identificado por Paulo Kubota):
+      retirado de dentro de comando if pois
+      deve ser zerado a cada passo de tempo:
+      TimeStep.f90
+
+2-) Eliminacao de restricao para conversao
+    em IEEE big_endian:
+    Diagnostics.f90, GridHistory.f90,
+    InputOutput.f90, IOLowLevel.f90
+
+3-) Eliminacao de opcao desnecessaria:
+    WriteFaked:
+    Model.f90, Options.f90, MODELIN
+
+
+
+===============================================================================
+ATUALIZACAO:
+
+  DATA :  05/10/2004
+  AUTOR:  Jose Paulo Bonatti
+  
+  MENSAGEM:
+  "Introducao de diagnostico de campos de precipitacao a cada time step"
+
+===============================================================================
+
+Mudancas realizadas: 
+
+1.) Os campos de precipitacao total e convectiva estavam calculados 
+    porem nao havia saida para arquivos. Foi gerada uma subrotina 
+    para escrita (Prec_Diag) e mudado o nome da rotina de escrever 
+    cabecario de WriteDHNHead para WriteDiagHead.
+
+    Modulos alterados: Diagnostics.f90, IOLowLevel.f90 Model.f90 
+    TimeStep.f90
+
+2.) Tambem foi introduzido um teste para verificar se o arquivo de 
+    diagnosticos desejados existe ou nao. Isto possibilita a utilizacao 
+    de tabela de diagnosticos desejados pre-definida no codigo.
+
+    Modulos alterados: Diagnostics.f90
+
+===============================================================================
+ATUALIZACAO:
+
+  DATA :  28/09/2004
+  AUTOR:  Jose Paulo Bonatti
+  
+  MENSAGEM:
+  "Eliminacao de dependencia harwired para resolucao horizontal e vertical"
+
+===============================================================================
+Mudancas de fato realizadas:
+
+1.) Eliminacao da matriz de trabalho radwrk e sua 
+    dimensao iwrkdm:
+    FieldsPhysics.f90, Model.f90, Options.f90, 
+    Surface.f90
+
+2.) Eliminacao de alguns warnings na compilacao 
+    e de comentarios JPB desnecessarios
+    Convection.f90, InputOutput.f90, IOLowLevel.f90, 
+    Options.f90, PhysicsDriver.f90, Radiation.f90, 
+    Surface.f90, Utils.f90
+
+3.) Calculo dos parametros nls e nlcs:
+    Convection.f90, Init.90, Model.f90, Options.f90, 
+    PhysicsDriver.f90
+
+4.) Obtencao de ct e cq:
+    Init.f90, Model.f90, Options.f90
+
+5.) Obtencao de si, sl e del:
+    Init.f90, InputOutput.f90, IOLowLevel.f90, 
+    Model.f90, Options.f90, Sizes.f90
+
+6.) Fixacao de dk e tk para qualquer resolucao:
+    Init.f90, Model.f90, Options.f90, SpecDynamics.f90
+
+7.) Obtencao de mods e niter
+    Model.f90, NonLinearNMI.f90, Options.f90
+
+8.) Mudanca no arquivo de restart (incluindo cabecario 
+    com si e sl) e output correto para inz:
+    Model.f90
+
+9.) Correcao da chamada para avanco no tempo na 
+    inicializacao por modos normais:
+    NonLinearNMI.f90
+
+10.) Introducao de declaracao para todas variaveis e 
+     constantes (Jairo), eliminacao da opcao de
+     compilacao -ew:
+     Constants.f90, Sizes.f90, Makefile
+
+11.) Eliminacao de constantes/parametros fora de uso 
+     e dependencia harwired para resolucao:
+     Options.f90
+
+12.) Introducao de opcao para modelo 1D:
+     Options.f90, PhysicsDriver.f90
+
+13.) Mudancas nos dados de entrada (MODELIN ou PARMODEL):
+     - Introducao de dt (intervalo de tempo) 
+     - Introducao de cflric (parametro dependente da 
+       resolucao vertical para RAS)
+     - Introducao de Model1D (variavel logica para modelo 
+       1D, .true., ou 3D, .false.) como entrada.
+
+14.) Mudancas no Makefile:
+     - Mudanca de flag de compilacao para Constants.f90 
+       e Sizes.f90
+     - Introducao de novas depencias devido a mudancas 
+       de 1 a 13 no codigo
+
+===============================================================================
+ATUALIZACAO:
+
+  DATA :  15/09/2004
+  AUTOR:  Eduardo Enari
+  
+  MENSAGEM:
+  "Versao Entregue pelo Jairo"
+
+===============================================================================
+
+Inclusao da primeira versao do global no controle de versoes.
+No repositorio de versoes da tiete foi gerado um novo modulo chamado GLOBAL com
+uma versao que me foi entregue pelo Jairo. A partir desta versao, todos os 
+integrantes do grupo de desenvolvimento irao realizar suas alteracoes, as quais
+serao acompanhadas pelo CVS.
+
+===============================================================================

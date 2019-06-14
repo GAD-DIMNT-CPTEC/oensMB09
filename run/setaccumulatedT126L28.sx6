@@ -1,0 +1,189 @@
+#!/bin/ksh 
+#PBS -l cpunum_prc=1
+#PBS -l tasknum_prc=1
+#PBS -l memsz_job=5.0gb  
+#PBS -l cputim_job=50000
+#
+#*****************************************************************#
+#                                                                 #
+#       Name:           setaccumulatedT126L28.sx6   #
+#                                                                 #
+#       Function:       This script file is used to set the       #
+#                       environmental variables and start         #
+#                       the week mean precipitation.              #
+#                                                                 #
+#*****************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#
+#PBS -o turi:/gfs/home3/modoper/tempo/global/oens/setaccumulatedT126L28.sx6.2012021409:35:18.out
+#PBS -j o
+#
+#   Set date (day,month,year) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=20120214
+HOUR=09:35:19
+export DATE HOUR
+#
+set -x
+#cp -rpf /bangu/samfs/modoper/tempo/global/oens/nmc/T126L28/GPOS/2012/02/13/GPOS???2012021312* /gfs/dk22/modoper/tempo/global/oens/pos/dataout/T126L28/
+#cp -rpf /bangu/samfs/modoper/tempo/global/oens/nmc/T126L28/GPOS/2012/02/13/GPOS???2012021300* /gfs/dk22/modoper/tempo/global/oens/pos/dataout/T126L28/
+set +x
+
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#
+OPERMOD=/gfs/home3/modoper/tempo/global/oens
+SOPERMOD=/gfs/dk22/modoper/tempo/global/oens
+ROPERMOD=/gfs/dk22/modoper/tempo/global/oens
+export OPERMOD SOPERMOD ROPERMOD
+echo ${OPERMOD}
+echo ${SOPERMOD}
+echo ${ROPERMOD}
+#
+cd ${OPERMOD}
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=L28
+TRUNC=T126
+export TRUNC LEV
+#
+#   Set machine
+MACH=sx6
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=run
+export COMPILE
+echo ${COMPILE}
+#
+# Define variables to generate variable data file names:
+#
+OUT=out
+export OUT
+#
+EXTS=S.unf
+export EXTS 
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#
+F_UFMTIEEE=70,71,80
+export F_UFMTIEEE
+F_UFMTADJUST70=TYPE2
+F_UFMTADJUST71=TYPE2
+F_UFMTADJUST80=TYPE2
+export F_UFMTADJUST70 F_UFMTADJUST71 F_UFMTADJUST80
+#
+F_SETBUF=2048
+export F_SETBUF
+echo " F_SETBUF = ${F_SETBUF}"
+#
+#  Now, verify if compile or run
+#
+if [ "${COMPILE}" != "run" ]
+then
+cd ${OPERMOD}
+#make -f Makefile clean
+#make -f Makefile
+#
+make -f Makefile_accum clean
+make -f Makefile_accum
+
+#
+else
+#
+#   Run prcmed
+#
+#Parameter to be read by prcmed.f90 : namelist file
+#UNDEF     : ( REAL    ) undef value set up according to original grib files
+#IMAX      : ( INTEGER ) number of points in zonal direction
+#JMAX      : ( INTEGER ) number of points in merdional direction
+#NMEMBERS  : ( INTEGER ) number of members of the ensemble
+#NFCTDY    : ( INTEGER ) number of forecast days
+#FREQCALC  : ( INTEGER ) interval in hours of output ensemble forecast
+#DIRINP    : ( CHAR    ) input directory (ensemble members)
+#DIROUT    : ( CHAR    ) output directory (accumulated outputs)
+#RESOL     : ( CHAR    ) horizontal and vertical model resolution
+#PREFX     : ( CHAR    ) preffix for input and output files 
+#DIRLAB=20120214
+cat <<EOT > ${OPERMOD}/run/accumsetup.2012021400.nml
+UNDEF     :   -9999
+IMAX      :   384
+JMAX      :   192
+IMAXINT   :   144
+JMAXINT   :   73
+NMEMBERS  :   15
+NFCTDY    :   15
+FREQCALC  :   6
+DIRINP    :   /gfs/dk22/modoper/tempo/global/oens/pos/dataout/T126L28/
+DIROUT    :   /gfs/dk22/modoper/tempo/global/oens/wgne/dataout/T126L28/
+RESOL     :   ${TRUNC}${LEV}
+PREFX     :   AVN
+EOT
+#
+#DIRINP    :   /rede/nas/io_dop/tigge/pos/${DIRLAB}/
+#DIRINP    :   /gfs/dk10/prestrel/wgne/datain/
+#-------------------------------------------------------------
+
+#
+#   Run the accumulated fortran program
+#
+cd ${OPERMOD}/run
+${OPERMOD}/wgne/bin/accumulated.exe 2012021400
+
+#rm -f /gfs/dk22/modoper/tempo/global/oens/pos/dataout/T126L28/GPOS???2012021312*
+#rm -f /gfs/dk22/modoper/tempo/global/oens/pos/dataout/T126L28/GPOS???2012021300*
+#
+#   Transfer files of accumulated to bangu and generate the figures
+#
+cd ${OPERMOD}/run
+#echo "${OPERMOD}/runtransfer.accumbab.sx6 126 28 2012021400  "
+#${OPERMOD}/runtransfer.accumab.sx6 126 28 2012021400  
+#
+fi
+#

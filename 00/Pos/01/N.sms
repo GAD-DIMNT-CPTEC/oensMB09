@@ -1,0 +1,31 @@
+%include <head.h>
+%include <config.h>
+
+set +x
+PREFX=%FAMILY1%%TASK%
+echo $PREFX
+
+cd $OPERM/run
+#AAF ./rungpgrib.sx6 $LABELI ${PREFX}
+./runposg.sx6
+
+
+JNAME=GRIBA${PREFX}
+SLEEPTIM=21
+%include <filectrl.h>
+
+%include <ctrl_pos.h>
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+
+LABELF=`date -d "$YYYY-$MM-$DD 15 days" +'%%Y%%m%%d'`${HH}
+
+cd ${OPERM}/produtos/grh/run
+#./RunGrh.members.sx6 run 126 28 ${LABELI} ${LABELF} $PREFX
+
+smslabel Info "Ok - ${LABELI}"
+
+%include <tail.h>
