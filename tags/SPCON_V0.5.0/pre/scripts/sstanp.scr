@@ -1,0 +1,85 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        sstanp.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   the NMC optimum interpolated SST          #
+#                   and provides a sea-ice mask files.        #
+#                   It generates GrADS output files.          #
+#                   It runs on batch.                         #
+#                                                             #
+#      Obs.       : It uses results from orgint and sibmsk.   #
+#                                                             #
+#      Date       : November 11th, 2002.                      #
+#      Last change: November 11th, 2002.                      #
+#                                                             #
+#*************************************************************#
+#
+#    Set directories
+#
+source=${OPERMOD}/pre/source
+outtrc=${SOPERMOD}/pre/dataout/${TRUNC}
+inputp=${SOPERMOD}/pre/datain
+ainput=${AOPERMOD}/model/datain
+minput=${ROPERMOD}/model/datain
+bin=${SOPERMOD}/pre/bin
+out=${OPERMOD}/pre/output
+#
+echo 'OPTIMUM INTERPOLATED SST  -- RUNNING ...'
+#
+echo ${source}
+#
+# Define I/O units
+#
+#  Input  files
+#
+if [ -s ${minput}/${NAMEI}${LABELI}${EXTS}.${TRUNC}${LEV} ]
+then
+eval ${FFF}23=${minput}/${NAMEI}${LABELI}${EXTS}.${TRUNC}${LEV}
+else
+echo "Using Initial Condition from NCEP:"
+echo "${ainput}/${NAMEA}${LABELI}${EXTS}.${TRUNC}${LEV}"
+eval ${FFF}23=${ainput}/${NAMEA}${LABELI}${EXTS}.${TRUNC}${LEV}
+fi
+eval ${FFF}24=${outtrc}/fseald.form.${TRUNC}
+eval ${FFF}50=${inputp}/sstanp.${LABELS}
+export ${FFF}23 ${FFF}24 ${FFF}50
+#
+#  Output files
+#
+eval ${FFF}52=${minput}/sstanp${LABELS}.${TRUNC}
+eval ${FFF}54=${outtrc}/sstang${LABELS}.${TRUNC}.${MACH}
+export ${FFF}52 ${FFF}54
+#
+#   Check if the makefile will compile:
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}/sstanp
+make -f sstanp.mk
+exit
+  fi
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}/sstanp
+make -f sstanp.mk clean
+make -f sstanp.mk
+exit
+  fi
+#
+# Generate Optimum Interpolated SST.
+#
+cd ${bin}/sstanp/${TRUNC}
+#
+./sstanp.${TRUNC} < ${inputp}/sstwka.nml > ${out}/sstanp.${LABELI}.${HOUR}.${TRUNC}
+#

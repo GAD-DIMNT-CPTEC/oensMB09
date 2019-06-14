@@ -1,0 +1,41 @@
+label "Circular cluster";
+
+#  Cluster identifier
+unsigned[1] clusterIdentifier ;
+
+#  Number of cluster to which the high resolution control belongs
+unsigned[1] numberOfClusterToWhichTheHighResolutionControlBelongs ;
+
+#  Number of cluster to which the low resolution control belongs
+unsigned[1] numberOfClusterToWhichTheLowResolutionControlBelongs ;
+
+#  Total number of clusters
+unsigned[1] totalNumberOfClusters ;
+
+#  Clustering method
+codetable[1] clusteringMethod 'grib2/4.8.table';
+
+#  Latitude of central point in cluster domain
+unsigned[4] latitudeOfCentralPointInClusterDomain ;
+
+#  Longitude of central point in cluster domain
+unsigned[4] longitudeOfCentralPointInClusterDomain ;
+
+#  Radius of cluster domain
+unsigned[4] radiusOfClusterDomain ;
+
+#  NC - Number of forecasts in the cluster
+unsigned[1] numberOfForecastsInTheCluster ;
+
+alias NC  = numberOfForecastsInTheCluster;
+#  Scale factor of standard deviation in the cluster
+unsigned[1] scaleFactorOfStandardDeviationInTheCluster ;
+
+#  Scaled value of standard deviation in the cluster
+unsigned[4] scaledValueOfStandardDeviationInTheCluster ;
+
+#  Scale factor of distance of the cluster from ensemble mean
+unsigned[1] scaleFactorOfDistanceOfTheClusterFromEnsembleMean ;
+
+#  Scaled value of distance of the cluster from ensemble mean
+unsigned[4] scaledValueOfDistanceOfTheClusterFromEnsembleMean ;

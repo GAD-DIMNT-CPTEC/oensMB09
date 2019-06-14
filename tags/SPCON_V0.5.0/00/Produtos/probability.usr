@@ -1,0 +1,144 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Produtos
+FAMILY1          =   Produtos
+SMSDATE          =   20080804
+SMSHOME          =   /gfs/home3/io_dop/users/alex
+SMSINCLUDE       =   /gfs/home3/io_dop/users/alex/oenspro/includes
+SMSNAME          =   /oenspro/T126/Produtos/probability
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   2
+SMS_PROG         =   2974622
+TASK             =   probability
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+LABELI=2008080400
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+cd ${OPERM}/probability/scripts/
+./runprobability.sx6 ${LABELI} ${PREFX}
+
+dateo=`date +"%%s"`
+
+cat << EOF > templjkaf.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/setprobability.${LABELI}.${dateo}.out
+#PBS -j o
+#PBS -N PROBAB
+cd ${OPERM}/probability/scripts
+./probability.scr ${LABELI} AVN
+exit 0
+EOF
+
+submit templjkaf.sub ${QUEUEP}
+rm -f templjkaf.sub
+
+# VERIFICACAO DOS DADOS
+#.bin
+NARQTIN=57
+NARQVERIF=`ls -ltr ${ROPERM}/probability/dataout/T${TRC}L${LV}/prob${LABELI}*.bin | awk 'BEGIN {i=0} {if ($5>=1179680) i+=1} END {printf ("%%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+NARQTIN=57
+NARQVERIF=`ls -ltr ${ROPERM}/probability/dataout/T${TRC}L${LV}/prob${LABELI}*.ctl | awk 'BEGIN {i=0} {if ($5>=2500) i+=1} END {printf ("%%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+
+NARQTIN=57
+NARQVERIF=`ls -ltr ${ROPERM}/probability/gif/prec${LABELI}*.gif | awk 'BEGIN {i=0} {if ($5>=201549) i+=1} END {printf ("%%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+
+
+%include <tail.h>
+
+
+
+
+
+. $OPERM/produtos/scripts/config.oens.prod
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+HH=${HH}
+LABELI=$YYYY$MM$DD$HH
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+let NMEMBR=\($NPERT*2\)+1
+
+echo NMEMBR=$NMEMBR
+cd ${HOMEPROD}/probability/scripts
+./runprobability.sx6 run ${TRC} ${LV} $LABELI $FSCT 15 30 AVN
+JNAME=PROBAB
+SLEEPTIM=43
+%include <filectrl.h>
+
+echo "#! /bin/ksh" > ${HOMEPROD}/scripts/setprobability.scr
+echo "#PBS -o ${HOMEPROD}/scripts/setout/setprobability.${LABELI}.out" >> ${HOMEPROD}/scripts/setprobability.scr
+echo "#PBS -j o" >> ${HOMEPROD}/scripts/setprobability.scr
+echo ". $OPERM/produtos/scripts/config.oens.prod" >> ${HOMEPROD}/scripts/setprobability.scr
+echo "cd ${HOMEPROD}/probability/scripts" >> ${HOMEPROD}/scripts/setprobability.scr
+echo "./probability.scr ${TRC} ${LV} $LABELI $FSCT" >> ${HOMEPROD}/scripts/setprobability.scr
+
+/usr/bin/nqsII/qsub -q ${QUEUEPROD} -N PROBABI1 ${HOMEPROD}/scripts/setprobability.scr
+
+JNAME=PROBABI1
+SLEEPTIM=43
+%include <filectrl.h>
+
+set +x
+
+echo "\n\nVerificando na TUCUPI\n"
+
+ftp -in tucupi.cptec.inpe.br << EOF
+user pnt &arun/a*
+cd /web1/ftp/pub/produtos/ensemble/PROBABILITY/
+dir prec${LABELI}* probability.out
+quit
+EOF
+
+cont=0
+for i in `cat probability.out |awk '{print $5}'`
+do
+if [ $i -ge 200000 ]
+then
+      let cont=$cont+1
+fi
+done
+
+if [ $cont -ge 29 ] 
+then
+echo " Arquivos Ok"
+else
+echo " Arquivos com Problemas... Abortando"
+exit 1
+fi
+\rm probability.out
+
+%include <tail.h>

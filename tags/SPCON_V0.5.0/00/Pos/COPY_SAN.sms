@@ -1,0 +1,87 @@
+%include <head.h>
+echo "Desativado dia: 04/10/2011"
+echo "De acordo com aviso dado no CPTEC news sobre o desligamento do modelo"
+sleep 10
+%include <tail.h>
+
+%include <config.h>
+
+f=0
+i=0
+ms=0
+es=0
+ps=0
+
+PERT=AVN
+
+set +x
+while [ $f -ne 1 ]; do
+
+/usr/local/sms/cdp << EOF > .temp02
+status -f %SUITE%
+exit
+EOF
+
+      Modelo_status=`cat .temp02 | grep Modelo | awk '{print $2}' | grep com | wc -l`
+      Ens_Medio_status=`cat .temp02 | grep Ens_Medio | awk '{print $4}' | grep com | wc -l`
+      Plumas_status=`cat .temp02 | grep Plumas | awk '{print $2}' | grep com | wc -l`
+      rm -f .temp02
+      
+      if [ \( ${Modelo_status} -eq 1 \) -a \( ms -ne 1 \) ]; then
+            $DATAMAN %SMSINCLUDE%/dataman.oenspro.nas ${LABELI}
+            smsevent Modelo
+            ms=1
+      fi
+      if [ \( ${Ens_Medio_status} -eq 1 \) -a \( es -ne 1 \) ]; then
+            $DATAMAN %SMSINCLUDE%/dataman.oenspro.nas ${LABELI}
+            smsevent Medio
+            es=1
+      fi
+      if [ \( ${Plumas_status} -eq 1 \) -a \( ps -ne 1 \) ]; then
+            $DATAMAN %SMSINCLUDE%/dataman.oenspro.nas ${LABELI}
+            smsevent Plumas
+            ps=1
+      fi
+      
+      if [ \( ${Modelo_status} -eq 1 \) -a \( ${Ens_Medio_status} -eq 1 \) -a \( ${Plumas_status} -eq 1 \) ]; then
+            if [ \( ${ms} -eq 1 \) -a \( ${es} -eq 1 \) -a \( ${ps} -eq 1 \) ]; then
+                  f=1
+            fi
+      fi
+      
+      let i=$i+1
+      echo "Rodada - $i"
+      sleep 60
+
+done
+rm -f .temp02
+set -x
+
+cd ${OPERM}/run
+./runcopyhsm.ksh ${LABELI} n
+./vermodpos.ksh ${LABELI} ${PERT} n n
+
+./runtemplate.ksh ${LABELI} ENM
+
+%include <tail.h>
+
+
+
+set +e
+set +u
+OENSDK=$ROPERM
+BANGU=$OENSPROBG
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+
+cp -rpf ${OENSDK}/pos/dataout/T126L28/*${LABELI}2*i*                     ${BANGU}/ANL/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/ensmed/dataout/T126L28/*${LABELI}2*i*                  ${BANGU}/ANL/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/model/dataout/T126L28/GFCT*${LABELI}2*                 ${BANGU}/GFCT/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/model/dataout/T126L28/GFGH*${LABELI}2*                 ${BANGU}/GFGH/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOSENM${LABELI}*    ${BANGU}/ENSMED/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOS??[NP]${LABELI}* ${BANGU}/GPOS/${YYYY}/${MM}/${DD}/
+mkdir -p ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/plumes/dataout/T126L28/*${LABELI}2*                    ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/
+
+%include <tail.h>

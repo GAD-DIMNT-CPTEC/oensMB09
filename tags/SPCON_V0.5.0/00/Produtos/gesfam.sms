@@ -1,0 +1,60 @@
+%include <head.h>
+%include <config.h>
+
+dateo=`date +"%%s"`
+
+echo "#! /bin/ksh" > ${OPERM}/recortes/scripts/setsurfacerec.scr
+echo "#PBS -o ${OPERM}/recortes/scripts/setout/setsurfacerec.${LABELI}.${dateo}.out" >> ${OPERM}/recortes/scripts/setsurfacerec.scr
+echo "#PBS -j o" >> ${OPERM}/recortes/scripts/setsurfacerec.scr
+echo "cd ${OPERM}/SKILL/scripts/" >> ${OPERM}/recortes/scripts/setsurfacerec.scr
+echo "./recortaskill.ksh ${LABELI} ${PREFX}" >> ${OPERM}/recortes/scripts/setsurfacerec.scr
+echo "cd ${OPERM}/recortes/scripts" >> ${OPERM}/recortes/scripts/setsurfacerec.scr
+#echo "./runsurfacerec.scr $LABELI" >> ${OPERM}/recortes/scripts/setsurfacerec.scr
+echo "exit 0" >> ${OPERM}/recortes/scripts/setsurfacerec.scr
+submit ${OPERM}/recortes/scripts/setsurfacerec.scr ${QUEUEP} Info
+
+cd ${OPERM}/recortes/scripts
+./runsurfacerec.scr $LABELI
+
+echo "ls -ltr ${ROPERM}/produtos/recortes/dataout/t126l28/GESF\?\?\?${LABELI}\*"
+ls -ltr ${ROPERM}/produtos/recortes/dataout/t126l28/GESF???${LABELI}* > gesfam.out
+
+if [ `wc -l < gesfam.out` -ge 1536 ]
+then
+echo "+++ Qtd de Arquivos OK para ${LABELI}"
+else
+echo "Erro na Qtd de Arquivos, Abortando..."
+exit 1
+fi
+
+set -A EXT grb gmp ctl
+set -A SIZ 111900 200 778
+i=0
+while [ $i -lt 3 ]
+do
+cont=0
+for siz in `cat gesfam.out | grep ${EXT[$i]} | awk '{print $5}'`
+do
+      if [ $siz -ge ${SIZ[$i]} ]
+      then
+            let cont=$cont+1
+      fi
+done
+
+if [ $cont -ge 512 ]
+then
+echo "Arquivos ${EXT[$i]} - Ok"
+else
+echo "Arquivos ${EXT[$i]} com problemas... Abortando"
+exit 1
+fi
+let i=$i+1
+done
+
+\rm -f gesfam.out
+
+
+smslabel Info "Ok - ${LABELI}"
+
+
+%include <tail.h>

@@ -1,0 +1,418 @@
+#!/bin/ksh
+
+
+echo "INICIANDO... \(set \-x\)"
+set -x
+
+. ../include/config.sx6
+
+LABELI=$1
+if [ -s $LABELI ]; then
+      echo "ERRO: FALTA PARAMETRO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+      exit 1
+else
+      if [ ${#LABELI} -lt 10 ]; then
+            echo "ERRO: PARAMETRO INCORRETO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+            exit 2
+      else
+            YYYY=`echo $LABELI |cut -c 1-4`
+            MM=`echo $LABELI |cut -c 5-6`
+            DD=`echo $LABELI |cut -c 7-8`
+            HH=`echo $LABELI |cut -c 9-10`
+
+            LABELF=`date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}"`
+            YYYYF=`echo $LABELF |cut -c 1-4`
+            MMF=`echo $LABELF |cut -c 5-6`
+            DDF=`echo $LABELF |cut -c 7-8`
+            HHF=`echo $LABELF |cut -c 9-10`
+      fi
+fi
+
+PREFX=$2
+
+if [ -s $PREFX ]; then
+      echo "ERRO - PARAMETRO PERT\nFORMATO: runrectigge.sx6 yyyymmddhh 01N"
+      exit 2
+fi
+
+if [ "${PREFX}" = "AVN" ]; then
+      membnum=000
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "01N" ]; then
+      membnum=001
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "02N" ]; then
+      membnum=002
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "03N" ]; then
+      membnum=003
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "04N" ]; then
+      membnum=004
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "05N" ]; then
+      membnum=005
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "06N" ]; then
+      membnum=006
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "07N" ]; then
+      membnum=007
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "01P" ]; then
+      membnum=008
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "02P" ]; then
+      membnum=009
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "03P" ]; then
+      membnum=010
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "04P" ]; then
+      membnum=011
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "05P" ]; then
+      membnum=012
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "06P" ]; then
+      membnum=013
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+if [ "${PREFX}" = "07P" ]; then
+      membnum=014
+      mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+fi
+
+smslabel Info "Aguardando Pos-processados: $LABELI" > /dev/null
+
+REQ="D"
+HH=`echo $LABELI | cut -c 9-10`
+LABELS=`echo $LABELI | cut -c 1-8`
+LABELF=`date -d "${LABELS} 15 days" +"%Y%m%d${HH}"`
+
+export GRIB_DEFINITION_PATH=${OPERM}/tigge/share/grib_api/definitions
+export GRIB_TEMPLATES_PATH=${OPERM}/tigge/share/grib_api/templates
+
+GRADS=/usr/local/grads/bin
+WGRIB18=${OPERM}/tigge/bin/wgrib.tupay
+ARQINI=z_tigge_c_sbsj_${LABELI}0000_glob
+DIRINI=sbsj_${LABELI}00_glob_prod
+
+# EXECUTAVIES DO TIGGE
+#CONVERTER - converte de grib para grib2
+#TIGGENAME - converte o nome do grib2 para o nome de convencao do TIGGE
+#TIGGECHECK - Verifica se o arquivo gerado esta correto
+CONVERTER=${OPERM}/tigge/bin/grib_convert
+TIGGENAME=${OPERM}/tigge/bin/tigge_name
+TIGGECHECK=${OPERM}/tigge/bin/tigge_check
+
+#tiggedirmopora=/usr/local/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/${DIRINI}
+tiggeoutgoing=${tiggedirmopora}/outgoing
+
+ssh ${tiggeldm} -l ldm "mkdir -p $tiggescratch"
+
+#/usr/local/ldm/tigge/
+
+typeset -RZ4 HOR
+typeset -RZ3 nnn
+typeset -RZ4 llll
+typeset -RZ3 tiggenameaux
+
+set +x
+cd ${ROPERM}/tigge/dataout/T${TRC}L${LV}
+mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}
+
+#ARQLST=${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${PREFX}${LABELI}${LABELF}${REQ}.fct.T${TRC}L${LV}.lst
+
+#if [ `ls -ltr $ARQLST | awk '{print $5}'` -le 1 ]; then
+#      exit 1
+#fi
+
+#ls -ltr ${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${PREFX}${LABELI}*grb | awk '{print $9}' > ${ARQLST}
+echo PWD=`pwd`
+
+# PEGA TODOS OS ARQUIVOS DO .lst PARA RECORTE
+echo "GERANDO RECORTES...\n"
+
+#AAF COMENTADO PARA FAZER O LOOP FIXO for arq in `cat ${ARQLST} | grep -v inz`
+#AAF COMENTADO PARA FAZER O LOOP FIXO do            
+
+rm -f ${OPERM}/tigge/bin/ens.${PREFX}.list
+rm -Rf ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}
+mkdir -p ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}
+
+set +x
+nd=0; p=0
+while [ $nd -le 360 ]; do # VARIA DE 00 a 360 horas de previsao para calcular a data de previsao do arquivo
+#      labelfct=`${CALDATE} ${LABELI} + ${nd}h "yyyymmddhh"` #calcula a data de previsao do arquivo
+      labelddate=`echo $LABELI | cut -c 1-8`
+      hhddate=`echo $LABELI | cut -c 9-10`
+      labelfct=`date -d "$labelddate ${hhddate}:00 ${nd} hours" +"%Y%m%d%H"` #calcula a data de previsao do arquivo
+      
+      if [ ${LABELI} -eq ${labelfct} ]; then
+            tarq=`ls -ltr ${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${PREFX}${LABELI}${labelfct}*icn*grb | grep -v "inz" | grep -v "~l" | awk '{print $5}'` # capturaa o tamanho do arquivo
+      else
+            tarq=`ls -ltr ${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${PREFX}${LABELI}${labelfct}*grb | grep -v "inz" | grep -v "~l" | awk '{print $5}'` # capturaa o tamanho do arquivo
+      fi
+      if [ $LABELI -ne $labelfct ]; then # verifica a data para pegar o tamnha dos icn e fct, que sao diferentes
+            taor=24789576 #tamanho fct
+            fct=fct
+      else
+            taor=23314006 #tamanho icn
+            fct=icn
+      fi
+      if [ $tarq -ge ${taor} ]; then # verifica se o tamanho do arquivo estah correto, se estiver gera os arquivos do tigge para o arquivo de previsao
+                                     # a cada arquivo pos-processado, serah verificado o tamanho e caso esteja correto, comeca os recortes z_tigge*
+            arq=`ls -ltr ${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${PREFX}${LABELI}${labelfct}*grb | grep -v "inz" | awk '{print $9}'` #captura o nome do arquivo pos-processado
+            echo ${nd} - ${labelfct} - $arq #imprime parametros para controle (pode-se comentar a linha)
+            arqens=`basename $arq`
+
+            ln -sf $arq ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}/$arqens
+      fi
+      
+cat <<EOF >> ${OPERM}/tigge/bin/ens.${PREFX}.list
+$arqens
+EOF
+      echo "${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${PREFX}${LABELI}${labelfct}P.${fct}.T${TRC}L${LV}.grb -a $tarq -ge ${taor} "
+      if [ \( -s ${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${PREFX}${LABELI}${labelfct}P.${fct}.T${TRC}L${LV}.grb \) -a \( $tarq -ge ${taor} \) ]; then
+            let nd=${nd}+6 #CONTINUACAO DO LOOP DE ARQUIVOS (IF TAMANHO DE ARQUIVO OK INCREMENTA DATA DE PREVISAO DO ARQUIVO)
+      else
+            echo "AGUARDANDO ARQUIVO ${ROPERM}/pos/dataout/T${TRC}L${LV}/GPOS${PREFX}${LABELI}${labelfct}P.${fct}.T${TRC}L${LV}.grb"
+            sleep 63
+      fi
+done #FIM DO LOOP DE ARQUIVOS
+
+#AAF COMENTADO PARA FAZER O LOOP FIXO done
+
+echo "ARQUIVOS ENCONTRADOS, INICIANDO RECORTES..."
+sleep 30
+cat <<EOF > ${OPERM}/run/tigge.${PREFX}.sx6
+#!/bin/sh
+#
+#PBS -l cpunum_prc=1
+#PBS -l tasknum_prc=1
+#PBS -l memsz_job=1gb
+#PBS -T distrib
+#PBS -V
+#PBS -b 1
+#PBS -q Midi1
+#PBS -o tupay-e:${OPERM}/run/setout/tigge.${PREFX}${LABELI}.out.%s
+#PBS -j o
+#
+cd ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}
+#
+${OPERM}/tigge/bin/tigge.x < ${OPERM}/tigge/bin/ens.${PREFX}.list
+#
+exit 0
+EOF
+echo "\nGERANDO RECORTES\n"
+submit ${OPERM}/run/tigge.${PREFX}.sx6 Mini Info
+
+sleep 30
+
+cd ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+
+# Cria arquivo concatenado para arquivamento
+touch ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${ARQINI}.${membnum}.tmp
+
+echo "\nCONVERTENDO PARA GRIB2 e RENOMEANDO\n"
+for arqgrib1 in `ls ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}/tigge*_??????????.grb`
+do
+      set -x
+      ${CONVERTER} ${OPERM}/tigge/rules/cptec.rules_grib_final.prod ${arqgrib1} ${arqgrib1}.${membnum}.2
+      tiggename=`${TIGGENAME} ${arqgrib1}.${membnum}.2 | grep "CORRECT" | cut -d: -f2`
+      set +x
+      
+# IF PARA VARIAVEIS QUE NAO ESTAO EM "PROD" MAS AINDA EM "TEST"
+# ATUALMENTE ttr, slhf, str e sshf
+      if [ \( `echo $tiggename | grep "ttr.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "slhf.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "str.grib" | wc -l` -eq 1 \) -o \( `echo $tiggename | grep "sshf.grib" | wc -l` -eq 1 \) ]; then
+set +e
+            tiggeconf=`echo $tiggename | cut -c 50-52`
+            rm -f ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}/*prod*ttr.grib
+            rm -f ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}/*prod*slhf.grib
+            rm -f ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}/*prod*str.grib
+            rm -f ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}/*prod*sshf.grib
+
+set -e
+            ${CONVERTER} ${OPERM}/tigge/rules/cptec.rules_grib_final ${arqgrib1} ${arqgrib1}.${membnum}.2
+            tiggename=`${TIGGENAME} ${arqgrib1}.${membnum}.2 | grep "CORRECT" | cut -d: -f2`
+      fi
+      tiggename=`echo $tiggename | sed -e s%"c_46"%"c_sbsj"%g`
+      tiggeconf=`echo $tiggename | cut -c 52-54`
+# FIM IF DAS VARIAVEIS TEST
+#      set +x
+#      echo "membro: $tiggeconf"
+      mv ${arqgrib1}.${membnum}.2 ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}/$tiggename
+      set +e
+      ${TIGGECHECK} ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}/$tiggename
+      if [ $? -ne 0 ]; then
+            echo "ERRO - ${TIGGECHECK} ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}/$tiggename"
+            rm -f ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}/$tiggename
+            rm -f ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}/$tiggename
+      fi
+#      set +x
+      set +e
+#      echo `basename ${arqgrib1}` - $tiggename
+
+# Concatena arquivos para armazenamento
+#AAF      cat ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}/$tiggename ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${ARQINI}.${membnum}.tmp > ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${ARQINI}.${membnum}.grb
+#AAF      cp -rpf ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${ARQINI}.${membnum}.grb ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${ARQINI}.${membnum}.tmp
+
+#AAF      smslabel Info "$tiggename"
+done
++
+# Move o arquivo temporario da concatenacao para o arquivos de armazenamento.
+#AAF mv ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${ARQINI}.${membnum}.tmp ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${ARQINI}.${membnum}.grb
+
+#z_tigge_c_sbsj_20071126000000_glob_test_pf_pl_0234_001_1000_v.grib
+
+cd ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}/
+
+#sleep 60
+tt=pf
+
+if [ ! "${PREFX}" = "AVN" ]; then
+rm -f ${ARQINI}_????_??_??_????_001_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_002_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_003_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_004_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_005_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_006_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_007_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_008_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_009_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_010_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_011_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_012_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_013_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_014_*lsm.grib
+rm -f ${ARQINI}_????_??_??_????_015_*lsm.grib
+
+rm -f ${ARQINI}_????_??_??_????_001_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_002_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_003_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_004_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_005_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_006_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_007_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_008_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_009_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_010_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_011_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_012_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_013_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_014_*orog.grib
+rm -f ${ARQINI}_????_??_??_????_015_*orog.grib
+
+rm -f ${ARQINI}_prod_??_??_????_???_*ttr.grib
+rm -f ${ARQINI}_prod_??_??_????_???_*slhf.grib
+rm -f ${ARQINI}_prod_??_??_????_???_*str.grib
+rm -f ${ARQINI}_prod_??_??_????_???_*sshf.grib
+
+NARQTIN=3468
+#NARQTIN=0
+else
+NARQTIN=3590
+#NARQTIN=0
+fi
+
+# VERIFICACAO DE ARQUIVOS
+echo "\n\n"
+set -x
+#find . -name "${ARQINI}_????_??_??_????_${tiggeconf}*.grib" -exec ls -ltr {} \; | awk 'BEGIN {i=0} {if ($5!=147643 || $5!=147667 ) printf ("Problemas no Arquivo: %s",$9)} END {printf ("%d",i)}'
+NARQVERIF=`find . -name "${ARQINI}_????_??_??_????_${tiggeconf}*.grib" -exec ls -ltr {} \; | awk 'BEGIN {i=0} {if ($5==147643 || $5==147667 ) i+=1} END {printf ("%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTEJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 23
+set -e
+set -u
+      echo "ERRO NO NUMERO DE ARQUIVOS!"
+      exit 23
+fi
+echo "\n\n"
+
+derr=366
+while [ $derr -le 558 ]; do
+
+      VER366=`find . -name "${ARQINI}_????_??_??_0${derr}_${tiggeconf}*.grib" -print | wc -l`
+
+      if [ $VER366 -ge 1 ]; then
+            cd ..
+            rm -Rf ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+            echo " saindo... erro arquivo 366"
+            sleep 67
+            exit 27
+      fi
+
+let derr=${derr}+06
+done
+
+
+#FAZ A COPIA DOS RECORTES PARA A MOPORA e DEPOIS MOVE PARA O DIRETORIO DE SAIDA.
+smslabel Info "Copiando Arquivos..."
+set +e
+ssh ldm@${tiggeldm} "mkdir $tiggescratch"
+set -e
+#scp -q ${ARQINI}_prod_??_??_00??_${tiggeconf}_*.grib ldm@${tiggeldm}:$tiggescratch
+#scp -q ${ARQINI}_prod_??_??_01??_${tiggeconf}_*.grib ldm@${tiggeldm}:$tiggescratch
+#scp -q ${ARQINI}_prod_??_??_02??_${tiggeconf}_*.grib ldm@${tiggeldm}:$tiggescratch
+#scp -q ${ARQINI}_prod_??_??_03??_${tiggeconf}_*.grib ldm@${tiggeldm}:$tiggescratch
+echo "RODANDO vescptigge.ksh"
+ljkafd=`pwd`
+cd ${OPERM}/run/
+./vescptigge.ksh $LABELI ${membnum}
+cd $ljkafd
+
+
+set +e; set +u
+mkdir -p ${tiggenas}/${ARQINI}/
+cp -rpf ${ARQINI}_prod_??_??_????_${tiggeconf}_*.grib ${tiggenas}/${ARQINI}/
+NARQVERIF=`find ${tiggenas}/${ARQINI}/ -name "${ARQINI}_????_??_??_????_${tiggeconf}*.grib" -exec ls -ltr {} \; | awk 'BEGIN {i=0} {if ($5==147643 || $5==147667 ) i+=1} END {printf ("%d",i)}'`
+
+# AAF ADICIONADO EM 20090113
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS no NAS, COPIA NOVAMENTE
+set -e;
+      echo "ERRO NO NUMERO DE ARQUIVOS no NAS! COPIANDO NOVAMENTE!"
+      find . -name "${ARQINI}_????_??_??_????_${tiggeconf}*.grib" -print | cpio -pdmv ${tiggenas}/${ARQINI}/
+fi
+
+echo "RODANDO vescptigge.ksh"
+ljkafd=`pwd`
+cd ${OPERM}/run/
+./vescptigge.ksh $LABELI ${membnum}
+cd $ljkafd
+
+set +e; set +u
+
+set +e
+#rm -Rf ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${PREFX}
+#rm -Rf ${ROPERM}/tigge/dataout/T${TRC}L${LV}/${membnum}
+# APAGA ARQUIVOS ANTIGOS
+LABELR=`date -d "$LABELS 1 day ago" +"%Y%m%d"`
+LABELR2=`date -d "$LABELS 2 day ago" +"%Y%m%d"`
+
+set +e; set +u
+cd ${OPERM}/run
+./runcattigge.2.0.ksh $LABELI ${membnum}
+rm -Rf ${tiggenas}/pos
+set -e
+
+smslabel Info "Ok - ${LABELI}"
+exit 0

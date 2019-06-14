@@ -1,0 +1,67 @@
+#!/bin/csh
+set bold="`tput bold`"
+set norm="`tput sgr0`"
+set usuario=""
+printf "Criador de Cabecalhos para os arquivos de fitas\n"
+printf "Responsavel : sene@cptec.inpe.br\n\n"
+
+if ($#argv == 0) then
+   printf "Usage : cab <tape number> [-new]\n"
+   printf "        cab E00001\n"
+   exit
+endif
+if ($#argv >= 2) then
+   if ("$2" == "-new") then
+      echo "" > $1
+   endif
+endif
+set usuario=""
+while ("$usuario" == "")
+    printf "Nome do Usuario : "
+    set usuario=$<
+    if ("$usuario" == "") then
+       printf "\r"
+    endif
+end
+
+printf "Criando cabecalho da Fita : $bold$1$norm\n\n"
+
+set hora=`date +"%H:%M"`
+set data=`date +"%d/%m/%Y"`
+printf "\n\n"
+
+printf "Fita    : $bold$1$norm\n"
+printf "Usuario : $bold$usuario$norm\n"
+printf "Hora    : $bold$hora$norm\n"
+printf "Data    : $bold$data$norm\n\n"
+
+printf "$1                                      Usuario : $usuario\n"
+printf "Atualizacao : $data             Horas   : $hora\n"
+printf "-------------------------------------------------------------------------------------\n\n"
+
+printf "$1                                      Usuario : $usuario\n" > QWERASDF
+printf "Atualizacao : $data             Horas   : $hora\n" >> QWERASDF 
+printf "-------------------------------------------------------------------------------------\n" >> QWERASDF
+
+if !(-e $1) then
+   touch $1
+   touch ASDFQWER
+endif
+
+if !(-z $1) then
+   set x=`head -1 $1 | cut -c 1`
+   if (("$x" == "E") || ("$x" == "D")) then
+      @ lines = `cat $1 | wc -l`
+      @ lines -= 3
+      tail -$lines $1 > ASDFQWER
+   else
+      cp $1 ASDFQWER
+   endif
+ cp QWERASDF $1
+   cat ASDFQWER >> $1
+else
+   cp QWERASDF $1
+endif
+rm QWERASDF ASDFQWER
+exit
+

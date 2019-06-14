@@ -1,0 +1,186 @@
+#!/bin/ksh 
+#help#
+#******************************************************************#
+#                                                                  #
+#     Name:           runperreco.sx6                               #
+#                                                                  #
+#     Function:    This script submits the                         #
+#                  recomposition script.                           #
+#                                                                  #                     
+#     Date:           May       28th, 2003.                        #
+#     Last change:    May       28th, 2003.                        #
+#                                                                  #
+#     Valid Arguments for runperreco.sx6                           #
+#                                                                  #
+#      First :   HELP: help or nothing for getting help            #
+#      First :    TRC: three-digit triangular truncation           #
+#      Second:     LV: two-digit number of vertical sigma-layers   #
+#      Third :    NUM: pertubation number                          #
+#      Fourth: LABELI: initial forecasting label                   #
+#      Fifth : NFDAYS: number of forecasting days                  #
+#      Sixth :  HUMID: YES or NO (humidity will be perturbed)      #
+#    Seventh :NUMPERT: number of random perturbation               #
+#                                                                  #
+#             LABELx : yyyyddhh                                    #
+#                      yyyy = four digit year                      #
+#                        mm = two digit month                      #
+#                        dd = two digit day                        #
+#                        hh = two digit hour                       #
+#                                                                  #
+#******************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < $0 | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+if [ -z "${2}" ]
+then
+echo "Second argument is not set: LV"
+exit
+fi
+if [ -z "${3}" ]
+then
+echo "Third argument is not set: NUM"
+exit
+else
+PERR=${3}
+fi
+if [ -z "${4}" ]
+then
+echo "Fourth argument is not set (LABELI: yyyymmddhh)"
+exit
+fi
+if [ -z "${5}" ]
+then
+echo "Fifth argument is not set: NFDAYS" 
+exit
+fi
+if [ -z "${6}" ]
+then
+echo "Sixth argument is not set: HUMID" 
+exit
+else
+HUMID=${6}
+fi
+if [ -z "${7}" ]
+then
+echo "Seventh argument is not set: NUMPERT" 
+exit
+else
+NUMPERT=${7}
+fi
+#
+#   Set machine, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+EXT=out
+echo ${MAQUI}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   IOPERM is the directory for the input files.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/dk20/modoper/tempo/global/oens
+IOPERM=/gfs/dk20/modoper/tempo/global/oens/model/datain
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${IOPERM}
+#
+#   Set truncation and layers
+#
+TRC=${1}
+LV=${2}
+RESOL=T${TRC}
+NIVEL=L${LV}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setperreco${PERR}${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        setperreco${PERR}${RESOL}${NIVEL}.${MAQUI}#
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  recomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setperreco${PERR}${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+# 
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y'``date +'%m'``date +'%d'`
+HOUR=`date +'%H:%M'`
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR
+#
+NUM=${3}
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+LABELI=${4}
+echo \${LABELI}
+export LABELI
+NFDAYS=${5}
+export NFDAYS
+#
+cd ${ROPERM}/model/dataout/${RESOL}${NIVEL}
+rm -f GFCT\${NUM}R\${LABELI}\${LABELI}*
+rm -f GFCT\${NUM}R\${LABELI}*.dir.${RESOL}${NIVEL}
+rm -f GFCT\${NUM}R\${LABELI}*.dir.${RESOL}${NIVEL}.files
+mv GFCT\${NUM}R\${LABELI}*F.fct.${RESOL}${NIVEL} ${ROPERM}/model/datain
+#
+ext=R.fct.${RESOL}${NIVEL}
+echo ${ext}
+cd  ${IOPERM}
+rm -f lst.GFCT\${NUM}R\${LABELI}.dr
+ls -l GFCT\${NUM}R\${LABELI}* > lst.GFCT\${NUM}R\${LABELI}.dr
+awk '{ print \$9 }' lst.GFCT\${NUM}R\${LABELI}.dr  >  lst.GFCT\${NUM}R\${LABELI}
+xx=\`awk '{ print substr(\$1,18,10) }' lst.GFCT\${NUM}R\${LABELI}\`
+echo ${xx}
+cd ${SOPERM}/eof/datain
+\rm templ\${NUM}\${LABELI} 
+for i in \${xx} 
+do
+cd ${SOPERM}/eof/datain
+cat <<EOT1 >> templ\${NUM}\${LABELI}
+${ROPERM}/recfct/dataout/${RESOL}${NIVEL}/GFCTCTR\${LABELI}\${i}\${ext}
+${ROPERM}/recfct/dataout/${RESOL}${NIVEL}/GFCT\${NUM}R\${LABELI}\${i}\${ext}
+EOT1
+cd ${OPERM}/run
+${OPERM}/run/runrecfct.${MAQUI} run ${TRC} ${LV} FCT\${NUM}R \${LABELI} \${i}     
+done
+${OPERM}/run/runeofs.${MAQUI} run ${TRC} ${LV} ${HUMID} \${NUM} \${LABELI} \${NFDAYS} ${NUMPERT}
+#
+EOT0
+chmod 744  ${OPERM}/run/setperreco${PERR}${RESOL}${NIVEL}.${MAQUI}
+#AMM echo "qsub -x -s /bin/ksh -q ${QUEUE} ${OPERM}/run/setperreco${PERR}${RESOL}${NIVEL}.${MAQUI}"
+#AMM qsub -x -s /bin/ksh -q ${QUEUE} ${OPERM}/run/setperreco${PERR}${RESOL}${NIVEL}.${MAQUI}
+echo "${OPERM}/run/setperreco${PERR}${RESOL}${NIVEL}.${MAQUI}"
+${OPERM}/run/setperreco${PERR}${RESOL}${NIVEL}.${MAQUI}
+#

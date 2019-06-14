@@ -1,0 +1,50 @@
+constant grib1divider = 1000 : hidden;
+constant ieeeFloats   = 0 : hidden, edition_specific;
+transient dummy = 1 :hidden;
+
+template      section_0 "grib1/section.0.def"   ;
+
+ascii[4] identifier  = "GRIB" : read_only,hidden;
+
+# Due to a trick done by GRIBEX to support large GRIBs, we need a special treatment
+# of the message length and of the section4 lenth, so instead of
+# length[3] totalLength                     ;
+# we get:
+
+
+
+g1_message_length[3] totalLength(section4Length);
+
+unsigned[1] editionNumber = GRIBEditionNumber : optional, edition_specific;
+
+template      section_1 "grib1/section.1.def"   ;
+
+alias ls.edition = editionNumber;
+
+# Not flagbit numbers 7 to 0, while wmo is 1 to 8
+flagbit gridDescriptionSectionPresent(section1Flags,7) = 1: optional;
+alias GDSPresent = gridDescriptionSectionPresent;
+
+flagbit bitmapPresent(section1Flags,6) = 0;
+alias bitmapSectionPresent=bitmapPresent;
+
+if(GDSPresent){
+    template section_2 "grib1/section.2.def"     ;
+ }
+
+# Used to mark end of headers. Can be accessed with grib_get_offset()
+position   endOfHeadersMaker;
+
+transient  missingValue   = 9999;
+
+if(bitmapSectionPresent){
+    template   section3 "grib1/section.3.def"     ;
+} else {
+   constant   tableReference = 0;
+}
+
+template     section_4 "grib1/section.4.def"     ;
+
+template     section_5 "grib1/section.5.def"     ;
+#template     section5 "grib1/gribex.def"     ;
+

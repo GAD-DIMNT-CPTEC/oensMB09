@@ -1,0 +1,26 @@
+#!/bin/ksh -x
+#####################################
+#
+# Script para copiar listagens de 
+# fitas DAT para a homepage da 
+# operacao
+#
+# Por Fabiano em 03/03/2006
+# Chamada: transf <Label fita>
+#####################################
+fita=$1
+# print "\n" >> $fita 
+echo "-------------------------------------------------------------------------------------" >> $fita
+#print "\n" >> $fita
+./total_transf $fita >> $fita 
+#print "\n" >> $fita 
+echo "-------------------------------------------------------------------------------------" >> $fita 
+
+compress $fita 
+
+scp $fita.Z operacao@tupinamba:/extra02/operacao/fitas/DAT
+
+rm -f $fita.Z
+exit
+
+   

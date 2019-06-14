@@ -1,0 +1,77 @@
+
+# START 2/template.3.90 ----------------------------------------------------------------------
+# TEMPLATE 3.90, Space view perspective or orthographic
+include "template.3.shape_of_the_earth.def";
+
+
+#  Nx - number of points along X-axis
+# (columns)                                                            
+unsigned[4] numberOfPointsAlongXAxis ;
+                             
+#  Ny - number of points along Y-axis
+# (rows or lines)                                                      
+unsigned[4] numberOfPointsAlongYAxis ;
+
+#  Lap - latitude of sub-satellite point
+signed[4] latitudeOfSubSatellitePoint ;
+
+alias Lap =  latitudeOfSubSatellitePoint;
+#  Lop - longitude of sub-satellite point
+signed[4] longitudeOfSubSatellitePoint ;
+
+alias Lop =  longitudeOfSubSatellitePoint;
+
+include "template.3.resolution_flags.def";
+
+#  dx - apparent diameter of Earth in grid lengths, in X-direction
+unsigned[4] apparentDiameterOfEarthInGridLengthsInXDirection ;
+
+alias dx  = apparentDiameterOfEarthInGridLengthsInXDirection;
+#  dy - apparent diameter of Earth in grid lengths, in Y-direction
+unsigned[4] apparentDiameterOfEarthInGridLengthsInYDirection ;
+
+alias dy  = apparentDiameterOfEarthInGridLengthsInYDirection;
+#  Xp - X-coordinate of sub-satellite point
+# (in units of 10-3 grid length expressed as an integer)               
+unsigned[4] xCoordinateOfSubSatellitePoint ;
+
+alias Xp =  xCoordinateOfSubSatellitePoint;
+#  Yp - Y-coordinate of sub-satellite point
+# (in units of 10-3 grid length expressed as an integer)               
+unsigned[4] yCoordinateOfSubSatellitePoint ;
+
+alias Yp =  yCoordinateOfSubSatellitePoint;
+
+include "template.3.scanning_mode.def";
+
+#  Orientation of the grid; i.e., the angle between the increasing Y-axis and the meridian of the sub-satellite point in the direction of increasing latitude
+# NOTE 3 NOT FOUND                                                     
+unsigned[4] orientationOfTheGrid;
+
+#  Nr - altitude of the camera from the Earth's centre, measured in units of the Earth's
+# (equatorial)                                                                                                
+unsigned[4] altitudeOfTheCameraFromTheEarthSCenterMeasuredInUnitsOfTheEarth;
+
+alias Nr =  altitudeOfTheCameraFromTheEarthSCenterMeasuredInUnitsOfTheEarth;
+#  Xo - X-coordinate of origin of sector image
+unsigned[4] xCoordinateOfOriginOfSectorImage ;
+
+alias Xo =  xCoordinateOfOriginOfSectorImage;
+#  Yo - Y-coordinate of origin of sector image
+unsigned[4] yCoordinateOfOriginOfSectorImage ;
+
+alias Yo =  yCoordinateOfOriginOfSectorImage;
+
+#meta      latOfFirstPoint    #scale(xCoordinateOfSubSatellitePoint,angleMultiplier,angleDivisor);
+#meta      longOfFirstPoint   #scale(yCoordinateOfSubSatellitePoint,angleMultiplier,angleDivisor);
+#meta      latOfLastPoint     #scale(xCoordinateOfOriginOfSectorImage,angleMultiplier,angleDivisor);
+#meta      longOfLastPoint    #scale(yCoordinateOfOriginOfSectorImage,angleMultiplier,angleDivisor);
+
+#alias geography.laFirst = latOfFirstPoint;
+#alias geography.loFirst = longOfFirstPoint;
+#alias geography.laLast = latOfLastPoint;
+#alias geography.loLast = longOfLastPoint;
+
+alias geography.Ni = numberOfPointsAlongXAxis;
+alias geography.Nj = numberOfPointsAlongYAxis;
+# END   2/template.3.90 ----------------------------------------------------------------------

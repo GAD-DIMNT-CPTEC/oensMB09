@@ -1,0 +1,52 @@
+%comment - sms edit variables
+
+FAMILY           =   Verifica
+FAMILY1          =   Verifica
+SMSDATE          =   2012010600
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/Verifica/VeTIGGE
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   1
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   VeTIGGE
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+set +x
+cd ${OPERM}/run
+
+./vetiggedir.ksh ${LABELI} n
+echo "\n\nINICIANDO MANUTENCAO WEB img0.cptec.inpe.br\n"
+./cprepositorio.ksh ${LABELI}
+
+echo " "
+echo " "
+echo "...Iniciando Verificação dos arquivos concatenados na BANGU..."
+echo " "
+
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+HH=`echo $LABELI | cut -c 9-10`
+
+for imemb in `echo 000 001 002 003 004 005 006 007 008 009 010 011 012 013 014`
+do
+
+      numbf=`ls -ltr /rede/hsm/tigge/$YYYY/$MM/z_tigge_c_sbsj_${LABELI}0000_glob/*_${imemb}.* | wc -l`
+
+      if [ $numbf -lt 244 ]; then
+            echo " RODANDO NOVAMENTE PARA MEMBRO - $imemb"
+            ./runcattigge.1.1.ksh ${LABELI} $imemb
+            cp -pv ${ROPERM}/tigge/dataout/concat/z_tigge_c_sbsj_${LABELI}0000_glob_prod_*${imemb}* /rede/hsm/tigge/$YYYY/$MM/z_tigge_c_sbsj_${LABELI}0000_glob/
+      else
+            echo "MEMBRO $imemb - OK"
+      fi
+            
+done
+
+%include <tail.h>

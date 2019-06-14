@@ -1,0 +1,38 @@
+      SUBROUTINE GL(KHALF,COLRAD)
+      DIMENSION COLRAD(*)
+      DOUBLE PRECISION COLRAD, EPS, SI, RK2, SCALE, PI, DRADZ, RAD,
+     1 DRAD, P1, P2, PHI, W, X, SN, DATAN,DSIN,DCOS,DSIGN
+      EPS=1.D-12
+      SI=1.D+00
+      K2=2*KHALF
+      RK2=K2
+      SCALE=2.D+00/(RK2**2)
+      K1=K2-1
+      PI=DATAN(SI)*4.D+00
+      DRADZ=PI/360.D+00
+      RAD=0.D+00
+      DO 1000 K=1,KHALF
+      ITR=0
+      DRAD=DRADZ
+1     CALL PLY(K2,RAD,P2)
+2     P1 =P2
+      ITR=ITR+1
+      RAD=RAD+DRAD
+      CALL PLY(K2,RAD,P2)
+      IF(DSIGN(SI,P1).EQ.DSIGN(SI,P2))GO TO 2
+      IF(DRAD.LT.EPS)GO TO 3
+      RAD=RAD-DRAD
+      DRAD=DRAD*0.25D+00
+      GO TO 1
+3     CONTINUE
+      COLRAD(K)=RAD
+      PHI=RAD   *180.D+00/PI
+      CALL PLY(K1,RAD,P1)
+      X=DCOS(RAD)
+      W=SCALE*(1.D+00-X*X)/(P1*P1)
+      SN=DSIN(RAD)
+      W=W/(SN*SN)
+      CALL PLY(K2,RAD,P1)
+1000  CONTINUE
+      RETURN
+      END

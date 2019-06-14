@@ -1,0 +1,268 @@
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        setdeco06T126L28.sx6   #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  decomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o tupan11:/gfs/home3/modoper/tempo/global/oens/run/setout/setdeco06T126L28.sx6.2012021405:07.out
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yymmdd
+#   HOUR=hh:mn
+#
+DATE=20120214
+HOUR=05:07
+echo 'Date: '${DATE}
+echo 'Hour: '${HOUR}
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file label
+#
+NUM=06
+export NUM
+LABELI=2012021400
+echo ${LABELI}
+export LABELI
+#
+#   Prefix names for the FORTRAN files
+#
+#   NAMEL - List file name prefix
+#   GNAME - Initial condition file name prefix
+#   NAMER - Input gridded file name prefix
+#   NAMES - Output spectral file name prefix
+#
+NAMEL=GEOFPE${NUM}
+export NAMEL
+GNAME=GANLAVN
+export GNAME
+NAMER=GANLAVN
+export NAMER
+NAMES1=GANL${NUM}P
+export NAMES1
+NAMES3=GANL${NUM}N
+export NAMES3
+#
+#   Suffix names for the FORTRAN files
+#
+#   EXTL - List file name suffix
+#   EXTG - Initial condition file name suffix
+#   ERRi - Input gridded file name suffix
+#   ERSi - Output spectral file name suffix
+#
+EXTL=P.rpt
+export EXTL
+EXTG=S.unf
+export EXTG
+ERR1=P.rp1
+ERR2=P.rp2
+ERR3=P.rp3
+export ERR1 ERR2 ERR3
+ERS1=S.rp1
+ERS2=S.rp2
+ERS3=S.rp3
+export ERS1 ERS2 ERS3
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   IOPERMOD is the directory for input file.
+#
+OPERMOD=/gfs/home3/modoper/tempo/global/oens
+SOPERMOD=/gfs/home3/modoper/tempo/global/oens
+ROPERMOD=/gfs/dk22/modoper/tempo/global/oens
+IOPERMOD=/gfs/dk22/modoper/tempo/global/oens/model/datain
+export OPERMOD SOPERMOD ROPERMOD IOPERMOD
+echo ${OPERMOD}
+echo ${SOPERMOD}
+echo ${ROPERMOD}
+echo ${IOPERMOD}
+#
+cd ${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=L28
+TRUNC=T126
+export TRUNC LEV
+#
+#   Set machine
+MACH=sx6
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+echo run
+COMPILE=run
+echo $COMPILE
+export COMPILE
+#
+#   Set FORTRAN compilation flags
+#
+#   -integer_size 64 sets the integer basic numeric size to 8 bytes
+#   -real_size 64    sets the real basic numeric size to 8 bytes
+#
+#
+FTNFLAG='-Wf" -pvctl noaltcode -O nodiv nomove "'
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=${OPERMOD}/include/${TRUNC}${LEV}
+CPP="-EP -I${INC}"
+export INC CPP
+#
+#   Set FORTRAN compiler name
+#
+F77="f90 -V -float0 -ew "
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#    is associated with FORTRAN file unit = n
+#
+#FFF=FORT
+#export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#FORT_CONVERT10=BIG_ENDIAN
+#FORT_CONVERT20=BIG_ENDIAN
+#export FORT_CONVERT10 FORT_CONVERT20
+#
+F_UFMTIEEE=10,11,20,62,64,72,74
+F_UFMTADJUST11=TYPE2
+F_UFMTADJUST20=TYPE2
+export F_UFMTIEEE F_UFMTADJUST11 F_UFMTADJUST20
+#  Now, build the necessary INCLUDE for the choosen truncation and 
+#       vertical resolution.. 
+#
+  if [ "${COMPILE}" != "run" ]
+  then
+#
+cd ${INC}
+#
+cat <<EOT1 > decanl.n
+      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
+      PARAMETER (IMAX=384,JMAX=192,MEND=126,KMAX=28,LMAX=17)
+EOT1
+if (diff decanl.n decanl.h > /dev/null)
+then
+    echo "decanl.n and decanl.h are the same"
+    rm -f decanl.n
+else
+    echo "decanl.n and decanl.h are different"
+    mv decanl.n decanl.h
+fi
+#
+#  End of includes
+#
+fi
+#
+#  Now, build the necessary NAMELIST input:
+#
+GNAMEL=${NAMEL}${LABELI}${EXTL}.${TRUNC}${LEV}
+#
+cat <<EOT2 > ${SOPERMOD}/decanl/datain/${GNAMEL}
+${GNAME}${LABELI}${EXTG}.${TRUNC}${LEV}
+winpe1${NUM}${LABELI}                            
+${NAMES1}${LABELI}${EXTG}.${TRUNC}${LEV}
+EOT2
+#
+cat <<EOT3 > ${SOPERMOD}/decanl/datain/decanl${NUM}.nml
+ &DATAIN
+  LDIM=1
+  DIRL='${SOPERMOD}/decanl/datain/ '
+  DIRI='${IOPERMOD}/ '
+  DIRG='${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/ '
+  DIRS='${IOPERMOD}/ '
+  GNAMEL='${GNAMEL} '
+ &END
+ &HUMIDI
+  HUM='NO'
+ &END
+EOT3
+#
+cd ${OPERMOD}/run
+#
+#   Run Decomposition
+#
+${OPERMOD}/decanl/scripts/decanl.scr
+#
+cat <<EOT4 > ${SOPERMOD}/decanl/datain/${GNAMEL}
+${GNAME}${LABELI}${EXTG}.${TRUNC}${LEV}
+winpn1${NUM}${LABELI}
+${NAMES3}${LABELI}${EXTG}.${TRUNC}${LEV}
+EOT4
+cd ${OPERMOD}/run
+#
+#   Run Decomposition
+#
+${OPERMOD}/decanl/scripts/decanl.scr
+#
+#   Remove obsolete files 
+#
+rm -f ${SOPERMOD}/recanl/datain/GANLAVN${LABELI}*.${TRUNC}${LEV}
+#
+rm -f ${SOPERMOD}/recfct/datain/GFCT${NUM}R${LABELI}*F.fct.${TRUNC}${LEV}
+rm -f ${SOPERMOD}/recfct/datain/GFCTCTR${LABELI}*F.fct.${TRUNC}${LEV}
+#
+rm -f ${SOPERMOD}/decanl/datain/GEOFPE${NUM}${LABELI}P.rpt.${TRUNC}${LEV}
+rm -f ${SOPERMOD}/decanl/datain/GANLAVN${LABELI}P.rpt.${TRUNC}${LEV}
+#
+rm -f ${ROPERMOD}/recfct/dataout/${TRUNC}${LEV}/GFCT${NUM}R${LABELI}*R.fct.${TRUNC}${LEV}
+
+rm -f ${ROPERMOD}/rdpert/dataout/${TRUNC}${LEV}/GANL${NUM}R${LABELI}R.unf.${TRUNC}${LEV}
+rm -f ${ROPERMOD}/rdpert/dataout/${TRUNC}${LEV}/GANL${NUM}R${LABELI}R.unf.${TRUNC}${LEV}.out
+
+rm -f ${ROPERMOD}/model/datain/GANL${NUM}R${LABELI}S.unf.${TRUNC}${LEV}
+rm -f ${ROPERMOD}/model/datain/GFCT${NUM}R${LABELI}*F.fct.${TRUNC}${LEV}
+#
+rm -f ${ROPERMOD}/model/datain/lst.GFCT${NUM}R${LABELI}.dr
+rm -f ${ROPERMOD}/model/datain/lst.GFCT${NUM}R${LABELI}
+#
+#AMM rm -f ${ROPERMOD}/model/dataout/${TRUNC}${LEV}/GPER${NUM}R${LABELI}*${TRUNC}${LEV}
+#AMM rm -f ${ROPERMOD}/model/dataout/${TRUNC}${LEV}/GFGH${NUM}R${LABELI}*${TRUNC}${LEV}
+#AMM rm -f ${ROPERMOD}/model/dataout/${TRUNC}${LEV}/GDHN${NUM}R${LABELI}*${TRUNC}${LEV}
+#
+rm -f ${SOPERMOD}/eof/datain/templ${NUM}${LABELI}
+#
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/temout${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/tempe1${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/tempn1${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/tempcm${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/humout${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/humpe1${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/humpn1${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/humpcm${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/winout${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/winpe1${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/winpn1${NUM}${LABELI}
+rm -f ${ROPERMOD}/eof/dataout/${TRUNC}${LEV}/winpcm${NUM}${LABELI}
+#
+# End of remove
+#

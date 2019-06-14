@@ -1,0 +1,330 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Tigge/Controle
+FAMILY1          =   Controle
+SMSDATE          =   2009070512
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Tigge/Controle/AVN
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   1
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   AVN
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+HH=`echo $LABELI | cut -c 9-10`
+LABELS=`echo $LABELI | cut -c 1-8`
+LABELF=`date -d "${LABELS} 15 days" +"%%Y%%m%%d${HH}"`
+PREFX="%TASK%"
+
+tiggeconf=000
+
+cd $OPERM/run
+
+. %SMSINCLUDE%/config.sx6
+
+s=`date +"%%s"`
+
+cat << EOF > ${OPERM}/run/TIGGE${PREFX}.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/TIGGE${PREFX}${LABELI}.${s}.out
+#PBS -j o
+
+cd ${OPERM}/run
+./runrectigge.1.4.sx6 $LABELI $PREFX
+
+exit 0
+EOF
+
+ARQINI=z_tigge_c_sbsj_${LABELI}0000_glob
+DIRINI=sbsj_${LABELI}00_glob_prod
+tiggedirmopora=/usr/local/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/${DIRINI}
+
+if [ `ls -ltr ${ROPERM}/tigge/dataout/T126L28/${tiggeconf}/${ARQINI}*prod* | wc -l` -eq 3350 ]; then
+      echo "\n\n++ RODADA COMPLETA..."
+else
+      submit ${OPERM}/run/TIGGE${PREFX}.sub pesq Info
+      arqoutset=${OPERM}/run/setout/TIGGE${PREFX}${LABELI}.${s}.out
+fi
+
+cd ${OPERM}/run
+./vescptigge.ksh $LABELI ${tiggeconf}
+
+rm -f ${OPERM}/run/TIGGE${PREFX}.sub
+
+set -e
+narq=`ssh mopora -l ldm "find /usr/local/ldm/tigge/data/scratch -name \"z_tigge_c_sbsj_${LABELI}00*prod*_${tiggeconf}_*.grib\" | wc -l"`
+if [ $narq -eq 3350 ]; then
+      echo "\n\n++ RODADA COMPLETA, REFAZENDO APENAS COPIA..."
+      echo "CASO ABORTE APOS TODAS AS TENTATIVAS, APAGUE OS ARQUIVOS DE:"
+      echo "${ROPERM}/tigge/dataout/T126L28/${tiggeconf}/\n\n REINICIE O MEMBRO COM PROBLEMAS."
+      ./vescptigge.ksh $LABELI ${tiggeconf}
+else
+      exit 3
+fi
+
+%include <tail.h>
+
+
+
+
+
+
+
+
+
+
+
+NFFRS=-1
+NFBEG=-1
+# NFEND=62 # POSPROCESSADOS TIMESTEP 12
+NFEND=62 # POSPROCESSADOS TIMESTEP 06
+REQ=p
+OUTBIN=0
+
+if [ $OUTBIN -eq 0 ]; then
+        OUTBIN='.False.'
+else
+        OUTBIN='.True.'
+fi
+
+rm -f $SOPERM/tigge/scripts/POSTIN_T126L28a${PREFX}
+cat > $SOPERM/tigge/scripts/POSTIN_T126L28a${PREFX} << EOF
+!namelist
+!############################### Change Log ##################################
+! 1.0.0.0
+!
+!  \$Author: bonatti \$
+!  \$Date: 2005/05/30 18:15:44 \$
+!  \$Revision: 1.2 \$
+!
+!
+!#############################################################################
+!
+ &PosInput
+  nffrs=$NFFRS,            ! value to indicated if model use or not initialization
+                       !    or to indicate if it is a cold or warm start run:
+                       !    nffrs=-1 - for runs with normal mode initialization
+                       !    nffrs=0  - for runs without normal mode initialization
+                       !    nffrs=1  - for warm start runs
+  nfbeg=$NFBEG             ! number of the first forecasted file to be post-processed
+  nfend=$NFEND,            ! number of forecasted files to be post-processed
+  nmand=09,            ! number of pressure levels listed below in format 10f8.2
+                       !    nmand=-1 means the use of default 18-levels
+  RegIntIn=.FALSE.,    ! flag to interpolate outputs on regular grid (.TRUE.)
+                       !    .FALSE. to get outputs on Gaussian grid
+  Linear=.FALSE.,      ! Flag to Gaussian grid type Linear (.TRUE.) or 
+                       !                            Quadratic (.FALSE.)
+  trunc ='T${TRC}',       ! horizontal truncation = Txxx
+  lev   ='L${LV}',        ! vertical layers = Lxx
+  labeli='${LABELI}', ! initial forecasting label (yyyymmddhh)
+  labelf='${LABELF}', ! final forecasting label (yyyymmddhh)
+  prefx ='${PREFX}',        ! preffix for input and output files
+  req   ='${REQ}',          ! flag to select requested field file (p, s, c, e or nothing)
+                       !   p - use file rfd.pnt
+                       !   s - use file rfd.sfc
+                       !   c - use file rfd.clm
+                       !   e - use file rfd.eta
+                       !     - use file rfd
+                       !   these files are spected to be in the directory:
+                       !   \${roperm}/pos/datain
+                       !   at the same directory there is a dft file for
+                       !   derived fields (this should be included in the
+                       !   code in future)
+  roperm='$ROPERM'     ! main dataout directory
+                       !   should be the same for model and post-processing
+  Binary=${OUTBIN}     ! output binary format ! False -> Grib (Default)
+ /
+ 1000.00  925.00  850.00  700.00  500.00  300.00  250.00  200.00   50.00
+EOF
+
+# 1000.00  925.00  850.00  700.00  500.00  400.00  300.00  250.00  200.00  150.00
+#  100.00   70.00   50.00   30.00   20.00   10.00    3.00
+
+cd $SOPERM/tigge
+pwd
+itime=`echo "24*3600" | bc -l`
+BUFFER=20480
+
+cpu=1
+MEM=5gb
+
+BASE=`pwd`
+echo $BASE
+rm -f xmit_pos.*.POS
+FSCR=$BASE"/scripts"
+FEXEMODEL=$BASE"/model"
+FEXEPOSGL=$BASE
+
+cat << EOT1 > ./scripts/xmit_pos.sh
+#!/usr/bin/ksh
+#PBS -o turi-e:${SOPERM}/run/setout/setposgrib${LABELI}.out
+#PBS -j o
+#
+
+#PARA RODAR NA TURI export F_UFMTENDIAN=18,19,10,11,22,23,24,49,83,82,81,27,25,26,33,99,61,45,42,52,50,80,51,53,92,93,43,77,0,31,91,66,32,21,20,74,88,89,36,37,38,39
+
+# ORIGINAL
+#AAF cd ${FEXEPOSGL}/exec
+#AAF Post_grb < ${FSCR}/POSTIN_T126L28a${PREFX} > ${SOPERM}/run/setout/xmit_pos${PREFX}.`date +'%%Y%%m%%d'`_`date +'%%Y%%m%%d'`.POS
+
+#NOVO POS - JPABLO
+cd ${SOPERM}/tigge/bin
+Postgrb < ${FSCR}/POSTIN_T126L28a${PREFX} > ${SOPERM}/run/setout/xmit_pos${PREFX}.`date +'%%Y%%m%%d'`_`date +'%%Y%%m%%d'`.POS
+
+echo "Post Ended..."
+EOT1
+
+#qsub -q ${QUEUE} -N GRIB${PREFX} ./scripts/xmit_pos.sh
+submit ./scripts/xmit_pos.sh ${QUEUE} Info
+sleep 03; rm -f ./scripts/xmit_pos.sh
+
+
+# GERA OS RECORTES DO TIGGE
+cd ${SOPERM}/tigge/scripts
+. %SMSINCLUDE%/config.sx6
+
+set +
+
+export GRIB_DEFINITION_PATH=${OPERM}/tigge/share/grib_api/definitions
+export GRIB_TEMPLATES_PATH=${OPERM}/tigge/share/grib_api/templates
+
+GRADS=/usr/local/grads/bin
+WGRIB18=/gfs/home3/io_dop/tools/wgrib.1.8
+ARQINI=z_tigge_c_sbsj_${LABELI}0000_glob_test
+DIRINI=sbsj_${LABELI}00_glob_test
+CONVERTER=${OPERM}/tigge/bin/grib_convert
+TIGGENAME=${OPERM}/tigge/bin/tigge_name
+TIGGECHECK=${OPERM}/tigge/bin/tigge_check
+
+tiggedirmopora=/home2/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/${DIRINI}
+tiggeoutgoing=${tiggedirmopora}/outgoing
+ssh mopora -l ldm -i ~/.ssh/id_rsa "mkdir -p $tiggescratch"
+
+typeset -RZ4 HOR
+typeset -RZ3 nnn
+typeset -RZ4 llll
+
+REQ=`awk 'BEGIN {print toupper("'$REQ'")}'`
+cd ${ROPERM}/pos/dataout/T${TRC}L${LV}
+
+
+#find . -name "${ARQINI}*" -exec rm -f {} \;
+
+ARQLST=GPOS${PREFX}${LABELI}${LABELF}${REQ}.fct.T${TRC}L${LV}.lst
+rm -f  $ARQLST cptec.*.${LABELI}.grb
+
+ls -ltr GPOS${PREFX}${LABELI}*grb | awk '{print $9}' > ${ARQLST}
+
+# PEGA TODOS OS ARQUIVOS DO .lst PARA RECORTE
+echo "GERANDO RECORTES...\n"
+
+for arq in `cat ${ARQLST} | grep -v inz`
+do            
+      for arqparm in `ls ${SOPERM}/tigge/parm/*.parm`
+      do
+            # LE ARQUIVO DE CONFIGURACAO DOS RECORTES
+            . $arqparm
+            j=0
+            while [ $j -lt ${#LEVELS[*]} ]
+            do
+                  if [ \( ${LEVELS[$j]} -gt 0 \) -a \( ${LEVELS[$j]} -lt 1001 \) ]
+                  then
+                        procl="${LEVELS[$j]} mb"
+                  else
+                        procl=sfc
+                        if [ "$VARTIGGE" = "msl" ]; then
+                              procl=MSL
+                        fi
+                        if [ "$VARWGRIB" = "cbnv" ]; then
+                              procl="cld top"
+                        fi
+                        if [ "$VARWGRIB" = "agpl" ]; then
+                              procl="atmos col"
+                        fi
+                  fi      
+                  echo $VARWGRIB - $VARTIGGE - ${LEVELS[$j]}
+
+                  # NOMEIA ARQUIVO DE SAIDA
+
+                  # GERA RECORTES UTILIZANDO O wgrib
+                  if [ \( "$VARWGRIB" = "prec" \) -o \( "$VARWGRIB" = "tgsc" \) -o \( "$VARWGRIB" = "prcv" \) -o \( "$VARWGRIB" = "neve" \) -o \( "$VARWGRIB" = "cbnv" \) -o \( "$VARWGRIB" = "tcas" \) ]
+                  then
+                        if [ `ls -ltr $arq | grep icn | wc -l` -ne 1 ]
+                        then
+                              ${WGRIB18} -s $arq | grep ":$VARWGRIB:${procl}:" | ${WGRIB18} -4yr -grib -i $arq -o ${arq}.grib1
+                        
+                              ${CONVERTER} ${OPERM}/tigge/sample/cptec.rules_grib2 ${arq}.grib1 ${arq}.grib2
+                              tiggename=`${TIGGENAME} ${arq}.grib2 | grep "CORRECT" | cut -d: -f2`
+                              tiggename=`echo $tiggename | sed -e s%%"c_46"%%"c_sbsj"%%g`
+                              tiggeconf=`echo ${tiggename} | cut -c 52-54`
+                              mv ${arq}.grib2 $tiggename
+                              if [ ! "$VARWGRIB" = "neve" ]; then
+                                    ${TIGGECHECK} $tiggename
+                                    if [ $? -ne 0 ];then
+                                          echo "Arquivo $tiggename com problemas (TIGGECHECK)\n Tentando Novamente...\n"
+                                          exit 1
+                                    fi
+                              fi
+                        fi
+                  else
+                        ${WGRIB18} -s $arq | grep ":$VARWGRIB:${procl}:" | ${WGRIB18} -4yr -grib -i $arq -o ${arq}.grib1
+                        
+                        ${CONVERTER} ${OPERM}/tigge/sample/cptec.rules_grib2 ${arq}.grib1 ${arq}.grib2
+                        tiggename=`${TIGGENAME} ${arq}.grib2 | grep "CORRECT" | cut -d: -f2`
+                        tiggename=`echo $tiggename | sed -e s%%"c_46"%%"c_sbsj"%%g`
+                        tiggeconf=`echo ${tiggename} | cut -c 52-54`
+                        mv ${arq}.grib2 $tiggename
+                        ${TIGGECHECK} $tiggename
+                        if [ $? -ne 0 ];then
+                              echo "Arquivo $tiggename com problemas (TIGGECHECK)\n Tentando Novamente...\n"
+                              exit 1
+                        fi
+                  fi
+            let j=$j+1
+            done
+      done
+done
+
+sleep 60
+tt=pf
+
+if [ `ls -ltr ${ARQINI}_??_??_????_${tiggeconf}_*.grib | wc -l` -lt 2805 ]
+then
+set -e
+      exit 2
+fi
+
+#FAZ A COPIA DOS RECORTES PARA A MOPORA e DEPOIS MOVE PARA O DIRETORIO DE SAIDA.
+#scp -q -i ~/.ssh/id_rsa ${ARQINI}_??_??_????_???_*.grib ldm@mopora:$tiggescratch
+
+#FAZ A COPIA DOS RECORTES PARA A MOPORA e DEPOIS MOVE PARA O DIRETORIO DE SAIDA.
+set +e
+scp -q -i ~/.ssh/id_rsa ${ARQINI}_??_??_00??_${tiggeconf}_*.grib ldm@mopora:$tiggescratch
+scp -q -i ~/.ssh/id_rsa ${ARQINI}_??_??_01??_${tiggeconf}_*.grib ldm@mopora:$tiggescratch
+scp -q -i ~/.ssh/id_rsa ${ARQINI}_??_??_02??_${tiggeconf}_*.grib ldm@mopora:$tiggescratch
+scp -q -i ~/.ssh/id_rsa ${ARQINI}_??_??_03??_${tiggeconf}_*.grib ldm@mopora:$tiggescratch
+set +x
+
+# APAGA ARQUIVOS ANTIGOS
+LABELR=`date -d "$LABELS 1 day ago" +"%%Y%%m%%d"`
+find ${ROPERM}/pos/dataout/T${TRC}L${LV} -name "z_tigge_c_sbsj_${LABELR}0000_glob_test$_??_??_????_${tiggeconf}_*.grib" -exec rm -f {} \;
+find ${ROPERM}/model/dataout/T${TRC}L${LV} -name "z_tigge_c_sbsj_${LABELR}0000_glob_test$_??_??_????_${tiggeconf}_*.grib" -exec rm -f {} \;
+
+echo "APAGANDO ARQUIVOS 06 e 18..."
+rsh turi -l modoper "ls -ltr ${ROPERM}/model/dataout/T${TRC}L${LV}.modoper/GFCT${PREFX}${LABELI}*[68]F.???.*"
+rsh turi -l modoper "rm -f ${ROPERM}/model/dataout/T${TRC}L${LV}.modoper/GFCT${PREFX}${LABELI}*[68]F.???.*"
+rsh turi -l modoper "rm -f ${ROPERM}/model/dataout/T${TRC}L${LV}.modoper/GFCT${PREFX}${LABELI}*[68]F.???.*full"
+
+%include <tail.h>
+
+./users/alex/oenspro.1/00/Pre/Pega_Analise.sms
+./users/alex/oenspro.1/12/Pre/Pega_Analise.sms
+./users/alex/oenspro/00/Pre/Pega_Analise.sms

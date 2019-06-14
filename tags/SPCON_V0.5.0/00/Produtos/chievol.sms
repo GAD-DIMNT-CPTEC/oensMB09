@@ -1,0 +1,71 @@
+%include <head.h>
+%include <config.h>
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+HH=${HH}
+LABELI=$YYYY$MM$DD$HH
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+let NMEMBR=\($NPERT*2\)+1
+
+cd ${OPERM}/chievol/scripts/
+
+dateo=`date +"%%s"`
+
+cat << EOF > tempkjasdbf.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/setchievol.${LABELI}.${dateo}.out
+#PBS -N CHIEVOL
+echo "RODANDO CHIEVOL"
+cd ${OPERM}/chievol/scripts/
+./chi_evol.scr ${LABELI} ${PREFX}
+
+echo "RODANDO PERTURBATIONS"
+cd ${OPERM}/perturbations/scripts
+./initpert.scr ${LABELI} ${PREFX}
+
+exit 0
+EOF
+
+submit tempkjasdbf.sub ${QUEUEP}
+rm -f tempkjasdbf.sub
+
+set -x
+
+NARQTIN=1
+NARQVERIF=`ls -ltr ${ROPERM}/chievol/gif/chi_evol${LABELI}*png | awk 'BEGIN {i=0} {if ($5>=18500) i+=1} END {printf ("%%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+
+#NARQTIN=2
+#NARQVERIF=`ls -ltr ${ROPERM}/prcmed/dataout/T${TRC}L${LV}/GPRCENM${LABELI}*.T${TRC}L${LV}.ctl | awk 'BEGIN {i=0} {if ($5>=2378) i+=1} END {printf ("%%d",i)}'`
+#
+#if [ ${NARQVERIF} -lt ${NARQTIN} ]
+#then
+## CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+#set -e;
+#      exit 2
+#fi
+
+NARQTIN=9
+NARQVERIF=`ls -ltr ${ROPERM}/perturbations/gif/perturbations*_${LABELI}*.png | awk 'BEGIN {i=0} {if ($5>=3000) i+=1} END {printf ("%%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+
+
+
+%include <tail.h>
+

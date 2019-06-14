@@ -1,0 +1,88 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        sstwkl.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   the weekly NMC interpolated SST           #
+#                   and provides a sea-ice mask files.        #
+#                   It generates GrADS output files.          #
+#                   It runs on batch.                         #
+#                                                             #
+#      Obs.       : It uses results from orgint and sibmsk.   #
+#                                                             #
+#      Date       : September 11th, 1995.                     #
+#      Last change: September 11th, 1995.                     #
+#                                                             #
+#*************************************************************#
+#
+#    Set directories
+#
+source=$OPERMOD/pre/source
+outtrc=$SOPERMOD/pre/dataout/$TRUNC
+input=$ROPERMODI
+inputp=$SOPERMOD/pre/datain
+inputd=$SOPERMOD/databcs
+ainput=$AOPERMOD/model/datain
+minput=$ROPERMOD/model/datain
+bin=$SOPERMOD/pre/bin
+out=$OPERMOD/pre/output
+#
+echo 'WEEKLY SST  -- RUNNING ...'
+#
+echo $source
+#
+# Define I/O units
+#
+#  Input  files
+#
+if [ -s $minput/$NAMEI$LABELI$EXTS.$TRUNC$LEV ]
+then
+eval $FFF'23'=$minput/$NAMEI$LABELI$EXTS.$TRUNC$LEV
+else
+echo "Using Initial Condition from NCEP:"
+echo "$ainput/$NAMEA$LABELI$EXTS.$TRUNC$LEV"
+eval $FFF'23'=$ainput/$NAMEA$LABELI$EXTS.$TRUNC$LEV
+fi
+eval $FFF'24'=$outtrc/fseald.form.$TRUNC
+eval $FFF'40'=$inputd/sstaoi.form
+eval $FFF'50'=$input/sstwkl.$LABELS
+export $FFF'23' $FFF'24' $FFF'40' $FFF'50'
+#
+#  Output files
+#
+eval $FFF'52'=$minput/sstwkl$LABELS.$TRUNC
+eval $FFF'54'=$outtrc/sstgwk$LABELS.$TRUNC.$MACH
+export $FFF'52' $FFF'54'
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/sstwkl
+make -f sstwkl.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/sstwkl
+make -f sstwkl.mk clean
+make -f sstwkl.mk
+exit
+  fi
+#
+# Generate Weekly Interpolated SST.
+#
+cd $bin/sstwkl/$TRUNC
+#
+./sstwkl.$TRUNC < $inputp/sstwkl.nml > $out/sstwkl.$LABELS.$HOUR.$TRUNC
+#

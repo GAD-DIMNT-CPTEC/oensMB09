@@ -1,0 +1,54 @@
+#!/bin/ksh -x
+#
+#********************************************************#
+#                                                        #
+#     Name:     recanl.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               the recomposition of a global model      #
+#               initial conditions.                      #
+#                                                        #
+#     Date:        February 11th, 1998.                  #
+#     Last change: February 11th, 1998.                  #
+#                                                        #
+#********************************************************#
+#
+echo 'Recomposition  -x-  RUNNING ...'
+#
+#    Set directories:
+#
+source=$OPERMOD/recanl/source
+bin=$SOPERMOD/recanl/bin/$TRUNC$LEV
+input=$SOPERMOD/recanl/datain
+out=$OPERMOD/recanl/output
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f recanl.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f recanl.mk clean
+make -f recanl.mk
+exit
+  fi
+#
+cd $bin
+#
+echo "./recanl.$TRUNC$LEV < $input/recanl${TYPES}.nml > $out/recanl.out.$LABELI.$HOUR.$TRUNC$LEV"
+./recanl.$TRUNC$LEV < $input/recanl${TYPES}.nml > $out/recanl.out.$LABELI.$HOUR.$TRUNC$LEV
+#

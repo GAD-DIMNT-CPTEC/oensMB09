@@ -1,0 +1,19 @@
+%include <head.h>
+%include <config.h>
+
+PERT=AVN
+export PERT
+
+cd $OPERM/run
+export OPERM SOPERM ROPERM CTLDIR DIRPRD
+export RMTUSR RMTCPR RMTCPF RMUSCF RMPWCF RMTCPY
+./runpntg1.sx6 126 28 $LABELI 15 ${PERT} 07 sstwkl
+set +x
+JNAME=OENSAVN
+SLEEPTIM=127
+%include <filectrl.h>
+
+sleep 90
+%include <ctrl_model.h>
+
+%include <tail.h>

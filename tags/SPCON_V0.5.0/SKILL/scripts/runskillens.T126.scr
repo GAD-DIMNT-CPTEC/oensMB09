@@ -1,0 +1,221 @@
+#!/bin/ksh -x
+. ${HOME}/tempo/global/oenspro/produtos/scripts/config.oens.prod
+#help#
+#**********************************************************#
+#                                                          #
+#     Name:           runskillens.T126.scr                 #
+#                                                          #
+#     Function:       This script runs the skill           #
+#                     performance based on anomally        #
+#                     correlations, rms error and bias     #
+#                     It runs in Korn shell.               #
+#                                                          #
+#     Date:           January   25th, 2002.                #
+#     Last change:    January   25th, 2002.                #
+#                                                          #
+#     Valid Arguments for runskillens.T126.scr             #
+#                                                          #
+#     First : LABELI : help or                             #
+#     First : LABELI : initial forecasting label           #
+#    Second : NMEMBR : number of members of the ensemble   #
+#     Third : NMDAYS : number of forecast days             #
+#                                                          #
+#             LABELx : yyyymmddhh                          #
+#                      yyyy = four digit year              #
+#                        mm = two digit month              #
+#                        dd = two digit day                #
+#                        hh = two digit hour               #
+#                                                          #
+#**********************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Test of Valid Arguments
+#
+if [ -z "${1}" ]
+then
+echo "LABELI is not set (yyyymmddhh)"
+exit 1
+fi
+if [ -z "${2}" ]
+then
+echo "NMEMBR is not set"
+exit
+else
+NMEMBR=${2} 
+fi
+if [ -z "${3}" ]
+then
+echo "NMDAYS is not set"
+exit
+else
+NMDAYS=${3} 
+fi
+#
+# Set Horizontal Resolution
+#
+RESOL=T126
+#
+# Set TERM
+#
+TERM=vt100;export TERM
+#
+#   Generate script file to run skill performance
+#
+cd ${HOMEPROD}/SKILL/scripts
+#
+echo "rm -f setskillens.${RESOL}.scr"
+#rm -f setskillens.${RESOL}.scr
+cat <<EOT > setskillens.${RESOL}.scr
+#!/bin/ksh
+#
+# Set initial current date
+#
+export datei=\`date\`
+echo "  Date Begin = \${datei}"
+#
+# Set directories and printer
+#
+export DIRSKL=${HOMEPROD}/SKILL/scripts
+export DIROUT=${DKPROD}/skill
+echo "DIRSKL = \${DIRSKL}"
+#
+# Set labels
+#
+export LABELI=${1}
+echo "LABELI = \${LABELI}"
+#
+echo \${LABELI} > labeli.${RESOL}.out
+yi=\`awk '{ print substr(\$1,1,4) }' labeli.${RESOL}.out\`
+mi=\`awk '{ print substr(\$1,5,2) }' labeli.${RESOL}.out\`
+di=\`awk '{ print substr(\$1,7,2) }' labeli.${RESOL}.out\`
+hi=\`awk '{ print substr(\$1,9,2) }' labeli.${RESOL}.out\`
+rm -f labeli.${RESOL}.out
+#
+# Run skill
+#
+if [ "\${hi}" = "00" -o "\${hi}" = "12" ]
+then
+#
+cd \${DIRSKL}
+#
+export GAUDFT=/usr/local/grads/udf/udft
+export GADDIR=/usr/local/grads/dat
+export GRADSB=/usr/local/grads/bin
+export GASCRP=/usr/local/grads/lib
+#
+rm -f nmembers.${RESOL}.n
+rm -f nmdays.${RESOL}.n
+rm -f filec.${RESOL}.n
+#
+cat <<EOT1> nmembers.${RESOL}.n
+${NMEMBR}
+EOT1
+cat <<EOT1> nmdays.${RESOL}.n
+${NMDAYS}
+EOT1
+cat <<EOB > filec.${RESOL}.n
+\${DIRSKL}/clmreannmc.${RESOL}.ctl
+EOB
+#
+#  expand memory
+#
+#ulimit -d 10485760
+#ulimit -s 1048576
+#ulimit -v 1013088
+#
+echo '/usr/local/grads/bin/gradsc -blc "run skill1.${RESOL}.gs"' \${yi} \${mi} \${di} \${hi}
+\${GRADSB}/gradsc -bl << EOTG
+run skill1.${RESOL}.gs
+\${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS} ${RESOL}
+${NMEMBR} ${NMDAYS}
+yes
+quit
+EOTG
+#
+echo '/usr/local/grads/bin/grads -blc "run skill2.${RESOL}.gs"' \${yi} \${mi} \${di} \${hi}
+\${GRADSB}/gradsc -bl << EOTG
+run skill2.${RESOL}.gs
+\${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS} ${RESOL}
+${NMEMBR} ${NMDAYS}
+yes
+quit
+EOTG
+#
+fi
+#
+# Run Brier Score
+#
+rm -f limiar.${RESOL}.n
+rm -f filec.${RESOL}.n
+#
+cat <<EOB > limiar.${RESOL}.n
+50.0
+EOB
+#
+cat <<EOB > filec.${RESOL}.n
+\${DIRSKL}/clima.gau.${RESOL}.ctl
+EOB
+#
+echo 'grads -lbc "run runbrierscore.${RESOL}.gs"' \${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS}
+\${GRADSB}/gradsc -lb << EOTG
+run runbrierscore.${RESOL}.gs
+\${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS} ${RESOL}
+${NMEMBR} ${NMDAYS}
+quit
+EOTG
+#
+rm -f setskillens.${RESOL}.scr
+rm -f clmreannmc.${RESOL}
+rm -f clmreannmc.${RESOL}.ctl
+rm -f clima.gau.${RESOL}
+rm -f clima.gau.${RESOL}.ctl
+rm -f nmembers.${RESOL}.n
+rm -f nmdays.${RESOL}.n
+rm -f limiar.${RESOL}.n
+rm -f filec.${RESOL}.n
+rm -f fileanl.${RESOL}
+rm -f filefctAVN.${RESOL}
+rm -f ${HOMEPROD}/SKILL/scripts/ctl/GPOSAVN*
+n=1
+while [ \${n} -le ${NMEMBR} ]
+do
+if [ \${n} -lt 10 ]
+then
+n='0'\${n}
+fi
+rm -f filefct\${n}P.${RESOL}
+rm -f filefct\${n}N.${RESOL}
+rm -f ${HOMEPROD}/SKILL/scripts/ctl/GPOS\${n}P*
+rm -f ${HOMEPROD}/SKILL/scripts/ctl/GPOS\${n}N*
+let n=n+1
+done
+chmod 755 -R \${DIROUT}
+
+
+#
+# Set final current date
+#
+export datef=\`date\`
+echo "  Date Final = \${datef}"
+#
+EOT
+#
+#   End of script generation
+#
+chmod 700 setskillens.${RESOL}.scr
+#
+#   Submit setskillens.${RESOL}.scr to at queue
+#
+#Adma echo "at now +1 minute setskillens.${RESOL}.scr"
+#Adma at now +1 minute setskillens.${RESOL}.scr 
+#qsub -q oper ./setskillens.${RESOL}.scr 
+./setskillens.${RESOL}.scr
+#

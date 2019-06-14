@@ -1,0 +1,56 @@
+#!/bin/ksh -x
+#********************************************************#
+#                                                        #
+#     Name:     Chopping.scr                             #
+#                                                        #
+#     Function: This script file is used to perform      # 
+#               the initial condition chopping.          #
+#               It generates a new initial condition     #
+#               in a new given resolution.               #
+#               It runs on batch.                        #
+#                                                        #
+#     Date:        July 01th, 2003.                      #
+#     Last change: July 01th, 2003.                      #
+#                                                        #
+#********************************************************#
+#
+echo "Initial Condition Chopping  -x-  Running ..."
+#
+# Set directories:
+#
+src=${SRCMAINDIR}/${SRCSUBDIR}/source
+bin=${SRCMAINDIR}/${SRCSUBDIR}/bin
+out=${SRCMAINDIR}/${SRCSUBDIR}/output
+#
+# Set Namelist and Output Extension
+#
+nml=${NML}
+ext=${LABELI}.${HOUR}.${TRUNCI}${LEVI}.${TRUNCO}${LEVO}.${EXT}
+#
+# Compilation:
+#
+if [ "${COMPILE}" = "make" ]
+then
+#
+# Make only:
+#
+  cd ${src}
+  make -f ${SRCNAME}.mak
+  exit
+fi
+#
+if [ "${COMPILE}" = "clean" ]
+then
+#
+# Clean and compile all the sources:
+#
+  cd ${src}
+  make -f ${SRCNAME}.mak clean
+  make -f ${SRCNAME}.mak
+  exit
+fi
+#
+cd ${bin}
+#
+time ./${SRCNAME} < ${nml}/${SRCNAME}.nml > ${out}/${SRCNAME}.${ext}
+#

@@ -1,0 +1,146 @@
+#!/bin/ksh
+#help#
+#*******************************************************************#
+#                                                                   #
+#     Name:           runctrreco.sx6                                #
+#                                                                   #
+#     Function:       This script submits the                       #
+#                     recomposition scripts                         #
+#                     of control forecast.                          #
+#                     It runs in Korn Shell.                        #
+#                                                                   #
+#      Date:           May    27th, 2003.                           #
+#      Last change:    May    27th, 2003.                           #
+#                                                                   #
+#     Valid Arguments for runctrreco.sx6                            #
+#                                                                   #
+#     First  :     TRC: three-digit triangular truncation           #
+#     Second :      LV: two-digit number of vertical sigma-layers   #
+#     Third  :  LABELI: initial forecasting label                   #
+#                                                                   #
+#              LABELx: yyyymmddhh                                   #
+#                      yyyy = two digit year                        #
+#                        mm = two digit month                       #
+#                        dd = two digit day                         #
+#                        hh = two digit UTC hour                    #
+#                                                                   #
+#*******************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < $0 | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+if [ -z "${2}" ]
+then
+echo "Second argument is not set (LV)"
+exit 
+fi
+if [ -z "${3}" ]
+then
+echo "Third argument is not set (LABELI: yyyymmddhh)"
+exit 
+fi
+#
+#   Set machine, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=Inter
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+EXT=out
+echo ${MAQUI}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   IOPERM is the directory for the input files.
+#
+. ../include/config.sx6
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${IOPERM}
+#
+#   Set truncation and layers
+#
+TRC=${1}
+LV=${2}
+RESOL=T${TRC}
+NIVEL=L${LV}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setctrreco.1.${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh -x
+#
+#************************************************************#
+#                                                            #
+#     Name:        setctrreco${RESOL}${NIVEL}.${MAQUI}       #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  recomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setctrreco.1.${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y'``date +'%m'``date +'%d'`
+HOUR=`date +'%H:%M'`
+echo 'Date: '\$DATE
+echo 'Hour: '\$HOUR
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+LABELI=${3}
+echo \${LABELI}
+export LABELI
+#
+cd ${ROPERM}/model/dataout
+rm -f GFCTCTR\${LABELI}\${LABELI}*
+rm -f GFCTCTR\${LABELI}*.dir.${RESOL}${NIVEL}
+rm -f GFCTCTR\${LABELI}*.dir.${RESOL}${NIVEL}.files
+#mv GFCTCTR\${LABELI}*F.fct.${RESOL}${NIVEL} ${ROPERM}/model/datain
+
+#AAF for i in `ls GFCTCTR\${LABELI}*F.fct.${RESOL}${NIVEL}`
+#AAF do
+#AAF       echo "ln -sf $i ${ROPERM}/model/datain/"
+#AAF       ln -sf $i ${ROPERM}/model/datain/
+#AAF done
+
+#
+cd  ${IOPERM}
+rm -f lst.GFCTCTR\${LABELI}.dr
+ls -l GFCTCTR\${LABELI}* > lst.GFCTCTR\${LABELI}.dr
+awk '{ print \$9 }' lst.GFCTCTR\${LABELI}.dr  >  lst.GFCTCTR\${LABELI}
+xx=\`awk '{ print substr(\$1,18,10) }' lst.GFCTCTR\${LABELI}\`
+echo ${xx}
+cd ${OPERM}/run
+for i in \${xx} 
+do
+runrecfct1.${MAQUI} run ${TRC} ${LV} FCTCTR \${LABELI} \${i}     
+done
+EOT0
+chmod 744 setctrreco.1.${RESOL}${NIVEL}.${MAQUI}
+
+echo "${OPERM}/run/setctrreco.1.${RESOL}${NIVEL}.${MAQUI}"
+submit ${OPERM}/run/setctrreco.1.${RESOL}${NIVEL}.${MAQUI} ${QUEUE} Info
+

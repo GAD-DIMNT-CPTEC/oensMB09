@@ -1,0 +1,84 @@
+#!/bin/ksh -x
+#*************************************************************#
+#                                                             #
+#      Name:        sstdir.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   interp SST on a direct access file        #
+#                   and provides a sea-ice mask files.        #
+#                   It generates GrADS output files.          #
+#                   It runs on batch.                         #
+#                                                             #
+#      Obs.       : It uses results from orgint and sibmsk.   #
+#                                                             #
+#      Date       : May 15th, 2001.                           #
+#      Last change: May 15th, 2001.                           #
+#                                                             #
+#*************************************************************#
+#
+echo "WEEKLY SST  Direct Access -- RUNNING ..."
+#
+#    Set directories
+#
+source=${OPERMOD}/pre/source/sstdir
+input=${ROPERMODI}
+inputp=${SOPERMOD}/pre/datain
+inputd=${SOPERMOD}/databcs
+ainput=${AOPERMOD}/model/datain
+minput=${ROPERMOD}/model/datain
+outtrc=${SOPERMOD}/pre/dataout/${TRUNC}
+bin=${SOPERMOD}/pre/bin/sstdir/${TRUNC}
+out=${OPERMOD}/pre/output
+#
+#   Check if the makefile will compile:
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f sstdir.mk
+exit
+  fi
+#
+  if [ "${COMPILE}" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f sstdir.mk clean
+make -f sstdir.mk
+exit
+  fi
+#
+# Define I/O units
+#
+#  Input  files: 23, 24, 40, 50 (defined in the main program).
+#  Output files: 52, 54.
+#
+if [ -s ${minput}/${NAMEI}${LABELI}${EXTS}.${TRUNC}${LEV} ]
+then
+eval ${FFF}23=${minput}/${NAMEI}${LABELI}${EXTS}.${TRUNC}${LEV}
+else
+echo "Using Initial Condition from NCEP:"
+echo "${ainput}/${NAMEA}${LABELI}${EXTS}.${TRUNC}${LEV}"
+eval ${FFF}23=${ainput}/${NAMEA}${LABELI}${EXTS}.${TRUNC}${LEV}
+fi
+eval ${FFF}24=${outtrc}/fseald.form.${TRUNC}
+eval ${FFF}40=${inputd}/sstaoi.form
+export ${FFF}23 ${FFF}24 ${FFF}40
+#
+rm -f ${minput}/$SSTDIR${LABELS}.${TRUNC}
+eval ${FFF}52=${minput}/$SSTDIR${LABELS}.${TRUNC}
+eval ${FFF}54=${outtrc}/sstig$SSTDIR${LABELS}.${TRUNC}.${MACH}
+export ${FFF}52 ${FFF}54
+#
+# Generate Weekly Interpolated SST.
+#
+cd ${bin}
+#
+./sstdir.${TRUNC} < ${inputp}/sstdir.nml > ${out}/sstdir.${LABELS}.${HOUR}.${TRUNC}
+#

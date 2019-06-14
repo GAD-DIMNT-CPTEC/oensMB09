@@ -1,0 +1,275 @@
+%include <head.h>
+%include <config.h>
+
+HH=`echo $LABELI | cut -c 9-10`
+LABELS=`echo $LABELI | cut -c 1-8`
+LABELF=`date -d "${LABELS} 15 days" +"%%Y%%m%%d${HH}"`
+
+cd $OPERM/run
+
+. ./config.sx6
+
+NFFRS=-1
+NFBEG=-1
+NFEND=31
+PREFX="%TASK%"
+REQ=p
+OUTBIN=0
+
+if [ $OUTBIN -eq 0 ]; then
+        OUTBIN='.False.'
+else
+        OUTBIN='.True.'
+fi
+
+rm -f $SOPERM/newpos/scripts/POSTIN_T126L28a${PREFX}
+cat > $SOPERM/newpos/scripts/POSTIN_T126L28a${PREFX} << EOF
+!namelist
+!############################### Change Log ##################################
+! 1.0.0.0
+!
+!  \$Author: bonatti \$
+!  \$Date: 2005/05/30 18:15:44 \$
+!  \$Revision: 1.2 \$
+!
+!
+!#############################################################################
+!
+ &PosInput
+  nffrs=$NFFRS,            ! value to indicated if model use or not initialization
+                       !    or to indicate if it is a cold or warm start run:
+                       !    nffrs=-1 - for runs with normal mode initialization
+                       !    nffrs=0  - for runs without normal mode initialization
+                       !    nffrs=1  - for warm start runs
+  nfbeg=$NFBEG             ! number of the first forecasted file to be post-processed
+  nfend=$NFEND,            ! number of forecasted files to be post-processed
+  nmand=09,            ! number of pressure levels listed below in format 10f8.2
+                       !    nmand=-1 means the use of default 18-levels
+  RegIntIn=.FALSE.,    ! flag to interpolate outputs on regular grid (.TRUE.)
+                       !    .FALSE. to get outputs on Gaussian grid
+  Linear=.FALSE.,      ! Flag to Gaussian grid type Linear (.TRUE.) or 
+                       !                            Quadratic (.FALSE.)
+  trunc ='T${TRC}',       ! horizontal truncation = Txxx
+  lev   ='L${LV}',        ! vertical layers = Lxx
+  labeli='${LABELI}', ! initial forecasting label (yyyymmddhh)
+  labelf='${LABELF}', ! final forecasting label (yyyymmddhh)
+  prefx ='${PREFX}',        ! preffix for input and output files
+  req   ='${REQ}',          ! flag to select requested field file (p, s, c, e or nothing)
+                       !   p - use file rfd.pnt
+                       !   s - use file rfd.sfc
+                       !   c - use file rfd.clm
+                       !   e - use file rfd.eta
+                       !     - use file rfd
+                       !   these files are spected to be in the directory:
+                       !   \${roperm}/pos/datain
+                       !   at the same directory there is a dft file for
+                       !   derived fields (this should be included in the
+                       !   code in future)
+  roperm='$ROPERM'     ! main dataout directory
+                       !   should be the same for model and post-processing
+  Binary=${OUTBIN}     ! output binary format ! False -> Grib (Default)
+ /
+ 1000.00  925.00  850.00  700.00  500.00  300.00  250.00  200.00   50.00
+EOF
+
+# 1000.00  925.00  850.00  700.00  500.00  400.00  300.00  250.00  200.00  150.00
+#  100.00   70.00   50.00   30.00   20.00   10.00    3.00
+
+cd $SOPERM/newpos
+pwd
+itime=`echo "24*3600" | bc -l`
+BUFFER=20480
+
+cpu=1
+MEM=5gb
+
+BASE=`pwd`
+echo $BASE
+rm -f xmit_pos.*.POS
+FSCR=$BASE"/scripts"
+FEXEMODEL=$BASE"/model"
+FEXEPOSGL=$BASE
+
+echo "SAIDA=${SOPERM}/run/setout/setposgrib${LABELI}.out"
+
+cat << EOT1 > ./scripts/xmit_pos.sh
+#!/usr/bin/ksh
+#PBS -o turi-e:${SOPERM}/run/setout/setposgrib${LABELI}.out
+#PBS -j o
+#
+F_RSVTASK=$cpu
+
+#export F_UFMTENDIAN=18,19,10,11,22,23,24,49,83,82,81,27,25,26,33,99,61,45,42,52,50,80,51,53,92,93,43,77,0,31,91,66,32,21,20,74,88,89,36,37,38,39
+
+#AAF cd ${FEXEPOSGL}/exec
+#AAF Post_grb < ${FSCR}/POSTIN_T126L28a${PREFX} > ${SOPERM}/run/setout/xmit_pos${PREFX}.`date +'%%Y%%m%%d'`_`date +'%%Y%%m%%d'`.POS
+
+#NOVO POS - JPABLO
+cd /gfs/home3/io_dop/tempo/global/oensproa/model/tigge/bin
+Postgrb < ${FSCR}/POSTIN_T126L28a${PREFX} > ${SOPERM}/run/setout/xmit_pos${PREFX}.`date +'%%Y%%m%%d'`_`date +'%%Y%%m%%d'`.POS
+echo ${SOPERM}/run/setout/xmit_pos${PREFX}.`date +'%%Y%%m%%d'`_`date +'%%Y%%m%%d'`.POS
+
+echo "Post Ended..."
+EOT1
+
+qsub -q ${QUEUE} -N GRIB${PREFX} ./scripts/xmit_pos.sh
+sleep 03; rm -f ./scripts/xmit_pos.sh
+
+set +x
+while [ `qstat | grep GRIB${PREFX} | wc -l` -ne 0 ]
+do
+      TIME=`qstat | grep GRIB${PREFX} | awk '{print $9}'`
+      echo "RODANDO GRIB TIGGE...TEMPO: ${TIME}"
+sleep 13
+done
+set -x
+
+# GERA OS RECORTES DO TIGGE
+set +x
+
+export GRIB_DEFINITION_PATH=/gfs/home3/io_dop/tempo/global/oensproa/model/tigge/share/grib_api/definitions
+export GRIB_TEMPLATES_PATH=/gfs/home3/io_dop/tempo/global/oensproa/model/tigge/share/grib_api/templates
+
+cd ${SOPERM}/tigge/scripts
+set +e
+. ../../run/config.sx6
+set -e
+GRADS=/usr/local/grads/bin
+WGRIB18=/gfs/home3/io_dop/tools/wgrib.1.8
+WGRIB18=/gfs/home3/io_dop/tempo/global/oensproa/model/tigge/bin/wgrib.tupay
+ARQINI=z_tigge_c_sbsj_${LABELI}0000_glob_test
+DIRINI=sbsj_${LABELI}00_glob_test
+CONVERTER=/gfs/home3/io_dop/tempo/global/oensproa/model/tigge/bin/grib_convert
+TIGGENAME=/gfs/home3/io_dop/tempo/global/oensproa/model/tigge/bin/tigge_name
+TIGGECHECK=/gfs/home3/io_dop/tempo/global/oensproa/model/tigge/bin/tigge_check
+
+tiggedirmopora=/home2/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/${DIRINI}
+tiggeoutgoing=${tiggedirmopora}/outgoing
+ssh mopora -l ldm -i ~/.ssh/id_rsa "mkdir -p $tiggescratch"
+
+typeset -RZ4 HOR
+typeset -RZ3 nnn
+typeset -RZ4 llll
+
+REQ=`awk 'BEGIN {print toupper("'$REQ'")}'`
+cd ${ROPERM}/pos/dataout/T${TRC}L${LV}
+
+
+ARQLST=GPOS${PREFX}${LABELI}${LABELF}${REQ}.fct.T${TRC}L${LV}.lst
+rm -f  $ARQLST cptec.*.${LABELI}.grb
+
+ls -ltr GPOS${PREFX}${LABELI}*P.[if]*grb | awk '{print $9}' > ${ARQLST}
+
+set -A hh 00 12
+i=0
+HORo=0
+
+incHORaslk=0
+
+# PEGA TODOS OS ARQUIVOS DO .lst PARA RECORTE
+echo "GERANDO RECORTES...\n"
+
+set -A HORaslk 0000 0012 0024 0036 0048 0060 0072 0084 0096 0108 0120 0132 0144 0156 0168 0180 0192 0204 0216 0228 0240 0252 0264 0276 0288 0300 0312 0324 0336 0348 0360 0360
+
+tt=cf
+nnn=000
+
+for arq in `cat ${ARQLST} | grep -v inz`
+do
+      HORo=`echo $arq | cut -c 18-25`
+      HORa=${hh[$i]}
+      TEMP=`echo $LABELF | cut -c 1-8`
+      if [ ${HORo} -eq ${TEMP} ]
+      then
+              HORa=00
+      fi
+      MM=`echo $LABELI | cut -c 5-6`
+      MMe=`echo $HORo | cut -c 5-6`
+      if [ $MM -eq $MMe ]
+      then
+            MMa=$HORo
+            HOR=`echo "($HORo-$LABELS)*24+$HORa" | bc -l`
+      else
+            DDe=`echo $HORo | cut -c 7-8`
+            HOR=`echo "($MMa-$LABELS+$DDe)*24+$HORa" | bc -l`
+      fi
+#AAF      if [ $HOR -ge 360 ]; then
+#AAF             HOR=360
+#AAF      fi
+      
+      for arqparm in `ls ${SOPERM}/tigge/parm/*.parm`
+      do
+            # LE ARQUIVO DE CONFIGURACAO DOS RECORTES
+            . $arqparm
+#            echo $VARWGRIB - $VARTIGGE - ${#LEVELS[*]}
+            if [ $PREFX = "AVN" ]
+            then
+                  nnn=000
+                  tt=cf
+            else
+                  tt=pf
+                  NP=`echo $PREFX | cut -c 3`
+                  NUMM=`echo $PREFX | cut -c 1-2`
+                  if [ $NP = "P" ]
+                  then
+                        let nnn=$NUMM+7
+                  else
+                        let nnn=$NUMM
+                  fi
+            fi
+            j=0
+            while [ $j -lt ${#LEVELS[*]} ]
+            do
+                  if [ \( ${LEVELS[$j]} -gt 0 \) -a \( ${LEVELS[$j]} -lt 1001 \) ]
+                  then
+                        ll=pl
+                        llll=${LEVELS[$j]}
+                        procl="${LEVELS[$j]} mb"
+                  else
+                        ll=sl
+                        llll=0000
+                        procl=sfc
+                        if [ "$VARTIGGE" = "msl" ]; then
+                              procl=MSL
+                        fi
+                  fi      
+#                  echo $VARWGRIB - $VARTIGGE - ${LEVELS[$j]}
+                  # NOMEIA ARQUIVO DE SAIDA
+                  HOR=${HORaslk[$incHORaslk]}
+                  ARQOUT=${ARQINI}_${tt}_${ll}_${HOR}_${nnn}_${llll}_${VARTIGGE}.grib
+
+                  # GERA RECORTES UTILIZANDO O wgrib
+                  ${WGRIB18} -s $arq | grep ":$VARWGRIB:${procl}:" | ${WGRIB18} -4yr -grib -i $arq -o ${ARQOUT} > /dev/null
+                  ${CONVERTER} /gfs/home3/io_dop/tempo/global/oensproa/model/tigge/sample/cptec.rules_grib2 ${ARQOUT} ${ARQOUT}2
+                  tiggename=`${TIGGENAME} ${ARQOUT}2 | grep "CORRECT" | cut -d: -f2`
+                  tiggename=`echo $tiggename | sed -e s%%"c_46"%%"c_sbsj"%%g`
+                  mv ${ARQOUT}2 $tiggename
+                  ${TIGGECHECK} $tiggename
+                  if [ $? -ne 0 ];then
+                        echo "Arquivo $tiggename com problemas (TIGGECHECK)\n Tentando Novamente...\n"
+                  fi
+            let j=$j+1
+            done
+      done
+
+      if [ $i -eq 0 ]
+      then
+              i=1
+      else
+              i=0
+      fi
+      let incHORaslk=$incHORaslk+1
+      
+done
+
+#FAZ A COPIA DOS RECORTES PARA A MOPORA e DEPOIS MOVE PARA O DIRETORIO DE SAIDA.
+scp -q -i ~/.ssh/id_rsa ${ARQINI}_${tt}_??_????_${nnn}_*.grib ldm@mopora:$tiggescratch
+
+# APAGA ARQUIVOS ANTIGOS
+LABELR=`date -d "$LABELS 1 day ago" +"%%Y%%m%%d"`
+find ${ROPERM}/pos/dataout/T${TRC}L${LV} -name "*$LABELR*" -exec rm -f {} \;
+find ${ROPERM}/model/dataout/T${TRC}L${LV} -name "*$LABELR*" -exec rm -f {} \;
+
+
+%include <tail.h>

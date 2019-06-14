@@ -1,0 +1,22 @@
+#  La1 - latitude of first grid point
+signed[3] latitudeOfFirstGridPoint : optional, edition_specific;
+meta latitudeOfFirstGridPointInDegrees scale(latitudeOfFirstGridPoint,oneConstant,grib1divider);
+alias La1 = latitudeOfFirstGridPoint;
+
+#  Lo1 - longitude of first grid point
+signed[3] longitudeOfFirstGridPoint  : optional,edition_specific;
+meta longitudeOfFirstGridPointInDegrees scale(longitudeOfFirstGridPoint,oneConstant,grib1divider);
+alias Lo1 = longitudeOfFirstGridPoint;
+
+include "resolution_flags.def";
+
+#  La2 - latitude of last grid point
+signed[3] latitudeOfLastGridPoint : optional, edition_specific;
+meta latitudeOfLastGridPointInDegrees scale(latitudeOfLastGridPoint,oneConstant,grib1divider);
+alias La2 = latitudeOfLastGridPoint;
+
+#  Lo2 - longitude of last grid point
+signed[3] longitudeOfLastGridPoint : optional;
+transient longitudeOfLastGridPointG1to2=longitudeOfLastGridPoint;
+meta longitudeOfLastGridPointInDegrees scale(longitudeOfLastGridPoint,oneConstant,grib1divider);
+alias Lo2 = longitudeOfLastGridPoint;

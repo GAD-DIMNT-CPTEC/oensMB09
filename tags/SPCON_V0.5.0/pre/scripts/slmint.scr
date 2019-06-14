@@ -1,0 +1,68 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        slmint.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   the soil moisture file.                   #
+#                   It generates GrADS output files.          #
+#                   It runs on batch.                         #
+#                                                             #
+#      Obs.       : It uses results from sibmsk.              #
+#                                                             #
+#      Date       : Feb. 09th, 1994.                          #
+#      Last change: June 26th, 1995.                          #
+#                                                             #
+#*************************************************************#
+#
+# Set directories
+#
+source=$OPERMOD/pre/source
+input=$SOPERMOD/databcs
+outtrc=$SOPERMOD/pre/dataout/$TRUNC
+minput=$SOPERMOD/model/datain
+output=$SOPERMOD/pre/dataout
+bin=$SOPERMOD/pre/bin/slmint/$TRUNC
+out=$OPERMOD/pre/output
+#
+echo 'Soil Moisture -- RUNNING ...'
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/slmint
+make -f slmint.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/slmint
+make -f slmint.mk clean
+make -f slmint.mk
+exit
+  fi
+#
+#  Input  files: 10 and 18.
+#  Output files: 19, 20 and 21.
+#
+eval $FFF'10'=$outtrc/fseald.form.$TRUNC
+eval $FFF'18'=$input/soilms.form
+eval $FFF'19'=$minput/soilms.$TRUNC
+eval $FFF'20'=$outtrc/smigrd.$TRUNC.$MACH
+eval $FFF'21'=$output/smcgrd.$MACH
+export $FFF'10' $FFF'18' $FFF'19' $FFF'20' $FFF'21'
+#
+cd $bin
+#
+./slmint.$TRUNC > $out/slmint.$DATE.$HOUR.$TRUNC
+#	

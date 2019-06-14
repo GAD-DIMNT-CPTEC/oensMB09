@@ -1,0 +1,66 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Produtos
+FAMILY1          =   Produtos
+SMSDATE          =   2011081512
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Produtos/FTP_WWW
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   1
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   FTP_WWW
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+HH=${HH}
+LABELI=$YYYY$MM$DD$HH
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+let NMEMBR=\($NPERT*2\)+1
+
+cd ${OPERM}/removies/scripts/
+
+#cp -rpf ${ROPERM}/pos/dataout/T${TRC}L${LV}/GFGNAVN${LABELI}${LABELF}M.grh.T${TRC}L${LV}.ctl ${ROPERM}/pos/dataout/T${TRC}L${LV}/CONT${LABELI}${LABELF}.T${TRC}L${LV}.ctl.tmp
+#cp -rpf ${ROPERM}/pos/dataout/T${TRC}L${LV}/GFGNAVN${LABELI}${LABELF}M.grh.T${TRC}L${LV}     ${ROPERM}/pos/dataout/T${TRC}L${LV}/CONT${LABELI}${LABELF}.T${TRC}L${LV}.bin
+#cp -rpf ${ROPERM}/pos/dataout/T${TRC}L${LV}/LocalizAVN${LABELI}${LABELF}.T${TRC}L${LV}       ${ROPERM}/pos/dataout/T${TRC}L${LV}/
+
+#cat ${ROPERM}/pos/dataout/T${TRC}L${LV}/CONT${LABELI}${LABELF}.T${TRC}L${LV}.ctl.tmp | sed -e s%%"GFGNAVN${LABELI}${LABELF}M.grh.T${TRC}L${LV}"%%"CONT${LABELI}${LABELF}.T${TRC}L${LV}.bin"%%g > ${ROPERM}/pos/dataout/T${TRC}L${LV}/CONT${LABELI}${LABELF}.T${TRC}L${LV}.ctl
+#rm -f ${ROPERM}/pos/dataout/T${TRC}L${LV}/CONT${LABELI}${LABELF}.T${TRC}L${LV}.ctl.tmp
+
+$DATAMAN %SMSINCLUDE%/dataman.oenspro.ftp ${LABELI}
+$DATAMAN %SMSINCLUDE%/dataman.oenspro.ftp.fixo ${LABELI}
+
+cd ${OPERM}/run
+./runibaia.ksh ${LABELI}
+./cprepositorio.ksh ${LABELI} # script para copiar os diretorios campos para a img0.
+
+set +e
+set +x
+
+#TEMPORARIO - ATEH MUDAREM DA TUCUPI PARA A IMG0
+#COMENTADO DEVIDO AO DESLIGAMENTO DA TUCUPI 12/05/2009 - ALEX
+#ftp -inv tucupi.cptec.inpe.br << EOF
+#user pnt &arun/a*
+#cd /web1/ftp/pub/produtos/prod_eta/ensemble/PROBABILITY
+#lcd /gfs/dk20/modoper/tempo/global/oens/probagr/gif
+#bin
+#mdel prec_agric_*.gif
+#mput prec_agric_*.gif
+#dir
+#quit
+#EOF
+#
+set -e
+set -x
+
+
+%include <tail.h>

@@ -1,0 +1,264 @@
+RMTCPR=turi
+RMUSCF=modoper
+
+QUEUE=PNT-EN        # FILA GENERICA
+QUEUEP=oper        # FILA PARA RODAR NA TURI
+QUEUE1=PNT-EN      # FUTURA FILA PARA JOBS DE no minimo 8 PROCESSADORES
+QUEUE2=PNT-EN      # FUTURA FILA PARA JOBS DE MENOS DE 8 PROCESSADORES
+QUEUETX7=$QUEUEP
+
+TRC=126
+LV=28
+FSCT=15
+NPERT=07
+DHFCT=06
+
+NFDAYS=${FSCT}
+
+CALDATE=/gfs/home3/modoper/bin/caldate.3.0.1
+DATAMAN=/gfs/home3/modoper/tools/dataman.ksh
+GRIBMAP=/usr/local/grads-1.9b4/bin/gribmap
+
+OENSPROBG=/bangu/samfs/modoper/tempo/global
+#ABS OENSPROBG=/rede/nas/modoper/tempo/global 
+HOMEOENS=/gfs/home3/modoper/tempo/global
+#DKOENS=/gfs/dk20/modoper/tempo/global
+DKOENS=/gfs/dk22/modoper/tempo/global
+
+T126OP=/gfs/dk20/modoper/tempo/global/glbT126
+T213OP=/gfs/dk20/modoper/tempo/global/T213L42
+T213BG=/bangu/samfs/modoper/tempo/global/prototipo/T213L42
+
+mHOME=${HOMEOENS}/oens
+mDK=${DKOENS}/oens
+
+BANGU=${OENSPROBG}/oens/nmc/T${TRC}L${LV}
+#ABS BANGU=${OENSPROBG}/oens/nmc 
+NAS=/rede/nas/modoper/tempo/global/oens/nmc/T${TRC}L${LV}
+#ABS T213BG=NAS 
+
+DIR_LOC=/local_disk/dk01/modoper/tempo/global/oens/nmc/T${TRC}L${LV}
+#DIR_LOC=${NAS}
+
+OPERM=${mHOME}
+SOPERM=${mHOME}
+ROPERM=${mDK}
+IOPERM=${mDK}/model/datain 
+AOPERM=${mDK}
+ROPERMI=${mDK}/model/datain
+
+SCTROPERM=/gfs/home3/modoper/tempo/global/glbT126
+RCTROPERM=${T126OP}
+ANLT213DK=${T213OP}/model/datain
+
+mkdir -p ${mDK}/model/datain
+mkdir -p ${mDK}/model/dataout/T${TRC}L${LV}
+mkdir -p ${mDK}/pos/datain
+mkdir -p ${mDK}/pos/dataout/T${TRC}L${LV}
+mkdir -p ${mDK}/plumes/datain
+mkdir -p ${mDK}/plumes/dataout/T${TRC}L${LV}
+mkdir -p ${mDK}/ensmed/datain
+mkdir -p ${mDK}/ensmed/dataout/T${TRC}L${LV}
+
+#TIGGE CONFIG
+#ALIAS PARA A MAQUINA tiggeldm=tigge-ldm.cptec.inpe.br
+tiggeldm=ubiru.cptec.inpe.br
+tiggedirmopora=/usr/local/ldm/tigge/data
+tiggescratch=${tiggedirmopora}/scratch/
+tiggeoutgoing=${tiggedirmopora}/outgoing
+tiggenas=/rede/nas/modoper/tigge
+      
+###############################################################
+#     
+# FUNCTIONS
+submit () {
+#!/bin/ksh
+set +x
+set +u
+####
+#
+#     Last Queue Status - by Eduardo Barbosa - 20061113
+#     Modificado por: Alex A. Fernandes
+#
+#     - lqs HISTORY -
+#     20061114 - inclusao da opcao SMSLABEL como parametro de entrada;
+#                inclusao da variavel $fctr para controle de falhas na
+#                 leitura do arquivo /adm/log/qstat.log;
+#                geracao automatica de um arquivo para testes (tmp.sx6)
+#
+#     20061116 - inclusao da opcao SMSMETER como parametro de entrada;
+#                Para funcionamento deve-se passar dois parametros
+#                Nome do medidor e user time total do processo
+#
+#<--#
+#     Sintaxe: ${PERCT}> lqsTRUN_IO_v3b1 ARQUIVO FILA [SMSLBL]
+#                 , onde ARQUIVO = Arquivo para submissao do job
+#                        FILA    = Nome da fila
+#                        SMSLBL  = Label para SMS (opcional)
+#                        SMSMTR  = Medidor para SMS (opcional)
+#                        TEMPOF  = Tempo de rodada em fila (em segundos, apenas se for utilizar SMSMTR)
+#
+#     Exemplo: ${PERCT}> lqsTRUN_IO_v3b1 tmp.sx6 Mini
+#-->#
+#
+####
+
+printhelp () {
+      cat < ${0} | sed -n '/^#<--#/,/^#-->#/p'
+      exit 1
+};
+
+#
+# Testa Existencia do primeiro parametro (Script)
+#
+echo "\n"
+if [ \( ! -z $1 \) -a \( -s $1 \) ]; then
+      fsub=$1
+      echo "Script: $fsub"
+      if [ \( `echo $0 |grep ".sms" | wc -l` -ge 1 \) -a \( `echo $0 |grep ".job*" | wc -l` -ge 1 \) ]; then
+            smsoksh="%%"
+      else
+            smsoksh=`echo "%%" | cut -c 1`
+      fi
+else
+      printhelp
+fi
+
+#
+# Testa Existencia do segundo parametro (Fila)
+#
+if [ ! -z $2 ]; then
+      qnam=$2
+      echo "Fila: $qnam"
+else
+      printhelp
+fi
+
+#
+# Testa Existencia do terceiro parametro (smslabel)
+#
+if [ ! -z $3 ]; then
+      smsl=$3
+      echo "SmsLabel: $smsl"
+else
+      echo "Rodando Sem Label(SMS)..."
+      smsl=
+fi
+
+#
+# Testa Existencia do quarto e quinto parametro (smsmeter)
+#
+if [ ! -z $4 ]; then
+      if [ ! -z $5 ]; then
+            smsm=$4
+            smsmtime=$5
+            echo "SmsMeter: $smsm $smsmtime"
+      else
+            echo "Rodando Sem Medidor(SMS)..."
+            smsm=
+      fi
+else
+      echo "Rodando Sem Medidor(SMS)..."
+      smsm=
+fi
+echo "\n"
+
+#
+#     Diretorios de trabalho
+#
+DIRSCR=$PWD
+DIRSX6=/usr/bin/nqsII
+
+#
+#     Submissao do job
+#
+qsub=`${DIRSX6}/qsub -q ${qnam} ${fsub}`
+
+#
+#     Numero do job
+#
+jobn=`echo ${qsub} | cut -d. -f1 | awk '{print $2}'`
+
+#
+#     Stdout
+#
+set +e
+stdo=`${DIRSX6}/qstat -f ${jobn}.siox | grep Stdout | cut -d: -f2-20 | sed -e s%".siox"%""%g`
+if [ `echo ${stdo} | grep "${smsoksh}s" | wc -l` -ge 1 ]; then
+      stdo=`echo ${stdo} | sed s#\${smsoksh}s#${jobn}\.siox#g | sed -e s%".siox"%""%g`
+fi
+echo "Stdout = ${stdo}\n"
+#
+#     Verificacao da fila
+#
+let fctr=0
+while [ 1 ]; do
+      stat=`cat /adm/log/qstat.log | grep ${jobn}.siox`
+      
+      echo "+--------------------------------------------+"
+      echo "Job       Status       Elapse        User Time"
+      echo $stat | awk '{print $2 "  " $6 "          " $10"             "$9}'
+      echo "+--------------------------------------------+"
+
+#      echo "stat=cat /adm/log/qstat.log | grep ${jobn}.siox"
+      echo $stat
+#
+#     Saida do Label do SMS
+#
+      if [ ! -z ${smsl} ]; then
+            smsltxt=`echo $stat | awk '{print $6," - ",$10," s"}'`
+            smslabel $smsl "$smsltxt" 2> /dev/null
+      fi
+#
+#     Saida do medidor do SMS
+#
+      if [ ! -z ${smsm} ]; then
+            if [ ! -z "$stat" ]; then
+                  jobtim=`echo $stat | grep $jobn | awk '{print $9}' | tail -1 | cut -d. -f1` # Captura tempo de processamento
+                  if [ \( $jobtim -ge 0 \) -a \( $jobtim -le 99999999 \) ]; then  # Controle de erros para o tempo de processamento
+                        jobtim=`echo "(${jobtim}/${smsmtime})*100" | bc -l | cut -d. -f1` 
+                        smsmeter ${smsm} $jobtim
+                  else
+                        jobtim=100
+                  fi
+            fi
+      fi
+#
+# APENAS PARA O ENSEMBLE
+#
+      jobtimens=`echo $stat | grep $jobn | awk '{print $10}' | tail -1 | cut -d. -f1`
+      if [ "$jobtimens" = "" ]; then
+            jobtimens=0
+      fi 
+      if [ $jobtimens -gt 8000 ]; then
+            qdel $jobn
+            sleep 30
+            qdel $jobn
+      fi
+#
+#     Verificacao da Existencia do arquivo de output
+#     para saida do loop
+#
+      if [ -s ${stdo} ]; then
+            break
+      fi
+      
+#
+#     Controle de falhas
+#
+      if [ `echo $stat | wc -w | cut -c1-10` -ne 13 ]; then
+            let fctr=fctr+1
+            if [ $fctr -gt 5 ];then
+                  break
+            fi
+      else
+            fctr=0  
+      fi
+      sleep 65
+done
+
+set -e
+set -u
+set -x
+};
+

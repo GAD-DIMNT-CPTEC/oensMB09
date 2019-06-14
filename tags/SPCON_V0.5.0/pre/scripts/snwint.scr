@@ -1,0 +1,68 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        snwint.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   the initial interpolated snow file.       #
+#                   It generates GrADS output files.          #
+#                   It runs on batch.                         #
+#                                                             #
+#      Obs.       : It uses results from albint.              #
+#                                                             #
+#      Date       : June 26th, 1995.                          #
+#      Last change: June 26th, 1995.                          #
+#                                                             #
+#*************************************************************#
+#
+# Set directories
+#
+source=$OPERMOD/pre/source
+outtrc=$SOPERMOD/pre/dataout/$TRUNC
+minput=$ROPERMOD/model/datain
+inputp=$SOPERMOD/pre/datain
+bin=$SOPERMOD/pre/bin/snwint/$TRUNC
+out=$OPERMOD/pre/output
+#
+echo 'Snow  -x-  RUNNING ...'
+#
+#   Check if the makefile will have to be run or not:
+#
+echo $COMPILE
+#
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Touch rotines:
+#
+cd $source/snwint
+  make -f snwint.mk
+#
+  exit
+  fi
+#
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Touch rotines:
+#
+cd $source/snwint
+  make -f snwint.mk clean
+  make -f snwint.mk
+#
+  exit
+  fi
+#
+#  Input  files: 14 and 15.
+#  Output files: 16, 17 and 66.
+#
+eval $FFF'14'=$outtrc/fseald.form.$TRUNC
+eval $FFF'15'=$outtrc/albedo.$TRUNC
+eval $FFF'16'=$minput/snowfd$LABELI$EXTS.$TRUNC
+eval $FFF'17'=$outtrc/snwgrd$LABELI$EXTS.$TRUNC
+eval $FFF'66'=$out/snwint.$LABELI.$HOUR.$TRUNC
+export $FFF'14' $FFF'15' $FFF'16' $FFF'17' $FFF'66'
+#
+cd $bin
+./snwint.$TRUNC $LABELI < $inputp/snwint.nml
+#

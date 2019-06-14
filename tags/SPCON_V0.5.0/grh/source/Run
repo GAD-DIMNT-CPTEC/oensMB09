@@ -1,0 +1,40 @@
+#!/bin/ksh
+#
+dirdata=/gfs/dk15/bonatti
+dirhome=/gfs/home0/bonatti
+varname=PostGridHistory
+varfile=PostGridHistory
+ieeefiles='10,20,30,40,50,60,70,80'
+#
+host=`hostname`
+if [ "${host}" = "turi" -o "${host}" = "tupay" ]
+then
+export F_UFMTENDIAN=${ieeefiles}
+make=Makefile.turi
+else
+make=Makefile.sx6
+fi
+#
+direxe=${dirdata}/prototipo/exec
+dirsrc=${dirhome}/prototipo/grh
+dirout=${dirdata}/prototipo/output
+#
+bin=${direxe}/${varname}
+nml=${dirsrc}/${varfile}.nml
+out=${dirout}/${varname}.out
+#
+cd ${dirsrc}
+echo " "
+echo " make : ${make} on ${host}"
+make -f ${make} clean
+make -f ${make}
+#
+rm -f ${dirout}/${varname}.out
+echo " "
+echo " ${bin} < ${nml} > ${out}"
+time ${bin} < ${nml} > ${out} 2>&1
+#
+more ${out}
+#
+echo " "
+#

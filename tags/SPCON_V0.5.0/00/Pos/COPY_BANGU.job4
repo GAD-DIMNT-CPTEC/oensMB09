@@ -1,0 +1,534 @@
+#! /bin/ksh
+
+date
+
+set -e # stop the shell on first error
+set -u # fail when using an undefined variable
+set -x # echo script lines as they are executed
+
+# Defines the three variables that are needed for any
+# communication with SMS
+
+export SMS_PROG=314159  # SMS Remote Procedure Call number
+export SMSNODE=turi    # The name sms that issued this task
+export SMSNAME=/oens/T126/Pos/COPY_BANGU    # The name of this current task
+export SMSPASS=/QkCW4E5    # A unique password
+export SMSTRYNO=4  # Current try number of the task
+
+export PATH=$PATH:/usr/local/sms
+
+
+# Tell SMS we have stated
+# The SMS variable SMSRID will be set to parameter of smsinit
+# Here we give the current PID.
+
+smsinit $$ 
+
+# Defined a error hanlder
+
+ERROR() {
+
+        echo "             |        |"
+        echo "             |        |"
+	echo "------------------------------------"
+	echo "       ----------------------"
+	echo "              --------"
+	echo "                 --"
+df=`date +"%Y%m%d%H%M%S"`
+echo "A:/oens/T126/Pos/COPY_BANGU:${LABELI}:${df}" >> /local_disk/dk00/logs_sms/oens.${LABELI}.log
+	set +e                     # Clear -e flag, so we don't fail
+	smsabort                   # Notify SMS that something went wong
+	trap 0                     # Remove the trap
+	exit 0                     # End the script
+}
+
+# Trap any calls to exit and errors caught by the -e flag
+
+trap ERROR 0
+
+# Trap any signal that may cause the script to fail
+
+trap '{ echo "Killed by a signal"; ERROR ; }' 1 2 3 4 5 6 7 8 10 12 13 15
+
+if [ "Pos" = "Produtos" ]; then
+      sleep 5
+fi
+TRC=126
+LV=28
+FSCT=15
+NPERT=07
+PREFX=NMC
+MAQ=sx6
+CALDATE=/gfs/home3/modoper/bin/caldate.3.0.1
+
+. /gfs/home3/modoper/tempo/global/oens/includes/config.sx6
+
+if [ \( `date +"%k%M"` -ge 0250 \) -a \( `date +"%k%M"` -lt 1530 \) ]; then
+      HH=00
+fi
+if [ \( `date +"%k%M"` -ge 1500 \) -o \( `date +"%k%M"` -lt 0249 \) ]; then
+      HH=12
+fi
+
+set -x
+SMSDATE=2011030600
+#if [ `ls -ltr /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt | wc -l` -ge 1 ]; then
+#      SMSDATE=`cat /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt | head -1`
+#      if [ "COPY_BANGU" = "Pega_Analise" ]; then
+#            nlindatarod=`cat /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt | wc -l`
+#            nlindatarod2=`echo "${nlindatarod}-1" | bc -l`
+#      
+#            cat /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt | tail -${nlindatarod2} > /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt.temp
+#            mv /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt.temp /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt
+#            
+#            if [ $nlindatarod -eq 0 ]; then
+#                  rm -f /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt
+#            fi
+#      fi
+#fi
+echo $SMSDATE
+
+if [ ${#SMSDATE} -eq 8 ]; then
+      LABELI=2011030600${HH}
+      if [ ! "`echo COPY_BANGU`" = "Pega_Analise" ]; then
+            ls=`ls -ltr /gfs/home3/modoper/tempo/global/oens/T${TRC}/Pre/Pega_Analise.[0-9]* | tail -1 | awk '{print $9}'`
+            LABELI=`cat $ls | grep "LABELI=" |head -1 | sed -e s%"+ LABELI="%""%g`
+            HH=`echo $LABELI | cut -c 9-10`
+      	sleep 15
+      fi
+else
+      LABELI=2011030600
+      HH=`echo ${LABELI} | cut -c 9-10`
+fi
+
+echo T126/Pos |cut -c 6-8; echo ${LABELI}
+echo LABELI=$LABELI
+
+if [ \( "Pos" = "Verifica" \) -o \( "Pos" = "Controle" \) -o \( "Pos" = "Pre" \) -o \( "COPY_BANGU" = "Rm_Tigge" \) -o \( "Pos" = "Ens_Medio" \) -o \( "Pos" = "Plumas" \) -o \( "Pos" = "Pos" \) -o \( "Pos" = "Produtos" \) ]
+then
+      PREFX=AVN
+else
+      PREFX=PosCOPY_BANGU
+      sleep=0
+      let sleep=10*Pos
+      set -x
+      sleep $sleep
+      set +x
+fi
+
+set -x
+set -e
+set -u
+
+maqtigge=mopora
+
+# PREPARA SCRIPTS PARA A RODADA (GERA LINKS)
+      echo "removendo e criando LINKs..."
+typeset -RZ2 i=01
+f=0
+set +e; set +x
+while [ $i -le 07 ]; do
+if [ $i -eq 01 ]; then
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/$i/P.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/$i/P.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+else
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/$i/N.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/$i/P.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/$i/Analise.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/$i/N.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/$i/P.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+fi
+
+let i=$i+1
+done
+
+echo "f=$f"
+set -e; set -x
+
+if [ $f -ne 0 ]; then
+
+      echo "CRIANDO LINKS PARA .sms"
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/P.sms
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/02/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/03/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/04/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/05/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/06/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/07/*
+
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/P.sms
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/02/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/03/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/04/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/05/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/06/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/07/*
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/02/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/03/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/04/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/05/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/06/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/07/N.sms
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/02/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/03/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/04/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/05/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/06/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/07/P.sms
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/02/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/03/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/04/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/05/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/06/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/07/Analise.sms
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/02/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/03/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/04/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/05/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/06/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/07/N.sms
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/02/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/03/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/04/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/05/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/06/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/07/P.sms
+else
+      echo "LINKS JAH CRIADOS"
+fi
+
+set +e
+set +u
+set +x
+if [ `echo "/oens/T126/Pos/COPY_BANGU" | grep Pega_Analise | wc -l` -ge 1 ]; then
+      rm -f /local_disk/dk00/logs_sms/oens.${LABELI}.log
+      touch /local_disk/dk00/logs_sms/oens.${LABELI}.log
+fi
+di=`date +"%Y%m%d%H%M%S"`
+echo "I:/oens/T126/Pos/COPY_BANGU:${LABELI}:${di}" >> /local_disk/dk00/logs_sms/oens.${LABELI}.log
+set -e
+set -u
+set -x
+
+sleep 600
+
+cd ${OPERM}/run
+./runcopyhsm.ksh ${LABELI} h
+
+# VERIFICACAO DOS ARQUIVOS NA BANGU
+#cd $OPERM/run
+#for PERT in `echo 01N 02N 03N 04N 05N 06N 07N AVN 01P 02P 03P 04P 05P 06P 07P`
+#do
+#      cd ${OPERM}/run
+#      ./vermodpos.ksh ${LABELI} ${PERT} s h
+#done
+
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+
+cp -vf ${ROPERM}/pos/dataout/T${TRC}L${LV}/Identif???${LABELI}* ${BANGU}/GRH/$YYYY/$MM/$DD/
+cp -vf ${ROPERM}/pos/dataout/T${TRC}L${LV}/Localiz???${LABELI}* ${BANGU}/GRH/$YYYY/$MM/$DD/
+cp -vf ${ROPERM}/pos/dataout/T${TRC}L${LV}/Preffix???${LABELI}* ${BANGU}/GRH/$YYYY/$MM/$DD/
+cp -vf ${ROPERM}/pos/dataout/T${TRC}L${LV}/GFGN???${LABELI}* ${BANGU}/GRH/$YYYY/$MM/$DD/
+
+cp -v ${ROPERM}/ensmed/dataout/T${TRC}L${LV}/GPOSENM${LABELI}*.ctl ${BANGU}/ENSMED/$YYYY/$MM/$DD/
+
+cd ${OPERM}/run/
+./runtemplate.ksh ${LABELI} ENM
+
+#rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl
+
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m01n_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m02n_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m03n_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m04n_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m05n_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m06n_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m07n_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m01p_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m02p_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m03p_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m04p_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m05p_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m06p_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl m07p_cptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl mcontrolcptec $LABELI"
+rsh intranet -l intranet "/home2/intranet/gol/disparaModel.pl EnsembleM $LABELI"
+
+date
+set +e
+set +u
+set +x
+df=`date +"%Y%m%d%H%M%S"`
+echo "F:/oens/T126/Pos/COPY_BANGU:${LABELI}:${df}" >> /local_disk/dk00/logs_sms/oens.${LABELI}.log
+set -e
+set -u
+set -x
+
+smscomplete  # Notify SMS of a normal end
+trap 0       # Remove all traps
+exit 0       # End the shell
+
+
+
+
+
+
+
+
+
+
+f=0
+i=0
+ms=0
+
+ms01n=0
+ms01p=0
+ms02n=0
+ms02p=0
+ms03n=0
+ms03p=0
+ms04n=0
+ms04p=0
+ms05n=0
+ms05p=0
+ms06n=0
+ms06p=0
+ms07n=0
+ms07p=0
+msavn=0
+
+es=0
+ps=0
+set +x
+while [ $f -ne 1 ]; do
+
+/usr/local/sms/cdp << EOF > .temp01
+status -f oens
+exit
+EOF
+
+/usr/local/sms/cdp << EOF > .temp012
+status -f oens/T${TRC}/Modelo/Membros/01/N
+status -f oens/T${TRC}/Modelo/Membros/01/P
+status -f oens/T${TRC}/Modelo/Membros/02/N
+status -f oens/T${TRC}/Modelo/Membros/02/P
+status -f oens/T${TRC}/Modelo/Membros/03/N
+status -f oens/T${TRC}/Modelo/Membros/03/P
+status -f oens/T${TRC}/Modelo/Membros/04/N
+status -f oens/T${TRC}/Modelo/Membros/04/P
+status -f oens/T${TRC}/Modelo/Membros/05/N
+status -f oens/T${TRC}/Modelo/Membros/05/P
+status -f oens/T${TRC}/Modelo/Membros/06/N
+status -f oens/T${TRC}/Modelo/Membros/06/P
+status -f oens/T${TRC}/Modelo/Membros/07/N
+status -f oens/T${TRC}/Modelo/Membros/07/P
+status -f oens/T${TRC}/Modelo/Controle/AVN
+exit
+EOF
+
+######
+cat .temp012
+set +x
+      Modelo_status_01n=`cat .temp012 | grep Modelo/Membros/01/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_01p=`cat .temp012 | grep Modelo/Membros/01/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_02n=`cat .temp012 | grep Modelo/Membros/02/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_02p=`cat .temp012 | grep Modelo/Membros/02/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_03n=`cat .temp012 | grep Modelo/Membros/03/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_03p=`cat .temp012 | grep Modelo/Membros/03/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_04n=`cat .temp012 | grep Modelo/Membros/04/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_04p=`cat .temp012 | grep Modelo/Membros/04/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_05n=`cat .temp012 | grep Modelo/Membros/05/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_05p=`cat .temp012 | grep Modelo/Membros/05/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_06n=`cat .temp012 | grep Modelo/Membros/06/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_06p=`cat .temp012 | grep Modelo/Membros/06/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_07n=`cat .temp012 | grep Modelo/Membros/07/N | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_07p=`cat .temp012 | grep Modelo/Membros/07/P | awk '{print $2}' | grep com | wc -l`
+      Modelo_status_avn=`cat .temp012 | grep Modelo/Controle/AVN | awk '{print $2}' | grep com | wc -l`
+###### 01n 01p
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.01n ${LABELI}
+      if [ \( ${Modelo_status_01n} -eq 1 \) -a \( ${ms01n} -ne 1 \) ]; then
+            ms01n=1
+      fi
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.01p ${LABELI}
+      if [ \( ${Modelo_status_01p} -eq 1 \) -a \( ${ms01p} -ne 1 \) ]; then
+            ms01p=1
+      fi
+
+###### 02n 02p
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.02n ${LABELI}
+      if [ \( ${Modelo_status_02n} -eq 1 \) -a \( ${ms02n} -ne 1 \) ]; then
+            ms02n=1
+      fi
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.02p ${LABELI}
+      if [ \( ${Modelo_status_02p} -eq 1 \) -a \( ${ms02p} -ne 1 \) ]; then
+            ms02p=1
+      fi
+
+###### 03n 03p
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.03n ${LABELI}
+      if [ \( ${Modelo_status_03n} -eq 1 \) -a \( ${ms03n} -ne 1 \) ]; then
+            ms03n=1
+      fi
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.03p ${LABELI}
+      if [ \( ${Modelo_status_03p} -eq 1 \) -a \( ${ms03p} -ne 1 \) ]; then
+            ms03p=1
+      fi
+
+###### 04n 04p
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.04n ${LABELI}
+      if [ \( ${Modelo_status_04n} -eq 1 \) -a \( ${ms04n} -ne 1 \) ]; then
+            ms04n=1
+      fi
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.04p ${LABELI}
+      if [ \( ${Modelo_status_04p} -eq 1 \) -a \( ${ms04p} -ne 1 \) ]; then
+            ms04p=1
+      fi
+
+###### 05n 05p
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.05n ${LABELI}
+      if [ \( ${Modelo_status_05n} -eq 1 \) -a \( ${ms05n} -ne 1 \) ]; then
+            ms05n=1
+      fi
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.05p ${LABELI}
+      if [ \( ${Modelo_status_05p} -eq 1 \) -a \( ${ms05p} -ne 1 \) ]; then
+            ms05p=1
+      fi
+
+###### 06n 06p
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.06n ${LABELI}
+      if [ \( ${Modelo_status_06n} -eq 1 \) -a \( ${ms06n} -ne 1 \) ]; then
+            ms06n=1
+      fi
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.06p ${LABELI}
+      if [ \( ${Modelo_status_06p} -eq 1 \) -a \( ${ms06p} -ne 1 \) ]; then
+            ms06p=1
+      fi
+
+###### 07n 07p
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.07n ${LABELI}
+      if [ \( ${Modelo_status_07n} -eq 1 \) -a \( ${ms07n} -ne 1 \) ]; then
+            ms07n=1
+      fi
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.07p ${LABELI}
+      if [ \( ${Modelo_status_07p} -eq 1 \) -a \( ${ms07p} -ne 1 \) ]; then
+            ms07p=1
+      fi
+
+###### Controle
+      $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu.avn ${LABELI}
+      if [ \( ${Modelo_status_avn} -eq 1 \) -a \( ${msavn} -ne 1 \) ]; then
+            msavn=1
+      fi
+set +x
+######
+
+      Modelo_status=`cat .temp01 | grep Modelo | awk '{print $2}' | grep com | wc -l`
+      Ens_Medio_status=`cat .temp01 | grep Ens_Medio | awk '{print $4}' | grep com | wc -l`
+      Plumas_status=`cat .temp01 | grep Plumas | awk '{print $2}' | grep com | wc -l`
+      rm -f .temp01
+      
+      if [ \( ${Modelo_status} -eq 1 \) -a \( $ms -ne 1 \) ]; then
+#            $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu ${LABELI}
+            smsevent Modelo
+            ms=1
+      fi
+      if [ \( ${Ens_Medio_status} -eq 1 \) -a \( $es -ne 1 \) ]; then
+            $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu ${LABELI}
+            smsevent Medio
+            es=1
+      fi
+      if [ \( ${Plumas_status} -eq 1 \) -a \( $ps -ne 1 \) ]; then
+            $DATAMAN /gfs/home3/modoper/tempo/global/oens/includes/dataman.oenspro.bangu ${LABELI}
+            smsevent Plumas
+            ps=1
+      fi
+      
+      if [ \( ${Modelo_status} -eq 1 \) -a \( ${Ens_Medio_status} -eq 1 \) -a \( ${Plumas_status} -eq 1 \) ]; then
+            if [ \( ${es} -eq 1 \) -a \( ${es} -eq 1 \) -a \( ${ps} -eq 1 \) ]; then
+                  f=1
+            fi
+      fi
+      
+      let i=$i+1
+      echo "Rodada - $i"
+      sleep 60
+
+done
+rm -f .temp01 .temp012
+
+date
+set +e
+set +u
+set +x
+df=`date +"%Y%m%d%H%M%S"`
+echo "F:/oens/T126/Pos/COPY_BANGU:${LABELI}:${df}" >> /local_disk/dk00/logs_sms/oens.${LABELI}.log
+set -e
+set -u
+set -x
+
+smscomplete  # Notify SMS of a normal end
+trap 0       # Remove all traps
+exit 0       # End the shell
+
+
+
+set +e
+set +u
+OENSDK=$ROPERM
+BANGU=$OENSPROBG
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+
+cp -rpf ${OENSDK}/pos/dataout/T126L28/*${LABELI}2*i*                     ${BANGU}/ANL/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/ensmed/dataout/T126L28/*${LABELI}2*i*                  ${BANGU}/ANL/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/model/dataout/T126L28/GFCT*${LABELI}2*                 ${BANGU}/GFCT/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/model/dataout/T126L28/GFGH*${LABELI}2*                 ${BANGU}/GFGH/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOSENM${LABELI}*    ${BANGU}/ENSMED/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/produtos/grib/${YYYY}/${MM}/${DD}/GPOS??[NP]${LABELI}* ${BANGU}/GPOS/${YYYY}/${MM}/${DD}/
+mkdir -p ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/
+cp -rpf ${OENSDK}/plumes/dataout/T126L28/*${LABELI}2*                    ${BANGU}/PLUMES/${YYYY}/${MM}/${DD}/
+
+date
+set +e
+set +u
+set +x
+df=`date +"%Y%m%d%H%M%S"`
+echo "F:/oens/T126/Pos/COPY_BANGU:${LABELI}:${df}" >> /local_disk/dk00/logs_sms/oens.${LABELI}.log
+set -e
+set -u
+set -x
+
+smscomplete  # Notify SMS of a normal end
+trap 0       # Remove all traps
+exit 0       # End the shell

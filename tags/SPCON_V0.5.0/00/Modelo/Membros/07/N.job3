@@ -1,0 +1,477 @@
+#! /bin/ksh
+
+date
+
+set -e # stop the shell on first error
+set -u # fail when using an undefined variable
+set -x # echo script lines as they are executed
+
+# Defines the three variables that are needed for any
+# communication with SMS
+
+export SMS_PROG=314159  # SMS Remote Procedure Call number
+export SMSNODE=turi    # The name sms that issued this task
+export SMSNAME=/oens/T126/Modelo/Membros/07/N    # The name of this current task
+export SMSPASS=MEkE77SY    # A unique password
+export SMSTRYNO=3  # Current try number of the task
+
+export PATH=$PATH:/usr/local/sms
+
+
+# Tell SMS we have stated
+# The SMS variable SMSRID will be set to parameter of smsinit
+# Here we give the current PID.
+
+smsinit $$ 
+
+# Defined a error hanlder
+
+ERROR() {
+
+        echo "             |        |"
+        echo "             |        |"
+	echo "------------------------------------"
+	echo "       ----------------------"
+	echo "              --------"
+	echo "                 --"
+df=`date +"%Y%m%d%H%M%S"`
+echo "A:/oens/T126/Modelo/Membros/07/N:${LABELI}:${df}" >> /local_disk/dk00/logs_sms/oens.${LABELI}.log
+	set +e                     # Clear -e flag, so we don't fail
+	smsabort                   # Notify SMS that something went wong
+	trap 0                     # Remove the trap
+	exit 0                     # End the script
+}
+
+# Trap any calls to exit and errors caught by the -e flag
+
+trap ERROR 0
+
+# Trap any signal that may cause the script to fail
+
+trap '{ echo "Killed by a signal"; ERROR ; }' 1 2 3 4 5 6 7 8 10 12 13 15
+
+if [ "07" = "Produtos" ]; then
+      sleep 5
+fi
+TRC=126
+LV=28
+FSCT=15
+NPERT=07
+PREFX=NMC
+MAQ=sx6
+CALDATE=/gfs/home3/modoper/bin/caldate.3.0.1
+
+. /gfs/home3/modoper/tempo/global/oens/includes/config.sx6
+
+if [ \( `date +"%k%M"` -ge 0250 \) -a \( `date +"%k%M"` -lt 1530 \) ]; then
+      HH=00
+fi
+if [ \( `date +"%k%M"` -ge 1500 \) -o \( `date +"%k%M"` -lt 0249 \) ]; then
+      HH=12
+fi
+
+set -x
+SMSDATE=20110824
+#if [ `ls -ltr /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt | wc -l` -ge 1 ]; then
+#      SMSDATE=`cat /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt | head -1`
+#      if [ "N" = "Pega_Analise" ]; then
+#            nlindatarod=`cat /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt | wc -l`
+#            nlindatarod2=`echo "${nlindatarod}-1" | bc -l`
+#      
+#            cat /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt | tail -${nlindatarod2} > /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt.temp
+#            mv /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt.temp /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt
+#            
+#            if [ $nlindatarod -eq 0 ]; then
+#                  rm -f /gfs/home3/modoper/tempo/global/oens/includes/datasrod.txt
+#            fi
+#      fi
+#fi
+echo $SMSDATE
+
+if [ ${#SMSDATE} -eq 8 ]; then
+      LABELI=20110824${HH}
+      if [ ! "`echo N`" = "Pega_Analise" ]; then
+            ls=`ls -ltr /gfs/home3/modoper/tempo/global/oens/T${TRC}/Pre/Pega_Analise.[0-9]* | tail -1 | awk '{print $9}'`
+            LABELI=`cat $ls | grep "LABELI=" |head -1 | sed -e s%"+ LABELI="%""%g`
+            HH=`echo $LABELI | cut -c 9-10`
+      	sleep 15
+      fi
+else
+      LABELI=20110824
+      HH=`echo ${LABELI} | cut -c 9-10`
+fi
+
+echo T126/Modelo/Membros/07 |cut -c 6-8; echo ${LABELI}
+echo LABELI=$LABELI
+
+if [ \( "07" = "Verifica" \) -o \( "07" = "Controle" \) -o \( "07" = "Pre" \) -o \( "N" = "Rm_Tigge" \) -o \( "07" = "Ens_Medio" \) -o \( "07" = "Plumas" \) -o \( "07" = "Pos" \) -o \( "07" = "Produtos" \) ]
+then
+      PREFX=AVN
+else
+      PREFX=07N
+      sleep=0
+      let sleep=10*07
+      set -x
+      sleep $sleep
+      set +x
+fi
+
+set -x
+set -e
+set -u
+
+maqtigge=mopora
+
+# PREPARA SCRIPTS PARA A RODADA (GERA LINKS)
+      echo "removendo e criando LINKs..."
+typeset -RZ2 i=01
+f=0
+set +e; set +x
+while [ $i -le 07 ]; do
+if [ $i -eq 01 ]; then
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/$i/P.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/$i/P.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+else
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/$i/N.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/$i/P.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/$i/Analise.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/$i/N.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+      test -L /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/$i/P.sms
+      if [ $? -ne 0 ]; then
+            f=1
+      fi
+fi
+
+let i=$i+1
+done
+
+echo "f=$f"
+set -e; set -x
+
+if [ $f -ne 0 ]; then
+
+      echo "CRIANDO LINKS PARA .sms"
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/P.sms
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/02/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/03/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/04/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/05/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/06/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/07/*
+
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/P.sms
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/02/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/03/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/04/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/05/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/06/*
+      rm -f /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/07/*
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/02/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/03/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/04/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/05/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/06/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/07/N.sms
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/02/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/03/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/04/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/05/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/06/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/07/P.sms
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/02/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/03/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/04/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/05/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/06/Analise.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/01/Analise.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Modelo/Membros/07/Analise.sms
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/02/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/03/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/04/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/05/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/06/N.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/07/N.sms
+
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/02/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/03/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/04/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/05/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/06/P.sms
+      ln -s /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/01/N.sms /gfs/home3/modoper/tempo/global/oens/T${TRC}/Tigge/07/P.sms
+else
+      echo "LINKS JAH CRIADOS"
+fi
+
+set +e
+set +u
+set +x
+if [ `echo "/oens/T126/Modelo/Membros/07/N" | grep Pega_Analise | wc -l` -ge 1 ]; then
+      rm -f /local_disk/dk00/logs_sms/oens.${LABELI}.log
+      touch /local_disk/dk00/logs_sms/oens.${LABELI}.log
+fi
+di=`date +"%Y%m%d%H%M%S"`
+echo "I:/oens/T126/Modelo/Membros/07/N:${LABELI}:${di}" >> /local_disk/dk00/logs_sms/oens.${LABELI}.log
+set -e
+set -u
+set -x
+
+LABELF=`${CALDATE} $LABELI + 36h 'yyyymmddhh'`
+PERT=07N
+NFDAYS=15
+NUMPERT=07
+cd $OPERM/run
+./runpntg1.sx6 ${TRC} ${LV} ${LABELI} ${NFDAYS} ${PERT} ${NUMPERT} sstwkl
+
+set +x
+#JNAME=OENS${PERT}
+#SLEEPTIM=23
+#%include <filectrl.h>
+
+sleep 30
+set -A ctrlsum 0 0 0 0 0 0 0 0 0 0
+
+set +x
+set +e
+set +u
+
+for arq in `ls ${ROPERM}/model/dataout/T126L28/G*${PERT}${LABELI}*`
+do
+echo $arq
+#GFCT
+ctrl1=`ls -ltr $arq | grep GFCT | grep fct | awk '{print $5}'` 
+ctrl2=`ls -ltr $arq | grep GFCT | grep dir | awk '{print $5}'` 
+ctrl3=`ls -ltr $arq | grep GFCT | grep icn | awk '{print $5}'` 
+ctrl4=`ls -ltr $arq | grep GFCT | grep inz | awk '{print $5}'` 
+
+#GPRG
+ctrl5=`ls -ltr $arq | grep GPRG | grep fct | awk '{print $5}'` 
+ctrl6=`ls -ltr $arq | grep GPRG | grep dir | awk '{print $5}'` 
+ctrl7=`ls -ltr $arq | grep GPRG | grep icn | awk '{print $5}'` 
+ctrl8=`ls -ltr $arq | grep GPRG | grep inz | awk '{print $5}'` 
+
+#GFGH
+ctrl9=`ls -ltr $arq  | grep GFGH | grep unf | awk '{print $5}'` 
+ctrl10=`ls -ltr $arq | grep GFGH | grep dir | awk '{print $5}'` 
+
+if [ \( -n $ctrl1 \) -a \( $ctrl1 -ge 11542576 \) ]
+then
+      let ctrlsum[0]=${ctrlsum[0]}+1
+      echo "SOMANDO 1"
+fi
+
+if [ \( -n $ctrl2 \) -a \( $ctrl2 -ge 2012 \) ]
+then
+      let ctrlsum[1]=${ctrlsum[1]}+1
+      echo "SOMANDO 2"
+fi
+
+if [ \( -n $ctrl3 \) -a \( $ctrl3 -ge 10067976 \) ]
+then
+      let ctrlsum[2]=${ctrlsum[2]}+1
+      echo "SOMANDO 3"
+fi
+
+if [ \( -n $ctrl4 \) -a \( $ctrl4 -ge 10067976 \) ]
+then
+      let ctrlsum[3]=${ctrlsum[3]}+1
+      echo "SOMANDO 4"
+fi
+
+if [ \( -n $ctrl5 \) -a \( $ctrl5 -ge 10067976 \) ]
+then
+      let ctrlsum[4]=${ctrlsum[4]}+1
+      echo "SOMANDO 5"
+fi
+
+if [ \( -n $ctrl6 \) -a \( $ctrl6 -ge 1657 \) ]
+then
+      let ctrlsum[5]=${ctrlsum[5]}+1
+      echo "SOMANDO 6"
+fi
+
+if [ \( -n $ctrl7 \) -a \( $ctrl7 -ge 10067976 \) ]
+then
+      let ctrlsum[6]=${ctrlsum[6]}+1
+      echo "SOMANDO 7"
+fi
+
+if [ \( -n $ctrl8 \) -a \( $ctrl8 -ge 10067976 \) ]
+then
+      let ctrlsum[7]=${ctrlsum[7]}+1
+      echo "SOMANDO 8"
+fi
+
+if [ \( -n $ctrl9 \) -a \( $ctrl9 -ge 47174400 \) ]
+then
+      let ctrlsum[8]=${ctrlsum[8]}+1
+      echo "SOMANDO 9"
+fi
+
+if [ \( -n $ctrl10 \) -a \( $ctrl10 -ge 30753 \) ]
+then
+      let ctrlsum[9]=${ctrlsum[9]}+1
+      echo "SOMANDO 10"
+fi
+
+done
+
+echo "\n\n\n"
+echo "GFCT${PERT}${LABELI}*fct* ${ctrlsum[0]}"
+echo "GFCT${PERT}${LABELI}*dir* ${ctrlsum[1]}"
+echo "GFCT${PERT}${LABELI}*icn* ${ctrlsum[2]}"
+echo "GFCT${PERT}${LABELI}*inz* ${ctrlsum[3]}"
+echo "GPRG${PERT}${LABELI}*fct* ${ctrlsum[4]}"
+echo "GPRG${PERT}${LABELI}*dir* ${ctrlsum[5]}"
+echo "GPRG${PERT}${LABELI}*icn* ${ctrlsum[6]}"
+echo "GPRG${PERT}${LABELI}*inz* ${ctrlsum[7]}"
+echo "GFGH${PERT}${LABELI}*unf* ${ctrlsum[8]}"
+echo "GFGH${PERT}${LABELI}*dir* ${ctrlsum[9]}"
+echo "\n"
+
+if [ \( ${ctrlsum[0]} -ge 30 \) -a \( ${ctrlsum[1]} -ge 31 \) -a \( ${ctrlsum[2]} -ge 1 \) -a \( ${ctrlsum[3]} -ge 1 \) -a  \( ${ctrlsum[4]} -ge 0 \) -a \( ${ctrlsum[5]} -ge 0 \) -a  \( ${ctrlsum[6]} -ge 0 \) -a \( ${ctrlsum[7]} -ge 0 \) -a  \( ${ctrlsum[8]} -ge 1 \) -a \( ${ctrlsum[9]} -ge 1 \) ]
+then
+      echo "ARQUIVOS OK"
+      smslabel Info "Saida Ok: ${LABELI}"
+      echo "\n\n"
+else
+      echo "ARQUIVOS COM ERROS"
+      smslabel Info "Saida c/Problemas: ${LABELI}"
+      echo "\n\n"
+      exit 12
+fi
+
+
+tenta=0
+set -x
+while [ $tenta -lt 5 ]
+do
+flag=0
+##############################################################################################
+# FILE CONTROL
+#
+#### VECTOR DISCRIPTION
+# EXT    -> FILE's EXTENSION
+# SIZ    -> FILE's SIZE
+# QTF    -> FILE's NUMBER
+# ARQINI -> INITIAL STRING FILE
+#
+cont=0
+set -A ARQINI GPOS${PREFX}
+set -A TYP P.icn P.inz P.fct
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+
+ls -ltr ${ROPERM}/pos/dataout/T${TRC}L${LV}/${ARQINI[0]}${LABELI}* > lsgrb${HH}a2.out
+
+k=0
+while [ ${k} -lt 3 ]
+do
+case ${k} in
+0)
+        set -A EXT grb idx ctl
+        set -A SIZ 23314006 3865 4783
+        set -A QTF 1 1 1
+;;
+1)
+        set -A EXT grb idx ctl
+        set -A SIZ 23314006 3865 4783
+        set -A QTF 1 1 1
+;;
+2)
+        set -A EXT grb idx ctl
+        set -A SIZ 24789576 3009 5743
+        set -A QTF 60 60 60
+;;
+esac
+
+j=0
+while [ ${j} -lt 3 ]
+do
+echo ${ARQINI[0]}${LABELI}"*"${TYP[$k]}"*"${EXT[$j]}
+cont=0
+for arq in `cat lsgrb${HH}a2.out | grep ${ARQINI[0]}${LABELI} | grep ${TYP[$k]} |grep ${EXT[$j]}| awk '{print $5}'`
+do
+#        echo $arq
+        if [ $arq -ge ${SIZ[$j]} ]
+        then
+                cont=$(($cont+1))
+        fi
+done
+if [ ${cont} -ge ${QTF[$j]} ]
+then
+        echo "*** Number of Files - OK ${ARQINI[0]} ${EXT[$j]}"
+        smslabel Info "Number of Files - OK ${ARQINI[0]} ${EXT[$j]}"
+        flag=0
+else
+        echo "*** Number of Files ${ARQINI[0]} ${EXT[$j]} - ERROR ${cont}"
+        smslabel Info "Number of Files ${ARQINI[0]} ${EXT[$j]}"
+        flag=1
+        sleep 60
+fi
+
+j=$(($j+1))
+done
+
+k=$(($k+1))
+done
+rm -f lsgrb${HH}a2.out
+
+if [ `ls -ltr ${ROPERM}/pos/dataout/T${TRC}L${LV}/GFGN${PREFX}${LABELI}*T${TRC}L${LV} | awk '{print $5}'` -lt 18214560 ]; then
+      flag=1
+fi
+if [ `ls -ltr ${ROPERM}/pos/dataout/T${TRC}L${LV}/GFGN${PREFX}${LABELI}*T${TRC}L${LV}.ctl | awk '{print $5}'` -lt 1166 ]; then
+      flag=1
+fi
+
+if [ ${flag} -eq 0 ]
+then
+        break
+fi
+
+let tenta=$tenta+1
+done
+
+if [ ${flag} -eq 1 ]
+then
+       smslabel Info "Number of Files ${ARQINI[0]} ${EXT[$j]}"
+       exit 1
+fi
+
+
+date
+set +e
+set +u
+set +x
+df=`date +"%Y%m%d%H%M%S"`
+echo "F:/oens/T126/Modelo/Membros/07/N:${LABELI}:${df}" >> /local_disk/dk00/logs_sms/oens.${LABELI}.log
+set -e
+set -u
+set -x
+
+smscomplete  # Notify SMS of a normal end
+trap 0       # Remove all traps
+exit 0       # End the shell

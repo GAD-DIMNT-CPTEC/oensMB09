@@ -1,0 +1,183 @@
+#!/bin/ksh
+#help#
+#*****************************************************************#
+#                                                                 #
+#       Name:           runbcon.sx6                               #
+#                                                                 #
+#       Function:     This script submits the                     # 
+#                     boundary conditions scripts                 #
+#                     to the NQS queue.                           #
+#                     It runs in Korn Shell.                      #
+#                                                                 #
+#       Date:         October 08th, 2002.                         #
+#       Last change:  October 08th, 2002.                         #
+#                                                                 #
+#       Valid Arguments for runbcon.sx6:                          #
+#                                                                 #
+#       First : COMPILE: help, make, clean or run.                #
+#       Second:     TRC: three-digit triangular truncation        #
+#                                                                 #
+#*****************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Test of Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+TRC=062
+else
+TRC=${2}
+fi
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y%m%d%T'`
+EXT=out
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#   
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/home3/modoper/tempo/global/oens
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+#
+#   Set truncation
+#
+RESOL=T${TRC}
+echo ${RESOL}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setbcon${RESOL}.${MAQUI}
+#!/bin/ksh
+#*****************************************************************#
+#                                                                 #
+#       Name:      setbcon${RESOL}.${MAQUI}                       #
+#                                                                 #
+#       Function:  This script file is used to set the            #
+#                  environmental variables and start the          #
+#                  boundary conditions scripts.                   #
+#                                                                 #
+#*****************************************************************#
+#
+#  At NEC Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setbcon${RESOL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+export OPERMOD SOPERMOD ROPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#                    =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE 
+echo \${COMPILE}
+#
+#   Run scripts
+#
+#   Orography:
+#
+runorog.\${MACH} \${COMPILE} ${TRC}
+#
+#   Sib Vegetation Mask:
+#
+runsibm.\${MACH} \${COMPILE} ${TRC}
+#
+#   Sib Vegetation Morfology and Albedo Coefficients:
+#
+runsibv.\${MACH} \${COMPILE}
+#
+#   Grid Point Albedo:
+#
+runalbi.\${MACH} \${COMPILE} ${TRC}
+#
+#   Ground Temperature and Roughness:
+#
+runtgz0.\${MACH} \${COMPILE} ${TRC}
+#
+#   Soil Moisture:
+#
+runslmi.\${MACH} \${COMPILE} ${TRC}
+#
+EOT0
+#
+echo 'Pre-Processing - B.C. -- RUNNING ...'
+#
+chmod +x setbcon${RESOL}.${MAQUI}
+#
+/usr/bin/nqsII/qsub -q ${QUEUE} ${OPERM}/run/setbcon${RESOL}.${MAQUI}
+#AMM ${OPERM}/run/setbcon${RESOL}.${MAQUI}
+#

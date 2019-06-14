@@ -1,0 +1,263 @@
+#!/bin/ksh 
+#help#
+#******************************************************************#
+#                                                                  #
+#     Name:           runense.sx6                                  #
+#                                                                  #
+#     Function:       This script submits the                      #
+#                     ensemble script.                             #
+#                     It runs in Korn Shell.                       #
+#                                                                  #
+#     Date:           May    26th, 2003.                           #
+#     Last change:    May    26th, 2003.                           #
+#                                                                  #
+#     Valid Arguments for runense.sx6                              #
+#                                                                  #
+#     First  :    HELP: help or nothing for getting help           #
+#     First  :     TRC: three-digit triangular truncation          #
+#    Second  :      LV: two-digit number of vertical sigma-layers  #
+#     Third  :  LABELI: initial forecasting label                  #
+#     Forth  :  NFDAYS: number of forecasting days                 #
+#     Fifth  : NUMPERT: number of random perturbations             #
+#     Sixth  :   HUMID: YES or NO (humidity will be perturbed)     #
+#    Seventh :   PREFX: AVN    ...(humidity will be perturbed)     #
+#                                                                  #
+#              LABELx : yyyymmddhh                                 #
+#                       yyyy = four digit year                     #
+#                       mm = two digit month                       #
+#                       dd = two digit day                         #
+#                       hh = two digit hour                        #
+#                                                                  #
+#******************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Test of Valid Arguments
+#
+if [  -z "${2}" ]
+then
+echo "Second argument is not set (LV)"
+exit
+fi
+if [  -z "${3}" ]
+then
+echo "Third argument is not set (LABELI yyyymmddhh)"
+exit
+fi
+if [  -z "${4}" ]
+then
+echo "Forth argument is not set (NFDAYS)"
+exit
+fi
+if [  -z "${5}" ]
+then
+echo "Fifth argument is not set (NUMPERT)"
+exit
+fi
+if [  -z "${6}" ]
+then
+echo "Sixth argument is not set (HUMID)"
+exit
+else
+if [ "${6}" != "YES" ]
+then
+if [ "${6}" != "NO" ]
+then
+echo "Sixth argument: ${6}, is wrong. Must be: YES or NO"
+exit
+fi 
+fi
+HUMID=${6}
+fi
+if [ -z "${7}" ]
+then
+PREFX=${7}
+else
+PREFX=AVN
+fi
+
+#
+#   Set machine, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+QUEUE=Inter
+EXT=out
+EXTL=S.unf
+EXTR=R.unf
+EXTZ=Z
+echo ${MAQUI}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories and remote machines
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   IOPERM is the directory for the input files.
+#   RMTCPR: is the remote machine to run the special products.
+#   RMUSCF: is the remote archieve machine user.
+#   DIRSCR: is the directory of the machine RMTCPR where there
+#           are the scripts to create the archive directories.
+
+#
+. ../include/config.sx6 #ARQUIVO DE CONFIGURACAO OS DIRETORIOS.
+
+#DIRSCR=/home/ensglob/scripts
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${IOPERM}
+echo ${RCTROPERM}
+export OPERM SOPERM ROPERM IOPERM 
+export RMTCPR RMUSCF DIRSCR
+
+#
+#   Set truncation and layers
+#
+TRC=${1}
+LV=${2}
+RESOL=T${TRC}
+NIVEL=L${LV}
+export RESOL NIVEL
+#
+LABELI=${3}
+#AMM LABELF=${4}
+NFDAYS=${4}
+NUMPERT=${5}
+export LABELI NFDAYS NUMPERT
+
+#   Set final forecasting label and UTC Hour
+caldaya ()
+{
+echo ${LABELI} > labeli.out
+yi=`awk '{ print substr($1,1,4) }' labeli.out`
+mi=`awk '{ print substr($1,5,2) }' labeli.out`
+di=`awk '{ print substr($1,7,2) }' labeli.out`
+hi=`awk '{ print substr($1,9,2) }' labeli.out`
+rm -f labeli.out
+let ybi=${yi}%4
+if [ ${ybi} = 0 ]
+then
+set -A md 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+let df=${di}+1
+let mf=${mi}
+let yf=${yi}
+let hf=${hi}+12
+let n=${mi}-1
+if [ hf -gt 23 ]
+then
+let hf=hf-24
+let df=df+1
+fi
+if [ df -gt md[${n}] ]
+then
+let df=df-md[${n}]
+let mf=mf+1
+if [ mf -eq 13 ]
+then
+let mf=1
+let yf=yf+1
+fi
+fi
+if [ df -lt 10 ]
+then DF=0${df}
+else DF=${df}
+fi
+if [ mf -lt 10 ]
+then MF=0${mf}
+else MF=${mf}
+fi
+YF=${yf}
+if [ hf -lt 10 ]
+then HF=0${hf}
+else HF=${hf}
+fi
+}
+#
+caldaya
+LABELF=${YF}${MF}${DF}${HF}
+LABELS=${yi}${mi}${di}
+export LABELF LABELS
+
+cd ${OPERM}/run
+#
+#   Create the archive directories
+#
+echo "makedir.scr ${TRC} ${LV} ${LABELI}"
+#ADMA 
+makedir1.scr ${TRC} ${LV} ${LABELI} > ${OPERM}/run/setout/setmakedir${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+
+cat <<EOT0 > ${OPERM}/run/setense.1.${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        setense${RESOL}${NIVEL}.${MAQUI}          #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  ensemble scripts.                         #
+#                                                            #
+#************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setense.1.${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+cd ${OPERM}/run
+#
+#   Copy the initial conditions from deterministic forecast datain to
+#   ensemble forecast datain
+#
+cp ${RCTROPERM}/model/datain/sstwkl.${LABELS} ${ROPERM}/model/datain
+cp ${RCTROPERM}/model/datain/orgwav.${RESOL} ${SOPERM}/pre/dataout/${RESOL}
+#cp ${SCTROPERM}/pre/dataout/${RESOL}/orgwav.${RESOL} ${SOPERM}/pre/dataout/${RESOL}
+#
+cd ${OPERM}/run
+# Script de recomposicao da analise 
+echo "\n+++\n+++ runrecanl1.${MAQUI} run ${TRC} ${LV} ANL${PREFX} ${LABELI}\n+++\n"
+runrecanl1.${MAQUI} run ${TRC} ${LV} ANL${PREFX} ${LABELI}
+#
+# Script de geracao das perturbacoes randomicas
+echo "\n+++\n+++ runrdpt1.${MAQUI} run ${NUMPERT} ${TRC} ${LV} ${LABELI} ${HUMID}\n+++\n"
+runrdpt1.${MAQUI} run ${NUMPERT} ${TRC} ${LV} ${LABELI} ${HUMID}
+#
+# Script de decomposicao das perturbacoes
+echo "\n+++\n+++ rundrpt1.${MAQUI} run ${NUMPERT} ${TRC} ${LV} ${LABELI} ${HUMID}\n+++\n"
+rundrpt1.${MAQUI} run ${NUMPERT} ${TRC} ${LV} ${LABELI} ${HUMID}
+# 
+# Script runctrpntg roda o modelo (controle)
+# RODAR SEPARADO PARA USAR 4 PROCESSADORES.
+echo "\n+++\n+++ runctrpntg.${MAQUI} ${TRC} ${LV} ${LABELI} ${LABELF} sstwkl\n+++\n"
+#runctrpntg1.${MAQUI} ${TRC} ${LV} ${LABELI} ${LABELF} sstwkl
+
+exit 0
+EOT0
+#
+echo "chmod 744  setense.1.${RESOL}${NIVEL}.${MAQUI}"
+chmod 744  ${OPERM}/run/setense.1.${RESOL}${NIVEL}.${MAQUI}
+#
+#   Submit setense.1.${RESOL}${NIVEL}.${MAQUI} to NQS ${QUEUE}
+#
+echo "/usr/bin/nqsII/qsub -N CTROENS -q ${QUEUE} ${OPERM}/run/setense.1.${RESOL}${NIVEL}.${MAQUI}"
+#/usr/bin/nqsII/qsub -q ${QUEUE} -N PERTANL ${OPERM}/run/setense.1.${RESOL}${NIVEL}.${MAQUI}
+
+submit ${OPERM}/run/setense.1.${RESOL}${NIVEL}.${MAQUI} ${QUEUE} Info
+
+exit 0

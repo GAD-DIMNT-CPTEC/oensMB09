@@ -1,0 +1,271 @@
+      PROGRAM PADIC
+C*
+C*    PADIC: READS IN HISTORY CARRYING VARIABLES FOR ONE TIME STEP,
+C*           SURFACE GEOPOTENTIAL, AND SIGMA COORDINATE LEVELS,
+C*           AND CHANGES RESOLUTION AND SMOOTHS AS REQUESTED.
+C*
+C*    ARGUMENT(DIMENSIONS)            DESCRIPTION
+C*
+C       IFDAY                       : FORECAST DAY OF THE SET OF
+C                                     SPECTRAL COEFFICIENTS.
+C       TOD                         : FORECAST TIME OF DAY IN
+C                                     SECONDS.
+C      IDATE(4)                     : IDATE(1)=INITIAL HOUR OF
+C                                     FORECAST FROM WHICH THE
+C                                     COEFFICIENTS WERE MADE.
+C                                     IDATE(2)=MONTH OF YEAR.
+C                                     IDATE(3)=DAY OF MONTH.
+C                                     IDATE(4)=YEAR.
+C       IDATEC(4)                   : IDATEC(1)=CURRENT HOUR OF
+C                                        OF THE CURRENT DAY
+C                                        FOR WHICH THE
+C                                        COEFFICIENTS APPLY.
+C                                     IDATEC(2)=CURRENT MONTH OF YEAR.
+C                                     IDATEC(3)=CURRENT DAY OF MONTH.
+C                                     IDATEC(4)=CURRENT YEAR.
+C      GZ   (MNWV2)                 : MODEL TERRAIN FIELD
+C                                     (SPECTRAL).
+C      QLNP (MNWV2)                 : NATURAL LOG OF SURFACE
+C                                     PRESSURE (SPECTRAL).
+C      QTMP (MNWV2,KMAX)            : TEMPERATURE (SPECTRAL).
+C      QDIV (MNWV2,KMAX)            : DIVERGENCE (SPECTRAL).
+C      QROT (MNWV2,KMAX)            : VORTICITY (SPECTRAL).
+C      QQ   (MNWV2,KMAX)            : SPECIFIC HUMIDITY (SPECTRAL).
+C      SL   (KMAX)                  : SIGMA VALUES FOR CENTER OF
+C                                     EACH LAYER.
+C      SI   (KMAXP)                 : SIGMA VALUES FOR EACH LEVEL.
+C*
+C*
+      INCLUDE "horpadr.h"
+      INCLUDE "verpadr.h"
+      INTEGER MNWV2R,KMAXRP
+      PARAMETER (MNWV2R=MEND1R*(MEND1R+1),KMAXRP=KMAXR+1)
+      INCLUDE "horpadw.h"
+      INCLUDE "verpadw.h"
+      INTEGER MNWV2,KMAXP
+      PARAMETER (MNWV2=MEND1*(MEND1+1),KMAXP=KMAX+1)
+C*
+      INTEGER IER,MN,K
+      REAL EPS
+      LOGICAL SMOOTH,SAME
+      INTEGER*4 IFDAY,IDATE(4),IDATEC(4)
+      REAL SIR(KMAXRP),SLR(KMAXR),DELSIG(KMAX),SL(KMAX),
+     *     SI(KMAXP),CI(KMAXP),QW(KMAXR),QI(KMAX),
+     *     ASLR(KMAXR),ASL(KMAX)
+      REAL*4 TOD,SIR4(KMAXRP),SLR4(KMAXR),SI4(KMAXP),SL4(KMAX),
+     *       QR(MNWV2R),QGZS(MNWV2),QLNP(MNWV2),
+     *       QTMP(MNWV2,KMAX),QDIV(MNWV2,KMAX),
+     *       QROT(MNWV2,KMAX),QQ(MNWV2,KMAX),QKR(MNWV2R,KMAXR),
+     *       QLR(MNWV2R,KMAXR),QSR(MNWV2R,KMAX)
+      NAMELIST /PADNML/ SMOOTH
+      DATA SMOOTH /.FALSE./
+C*
+      INCLUDE "delsigp.h"
+C*
+      READ(5,PADNML)
+      WRITE(6,PADNML)
+C*
+      SAME=MEND1R.EQ.MEND1 .AND. KMAXR.EQ.KMAX
+      IF (SAME .AND. (.NOT.SMOOTH)) THEN
+      WRITE(6,'(2(A,I8))')' MEND1R=MEND1=',MEND1,' KMAXR=KMAX=',KMAX
+      WRITE(6,'(A)')' NO PADDING, NO VERT. INTERP. AND NO SMOOTHING'
+      WRITE(0,'(2(A,I8))')' MEND1R=MEND1=',MEND1,' KMAXR=KMAX=',KMAX
+      WRITE(0,'(A)')' NO PADDING, NO VERT. INTERP. AND NO SMOOTHING'
+      STOP 1
+      ENDIF
+      smooth=.false.
+C*
+      EPS=2.0E0**(-26)
+C*
+C*    OPEN SPECTRAL DATA FILES
+C*
+      OPEN(11,STATUS='UNKNOWN',FORM='UNFORMATTED')
+      OPEN(12,STATUS='UNKNOWN',FORM='UNFORMATTED')
+      OPEN(13,STATUS='UNKNOWN',FORM='UNFORMATTED')
+C*
+C*    HOUR, DATE, SIGMA LEVELS AND LAYERS
+C*
+      READ(11)IFDAY,TOD,IDATE,IDATEC,SIR4,SLR4
+      DO K=1,KMAXR
+      SIR(K)=SIR4(K)
+      SLR(K)=SLR4(K)
+      ASLR(K)=LOG(SLR4(K))
+      ENDDO
+      SIR(KMAXRP)=SIR4(KMAXRP)
+      CALL SETSIG(DELSIG,SI,SL,CI,KMAX,KMAXP)
+      IF (ABS(SL(1)-SLR(1)) .LE. EPS) SL(1)=SLR(1)-EPS
+      IF (ABS(SL(KMAX)-SLR(KMAXR)) .LE. EPS) SL(KMAX)=SLR(KMAXR)+EPS
+      DO K=1,KMAX
+      SI4(K)=SI(K)
+      SL4(K)=SL(K)
+      ASL(K)=LOG(SL(K))
+      ENDDO
+      SI4(KMAXP)=SI(KMAXP)
+      WRITE(12)IFDAY,TOD,IDATE,IDATEC,SI4,SL4
+C*
+      WRITE(6,'(/,A)')' SLR : '
+      WRITE(6,'(1P6G12.5)')SLR
+      WRITE(6,'(/,A)')' SL : '
+      WRITE(6,'(1P6G12.5)')SL
+      WRITE(6,'(/,A)')' ASLR : '
+      WRITE(6,'(1P6G12.5)')ASLR
+      WRITE(6,'(/,A)')' ASL : '
+      WRITE(6,'(1P6G12.5)')ASL
+C*
+C*    OROGRAPHY (METERS)
+C*
+      READ(11)QR
+      CALL PADTRG(MEND1R,MEND1,MNWV2R,MNWV2,1,QR,QGZS,SAME)
+      IF (SMOOTH) CALL SMTCFT(QGZS,MEND1,MNWV2,1)
+      WRITE(12)QGZS
+      WRITE(13)QGZS
+C*
+C*    NATURAL LOG OF SURFACE PRESSURE (HPA)
+C*
+      READ(11)QR
+      CALL PADTRG(MEND1R,MEND1,MNWV2R,MNWV2,1,QR,QLNP,SAME)
+      IF (SMOOTH) CALL SMTCFT(QLNP,MEND1,MNWV2,1)
+      WRITE(12)QLNP
+C*
+C*    VIRTUAL TEMPERATURE (KELVIN)
+C*
+      DO K=1,KMAXR
+      READ(11)(QKR(MN,K),MN=1,MNWV2R)
+      ENDDO
+      IF (KMAXR .NE. KMAX) THEN
+C*    VERTICAL SIGMA TO SIGMA INTERPOLATION
+      DO MN=1,MNWV2R
+      DO K=1,KMAXR
+      QW(K)=QKR(MN,K)
+      ENDDO
+      CALL LINEAR(ASLR,QW,KMAXR,ASL,QI,KMAX,IER)
+      IF (IER .NE. 0) THEN
+      WRITE(6,'(/,A,I5)')' IER = ',IER
+      WRITE(0,'(/,A,I5)')' IER = ',IER
+      STOP 2
+      ENDIF
+      DO K=1,KMAX
+      QSR(MN,K)=QI(K)
+      ENDDO
+      ENDDO
+      ELSE
+      DO K=1,KMAX
+      DO MN=1,MNWV2R
+      QSR(MN,K)=QKR(MN,K)
+      ENDDO
+      ENDDO
+      ENDIF
+C*    PADDING
+      CALL PADTRG(MEND1R,MEND1,MNWV2R,MNWV2,KMAX,QSR,QTMP,SAME)
+      IF (SMOOTH) CALL SMTCFT(QTMP,MEND1,MNWV2,KMAX)
+      DO K=1,KMAX
+      WRITE(12)(QTMP(MN,K),MN=1,MNWV2)
+      ENDDO
+C*
+C*    HORIZONTAL DIVERGENCE AND VERTICAL VORTICITY (1/SEG)
+C*
+      DO K=1,KMAXR
+      READ(11)(QKR(MN,K),MN=1,MNWV2R)
+      READ(11)(QLR(MN,K),MN=1,MNWV2R)
+      ENDDO
+      IF (KMAXR .NE. KMAX) THEN
+C*    VERTICAL SIGMA TO SIGMA INTERPOLATION
+      DO MN=1,MNWV2R
+      DO K=1,KMAXR
+      QW(K)=QKR(MN,K)
+      ENDDO
+      CALL LINEAR(ASLR,QW,KMAXR,ASL,QI,KMAX,IER)
+      IF (IER .NE. 0) THEN
+      WRITE(6,'(/,A,I5)')' IER = ',IER
+      WRITE(0,'(/,A,I5)')' IER = ',IER
+      STOP 3
+      ENDIF
+      DO K=1,KMAX
+      QSR(MN,K)=QI(K)
+      ENDDO
+      ENDDO
+      ELSE
+      DO K=1,KMAX
+      DO MN=1,MNWV2R
+      QSR(MN,K)=QKR(MN,K)
+      ENDDO
+      ENDDO
+      ENDIF
+C*    PADDING
+      CALL PADTRG(MEND1R,MEND1,MNWV2R,MNWV2,KMAX,QSR,QDIV,SAME)
+      IF (SMOOTH) CALL SMTCFT(QDIV,MEND1,MNWV2,KMAX)
+      IF (KMAXR .NE. KMAX) THEN
+      DO MN=1,MNWV2R
+      DO K=1,KMAXR
+      QW(K)=QLR(MN,K)
+      ENDDO
+      CALL LINEAR(ASLR,QW,KMAXR,ASL,QI,KMAX,IER)
+      IF (IER .NE. 0) THEN
+      WRITE(6,'(/,A,I5)')' IER = ',IER
+      WRITE(0,'(/,A,I5)')' IER = ',IER
+      STOP 4
+      ENDIF
+      DO K=1,KMAX
+      QSR(MN,K)=QI(K)
+      ENDDO
+      ENDDO
+      ELSE
+      DO K=1,KMAX
+      DO MN=1,MNWV2R
+      QSR(MN,K)=QLR(MN,K)
+      ENDDO
+      ENDDO
+      ENDIF
+C*    PADDING
+      CALL PADTRG(MEND1R,MEND1,MNWV2R,MNWV2,KMAX,QSR,QROT,SAME)
+      IF (SMOOTH) CALL SMTCFT(QROT,MEND1,MNWV2,KMAX)
+      DO K=1,KMAX
+      WRITE(12)(QDIV(MN,K),MN=1,MNWV2)
+      WRITE(12)(QROT(MN,K),MN=1,MNWV2)
+      ENDDO
+C*
+C*    SPECIFIC HUMIDITY (G/G)
+C*
+      DO K=1,KMAXR
+      READ(11)(QKR(MN,K),MN=1,MNWV2R)
+      ENDDO
+      IF (KMAXR .NE. KMAX) THEN
+C*    VERTICAL SIGMA TO SIGMA INTERPOLATION
+      DO MN=1,MNWV2R
+      DO K=1,KMAXR
+      QW(K)=QKR(MN,K)
+      ENDDO
+      CALL LINEAR(ASLR,QW,KMAXR,ASL,QI,KMAX,IER)
+      IF (IER .NE. 0) THEN
+      WRITE(6,'(/,A,I5)')' IER = ',IER
+      WRITE(0,'(/,A,I5)')' IER = ',IER
+      STOP 5
+      ENDIF
+      DO K=1,KMAX
+      QSR(MN,K)=QI(K)
+      ENDDO
+      ENDDO
+      ELSE
+      DO K=1,KMAX
+      DO MN=1,MNWV2R
+      QSR(MN,K)=QKR(MN,K)
+      ENDDO
+      ENDDO
+      ENDIF
+C*    PADDING
+      CALL PADTRG(MEND1R,MEND1,MNWV2R,MNWV2,KMAX,QSR,QQ,SAME)
+      IF (SMOOTH) CALL SMTCFT(QQ,MEND1,MNWV2,KMAX)
+      DO K=1,KMAX
+      WRITE(12)(QQ(MN,K),MN=1,MNWV2)
+      ENDDO
+C*
+      CLOSE(11)
+      CLOSE(12)
+      CLOSE(13)
+C*
+      WRITE(6,101) IFDAY,TOD,IDATE,IDATEC
+  101 FORMAT (/,' IFDAY=',I8,' TOD=',F8.1,' IDATE=',3I3,I5,
+     *          ' IDATEC=',3I3,I5)
+C*
+      STOP
+      END

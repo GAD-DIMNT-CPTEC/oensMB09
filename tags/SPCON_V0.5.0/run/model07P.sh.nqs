@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+#PBS -l cpunum_prc=1
+#PBS -l tasknum_prc=1
+#PBS -l memsz_job=1gb
+#PBS -T distrib
+#PBS -V
+#PBS -b 1
+#PBS -q PNT-EN
+#PBS -o turi-e:/gfs/home3/modoper//gfs/home3/modoper/tempo/global/oens/run/model07P.sh.nqs.out.%s
+#PBS -j o
+#
+cd /gfs/home3/modoper
+#
+/gfs/home3/modoper/tempo/global/oens/run/model07P.sh PNT-EN Info
+#

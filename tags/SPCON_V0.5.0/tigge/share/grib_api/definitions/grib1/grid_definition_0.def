@@ -1,0 +1,64 @@
+# grib 1 -> 2
+constant gridDefinitionTemplateNumber     = 0;
+
+
+# START 1/grid_definition.latitude_longitude_grid ----------------------------------------------------------------------
+# GRID DEFINITION latitude/longitude grid (or equidistant cylindrical)
+#  Ni - number of points along a parallel
+
+# Number of point is optional. It is computed into g1_increment
+# after DirectionIncrementInDegrees (compulsory) is provided
+unsigned[2] numberOfPointsAlongAParallel : optional,can_be_missing;
+alias Ni          = numberOfPointsAlongAParallel;
+
+# Number of point is optional. It is computed into g1_increment
+# after DirectionIncrementInDegrees (coumpulsory) is provided
+unsigned[2] numberOfPointsAlongAMeridian : optional,can_be_missing;
+alias Nj          = numberOfPointsAlongAMeridian;
+
+# Latitudes and Longitudes of the first and the last points
+# Resolution and component flags
+include "grid_first_last_resandcomp.def";
+
+unsigned[2] iDirectionIncrement : optional,can_be_missing;
+unsigned[2] jDirectionIncrement : optional,can_be_missing;
+alias Dj = jDirectionIncrement;
+alias Di = iDirectionIncrement;
+include "scanning_mode.def";
+
+meta  jDirectionIncrementInDegrees latlon_increment(ijDirectionIncrementGiven,jDirectionIncrement,
+  jScansPositively,
+  latitudeOfFirstGridPointInDegrees,latitudeOfLastGridPointInDegrees,
+  numberOfPointsAlongAMeridian,oneConstant,grib1divider,0) : can_be_missing;
+
+meta  iDirectionIncrementInDegrees latlon_increment(ijDirectionIncrementGiven,iDirectionIncrement,
+  iScansPositively,
+  longitudeOfFirstGridPointInDegrees,longitudeOfLastGridPointInDegrees,
+  numberOfPointsAlongAParallel,oneConstant,grib1divider,1) : can_be_missing;
+
+
+#  Set to zero
+# (reserved)
+
+alias geography.laFirst = latitudeOfFirstGridPointInDegrees;
+alias geography.loFirst = longitudeOfFirstGridPointInDegrees;
+
+alias geography.laLast = latitudeOfLastGridPointInDegrees;
+alias geography.loLast = longitudeOfLastGridPointInDegrees;
+alias geography.iInc = iDirectionIncrementInDegrees;
+alias geography.jInc = jDirectionIncrementInDegrees;
+
+alias geography.gridWestEast = iDirectionIncrementInDegrees;
+alias geography.gridNorthSouth = jDirectionIncrementInDegrees;
+
+# alias geography.area = thisarea;
+if (scanningMode == 0) {
+ if(missing(numberOfPointsAlongAParallel)){
+    iterator latlon_reduced(missingValue,values,laFirst,loFirst,laLast,loLast,
+      Nj,jInc,pl);
+ } else {
+    iterator latlon(missingValue,values,loFirst,iInc  ,Ni   ,Nj, laFirst, jInc);
+ }
+}
+
+# END   1/grid_definition.latitude_longitude_grid ----------------------------------------------------------------------

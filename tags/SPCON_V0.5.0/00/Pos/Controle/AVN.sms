@@ -1,0 +1,96 @@
+%include <head.h>
+%include <config.h>
+
+set +x
+PREFX=%TASK%
+echo $PREFX
+
+cd $OPERM/run
+./rungpgrib.sx6 $LABELI ${PREFX}
+
+JNAME=GRIBA${PREFX}
+SLEEPTIM=21
+%include <filectrl.h>
+
+##############################################################################################
+# FILE CONTROL
+#
+#### VECTOR DISCRIPTION
+# EXT    -> FILE's EXTENSION
+# SIZ    -> FILE's SIZE
+# QTF    -> FILE's NUMBER
+# ARQINI -> INITIAL STRING FILE
+#
+cont=0
+set -A ARQINI GPOS${PREFX}
+set -A TYP P.icn P.inz P.fct
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+
+ls -ltr ${ROPERM}/produtos/grib/$YYYY/$MM/$DD/${ARQINI[0]}${LABELI}* > lsgrb${HH}a2.out
+
+k=0
+while [ ${k} -lt 3 ]
+do
+case ${k} in
+0)
+        set -A EXT grb gmp ctl
+        set -A SIZ 17704700 2753 2730
+        set -A QTF 1 1 1
+;;
+1)
+        set -A EXT grb gmp ctl
+        set -A SIZ 17704700 2753 2730
+        set -A QTF 1 1 1
+;;
+2)
+        set -A EXT grb gmp ctl
+        set -A SIZ 18294000 3009 3067
+        set -A QTF 30 30 30
+;;
+esac
+
+j=0
+while [ ${j} -lt 3 ]
+do
+echo ${ARQINI[0]}${LABELI}"*"${TYP[$k]}"*"${EXT[$j]}
+cont=0
+for i in `cat lsgrb${HH}a2.out | grep ${ARQINI[0]}${LABELI} | grep ${TYP[$k]} |grep ${EXT[$j]}| awk '{print $5}'`
+do
+#        echo $i
+        if [ $i -ge ${SIZ[$j]} ]
+        then
+                cont=$(($cont+1))
+        fi
+done
+if [ ${cont} -ge ${QTF[$j]} ]
+then
+        echo "*** Number of Files - OK ${ARQINI[0]} ${EXT[$j]}"
+        smslabel Info "Number of Files - OK ${ARQINI[0]} ${EXT[$j]}"
+else
+        echo "*** Number of Files ${ARQINI[0]} ${EXT[$j]} - ERROR ${cont}"
+        smslabel Info "Number of Files ${ARQINI[0]} ${EXT[$j]} - BANGU"
+        exit 1
+fi
+
+j=$(($j+1))
+done
+
+k=$(($k+1))
+done
+rm -f lsgrb${HH}a2.out 
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+
+LABELF=`date -d "$YYYY-$MM-$DD 15 days" +'%%Y%%m%%d'`${HH}
+
+cd ${OPERM}/produtos/grh/run
+./RunGrh.members.sx6 run 126 28 ${LABELI} ${LABELF} $PREFX
+
+smslabel Info "Ok - ${LABELI}"
+
+%include <tail.h>

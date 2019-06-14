@@ -1,0 +1,54 @@
+#!/bin/ksh -x
+#********************************************************#
+#                                                        #
+#     Name:     eoftem.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               the temperature eof                      #
+#                                                        #
+#     Date:        February 11th, 1998.                  #
+#     Last change: October  01th, 1998.                  #
+#                                                        #
+#********************************************************#
+#
+echo "EOFT           -x-  RUNNING ..."
+#    Set directories:
+#
+source=$OPERMOD/eoftemp/source
+bin=$SOPERMOD/eof/bin/$RESOL$NIVEL
+#AMM input=$ROPERMOD/eof/datain
+#AMM out=$OPERMOD/dataout
+inp=$SOPERMOD/eof/datain
+outp=$OPERMOD/eoftemp/output
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f eoftem.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source
+make -f eoftem.mk clean
+make -f eoftem.mk
+exit
+  fi
+#
+cd $bin
+#
+echo "./eoftem.$TRUNC$LEV < $inp/eoftem${NUM}.nml > $outp/eoftem.$LABELI.$HOUR.$TRUNC$LEV"
+./eoftem.$TRUNC$LEV < $inp/eoftem${NUM}.nml > $outp/eoftem.$LABELI.$HOUR.$TRUNC$LEV
+#
+#

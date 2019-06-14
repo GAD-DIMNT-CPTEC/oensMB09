@@ -1,0 +1,113 @@
+%include <head.h>
+%include <config.h>
+
+ARQINI=sbsj_${LABELI}00_glob_prod
+
+LABELS=`echo ${LABELI} | cut -c 1-8`
+
+tiggescratch=${tiggedirmopora}/scratch/${ARQINI}
+tiggeoutgoing=${tiggedirmopora}/outgoing
+
+
+
+if [ `ssh ldm@ubiru "ls $tiggeoutgoing/${ARQINI}" | wc -l` -eq 0 ]; then
+cd ${OPERM}/run
+set +x
+./vescptigge.ksh ${LABELI} 000
+./vescptigge.ksh ${LABELI} 001
+./vescptigge.ksh ${LABELI} 002
+./vescptigge.ksh ${LABELI} 003
+./vescptigge.ksh ${LABELI} 004
+./vescptigge.ksh ${LABELI} 005
+./vescptigge.ksh ${LABELI} 006
+./vescptigge.ksh ${LABELI} 007
+./vescptigge.ksh ${LABELI} 008
+./vescptigge.ksh ${LABELI} 009
+./vescptigge.ksh ${LABELI} 010
+./vescptigge.ksh ${LABELI} 011
+./vescptigge.ksh ${LABELI} 012
+./vescptigge.ksh ${LABELI} 013
+./vescptigge.ksh ${LABELI} 014
+set -x
+      ssh ldm@ubiru "rm -f $tiggescratch/*test*"
+      ssh ldm@ubiru "mv $tiggescratch $tiggeoutgoing"
+      set +e
+#      ssh ldm@mopora "rm -f $tiggescratch/*test*"
+#      ssh ldm@mopora "mv $tiggescratch $tiggeoutgoing"
+else
+      echo "Arquivo jah movido..."
+fi
+
+LABELS=`echo $LABELI | cut -c 1-8`
+mkdir -p ${BANGU}/GPOS/${LABELS}/
+mkdir -p ${tiggenas}/pos/${LABELS}/
+
+#find ${ROPERM}/pos/dataout/T${TRC}L${LV} -name "GPOS???${LABELI}*" -exec mv {} ${BANGU}/GPOS/${LABELS}/ \;
+
+find ${ROPERM}/tigge/dataout/T${TRC}L${LV} -name "z_tigge*" -exec rm -f {} \;
+find ${ROPERM}/pos/dataout/T${TRC}L${LV} -name "GPOS*" -mtime +2 -exec rm -f {} \;
+
+# REFORCA COPIA PARA O NAS USANDO CPIO
+#set +e; set +u
+#a=`pwd`
+#cd ${ROPERM}/pos/dataout/T${TRC}L${LV}
+#mkdir -p ${tiggenas}/pos/${LABELS}
+#find  -name "GPOS*" -print | cpio -pdmv ${tiggenas}/pos/${LABELS}
+#cd $a
+#set -e
+# FIM DA COPIA PARA O NAS
+
+
+#rm -f ${OPERM}/run/setout/*
+rm -Rf ${ROPERM}/tigge/dataout/T${TRC}L${LV}/0??
+#rm -Rf ${ROPERM}/model/dataout/T${TRC}L${LV}/G*
+rm -Rf ${OPERM}/recortes/scripts/setout/*out
+
+cd ${OPERM}/run
+LABELF1=`$CALDATE ${LABELI} - 1d "yyyymmddhh"`
+LABELF2=`$CALDATE ${LABELI} - 2d "yyyymmddhh"`
+LABELF3=`$CALDATE ${LABELI} - 3d "yyyymmddhh"`
+LABELF4=`$CALDATE ${LABELI} - 4d "yyyymmddhh"`
+LABELF5=`$CALDATE ${LABELI} - 5d "yyyymmddhh"`
+
+LABELF1s=`$CALDATE ${LABELI} - 1d "yyyymmdd"`
+LABELF2s=`$CALDATE ${LABELI} - 2d "yyyymmdd"`
+LABELF3s=`$CALDATE ${LABELI} - 3d "yyyymmdd"`
+LABELF4s=`$CALDATE ${LABELI} - 4d "yyyymmdd"`
+LABELF5s=`$CALDATE ${LABELI} - 5d "yyyymmdd"`
+LABELF6s=`$CALDATE ${LABELI} - 6d "yyyymmdd"`
+
+#AAF set +e; set +u
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 000
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 001
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 002
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 003
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 004
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 005
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 006
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 007
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 008
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 009
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 010
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 011
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 012
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 013
+#AAF time ./runcattigge.1.1.ksh ${LABELF1} 014
+set -e; set -u
+
+#rm -Rf ${tiggenas}/pos/${LABELF1s}
+#rm -Rf ${tiggenas}/pos/${LABELF2s}
+#rm -Rf ${tiggenas}/pos/${LABELF3s}
+#rm -Rf ${tiggenas}/pos/${LABELF4s}
+#rm -Rf ${tiggenas}/pos/${LABELF5s}
+
+#rm -Rf ${tiggenas}/pos/${LABELF6s}
+rm -Rf ${tiggenas}/z*${LABELF2s}*
+
+./veldmtigge.ksh ${LABELI}
+
+mail aaf.1979@gmail.com -s TIGGE << EOF
+TIGGE RODADO para ${LABELI}
+EOF
+
+%include <tail.h>

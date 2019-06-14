@@ -1,0 +1,59 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Produtos
+FAMILY1          =   Produtos
+SMSDATE          =   2011082412
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Produtos/removies
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   4
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   removies
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+HH=${HH}
+LABELI=$YYYY$MM$DD$HH
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+let NMEMBR=\($NPERT*2\)+1
+
+cd ${OPERM}/removies/scripts/
+
+dateo=`date +"%%s"`
+
+cat << EOF > tempiulahsb.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/setremovies.${LABELI}.${dateo}.out
+#PBS -N REMOVIES
+
+cd ${OPERM}/removies/scripts/
+./removies_t126L28_ense_cal_fixBfctg_operacao_mend.ksh ${LABELI} 360 000 012 30 096
+./gposens.scr ${LABELI} AVN
+
+exit 0
+EOF
+
+submit tempiulahsb.sub ${QUEUEP}
+rm -f tempiulahsb.sub
+TARQC=90000
+NARQC=120
+
+NARQV=`find ${ROPERM}/removies/gif -name "*rm${LABELI}*.png" -exec ls -ltr {} \; | awk 'BEGIN {i=0} {if ($5>=10000) i+=1} END {printf ("%%d",i)}'`
+
+if [ $NARQV -lt $NARQC ]; then
+      echo "problemas na geracao de figuras do removies!"
+      exit 2
+fi
+
+
+%include <tail.h>

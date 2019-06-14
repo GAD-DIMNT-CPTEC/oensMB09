@@ -1,0 +1,37 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Modelo/Membros/01
+FAMILY1          =   01
+SMSDATE          =   20100624
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Modelo/Membros/01/Analise
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   8
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   Analise
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+LABELF=`${CALDATE} $LABELI + 36h 'yyyymmddhh'`
+PERT=%FAMILY1%
+cd $OPERM/run
+./runperpnt1.sx6 126 28 $PERT R $LABELI $LABELF 15 NO 07 sstwkl
+
+set +x
+JNAME=ENSANL${PERT}
+SLEEPTIM=23
+%include <filectrl.h>
+
+sleep 60
+%include <ctrl_analise.h>
+
+set -x
+find ${ROPERM}/ -name "GFCT${PERT}R*" -print -exec rm -f {} \;
+set +x
+
+%include <tail.h>

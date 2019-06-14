@@ -1,0 +1,60 @@
+# grib 1 -> 2
+constant gridDefinitionTemplateNumber     = 20;
+
+
+
+# START 1/grid_definition.polar_stereographic ----------------------------------------------------------------------
+# GRID DEFINITION polar stereographic
+
+#  Nx - number of points along X-axis
+unsigned[2] numberOfPointsAlongXAxis ;
+alias Nx = numberOfPointsAlongXAxis;
+
+#  Ny - number of points along Y-axis
+unsigned[2] numberOfPointsAlongYAxis ;
+alias Ny = numberOfPointsAlongYAxis;
+
+#  La1 - latitude of first grid point
+# NOTE 3 NOT FOUND
+unsigned[3] latitudeOfFirstGridPoint : optional, edition_specific ;
+meta latitudeOfFirstGridPointInDegrees scale(latitudeOfFirstGridPoint,oneConstant,grib1divider);
+alias La1 = latitudeOfFirstGridPoint;
+
+#  Lo1 - longitude of first grid point
+# NOTE 4 NOT FOUND
+unsigned[3] longitudeOfFirstGridPoint : optional, edition_specific ;
+meta longitudeOfFirstGridPointInDegrees scale(longitudeOfFirstGridPoint,oneConstant,grib1divider);
+alias Lo1 = longitudeOfFirstGridPoint;
+
+include "resolution_flags.def";
+
+#  LoV - orientation of the grid; i.e.  the longitude value of the meridian which is parallel to the Y-axis
+# (or columns of the grid)
+# NOTE 4 NOT FOUND
+unsigned[3] orientationOfTheGrid : optional ;
+meta orientationOfTheGridInDegrees scale(orientationOfTheGrid,oneConstant,grib1divider);
+alias LoV = orientationOfTheGrid ;
+
+
+#  Dx - X-direction grid length
+# NOTE 2 NOT FOUND
+unsigned[3] xDirectionGridLength ;
+
+alias Dx = xDirectionGridLength;
+#  Dy - Y-direction grid length
+# NOTE 2 NOT FOUND
+unsigned[3] yDirectionGridLength ;
+
+alias Dy = yDirectionGridLength;
+#  Projection center flag
+# NOTE 5 NOT FOUND
+unsigned[1] projectionCenterFlag ;
+
+include "scanning_mode.def";
+
+#  Set to zero
+# (reserved)
+pad padding_grid5_1(4);
+
+
+# END   1/grid_definition.polar_stereographic ----------------------------------------------------------------------

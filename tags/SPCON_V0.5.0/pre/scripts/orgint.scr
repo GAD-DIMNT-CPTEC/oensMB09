@@ -1,0 +1,70 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        orgint.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   the orography, variance and               #
+#                   land-sea mask files.                      #
+#                   It generates GrADS output files.          #
+#                   It runs on batch.                         #
+#                                                             #
+#      Date       : Feb. 10th, 1994.                          #
+#      Last change: June 26th, 1995.                          #
+#                                                             #
+#*************************************************************#
+#
+# Set directories
+#
+source=$OPERMOD/pre/source
+input=$SOPERMOD/databcs
+inputp=$SOPERMOD/pre/datain
+outtrc=$SOPERMOD/pre/dataout/$TRUNC
+minput=$SOPERMOD/model/datain
+bin=$SOPERMOD/pre/bin/orgint/$TRUNC
+out=$OPERMOD/pre/output
+#
+echo 'Topography and Variance -- RUNNING ...'
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/orgint
+make -f orgint.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/orgint
+make -f orgint.mk clean
+make -f orgint.mk
+exit
+  fi
+#
+#  Input  files: 18.
+#  Output files: 11, 22, 33, 34, 44 and 55.
+#
+eval $FFF'18'=$input/navytm.form
+eval $FFF'11'=$outtrc/sealnd.form.$TRUNC
+eval $FFF'22'=$outtrc/orogin.$TRUNC
+eval $FFF'33'=$minput/orgvar.$TRUNC
+eval $FFF'34'=$outtrc/vargrd.$TRUNC.$MACH
+eval $FFF'44'=$outtrc/orgwav.$TRUNC
+eval $FFF'55'=$outtrc/orogsm.$TRUNC
+export $FFF'18' $FFF'11' $FFF'22' $FFF'33'
+export $FFF'34' $FFF'44' $FFF'55'
+#
+cd $bin
+#
+./orgint.$TRUNC < $inputp/orgint.nml > $out/orgint.$DATE.$HOUR.$TRUNC
+#

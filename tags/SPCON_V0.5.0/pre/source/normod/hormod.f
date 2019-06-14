@@ -1,0 +1,143 @@
+      SUBROUTINE HORMOD(NFG,GH,MODS,EPS)
+C*
+      INCLUDE "reshnmd.h"
+C*
+C*    RHOMBOIDAL TRUNCATION: NEND1=MEND1, JEND1=MEND1+NEND1-1
+C*
+C*    TRIANGULAR TRUNCATION: NEND1=MEND1=JEND1
+C*
+      INTEGER MEND,JMX
+      PARAMETER(MEND=MEND1-1,JMX=MEND1+NEND1-1)
+C*
+      INTEGER MODD,LEND,KEND,NXSY,NXAS
+      PARAMETER(MODD=MEND-(MEND/2)*2,LEND=(MEND+MODD)/2,
+     *          KEND=LEND+1-MODD,NXSY=LEND+2*KEND,NXAS=2*LEND+KEND)
+C*
+      INTEGER NFG,MODS,IPR,K,M,NMAX,NLX,NMD,LMAX,MMAX,KLMX,
+     *        NSY,NAS,N,NCUTS,NCUTA
+      REAL EPS,ERI,PI,TWOMG,PERCUT,RM,RN
+C*
+      REAL ALFA(NEND1),BETA(NEND1),GAMA(NEND1)
+      REAL DGL(NEND1),SDG(NEND1),XX(NEND1,NEND1),WK(NXSY)
+      REAL WS(NXSY),WA(NXAS),XS(NXSY,NXSY),XA(NXAS,NXAS)
+      REAL ES(NXSY,NXSY),EA(NXAS,NXAS)
+      REAL GH(MODS)
+C*
+      REAL ZERO,ONE,FOUR
+      DATA ZERO /0.0E0/, ONE /1.0E0/, FOUR /4.0E0/
+      REAL GRAV,ER,DAY
+      DATA GRAV /9.80665E0/, ER /6.37E6/, DAY /86400.0E0/
+C*
+      IPR=-1
+      ERI=ONE/ER
+      PI=FOUR*ATAN(ONE)
+      TWOMG=FOUR*PI/DAY
+      PERCUT=DAY/PI
+C*
+      DO 10 K=1,MODS
+C*
+      WRITE(*,*)' '
+      WRITE(*,'(2(A6,I5))')' MEND=',MEND,' MODE=',K
+      WRITE(*,*)' '
+      WRITE(*,'(1P,3(A7,G12.5))')
+     *        ' 2*OMG=',TWOMG,'  GH = ',GH(K),' PERC= ',PERCUT
+C*
+      DO 10 M=1,MEND1
+C*
+      IF (JEND1 .EQ. JMX) THEN
+      NMAX=NEND1
+      NLX=MEND
+      ELSE
+      NMAX=NEND1-M+1
+      NLX=MEND1-M
+      ENDIF
+C*
+      NMD=MOD(NLX,2)
+      LMAX=(NLX+NMD)/2
+      MMAX=LMAX+1-NMD
+      KLMX=LMAX+MMAX
+      NSY=LMAX+2*MMAX
+      NAS=MMAX+2*LMAX
+      WRITE(*,*)' '
+      WRITE(*,'(4(A6,I5))')' M  = ',M-1,' NMAX=',NMAX-1,
+     *                     ' LMAX=',LMAX,' MMAX=',MMAX
+C*
+      RM=FLOAT(M-1)
+      DO 20 N=1,NMAX
+      RN=RM+FLOAT(N-1)
+      IF (RN .EQ. ZERO) THEN
+      ALFA(N)=ZERO
+      BETA(N)=ZERO
+      GAMA(N)=ZERO
+      ELSE
+      ALFA(N)=TWOMG*RM/(RN*(RN+ONE))
+      BETA(N)=(TWOMG/RN)*SQRT((RN*RN-ONE)*(RN*RN-RM*RM)/
+     *                       (FOUR*RN*RN-ONE))
+      GAMA(N)=ERI*SQRT(RN*(RN+ONE)*GH(K))
+      ENDIF
+   20 CONTINUE
+C*
+      IF (IPR .GE. 1) THEN
+      WRITE(*,*)' '
+      WRITE(*,*)' ALFA:'
+      WRITE(*,'(1P,6G12.5)')(ALFA(N),N=1,NMAX)
+      WRITE(*,*)' BETA:'
+      WRITE(*,'(1P,6G12.5)')(BETA(N),N=1,NMAX)
+      WRITE(*,*)' GAMA:'
+      WRITE(*,'(1P,6G12.5)')(GAMA(N),N=1,NMAX)
+      ENDIF
+C*
+      IF (M .EQ. 1) THEN
+C*
+C*    SYMMETRIC CASE
+C*
+      CALL SYMG0(NXSY,NSY,NEND1,LMAX,KLMX,NMD,IPR,NCUTS,
+     *           EPS,TWOMG,BETA,GAMA,
+     *           WS,SDG,DGL,ES,XS,XX)
+C*
+      CALL RECORD(NFG,NXSY,NCUTS,NSY,WS,XS,WK,ES)
+C*
+C*    WRITE(NFG)NCUTS,NSY,(ONE/WS(N),N=1,NCUTS),
+C*   *                    ((XS(NN,N),N=1,NSY),NN=1,NCUTS)
+C*
+C*    ASYMMETRIC CASE
+C*
+      CALL ASYG0(NXAS,NAS,NEND1,LMAX,KLMX,MMAX,NMD,IPR,
+     *           NCUTA,EPS,TWOMG,BETA,GAMA,
+     *           WA,SDG,DGL,EA,XA,XX)
+C*
+      CALL RECORD(NFG,NXAS,NCUTA,NAS,WA,XA,WK,EA)
+C*
+C*    WRITE(NFG)NCUTA,NAS,(ONE/WA(N),N=1,NCUTA),
+C*   *                    ((XA(NN,N),N=1,NAS),NN=1,NCUTA)
+C*
+      ELSE
+C*
+C*    SYMMETRIC CASE
+C*
+      CALL SYMRG(NXSY,NSY,LMAX,MMAX,NMD,IPR,NCUTS,
+     *           EPS,TWOMG,PERCUT,ALFA,BETA,GAMA,
+     *           WS,WK,ES,XS)
+C*
+      CALL RECORD(NFG,NXSY,NCUTS,NSY,WS,XS,WK,ES)
+C*
+C*    WRITE(NFG)NCUTS,NSY,(ONE/WS(N),N=1,NCUTS),
+C*   *                    ((XS(NN,N),N=1,NSY),NN=1,NCUTS)
+C*
+C*    ASYMMETRIC CASE
+C*
+      CALL ASYRG(NXAS,NAS,LMAX,MMAX,NMD,IPR,NCUTA,
+     *           EPS,TWOMG,PERCUT,ALFA,BETA,GAMA,
+     *           WA,WK,EA,XA)
+C*
+      CALL RECORD(NFG,NXAS,NCUTA,NAS,WA,XA,WK,EA)
+C*
+C*    WRITE(NFG)NCUTA,NAS,(ONE/WA(N),N=1,NCUTA),
+C*   *                    ((XA(NN,N),N=1,NAS),NN=1,NCUTA)
+C*
+      ENDIF
+C*
+   10 CONTINUE
+C*
+      RETURN
+      END

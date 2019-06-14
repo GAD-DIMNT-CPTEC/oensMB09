@@ -1,0 +1,337 @@
+#!/bin/ksh
+#help#
+#***************************************************************#
+#                                                               #
+#     Name:           rundhnp.sx6                               #
+#                                                               #
+#     Function:     This script submits the                     #
+#                   DHN U*,V* generation script                 #
+#                   to the NQS queue.                           #
+#                   It runs in Korn Shell.                      #
+#                                                               #
+#     Date:         November 04th, 1999.                        #
+#     Last change:  November 04th, 1999.                        #
+#                                                               #
+#     Valid Arguments for rundhnp.sx6:                          #
+#                                                               #
+#     First  : COMPILE: help, make, clean or run                #
+#     Second :     TRC: three-digit triangular truncation       #
+#     Third  :      LV: two-digit number of vertical layers     #
+#     Fourth :  LABELI: initial forecasting label               #
+#     Fifth  :  LABELF: final forecasting label                 #
+#                                                               #
+#               LABELx : yyyymmddhh                             #
+#                        yyyy = four digit year                 #
+#                          mm = two digit month                 #
+#                          dd = two digit day                   #
+#                          hh = two digit hour                  #
+#                                                               #
+#***************************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+    cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+    exit 0
+fi
+#
+#       Testing Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+TRC=062
+else
+TRC=${2}
+fi
+if [ -z "${3}" ]
+then
+LV=28
+else
+LV=${3}
+fi
+#
+#     Select parameter for the resolution:
+#
+case ${TRC} in
+021) IR=64  ; JR=32  ;;
+030) IR=96  ; JR=48  ;;
+042) IR=128 ; JR=64  ;;
+047) IR=144 ; JR=72  ;;
+062) IR=192 ; JR=96  ;;
+079) IR=240 ; JR=120 ;;
+095) IR=288 ; JR=144 ;;
+106) IR=320 ; JR=160 ;;
+126) IR=384 ; JR=192 ;;
+159) IR=480 ; JR=240 ;;
+170) IR=512 ; JR=256 ;;
+213) IR=640 ; JR=320 ;;
+319) IR=960 ; JR=480 ;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;;
+esac
+#
+case ${LV} in
+09) KR=09 ;;
+18) KR=18 ;;
+28) KR=28 ;;
+42) KR=42 ;;
+*) echo "Wrong request for vertical resolution: ${LV}" ; exit 1;;
+esac
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT=out
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#   
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/dk20/modoper/tempo/global/oens
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+#
+#   Set truncation and layers
+#
+RESOL=T${TRC}
+NIVEL=L${LV}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setdhnp${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh
+#
+#*****************************************************************#
+#                                                                 #
+#       Name:     setdhnp${RESOL}${NIVEL}.${MAQUI}                #
+#                                                                 #
+#       Function: This script file is used to set the             #
+#                 environmental variables and start the           #
+#                 DHN U*,V* generation script.                    #
+#                                                                 #
+#*****************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setdhnp${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute)
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%H:%M'`
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELF = yyyymmddhh
+#   LABELI = initial run forecast label
+#   LABELF = final run forecast label
+#
+LABELI=${4}
+LABELF=${5}
+export LABELI LABELF
+echo \${LABELI} \${LABELF}
+#
+#   Prefix names for the FORTRAN files
+#
+#   NAMED - DHN Forecasted file's prefix
+#   NAMEP - Pos-processed file's prefix
+#
+NAMED=GDHNNMC
+NAMEP=GPOSNMC
+export NAMED NAMEP
+#
+#   Suffix names for the FORTRAN files
+#
+#   EXTF - DHN Forecasted file's extension
+#   EXTP - Post-processed file's extension
+#   EXTM - Topography and Land-sea Mask file's extension
+#   EXTS - Post-processed DHN Forecasted file's extension
+#
+EXTF=F.unf
+EXTP=P.icn
+EXTM=S.msk
+EXTS=S.fct
+export EXTF EXTP EXTM EXTS
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+export OPERMOD SOPERMOD ROPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+#
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE
+echo \${COMPILE}
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#F_FILEINF=DETAIL
+#export F_FILEINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -pvctl noaltcode either scalar or vector code is generated at compilation
+#   -O nodiv         division may not be changed to reciprocal multiplication
+#   -O nomove        not move invariant expression outside the loop
+#   -float2          floating-point data format 2 is enabled
+#   -w               sets the basic numeric size to 8 bytes
+#   -b               dummy argument variable is referenced by address
+#
+#
+FTNFLAG='-C vsafe -float0 -ew -Wf" -pvctl noaltcode nomatmul -O nodiv nomove " '
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=\${OPERMOD}/include/\${TRUNC}\${LEV}
+CPP="-I\${INC}"
+export INC CPP
+echo \${INC}
+#
+#   Set FORTRAN compiler name
+#
+F77=f90
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   32-Bits IEEE Files
+#
+F_UFMTIEEE=90,91,93,95
+export F_UFMTIEEE
+F_UFMTADJUST=TYPE2
+export F_UFMTADJUST
+#
+#   Building the Include File
+#
+  if [ "\${COMPILE}" != "run" ]
+  then
+#
+cd \${INC}
+#
+cat <<EOT1 > resdhn.n
+      INTEGER JMAX,IMAX
+      PARAMETER(IMAX=${IR},JMAX=${JR})
+EOT1
+if (diff resdhn.n resdhn.h > /dev/null)
+then 
+    echo "resdhn.n and resdhn.h are the same"
+    rm -f resdhn.n
+else
+    echo "resdhn.n and resdhn.h are different"
+    mv resdhn.n resdhn.h
+fi
+#
+#   End of includes
+#
+else
+#
+#   Building the Namelist File
+#
+cat <<EOT2 > \${SOPERMOD}/dhn/datain/dhn.nml
+ &NMLDHN
+  ITM=96,
+  ITC=' 3HR',
+  DIRI='\${ROPERMOD}/model/dataout/\${TRUNC}\${LEV}/ ',
+  DIRO='\${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}/ ',
+  FNDHI='\${NAMED}\${LABELI}\${LABELF}\${EXTF}.\${TRUNC}\${LEV} ',
+  FNICN='\${NAMEP}\${LABELI}\${LABELI}\${EXTP}.\${TRUNC}\${LEV} ',
+  FNMSK='\${NAMED}\${LABELI}\${LABELF}\${EXTM}.\${TRUNC}\${LEV} ',
+  FNDHN='\${NAMED}\${LABELI}\${LABELF}\${EXTS}.\${TRUNC}\${LEV} '
+ &END
+EOT2
+#
+fi
+#
+#   Run script
+#
+\${OPERMOD}/dhn/scripts/dhn.scr
+EOT0
+#
+#   End of ${OPERM}/run/setdhnp${RESOL}${NIVEL}.${MAQUI} generation
+#
+echo 'Post-Processing - DHN -- RUNNING ...'
+#
+chmod +x setdhnp${RESOL}${NIVEL}.${MAQUI}
+#
+/usr/bin/nqsII/qsub -q ${QUEUE} ${OPERM}/run/setdhnp${RESOL}${NIVEL}.${MAQUI}
+#

@@ -1,0 +1,61 @@
+#!/bin/sh -x
+#*************************************************************#
+#                                                             #
+#      Name:        sibalb.scr                                #
+#                                                             #
+#      Function:    This script file is used to generate      #
+#                   resolution independent unformated         #
+#                   albedo coefficients file.                 #
+#                   It runs on batch.                         #
+#                                                             #
+#      Date       : Feb. 09th, 1994.                          #
+#      Last change: June 26th, 1995.                          #
+#                                                             #
+#*************************************************************#
+#
+# Set directories
+#
+source=$OPERMOD/pre/source
+input=$SOPERMOD/databcs
+minput=$SOPERMOD/model/datain
+bin=$SOPERMOD/pre/bin/sibalb
+out=$OPERMOD/pre/output
+#
+echo 'Albedo Coefficients -- RUNNING ...'
+#
+#   Check if the makefile will compile:
+#
+echo $COMPILE
+  if [ "$COMPILE" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/sibalb
+make -f sibalb.mk
+exit
+  fi
+#
+echo $COMPILE
+  if [ "$COMPILE" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd $source/sibalb
+make -f sibalb.mk clean
+make -f sibalb.mk
+exit
+  fi
+#
+#  Input  files: 10.
+#  Output files: 11.
+#
+eval $FFF'10'=$input/sibalb.form
+eval $FFF'11'=$minput/sibalb
+export $FFF'10' $FFF'11'
+#
+cd $bin
+#
+./sibalb > $out/sibalb.$DATE.$HOUR
+#

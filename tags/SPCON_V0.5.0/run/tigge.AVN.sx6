@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+#PBS -l cpunum_prc=1
+#PBS -l tasknum_prc=1
+#PBS -l memsz_job=1gb
+#PBS -T distrib
+#PBS -V
+#PBS -b 1
+#PBS -q Midi1
+#PBS -o tupay-e:/gfs/home3/modoper/tempo/global/oens/run/setout/tigge.AVN2012021400.out.%s
+#PBS -j o
+#
+cd /gfs/dk22/modoper/tempo/global/oens/tigge/dataout/T126L28/AVN
+#
+/gfs/home3/modoper/tempo/global/oens/tigge/bin/tigge.x < /gfs/home3/modoper/tempo/global/oens/tigge/bin/ens.AVN.list
+#
+exit 0

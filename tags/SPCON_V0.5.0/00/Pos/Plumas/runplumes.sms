@@ -1,0 +1,28 @@
+%include <head.h>
+%include <config.h>
+
+PREFX=AVN
+LABELF=`/gfs/home3/modoper/bin/caldate.3.1.2 ${LABELI} + 15d "yyyymmddhh"`
+echo $LABELF
+
+cd $OPERM/run
+
+for m in `echo 01N 01P 02N 02P 03N 03P 04N 04P 05N 05P 06N 06P 07N 07P AVN`
+do
+
+      if [ ! -s  ${mDK}/pos/dataout/T${TRC}L${LV}/GFGN${m}${LABELI}*${LV} ]; then
+            echo "./runpntg1.sx6 ${TRC} ${LV} ${LABELI} ${NFDAYS} ${m} ${NPERT} sstwk"
+#            ./runpntg1.sx6 ${TRC} ${LV} ${LABELI} ${NFDAYS} ${m} ${NPERT} sstwk
+            ./runmodgprompi.sx6 ${TRC} ${LV} ${LABELI} ${LABELF} ${DHFCT} ${m}
+            ./rungrhprompi.ksh ${LABELI} ${m}
+      else
+            echo "GFGH${m}${LABELI} - OK"
+      fi
+done
+
+./runplumes.sx6 ${LABELI} AVN
+
+sleep 15
+%include <ctrl_plumes.h>
+
+%include <tail.h>

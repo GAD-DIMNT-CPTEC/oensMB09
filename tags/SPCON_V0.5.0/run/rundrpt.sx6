@@ -1,0 +1,477 @@
+#!/bin/ksh
+#help#
+#*******************************************************************#
+#                                                                   #
+#     Name:           rundrpt.sx6                                   #
+#                                                                   #
+#     Function:       This script submits the                       #
+#                     decomposition scripts                         #
+#                     It runs in Korn Shell.                        #
+#                                                                   #
+#     Date:           May    26th, 2003.                            #
+#     Last change:    May    26th, 2003.                            #
+#                                                                   #
+#     Valid Arguments for rundrpt.sx6                               #
+#                                                                   #
+#     First  : COMPILE: help, make, clean or run                    #
+#     Second : NUMPERT: number of perturbations                     #
+#     Third  :     TRC: three-digit triangular truncation           #
+#     Fourth :      LV: two-digit number of vertical sigma-layers   #
+#     Fifth  :  LABELI: input field label                           #
+#     Sixth  :  HUMID: YES or NO (humidity will be perturbed)       #
+#              LABELx : yyyymmddhh                                  #
+#                       yyyy = four digit year                      #
+#                       mm = two digit month                        #
+#                       dd = two digit day                          #
+#                       hh = two digit hour                         #
+#                                                                   #
+#*******************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < $0 | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Test of Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+echo "Second argument is not set (NUMPERT)"
+exit
+else
+NUMPERT=${2}
+fi
+if [ -z "${3}" ]
+then
+echo "Third argument is not set (TRC)"
+exit
+else
+TRC=${3}
+fi
+if [ -z "${4}" ]
+then
+echo "Fourth argument is not set (LV)"
+exit
+else
+LV=${4}
+fi
+if [ "${1}" = "run" ]
+then
+if [ -z "${5}" ]
+then
+echo "Fifth argument is not set (LABELI: yyyymmddhh)"
+exit
+fi
+if [ -z "${6}" ]
+then
+echo "Sixth argument is not set (HUMID)"
+exit
+else
+HUMID=${6}
+fi
+fi
+#
+#   Set machine, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+EXT=out
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   IOPERM is the directory for the input files.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/dk20/modoper/tempo/global/oens
+IOPERM=/gfs/dk20/modoper/tempo/global/oens/model/datain
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${IOPERM}
+#
+#   Set truncation and layers
+#
+RESOL=T${TRC}
+NIVEL=L${LV}
+export RESOL NIVEL
+#
+case ${TRC} in
+021) MR=21 ; IR=64 ; JR=32 ; 
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+030) MR=30 ; IR=96 ; JR=48 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+042) MR=42 ; IR=128 ; JR=64 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=11 ;;
+     28) KR=28 ; LR=11 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+047) MR=47 ; IR=144 ; JR=72 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+062) MR=62 ; IR=192 ; JR=96 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=11 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+079) MR=79 ; IR=240 ; JR=120 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+095) MR=95 ; IR=288 ; JR=144 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+106) MR=106 ; IR=320 ; JR=160 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+126) MR=126 ; IR=384 ; JR=192 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=11 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+159) MR=159 ; IR=480 ; JR=240 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+170) MR=170 ; IR=512 ; JR=256 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+213) MR=213 ; IR=640 ; JR=320 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+319) MR=319 ; IR=960 ; JR=480 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setdrpt${RESOL}${NIVEL}.${MAQUI}
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        setdrpt${RESOL}${NIVEL}.${MAQUI}          #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  decomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/setdrpt${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y'``date +'%m'``date +'%d'`
+HOUR=`date +'%H:%M'`
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file label
+#
+LABELI=${5}
+echo \${LABELI} \${NUMPERT}
+export LABELI NUMPERT
+#
+#   Prefix names for the FORTRAN files
+#
+#   NAMEL - List file name prefix
+#   GNAME - Initial condition file name prefix
+#   NAMER - Input gridded file name prefix
+#   NAMES - Output spectral file name prefix
+#
+NAMEL=GANLNMC
+export NAMEL
+GNAME=GANLNMC
+export GNAME
+#
+#   Suffix names for the FORTRAN files
+#
+#   EXTL - List file name suffix
+#   EXTG - Initial condition file name suffix
+#   ERRi - Input gridded file name suffix
+#   ERSi - Output spectral file name suffix
+#
+EXTL=P.rpt
+export EXTL
+EXTG=S.unf
+export EXTG
+EXTR=R.unf
+PT=R
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   IOPERMOD is the directory for input file.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+IOPERMOD=${IOPERM}
+export OPERMOD SOPERMOD ROPERMOD IOPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+echo \${IOPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+echo ${1}
+COMPILE=${1}
+echo \${COMPILE}
+export COMPILE
+#
+#   Set FORTRAN compilation flags
+#
+#   -integer_size 64 sets the integer basic numeric size to 8 bytes
+#   -real_size 64    sets the real basic numeric size to 8 bytes
+#
+#
+FTNFLAG='-Wf" -pvctl noaltcode -O nodiv nomove "'
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=\${OPERMOD}/include/\${TRUNC}\${LEV}
+CPP="-EP -I\${INC}"
+export INC CPP
+#
+#   Set FORTRAN compiler name
+#
+F77="f90 -V -float0 -ew "
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#   $FFFn is associated with FORTRAN file unit = n
+#
+FFF=FORT
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#FORT_CONVERT10=BIG_ENDIAN
+#FORT_CONVERT20=BIG_ENDIAN
+#export FORT_CONVERT10 FORT_CONVERT20
+#
+F_UFMTIEEE=10,11,20
+F_UFMTADJUST11=TYPE2
+F_UFMTADJUST20=TYPE2
+#AMM export F_UFMTIEEE F_UFMTADJUST
+export F_UFMTIEEE F_UFMTADJUST11 F_UFMTADJUST20
+#  Now, build the necessary INCLUDE for the choosen truncation and 
+#       vertical resolution.. 
+#
+  if [ "\${COMPILE}" != "run" ]
+  then
+#
+cd \${INC}
+#
+cat <<EOT1 > decanl.n
+      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
+      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},LMAX=${LR})
+EOT1
+if (diff decanl.n decanl.h > /dev/null)
+then
+    echo "decanl.n and decanl.h are the same"
+    rm -f decanl.n
+else
+    echo "decanl.n and decanl.h are different"
+    mv decanl.n decanl.h
+fi
+#
+#  End of includes
+#
+fi
+#  Now, build the necessary NAMELIST input:
+#
+GNAMEL=\${NAMEL}\${LABELI}\${EXTL}.\${TRUNC}\${LEV}
+#para namelist: LDIM=\${NUMPERT}
+cat <<EOT2 > \${SOPERMOD}/decanl/datain/decanl.nml
+ &DATAIN
+  LDIM=1
+  DIRL='\${SOPERMOD}/decanl/datain/ '
+  DIRI='\${IOPERMOD}/ '
+  DIRG='\${ROPERMOD}/rdpert/dataout/\${TRUNC}\${LEV}/ '
+  DIRS='\${IOPERMOD}/ '
+  GNAMEL='\${GNAMEL} '
+ &END
+ &HUMIDI
+  HUM='${HUMID}'
+ &END
+EOT2
+i=1
+while [ \${i} -le ${NUMPERT} ]
+do
+#
+if [ i -le 9 ]
+then
+cat <<EOT3 > \${SOPERMOD}/decanl/datain/\${GNAMEL}
+\${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
+GANL0\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}
+GANL0\${i}R\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
+EOT3
+else
+cat <<EOT3 > \${SOPERMOD}/decanl/datain/\${GNAMEL}
+\${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
+GANL\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}
+GANL\${i}R\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
+EOT3
+fi
+#
+#
+cd \${OPERMOD}/run
+#
+#   Run Decomposition
+#
+\${OPERMOD}/decanl/scripts/decanl.scr
+#
+#
+echo \${i}
+let i=i+1
+done
+EOT0
+#
+#   Change mode to be executable
+#
+chmod 744 setdrpt${RESOL}${NIVEL}.${MAQUI}
+#
+#   Submit Decomposition scripts to NQS ${QUEUE}
+#
+#AMM echo "qsub -x -s /bin/ksh -q ${QUEUE} ${OPERM}/run/setdrpt${RESOL}${NIVEL}.${MAQUI}"
+#AMM qsub -x -s /bin/ksh -q ${QUEUE} ${OPERM}/run/setdrpt${RESOL}${NIVEL}.${MAQUI}
+echo "${OPERM}/run/setdrpt${RESOL}${NIVEL}.${MAQUI}"
+${OPERM}/run/setdrpt${RESOL}${NIVEL}.${MAQUI}
+#

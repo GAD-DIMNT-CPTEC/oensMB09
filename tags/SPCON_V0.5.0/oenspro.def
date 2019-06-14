@@ -1,0 +1,182 @@
+set HOME "/gfs/home3/io_dop/users/alex"
+			    
+suite oenspro		    
+
+	clock real
+	limit Task 1
+	defstatus suspended
+        limit i 4
+        limit f 10
+
+	edit SMSFILES   "${HOME}/oenspro/smsfiles"
+	edit SMSINCLUDE "${HOME}/oenspro/includes"
+	edit SMSHOME    "${HOME}"
+
+	loop HH ( 00 12 ) do
+        set HZ "${HH}"
+
+	family ${HH}
+        case HZ
+	  in (00) do cron 03:30; endin    # +2h para modelos das 00Z e 12Z
+	  in (12) do cron 16:00; endin    
+        endcase
+
+		family Pre
+			task Pega_Analise
+                       label Info "ok"
+			task Chopping
+                        label Info "ok"
+				trigger (./Pega_Analise eq complete)
+			task Perturba_Analise
+                        label Info "ok"
+				trigger (./Chopping eq complete)
+			task Rodada_Controle
+                        label Info "ok"
+				trigger (./Perturba_Analise eq complete)
+		endfamily
+
+		family Modelo
+			family Membros
+				# AS TAREFAS PROCESSAM E BINARIZAM
+
+				loop PERT (01 02 03 04 05 06 07) do
+					family ${PERT}
+                                                
+						task Analise
+                                          label Info "ok"
+							trigger (/oenspro/${HH}/Pre eq complete)
+						task N
+                                          label Info "ok"
+							trigger (./Analise eq complete)
+						task P
+                                          label Info "ok"
+							trigger (./Analise eq complete)
+					endfamily
+				endloop
+			endfamily
+			family Controle
+				task AVN
+                        label Info "ok"
+				trigger (/oenspro/${HH}/Pre/Chopping eq complete)
+			endfamily
+		endfamily
+		family Tigge
+                inlimit /oenspro:i
+			loop PERT (01 02 03 04 05 06 07) do
+				family ${PERT}
+                                                
+                              edit SMSTRIES 6
+					task N
+                                    label Info "ok"
+						trigger (/oenspro/${HH}/Pre eq complete)
+					task P
+                                    label Info "ok"
+						trigger (/oenspro/${HH}/Pre eq complete)
+				endfamily
+			endloop
+			family Controle
+                        edit SMSTRIES 4
+				task AVN
+                              label Info "ok"
+					trigger (/oenspro/${HH}/Pre eq complete)
+			endfamily
+                  task Rm_Tigge
+                        trigger ( /oenspro/${HH}/Tigge/01 eq complete and \
+                              /oenspro/${HH}/Tigge/02 eq complete and \
+                              /oenspro/${HH}/Tigge/03 eq complete and \
+                              /oenspro/${HH}/Tigge/04 eq complete and \
+                              /oenspro/${HH}/Tigge/05 eq complete and \
+                              /oenspro/${HH}/Tigge/06 eq complete and \
+                              /oenspro/${HH}/Tigge/07 eq complete and \
+                              /oenspro/${HH}/Tigge/Controle eq complete )
+                              
+            endfamily
+		family Pos
+                defstatus complete
+                inlimit /oenspro:i
+#			loop PERT (01 02 03 04 05 06 07) do
+#				family ${PERT}
+#                                                
+#                              edit SMSTRIES 4
+#					task N
+#                                    label Info "ok"
+#						trigger (/oenspro/${HH}/Tigge eq complete)
+#					task P
+#                                    label Info "ok"
+#						trigger (/oenspro/${HH}/Tigge eq complete)
+#				endfamily
+#			endloop
+#			family Controle
+#                        edit SMSTRIES 4
+#				task AVN
+#                              label Info "ok"
+#					trigger (/oenspro/${HH}/Tigge eq complete)
+#			endfamily
+			family Ens_Medio
+                                                
+				task Medio
+                              label Info "ok"
+					trigger (/oenspro/${HH}/Modelo/Controle eq complete) and (/oenspro/${HH}/Modelo/Membros eq complete)
+#				task Griba
+#                              edit SMSTRIES 4
+#                              label Info "ok"
+#					trigger (./Medio eq complete)
+			endfamily
+                        family Plumas
+                                                
+                              task runplumes
+                                    label Info "ok"
+                                    trigger (/oenspro/${HH}/Pos/Ens_Medio eq complete)
+                        endfamily
+			task COPY_BANGU
+                                defstatus queued
+                                trigger (/oenspro/${HH}/Pos/Plumas eq complete)
+			task COPY_SAN
+                                defstatus queued
+                                trigger (/oenspro/${HH}/Pos/Plumas eq complete)
+		endfamily
+		family Produtos
+                defstatus complete
+                inlimit /oenspro:f
+                        trigger ( /oenspro/${HH}/Pos eq complete )
+                        
+                        task gesfam
+                              
+                        task ghprec
+                              trigger ( /oenspro/${HH}/Pos/Plumas eq complete )
+                              
+                        task probability
+                              
+                        task spread
+                              
+                        task cluster
+                              
+                        task spaguetti
+                              
+                        task grhens
+                              trigger ( /oenspro/${HH}/Pos/Plumas eq complete )
+                              
+                        task skillens
+                              
+                        task prcmed
+                              
+                        task chievol
+                              
+                        task COPY_BANGU
+                                 defstatus queued
+                                 trigger (./gesfam eq complete and \
+                                 ./ghprec eq complete and ./probability eq complete and \
+                                 ./spread eq complete and ./spaguetti eq complete and \
+                                 ./grhens eq complete and ./skillens eq complete and \
+                                 ./prcmed eq complete and ./chievol eq complete )
+                        task SAN
+                                 defstatus queued
+                                 trigger (./gesfam eq complete and \
+                                 ./ghprec eq complete and ./probability eq complete and \
+                                 ./spread eq complete and ./spaguetti eq complete and \
+                                 ./grhens eq complete and ./skillens eq complete and \
+                                 ./prcmed eq complete and ./chievol eq complete )
+		endfamily
+	endfamily
+	endloop
+endsuite

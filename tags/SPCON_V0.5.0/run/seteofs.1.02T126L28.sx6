@@ -1,0 +1,309 @@
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        seteofs02T126L28.sx6   #
+#                                                            #
+#************************************************************#
+#
+#PBS -o tupan00:/gfs/home3/modoper/tempo/global/oens/run/setout/seteofs.1.02T126L28.sx6.2012021406:31.out
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+#
+#ulimit -d 524288
+#
+#  Set number of perturbation
+#
+
+export PATH=".:/usr/local/sxbin:~/bin:/usr/local/nec/tools:/usr/psuite:/SX/usr/bin:.:~/bin:/usr/local/nec/tools:/usr/psuite:/SX/usr/bin:/usr/local/sms:./:../:/usr/local/grads-1.9b4/bin/:/bin:/usr/bin:/usr/ucb"
+
+NUM=02
+echo ${NUM}
+export NUM
+TRUNC=T126
+LEV=L28
+export TRUNC LEV
+#
+#
+#  Set labels (date, UTC hour, ...)
+#
+DATE=20120214
+HOUR=06:31
+echo 'Date: '$DATE
+echo 'Hour: '$HOUR
+export DATE HOUR
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+LABELI=2012021400
+echo ${LABELI}
+export LABELI
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   IOPERMOD is the directory for input file.
+#
+OPERMOD=/gfs/home3/modoper/tempo/global/oens
+SOPERMOD=/gfs/home3/modoper/tempo/global/oens
+ROPERMOD=/gfs/dk22/modoper/tempo/global/oens
+IOPERMOD=/gfs/dk22/modoper/tempo/global/oens/model/datain
+export OPERMOD SOPERMOD ROPERMOD IOPERMOD
+echo ${OPERMOD}
+echo ${SOPERMOD}
+echo ${ROPERMOD}
+echo ${IOPERMOD}
+#
+cd ${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+#   Set machine
+MACH=sx6
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+echo run
+COMPILE=run
+echo ${COMPILE}
+export COMPILE
+#
+#   Set FORTRAN compilation flags
+#
+#   -integer_size 64 sets the integer basic numeric size to 8 bytes
+#   -real_size 64    sets the real basic numeric size to 8 bytes
+#
+#
+FTNFLAG='-C vsafe -float0 -ew -Wf" -pvctl noaltcode nomatmul -O nodiv nomove " '
+CHWFLAG='-C vsafe -float0 -ew -Wf" -pvctl noaltcode nomatmul -O nodiv nomove " '
+export FTNFLAG CHWFLAG
+#
+#   Set C pre-processing flags
+#
+INC=${OPERMOD}/include/T126L28
+CPP="-EP -I${INC}"
+export INC CPP
+#
+#   Set FORTRAN compiler name
+#
+F77="sxf90 -V -float0 -ew "
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#    is associated with FORTRAN file unit = n
+#
+#FFF=FORT
+#export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#FORT_CONVERT10=BIG_ENDIAN
+#FORT_CONVERT20=BIG_ENDIAN
+#export FORT_CONVERT10 FORT_CONVERT20
+#
+F_UFMTIEEE=10,11,20,62,64,68,69,72,74
+#AMM F_UFMTADJUST=TYPE2
+#AMM export F_UFMTIEEE F_UFMTADJUST
+export F_UFMTIEEE
+#  Now, build the necessary INCLUDE for the choosen truncation and 
+#       vertical resolution.. 
+#
+  if [ "${COMPILE}" != "run" ]
+  then
+#
+cd ${INC}
+#
+cat <<EOT > recanl.n
+      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
+      PARAMETER (IMAX=384,JMAX=192,MEND=126,KMAX=28,LMAX=11)
+EOT
+if (diff recanl.n recanl.h > /dev/null)
+then
+    echo "recanl.n and recanl.h are the same"
+    rm -f recanl.n
+else
+    echo "recanl.n and recanl.h are different"
+    mv recanl.n recanl.h
+fi
+cat <<EOT > reseofes.n
+      INTEGER IMAX,JMAX,MEND,KMAX,LMAX,JINF,JSUP,JMAX0
+      PARAMETER (IMAX=384,JINF=64,JSUP=145,JMAX=192)
+      PARAMETER (JMAX0=82,MEND=126,KMAX=28,LMAX=11)
+EOT
+if (diff reseofes.n reseofes.inc > /dev/null)
+then
+    echo "reseofes.n and reseofes.inc are the same"
+    rm -f reseofes.n
+else
+    echo "reseofes.n and reseofes.inc are different"
+    mv reseofes.n reseofes.inc
+fi
+cat <<EOT > nvector.n
+      INTEGER LMAX
+      PARAMETER (LMAX=11)
+EOT
+if (diff nvector.n nvector.inc > /dev/null)
+then
+    echo "nvector.n and nvector.inc are the same"
+    rm -f nvector.n
+else
+    echo "nvector.n and nvector.inc are different"
+    mv nvector.n nvector.inc
+fi
+#
+#  End of includes
+#
+fi
+#
+#  Now, build the necessary NAMELIST input:
+#
+#
+cd ${SOPERMOD}/eof/datain
+ext=R.unf
+cat <<EOT1 > eoftem${NUM}.nml
+ &DATAIN
+  DIRI='${SOPERMOD}/eof/datain/ '
+  DIRA='${IOPERMOD}/ '
+  DIRO='${ROPERMOD}/eof/dataout/T126L28/ '
+  NAMEL='templ${NUM}${LABELI}'
+  ANAME='GANLAVN${LABELI}${ext}.T126L28 '
+  TEMOUT='temout${NUM}${LABELI} '
+  TEMPCM='tempcm${NUM}${LABELI} '
+  TEMPER1='tempe1${NUM}${LABELI} '
+  TEMPEN1='tempn1${NUM}${LABELI} '
+ &END
+ &STTEMP
+  STDT( 1)=1.50,STDT( 2)=1.50,STDT( 3)=1.50,STDT( 4)=1.50,STDT( 5)=1.50,
+  STDT( 6)=1.50,STDT( 7)=1.50,STDT( 8)=1.50,STDT( 9)=1.50,STDT(10)=1.50,
+  STDT(11)=1.50,STDT(12)=1.50,STDT(13)=1.50,STDT(14)=1.50,STDT(15)=1.50,
+  STDT(16)=1.50,STDT(17)=1.50,STDT(18)=1.50,STDT(19)=1.50,STDT(20)=1.50,
+  STDT(21)=1.50,STDT(22)=1.50,STDT(23)=1.50,STDT(24)=1.50,STDT(25)=1.50,
+  STDT(26)=1.50,STDT(27)=1.50,STDT(28)=1.50
+ &END
+EOT1
+#
+echo 'Vai chamar eoft'
+#
+${OPERMOD}/eoftemp/scripts/eoftem.scr
+#
+#
+if [ "NO" = "YES" ] 
+then
+#  Now, build the necessary NAMELIST input:
+#
+#
+cd ${SOPERMOD}/eof/datain
+ext=R.unf
+cat <<EOT1 > eofhum${NUM}.nml
+ &DATAIN
+  DIRI='${SOPERMOD}/eof/datain/ '
+  DIRA='${IOPERMOD}/ '
+  DIRO='${ROPERMOD}/eof/dataout/T126L28/ '
+  NAMEL='templ${NUM}${LABELI}'
+  ANAME='GANLAVN${LABELI}${ext}.T126L28 '
+  HUMOUT='humout${NUM}${LABELI} '
+  HUMPCM='humpcm${NUM}${LABELI} '
+  HUMPER1='humpe1${NUM}${LABELI} '
+  HUMPEN1='humpn1${NUM}${LABELI} '
+ &END
+ &STHUMI
+  STDQ( 1)= 1.019,STDQ( 2)= 0.926,STDQ( 3)= 0.872,STDQ( 4)= 0.797,
+  STDQ( 5)= 0.703,STDQ( 6)= 0.641,STDQ( 7)= 0.629,STDQ( 8)= 0.571,
+  STDQ( 9)= 0.595,STDQ(10)= 0.546,STDQ(11)= 0.434,STDQ(12)= 0.345,
+  STDQ(13)= 0.276,STDQ(14)= 0.204,STDQ(15)= 0.142,STDQ(16)= 0.081,
+  STDQ(17)= 0.049,STDQ(18)= 0.024,STDQ(19)= 0.008,STDQ(20)= 0.002,
+  STDQ(21)= 0.001,STDQ(22)= 0.000,STDQ(23)= 0.000,STDQ(24)= 0.000,
+  STDQ(25)= 0.000,STDQ(26)= 0.000,STDQ(27)= 0.000,STDQ(28)= 0.000
+ &END
+EOT1
+#
+echo 'Vai chamar eofh'
+#
+${OPERMOD}/eofhumi/scripts/eofhum.scr
+#
+fi
+#
+#  Now, build the necessary NAMELIST input:
+#
+#
+cd ${SOPERMOD}/eof/datain
+ext=R.unf
+cat <<EOT1 > eofwin${NUM}.nml
+ &DATAIN
+  DIRI='${SOPERMOD}/eof/datain/ '
+  DIRA='${IOPERMOD}/ '
+  DIRO='${ROPERMOD}/eof/dataout/T126L28/ '
+  NAMEL='templ${NUM}${LABELI} '
+  ANAME='GANLAVN${LABELI}${ext}.T126L28 '
+  WINOUT='winout${NUM}${LABELI} '
+  WINPCM='winpcm${NUM}${LABELI} '
+  WINPER1='winpe1${NUM}${LABELI} '
+  WINPEN1='winpn1${NUM}${LABELI} '
+  TEMPER1='tempe1${NUM}${LABELI} '
+  TEMPEN1='tempn1${NUM}${LABELI} '
+  HUMPER1='humpe1${NUM}${LABELI} '
+  HUMPEN1='humpn1${NUM}${LABELI} '
+ &END
+ &STZWIN
+  STDU( 1)=5.00,STDU( 2)=5.00,STDU( 3)=5.00,STDU( 4)=5.00,STDU( 5)=5.00,
+  STDU( 6)=5.00,STDU( 7)=5.00,STDU( 8)=5.00,STDU( 9)=5.00,STDU(10)=5.00,
+  STDU(11)=5.00,STDU(12)=5.00,STDU(13)=5.00,STDU(14)=5.00,STDU(15)=5.00,
+  STDU(16)=5.00,STDU(17)=5.00,STDU(18)=5.00,STDU(19)=5.00,STDU(20)=5.00,
+  STDU(21)=5.00,STDU(22)=5.00,STDU(23)=5.00,STDU(24)=5.00,STDU(25)=5.00,
+  STDU(26)=5.00,STDU(27)=5.00,STDU(28)=5.00
+ &END
+ &STMWIN
+  STDV( 1)=5.00,STDV( 2)=5.00,STDV( 3)=5.00,STDV( 4)=5.00,STDV( 5)=5.00,
+  STDV( 6)=5.00,STDV( 7)=5.00,STDV( 8)=5.00,STDV( 9)=5.00,STDV(10)=5.00,
+  STDV(11)=5.00,STDV(12)=5.00,STDV(13)=5.00,STDV(14)=5.00,STDV(15)=5.00,
+  STDV(16)=5.00,STDV(17)=5.00,STDV(18)=5.00,STDV(19)=5.00,STDV(20)=5.00,
+  STDV(21)=5.00,STDV(22)=5.00,STDV(23)=5.00,STDV(24)=5.00,STDV(25)=5.00,
+  STDV(26)=5.00,STDV(27)=5.00,STDV(28)=5.00
+ &END
+ &HUMIDI
+  HUM='NO'
+ &END
+EOT1
+#
+echo 'Vai chamar eofw'
+#
+${OPERMOD}/eofwind/scripts/eofwin.scr
+
+#
+cd /gfs/home3/modoper/tempo/global/oens/run
+EXTs=S.unf.T126L28
+# Decomposicao das analises obtidas
+rundeco1.sx6 run 126 28 ${NUM} ${LABELI} 15 NO 07
+#
+# Script runpntg.sx6 roda o modelo completo:
+#
+# FICA ESPERTO ABAIXO!!! RODA O MODELO PARA CADA MEMBRO!
+
+
+# AGORA SERAH CHAMADO PELO SMS!
+
+#/gfs/home3/modoper/tempo/global/oens/run/runpntg1.sx6 126 28 ${LABELI} 15 ${NUM}P 07 sstwkl
+#/gfs/home3/modoper/tempo/global/oens/run/runpntg1.sx6 126 28 ${LABELI} 15 ${NUM}N 07 sstwkl
+
+#

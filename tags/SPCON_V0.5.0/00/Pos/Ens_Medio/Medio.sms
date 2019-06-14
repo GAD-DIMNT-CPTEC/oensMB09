@@ -1,0 +1,60 @@
+%include <head.h>
+%include <config.h>
+
+PREFX=ENM
+
+YYYY=`echo $LABELI | cut -c 1-4`
+MM=`echo $LABELI | cut -c 5-6`
+DD=`echo $LABELI | cut -c 7-8`
+
+# APAGA ARQUIVOS DA RODADA DE CONTROLE PARA GERACAO DE ANALISE
+# NAO UTILIZADOS A PARTIR DESTA TASK
+find ${ROPERM} -name "GFCTCTR*" -exec rm -f {} \;
+
+cd $OPERM/run
+#NAO FUNCIONA PARA GRIB ./criasize.ksh ${LABELI}
+
+./runensmed.sx6 ${LABELI} AVN
+
+
+for ext in grb ctl idx; do
+lsoma=0
+
+for arqtam in `ls -ltr ${mDK}/ensmed/dataout/T${TRC}L${LV}/GPOSENM${LABELI}*${ext} | awk '{print $5}'`; do
+
+      lsoma=`echo "${lsoma}+${arqtam}" | bc -l`
+
+done
+
+if [ "${ext}" = "grb" ]; then
+soma=1484252400
+fi
+if [ "${ext}" = "idx" ]; then
+soma=254030
+fi
+if [ "${ext}" = "ctl" ]; then
+soma=246300
+fi
+
+
+if [ $lsoma -ge $soma ]; then
+      echo "Ok"
+      set +e; set +u
+      mkdir -p ${BANGU}/ENSMED/${YYYY}/${MM}/${DD}/
+      cp -rfv ${mDK}/ensmed/dataout/T${TRC}L${LV}/GPOSENM${LABELI}* ${BANGU}/ENSMED/${YYYY}/${MM}/${DD}/
+      set -e; set -u
+
+      cd ${OPERM}/run/
+      ./runtemplate.ksh ${LABELI} ENM
+else
+      echo "ERRO"
+      smsabort
+      trap 0
+      exit 1
+fi
+
+done
+
+
+
+%include <tail.h>

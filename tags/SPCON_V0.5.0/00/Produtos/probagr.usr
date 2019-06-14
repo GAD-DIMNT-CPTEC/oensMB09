@@ -1,0 +1,73 @@
+%comment - sms edit variables
+
+FAMILY           =   T126/Produtos
+FAMILY1          =   Produtos
+SMSDATE          =   20090805
+SMSHOME          =   /gfs/home3/modoper/tempo/global
+SMSINCLUDE       =   /gfs/home3/modoper/tempo/global/oens/includes
+SMSNAME          =   /oens/T126/Produtos/probagr
+SMSNODE          =   turi
+SMSPASS          =   super-idiot
+SMSTRYNO         =   3
+SMS_PROG         =   314159
+SUITE            =   oens
+TASK             =   probagr
+
+%end     - sms edit variables
+%include <head.h>
+%include <config.h>
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+HH=${HH}
+LABELI=$YYYY$MM$DD$HH
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+let NMEMBR=\($NPERT*2\)+1
+
+cd ${OPERM}/grh/scripts/
+
+dateo=`date +"%%s"`
+
+cat << EOF > tempsdkjfh329sdf.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/setprobagr.${LABELI}.${dateo}.out
+#PBS -N GRHENS
+cd ${OPERM}/probagr/scripts/
+./runprobagr.sx6 ${LABELI} ${PREFX}
+./probability.scr ${LABELI} ${PREFX}
+cd ${OPERM}/probweek/scripts/
+./runprobweek.sx6 ${LABELI} ${PREFX}
+exit 0
+EOF
+
+submit tempsdkjfh329sdf.sub ${QUEUEP}
+rm -f tempsdkjfh329sdf.sub
+
+NARQTIN=3
+NARQVERIF=`ls -ltr ${ROPERM}/probagr/dataout/T${TRC}L${LV}/wmaprecprob${LABELI}*L${LV} | awk 'BEGIN {i=0} {if ($5>=294920) i+=1} END {printf ("%%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+
+NARQTIN=3
+NARQVERIF=`ls -ltr ${ROPERM}/probagr/dataout/T${TRC}L${LV}/wmaprecprob${LABELI}*L${LV}.ctl | awk 'BEGIN {i=0} {if ($5>=2316) i+=1} END {printf ("%%d",i)}'`
+
+if [ ${NARQVERIF} -lt ${NARQTIN} ]
+then
+# CASO ESTERJA INCORRETO O NUMERO DE ARQUIVOS, SAI COM ERRO 2
+set -e;
+      exit 2
+fi
+
+
+%include <tail.h>
+
+
+

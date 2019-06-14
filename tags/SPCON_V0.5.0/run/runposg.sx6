@@ -1,0 +1,150 @@
+#!/bin/ksh -x
+
+. ../include/config.sx6
+
+LABELI=$1
+if [ -s $LABELI ]; then
+      echo "ERRO: FALTA PARAMETRO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+      exit 1
+else
+      if [ ${#LABELI} -lt 10 ]; then
+            echo "ERRO: PARAMETRO INCORRETO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+            exit 2
+      else
+            YYYY=`echo $LABELI |cut -c 1-4`
+            MM=`echo $LABELI |cut -c 5-6`
+            DD=`echo $LABELI |cut -c 7-8`
+            HH=`echo $LABELI |cut -c 9-10`
+
+            LABELF=`date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}"`
+            YYYYF=`echo $LABELF |cut -c 1-4`
+            MMF=`echo $LABELF |cut -c 5-6`
+            DDF=`echo $LABELF |cut -c 7-8`
+            HHF=`echo $LABELF |cut -c 9-10`
+      fi
+fi
+
+PERT=$2
+
+FSCR=${mHOME}/run
+FDATAIN=${mHOME}/pos/datain
+FEXEMODEL=${mHOME}/model
+FEXEPOSGL=${mHOME}/pos
+FOUTPOSGL=${mDK}/pos/output
+
+TOTALF=`echo ${NFDAYS}*(24/${DHFCT})+2 | bc -l | cut -d. -f1`
+INC=-1
+
+#if [ "${PERT}" = "AVN" ]; then
+#      r=s
+#else
+      r=p
+#fi
+
+# INICIO DO CAT PARA SUBMISSAO
+cat <<EOF> ${FDATAIN}/POSTIN_T${TRC}L${LV}_${PERT}.g
+!namelist
+!############################### Change Log ##################################
+! 1.0.0.0
+!
+!  $Author: alexalm $
+!  $Date: 2007/05/28 18:29:34 $
+!  $Revision: 1.1.1.1 $
+!
+!
+!#############################################################################
+!
+ &PosInput
+  nffrs=-1,            ! value to indicated if model use or not initialization
+                       !    or to indicate if it is a cold or warm start run:
+                       !    nffrs=-1 - for runs with normal mode initialization
+                       !    nffrs=0  - for runs without normal mode initialization
+                       !    nffrs=1  - for warm start runs
+  nfbeg=${INC},          ! number of the first forecasted file to be post-processed
+  nfend=62,       ! number of forecasted files to be post-processed
+  nmand=13,            ! number of pressure levels listed below in format 10f8.2
+                       !    nmand=-1 means the use of default 18-levels
+  RegIntIn=.FALSE.,    ! flag to interpolate outputs on regular grid (.TRUE.)
+                       !    .FALSE. to get outputs on Gaussian grid
+  Linear=.FALSE.,      ! Flag to Gaussian grid type Linear (.TRUE.) or 
+                       !                            Quadratic (.FALSE.)
+  trunc ='T${TRC}',       ! horizontal truncation = Txxx
+  lev   ='L${LV}',        ! vertical layers = Lxx
+  labeli='${LABELI}', ! initial forecasting label (yyyymmddhh)
+  labelf='${LABELF}', ! final forecasting label (yyyymmddhh)
+  prefx ='${PERT}',        ! preffix for input and output files
+  req   ='${r}',          ! flag to select requested field file (p, s, c, e or nothing)
+                       !   p - use file rfd.pnt
+                       !   s - use file rfd.sfc
+                       !   c - use file rfd.clm
+                       !   e - use file rfd.eta
+                       !     - use file rfd
+                       !   these files are spected to be in the directory:
+                       !   ${roperm}/pos/datain
+                       !   at the same directory there is a dft file for
+                       !   derived fields (this should be included in the
+                       !   code in future)
+  datain='${mDK}/model/dataout/T${TRC}L${LV}', ! main dataout directory
+  datalib='${mHOME}/pos/datain',   ! main dataout directory
+  dataout='${mDK}/pos/dataout/T${TRC}L${LV}',  ! main dataout directory
+                                 !   should be the same for model and post-processing
+  Binary=.False.       ! output binary format ! False -> Grib (Default)
+  postclim=.FALSE.,    ! The Option "postclim" only is functional by grib files
+                       ! If postclim=TRUE, post-processing all files as anl.,
+                       ! should be used for climate running
+                       ! If postclim=FALSE,it differentiates anl. of the forecast
+  res=-0.5,            ! if res >  0 Define output resolution (deg)
+                       ! if res <= 0 It does not make interpolation
+  ENS=.TRUE.           ! ensemble products => TRUE, only for AVN, 0?P, 0?N prefx
+ /
+ 1000.00  925.00  850.00  700.00  500.00  300.00  250.00  200.00  100.00   70.00
+   50.00   30.00   10.00
+EOF
+
+cd $FSCR
+
+cpu=1
+MEM=700mb
+itime=`echo "0.8*3600" | bc -l`
+#itime=15200
+BUFFER=20480
+data=`date +'%s'`
+cat <<EOT1 > ${FSCR}/setposT${TRC}L${LV}.grib.${PERT}.sh
+#!/usr/bin/ksh
+#PBS -l cpunum_prc=$cpu
+#PBS -l tasknum_prc=${cpu}
+#PBS -l memsz_job=${MEM}
+#PBS -l cputim_job=${itime}
+#PBS -o turi-e:${FSCR}/setout/setposT${TRC}L${LV}.${LABELI}${LABELF}${data}.%s.${PERT}.out
+#PBS -e turi-e:${FSCR}/setout/setposT${TRC}L${LV}.${LABELI}${LABELF}${data}.%s.${PERT}.out
+#PBS -j o
+#PBS -N POS${PERT}
+#
+F_RSVTASK=$cpu
+
+OMP_NUM_THREADS=$cpu
+F_ERRCNT=1
+F_SETBUF=20480
+export F_ERRCNT F_SETBUF F_RSVTASK OMP_NUM_THREADS
+
+cd ${FEXEPOSGL}/exec
+echo PostGrib < ${FDATAIN}/POSTIN_T${TRC}L${LV}_${PERT}.g
+PostGrib < ${FDATAIN}/POSTIN_T${TRC}L${LV}_${PERT}.g # > ${FOUTPOSGL}/setposg.`date +'%Y%m%d'`.T${TRC}L${LV}.POS
+#
+EOT1
+# FIM DO CAT
+
+if [ `echo $PERT | grep P | wc -l` -ge 1 ]; then
+      QUEUE=Midi
+else
+      QUEUE=PNT-EN
+fi
+
+submit ${FSCR}/setposT${TRC}L${LV}.grib.${PERT}.sh ${QUEUE} Info
+sleep 10
+
+rm -f ${FSCR}/setposT${TRC}L${LV}.grib.${PERT}.sh
+
+#${FSCR}/runtemplate.ksh ${LABELI} ${PERT}
+
+exit 0

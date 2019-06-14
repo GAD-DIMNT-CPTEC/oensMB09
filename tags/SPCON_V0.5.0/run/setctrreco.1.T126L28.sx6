@@ -1,0 +1,59 @@
+#!/bin/ksh -x
+#
+#************************************************************#
+#                                                            #
+#     Name:        setctrrecoT126L28.sx6       #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  recomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o turi:/gfs/home3/modoper/tempo/global/oens/run/setout/setctrreco.1.T126L28.sx6.2012021404:44.out
+#PBS -j o
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=20120214
+HOUR=04:44
+echo 'Date: '$DATE
+echo 'Hour: '$HOUR
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+LABELI=2012021400
+echo ${LABELI}
+export LABELI
+#
+cd /gfs/dk22/modoper/tempo/global/oens/model/dataout
+rm -f GFCTCTR${LABELI}${LABELI}*
+rm -f GFCTCTR${LABELI}*.dir.T126L28
+rm -f GFCTCTR${LABELI}*.dir.T126L28.files
+#mv GFCTCTR${LABELI}*F.fct.T126L28 /gfs/dk22/modoper/tempo/global/oens/model/datain
+
+#AAF for i in 
+#AAF do
+#AAF       echo "ln -sf  /gfs/dk22/modoper/tempo/global/oens/model/datain/"
+#AAF       ln -sf  /gfs/dk22/modoper/tempo/global/oens/model/datain/
+#AAF done
+
+#
+cd  /gfs/dk22/modoper/tempo/global/oens/model/datain
+rm -f lst.GFCTCTR${LABELI}.dr
+ls -l GFCTCTR${LABELI}* > lst.GFCTCTR${LABELI}.dr
+awk '{ print $9 }' lst.GFCTCTR${LABELI}.dr  >  lst.GFCTCTR${LABELI}
+xx=`awk '{ print substr($1,18,10) }' lst.GFCTCTR${LABELI}`
+echo 
+cd /gfs/home3/modoper/tempo/global/oens/run
+for i in ${xx} 
+do
+runrecfct1.sx6 run 126 28 FCTCTR ${LABELI} ${i}     
+done

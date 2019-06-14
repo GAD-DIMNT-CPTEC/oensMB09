@@ -1,0 +1,118 @@
+%include <head.h>
+%include <config.h>
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+HH=${HH}
+LABELI=$YYYY$MM$DD$HH
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+let NMEMBR=\($NPERT*2\)+1
+
+cd ${OPERM}/SKILL/scripts/
+
+dateo=`date +"%%s"`
+
+cat << EOF > tempasd29sdf.sub
+#!/bin/ksh
+#PBS -o ${OPERM}/run/setout/setskillensmbctrlenm.${LABELI}.${dateo}.out
+#PBS -N skienm
+cd ${OPERM}/SKILL/scripts/
+#./recortaskill.ksh ${LABELI} ${PREFX}
+./runskillens.scr ${LABELI} ${PREFX}
+./runskillens.rm.scr ${LABELI} ${PREFX}
+exit 0
+EOF
+
+submit tempasd29sdf.sub ${QUEUEP}
+rm -f tempasd29sdf.sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%include <tail.h>
+
+
+
+. $OPERM/produtos/scripts/config.oens.prod
+
+YYYY=`echo ${LABELI} | cut -c 1-4`
+MM=`echo ${LABELI} | cut -c 5-6`
+DD=`echo ${LABELI} | cut -c 7-8`
+HH=`echo ${LABELI} | cut -c 9-10`
+HH=${HH}
+LABELI=$YYYY$MM$DD$HH
+LABELF=`date -d "$YYYY-$MM-$DD ${FSCT} days" +"%%Y%%m%%d${HH}"`
+
+let NMEMBR=\($NPERT*2\)+1
+
+echo NMEMBR=$NMEMBR
+echo "#! /bin/ksh" > ${HOMEPROD}/scripts/setskilloens.scr
+echo "#PBS -o ${HOMEPROD}/scripts/setout/setskilloens.${LABELI}.out" >> ${HOMEPROD}/scripts/setskilloens.scr
+echo "#PBS -j o" >> ${HOMEPROD}/scripts/setskilloens.scr
+echo ". $OPERM/produtos/scripts/config.oens.prod" >> ${HOMEPROD}/scripts/setskilloens.scr
+echo "cd ${HOMEPROD}/SKILL/scripts" >> ${HOMEPROD}/scripts/setskilloens.scr
+echo "./runskillens.T126.scr $LABELI 15 15" >> ${HOMEPROD}/scripts/setskilloens.scr
+
+/usr/bin/nqsII/qsub -q ${QUEUEPROD} -N SKILLOEN ${HOMEPROD}/scripts/setskilloens.scr
+
+
+JNAME=SKILLOEN
+SLEEPTIM=85
+%include <filectrl.h>
+
+JNAME=setskill
+SLEEPTIM=85
+%include <filectrl.h>
+
+LABELSKI=`date -d "${YYYY}-${MM}-${DD}" +"%%d%%b%%Y"`
+LABELSKI=`awk 'BEGIN {print toupper("'$LABELSKI'")}'`
+
+sleep 30
+set -A ARQ skillw. skillg. spreadw. spreadg. skills. skillh.
+set -A SIZ 221000  233000   4400      5700   136000   77900
+i=0
+while [ $i -lt 6 ]
+do
+if [ `ls -ltr ${DKPROD}/skill/${ARQ[$i]}${HH}Z${LABELSKI}.ens.m02 | awk '{print $5}'` -ge ${SIZ[$i]} ]
+then
+echo "SKILL OK"
+else
+echo "PROBLEMAS NOS SKILLS... ABORTANDO"
+exit 1
+fi
+let i=$i+1
+done
+
+
+%include <tail.h>

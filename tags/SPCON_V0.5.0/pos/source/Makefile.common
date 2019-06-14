@@ -1,0 +1,109 @@
+#
+#  $Author: pkubota $
+#  $Date: 2007/10/10 20:28:03 $
+#  $Revision: 1.4 $
+#
+# $Id: Makefile.common,v 1.4 2007/10/10 20:28:03 pkubota Exp $
+#
+# Platform independent part of make procedure for POSGRIB directory, 
+# included by machine specific makefiles.
+#
+EXEC=PostGrib
+LIB=w3lib-1.4/libw3.a
+
+OBJ = \
+	mod_tables.o \
+	Constants.o \
+	Conversion.o \
+	PrblSize.o \
+	FFT.o \
+	GaussRep.o \
+	GaussPressure.o \
+	GaussSigma.o \
+	RegInterp.o \
+	SpectralRep.o \
+	FileAccess.o \
+        Infgdspds.o \
+        FileGrib.o \
+	SigmaToPressure.o \
+	LegTrans.o \
+	TransSpectralGrid.o \
+	Util.o \
+	PostLoop.o \
+	post.o
+
+pos:	$(OBJ)
+	$(F90) -o $(EXEC) $(F90_32BITS) $(LOADFLAG) $(OBJ) $(LIB)
+
+Constants.o: Constants.f90
+	$(F90) -c $(F90_32BITS) Constants.f90
+
+Conversion.o: Conversion.f90 Constants.o
+	$(F90) -c $(F90_32BITS) Conversion.f90
+
+PrblSize.o: PrblSize.f90 Constants.o
+	$(F90) -c $(F90_32BITS) PrblSize.f90
+
+FFT.o: FFT.f90 PrblSize.o
+	$(F90) -c $(F90_32BITS) FFT.f90
+
+GaussRep.o: GaussRep.f90 Constants.o PrblSize.o
+	$(F90) -c $(F90_32BITS) GaussRep.f90
+
+GaussPressure.o: GaussPressure.f90 Constants.o PrblSize.o
+	$(F90) -c $(F90_32BITS) GaussPressure.f90
+
+GaussSigma.o: GaussSigma.f90 Constants.o PrblSize.o
+	$(F90) -c $(F90_32BITS) GaussSigma.f90
+
+RegInterp.o: RegInterp.f90 Constants.o PrblSize.o
+	$(F90) -c $(F90_32BITS) RegInterp.f90
+
+SpectralRep.o: SpectralRep.f90 Constants.o PrblSize.o
+	$(F90) -c $(F90_32BITS) SpectralRep.f90
+
+FileAccess.o: FileAccess.f90 Constants.o PrblSize.o SpectralRep.o
+	$(F90) -c $(F90_32BITS) FileAccess.f90
+
+Infgdspds.o: Infgdspds.f90
+	$(F90) -c $(F90_32BITS) Infgdspds.f90
+
+FileGrib.o: FileGrib.f90 RegInterp.o
+	$(F90) -c $(F90_32BITS) FileGrib.f90
+
+SigmaToPressure.o: SigmaToPressure.f90 Constants.o PrblSize.o GaussSigma.o
+	$(F90) -c $(F90_32BITS) SigmaToPressure.f90
+
+LegTrans.o: LegTrans.f90 Constants.o PrblSize.o GaussRep.o SpectralRep.o
+	$(F90) -c $(F90_32BITS) LegTrans.f90
+
+TransSpectralGrid.o: TransSpectralGrid.f90 Constants.o PrblSize.o FFT.o LegTrans.o
+	$(F90) -c $(F90_32BITS) TransSpectralGrid.f90
+
+Util.o: Util.f90 Constants.o PrblSize.o FFT.o GaussRep.o LegTrans.o
+	$(F90) -c $(F90_32BITS) Util.f90
+
+PostLoop.o: PostLoop.f90 mod_tables.o \
+			Constants.o Conversion.o PrblSize.o FFT.o \
+                         GaussRep.o GaussPressure.o GaussSigma.o \
+                         RegInterp.o SpectralRep.o FileAccess.o FileGrib.o \
+                         SigmaToPressure.o LegTrans.o Infgdspds.o \
+                         TransSpectralGrid.o Util.o
+	$(F90) -c $(F90_32BITS) PostLoop.f90
+
+post.o: post.f90 Constants.o Conversion.o PrblSize.o FFT.o GaussRep.o \
+                 GaussSigma.o RegInterp.o SpectralRep.o FileAccess.o FileGrib.o \
+                 LegTrans.o PostLoop.o Infgdspds.o mod_tables.o
+	$(F90) -c $(F90_32BITS) post.f90
+
+.SUFFIXES:
+.SUFFIXES: .f90 .o
+
+
+.f90.o:
+	$(F90) -c $(F90_32BITS) $<
+
+clean:
+	-rm -f $(OBJ)
+	-rm -f $(EXEC)
+	-rm -f *.mod

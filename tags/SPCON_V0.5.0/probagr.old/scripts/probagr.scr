@@ -1,0 +1,218 @@
+#!/bin/ksh 
+#help#
+#**********************************************************#
+#                                                          #
+#     Name:           probagr.scr                          #
+#                                                          #
+#     Function:       This script makes the gifs of        #
+#                     probabilistic forecast.              #
+#                     It runs in K shell.                  #
+#                                                          #
+#     Date:           January   24th, 2002.                #
+#     Last change:    August    15th, 2002.                #
+#                                                          #
+#     Valid Arguments for probagr.scr                      #
+#                                                          #
+#     First :         : nothing for help or                #
+#     First : trcm    : horizontal resolution              #
+#    Second : lv      : vertical resolution                #
+#     Third : labeli  : initial forecasting label          #
+#    Fourth : fctdays : number of forecast days            #
+#     Fifth : ndacc   : number of days that prec was accum.#
+#      Sixt : freqcalc: interval in hours of fct outputs   #
+#                                                          #
+#             LABELx : yyyymmddhh                          #
+#                      yyyy = four digit year              #
+#                        mm = two digit month              #
+#                        dd = two digit day                #
+#                        hh = two digit hour               #
+#                                                          #
+#**********************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ] 
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+# Test of Valid Arguments
+#
+if [ -z "${1}" ] 
+then
+   echo "trcm is not set"
+   exit
+else
+   trcm=${1}
+fi
+if [ -z "${2}" ] 
+then
+   echo "lv is not set"
+   exit
+else
+   lv=${2}
+fi
+if [ -z  "${3}" ] 
+then
+   echo "labeli is not set (yyyymmddhh)"
+   exit 1
+else
+   labeli=${3}
+fi
+if [ -z "${4}" ] 
+then
+   echo "fctdays is not set"
+   exit
+else
+   fctdays=${4}
+fi
+if [ -z "${5}" ] 
+then
+   echo "ndacc is not set"
+   exit
+else
+   ndacc=${5}
+fi
+if [ -z "${6}" ] 
+then
+   echo "freqcalc is not set"
+   exit
+else
+   freqcalc=${6}
+fi
+
+#
+# Calculate the number of outputs per day
+#
+
+if [ ${ndacc} -lt 1 ]
+then
+   echo "ndacc must be equal or greater than 1"
+   exit
+fi
+
+if [ ${freqcalc} -gt 24 ]
+then
+   echo "freqcalc must be less or equal 24"
+   exit
+fi
+
+let rest=24%${freqcalc}
+if [ ${rest} -ne 0 ]
+then
+   echo "freqcalc must be a divisor of 24. Ex.: 6, 12 or 24"
+   exit
+else
+   let noutpday=24/${freqcalc}
+fi
+
+#
+# Set model resolution
+#
+
+resol=T${trcm}L${lv}
+trc=T${trcm}
+
+#
+#  Set directories
+#
+
+yy=`echo ${labeli} | cut -c 1-4`
+mm=`echo ${labeli} | cut -c 5-6`
+dd=`echo ${labeli} | cut -c 7-8`
+hh=`echo ${labeli} | cut -c 9-10`
+
+dirscr=/home/mendonca/EnsembleCptec/Produtos/PROBAGR/scripts
+dirgif=/home/mendonca/EnsembleCptec/Produtos/PROBAGR/gif
+dirbang=/rede/bangu_samfs_modoper3/tempo/global/oens/avn/${resol}${nivel}
+dirbct=${dirbang}/produtos/probability/binctl/${yy}/${mm}/${dd}
+if [ ! -d ${dirgif} ]
+then
+mkdir ${dirgif}
+else
+echo "${dirgif} has already been created"
+fi
+
+#
+# Create the list of probability ctls  
+#
+
+labelf=`caldate.3.0.2 ${labeli} + ${fctdays}d 'yyyymmddhh'`
+
+arqlist=wmaprecprob${labeli}${labelf}.${resol}.lst
+
+rm -f filefct${labeli}.${trc}
+for arq in `cat ${dirbct}/${arqlist} |grep ctl`
+do
+   arq1=`basename $arq`
+   echo ${arq1} >> filefct${labeli}.${trc}
+done
+
+#
+# Number of ctl files on the list 
+#
+
+nblst=`wc -l filefct${labeli}.${trc} | awk '{ print $1 }'`
+echo "nblst="${nblst}
+
+#
+# Generate the figures
+#
+
+/home/grads/bin/grads -lb << EOT
+run plot_precprob_agric.gs
+${resol} ${trc} ${labeli} ${nblst} ${ndacc} ${noutpday} ${dirbct} ${dirgif}
+EOT
+
+#
+# Remove temporary files
+#
+
+rm -f filefct${labeli}.${trc}
+
+#
+# Send gifs to tucupi
+#
+
+#AMM labelr4=`caldate.3.0.2 ${labeli} - 4d 'yyyymmddhh'`
+#AMM labelr5=`caldate.3.0.2 ${labeli} - 5d 'yyyymmddhh'`
+#AMM labelr6=`caldate.3.0.2 ${labeli} - 6d 'yyyymmddhh'`
+#AMM echo "labelr4="${labelr4}   
+#AMM echo "labelr5="${labelr5}   
+#AMM echo "labelr6="${labelr6}   
+#AMM #
+#AMM rm -f putgif.${labeli}.${trc}.${labeli}
+#AMM cat << EOT >> putgif.${labeli}.${trc}.${labeli}
+#AMM user pnt &arun/a*
+#AMM bin 
+#AMM cd /web1/ftp/pub/produtos/ensemble/PROBABILITY
+#AMM lcd ${dirgif}
+#AMM mput prec_agric*
+#AMM quit
+#AMM EOT
+#AMM #
+#AMM echo "ftp -in tucupi < putgif.${labeli}.${trc}.${labeli}"
+#AMM ftp -in tucupi < putgif.${labeli}.${trc}.${labeli}
+#AMM #
+
+#AMM rm -f putgif.${labeli}.${trc}.${labeli}
+
+#AMM #
+#AMM #REMOVE GIFS E BINCTLS ANTIGOS
+#AMM #
+#AMM 
+#AMM labelr9 =`caldate.3.0.2 ${labeli} -  9d 'yyyymmddhh'`
+#AMM labelr10=`caldate.3.0.2 ${labeli} - 10d 'yyyymmddhh'`
+#AMM labelr11=`caldate.3.0.2 ${labeli} - 11d 'yyyymmddhh'`
+#AMM echo "labelr9 ="${labelr9}   
+#AMM echo "labelr10="${labelr10}   
+#AMM echo "labelr11="${labelr11}   
+#AMM rm -f ${dirbct}/wmaprecprob${labelr11}*
+#AMM rm -f ${dirbct}/wmaprecprob${labelr10}*
+#AMM rm -f ${dirbct}/wmaprecprob${labelr9}*
+#
+exit
+#
+

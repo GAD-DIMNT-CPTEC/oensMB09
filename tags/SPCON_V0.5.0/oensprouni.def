@@ -1,0 +1,199 @@
+setenv -i HOME
+set HOME "${HOME}/tempo/global"
+			    
+suite oens		    
+
+	clock real
+	limit Task 1
+      limit i 17
+      limit f 10
+#	defstatus suspended
+
+	edit SMSFILES   "${HOME}/oens/smsfiles"
+	edit SMSINCLUDE "${HOME}/oens/includes"
+	edit SMSHOME    "${HOME}"
+
+      family T126
+         cron 03:00
+         cron 15:00
+
+		family Pre
+                  inlimit /oens:Task
+			task Pega_Analise
+                       label Info "ok"
+			task Chopping
+                        label Info "ok"
+			task Perturba_Analise
+                        label Info "ok"
+			task Rodada_Controle
+                        label Info "ok"
+		endfamily
+
+		family Modelo
+			family Membros
+				# AS TAREFAS PROCESSAM E BINARIZAM
+
+				loop PERT (01 02 03 04 05 06 07) do
+					family ${PERT}
+                                    edit SMSTRIES "7"
+						task Analise
+                                          label Info "ok"
+							trigger (/oens/T126/Pre eq complete)
+						task N
+                                          label Info "ok"
+							trigger (./Analise eq complete)
+						task P
+                                          label Info "ok"
+							trigger (./Analise eq complete)
+					endfamily
+				endloop
+			endfamily
+			family Controle
+				task AVN
+                        label Info "ok"
+				trigger (/oens/T126/Pre/Chopping eq complete)
+			endfamily
+		endfamily
+            
+		family Tigge
+                inlimit /oens:i
+			loop PERT (01 02 03 04 05 06 07) do
+				family ${PERT}
+                                                
+                              edit SMSTRIES 6
+					task N
+                                    label Info "ok"
+						trigger (/oens/T126/Modelo/Membros/${PERT}/N eq complete)
+					task P
+                                    label Info "ok"
+						trigger (/oens/T126/Modelo/Membros/${PERT}/P eq complete)
+				endfamily
+			endloop
+			family Controle
+                        edit SMSTRIES 4
+				task AVN
+                              label Info "ok"
+					trigger (/oens/T126/Modelo/Controle/AVN eq complete)
+			endfamily
+                  task Rm_Tigge
+                        trigger ( /oens/T126/Tigge/01 eq complete and \
+                              /oens/T126/Tigge/02 eq complete and \
+                              /oens/T126/Tigge/03 eq complete and \
+                              /oens/T126/Tigge/04 eq complete and \
+                              /oens/T126/Tigge/05 eq complete and \
+                              /oens/T126/Tigge/06 eq complete and \
+                              /oens/T126/Tigge/07 eq complete and \
+                              /oens/T126/Tigge/Controle eq complete )
+                              
+            endfamily
+		family Pos
+                inlimit /oens:i
+			family Ens_Medio
+                                                
+				task Medio
+                              label Info "ok"
+                              trigger (/oens/T126/Modelo eq complete)
+                  endfamily
+                  family Plumas
+                        task runplumes
+                              label Info "ok"
+                              trigger (/oens/T126/Modelo eq complete)
+                  endfamily
+                  task COPY_BANGU
+                        event GFCT
+                        event GPRG
+                        event GFGH
+                        event GPOS
+                        event GFGN
+                        event Medio
+                        event Plumas
+                        trigger (/oens/T126/Modelo eq active )
+                  task COPY_SAN
+                        event Modelo
+                        event Medio
+                        event Plumas
+                        trigger (/oens/T126/Modelo eq active )
+		endfamily
+		family Produtos
+                  inlimit /oens:f
+                        trigger ( /oens/T126/Pos/Ens_Medio eq complete ) and\
+                                ( /oens/T126/Pos/Plumas eq complete )
+                        
+                        task gesfam
+                              
+                        task ghprec
+                              
+                        task probability
+                              
+                        task probagr
+                              
+                        task spread
+                              
+                        task cluster
+                              
+                        task spaguetti
+                              
+                        task grhens
+                              
+                        task prcmed
+                              
+                        task wgne
+                              
+                        task chievol
+                                 trigger (./spread eq complete)
+                        task removies
+                              trigger (./probability eq complete and \
+                                 ./spread eq complete and ./cluster eq complete)
+                              
+                        task skillens
+                                 trigger (./removies eq complete)
+                        task COPY_BANGU
+                                 trigger (./gesfam eq complete and \
+                                 ./ghprec eq complete and \
+                                 ./probability eq complete and \
+                                 ./spread eq complete and \
+                                 ./spaguetti eq complete and \
+                                 ./grhens eq complete and \
+                                 ./skillens eq complete and \
+                                 ./prcmed eq complete and \
+                                 ./chievol eq complete and \
+                                 ./removies eq complete and \
+                                 ./probagr eq complete and \
+                                 ./cluster eq complete and \
+                                 ./wgne eq complete and \
+                                 /oens/T126/Pos eq complete )
+                        task COPY_SAN
+                                 trigger (./COPY_BANGU eq complete and ./FTP_WWW eq complete \
+                                          and /oens/T126/Pos eq complete  and /oens/T126/Tigge eq complete )
+                        task FTP_WWW
+                                 #defstatus complete
+                                 trigger (./gesfam eq complete ) and\
+                                 (./ghprec eq complete ) and\
+                                 (./probability eq complete ) and\
+                                 (./probagr eq complete ) and\
+                                 (./spread eq complete ) and\
+                                 (./cluster eq complete ) and\
+                                 (./spaguetti eq complete ) and\
+                                 (./grhens eq complete ) and\
+                                 (./prcmed eq complete ) and\
+                                 (./removies eq complete ) and\
+                                 (./chievol eq complete )
+		endfamily
+	endfamily
+      family Verifica
+      task VeTIGGE
+            cron 00:01 23:59 01:00
+            label Info "OK"
+            label Info "OK"
+            label Rodada "OK"
+            label STATUS "OLHAR A PAGINA: http://tigge.ecmwf.int/tigge/d/tigge_history/"
+            trigger ( /oens/T126 eq queued )
+      task VeBANGU
+            cron 00:00 23:00 01:00
+            label Info "OK"
+            label Info "OK"
+            label Rodada "OK"
+            label STATUS "OK"
+            trigger ( /oens/T126 eq queued )
+      endfamily
+endsuite

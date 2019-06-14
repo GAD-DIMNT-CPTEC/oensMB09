@@ -1,0 +1,47 @@
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        setenseT126L28.sx6          #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  ensemble scripts.                         #
+#                                                            #
+#************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o turi:/gfs/home3/modoper/tempo/global/oens/run/setout/setense.1.T126L28.sx6.2012021404:30.out
+#PBS -j o
+#
+#
+cd /gfs/home3/modoper/tempo/global/oens/run
+#
+#   Copy the initial conditions from deterministic forecast datain to
+#   ensemble forecast datain
+#
+cp /gfs/dk20/modoper/tempo/global/glbT126/model/datain/sstwkl.20120214 /gfs/dk22/modoper/tempo/global/oens/model/datain
+cp /gfs/dk20/modoper/tempo/global/glbT126/model/datain/orgwav.T126 /gfs/home3/modoper/tempo/global/oens/pre/dataout/T126
+#cp /gfs/home3/modoper/tempo/global/glbT126/pre/dataout/T126/orgwav.T126 /gfs/home3/modoper/tempo/global/oens/pre/dataout/T126
+#
+cd /gfs/home3/modoper/tempo/global/oens/run
+# Script de recomposicao da analise 
+echo "\n+++\n+++ runrecanl1.sx6 run 126 28 ANLAVN 2012021400\n+++\n"
+runrecanl1.sx6 run 126 28 ANLAVN 2012021400
+#
+# Script de geracao das perturbacoes randomicas
+echo "\n+++\n+++ runrdpt1.sx6 run 07 126 28 2012021400 NO\n+++\n"
+runrdpt1.sx6 run 07 126 28 2012021400 NO
+#
+# Script de decomposicao das perturbacoes
+echo "\n+++\n+++ rundrpt1.sx6 run 07 126 28 2012021400 NO\n+++\n"
+rundrpt1.sx6 run 07 126 28 2012021400 NO
+# 
+# Script runctrpntg roda o modelo (controle)
+# RODAR SEPARADO PARA USAR 4 PROCESSADORES.
+echo "\n+++\n+++ runctrpntg.sx6 126 28 2012021400 2012021512 sstwkl\n+++\n"
+#runctrpntg1.sx6 126 28 2012021400 2012021512 sstwkl
+
+exit 0

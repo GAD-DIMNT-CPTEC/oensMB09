@@ -1,0 +1,256 @@
+#!/bin/ksh
+#
+dir=/gfs/home3/modoper/tempo/global/oens
+dirs=/gfs/home3/modoper/tempo/global/oens
+dirr=/gfs/dk20/modoper/tempo/global/oens
+#
+hostn=`hostname`
+queue=PNT-EN
+maq=sx6
+#
+if [ -z "${1}" ]
+then
+  echo "LABELI nao foi dado"
+  exit
+else
+  labeli=${1}
+fi
+########################################################
+typeset -Z4 yi
+typeset -Z2 mi di hi
+let yi=`awk 'BEGIN {print substr("'${labeli}'",1,4)}'`
+let mi=`awk 'BEGIN {print substr("'${labeli}'",5,2)}'`
+let di=`awk 'BEGIN {print substr("'${labeli}'",7,2)}'`
+let hi=`awk 'BEGIN {print substr("'${labeli}'",9,2)}'`
+let ybi=$yi
+let ybiss=$ybi%4
+if [ $ybiss = 0 ]
+then
+set -A md 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+#
+if [ "$hi" = "00" -o "$hi" = "12" ]
+then
+#
+#  nfdays = number of forecasting days
+#
+let nfdays=12
+let df=$di+$nfdays
+let mf=$mi
+let yf=$yi
+let hf=$hi
+#
+else
+#
+#  nfhours = number of forecasting hours
+#
+let nfhours=12
+let df=$di
+let mf=$mi
+let yf=$yi
+let hf=$hi+$nfhours
+if [ hf -ge 24 ]
+then
+let hf=hf-24
+let df=df+1
+fi
+#
+fi
+#
+if [ df -gt md[$mi-1] ]
+then
+let n=df-md[$mi-1]
+let df=n
+let mf=mf+1
+fi
+if [ mf -gt 12 ]
+then
+let mf=1
+let yf=yf+1
+fi
+#
+if [ df -lt 10 ]
+then DF=0$df
+else DF=$df
+fi
+if [ mf -lt 10 ]
+then MF=0$mf
+else MF=$mf
+fi
+YF=$yf
+if [ hf -lt 10 ]
+then HF=0$hf
+else HF=$hf
+fi
+YF=$yf
+#
+labf=$YF$MF$DF$HF
+#
+################ L. Candido ###########################
+#
+if [ -z "${2}" ]
+then
+  labelf=${labf}
+  echo "Modelo rodando de ${labeli} ate ${labelf}"
+else
+  labelf=${2}
+fi
+#
+labelc=${labelf}
+#
+start=cold
+tr=126
+lv=28
+sst='sstwkl'
+prefx='NMC'
+prefy='NMC'
+dhfct=0
+dhdhn=0
+nhdhn=0
+dhext=0
+nhext=0
+nproc=8
+typeset -Z4 yy
+typeset -Z2 mm dd hh
+let yy=`awk 'BEGIN {print substr("'${labeli}'",1,4)}'`
+let mm=`awk 'BEGIN {print substr("'${labeli}'",5,2)}'`
+let dd=`awk 'BEGIN {print substr("'${labeli}'",7,2)}'`
+let hh=`awk 'BEGIN {print substr("'${labeli}'",9,2)}'`
+labels=${yy}${mm}${dd}
+#
+#  Number of time steps (MAXTIM) between two date labels:
+#  LABELi and LABELf:  yyyymmddhh
+#
+ntimesteps () {
+typeset -Z4 yi yf
+typeset -Z2 mi di hi mf df hf
+let yi=`awk 'BEGIN {print substr("'${datei}'",1,4)}'`
+let mi=`awk 'BEGIN {print substr("'${datei}'",5,2)}'`
+let di=`awk 'BEGIN {print substr("'${datei}'",7,2)}'`
+let hi=`awk 'BEGIN {print substr("'${datei}'",9,2)}'`
+let yf=`awk 'BEGIN {print substr("'${datef}'",1,4)}'`
+let mf=`awk 'BEGIN {print substr("'${datef}'",5,2)}'`
+let df=`awk 'BEGIN {print substr("'${datef}'",7,2)}'`
+let hf=`awk 'BEGIN {print substr("'${datef}'",9,2)}'`
+let datehr=${yi}${mi}${di}${hi}
+let datehf=${yf}${mf}${df}${hf}
+if [ dhfct -ne 0 ]
+then
+  let ntstep=0
+  until [ datehr -ge datehf ]
+  do
+    let ntstep=ntstep+1
+    let ybi=yi%4
+    if [ ybi -eq 0 ]
+    then
+      set -A md 0 31 29 31 30 31 30 31 31 30 31 30 31
+    else
+      set -A md 0 31 28 31 30 31 30 31 31 30 31 30 31
+    fi
+    let hi=hi+dhfct
+    if [ hi -ge 24 ]
+    then
+      let hi=hi-24
+      let di=di+1
+      if [ di -gt md[mi] ]
+      then
+        let di=1
+        let mi=mi+1
+        if [ mi -gt 12 ]
+        then
+          let mi=1
+          let yi=yi+1
+        fi
+      fi
+    fi
+    let datehr=${yi}${mi}${di}${hi}
+  done
+else
+    let ntstep=40
+fi; }
+#
+set -x
+cd ${dirs}/model/datain
+cp desirtable.pnt desirtable
+cd ${dirs}/pos/datain
+cp rfdpntT126 rfd
+set +x
+#
+cd ${dir}/run
+################################################
+#
+#   Run snow initial condition
+#
+echo "runsnow.${maq} run ${tr} ${labeli}"
+runsnow.${maq} run ${tr} ${labeli}
+#
+################################################
+#
+#   Run weekly sst, if desired
+#
+if [ ${sst} = 'sstwkl' ]
+then
+echo "runsstw.${maq} run ${tr} ${lv} ${labeli}"
+runsstw.${maq} run ${tr} ${lv} ${labeli}
+else
+echo "runssto.${maq} run ${tr} ${lv} ${labeli}"
+runssto.${maq} run ${tr} ${lv} ${labeli}
+fi 
+#
+###############################################
+datei=${labeli}
+datef=${labelf}
+echo "${datei} ${datef}"
+ntimesteps
+npostc=${ntstep}
+#
+echo ${ntstep}
+#
+###############################################
+#
+#   Run spectral global model forecast
+#
+echo "runmodg.${maq} run ${tr} ${lv} ${start} ${labeli} ${labelc} ${labelf} ${sst} ${dhfct} ${dhdhn} ${nhdhn} ${dhext} ${nhext} T F F F ${prefx} ${prefy} ${nproc}"
+runmodg.${maq} run ${tr} ${lv} ${start} ${labeli} ${labelc} ${labelf} ${sst} ${dhfct} ${dhdhn} ${nhdhn} ${dhext} ${nhext} T F F F ${prefx} ${prefy} ${nproc}
+#
+##############################################
+#
+#   Run GFCT post-processing upper-level: GPOSNMC*P.fct.T126L28
+#
+echo "runpost.${maq} run ${tr} ${lv} ${start} ${labeli} ${labelf} -1 ${npostc} 0 0 ${prefx}"
+runpost.${maq} run ${tr} ${lv} ${start} ${labeli} ${labelf} -1 ${npostc} 0 0 ${prefx}
+#
+#
+#   Run GFCT post-processing surface fileds: GPOSNMC*S.fct.T126L28
+#
+#AMM echo "runpost.${maq} run ${tr} ${lv} ${start} ${labeli} ${labelf} -1 40 0 0 ${prefx} s"
+#AMM runpost.${maq} run ${tr} ${lv} ${start} ${labeli} ${labelf} -1 40 0 0 ${prefx} s
+#
+#   Run GPRG post-processing: GPOSETA*E.fct.T126L28
+#
+#AMM echo "runpost.${maq} run ${tr} ${lv} ${start} ${labeli} ${labelf} -1 40 0 0 ${prefx} e"
+#AMM runpost.${maq} run ${tr} ${lv} ${start} ${labeli} ${labelf} -1 40 0 0 ${prefx} e
+#
+##############################################
+#
+#   Run DHN post-processing
+#
+#AMM echo "rundhnp.${maq} run ${tr} ${lv} ${labeli} ${labelf}"
+#AMM rundhnp.${maq} run ${tr} ${lv} ${labeli} ${labelf}
+#
+##############################################
+#
+#   Data transfer to Bangu
+#
+#AMM echo "runtransfer.${maq} ${labeli}"
+#AMM runtransfer.${maq} ${labeli}
+#
+##############################################
+#
+#   GRIB file conversion
+#
+#AMM echo "runprdenew.${maq} ${tr} ${lv} ${labeli} ${labelf}"
+#AMM runprdenew.${maq} ${tr} ${lv} ${labeli} ${labelf}
+#

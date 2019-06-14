@@ -1,0 +1,191 @@
+#!/bin/ksh
+#help#
+#***********************************************************************#
+#                                                                       #
+#     Name:           runtransfer.plumes.sx6                            #
+#                                                                       #
+#     Function:       This script submits the transfer                  #
+#                     scripts COPY_BANGU.QUE                            #
+#                                                                       #
+#     Date:         April 16th, 2003                                    #
+#                                                                       #
+#     Valid Arguments for runtransfer.plumes.sx6                        #
+#                                                                       #
+#     First   :     TRC: horizontal truncation                          #
+#     Second  :      LV: vertical resolution                            #
+#     Third   :  LABELI: initial forecasting label                      #
+#                                                                       #
+#               LABELx : yyyymmddhh                                     #
+#                        yyyy = four digit year                         #
+#                          mm = two digit month                         #
+#                          dd = two digit day                           #
+#                          hh = two digit hour                          #
+#                                                                       #
+#***********************************************************************#
+#help#
+#
+#   Verify parameters
+#
+if [ -z "${1}" ]
+then
+  echo "TRC is not set"
+  exit
+else
+  TRC=${1}
+fi
+if [ -z "${2}" ]
+then
+  echo "LV is not set"
+  exit
+else
+  LV=${2}
+fi
+if [ -z "${3}" ]
+then
+  echo "labeli is not set"
+  exit
+fi
+#
+#   Set host, machine, NQS Queue and Run time 
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT='out'
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/dk20/modoper/tempo/global/oens
+dirhome=/gfs/home3/modoper/tempo/global
+dirout=/gfs/dk20/modoper/tempo/global/oens/plumes/dataout/T126L28
+dirpos=/gfs/dk20/modoper/tempo/global/oens/plumes/dataout/T126L28
+dir=/bangu/samfs/modoper/tempo/global/oens/nmc/T126L28
+copybg='COPY_BANGU.QUE'
+#
+echo ${dirhome}
+echo ${dirout}
+echo ${dir}
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+TRUNC=T${TRC}
+LEV=L${LV}
+export TRUNC LEV
+#
+cd ${dirhome}/oens/run
+#
+cat <<EOT0 > settransfer.plumes.${MAQUI}
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        settransfer.plumes.${MAQUI}               #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  transfer script.                          #
+#                                                            #
+#************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:/gfs/home3/modoper/tempo/global/oens/run/setout/settransfer.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%H:%M'`
+#
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR 
+#
+#   Set labeli (date, UTC hour, ...)
+#
+#   labeli = yyyymmddhh
+#   labeli = initial run forecast label
+#
+if [ -z "${3}" ]
+then
+  echo "labeli nao foi dado"
+  exit
+else
+  labeli=${3}
+fi
+#
+export labeli 
+#echo \${labeli} 
+#
+yi=\`awk 'BEGIN {print substr("'\${labeli}'",1,4)}'\`
+mi=\`awk 'BEGIN {print substr("'\${labeli}'",5,2)}'\`
+di=\`awk 'BEGIN {print substr("'\${labeli}'",7,2)}'\`
+hi=\`awk 'BEGIN {print substr("'\${labeli}'",9,2)}'\`
+#
+export yi mi di hi
+yymmdd=\${yi}\${mi}\${di}
+fn1='PLUMES'
+sigle=''
+mark='out'
+#
+export yymmdd fn1 fn2 fn3 fn4 fn5 sigle mark 
+#echo \${yymmdd}
+#
+dirhome1=${dirhome}
+dirout1=${dirout}
+dirpos1=${dirpos}
+dir1=${dir}
+dirhome2=/gfs/home3/modoper
+setout=${dirhome}/oens/run/setout
+copybg1=${copybg}
+echo \$dirhome2
+#
+export dirhome1 dirhome2 dirout1 dirpos1 dir1 setout copybg1
+# 
+\rm \${dirhome1}/oens/run/settran.plumes.o* 
+\rm \${dirhome1}/oens/run/settran.plumes.e*
+#
+cd \${dirout1}
+
+chmod u=rwx,g=rwx,o=rx *\${labeli}*
+
+cd \${dirhome1}/oens
+
+dirtransfer1=\${dir1}/\${fn1}/\${yi}/\${mi}/\${di}
+
+export dirtransfer1 dirtransfer2 dirtransfer3 dirtransfer4 dirtransfer5
+
+\rm \${setout}/transfer.plumes.txt
+
+echo \${dirout1}/*\${labeli}"*" \${dirtransfer1} >> \${setout}/transfer.plumes.txt
+echo "cat \${setout}/transfer.plumes.txt >> \${dirhome2}/\${copybg1}"
+cat \${setout}/transfer.plumes.txt >> \${dirhome2}/\${copybg1}
+
+\rm \${setout}/transfer.plumes.txt
+
+EOT0
+##########################################################
+#
+#   Change mode to be executable
+#
+chmod +x settransfer.plumes.${MAQUI}
+#
+#   Submit Transfer scripts to Batch
+#
+echo "Transfer  -- SUBMITTED TO Batch ..."
+#
+echo "${dirhome}/oens/run/settransfer.plumes.${MAQUI}"
+${dirhome}/oens/run/settransfer.plumes.${MAQUI}
+#
+###########################################################

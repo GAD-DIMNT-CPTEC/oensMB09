@@ -1,0 +1,269 @@
+#!/bin/ksh
+#help#
+#*****************************************************************#
+#                                                                 #
+#       Name:           runtgz0.sx6                               #
+#                                                                 #
+#       Function:     This script submits the                     #
+#                     soil temperature and roughness scripts      #
+#                     to the NQS queue.                           #
+#                     It runs in Korn Shell.                      #
+#                                                                 #
+#       Date:         October 08th, 2002.                         #
+#       Last change:  October 08th, 2002.                         #
+#                                                                 #
+#       Valid Arguments for runtgz0.sx6:                          #
+#                                                                 #
+#       First : COMPILE: help, make, clean or run.                #
+#       Second:     TRC: three-digit triangular truncation        #
+#                                                                 #
+#*****************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Test of Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+TRC=062
+else
+TRC=${2}
+fi
+#
+#     Select parameter for the resolution:
+#
+case ${TRC} in
+021) MR=22  ; IR=64  ; JR=32  ;;
+030) MR=32  ; IR=96  ; JR=48  ;;
+042) MR=43  ; IR=128 ; JR=64  ;;
+047) MR=48  ; IR=144 ; JR=72  ;;
+062) MR=63  ; IR=192 ; JR=96  ;;
+079) MR=80  ; IR=240 ; JR=120 ;;
+085) MR=86  ; IR=256 ; JR=128 ;;
+094) MR=95  ; IR=288 ; JR=144 ;;
+106) MR=107 ; IR=320 ; JR=160 ;;
+126) MR=127 ; IR=384 ; JR=192 ;;
+159) MR=160 ; IR=480 ; JR=240 ;;
+170) MR=171 ; IR=512 ; JR=256 ;;
+213) MR=214 ; IR=640 ; JR=320 ;;
+254) MR=255 ; IR=768 ; JR=384 ;;
+319) MR=320 ; IR=960 ; JR=480 ;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+#
+#   Set host, machine, NQS Queue, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=PNT-EN
+RUNTM=`date +'%Y%m%d%T'`
+EXT=out
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#
+OPERM=/gfs/home3/modoper/tempo/global/oens
+SOPERM=/gfs/home3/modoper/tempo/global/oens
+ROPERM=/gfs/home3/modoper/tempo/global/oens
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+#
+#   Set truncation
+#
+RESOL=T${TRC}
+echo ${RESOL}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > settgz0${RESOL}.${MAQUI}
+#!/bin/ksh
+#
+#*****************************************************************#
+#                                                                 #
+#       Name:      settgz0${RESOL}.${MAQUI}                       #
+#                                                                 #
+#       Function:  This script file is used to set the            #
+#                  environmental variables and start the          #
+#                  soil temperature and roughness scripts.        #
+#                                                                 #
+#*****************************************************************#
+#
+#  At NEC Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:${OPERM}/run/setout/settgz0${RESOL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%T'`
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR
+#
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+export OPERMOD SOPERMOD ROPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation
+#
+TRUNC=${RESOL}
+export TRUNC
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#                    =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+COMPILE=${1}
+export COMPILE
+echo \${COMPILE}
+#
+#   Set NEC FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#F_FILEINF=DETAIL
+#export F_FILEINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -pvctl noaltcode either scalar or vector code is generated at compilation
+#   -O nodiv         division may not be changed to reciprocal multiplication
+#   -O nomove        not move invariant expression outside the loop
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+FTNFLAG='-C vsafe -float0 -ew -Wf" -pvctl noaltcode nomatmul -O nodiv nomove " '
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=\${OPERMOD}/include/\${TRUNC}
+export INC
+echo \${INC}
+#
+#   Set FORTRAN compiler name
+#
+F77=f90
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+F_UFMTIEEE=20,21
+export F_UFMTIEEE
+F_UFMTADJUST20=TYPE2
+F_UFMTADJUST21=TYPE2
+export F_UFMTADJUST20 F_UFMTADJUST21
+#
+#
+#  Now, build the necessary INCLUDE for the choosen truncation
+#
+  if [ "\${COMPILE}" != "run" ]
+  then
+#
+cd \${INC}
+#
+cat <<EOT1 > reshtgz.n
+      INTEGER MEND1,NEND1,JEND1,JMAX,IMAX
+      PARAMETER(MEND1=${MR},NEND1=${MR},JEND1=${MR})
+      PARAMETER(IMAX=${IR})
+      PARAMETER(JMAX=${JR})
+EOT1
+if (diff reshtgz.n reshtgz.h > /dev/null)
+then 
+    echo "reshtgz.n and reshtgz.h are the same"
+    rm -f reshtgz.n
+else
+    echo "reshtgz.n and reshtgz.h are different"
+    mv reshtgz.n reshtgz.h
+fi
+#
+#  End of includes
+#
+fi
+#
+#   Run scripts
+#
+\${OPERMOD}/pre/scripts/tg3int.scr
+\${OPERMOD}/pre/scripts/zrlint.scr
+\${OPERMOD}/pre/scripts/tg3zrl.scr
+#
+EOT0
+#
+#
+echo 'Pre-Processing - B.C. -- RUNNING ...'
+#
+chmod +x settgz0${RESOL}.${MAQUI}
+#
+/usr/bin/nqsII/qsub -q ${QUEUE} ${OPERM}/run/settgz0${RESOL}.${MAQUI}
+#AMM ${OPERM}/run/settgz0${RESOL}.${MAQUI}
+#

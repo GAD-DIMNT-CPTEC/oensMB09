@@ -1,0 +1,256 @@
+#!/bin/ksh
+#help#
+#***********************************************************************#
+#                                                                       #
+#     Name:           runtransfer.sx6                                   #
+#                                                                       #
+#     Function:       This script submits the transfer                  #
+#                     scripts COPY_BANGU.QUE                            #
+#                                                                       #
+#     Date:         April 16th, 2003                                    #
+#                                                                       #
+#     Valid Arguments for runtransfer.sx6                               #
+#                                                                       #
+#     First   :     TRC: horizontal truncation                          #
+#     Second  :      LV: vertical resolution                            #
+#     Third   :  LABELI: initial forecasting label                      #
+#     Fourth  :    PERT: perturbation                                   #
+#                                                                       #
+#               LABELx : yyyymmddhh                                     #
+#                        yyyy = four digit year                         #
+#                          mm = two digit month                         #
+#                          dd = two digit day                           #
+#                          hh = two digit hour                          #
+#                                                                       #
+#                 PERT : AVN,01P,01N,02P,02N,...                        #
+#***********************************************************************#
+#help#
+#
+#   Verify parameters
+#
+if [ -z "${1}" ]
+then
+  echo "TRC is not set"
+  exit
+else
+  TRC=${1}
+fi
+if [ -z "${2}" ]
+then
+  echo "LV is not set"
+  exit
+else
+  LV=${2}
+fi
+if [ -z "${3}" ]
+then
+  echo "labeli is not set"
+  exit
+fi
+if [ -z "${4}" ]
+then
+  echo "PERT is not set"
+  exit
+else
+  PERT=${4}
+fi
+#
+#   Set host, machine, NQS Queue and Run time 
+#
+HSTMAQ=`hostname`
+MAQUI=sx6
+QUEUE=Inter
+RUNTM=`date +'%Y%m%d%H:%M'`
+EXT='out'
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+TRUNC=T${TRC}
+LEV=L${LV}
+export TRUNC LEV
+#
+#   Set directories
+#
+OPERM=/gfs/home3/io_dop/tempo/global/oenspro
+ROPERM=/gfs/dk21/io_dop/tempo/global/oenspro
+dirhome2=/gfs/home3/io_dop
+dirhome=/gfs/home3/io_dop/tempo/global
+dirout=/gfs/dk21/io_dop/tempo/global/oenspro/model/dataout/${TRUNC}${LEV}
+dirpos=/gfs/dk21/io_dop/tempo/global/oenspro/pos/dataout/${TRUNC}${LEV}
+dir=/bangu/samfs/io_dop/tempo/global/oenspro/nmc/${TRUNC}${LEV}
+copybg='COPY_BANGU.QUE'
+#
+echo ${dirhome}
+echo ${dirhome2}
+echo ${dirout}
+echo ${dir}
+#
+cd ${dirhome}/oenspro/run
+#
+cat <<EOT0 > settransfer${PERT}.${MAQUI}
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        settransfer${PERT}.${MAQUI}               #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  transfer script.                          #
+#                                                            #
+#************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o ${HSTMAQ}:/gfs/home3/io_dop/tempo/global/oenspro/run/setout/settransfer${PERT}.${RUNTM}.${EXT}
+#PBS -j o
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y%m%d'`
+HOUR=`date +'%H:%M'`
+#
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR 
+#
+#   Set labeli (date, UTC hour, ...)
+#
+#   labeli = yyyymmddhh
+#   labeli = initial run forecast label
+#
+if [ -z "${3}" ]
+then
+  echo "labeli nao foi dado"
+  exit
+else
+  labeli=${3}
+fi
+#
+export labeli 
+#
+yi=\`awk 'BEGIN {print substr("'\${labeli}'",1,4)}'\`
+mi=\`awk 'BEGIN {print substr("'\${labeli}'",5,2)}'\`
+di=\`awk 'BEGIN {print substr("'\${labeli}'",7,2)}'\`
+hi=\`awk 'BEGIN {print substr("'\${labeli}'",9,2)}'\`
+#
+export yi mi di hi
+yymmdd=\${yi}\${mi}\${di}
+fn1='GFCT'
+fn2='GFGH'
+fn3='GDHN'
+fn4='GPRG'
+fn5='ANL'
+#AMM sigle='AVN'
+sigle='${PERT}'
+mark='out'
+#
+export yymmdd fn1 fn2 fn3 fn4 fn5 sigle mark 
+#echo \${yymmdd}
+#
+dirhome1=${dirhome}
+dirout1=${dirout}
+dirpos1=${dirpos}
+dir1=${dir}
+setout=${dirhome}/oenspro/run/setout
+copybg1=${copybg}
+#
+export dirhome1 dirout1 dirpos1 dir1 setout copybg1
+# 
+\rm \${dirhome1}/oenspro/run/settran${PERT}.o* 
+\rm \${dirhome1}/oenspro/run/settran${PERT}.e*
+#
+cd \${dirout1}
+#
+rm -f SizeTupanI${PERT}\${labeli}
+ls -l *${PERT}\${labeli}* > tupan${PERT}\${labeli}
+awk '{ print \$9" "\$5 }' tupan${PERT}\${labeli} > SizeTupanI${PERT}\${labeli}
+\rm tupan${PERT}\${labeli}
+#
+chmod u=rwx,g=rwx,o=rx *${PERT}\${labeli}*
+#
+cd \${dirpos1}
+#
+
+rm -f SizeTupanII${PERT}\${labeli}
+ls -l *${PERT}\${labeli}* > tupan${PERT}\${labeli}
+awk '{ print \$9" "\$5 }' tupan${PERT}\${labeli} > SizeTupanII${PERT}\${labeli}
+\rm tupan${PERT}\${labeli}
+
+chmod u=rwx,g=rwx,o=rx *${PERT}\${labeli}*
+
+cd \${dirhome1}/oenspro
+
+dirtransfer1=\${dir1}/\${fn1}/\${yi}/\${mi}/\${di}
+dirtransfer2=\${dir1}/\${fn2}/\${yi}/\${mi}/\${di}
+dirtransfer3=\${dir1}/\${fn3}/\${yi}/\${mi}/\${di}
+dirtransfer4=\${dir1}/\${fn4}/\${yi}/\${mi}/\${di}
+dirtransfer5=\${dir1}/\${fn5}/\${yi}/\${mi}/\${di}
+
+export dirtransfer1 dirtransfer2 dirtransfer3 dirtransfer4 dirtransfer5
+
+echo \${dirout1}/\${fn1}\${sigle}\${labeli}"*" \${dirtransfer1} >> \${setout}/transfer${PERT}.txt
+echo \${dirout1}/SizeTupanI${PERT}\${labeli} \${dir1} >> \${setout}/transfer${PERT}.txt
+echo \${dirout1}/SizeTupanI${PERT}\${labeli} \${dir1}/ANL >> \${setout}/transfer${PERT}.txt
+echo \${dirpos1}/"*"\${sigle}\${labeli}"*" \${dirtransfer5} >> \${setout}/transfer${PERT}.txt
+echo \${dirpos1}/SizeTupanII${PERT}\${labeli} \${dir1} >> \${setout}/transfer${PERT}.txt
+echo \${dirpos1}/SizeTupanII${PERT}\${labeli} \${dir1}/ANL >> \${setout}/transfer${PERT}.txt
+
+
+if [ "\${hi}" = "00" -o "\${hi}" = "12" ]
+then
+
+#Adma echo \${dirout1}/\${fn2}\${sigle}\${labeli}"*" \${dirtransfer2} >> \${setout}/transfer${PERT}.txt
+
+fi
+
+#Adma echo "cat \${setout}/transfer${PERT}.txt >> ${dirhome2}/\${copybg1}"
+#Adma cat \${setout}/transfer${PERT}.txt >> ${dirhome2}/\${copybg1}
+
+\rm \${setout}/transfer${PERT}.txt
+
+##########################################################
+# Aditional Remove
+##########################################################
+
+if [ "${PERT}" != "AVN" ]
+then
+rm -f ${ROPERM}/model/datain/GANL${PERT}\${labeli}S.unf.${TRUNC}${LEV}
+fi
+
+if [ "${PERT}" = "07N" ]
+then
+rm -f ${OPERM}/decanl/datain/GANLAVN\${labeli}P.rpt.${TRUNC}${LEV}
+rm -f ${OPERM}/recanl/datain/GANLAVN\${labeli}S.unf.${TRUNC}${LEV}
+rm -f ${ROPERM}/recanl/dataout/${TRUNC}${LEV}/GANLAVN\${labeli}R.unf.${TRUNC}${LEV}
+rm -f ${ROPERM}/recfct/dataout/${TRUNC}${LEV}/GFCTCTR\${labeli}*R.fct.${TRUNC}${LEV}
+
+rm -f ${ROPERM}/model/datain/GANLAVN\${labeli}R.unf.${TRUNC}${LEV}
+rm -f ${ROPERM}/model/datain/GFCTCTR\${labeli}*F.fct.${TRUNC}${LEV}
+rm -f ${ROPERM}/model/datain/lst.GFCTCTR\${labeli}.dr
+rm -f ${ROPERM}/model/datain/lst.GFCTCTR\${labeli}
+
+fi
+
+EOT0
+##########################################################
+#
+#   Change mode to be executable
+#
+#   Submit Transfer scripts to Batch
+##########################################################
+echo "Transfer  -- SUBMITTED TO Batch ..."
+echo "${dirhome}/oenspro/run/settransfer${PERT}.${MAQUI}"
+
+chmod +x settransfer${PERT}.${MAQUI}
+${dirhome}/oenspro/run/settransfer${PERT}.${MAQUI}
+
