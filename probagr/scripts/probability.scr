@@ -1,0 +1,346 @@
+#!/bin/ksh -x
+#help#
+#**********************************************************#
+#                                                          #
+#     Name:           probability.scr                      #
+#                                                          #
+#     Function:       This script makes the gifs of        #
+#                     probabilistic forecast.              #
+#                     It runs in K shell.                  #
+#                                                          #
+#     Date:           January   24th, 2002.                #
+#     Last change:    August    15th, 2002.                #
+#                                                          #
+#     Valid Arguments for probability.scr                  #
+#                                                          #
+#     First :         : nothing for help or                #
+#     First : trcm    : horizontal resolution              #
+#    Second : lv      : vertical resolution                #
+#     Third : labeli  : initial forecasting label          #
+#    Fourth : fctdays : number of forecast days            #
+#                                                          #
+#             LABELx : yyyymmddhh                          #
+#                      yyyy = four digit year              #
+#                        mm = two digit month              #
+#                        dd = two digit day                #
+#                        hh = two digit hour               #
+#                                                          #
+#**********************************************************#
+#help#
+#
+# Help:
+#
+export GAUDFT=/usr/local/grads/udf/udft
+export GADDIR=/usr/local/grads/dat
+export GRADSB=/usr/local/grads/bin
+export GASCRP=/usr/local/grads/lib
+. ../../include/config.sx6
+
+ndacc=05
+freqcalc=06 
+
+LABELI=$1
+if [ -s $LABELI ]; then
+      echo "ERRO: FALTA PARAMETRO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+      exit 1
+else
+      if [ ${#LABELI} -lt 10 ]; then
+            echo "ERRO: PARAMETRO INCORRETO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+            exit 2
+      else
+            YYYY=`echo $LABELI |cut -c 1-4`
+            MM=`echo $LABELI |cut -c 5-6`
+            DD=`echo $LABELI |cut -c 7-8`
+            HH=`echo $LABELI |cut -c 9-10`
+
+            LABELF=`date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}"`
+            YYYYF=`echo $LABELF |cut -c 1-4`
+            MMF=`echo $LABELF |cut -c 5-6`
+            DDF=`echo $LABELF |cut -c 7-8`
+            HHF=`echo $LABELF |cut -c 9-10`
+      fi
+fi
+
+PREFX=$2
+NFCTDY=${NFDAYS}
+let NMEMBR=${NPERT}*2+1
+OUT=out
+NPROC=1
+fctdays=${NFDAYS}
+#
+#  End of setting parameters to run
+#
+
+#
+# Expand memory
+#
+
+ulimit -d 10485760
+ulimit -s 131072
+#ulimit -v 500416
+
+#
+# Set model resolution
+#
+labeli=$LABELI
+labelf=$LABELF
+resol=T${TRC}L${LV}
+trc=T${TRC}
+
+#
+#  Set directories
+#
+yy=`echo ${labeli} | cut -c 1-4`
+mm=`echo ${labeli} | cut -c 5-6`
+dd=`echo ${labeli} | cut -c 7-8`
+hh=`echo ${labeli} | cut -c 9-10`
+
+#dirscr=/home/mendonca/EnsembleCptec/Produtos/PROBAGR/scripts
+#dirgif=/home/mendonca/EnsembleCptec/Produtos/PROBAGR/gif
+#dirbang=/rede/bangu_samfs_modoper3/tempo/global/oens/avn/${resol}${nivel}
+##dirbct=${dirbang}/produtos/probability/binctl/${yy}/${mm}/${dd}
+#dirbct=/home/mendonca/EnsembleCptec/Produtos/PROBAGR/bin
+
+dirscr=${OPERM}/probagr/scripts
+dirgif=${ROPERM}/probagr/gif
+dirbang=${BANGU}
+#dirbct=${dirbang}/produtos/probability/binctl/${yy}/${mm}/${dd}
+dirbct=${ROPERM}/probagr/dataout/${resol}${nivel}
+if [ ! -d ${dirgif} ]
+then
+mkdir ${dirgif}
+else
+echo "${dirgif} has already been created"
+fi
+
+#
+# Create the list of probability ctls  
+#
+
+#labelf=`caldate.3.0.2 ${labeli} + ${fctdays}d 'yyyymmddhh'`
+
+arqlist=wmaprecprob${labeli}${labelf}.${resol}.lst
+
+rm -f filefct${labeli}.${trc}
+for arq in `cat ${dirbct}/${arqlist} |grep ctl`
+do
+   arq1=`basename $arq`
+   echo ${arq1} >> filefct${labeli}.${trc}
+done
+
+#
+# Number of ctl files on the list 
+#
+
+nblst=`wc -l filefct${labeli}.${trc} | awk '{ print $1 }'`
+echo "nblst="${nblst}
+
+if [ ${ndacc} -lt 1 ]
+then
+   echo "ndacc must be equal or greater than 1"
+   exit 3
+fi
+
+if [ ${freqcalc} -gt 24 ]
+then
+   echo "freqcalc must be less or equal 24"
+   exit 4
+fi
+
+let rest=24%${freqcalc}
+if [ ${rest} -ne 0 ]
+then
+   echo "freqcalc must be a divisor of 24. Ex.: 6, 12 or 24"
+   exit 5
+else
+   let noutpday=24/${freqcalc}
+fi
+
+#
+# Generate the figures
+#
+
+set GADDIR /usr/local/grads/dat
+export GADDIR
+
+cd ${OPERM}/probagr/scripts/
+
+#/usr/local/grads/bin/gradsc -lb << EOT
+echo ${resol} ${trc} ${labeli} ${nblst} ${ndacc} ${noutpday} ${dirbct} ${dirgif}
+/usr/local/grads/bin/gradsc -lb << EOT
+run plot_precprob_agric.gs
+${resol} ${trc} ${labeli} ${nblst} ${ndacc} ${noutpday} ${dirbct} ${dirgif}
+EOT
+
+
+
+exit 0
+#
+# Remove temporary files
+#
+
+rm -f filefct${labeli}.${trc}
+
+#
+# Send gifs to tucupi
+#
+
+calday ()
+{
+yy=`awk 'BEGIN { print substr('${labeli}',1,4) }'`
+mm=`awk 'BEGIN { print substr('${labeli}',5,2) }'`
+dd=`awk 'BEGIN { print substr('${labeli}',7,2) }'`
+hh=`awk 'BEGIN { print substr('${labeli}',9,2) }'`
+#
+let ybi=$yy
+let ybir=$ybi%4
+if [ $ybir = 0 ]
+then
+set -A md 31 29 31 30 31 30 31 31 30 31 30 31
+else
+set -A md 31 28 31 30 31 30 31 31 30 31 30 31
+fi
+set -A mh JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC
+#
+let dr=$dd-$nrdays
+let mr=$mm
+let yr=$yy
+let hr=$hh
+if [ dr -le 0 ]
+then
+let nr=$mm-2
+if [ nr -lt 0 ]
+then let nr=11
+fi
+let dr=dr+md[$nr]
+let mr=$mm-1
+fi
+if [ mr -le 0 ]
+then
+let mr=12
+let yr=yr-1
+fi
+#
+if [ dr -lt 10 ]
+then DR=0$dr
+else DR=$dr
+fi
+if [ mr -lt 10 ]
+then MR=0$mr
+else MR=$mr
+fi
+YR=$yr
+if [ hr -lt 10 ]
+then HR=0$hr
+else HR=$hr
+fi
+#
+let hp=$hh-6
+let dp=$dd
+let mp=$mm
+let yp=$yy
+if [ hp -lt 0 ]
+then
+let hp=18
+let dp=$dd-1
+if [ dp -le 0 ]
+then
+let mp=$mp-1
+if [ mp -le 0 ]
+then
+let mp=12
+let yp=$yp-1
+fi
+let dp=md[$mp-1]
+fi
+fi
+#
+if [ dp -lt 10 ]
+then DP=0$dp
+else DP=$dp
+fi
+if [ mp -lt 10 ]
+then MP=0$mp
+else MP=$mp
+fi
+YP=$yp
+if [ hp -lt 10 ]
+then HP=0$hp
+else HP=$hp
+fi
+}
+
+ nrdays=4
+ calday
+ labelr4=${YR}${MR}${DR}${HR}
+ echo "labelr4="${labelr4}   
+ nrdays=5
+ calday
+ labelr5=${YR}${MR}${DR}${HR}
+ echo "labelr5="${labelr5}   
+ nrdays=6
+ calday
+ labelr6=${YR}${MR}${DR}${HR}
+ echo "labelr6="${labelr6}   
+ #
+ rm -f putgif.${labeli}.${trc}.${labeli}
+ 
+ set -x
+
+
+
+
+exit 0
+ 
+cat << EOT >> putgif.${labeli}.${trc}.${labeli}
+user pnt &arun/a*
+bin 
+cd /web1/ftp/pub/produtos/ensemble/PROBABILITY
+lcd ${dirgif}
+mput prec_agric_*
+quit
+EOT
+ #
+echo "ftp -in tucupi < putgif.${labeli}.${trc}.${labeli}"
+ftp -in tucupi < putgif.${labeli}.${trc}.${labeli}
+ #
+#REMOVE ARQUIVOS OBSOLETOS
+#
+yyyy=`echo ${labeli} | cut -c 1-4`
+mm=`echo ${labeli} | cut -c 5-6`
+dd=`echo ${labeli} | cut -c 7-8`
+cp -rpf ${dirbct}/wmaprecprob${yyyy}${mm}${dd}* ${dirbang}/produtos/probability/binctl/${yyyy}/${mm}/${dd}
+dd1=`caldate.3.0.2 ${labeli} + 5d 'dd'`
+cp -rpf ${dirbct}/wmaprecprob${yyyy}${mm}${dd1}* ${dirbang}/produtos/probability/binctl/${yyyy}/${mm}/${dd}
+dd2=`caldate.3.0.2 ${labeli} + 10d 'dd'`
+cp -rpf ${dirbct}/wmaprecprob${yyyy}${mm}${dd2}* ${dirbang}/produtos/probability/binctl/${yyyy}/${mm}/${dd}
+
+labelf=`caldate.3.0.2 ${labeli} - 10d 'yyyymmddhh'`
+rm -f ${dirbct}/wmaprecprob${labelf}*
+rm -f putgif.${labeli}.${trc}.${labeli}
+
+#AMM #
+#AMM #REMOVE GIFS E BINCTLS ANTIGOS
+#AMM #
+#AMM nrdays=9
+#AMM calday
+#AMM labelr9=${YR}${MR}${DR}${HR}
+#AMM echo "labelr9="${labelr9}   
+#AMM nrdays=10
+#AMM calday
+#AMM labelr10=${YR}${MR}${DR}${HR}
+#AMM echo "labelr10="${labelr10}   
+#AMM nrdays=11
+#AMM calday
+#AMM labelr11=${YR}${MR}${DR}${HR}
+#AMM echo "labelr11="${labelr11}   
+#AMM rm -f ${dirgif}/prec${labelr11}*
+#AMM rm -f ${dirgif}/prec${labelr10}*
+#AMM rm -f ${dirgif}/prec${labelr9}*
+#AMM rm -f ${dirbct}/precprob${labelr11}*
+#AMM rm -f ${dirbct}/precprob${labelr10}*
+#AMM rm -f ${dirbct}/precprob${labelr9}*
+#
+exit
+#
+

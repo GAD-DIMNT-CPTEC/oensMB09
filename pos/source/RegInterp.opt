@@ -1,0 +1,1227 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  RegInterp.f90
+       !        File                  :  RegInterp.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   66.       
+   66.       subroutine initareainterpolation
+   72.       regint = regintin
+   74.       polarmean = .true.
+   76.       if ( res > 0 ) then
+   77.          if ( regintin /= .false. ) then
+   78.             idimout = _rnd( ( 360.0 * 1.0/res ) )
+   79.             if ( mod( real( idimout, 8 ), 2.0 ) /= 0.0 ) then
+   79.                idimout = 1 + idimout
+   79.             endif
+   80.             jdimout = 1 + idimout / 2
+   80.          else
+   82.             idimout = _rnd( ( 360.0 * 1.0/res ) )
+   83.             if ( mod( real( idimout, 8 ), 2.0 ) /= 0.0 ) then
+   83.                idimout = 1 + idimout
+   83.             endif
+   84.             jdimout = idimout / 2
+   84.          endif
+   86.       else if ( regintin /= .false. ) then
+   88.          idimout = idimin
+   89.          jdimout = 1 + jdimin
+   89.       else
+   91.          idimout = idimin
+   92.          jdimout = jdimin
+   92.       endif
+   96.       mgaus = idimout * jdimout
+   97.       lons = 2 + idimout + idimin
+   98.       lats = 2 + jdimout + jdimin
+   99.       lwrk = max( 4 + 2 * jdimout + 2 * jdimin, 4 + 2 * idimout + 2 * idimin )
+  101.       mplon%header%a_contig = 1
+  101.       mplon%dim_1%LB = 1
+  101.       mplon%dim_1%EX = _zla( 0, ( 2 + idimout + idimin ) )
+  101.       mplon%dim_1%SM = 1
+  101.       mplon%dim_2%LB = 1
+  101.       mplon%dim_2%EX = 2
+  101.       mplon%dim_2%SM = _zla( 0, ( 2 + idimout + idimin ) )
+  101.       mplat%header%a_contig = 1
+  101.       mplat%dim_1%LB = 1
+  101.       mplat%dim_1%EX = _zla( 0, ( 2 + jdimout + jdimin ) )
+  101.       mplat%dim_1%SM = 1
+  101.       mplat%dim_2%LB = 1
+  101.       mplat%dim_2%EX = 2
+  101.       mplat%dim_2%SM = _zla( 0, ( 2 + jdimout + jdimin ) )
+  101.       maskinput%header%a_contig = 1
+  101.       maskinput%dim_1%LB = 1
+  101.       maskinput%dim_1%EX = _zla( 0, idimin )
+  101.       maskinput%dim_1%SM = 1
+  101.       maskinput%dim_2%LB = 1
+  101.       maskinput%dim_2%EX = _zla( 0, jdimin )
+  101.       maskinput%dim_2%SM = _zla( 0, idimin )
+  101.       $_allo_P0(0) = 0x3000000000001L
+  101.       $_allo_P0(1) = loc( mplon )
+  101.       $_allo_P0(2) = loc( mplat )
+  101.       $_allo_P0(3) = loc( maskinput )
+  101.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  102.       wtlon%header%a_contig = 1
+  102.       wtlon%dim_1%LB = 1
+  102.       wtlon%dim_1%EX = _zla( 0, ( 2 + idimout + idimin ) )
+  102.       wtlon%dim_1%SM = 1
+  102.       wtlat%header%a_contig = 1
+  102.       wtlat%dim_1%LB = 1
+  102.       wtlat%dim_1%EX = _zla( 0, ( 2 + jdimout + jdimin ) )
+  102.       wtlat%dim_1%SM = 1
+  102.       $_allo_P1(0) = 0x2000000000001L
+  102.       $_allo_P1(1) = loc( wtlon )
+  102.       $_allo_P1(2) = loc( wtlat )
+  102.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  105.       $F_A33 = _zla( 0, jdimin )
+  105.       $F_A34 = _zla( 0, idimin )
+  105.       if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  105.          $I_A2 = 0
+  105.          do
+  105.             $I_A1 = 0
+  105. !dir$ ivdep
+  105.             do
+  105.                (maskinput%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 1
+  105.                $I_A1 = 1 + $I_A1
+  105.                if ( $I_A1 >= $F_A34 ) exit
+  105.             enddo
+  105.             $I_A2 = 1 + $I_A2
+  105.             if ( $I_A2 >= $F_A33 ) exit
+  105.          enddo
+  105.       endif
+  108.       flaginput(1) = .true.
+  109.       flaginput(2) = .true.
+  110.       flaginput(3) = .false.
+  111.       flaginput(4) = .true.
+  112.       flaginput(5) = .true.
+  114.       if ( regintin /= .false. ) then
+  116.          flagoutput(1) = .true.
+  117.          flagoutput(2) = .true.
+  118.          flagoutput(3) = .true.
+  119.          flagoutput(4) = .true.
+  120.          flagoutput(5) = .false.
+  120.       else
+  122.          flagoutput(1) = .true.
+  123.          flagoutput(2) = .true.
+  124.          flagoutput(3) = .false.
+  125.          flagoutput(4) = .true.
+  126.          flagoutput(5) = .true.
+  126.       endif
+  130.       call getareainterpolationweights
+  132.       return
+  132.       end
+  132.       
+  135.       
+  135.       subroutine doareainterpolation( fieldinput, fieldoutput )
+  135.       t$1 = idimin
+  135.       t$2 = jdimin
+  151.       t$11 = _zla( 0, idimin )
+  135.       t$12 = _zla( 0, idimin )
+  151.       t$13 = _zla( 0, jdimin )
+  135.       t$14 = _zla( 0, idimin ) * _zla( 0, jdimin )
+  135.       t$3 = idimout
+  135.       t$4 = jdimout
+  153.       t$15 = _zla( 0, idimout )
+  135.       t$16 = _zla( 0, idimout )
+  153.       t$17 = _zla( 0, jdimout )
+  135.       t$18 = _zla( 0, idimout ) * _zla( 0, jdimout )
+  159.       t$21 = 8 * _zla( 0, idimout ) * _zla( 0, jdimout )
+  135.       t$19 = int( _alloc( 8 * _zla( 0, idimout ) * _zla( 0, jdimout ) ), 8 )
+  159.       t$20 = t$19
+  161.       $F_A35 = jdimout
+  161.       $F_A36 = idimout
+  161.       if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+  161.          $I_A4 = 0
+  161.          do
+  161.             $I_A3 = 0
+  161. !dir$ ivdep
+  161.             do
+  161.                fieldoutput(1 + $I_A3, 1 + $I_A4) = 0.0
+  161.                $I_A3 = 1 + $I_A3
+  161.                if ( $I_A3 >= $F_A36 ) exit
+  161.             enddo
+  161.             $I_A4 = 1 + $I_A4
+  161.             if ( $I_A4 >= $F_A35 ) exit
+  161.          enddo
+  161.       endif
+  162.       $F_A37 = jdimout
+  162.       $F_A38 = idimout
+  162.       if ( and( -$F_A38, -$F_A37 ) < 0 ) then
+  162.          $I_A4 = 0
+  162.          do
+  162.             $I_A3 = 0
+  162. !dir$ ivdep
+  162.             do
+  162.                work(1 + $I_A3, 1 + $I_A4) = 0.0
+  162.                $I_A3 = 1 + $I_A3
+  162.                if ( $I_A3 >= $F_A38 ) exit
+  162.             enddo
+  162.             $I_A4 = 1 + $I_A4
+  162.             if ( $I_A4 >= $F_A37 ) exit
+  162.          enddo
+  162.       endif
+  164.       if ( latd > 0 ) then
+  172.          $SC_wtlon_I17 = wtlon%dim_1%EX
+  172.          $SC_wtlon_I18 = wtlon%dim_1%LB
+  170.          $SC_maskinput_I12 = maskinput%dim_1%EX
+  170.          $SC_maskinput_I13 = maskinput%dim_1%LB
+  170.          $SC_maskinput_I15 = maskinput%dim_2%SM
+  170.          $SC_maskinput_I14 = maskinput%dim_2%EX
+  170.          $SC_maskinput_I16 = maskinput%dim_2%LB
+  169.          $SC_mplon_I7 = mplon%dim_1%EX
+  169.          $SC_mplon_I8 = mplon%dim_1%LB
+  169.          $SC_mplon_I10 = mplon%dim_2%SM
+  169.          $SC_mplon_I9 = mplon%dim_2%EX
+  169.          $SC_mplon_I11 = mplon%dim_2%LB
+  166.          $SC_mplat_I2 = mplat%dim_1%EX
+  166.          $SC_mplat_I3 = mplat%dim_1%LB
+  166.          $SC_mplat_I5 = mplat%dim_2%SM
+  166.          $SC_mplat_I4 = mplat%dim_2%EX
+  166.          $SC_mplat_I6 = mplat%dim_2%LB
+  165.          $SC_wtlat_I0 = wtlat%dim_1%EX
+  165.          $SC_wtlat_I1 = wtlat%dim_1%LB
+  168.          if ( lond > 0 ) then
+  164.             $I_L164_20 = 0
+  164.             do
+  165.                $wlt_S5 = (wtlat%base_addr)(1 + $I_L164_20, 0)
+  166.                $lti_S3 = (mplat%base_addr)(1 + $I_L164_20, 1, 0)
+  167.                $lto_S7 = (mplat%base_addr)(1 + $I_L164_20, 2, 0)
+  168.                $I_L168_16 = 0
+  168. !dir$ ivdep
+  168.                do
+  169.                   $lni_S2 = (mplon%base_addr)(1 + $I_L168_16, 1, 0)
+  170.                   if ( (maskinput%base_addr)($lni_S2, $lti_S3, 0) /= 0 ) then
+  171.                      if ( fieldinput($lni_S2, $lti_S3) /= undef ) then
+  172.                         $wln_S4 = (wtlon%base_addr)(1 + $I_L168_16, 0)
+  173.                         $lno_S6 = (mplon%base_addr)(1 + $I_L168_16, 2, 0)
+  175.                         work($lno_S6, $lto_S7) = _vu_plus( work($lno_S6, $lto_S7), $wln_S4 * $wlt_S5 )
+  174.                         fieldoutput($lno_S6, $lto_S7) = _vu_plus( fieldoutput($lno_S6, $lto_S7), $wln_S4 * $wlt_S5 * fieldinput($lni_S2, $lti_S3) )
+  174.                      endif
+  174.                   endif
+  178.                   $I_L168_16 = 1 + $I_L168_16
+  177.                   if ( $I_L168_16 >= lond ) exit
+  177.                enddo
+  179.                $I_L164_20 = 1 + $I_L164_20
+  178.                if ( $I_L164_20 >= latd ) exit
+  178.             enddo
+  178.          endif
+  178.       endif
+  181.       if ( jdimout > 0 ) then
+  182.          if ( idimout > 0 ) then
+  181.             $I_L181_22 = 0
+  181.             do
+  182.                $I_L182_18 = 0
+  182. !dir$ ivdep
+  182.                do
+  183.                   if ( work(1 + $I_L182_18, 1 + $I_L181_22) == 0.0 ) then
+  184.                      fieldoutput(1 + $I_L182_18, 1 + $I_L181_22) = undef
+  184.                   else
+  186.                      fieldoutput(1 + $I_L182_18, 1 + $I_L181_22) = ( fieldoutput(1 + $I_L182_18, 1 + $I_L181_22) * 1.0/work(1 + $I_L182_18, 1 + $I_L181_22) )
+  186.                   endif
+  188.                   $I_L182_18 = 1 + $I_L182_18
+  187.                   if ( $I_L182_18 >= idimout ) exit
+  187.                enddo
+  189.                $I_L181_22 = 1 + $I_L181_22
+  188.                if ( $I_L181_22 >= jdimout ) exit
+  188.             enddo
+  188.          endif
+  188.       endif
+  191.       if ( polarmean /= .false. ) then
+  192.          $Reduc_A39 = 0.0
+  192.          $F_A41 = idimout
+  192.          if ( idimout > 0 ) then
+  192.             $I_A40 = 0
+  192. !dir$ ivdep
+  192.             do
+  192.                $Reduc_A39 = $Reduc_A39 + fieldoutput(1 + $I_A40, 1)
+  192.                $I_A40 = 1 + $I_A40
+  192.                if ( $I_A40 >= $F_A41 ) exit
+  192.             enddo
+  192.          endif
+  192.          $F_A42 = idimout
+  192.          if ( idimout > 0 ) then
+  192.             $I_A3 = 0
+  192. !dir$ ivdep
+  192.             do
+  192.                fieldoutput(1 + $I_A3, 1) = ( $Reduc_A39 * 1.0/( real( idimout, 8 ) ) )
+  192.                $I_A3 = 1 + $I_A3
+  192.                if ( $I_A3 >= $F_A42 ) exit
+  192.             enddo
+  192.          endif
+  193.          $Reduc_A43 = 0.0
+  193.          $F_A45 = idimout
+  193.          if ( idimout > 0 ) then
+  193.             $I_A44 = 0
+  193. !dir$ ivdep
+  193.             do
+  193.                $Reduc_A43 = $Reduc_A43 + fieldoutput(1 + $I_A44, jdimout)
+  193.                $I_A44 = 1 + $I_A44
+  193.                if ( $I_A44 >= $F_A45 ) exit
+  193.             enddo
+  193.          endif
+  193.          $F_A46 = idimout
+  193.          if ( idimout > 0 ) then
+  193.             $I_A3 = 0
+  193. !dir$ ivdep
+  193.             do
+  193.                fieldoutput(1 + $I_A3, jdimout) = ( $Reduc_A43 * 1.0/( real( idimout, 8 ) ) )
+  193.                $I_A3 = 1 + $I_A3
+  193.                if ( $I_A3 >= $F_A46 ) exit
+  193.             enddo
+  193.          endif
+  193.       endif
+  135.       _free( t$19 )
+  196.       return
+  196.       end
+  196.       
+  198.       
+  198.       subroutine doareagausinterpolation( fieldinput, fieldoutput )
+  198.       t$5 = idimin
+  198.       t$6 = jdimin
+  214.       t$22 = _zla( 0, idimin )
+  198.       t$23 = _zla( 0, idimin )
+  214.       t$24 = _zla( 0, jdimin )
+  198.       t$25 = _zla( 0, idimin ) * _zla( 0, jdimin )
+  198.       t$7 = idimout
+  198.       t$8 = jdimout
+  216.       t$26 = _zla( 0, idimout )
+  198.       t$27 = _zla( 0, idimout )
+  216.       t$28 = _zla( 0, jdimout )
+  198.       t$29 = _zla( 0, idimout ) * _zla( 0, jdimout )
+  222.       t$32 = 8 * _zla( 0, idimout ) * _zla( 0, jdimout )
+  198.       t$30 = int( _alloc( 8 * _zla( 0, idimout ) * _zla( 0, jdimout ) ), 8 )
+  222.       t$31 = t$30
+  224.       $F_A35 = jdimout
+  224.       $F_A36 = idimout
+  224.       if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+  224.          $I_A4 = 0
+  224.          do
+  224.             $I_A3 = 0
+  224. !dir$ ivdep
+  224.             do
+  224.                fieldoutput(1 + $I_A3, 1 + $I_A4) = 0.0
+  224.                $I_A3 = 1 + $I_A3
+  224.                if ( $I_A3 >= $F_A36 ) exit
+  224.             enddo
+  224.             $I_A4 = 1 + $I_A4
+  224.             if ( $I_A4 >= $F_A35 ) exit
+  224.          enddo
+  224.       endif
+  225.       $F_A37 = jdimout
+  225.       $F_A38 = idimout
+  225.       if ( and( -$F_A38, -$F_A37 ) < 0 ) then
+  225.          $I_A4 = 0
+  225.          do
+  225.             $I_A3 = 0
+  225. !dir$ ivdep
+  225.             do
+  225.                work(1 + $I_A3, 1 + $I_A4) = 0.0
+  225.                $I_A3 = 1 + $I_A3
+  225.                if ( $I_A3 >= $F_A38 ) exit
+  225.             enddo
+  225.             $I_A4 = 1 + $I_A4
+  225.             if ( $I_A4 >= $F_A37 ) exit
+  225.          enddo
+  225.       endif
+  226.       if ( res <= 0.0 ) then
+  227.          $F_A39 = jdimout
+  227.          $F_A40 = idimout
+  227.          if ( and( -$F_A40, -$F_A39 ) < 0 ) then
+  227.             $I_A4 = 0
+  227.             do
+  227.                $I_A3 = 0
+  227. !dir$ ivdep
+  227.                do
+  227.                   fieldoutput(1 + $I_A3, 1 + $I_A4) = fieldinput(1 + $I_A3, 1 + $I_A4)
+  227.                   $I_A3 = 1 + $I_A3
+  227.                   if ( $I_A3 >= $F_A40 ) exit
+  227.                enddo
+  227.                $I_A4 = 1 + $I_A4
+  227.                if ( $I_A4 >= $F_A39 ) exit
+  227.             enddo
+  227.          endif
+  227.       else
+  229.          if ( latd > 0 ) then
+  237.             $SC_wtlon_I17 = wtlon%dim_1%EX
+  237.             $SC_wtlon_I18 = wtlon%dim_1%LB
+  235.             $SC_maskinput_I12 = maskinput%dim_1%EX
+  235.             $SC_maskinput_I13 = maskinput%dim_1%LB
+  235.             $SC_maskinput_I15 = maskinput%dim_2%SM
+  235.             $SC_maskinput_I14 = maskinput%dim_2%EX
+  235.             $SC_maskinput_I16 = maskinput%dim_2%LB
+  234.             $SC_mplon_I7 = mplon%dim_1%EX
+  234.             $SC_mplon_I8 = mplon%dim_1%LB
+  234.             $SC_mplon_I10 = mplon%dim_2%SM
+  234.             $SC_mplon_I9 = mplon%dim_2%EX
+  234.             $SC_mplon_I11 = mplon%dim_2%LB
+  231.             $SC_mplat_I2 = mplat%dim_1%EX
+  231.             $SC_mplat_I3 = mplat%dim_1%LB
+  231.             $SC_mplat_I5 = mplat%dim_2%SM
+  231.             $SC_mplat_I4 = mplat%dim_2%EX
+  231.             $SC_mplat_I6 = mplat%dim_2%LB
+  230.             $SC_wtlat_I0 = wtlat%dim_1%EX
+  230.             $SC_wtlat_I1 = wtlat%dim_1%LB
+  233.             if ( lond > 0 ) then
+  229.                $I_L229_20 = 0
+  229.                do
+  230.                   $wlt_S5 = (wtlat%base_addr)(1 + $I_L229_20, 0)
+  231.                   $lti_S3 = (mplat%base_addr)(1 + $I_L229_20, 1, 0)
+  232.                   $lto_S7 = (mplat%base_addr)(1 + $I_L229_20, 2, 0)
+  233.                   $I_L233_16 = 0
+  233. !dir$ ivdep
+  233.                   do
+  234.                      $lni_S2 = (mplon%base_addr)(1 + $I_L233_16, 1, 0)
+  235.                      if ( (maskinput%base_addr)($lni_S2, $lti_S3, 0) /= 0 ) then
+  236.                         if ( fieldinput($lni_S2, $lti_S3) /= undef ) then
+  237.                            $wln_S4 = (wtlon%base_addr)(1 + $I_L233_16, 0)
+  238.                            $lno_S6 = (mplon%base_addr)(1 + $I_L233_16, 2, 0)
+  240.                            work($lno_S6, $lto_S7) = _vu_plus( work($lno_S6, $lto_S7), $wln_S4 * $wlt_S5 )
+  239.                            fieldoutput($lno_S6, $lto_S7) = _vu_plus( fieldoutput($lno_S6, $lto_S7), $wln_S4 * $wlt_S5 * fieldinput($lni_S2, $lti_S3) )
+  239.                         endif
+  239.                      endif
+  243.                      $I_L233_16 = 1 + $I_L233_16
+  242.                      if ( $I_L233_16 >= lond ) exit
+  242.                   enddo
+  244.                   $I_L229_20 = 1 + $I_L229_20
+  243.                   if ( $I_L229_20 >= latd ) exit
+  243.                enddo
+  243.             endif
+  243.          endif
+  246.          if ( jdimout > 0 ) then
+  247.             if ( idimout > 0 ) then
+  246.                $I_L246_22 = 0
+  246.                do
+  247.                   $I_L247_18 = 0
+  247. !dir$ ivdep
+  247.                   do
+  248.                      if ( work(1 + $I_L247_18, 1 + $I_L246_22) == 0.0 ) then
+  249.                         fieldoutput(1 + $I_L247_18, 1 + $I_L246_22) = undef
+  249.                      else
+  251.                         fieldoutput(1 + $I_L247_18, 1 + $I_L246_22) = ( fieldoutput(1 + $I_L247_18, 1 + $I_L246_22) * 1.0/work(1 + $I_L247_18, 1 + $I_L246_22) )
+  251.                      endif
+  253.                      $I_L247_18 = 1 + $I_L247_18
+  252.                      if ( $I_L247_18 >= idimout ) exit
+  252.                   enddo
+  254.                   $I_L246_22 = 1 + $I_L246_22
+  253.                   if ( $I_L246_22 >= jdimout ) exit
+  253.                enddo
+  253.             endif
+  253.          endif
+  256.          if ( polarmean /= .false. ) then
+  257.             $Reduc_A41 = 0.0
+  257.             $F_A43 = idimout
+  257.             if ( idimout > 0 ) then
+  257.                $I_A42 = 0
+  257. !dir$ ivdep
+  257.                do
+  257.                   $Reduc_A41 = $Reduc_A41 + fieldoutput(1 + $I_A42, 1)
+  257.                   $I_A42 = 1 + $I_A42
+  257.                   if ( $I_A42 >= $F_A43 ) exit
+  257.                enddo
+  257.             endif
+  257.             $F_A44 = idimout
+  257.             if ( idimout > 0 ) then
+  257.                $I_A3 = 0
+  257. !dir$ ivdep
+  257.                do
+  257.                   fieldoutput(1 + $I_A3, 1) = ( $Reduc_A41 * 1.0/( real( idimout, 8 ) ) )
+  257.                   $I_A3 = 1 + $I_A3
+  257.                   if ( $I_A3 >= $F_A44 ) exit
+  257.                enddo
+  257.             endif
+  258.             $Reduc_A45 = 0.0
+  258.             $F_A47 = idimout
+  258.             if ( idimout > 0 ) then
+  258.                $I_A46 = 0
+  258. !dir$ ivdep
+  258.                do
+  258.                   $Reduc_A45 = $Reduc_A45 + fieldoutput(1 + $I_A46, jdimout)
+  258.                   $I_A46 = 1 + $I_A46
+  258.                   if ( $I_A46 >= $F_A47 ) exit
+  258.                enddo
+  258.             endif
+  258.             $F_A48 = idimout
+  258.             if ( idimout > 0 ) then
+  258.                $I_A3 = 0
+  258. !dir$ ivdep
+  258.                do
+  258.                   fieldoutput(1 + $I_A3, jdimout) = ( $Reduc_A45 * 1.0/( real( idimout, 8 ) ) )
+  258.                   $I_A3 = 1 + $I_A3
+  258.                   if ( $I_A3 >= $F_A48 ) exit
+  258.                enddo
+  258.             endif
+  258.          endif
+  258.       endif
+  198.       _free( t$30 )
+  261.       return
+  261.       end
+  261.       
+  264.       
+  264.       subroutine getareainterpolationweights
+  264.       t$9 = lwrk
+  274.       t$33 = _zla( 0, lwrk )
+  274.       t$36 = 8 * _zla( 0, lwrk )
+  264.       t$34 = int( _alloc( 8 * _zla( 0, lwrk ) ), 8 )
+  274.       t$35 = t$34
+  289.       joi = 2 + jdimin + jdimout
+  290.       if ( flaginput(5) /= .false. ) then
+  295.          t$10 = jdimin / 2
+  295.          t$37 = max( 0, jdimin / 2 )
+  295.          $dgcolin_S0 = ( 7.8539816339744828e-1 * 1.0/( real( 2 * jdimin / 2, 8 ) ) )
+  295.          $gcol_S1 = 0.0
+  295.          if ( jdimin >= 2 ) then
+  295.             if ( -2 + 2 * jdimin / 2 >= 0 ) then
+  295.                $I_L295_142 = 0
+  295.                do
+  295.                   $dgcol_S6 = $dgcolin_S0
+  295.                   do
+  295.                      $Flat_S2 = cos( $gcol_S1 )
+  295.                      $y1_S4 = 1.0
+  295.                      $y2_S3 = $Flat_S2
+  295.                      $I_L295_108 = 0
+  295. !dir$ unroll 4
+  295.                      do
+  295.                         y3 = -$y1_S4 + -( ( ( $Flat_S2 * $y2_S3 ) + -$y1_S4 ) * 1.0/( real( 2 + $I_L295_108, 8 ) ) ) + 2.0 * ( $Flat_S2 * $y2_S3 )
+  295.                         $y1_S4 = $y2_S3
+  295.                         $y2_S3 = y3
+  295.                         $I_L295_108 = 1 + $I_L295_108
+  295.                         if ( $I_L295_108 >= -1 + 2 * jdimin / 2 ) exit
+  295.                      enddo
+  295.                      do
+  295.                         $p1_S11 = y3
+  295.                         $gcol_S1 = $gcol_S1 + $dgcol_S6
+  295.                         $Flat_S7 = cos( $gcol_S1 )
+  295.                         $y1_S9 = 1.0
+  295.                         $y2_S8 = $Flat_S7
+  295.                         $I_L295_110 = 0
+  295. !dir$ unroll 4
+  295.                         do
+  295.                            y3 = -$y1_S9 + -( ( ( $Flat_S7 * $y2_S8 ) + -$y1_S9 ) * 1.0/( real( 2 + $I_L295_110, 8 ) ) ) + 2.0 * ( $Flat_S7 * $y2_S8 )
+  295.                            $y1_S9 = $y2_S8
+  295.                            $y2_S8 = y3
+  295.                            $I_L295_110 = 1 + $I_L295_110
+  295.                            if ( $I_L295_110 >= -1 + 2 * jdimin / 2 ) exit
+  295.                         enddo
+  295.                         if ( sign( 1.0, $p1_S11 ) /= sign( 1.0, y3 ) ) exit
+  295.                      enddo
+  295.                      if ( $dgcol_S6 <= 2.2204460492503131e-14 ) goto 10
+  295.                      $gcol_S1 = $gcol_S1 + -$dgcol_S6
+  295.                   enddo
+  295.    10             continue
+  295.                   workweights(1 + $I_L295_142) = $gcol_S1
+  295.                   $I_L295_142 = 1 + $I_L295_142
+  295.                   if ( $I_L295_142 >= jdimin / 2 ) exit
+  295.                enddo
+  295.             else
+  295.                do
+  295.                enddo
+  295.             endif
+  296.             $I_L296_62 = 0
+  308.             if ( 0 > -1 + jdimin / 2 ) then
+  308.                goto 20
+  308.             else
+  308.                if ( 0 > -2 + jdimin / 2 ) then
+  308.                   goto 40
+  308.                else
+  296.                   $I_L296_112 = 0
+  296.                   $CSVL_V0 = cvmg( 2 + jdimin + jdimout, cvmg( 3 + jdimin + jdimout, 2, and( 3 + jdimin + jdimout > 0, and( 1 + jdimin + jdimout <= 0, 3 + jdimin + jdimout <= -1 + min( min( -1 + jdimin, -1 + jdimin / 2 ), jdimin / 2 ) ) ) ), and( 2 + jdimin + jdimout > 0, and( 2 + jdimin + jdimout <= cvmg( 3 + jdimin + jdimout, 2, and( 3 + jdimin + jdimout > 0, and( 1 + jdimin + jdimout <= 0, 3 + jdimin + jdimout <= -1 + min( min( -1 + jdimin, -1 + jdimin / 2 ), jdimin / 2 ) ) ) ), 2 + jdimin + jdimout <= -1 + min( min( -1 + jdimin, -1 + jdimin / 2 ), jdimin / 2 ) ) ) )
+  296.                   if ( $CSVL_V0 <= 4 ) then
+  296.                      do
+  298.                         $drltm_S15 = -1.5707963267948966 + workweights(1 + $I_L296_112)
+  299.                         $drltp_S14 = -1.5707963267948966 + workweights(2 + $I_L296_112)
+  307.                         $Flat_S16 = sin( 5.0e-1 * ( $drltp_S14 + $drltm_S15 ) )
+  307.                         workweights(4 + jdimin + jdimout + $I_L296_112) = $Flat_S16
+  308.                         $I_L296_112 = 1 + $I_L296_112
+  306.                         if ( $I_L296_112 >= min( min( -1 + jdimin, -1 + jdimin / 2 ), jdimin / 2 ) ) exit
+  306.                      enddo
+  306.                   else
+  306. !dir$ ivdep safevl = $CSVL_V0 !   Guaranteed minimum :: 4
+  306.                      do
+  298.                         $drltm_S15 = -1.5707963267948966 + workweights(1 + $I_L296_112)
+  299.                         $drltp_S14 = -1.5707963267948966 + workweights(2 + $I_L296_112)
+  307.                         $Flat_S16 = sin( 5.0e-1 * ( $drltp_S14 + $drltm_S15 ) )
+  307.                         workweights(4 + jdimin + jdimout + $I_L296_112) = $Flat_S16
+  308.                         $I_L296_112 = 1 + $I_L296_112
+  306.                         if ( $I_L296_112 >= min( min( -1 + jdimin, -1 + jdimin / 2 ), jdimin / 2 ) ) exit
+  306.                      enddo
+  306.                   endif
+  308.                   $I_L296_62 = min( min( -1 + jdimin, -1 + jdimin / 2 ), jdimin / 2 )
+  308.                   if ( min( min( -1 + jdimin, -1 + jdimin / 2 ), jdimin / 2 ) < min( jdimin / 2, -1 + jdimin ) ) then
+  308.    40                continue
+  296.                      $I_L296_140 = 0
+  296. !dir$ ivdep
+  296.                      do
+  307.                         workweights(4 + jdimin + jdimout + $I_L296_62 + $I_L296_140) = 0.0
+  308.                         $I_L296_140 = 1 + $I_L296_140
+  306.                         if ( $I_L296_140 >= min( jdimin / 2, -1 + jdimin ) + -$I_L296_62 ) exit
+  306.                      enddo
+  308.                      $I_L296_62 = min( jdimin / 2, -1 + jdimin )
+  308.                   endif
+  308.                endif
+  308.                if ( $I_L296_62 < -1 + jdimin ) then
+  308.    20             continue
+  308.                   if ( $I_L296_62 > -2 + jdimin / 2 ) then
+  308.                      goto 30
+  308.                   else
+  296.                      $Trips01_N98 = min( -1 + jdimin, -1 + jdimin / 2 ) + -$I_L296_62
+  308.                      $$I_L296_62_N99 = $I_L296_62
+  296.                      $I_L296_136 = 0
+  296.                      $CSVL_V3 = cvmg( 2 + jdimin + jdimout, cvmg( 3 + jdimin + jdimout, 2, and( 3 + jdimin + jdimout > 0, and( 1 + jdimin + jdimout <= 0, 3 + jdimin + jdimout <= -1 + min( -1 + jdimin, -1 + jdimin / 2 ) + -$I_L296_62 ) ) ), and( 2 + jdimin + jdimout > 0, and( 2 + jdimin + jdimout <= cvmg( 3 + jdimin + jdimout, 2, and( 3 + jdimin + jdimout > 0, and( 1 + jdimin + jdimout <= 0, 3 + jdimin + jdimout <= -1 + min( -1 + jdimin, -1 + jdimin / 2 ) + -$I_L296_62 ) ) ), 2 + jdimin + jdimout <= -1 + min( -1 + jdimin, -1 + jdimin / 2 ) + -$I_L296_62 ) ) )
+  296.                      if ( $CSVL_V3 <= 4 ) then
+  296.                         do
+  298.                            $drltm_S15 = -1.5707963267948966 + workweights(1 + $I_L296_62 + $I_L296_136)
+  299.                            $drltp_S14 = -1.5707963267948966 + workweights(2 + $I_L296_62 + $I_L296_136)
+  307.                            $Flat_S16 = sin( 5.0e-1 * ( $drltp_S14 + $drltm_S15 ) )
+  307.                            workweights(4 + jdimin + jdimout + $I_L296_62 + $I_L296_136) = $Flat_S16
+  308.                            $I_L296_136 = 1 + $I_L296_136
+  306.                            if ( $I_L296_136 >= min( -1 + jdimin, -1 + jdimin / 2 ) + -$I_L296_62 ) exit
+  306.                         enddo
+  306.                      else
+  306. !dir$ ivdep safevl = $CSVL_V3 !   Guaranteed minimum :: 4
+  306.                         do
+  298.                            $drltm_S15 = -1.5707963267948966 + workweights(1 + $I_L296_62 + $I_L296_136)
+  299.                            $drltp_S14 = -1.5707963267948966 + workweights(2 + $I_L296_62 + $I_L296_136)
+  307.                            $Flat_S16 = sin( 5.0e-1 * ( $drltp_S14 + $drltm_S15 ) )
+  307.                            workweights(4 + jdimin + jdimout + $I_L296_62 + $I_L296_136) = $Flat_S16
+  308.                            $I_L296_136 = 1 + $I_L296_136
+  306.                            if ( $I_L296_136 >= min( -1 + jdimin, -1 + jdimin / 2 ) + -$I_L296_62 ) exit
+  306.                         enddo
+  306.                      endif
+  308.                      $I_L296_62 = min( -1 + jdimin, -1 + jdimin / 2 )
+  308.                      if ( $Trips01_N98 + $$I_L296_62_N99 < -1 + jdimin ) then
+  308.    30                   continue
+  296.                         $I_L296_138 = 0
+  296.                         do
+  301.                            $drltm_S15 = 1.5707963267948966 + -workweights(jdimin + -$I_L296_62 + -$I_L296_138)
+  302.                            $drltp_S14 = 1.5707963267948966 + -workweights(-1 + jdimin + -$I_L296_62 + -$I_L296_138)
+  307.                            $Flat_S16 = sin( 5.0e-1 * ( $drltp_S14 + $drltm_S15 ) )
+  307.                            workweights(4 + jdimin + jdimout + $I_L296_62 + $I_L296_138) = $Flat_S16
+  308.                            $I_L296_138 = 1 + $I_L296_138
+  306.                            if ( $I_L296_138 >= -1 + jdimin + -$I_L296_62 ) exit
+  306.                         enddo
+  306.                      endif
+  306.                   endif
+  306.                endif
+  306.             endif
+  306.          endif
+  309.          workweights(3 + jdimin + jdimout) = -1.0
+  310.          workweights(3 + jdimin + jdimout + jdimin / 2) = 0.0
+  311.          workweights(3 + jdimout + 2 * jdimin) = 1.0
+  311.       else
+  316.          if ( flaginput(3) /= .false. ) then
+  317.             $dlat_S18 = ( 3.1415926535897931 * 1.0/( real( -1 + jdimin, 8 ) ) )
+  318.             $dof_S19 = -5.0e-1 * ( 3.1415926535897931 + ( 3.1415926535897931 * 1.0/( real( -1 + jdimin, 8 ) ) ) )
+  318.          else
+  320.             $dlat_S18 = ( 3.1415926535897931 * 1.0/( real( jdimin, 8 ) ) )
+  321.             $dof_S19 = -1.5707963267948966
+  321.          endif
+  323.          if ( -2 + jdimin >= 0 ) then
+  323.             $I_L323_106 = 0
+  323. !dir$ ivdep
+  323.             do
+  324.                $Flat_S20 = sin( $dof_S19 + $dlat_S18 * real( 1 + $I_L323_106, 8 ) )
+  324.                workweights(4 + jdimin + jdimout + $I_L323_106) = $Flat_S20
+  325.                $I_L323_106 = 1 + $I_L323_106
+  323.                if ( $I_L323_106 >= -1 + jdimin ) exit
+  323.             enddo
+  323.          endif
+  326.          workweights(3 + jdimin + jdimout) = -1.0
+  327.          workweights(3 + jdimout + 2 * jdimin) = 1.0
+  327.       endif
+  334.       if ( flagoutput(5) /= .false. ) then
+  339.          t$10 = jdimout / 2
+  339.          t$37 = max( 0, jdimout / 2 )
+  339.          $dgcolin_S21 = ( 7.8539816339744828e-1 * 1.0/( real( 2 * jdimout / 2, 8 ) ) )
+  339.          $gcol_S22 = 0.0
+  339.          if ( jdimout >= 2 ) then
+  339.             if ( -2 + 2 * jdimout / 2 >= 0 ) then
+  339.                $I_L339_144 = 0
+  339.                do
+  339.                   $dgcol_S27 = $dgcolin_S21
+  339.                   do
+  339.                      $Flat_S23 = cos( $gcol_S22 )
+  339.                      $y1_S25 = 1.0
+  339.                      $y2_S24 = $Flat_S23
+  339.                      $I_L339_118 = 0
+  339. !dir$ unroll 4
+  339.                      do
+  339.                         y3 = -$y1_S25 + -( ( ( $Flat_S23 * $y2_S24 ) + -$y1_S25 ) * 1.0/( real( 2 + $I_L339_118, 8 ) ) ) + 2.0 * ( $Flat_S23 * $y2_S24 )
+  339.                         $y1_S25 = $y2_S24
+  339.                         $y2_S24 = y3
+  339.                         $I_L339_118 = 1 + $I_L339_118
+  339.                         if ( $I_L339_118 >= -1 + 2 * jdimout / 2 ) exit
+  339.                      enddo
+  339.                      do
+  339.                         $p1_S32 = y3
+  339.                         $gcol_S22 = $gcol_S22 + $dgcol_S27
+  339.                         $Flat_S28 = cos( $gcol_S22 )
+  339.                         $y1_S30 = 1.0
+  339.                         $y2_S29 = $Flat_S28
+  339.                         $I_L339_120 = 0
+  339. !dir$ unroll 4
+  339.                         do
+  339.                            y3 = -$y1_S30 + -( ( ( $Flat_S28 * $y2_S29 ) + -$y1_S30 ) * 1.0/( real( 2 + $I_L339_120, 8 ) ) ) + 2.0 * ( $Flat_S28 * $y2_S29 )
+  339.                            $y1_S30 = $y2_S29
+  339.                            $y2_S29 = y3
+  339.                            $I_L339_120 = 1 + $I_L339_120
+  339.                            if ( $I_L339_120 >= -1 + 2 * jdimout / 2 ) exit
+  339.                         enddo
+  339.                         if ( sign( 1.0, $p1_S32 ) /= sign( 1.0, y3 ) ) exit
+  339.                      enddo
+  339.                      if ( $dgcol_S27 <= 2.2204460492503131e-14 ) goto 50
+  339.                      $gcol_S22 = $gcol_S22 + -$dgcol_S27
+  339.                   enddo
+  339.    50             continue
+  339.                   workweights(1 + $I_L339_144) = $gcol_S22
+  339.                   $I_L339_144 = 1 + $I_L339_144
+  339.                   if ( $I_L339_144 >= jdimout / 2 ) exit
+  339.                enddo
+  339.             else
+  339.                do
+  339.                enddo
+  339.             endif
+  339.          endif
+  340.          if ( glats%header%assoc == 1 ) then
+  340.             $_allo_P10(0) = 0x1000000000001L
+  340.             $_allo_P10(1) = loc( glats )
+  340.             call __deallocate( $_allo_P10, 0, 0, _fcd( 0, 0 ) )
+  340.             glats%header%assoc = 0
+  340.          endif
+  341.          glats%header%a_contig = 1
+  341.          glats%dim_1%LB = 1
+  341.          glats%dim_1%EX = ( max( 0, jdimout ) )
+  341.          glats%dim_1%SM = 1
+  341.          $_allo_P11(0) = 0x1000000000001L
+  341.          $_allo_P11(1) = loc( glats )
+  341.          call __allocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+  342.          if ( jdimout >= 2 ) then
+  342.             $I_L342_122 = 0
+  342. !dir$ ivdep
+  342.             do
+  343.                $glats_WR0_R0 = 90.0 + -57.295779513082323 * workweights(1 + $I_L342_122)
+  343.                (glats%base_addr)(1 + $I_L342_122, 0) = $glats_WR0_R0
+  344.                (glats%base_addr)(jdimout + -$I_L342_122, 0) = -$glats_WR0_R0
+  345.                $I_L342_122 = 1 + $I_L342_122
+  342.                if ( $I_L342_122 >= jdimout / 2 ) exit
+  342.             enddo
+  346.             $I_L346_74 = 0
+  358.             if ( 0 > -1 + jdimout / 2 ) then
+  358.                goto 60
+  358.             else
+  358.                if ( 0 > -2 + jdimout / 2 ) then
+  358.                   goto 80
+  358.                else
+  346.                   $I_L346_124 = 0
+  346.                   $CSVL_V1 = cvmg( 3 + jdimout + 2 * jdimin, cvmg( 4 + jdimout + 2 * jdimin, 2, and( 4 + jdimout + 2 * jdimin > 0, and( 2 + jdimout + 2 * jdimin <= 0, 4 + jdimout + 2 * jdimin <= -1 + min( min( -1 + jdimout, -1 + jdimout / 2 ), jdimout / 2 ) ) ) ), and( 3 + jdimout + 2 * jdimin > 0, and( 3 + jdimout + 2 * jdimin <= cvmg( 4 + jdimout + 2 * jdimin, 2, and( 4 + jdimout + 2 * jdimin > 0, and( 2 + jdimout + 2 * jdimin <= 0, 4 + jdimout + 2 * jdimin <= -1 + min( min( -1 + jdimout, -1 + jdimout / 2 ), jdimout / 2 ) ) ) ), 3 + jdimout + 2 * jdimin <= -1 + min( min( -1 + jdimout, -1 + jdimout / 2 ), jdimout / 2 ) ) ) )
+  346.                   if ( $CSVL_V1 <= 4 ) then
+  346.                      do
+  348.                         $drltm_S37 = -1.5707963267948966 + workweights(1 + $I_L346_124)
+  349.                         $drltp_S36 = -1.5707963267948966 + workweights(2 + $I_L346_124)
+  357.                         $Flat_S38 = sin( 5.0e-1 * ( $drltp_S36 + $drltm_S37 ) )
+  357.                         workweights(5 + jdimout + $I_L346_124 + 2 * jdimin) = $Flat_S38
+  358.                         $I_L346_124 = 1 + $I_L346_124
+  356.                         if ( $I_L346_124 >= min( min( -1 + jdimout, -1 + jdimout / 2 ), jdimout / 2 ) ) exit
+  356.                      enddo
+  356.                   else
+  356. !dir$ ivdep safevl = $CSVL_V1 !   Guaranteed minimum :: 4
+  356.                      do
+  348.                         $drltm_S37 = -1.5707963267948966 + workweights(1 + $I_L346_124)
+  349.                         $drltp_S36 = -1.5707963267948966 + workweights(2 + $I_L346_124)
+  357.                         $Flat_S38 = sin( 5.0e-1 * ( $drltp_S36 + $drltm_S37 ) )
+  357.                         workweights(5 + jdimout + $I_L346_124 + 2 * jdimin) = $Flat_S38
+  358.                         $I_L346_124 = 1 + $I_L346_124
+  356.                         if ( $I_L346_124 >= min( min( -1 + jdimout, -1 + jdimout / 2 ), jdimout / 2 ) ) exit
+  356.                      enddo
+  356.                   endif
+  358.                   $I_L346_74 = min( min( -1 + jdimout, -1 + jdimout / 2 ), jdimout / 2 )
+  358.                   if ( min( min( -1 + jdimout, -1 + jdimout / 2 ), jdimout / 2 ) < min( jdimout / 2, -1 + jdimout ) ) then
+  358.    80                continue
+  346.                      $I_L346_134 = 0
+  346. !dir$ ivdep
+  346.                      do
+  357.                         workweights(5 + jdimout + $I_L346_74 + $I_L346_134 + 2 * jdimin) = 0.0
+  358.                         $I_L346_134 = 1 + $I_L346_134
+  356.                         if ( $I_L346_134 >= min( jdimout / 2, -1 + jdimout ) + -$I_L346_74 ) exit
+  356.                      enddo
+  358.                      $I_L346_74 = min( jdimout / 2, -1 + jdimout )
+  358.                   endif
+  358.                endif
+  358.                if ( $I_L346_74 < -1 + jdimout ) then
+  358.    60             continue
+  358.                   if ( $I_L346_74 > -2 + jdimout / 2 ) then
+  358.                      goto 70
+  358.                   else
+  346.                      $Trips01_N89 = min( -1 + jdimout, -1 + jdimout / 2 ) + -$I_L346_74
+  358.                      $$I_L346_74_N90 = $I_L346_74
+  346.                      $I_L346_130 = 0
+  346.                      $CSVL_V2 = cvmg( 3 + jdimout + 2 * jdimin, cvmg( 4 + jdimout + 2 * jdimin, 2, and( 4 + jdimout + 2 * jdimin > 0, and( 2 + jdimout + 2 * jdimin <= 0, 4 + jdimout + 2 * jdimin <= -1 + min( -1 + jdimout, -1 + jdimout / 2 ) + -$I_L346_74 ) ) ), and( 3 + jdimout + 2 * jdimin > 0, and( 3 + jdimout + 2 * jdimin <= cvmg( 4 + jdimout + 2 * jdimin, 2, and( 4 + jdimout + 2 * jdimin > 0, and( 2 + jdimout + 2 * jdimin <= 0, 4 + jdimout + 2 * jdimin <= -1 + min( -1 + jdimout, -1 + jdimout / 2 ) + -$I_L346_74 ) ) ), 3 + jdimout + 2 * jdimin <= -1 + min( -1 + jdimout, -1 + jdimout / 2 ) + -$I_L346_74 ) ) )
+  346.                      if ( $CSVL_V2 <= 4 ) then
+  346.                         do
+  348.                            $drltm_S37 = -1.5707963267948966 + workweights(1 + $I_L346_74 + $I_L346_130)
+  349.                            $drltp_S36 = -1.5707963267948966 + workweights(2 + $I_L346_74 + $I_L346_130)
+  357.                            $Flat_S38 = sin( 5.0e-1 * ( $drltp_S36 + $drltm_S37 ) )
+  357.                            workweights(5 + jdimout + $I_L346_74 + $I_L346_130 + 2 * jdimin) = $Flat_S38
+  358.                            $I_L346_130 = 1 + $I_L346_130
+  356.                            if ( $I_L346_130 >= min( -1 + jdimout, -1 + jdimout / 2 ) + -$I_L346_74 ) exit
+  356.                         enddo
+  356.                      else
+  356. !dir$ ivdep safevl = $CSVL_V2 !   Guaranteed minimum :: 4
+  356.                         do
+  348.                            $drltm_S37 = -1.5707963267948966 + workweights(1 + $I_L346_74 + $I_L346_130)
+  349.                            $drltp_S36 = -1.5707963267948966 + workweights(2 + $I_L346_74 + $I_L346_130)
+  357.                            $Flat_S38 = sin( 5.0e-1 * ( $drltp_S36 + $drltm_S37 ) )
+  357.                            workweights(5 + jdimout + $I_L346_74 + $I_L346_130 + 2 * jdimin) = $Flat_S38
+  358.                            $I_L346_130 = 1 + $I_L346_130
+  356.                            if ( $I_L346_130 >= min( -1 + jdimout, -1 + jdimout / 2 ) + -$I_L346_74 ) exit
+  356.                         enddo
+  356.                      endif
+  358.                      $I_L346_74 = min( -1 + jdimout, -1 + jdimout / 2 )
+  358.                      if ( $Trips01_N89 + $$I_L346_74_N90 < -1 + jdimout ) then
+  358.    70                   continue
+  346.                         $I_L346_132 = 0
+  346.                         do
+  351.                            $drltm_S37 = 1.5707963267948966 + -workweights(jdimout + -$I_L346_74 + -$I_L346_132)
+  352.                            $drltp_S36 = 1.5707963267948966 + -workweights(-1 + jdimout + -$I_L346_74 + -$I_L346_132)
+  357.                            $Flat_S38 = sin( 5.0e-1 * ( $drltp_S36 + $drltm_S37 ) )
+  357.                            workweights(5 + jdimout + $I_L346_74 + $I_L346_132 + 2 * jdimin) = $Flat_S38
+  358.                            $I_L346_132 = 1 + $I_L346_132
+  356.                            if ( $I_L346_132 >= -1 + jdimout + -$I_L346_74 ) exit
+  356.                         enddo
+  356.                      endif
+  356.                   endif
+  356.                endif
+  356.             endif
+  356.          endif
+  359.          workweights(4 + jdimout + 2 * jdimin) = -1.0
+  360.          workweights(4 + jdimout + jdimout / 2 + 2 * jdimin) = 0.0
+  361.          workweights(4 + 2 * jdimin + 2 * jdimout) = 1.0
+  361.       else
+  366.          if ( flagoutput(3) /= .false. ) then
+  367.             $dlat_S40 = ( 3.1415926535897931 * 1.0/( real( -1 + jdimout, 8 ) ) )
+  368.             $dof_S42 = -5.0e-1 * ( 3.1415926535897931 + ( 3.1415926535897931 * 1.0/( real( -1 + jdimout, 8 ) ) ) )
+  368.          else
+  370.             $dlat_S40 = ( 3.1415926535897931 * 1.0/( real( jdimout, 8 ) ) )
+  371.             $dof_S42 = -1.5707963267948966
+  371.          endif
+  373.          if ( glats%header%assoc == 1 ) then
+  373.             $_allo_P12(0) = 0x1000000000001L
+  373.             $_allo_P12(1) = loc( glats )
+  373.             call __deallocate( $_allo_P12, 0, 0, _fcd( 0, 0 ) )
+  373.             glats%header%assoc = 0
+  373.          endif
+  374.          glats%header%a_contig = 1
+  374.          glats%dim_1%LB = 1
+  374.          glats%dim_1%EX = ( max( 0, jdimout ) )
+  374.          glats%dim_1%SM = 1
+  374.          $_allo_P13(0) = 0x1000000000001L
+  374.          $_allo_P13(1) = loc( glats )
+  374.          call __allocate( $_allo_P13, 0, 0, _fcd( 0, 0 ) )
+  375.          if ( jdimout > 0 ) then
+  375.             $I_L375_114 = 0
+  375. !dir$ ivdep
+  375.             do
+  376.                (glats%base_addr)(1 + $I_L375_114, 0) = 90.0 + -57.295779513082323 * $dlat_S40 * real( $I_L375_114, 8 )
+  377.                $I_L375_114 = 1 + $I_L375_114
+  375.                if ( $I_L375_114 >= jdimout ) exit
+  375.             enddo
+  375.          endif
+  378.          if ( -2 + jdimout >= 0 ) then
+  378.             $I_L378_116 = 0
+  378. !dir$ ivdep
+  378.             do
+  379.                $Flat_S43 = sin( $dof_S42 + $dlat_S40 * real( 1 + $I_L378_116, 8 ) )
+  379.                workweights(5 + jdimout + $I_L378_116 + 2 * jdimin) = $Flat_S43
+  380.                $I_L378_116 = 1 + $I_L378_116
+  378.                if ( $I_L378_116 >= -1 + jdimout ) exit
+  378.             enddo
+  378.          endif
+  381.          workweights(4 + jdimout + 2 * jdimin) = -1.0
+  382.          workweights(4 + 2 * jdimin + 2 * jdimout) = 1.0
+  382.       endif
+  388.       $j1_S45 = 1
+  389.       $j2_S44 = 1
+  390.       $j3_S46 = 1
+  399.       $SC_flagoutput_I8 = flagoutput(1)
+  397.       $SC_flaginput_I7 = flaginput(1)
+  396.       $SC_mplat_I2 = mplat%dim_1%EX
+  396.       $SC_mplat_I3 = mplat%dim_1%LB
+  396.       $SC_mplat_I5 = mplat%dim_2%SM
+  396.       $SC_mplat_I4 = mplat%dim_2%EX
+  396.       $SC_mplat_I6 = mplat%dim_2%LB
+  395.       $SC_wtlat_I0 = wtlat%dim_1%EX
+  395.       $SC_wtlat_I1 = wtlat%dim_1%LB
+  395.       do
+  392.          if ( abs( workweights(joi + $j1_S45) + -workweights(3 + jdimout + $j2_S44 + 2 * jdimin) ) < 1.1920929e-7 ) then
+  393.             workweights($j3_S46) = workweights(2 + jdimin + jdimout + $j1_S45)
+  394.             if ( $j3_S46 /= 1 ) then
+  395.                (wtlat%base_addr)(-1 + $j3_S46, 0) = workweights($j3_S46) + -workweights(-1 + $j3_S46)
+  396.                (mplat%base_addr)(-1 + $j3_S46, 1, 0) = -1 + $j1_S45
+  397.                if ( $SC_flaginput_I7 /= .false. ) then
+  397.                   (mplat%base_addr)(-1 + $j3_S46, 1, 0) = 2 + jdimin + -$j1_S45
+  397.                endif
+  398.                (mplat%base_addr)(-1 + $j3_S46, 2, 0) = -1 + $j2_S44
+  399.                if ( $SC_flagoutput_I8 /= .false. ) then
+  399.                   (mplat%base_addr)(-1 + $j3_S46, 2, 0) = 2 + jdimout + -$j2_S44
+  399.                endif
+  399.             endif
+  402.             $j2_S44 = 1 + $j2_S44
+  401.             $j1_S45 = 1 + $j1_S45
+  404.          else if ( workweights(joi + $j1_S45) < workweights(3 + jdimout + $j2_S44 + 2 * jdimin) ) then
+  405.             workweights($j3_S46) = workweights(2 + jdimin + jdimout + $j1_S45)
+  406.             if ( $j3_S46 /= 1 ) then
+  407.                (wtlat%base_addr)(-1 + $j3_S46, 0) = workweights($j3_S46) + -workweights(-1 + $j3_S46)
+  408.                (mplat%base_addr)(-1 + $j3_S46, 1, 0) = -1 + $j1_S45
+  409.                if ( $SC_flaginput_I7 /= .false. ) then
+  409.                   (mplat%base_addr)(-1 + $j3_S46, 1, 0) = 2 + jdimin + -$j1_S45
+  409.                endif
+  410.                (mplat%base_addr)(-1 + $j3_S46, 2, 0) = -1 + $j2_S44
+  411.                if ( $SC_flagoutput_I8 /= .false. ) then
+  411.                   (mplat%base_addr)(-1 + $j3_S46, 2, 0) = 2 + jdimout + -$j2_S44
+  411.                endif
+  411.             endif
+  413.             $j1_S45 = 1 + $j1_S45
+  413.          else
+  416.             workweights($j3_S46) = workweights(3 + jdimout + $j2_S44 + 2 * jdimin)
+  417.             if ( $j3_S46 /= 1 ) then
+  418.                (wtlat%base_addr)(-1 + $j3_S46, 0) = workweights($j3_S46) + -workweights(-1 + $j3_S46)
+  419.                (mplat%base_addr)(-1 + $j3_S46, 1, 0) = -1 + $j1_S45
+  420.                if ( $SC_flaginput_I7 /= .false. ) then
+  420.                   (mplat%base_addr)(-1 + $j3_S46, 1, 0) = 2 + jdimin + -$j1_S45
+  420.                endif
+  421.                (mplat%base_addr)(-1 + $j3_S46, 2, 0) = -1 + $j2_S44
+  422.                if ( $SC_flagoutput_I8 /= .false. ) then
+  422.                   (mplat%base_addr)(-1 + $j3_S46, 2, 0) = 2 + jdimout + -$j2_S44
+  422.                endif
+  422.             endif
+  424.             $j2_S44 = 1 + $j2_S44
+  424.          endif
+  425.          $j3_S46 = 1 + $j3_S46
+  427.          if ( $j1_S45 > 1 + jdimin ) exit
+  427.          if ( $j2_S44 > 1 + jdimout ) exit
+  427.       enddo
+  429.       latd = -2 + $j3_S46
+  435.       ioi = 2 + idimin + idimout
+  436.       $delrdi_S51 = ( 6.2831853071795862 * 1.0/( real( idimin, 8 ) ) )
+  437.       if ( flaginput(5) .orelse. flaginput(4) /= .false. ) then
+  438.          $ici_S58 = 0
+  439.          $dof_S50 = 5.0e-1
+  439.       else
+  441.          $ici_S58 = 1
+  442.          $dof_S50 = 0.0
+  442.       endif
+  444.       if ( idimin > 0 ) then
+  444.          $I_L444_126 = 0
+  444. !dir$ ivdep
+  444.          do
+  445.             workweights(3 + idimin + idimout + $I_L444_126) = $delrdi_S51 * ( $dof_S50 + real( $I_L444_126, 8 ) )
+  446.             $I_L444_126 = 1 + $I_L444_126
+  444.             if ( $I_L444_126 >= idimin ) exit
+  444.          enddo
+  444.       endif
+  451.       $delrdo_S54 = ( 6.2831853071795862 * 1.0/( real( idimout, 8 ) ) )
+  452.       if ( flagoutput(5) .orelse. flagoutput(4) /= .false. ) then
+  453.          $ico_S59 = 0
+  454.          $dof_S53 = 5.0e-1
+  454.       else
+  456.          $ico_S59 = 1
+  457.          $dof_S53 = 0.0
+  457.       endif
+  459.       if ( idimout > 0 ) then
+  459.          $I_L459_128 = 0
+  459. !dir$ ivdep
+  459.          do
+  460.             workweights(4 + idimout + $I_L459_128 + 2 * idimin) = $delrdo_S54 * ( $dof_S53 + real( $I_L459_128, 8 ) )
+  461.             $I_L459_128 = 1 + $I_L459_128
+  459.             if ( $I_L459_128 >= idimout ) exit
+  459.          enddo
+  459.       endif
+  466.       $i1_S56 = 1
+  467.       $i2_S55 = 1
+  468.       $i3_S57 = 1
+  480.       $SC_flagoutput_I17 = flagoutput(2)
+  475.       $SC_flaginput_I16 = flaginput(2)
+  474.       $SC_mplon_I11 = mplon%dim_1%EX
+  474.       $SC_mplon_I12 = mplon%dim_1%LB
+  474.       $SC_mplon_I14 = mplon%dim_2%SM
+  474.       $SC_mplon_I13 = mplon%dim_2%EX
+  474.       $SC_mplon_I15 = mplon%dim_2%LB
+  473.       $SC_wtlon_I9 = wtlon%dim_1%EX
+  473.       $SC_wtlon_I10 = wtlon%dim_1%LB
+  473.       do
+  470.          if ( abs( workweights(ioi + $i1_S56) + -workweights(3 + idimout + $i2_S55 + 2 * idimin) ) < 1.1920929e-7 ) then
+  471.             workweights($i3_S57) = workweights(2 + idimin + idimout + $i1_S56)
+  472.             if ( $i3_S57 /= 1 ) then
+  473.                (wtlon%base_addr)(-1 + $i3_S57, 0) = workweights($i3_S57) + -workweights(-1 + $i3_S57)
+  474.                (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + -$ici_S58
+  475.                if ( $SC_flaginput_I16 == .false. ) then
+  476.                   (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + idimin / 2 + -$ici_S58
+  477.                   if ( $i1_S56 + -$ici_S58 > idimin / 2 ) then
+  477.                      (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + idimin / -2 + -$ici_S58
+  477.                   endif
+  477.                endif
+  479.                (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + -$ico_S59
+  480.                if ( $SC_flagoutput_I17 == .false. ) then
+  481.                   (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + idimout / 2 + -$ico_S59
+  482.                   if ( $i2_S55 + -$ico_S59 > idimout / 2 ) then
+  482.                      (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + idimout / -2 + -$ico_S59
+  482.                   endif
+  482.                endif
+  482.             endif
+  486.             $i2_S55 = 1 + $i2_S55
+  485.             $i1_S56 = 1 + $i1_S56
+  488.          else if ( workweights(ioi + $i1_S56) < workweights(3 + idimout + $i2_S55 + 2 * idimin) ) then
+  489.             workweights($i3_S57) = workweights(2 + idimin + idimout + $i1_S56)
+  490.             if ( $i3_S57 /= 1 ) then
+  491.                (wtlon%base_addr)(-1 + $i3_S57, 0) = workweights($i3_S57) + -workweights(-1 + $i3_S57)
+  492.                (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + -$ici_S58
+  493.                if ( $SC_flaginput_I16 == .false. ) then
+  494.                   (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + idimin / 2 + -$ici_S58
+  495.                   if ( $i1_S56 + -$ici_S58 > idimin / 2 ) then
+  495.                      (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + idimin / -2 + -$ici_S58
+  495.                   endif
+  495.                endif
+  497.                (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + -$ico_S59
+  498.                if ( $SC_flagoutput_I17 == .false. ) then
+  499.                   (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + idimout / 2 + -$ico_S59
+  500.                   if ( $i2_S55 + -$ico_S59 > idimout / 2 ) then
+  500.                      (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + idimout / -2 + -$ico_S59
+  500.                   endif
+  500.                endif
+  500.             endif
+  503.             $i1_S56 = 1 + $i1_S56
+  503.          else
+  506.             workweights($i3_S57) = workweights(3 + idimout + $i2_S55 + 2 * idimin)
+  507.             if ( $i3_S57 /= 1 ) then
+  508.                (wtlon%base_addr)(-1 + $i3_S57, 0) = workweights($i3_S57) + -workweights(-1 + $i3_S57)
+  509.                (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + -$ici_S58
+  510.                if ( $SC_flaginput_I16 == .false. ) then
+  511.                   (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + idimin / 2 + -$ici_S58
+  512.                   if ( $i1_S56 + -$ici_S58 > idimin / 2 ) then
+  512.                      (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + idimin / -2 + -$ici_S58
+  512.                   endif
+  512.                endif
+  514.                (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + -$ico_S59
+  515.                if ( $SC_flagoutput_I17 == .false. ) then
+  516.                   (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + idimout / 2 + -$ico_S59
+  517.                   if ( $i2_S55 + -$ico_S59 > idimout / 2 ) then
+  517.                      (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + idimout / -2 + -$ico_S59
+  517.                   endif
+  517.                endif
+  517.             endif
+  520.             $i2_S55 = 1 + $i2_S55
+  520.          endif
+  521.          $i3_S57 = 1 + $i3_S57
+  523.          if ( $i1_S56 > idimin ) exit
+  523.          if ( $i2_S55 > idimout ) exit
+  523.       enddo
+  525.       if ( $i1_S56 > idimin ) then
+  525.          $i1_S56 = 1
+  525.       endif
+  526.       if ( $i2_S55 > idimout ) then
+  526.          $i2_S55 = 1
+  526.       endif
+  538.       $SC_flagoutput_I17 = flagoutput(2)
+  533.       $SC_flaginput_I16 = flaginput(2)
+  531.       $SC_mplon_I11 = mplon%dim_1%EX
+  531.       $SC_mplon_I12 = mplon%dim_1%LB
+  531.       $SC_mplon_I14 = mplon%dim_2%SM
+  531.       $SC_mplon_I13 = mplon%dim_2%EX
+  531.       $SC_mplon_I15 = mplon%dim_2%LB
+  530.       $SC_wtlon_I9 = wtlon%dim_1%EX
+  530.       $SC_wtlon_I10 = wtlon%dim_1%LB
+  555.       $SC_flagoutput_I20 = flagoutput(4)
+  532.       $SC_flaginput_I18 = flaginput(4)
+  555.       $SC_flagoutput_I21 = flagoutput(5)
+  532.       $SC_flaginput_I19 = flaginput(5)
+  532.       do
+  527.          do
+  528.             if ( $i2_S55 /= 1 ) then
+  529.                $SVU_P14 = workweights(3 + idimout + $i2_S55 + 2 * idimin)
+  529.                workweights($i3_S57) = $SVU_P14
+  530.                (wtlon%base_addr)(-1 + $i3_S57, 0) = $SVU_P14 + -workweights(-1 + $i3_S57)
+  531.                (mplon%base_addr)(-1 + $i3_S57, 1, 0) = 1
+  532.                if ( $SC_flaginput_I18 == .false. ) then
+  532.                   if ( $SC_flaginput_I19 == .false. ) then
+  532.                      (mplon%base_addr)(-1 + $i3_S57, 1, 0) = idimin
+  532.                   endif
+  532.                endif
+  533.                if ( $SC_flaginput_I16 == .false. ) then
+  534.                   (mplon%base_addr)(-1 + $i3_S57, 1, 0) = 1 + idimin / 2
+  535.                   if ( $SC_flaginput_I18 == .false. ) then
+  535.                      if ( $SC_flaginput_I19 == .false. ) then
+  535.                         (mplon%base_addr)(-1 + $i3_S57, 1, 0) = idimin / 2
+  535.                      endif
+  535.                   endif
+  535.                endif
+  537.                (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + -$ico_S59
+  538.                if ( $SC_flagoutput_I17 == .false. ) then
+  539.                   (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + idimout / 2 + -$ico_S59
+  540.                   if ( $i2_S55 + -$ico_S59 > idimout / 2 ) then
+  540.                      (mplon%base_addr)(-1 + $i3_S57, 2, 0) = $i2_S55 + idimout / -2 + -$ico_S59
+  540.                   endif
+  540.                endif
+  542.                $i2_S55 = 1 + $i2_S55
+  543.                if ( $i2_S55 > idimout ) then
+  543.                   $i2_S55 = 1
+  543.                endif
+  544.                $i3_S57 = 1 + $i3_S57
+  544.             endif
+  546.             if ( $i1_S56 /= 1 ) then
+  547.                workweights($i3_S57) = workweights(2 + idimin + idimout + $i1_S56)
+  548.                (wtlon%base_addr)(-1 + $i3_S57, 0) = workweights($i3_S57) + -workweights(-1 + $i3_S57)
+  549.                (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + -$ici_S58
+  550.                if ( $SC_flaginput_I16 == .false. ) then
+  551.                   (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + idimin / 2 + -$ici_S58
+  552.                   if ( $i1_S56 + -$ici_S58 > idimin / 2 ) then
+  552.                      (mplon%base_addr)(-1 + $i3_S57, 1, 0) = $i1_S56 + idimin / -2 + -$ici_S58
+  552.                   endif
+  552.                endif
+  554.                (mplon%base_addr)(-1 + $i3_S57, 2, 0) = 1
+  555.                if ( $SC_flagoutput_I20 == .false. ) then
+  555.                   if ( $SC_flagoutput_I21 == .false. ) then
+  555.                      (mplon%base_addr)(-1 + $i3_S57, 2, 0) = idimout
+  555.                   endif
+  555.                endif
+  556.                if ( $SC_flagoutput_I17 == .false. ) then
+  557.                   (mplon%base_addr)(-1 + $i3_S57, 2, 0) = 1 + idimout / 2
+  558.                   if ( $SC_flagoutput_I20 == .false. ) then
+  558.                      if ( $SC_flagoutput_I21 == .false. ) then
+  558.                         (mplon%base_addr)(-1 + $i3_S57, 2, 0) = idimout / 2
+  558.                      endif
+  558.                   endif
+  558.                endif
+  560.                $i1_S56 = 1 + $i1_S56
+  561.                if ( $i1_S56 > idimin ) then
+  561.                   $i1_S56 = 1
+  561.                endif
+  562.                $i3_S57 = 1 + $i3_S57
+  562.             endif
+  564.             if ( $i1_S56 /= 1 ) then
+  564.                goto <unknown>
+  564.             endif
+  564.             if ( $i2_S55 == 1 ) exit
+  564.          enddo
+  566.          (wtlon%base_addr)(-1 + $i3_S57, 0) = 6.2831853071795862 + workweights(1) + -workweights(-1 + $i3_S57)
+  567.          (mplon%base_addr)(-1 + $i3_S57, 1, 0) = 1
+  568.          if ( $SC_flaginput_I18 == .false. ) then
+  568.             if ( $SC_flaginput_I19 == .false. ) then
+  568.                (mplon%base_addr)(-1 + $i3_S57, 1, 0) = idimin
+  568.             endif
+  568.          endif
+  569.          if ( $SC_flaginput_I16 == .false. ) then
+  570.             (mplon%base_addr)(-1 + $i3_S57, 1, 0) = 1 + idimin / 2
+  571.             if ( $SC_flaginput_I18 == .false. ) then
+  571.                if ( $SC_flaginput_I19 == .false. ) then
+  571.                   (mplon%base_addr)(-1 + $i3_S57, 1, 0) = idimin / 2
+  571.                endif
+  571.             endif
+  571.          endif
+  573.          (mplon%base_addr)(-1 + $i3_S57, 2, 0) = 1
+  574.          if ( $SC_flagoutput_I20 == .false. ) then
+  574.             if ( $SC_flagoutput_I21 == .false. ) then
+  574.                (mplon%base_addr)(-1 + $i3_S57, 2, 0) = idimout
+  574.             endif
+  574.          endif
+  575.          if ( $SC_flagoutput_I17 == .false. ) then
+  576.             (mplon%base_addr)(-1 + $i3_S57, 2, 0) = 1 + idimout / 2
+  577.             if ( $SC_flagoutput_I20 == .false. ) then
+  577.                if ( $SC_flagoutput_I21 == .false. ) then
+  577.                   (mplon%base_addr)(-1 + $i3_S57, 2, 0) = idimout / 2
+  577.                endif
+  577.             endif
+  577.          endif
+  579.          lond = -1 + $i3_S57
+  264.          _free( t$34 )
+  581.          return
+  581.       end
+  581.       
+  584.       
+  584.       subroutine gaussianlatitudes( lath, colatitude )
+  584.       t$10 = lath
+  590.       t$37 = _zla( 0, lath )
+  598.       $dgcolin_S0 = ( 7.8539816339744828e-1 * 1.0/( real( 2 * lath, 8 ) ) )
+  599.       $gcol_S1 = 0.0
+  600.       if ( lath > 0 ) then
+  603.          if ( -2 + 2 * lath >= 0 ) then
+  600.             $I_L600_16 = 0
+  600.             do
+  601.                $dgcol_S6 = $dgcolin_S0
+  601.                do
+  603.                   $Flat_S2 = cos( $gcol_S1 )
+  603.                   $y1_S4 = 1.0
+  603.                   $y2_S3 = $Flat_S2
+  603.                   $I_L603_12 = 0
+  603. !dir$ unroll 4
+  603.                   do
+  603.                      y3 = -$y1_S4 + -( ( ( $Flat_S2 * $y2_S3 ) + -$y1_S4 ) * 1.0/( real( 2 + $I_L603_12, 8 ) ) ) + 2.0 * ( $Flat_S2 * $y2_S3 )
+  603.                      $y1_S4 = $y2_S3
+  603.                      $y2_S3 = y3
+  603.                      $I_L603_12 = 1 + $I_L603_12
+  603.                      if ( $I_L603_12 >= -1 + 2 * lath ) exit
+  603.                   enddo
+  603.                   do
+  605.                      $p1_S11 = y3
+  606.                      $gcol_S1 = $gcol_S1 + $dgcol_S6
+  607.                      $Flat_S7 = cos( $gcol_S1 )
+  607.                      $y1_S9 = 1.0
+  607.                      $y2_S8 = $Flat_S7
+  607.                      $I_L607_14 = 0
+  607. !dir$ unroll 4
+  607.                      do
+  607.                         y3 = -$y1_S9 + -( ( ( $Flat_S7 * $y2_S8 ) + -$y1_S9 ) * 1.0/( real( 2 + $I_L607_14, 8 ) ) ) + 2.0 * ( $Flat_S7 * $y2_S8 )
+  607.                         $y1_S9 = $y2_S8
+  607.                         $y2_S8 = y3
+  607.                         $I_L607_14 = 1 + $I_L607_14
+  607.                         if ( $I_L607_14 >= -1 + 2 * lath ) exit
+  607.                      enddo
+  607.                      if ( sign( 1.0, $p1_S11 ) /= sign( 1.0, y3 ) ) exit
+  607.                   enddo
+  610.                   if ( $dgcol_S6 <= 2.2204460492503131e-14 ) goto 10
+  611.                   $gcol_S1 = $gcol_S1 + -$dgcol_S6
+  611.                enddo
+  611.    10          continue
+  614.                colatitude(1 + $I_L600_16) = $gcol_S1
+  615.                $I_L600_16 = 1 + $I_L600_16
+  613.                if ( $I_L600_16 >= lath ) exit
+  613.             enddo
+  613.          else
+  613.             do
+  604.             enddo
+  604.          endif
+  604.       endif
+  617.       return
+  617.       end
+  617.       
+  620.       
+  620.       subroutine legendrepolynomial( n, colatitude, pln )
+  634.       $Flat_S0 = cos( colatitude )
+  635.       $y1_S2 = 1.0
+  636.       $y2_S1 = $Flat_S0
+  637.       if ( -2 + n >= 0 ) then
+  637.          $I_L637_4 = 0
+  637. !dir$ unroll 4
+  637.          do
+  639.             y3 = -$y1_S2 + -( ( ( $Flat_S0 * $y2_S1 ) + -$y1_S2 ) * 1.0/( real( 2 + $I_L637_4, 8 ) ) ) + 2.0 * ( $Flat_S0 * $y2_S1 )
+  640.             $y1_S2 = $y2_S1
+  641.             $y2_S1 = y3
+  642.             $I_L637_4 = 1 + $I_L637_4
+  637.             if ( $I_L637_4 >= -1 + n ) exit
+  637.          enddo
+  637.       endif
+  643.       pln = y3
+  645.       return
+  645.       end
+  645.       
+   24.       
+   24.       module reginterp
+   24.       end
+   24.       

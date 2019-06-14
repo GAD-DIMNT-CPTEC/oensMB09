@@ -1,0 +1,40 @@
+#!/bin/bash
+#PBS -o eslogin11:/scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/pos/exec/setout/Out.post.01P.2004032600.1305145246.%s.MPI1.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N EnsPos01P
+#
+#PBS -q pesq.q
+
+export PBS_SERVER=aux20-eth4
+
+if [[ Linux == "Linux" || Linux == "linux" ]]; then
+export F_UFMTENDIAN=10,11
+fi
+export KMP_STACKSIZE=128m
+ulimit -s unlimited
+cd /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/pos/exec
+mkdir -p setout
+optserver=aux
+if [[ (${optserver} = "aux") ]]; then
+ /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/pos/exec/PostGrib < /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/pos/exec/POSTIN-GRIB
+else
+time aprun -n 1 -N 1 /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/pos/exec/PostGrib < /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/pos/exec/POSTIN-GRIB
+fi
+for TIPO in P.fct P.fgs S.fct
+do
+if [ -e /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/pos/dataout/TQ0126L028/2004032600/GPOS01P20040326002004041000${TIPO}.TQ0126L028.lst  ]; then
+for arq in `cat /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/pos/dataout/TQ0126L028/2004032600/GPOS01P20040326002004041000${TIPO}.TQ0126L028.lst |grep ctl`
+do
+arq1=`basename $arq`
+
+# Mapping the GRIB data
+
+/opt/grads/2.0.a9/bin/gribmap -i ${dataout}/${arq1}
+done
+fi
+done

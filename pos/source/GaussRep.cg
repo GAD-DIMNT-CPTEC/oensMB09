@@ -1,0 +1,565 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  GaussRep.f90
+       !        File                  :  GaussRep.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   23.       
+   23.       subroutine creategaussrep
+   30.       $LCS_colrad_0 = loc( colrad )
+   30.       15[$LCS_colrad_0,0].L = 1
+   30.       $MR_jmax_S76 = 0[loc( jmax ),0]
+   30.       16[$LCS_colrad_0,0].L = max( 0, $MR_jmax_S76 )
+   30.       17[$LCS_colrad_0,0].L = 1
+   30.       0[loc( $_allo_P9 ),0].L = 0x1000000000001L
+   30.       1[loc( $_allo_P9 ),0].L = loc( glat )
+   30.       $MR_glat_S77 = 11[$LCS_colrad_0,0].L
+   30.       $MR_glat_S78 = or( 16, $MR_glat_S77 )
+   30.       11[$LCS_colrad_0,0].L = $MR_glat_S78
+   30.       call __allocate( $_allo_P9, 0, 0, _fcd( 0, 0 ) )
+   31.       $LCS_colrad_1 = loc( colrad )
+   31.       6[$LCS_colrad_1,0].L = 1
+   31.       $MR_jmaxhf_S79 = 2[loc( jmax ),0]
+   31.       7[$LCS_colrad_1,0].L = max( 0, $MR_jmaxhf_S79 )
+   31.       8[$LCS_colrad_1,0].L = 1
+   31.       0[loc( $_allo_P10 ),0].L = 0x1000000000001L
+   31.       1[loc( $_allo_P10 ),0].L = loc( colrad )
+   31.       $MR_colrad_S80 = 2[$LCS_colrad_1,0].L
+   31.       $MR_colrad_S81 = or( 16, $MR_colrad_S80 )
+   31.       2[$LCS_colrad_1,0].L = $MR_colrad_S81
+   31.       call __allocate( $_allo_P10, 0, 0, _fcd( 0, 0 ) )
+   32.       $LCS_colrad_2 = loc( colrad )
+   32.       24[$LCS_colrad_2,0].L = 1
+   32.       $MR_jmaxhf_S82 = 2[loc( jmax ),0]
+   32.       25[$LCS_colrad_2,0].L = max( 0, $MR_jmaxhf_S82 )
+   32.       26[$LCS_colrad_2,0].L = 1
+   32.       0[loc( $_allo_P11 ),0].L = 0x1000000000001L
+   32.       1[loc( $_allo_P11 ),0].L = loc( rcs2 )
+   32.       $MR_rcs2_S83 = 20[$LCS_colrad_2,0].L
+   32.       $MR_rcs2_S84 = or( 16, $MR_rcs2_S83 )
+   32.       20[$LCS_colrad_2,0].L = $MR_rcs2_S84
+   32.       call __allocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+   33.       $LCS_colrad_3 = loc( colrad )
+   33.       33[$LCS_colrad_3,0].L = 1
+   33.       $CS_jmax_1 = loc( jmax )
+   33.       $MR_jmaxhf_S85 = 2[$CS_jmax_1,0]
+   33.       34[$LCS_colrad_3,0].L = max( 0, $MR_jmaxhf_S85 )
+   33.       35[$LCS_colrad_3,0].L = 1
+   33.       0[loc( $_allo_P12 ),0].L = 0x1000000000001L
+   33.       1[loc( $_allo_P12 ),0].L = loc( wgt )
+   33.       $MR_wgt_S86 = 29[$LCS_colrad_3,0].L
+   33.       $MR_wgt_S87 = or( 16, $MR_wgt_S86 )
+   33.       29[$LCS_colrad_3,0].L = $MR_wgt_S87
+   33.       call __allocate( $_allo_P12, 0, 0, _fcd( 0, 0 ) )
+   35.       $LCS_jmax_5 = loc( jmax )
+   35.       $MR_jmax_S88 = 0[$LCS_jmax_5,0]
+   35.       $LCS_MR_jmax_4 = real( $MR_jmax_S88, 8 )
+   35.       $scale_S19 = 2.0 / ( $LCS_MR_jmax_4 * $LCS_MR_jmax_4 )
+   35.       $dgcolin_S0 = 7.8539816339744828e-1 / $LCS_MR_jmax_4
+   35.       $gcol_S91 = 0.0
+   35.       $MR_jmaxhf_S89 = 2[$LCS_jmax_5,0]
+   35.       if ( $MR_jmaxhf_S89 > 0 ) then
+   35.          if ( -2 + $MR_jmax_S88 >= 0 ) then
+   35.             $I_L35_S109 = 0
+   35.             $CS_colrad_0 = loc( colrad )
+   35.             $SC_rcs2_I4 = 18[$CS_colrad_0,0].L
+   35.             $SC_wgt_I3 = 27[$CS_colrad_0,0].L
+   35.             $MR_colrad_S90 = 0[$CS_colrad_0,0].L
+   35.             $LIS_E11 = 2.0
+   35.             $LIS_S54 = int( $MR_colrad_S90, 8 )
+   35.             $LIS_E9 = int( $SC_rcs2_I4, 8 )
+   35.             $LIS_E8 = int( $SC_wgt_I3, 8 )
+   35.             $LIS_S69 = $MR_jmaxhf_S89
+   35.             $LCS_7 = $MR_jmax_S88
+   35.             $LCS_2_8 = ( -2 + $LCS_7 )
+   35.             $LIS_E5 = 2.2204460492503131e-14
+   35.             $LIS_E4 = 1.0
+   35.             $LCS_1_9 = ( -1 + $LCS_7 )
+   35.             do
+   35.                $dgcol_S100 = $dgcolin_S0
+   35.                do
+   35.                   $Flat_S2 = cos( $gcol_S91 )
+   35.                   $y1_S94 = $LIS_E4
+   35.                   $y2_S92 = $Flat_S2
+   35.                   $I_L35_S98 = 0
+   35.                   $SR_S93 = $LIS_E11
+   35.                   $LCS_1_10 = ( -1 + $MR_jmax_S88 )
+   35.                   if ( 4 <= $LCS_1_10 ) then
+   35.                      $LIS_S99 = and( -4, $LCS_1_10 + _rsh( _ash( $LCS_1_10, 1 ), 62 ) )
+   35.                      $LIS_S97 = 4.0 * $LIS_E4
+   35.                      $LIS_S96 = 3.0 * $LIS_E4
+   35.                      $LIS_S95 = 2.0 * $LIS_E4
+   35.                      do
+   35.                         $LCS_11 = ( $Flat_S2 * $y2_S92 )
+   35.                         $y3_S30 = $LIS_E11 * $LCS_11 - $y1_S94 + ( $LCS_11 - $y1_S94 ) / $SR_S93
+   35.                         $LCS_12 = ( $Flat_S2 * $y3_S30 )
+   35.                         $y3_S33 = $LIS_E11 * $LCS_12 - $y2_S92 + ( $LCS_12 - $y2_S92 ) / ( $LIS_E4 + $SR_S93 )
+   35.                         $LCS_13 = ( $Flat_S2 * $y3_S33 )
+   35.                         $y3_S36 = $LIS_E11 * $LCS_13 - $y3_S30 + ( $LCS_13 - $y3_S30 ) / ( $SR_S93 + $LIS_S95 )
+   35.                         $LCS_14 = ( $Flat_S2 * $y3_S36 )
+   35.                         $SC_y3_I0 = $LIS_E11 * $LCS_14 - $y3_S33 + ( $LCS_14 - $y3_S33 ) / ( $SR_S93 + $LIS_S96 )
+   35.                         $y1_S94 = $y3_S36
+   35.                         $y2_S92 = $SC_y3_I0
+   35.                         $SR_S93 = $SR_S93 + $LIS_S97
+   35.                         $I_L35_S98 = 4 + $I_L35_S98
+   35.                         if ( $I_L35_S98 >= $LIS_S99 ) exit
+   35.                      enddo
+   35.                   endif
+   35.                   if ( $I_L35_S98 < $LCS_1_9 ) then
+   35.                      do
+   35.                         $LCS_15 = ( $Flat_S2 * $y2_S92 )
+   35.                         $SC_y3_I0 = $LIS_E11 * $LCS_15 - $y1_S94 + ( $LCS_15 - $y1_S94 ) / $SR_S93
+   35.                         $y1_S94 = $y2_S92
+   35.                         $y2_S92 = $SC_y3_I0
+   35.                         $SR_S93 = $LIS_E4 + $SR_S93
+   35.                         $I_L35_S98 = 1 + $I_L35_S98
+   35.                         if ( $I_L35_S98 >= $LCS_1_9 ) exit
+   35.                      enddo
+   35.                   endif
+   35.                   do
+   35.                      $p1_S11 = $SC_y3_I0
+   35.                      $gcol_S91 = $gcol_S91 + $dgcol_S100
+   35.                      $CS_3 = cos( $gcol_S91 )
+   35.                      $y1_S103 = $LIS_E4
+   35.                      $y2_S101 = $CS_3
+   35.                      $I_L35_S107 = 0
+   35.                      $SR_S102 = $LIS_E11
+   35.                      $LCS_1_16 = ( -1 + $MR_jmax_S88 )
+   35.                      if ( 4 <= $LCS_1_16 ) then
+   35.                         $LIS_S108 = and( -4, $LCS_1_16 + _rsh( _ash( $LCS_1_16, 1 ), 62 ) )
+   35.                         $LIS_S106 = 4.0 * $LIS_E4
+   35.                         $LIS_S105 = 3.0 * $LIS_E4
+   35.                         $LIS_S104 = 2.0 * $LIS_E4
+   35.                         do
+   35.                            $LCS_17 = ( $CS_3 * $y2_S101 )
+   35.                            $y3_S44 = $LIS_E11 * $LCS_17 - $y1_S103 + ( $LCS_17 - $y1_S103 ) / $SR_S102
+   35.                            $LCS_18 = ( $y3_S44 * $CS_3 )
+   35.                            $y3_S47 = $LIS_E11 * $LCS_18 - $y2_S101 + ( $LCS_18 - $y2_S101 ) / ( $LIS_E4 + $SR_S102 )
+   35.                            $LCS_19 = ( $y3_S47 * $CS_3 )
+   35.                            $y3_S50 = $LIS_E11 * $LCS_19 - $y3_S44 + ( $LCS_19 - $y3_S44 ) / ( $SR_S102 + $LIS_S104 )
+   35.                            $LCS_20 = ( $y3_S50 * $CS_3 )
+   35.                            $SC_y3_I0 = $LIS_E11 * $LCS_20 - $y3_S47 + ( $LCS_20 - $y3_S47 ) / ( $SR_S102 + $LIS_S105 )
+   35.                            $y1_S103 = $y3_S50
+   35.                            $y2_S101 = $SC_y3_I0
+   35.                            $SR_S102 = $SR_S102 + $LIS_S106
+   35.                            $I_L35_S107 = 4 + $I_L35_S107
+   35.                            if ( $I_L35_S107 >= $LIS_S108 ) exit
+   35.                         enddo
+   35.                      endif
+   35.                      if ( $I_L35_S107 < $LCS_1_9 ) then
+   35.                         do
+   35.                            $LCS_21 = ( $CS_3 * $y2_S101 )
+   35.                            $SC_y3_I0 = $LIS_E11 * $LCS_21 - $y1_S103 + ( $LCS_21 - $y1_S103 ) / $SR_S102
+   35.                            $y1_S103 = $y2_S101
+   35.                            $y2_S101 = $SC_y3_I0
+   35.                            $SR_S102 = $LIS_E4 + $SR_S102
+   35.                            $I_L35_S107 = 1 + $I_L35_S107
+   35.                            if ( $I_L35_S107 >= $LCS_1_9 ) exit
+   35.                         enddo
+   35.                      endif
+   35.                      if ( sign( $LIS_E4, $SC_y3_I0 ) /= sign( $LIS_E4, $p1_S11 ) ) exit
+   35.                   enddo
+   35.                   if ( $dgcol_S100 <= $LIS_E5 ) goto 10
+   35.                   $gcol_S91 = $gcol_S91 - $dgcol_S100
+   35.                enddo
+   35.    10          continue
+   35.                0[$LIS_S54,$I_L35_S109].L = $gcol_S91
+   35.                $y1_S112 = $LIS_E4
+   35.                $y2_S110 = $CS_3
+   35.                if ( -3 + $MR_jmax_S88 >= 0 ) then
+   35.                   $I_L35_S116 = 0
+   35.                   $SR_S111 = $LIS_E11
+   35.                   $LCS_2_22 = ( -2 + $MR_jmax_S88 )
+   35.                   if ( 4 <= $LCS_2_22 ) then
+   35.                      $LIS_E22 = and( -4, $LCS_2_22 + _rsh( _ash( $LCS_2_22, 1 ), 62 ) )
+   35.                      $LIS_S115 = 4.0 * $LIS_E4
+   35.                      $LIS_S114 = 3.0 * $LIS_E4
+   35.                      $LIS_S113 = 2.0 * $LIS_E4
+   35.                      do
+   35.                         $LCS_23 = ( $CS_3 * $y2_S110 )
+   35.                         $y3_S59 = $LIS_E11 * $LCS_23 - $y1_S112 + ( $LCS_23 - $y1_S112 ) / $SR_S111
+   35.                         $LCS_24 = ( $y3_S59 * $CS_3 )
+   35.                         $y3_S62 = $LIS_E11 * $LCS_24 - $y2_S110 + ( $LCS_24 - $y2_S110 ) / ( $LIS_E4 + $SR_S111 )
+   35.                         $LCS_25 = ( $y3_S62 * $CS_3 )
+   35.                         $y3_S65 = $LIS_E11 * $LCS_25 - $y3_S59 + ( $LCS_25 - $y3_S59 ) / ( $SR_S111 + $LIS_S113 )
+   35.                         $LCS_26 = ( $y3_S65 * $CS_3 )
+   35.                         $SC_y3_I0 = $LIS_E11 * $LCS_26 - $y3_S62 + ( $LCS_26 - $y3_S62 ) / ( $SR_S111 + $LIS_S114 )
+   35.                         $y1_S112 = $y3_S65
+   35.                         $y2_S110 = $SC_y3_I0
+   35.                         $SR_S111 = $SR_S111 + $LIS_S115
+   35.                         $I_L35_S116 = 4 + $I_L35_S116
+   35.                         if ( $I_L35_S116 >= $LIS_E22 ) exit
+   35.                      enddo
+   35.                   endif
+   35.                   if ( $I_L35_S116 < $LCS_2_8 ) then
+   35.                      do
+   35.                         $LCS_27 = ( $CS_3 * $y2_S110 )
+   35.                         $SC_y3_I0 = $LIS_E11 * $LCS_27 - $y1_S112 + ( $LCS_27 - $y1_S112 ) / $SR_S111
+   35.                         $y1_S112 = $y2_S110
+   35.                         $y2_S110 = $SC_y3_I0
+   35.                         $SR_S111 = $LIS_E4 + $SR_S111
+   35.                         $I_L35_S116 = 1 + $I_L35_S116
+   35.                         if ( $I_L35_S116 >= $LCS_2_8 ) exit
+   35.                      enddo
+   35.                   endif
+   35.                endif
+   35.                $Coss_P8 = coss( $gcol_S91 )
+   35.                $LCS_Coss_28 = real( $Coss_P8, 8 )
+   35.                0[$LIS_E8,$I_L35_S109].L = ( ( $LIS_E4 - $LCS_Coss_28 * $LCS_Coss_28 ) / ( $SC_y3_I0 * $SC_y3_I0 ) * $scale_S19 )
+   35.                $LCS_29 = cimag( $Coss_P8 )
+   35.                0[$LIS_E9,$I_L35_S109].L = 1.0 / ( $LCS_29 * $LCS_29 )
+   35.                $I_L35_S109 = 1 + $I_L35_S109
+   35.                if ( $I_L35_S109 >= $LIS_S69 ) exit
+   35.             enddo
+   35.          else
+   35.             do
+   35.             enddo
+   35.          endif
+   37.          $I_L37_S118 = 0
+   38.          $LCS_MR_jmax_30 = $MR_jmax_S88
+   38.          $LCS_MR_jmaxhf_31 = $MR_jmaxhf_S89
+   38.          if ( $LCS_MR_jmaxhf_31 > $LCS_MR_jmax_30 ) then
+   38.             $LB_Y0 = 1
+   38.             $UB_Y1 = $LCS_MR_jmax_30
+   38.             $Subscript_Y2 = 1
+   38.             $Subscript_Y3 = $LCS_MR_jmaxhf_31
+   38.             $Subscript_Y4 = 1
+   38.             _rbounds_error( $_File_Y40, $Line_Y48, $_Name_Y50, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y51 )
+   38.          endif
+   39.          $LCS_MR_jmax_32 = $MR_jmax_S88
+   39.          $LCS_MR_jmaxhf_33 = $MR_jmaxhf_S89
+   39.          if ( $LCS_MR_jmaxhf_33 > $LCS_MR_jmax_32 ) then
+   39.             $LB_Y0 = 1
+   39.             $UB_Y1 = $LCS_MR_jmax_32
+   39.             $Subscript_Y2 = 1
+   39.             $Subscript_Y3 = $LCS_MR_jmaxhf_33
+   39.             $Subscript_Y4 = 1
+   39.             _rbounds_error( $_File_Y40, $Line_Y52, $_Name_Y50, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y53 )
+   39.          endif
+   39.          $LCS_35 = $MR_jmax_S88 - $MR_jmaxhf_S89
+   39.          if ( $LCS_35 < 0 ) then
+   39.             $LB_Y0 = 1
+   39.             $LCS_MR_jmax_34 = $MR_jmax_S88
+   39.             $UB_Y1 = $LCS_MR_jmax_34
+   39.             $Subscript_Y2 = $LCS_MR_jmax_34
+   39.             $Subscript_Y3 = 1 + $LCS_35
+   39.             $Subscript_Y4 = -1
+   39.             _rbounds_error( $_File_Y40, $Line_Y52, $_Name_Y50, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y54 )
+   39.          endif
+   38.          $SC_glat_I6 = 9[$CS_colrad_0,0].L
+   38.          $MR_colrad_S117 = 0[$CS_colrad_0,0].L
+   39.          $LIS_E15 = $MR_jmax_S88
+   38.          $LIS_E14 = 90.0
+   38.          $LIS_E13 = -57.295779513082323
+   38.          $LIS_S73 = int( $MR_colrad_S117, 8 )
+   38.          $LIS_E12 = int( $SC_glat_I6, 8 )
+   40.          $LCS_MR_jmaxhf_37 = $MR_jmaxhf_S89
+   40.          if ( 4 <= $LCS_MR_jmaxhf_37 ) then
+   37.             $LIS_E23 = $MR_jmaxhf_S89 - $MR_jmaxhf_S89 - and( -4, $MR_jmaxhf_S89 + _rsh( _ash( $MR_jmaxhf_S89, 1 ), 30 ) )
+   37.             do
+   38.                $MR_colrad_S119 = 0[$LIS_S73,$I_L37_S118].L
+   38.                $MR_glat_S120 = $LIS_E14 + $LIS_E13 * $MR_colrad_S119
+   38.                0[$LIS_E12,$I_L37_S118].L = $MR_glat_S120
+   39.                $MR_glat_S121 = -$MR_glat_S120
+   39.                $LCS_38 = $LIS_E15 - $I_L37_S118
+   39.                -1[$LIS_E12,$LCS_38].L = $MR_glat_S121
+   38.                $MR_glat_39 = $LIS_E14 + 1[$LIS_S73,$I_L37_S118].L * $LIS_E13
+   38.                1[$LIS_E12,$I_L37_S118].L = $MR_glat_39
+   39.                -2[$LIS_E12,$LCS_38].L = -$MR_glat_39
+   38.                $MR_glat_42 = $LIS_E14 + 2[$LIS_S73,$I_L37_S118].L * $LIS_E13
+   38.                2[$LIS_E12,$I_L37_S118].L = $MR_glat_42
+   39.                -3[$LIS_E12,$LCS_38].L = -$MR_glat_42
+   38.                $MR_glat_45 = $LIS_E14 + 3[$LIS_S73,$I_L37_S118].L * $LIS_E13
+   38.                3[$LIS_E12,$I_L37_S118].L = $MR_glat_45
+   39.                -4[$LIS_E12,$LCS_38].L = -$MR_glat_45
+   40.                $I_L37_S118 = 4 + $I_L37_S118
+   40.                if ( $I_L37_S118 >= $LIS_E23 ) exit
+   40.             enddo
+   40.          endif
+   37.          if ( $I_L37_S118 < $MR_jmaxhf_S89 ) then
+   37.             do
+   38.                $MR_colrad_S122 = 0[$LIS_S73,$I_L37_S118].L
+   38.                $MR_glat_S123 = $LIS_E14 + $LIS_E13 * $MR_colrad_S122
+   38.                0[$LIS_E12,$I_L37_S118].L = $MR_glat_S123
+   39.                $MR_glat_S124 = -$MR_glat_S123
+   39.                -1[$LIS_E12,$LIS_E15 - $I_L37_S118].L = $MR_glat_S124
+   40.                $I_L37_S118 = 1 + $I_L37_S118
+   37.                if ( $I_L37_S118 >= $LCS_MR_jmaxhf_37 ) exit
+   37.             enddo
+   37.          endif
+   37.       endif
+   42.       return
+   42.       end
+   42.       
+   45.       
+   45.       subroutine glats
+   57.       $LCS_jmax_1 = loc( jmax )
+   57.       $MR_jmax_11 = 0[$LCS_jmax_1,0]
+   57.       $LCS_MR_jmax_0 = real( $MR_jmax_11, 8 )
+   57.       $scale_S19 = 2.0 / ( $LCS_MR_jmax_0 * $LCS_MR_jmax_0 )
+   58.       $dgcolin_S0 = 7.8539816339744828e-1 / $LCS_MR_jmax_0
+   59.       $gcol_S64 = 0.0
+   60.       $MR_jmaxhf_12 = 2[$LCS_jmax_1,0]
+   60.       if ( $MR_jmaxhf_12 > 0 ) then
+   77.          $CS_colrad_0 = loc( colrad )
+   77.          $SC_rcs2_I4 = 25[$CS_colrad_0,0].L
+   77.          $SC_rcs2_I5 = 24[$CS_colrad_0,0].L
+   76.          $SC_wgt_I2 = 34[$CS_colrad_0,0].L
+   76.          $SC_wgt_I3 = 33[$CS_colrad_0,0].L
+   74.          $SC_colrad_I0 = 7[$CS_colrad_0,0].L
+   74.          $SC_colrad_I1 = 6[$CS_colrad_0,0].L
+   63.          if ( -2 + $MR_jmax_11 >= 0 ) then
+   60.             $I_L60_S82 = 0
+   74.             $LCS_1_3 = -1 + $SC_colrad_I0 + $SC_colrad_I1
+   74.             $LCS_MR_jmaxhf_4 = $MR_jmaxhf_12
+   74.             if ( ( 1 >= $SC_colrad_I1 .and. $LCS_MR_jmaxhf_4 <= $LCS_1_3 ) == .false. ) then
+   74.                $LB_Y0 = $SC_colrad_I1
+   74.                $UB_Y1 = $LCS_1_3
+   74.                $Subscript_Y2 = 1
+   74.                $Subscript_Y3 = $LCS_MR_jmaxhf_4
+   74.                $Subscript_Y4 = 1
+   74.                _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+   74.             endif
+   76.             $LCS_1_5 = -1 + $SC_wgt_I2 + $SC_wgt_I3
+   76.             $LCS_MR_jmaxhf_6 = $MR_jmaxhf_12
+   76.             if ( ( 1 >= $SC_wgt_I3 .and. $LCS_MR_jmaxhf_6 <= $LCS_1_5 ) == .false. ) then
+   76.                $LB_Y0 = $SC_wgt_I3
+   76.                $UB_Y1 = $LCS_1_5
+   76.                $Subscript_Y2 = 1
+   76.                $Subscript_Y3 = $LCS_MR_jmaxhf_6
+   76.                $Subscript_Y4 = 1
+   76.                _rbounds_error( $_File_Y40, $Line_Y45, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y46 )
+   76.             endif
+   77.             $LCS_1_7 = -1 + $SC_rcs2_I4 + $SC_rcs2_I5
+   77.             $LCS_MR_jmaxhf_8 = $MR_jmaxhf_12
+   77.             if ( ( 1 >= $SC_rcs2_I5 .and. $LCS_MR_jmaxhf_8 <= $LCS_1_7 ) == .false. ) then
+   77.                $LB_Y0 = $SC_rcs2_I5
+   77.                $UB_Y1 = $LCS_1_7
+   77.                $Subscript_Y2 = 1
+   77.                $Subscript_Y3 = $LCS_MR_jmaxhf_8
+   77.                $Subscript_Y4 = 1
+   77.                _rbounds_error( $_File_Y40, $Line_Y48, $_Name_Y47, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y49 )
+   77.             endif
+   77.             $SC_rcs2_I10 = 18[$CS_colrad_0,0].L
+   76.             $SC_wgt_I9 = 27[$CS_colrad_0,0].L
+   74.             $SC_colrad_I8 = 0[$CS_colrad_0,0].L
+   63.             $LIS_E11 = 2.0
+   74.             $LIS_E10 = int( $SC_colrad_I8, 8 )
+   77.             $LIS_E9 = int( $SC_rcs2_I10, 8 )
+   76.             $LIS_E8 = int( $SC_wgt_I9, 8 )
+   78.             $LIS_E7 = $MR_jmaxhf_12
+   75.             $LCS_10 = $MR_jmax_11
+   75.             $LCS_2_11 = ( -2 + $LCS_10 )
+   70.             $LIS_E5 = 2.2204460492503131e-14
+   68.             $LIS_E4 = 1.0
+   63.             $LCS_1_12 = ( -1 + $LCS_10 )
+   63.             do
+   61.                $dgcol_S73 = $dgcolin_S0
+   61.                do
+   63.                   $Flat_S2 = cos( $gcol_S64 )
+   63.                   $y1_S67 = $LIS_E4
+   63.                   $y2_S65 = $Flat_S2
+   63.                   $I_L63_S71 = 0
+   63.                   $SR_S66 = $LIS_E11
+   63.                   $LCS_1_13 = ( -1 + $MR_jmax_11 )
+   63.                   if ( 4 <= $LCS_1_13 ) then
+   63.                      $LIS_S72 = and( -4, $LCS_1_13 + _rsh( _ash( $LCS_1_13, 1 ), 62 ) )
+   63.                      $LIS_S70 = 4.0 * $LIS_E4
+   63.                      $LIS_S69 = 3.0 * $LIS_E4
+   63.                      $LIS_S68 = 2.0 * $LIS_E4
+   63.                      do
+   63.                         $LCS_14 = ( $Flat_S2 * $y2_S65 )
+   63.                         $y3_S26 = $LIS_E11 * $LCS_14 - $y1_S67 + ( $LCS_14 - $y1_S67 ) / $SR_S66
+   63.                         $LCS_15 = ( $Flat_S2 * $y3_S26 )
+   63.                         $y3_S29 = $LIS_E11 * $LCS_15 - $y2_S65 + ( $LCS_15 - $y2_S65 ) / ( $LIS_E4 + $SR_S66 )
+   63.                         $LCS_16 = ( $Flat_S2 * $y3_S29 )
+   63.                         $y3_S32 = $LIS_E11 * $LCS_16 - $y3_S26 + ( $LCS_16 - $y3_S26 ) / ( $SR_S66 + $LIS_S68 )
+   63.                         $LCS_17 = ( $Flat_S2 * $y3_S32 )
+   63.                         $SC_y3_I6 = $LIS_E11 * $LCS_17 - $y3_S29 + ( $LCS_17 - $y3_S29 ) / ( $SR_S66 + $LIS_S69 )
+   63.                         $y1_S67 = $y3_S32
+   63.                         $y2_S65 = $SC_y3_I6
+   63.                         $SR_S66 = $SR_S66 + $LIS_S70
+   63.                         $I_L63_S71 = 4 + $I_L63_S71
+   63.                         if ( $I_L63_S71 >= $LIS_S72 ) exit
+   63.                      enddo
+   63.                   endif
+   63.                   if ( $I_L63_S71 < $LCS_1_12 ) then
+   63.                      do
+   63.                         $LCS_18 = ( $Flat_S2 * $y2_S65 )
+   63.                         $SC_y3_I6 = $LIS_E11 * $LCS_18 - $y1_S67 + ( $LCS_18 - $y1_S67 ) / $SR_S66
+   63.                         $y1_S67 = $y2_S65
+   63.                         $y2_S65 = $SC_y3_I6
+   63.                         $SR_S66 = $LIS_E4 + $SR_S66
+   63.                         $I_L63_S71 = 1 + $I_L63_S71
+   63.                         if ( $I_L63_S71 >= $LCS_1_12 ) exit
+   63.                      enddo
+   63.                   endif
+   63.                   do
+   65.                      $p1_S11 = $SC_y3_I6
+   66.                      $gcol_S64 = $gcol_S64 + $dgcol_S73
+   67.                      $CS_1 = cos( $gcol_S64 )
+   67.                      $y1_S76 = $LIS_E4
+   67.                      $y2_S74 = $CS_1
+   67.                      $I_L67_S80 = 0
+   67.                      $SR_S75 = $LIS_E11
+   67.                      $LCS_1_19 = ( -1 + $MR_jmax_11 )
+   67.                      if ( 4 <= $LCS_1_19 ) then
+   67.                         $LIS_S81 = and( -4, $LCS_1_19 + _rsh( _ash( $LCS_1_19, 1 ), 62 ) )
+   67.                         $LIS_S79 = 4.0 * $LIS_E4
+   67.                         $LIS_S78 = 3.0 * $LIS_E4
+   67.                         $LIS_S77 = 2.0 * $LIS_E4
+   67.                         do
+   67.                            $LCS_20 = ( $CS_1 * $y2_S74 )
+   67.                            $y3_S40 = $LIS_E11 * $LCS_20 - $y1_S76 + ( $LCS_20 - $y1_S76 ) / $SR_S75
+   67.                            $LCS_21 = ( $y3_S40 * $CS_1 )
+   67.                            $y3_S43 = $LIS_E11 * $LCS_21 - $y2_S74 + ( $LCS_21 - $y2_S74 ) / ( $LIS_E4 + $SR_S75 )
+   67.                            $LCS_22 = ( $y3_S43 * $CS_1 )
+   67.                            $y3_S46 = $LIS_E11 * $LCS_22 - $y3_S40 + ( $LCS_22 - $y3_S40 ) / ( $SR_S75 + $LIS_S77 )
+   67.                            $LCS_23 = ( $y3_S46 * $CS_1 )
+   67.                            $SC_y3_I6 = $LIS_E11 * $LCS_23 - $y3_S43 + ( $LCS_23 - $y3_S43 ) / ( $SR_S75 + $LIS_S78 )
+   67.                            $y1_S76 = $y3_S46
+   67.                            $y2_S74 = $SC_y3_I6
+   67.                            $SR_S75 = $SR_S75 + $LIS_S79
+   67.                            $I_L67_S80 = 4 + $I_L67_S80
+   67.                            if ( $I_L67_S80 >= $LIS_S81 ) exit
+   67.                         enddo
+   67.                      endif
+   67.                      if ( $I_L67_S80 < $LCS_1_12 ) then
+   67.                         do
+   67.                            $LCS_24 = ( $CS_1 * $y2_S74 )
+   67.                            $SC_y3_I6 = $LIS_E11 * $LCS_24 - $y1_S76 + ( $LCS_24 - $y1_S76 ) / $SR_S75
+   67.                            $y1_S76 = $y2_S74
+   67.                            $y2_S74 = $SC_y3_I6
+   67.                            $SR_S75 = $LIS_E4 + $SR_S75
+   67.                            $I_L67_S80 = 1 + $I_L67_S80
+   67.                            if ( $I_L67_S80 >= $LCS_1_12 ) exit
+   67.                         enddo
+   67.                      endif
+   67.                      if ( sign( $LIS_E4, $SC_y3_I6 ) /= sign( $LIS_E4, $p1_S11 ) ) exit
+   67.                   enddo
+   70.                   if ( $dgcol_S73 <= $LIS_E5 ) goto 10
+   71.                   $gcol_S64 = $gcol_S64 - $dgcol_S73
+   71.                enddo
+   71.    10          continue
+   74.                1[$LIS_E10,$I_L60_S82 - $SC_colrad_I1].L = $gcol_S64
+   75.                $y1_S85 = $LIS_E4
+   75.                $y2_S83 = $CS_1
+   75.                if ( -3 + $MR_jmax_11 >= 0 ) then
+   75.                   $I_L75_S89 = 0
+   75.                   $SR_S84 = $LIS_E11
+   75.                   $LCS_2_25 = ( -2 + $MR_jmax_11 )
+   75.                   if ( 4 <= $LCS_2_25 ) then
+   75.                      $LIS_E18 = and( -4, $LCS_2_25 + _rsh( _ash( $LCS_2_25, 1 ), 62 ) )
+   75.                      $LIS_S88 = 4.0 * $LIS_E4
+   75.                      $LIS_S87 = 3.0 * $LIS_E4
+   75.                      $LIS_S86 = 2.0 * $LIS_E4
+   75.                      do
+   75.                         $LCS_26 = ( $CS_1 * $y2_S83 )
+   75.                         $y3_S54 = $LIS_E11 * $LCS_26 - $y1_S85 + ( $LCS_26 - $y1_S85 ) / $SR_S84
+   75.                         $LCS_27 = ( $y3_S54 * $CS_1 )
+   75.                         $y3_S57 = $LIS_E11 * $LCS_27 - $y2_S83 + ( $LCS_27 - $y2_S83 ) / ( $LIS_E4 + $SR_S84 )
+   75.                         $LCS_28 = ( $y3_S57 * $CS_1 )
+   75.                         $y3_S60 = $LIS_E11 * $LCS_28 - $y3_S54 + ( $LCS_28 - $y3_S54 ) / ( $SR_S84 + $LIS_S86 )
+   75.                         $LCS_29 = ( $y3_S60 * $CS_1 )
+   75.                         $SC_y3_I6 = $LIS_E11 * $LCS_29 - $y3_S57 + ( $LCS_29 - $y3_S57 ) / ( $SR_S84 + $LIS_S87 )
+   75.                         $y1_S85 = $y3_S60
+   75.                         $y2_S83 = $SC_y3_I6
+   75.                         $SR_S84 = $SR_S84 + $LIS_S88
+   75.                         $I_L75_S89 = 4 + $I_L75_S89
+   75.                         if ( $I_L75_S89 >= $LIS_E18 ) exit
+   75.                      enddo
+   75.                   endif
+   75.                   if ( $I_L75_S89 < $LCS_2_11 ) then
+   75.                      do
+   75.                         $LCS_30 = ( $CS_1 * $y2_S83 )
+   75.                         $SC_y3_I6 = $LIS_E11 * $LCS_30 - $y1_S85 + ( $LCS_30 - $y1_S85 ) / $SR_S84
+   75.                         $y1_S85 = $y2_S83
+   75.                         $y2_S83 = $SC_y3_I6
+   75.                         $SR_S84 = $LIS_E4 + $SR_S84
+   75.                         $I_L75_S89 = 1 + $I_L75_S89
+   75.                         if ( $I_L75_S89 >= $LCS_2_11 ) exit
+   75.                      enddo
+   75.                   endif
+   75.                endif
+   76.                $Coss_P8 = coss( $gcol_S64 )
+   76.                $LCS_Coss_31 = real( $Coss_P8, 8 )
+   76.                1[$LIS_E8,$I_L60_S82 - $SC_wgt_I3].L = ( ( $LIS_E4 - $LCS_Coss_31 * $LCS_Coss_31 ) / ( $SC_y3_I6 * $SC_y3_I6 ) * $scale_S19 )
+   77.                $LCS_32 = cimag( $Coss_P8 )
+   77.                1[$LIS_E9,$I_L60_S82 - $SC_rcs2_I5].L = 1.0 / ( $LCS_32 * $LCS_32 )
+   78.                $I_L60_S82 = 1 + $I_L60_S82
+   75.                if ( $I_L60_S82 >= $LIS_E7 ) exit
+   75.             enddo
+   75.          else
+   75.             do
+   64.             enddo
+   64.          endif
+   64.       endif
+   80.       return
+   80.       end
+   80.       
+   83.       
+   83.       subroutine legendrepolynomial( n, colatitude, pln )
+   83.       $CARG_n_I0 = 0[loc( n ),0]
+   83.       $CARG_colatitude_I1 = 0[loc( colatitude ),0].L
+   98.       $Flat_S0 = cos( $CARG_colatitude_I1 )
+   99.       $y1_S19 = 1.0
+  100.       $y2_S17 = $Flat_S0
+  101.       if ( -2 + $CARG_n_I0 >= 0 ) then
+  101.          $I_L101_S20 = 0
+  103.          $SR_S18 = 2.0
+  103.          $LIS_E3 = 1.0
+  103.          $LIS_E2 = 2.0
+  106.          $LCS_1_0 = ( -1 + $CARG_n_I0 )
+  106.          if ( 4 <= $LCS_1_0 ) then
+  103.             $LIS_E7 = 3.0 * $LIS_E3
+  103.             $LIS_E6 = 2.0 * $LIS_E3
+  101.             $LIS_E5 = and( -4, $LCS_1_0 + _rsh( _ash( $LCS_1_0, 1 ), 62 ) )
+  103.             $LIS_E4 = 4.0 * $LIS_E3
+  103.             do
+  103.                $LCS_1 = ( $Flat_S0 * $y2_S17 )
+  103.                $y3_S7 = $LIS_E2 * $LCS_1 - $y1_S19 + ( $LCS_1 - $y1_S19 ) / $SR_S18
+  103.                $LCS_2 = ( $Flat_S0 * $y3_S7 )
+  103.                $y3_S10 = $LIS_E2 * $LCS_2 - $y2_S17 + ( $LCS_2 - $y2_S17 ) / ( $LIS_E3 + $SR_S18 )
+  103.                $LCS_3 = ( $Flat_S0 * $y3_S10 )
+  103.                $y3_S13 = $LIS_E2 * $LCS_3 - $y3_S7 + ( $LCS_3 - $y3_S7 ) / ( $LIS_E6 + $SR_S18 )
+  103.                $LCS_4 = ( $Flat_S0 * $y3_S13 )
+  103.                $SC_y3_I3 = $LIS_E2 * $LCS_4 - $y3_S10 + ( $LCS_4 - $y3_S10 ) / ( $LIS_E7 + $SR_S18 )
+  104.                $y1_S19 = $y3_S13
+  105.                $y2_S17 = $SC_y3_I3
+  103.                $SR_S18 = $LIS_E4 + $SR_S18
+  106.                $I_L101_S20 = 4 + $I_L101_S20
+  106.                if ( $I_L101_S20 >= $LIS_E5 ) exit
+  106.             enddo
+  106.          endif
+  101.          if ( $I_L101_S20 < ( -1 + $CARG_n_I0 ) ) then
+  101.             do
+  103.                $LCS_5 = ( $Flat_S0 * $y2_S17 )
+  103.                $SC_y3_I3 = $LIS_E2 * $LCS_5 - $y1_S19 + ( $LCS_5 - $y1_S19 ) / $SR_S18
+  104.                $y1_S19 = $y2_S17
+  105.                $y2_S17 = $SC_y3_I3
+  103.                $SR_S18 = $LIS_E3 + $SR_S18
+  106.                $I_L101_S20 = 1 + $I_L101_S20
+  101.                if ( $I_L101_S20 >= $LCS_1_0 ) exit
+  101.             enddo
+  101.          endif
+  103.          y3 = $SC_y3_I3
+  103.       endif
+  107.       0[loc( pln ),0].L = y3
+  109.       return
+  109.       end
+  109.       
+   15.       
+   15.       module gaussrep
+   15.       end
+   15.       

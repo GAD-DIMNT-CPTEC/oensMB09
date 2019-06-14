@@ -1,0 +1,1224 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Watches.f90
+       !        File                  :  Watches.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   59.       
+   59.       subroutine createwatch( wt, nw, firstw )
+   33.       if ( t$44 == 0 ) then
+   33.          0[loc( t$49 ),0] = 2
+   33.          0[loc( t$50 ),0] = 0
+   33.          0[loc( t$51 ),0] = 0
+   33.          0[loc( t$46 ),0].L = int( loc( t$43 ), 8 )
+   33.          0[loc( t$47 ),0].L = 0
+   33.          0[loc( t$48 ),0].L = int( loc( t$45 ), 8 )
+   33.          t$44 = __get_dynamic_type( 2, 0[loc( t$46 ),0].L, 0[loc( t$49 ),0], 1, 0[loc( t$47 ),0].L, 0[loc( t$48 ),0].L, 0[loc( t$50 ),0], 0[loc( t$51 ),0] )
+   33.       endif
+   73.       $LCS_nw_0 = loc( nw )
+   73.       $MR_nw_S2 = 0[$LCS_nw_0,0]
+   73.       if ( $MR_nw_S2 <= 0 ) then
+   74.          $_StackCntrl_O1 = $_StaticCntrl_O0
+   74.          1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c0,0:10] )
+   74.          $_StackIolist_O3 = $_StaticIolist_O2
+   74.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O3 ),0].L ) ), 8 ),0].L = loc( 0[$LCS_nw_0,0] )
+   74.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O3 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   75.          _f90_adjustl( substr[t$88,0:10], substr[c0,0:10] )
+   75.          t$89 = 52 + ( _ltrim( substr[t$88,0:10] ) )
+   75.          t$91 = int( _alloc( max( 0, t$89 ) ), 8 )
+   75.          $LCS_1 = max( 0, t$89 )
+   75.          substr[0,t$91:$LCS_1] = //( '**(CreateWatch)** number of watches (', //( substr[t$88,0:_ltrim( substr[t$88,0:10] )], ') should be > 0' ) )
+   75.          call fatalerror( substr[0,t$91:$LCS_1] )
+   75.          _free( t$91 )
+   76.          substr[t$92,0:4] = '1'
+   76.          call _stop( substr[t$92,0:1] )
+   76.       else
+   77.          $MR_firstw_S3 = 0[loc( firstw ),0]
+   77.          if ( $MR_firstw_S3 > $MR_nw_S2 ) then
+   78.             $_StackCntrl_O1 = $_StaticCntrl_O5
+   78.             1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c0,0:10] )
+   78.             $_StackIolist_O7 = $_StaticIolist_O6
+   78.             0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O7 ),0].L ) ), 8 ),0].L = loc( 0[loc( nw ),0] )
+   78.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O7 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   79.             $_StackCntrl_O1 = $_StaticCntrl_O8
+   79.             1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c1,0:10] )
+   79.             $_StackIolist_O10 = $_StaticIolist_O9
+   79.             0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O10 ),0].L ) ), 8 ),0].L = loc( 0[loc( firstw ),0] )
+   79.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O10 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   80.             _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O11 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O13 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   81.             _f90_adjustl( substr[t$93,0:10], substr[c1,0:10] )
+   82.             _f90_adjustl( substr[t$94,0:10], substr[c0,0:10] )
+   81.             t$95 = ( _ltrim( substr[t$93,0:10] ) ) + 55 + ( _ltrim( substr[t$94,0:10] ) )
+   82.             t$97 = int( _alloc( max( 0, t$95 ) ), 8 )
+   82.             $LCS_2 = max( 0, t$95 )
+   82.             substr[0,t$97:$LCS_2] = //( '**(CreateWatch)** first watch (', //( substr[t$93,0:_ltrim( substr[t$93,0:10] )], //( ') > number of watches (', //( substr[t$94,0:_ltrim( substr[t$94,0:10] )], ')' ) ) ) )
+   81.             call fatalerror( substr[0,t$97:$LCS_2] )
+   82.             _free( t$97 )
+   83.             substr[t$98,0:4] = '1'
+   83.             call _stop( substr[t$98,0:1] )
+   83.          else
+   88.             $LCS_wt_3 = loc( wt )
+   88.             0[$LCS_wt_3,0] = $MR_nw_S2
+   89.             7[$LCS_wt_3,0].L = 0
+   89.             8[$LCS_wt_3,0].L = ( max( 0, 1 + $MR_nw_S2 ) )
+   89.             9[$LCS_wt_3,0].L = 1
+   89.             0[loc( $_allo_P1 ),0].L = 0x1000000000001L
+   89.             1[loc( $_allo_P1 ),0].L = loc( 1[$LCS_wt_3,0].L )
+   89.             $MR_wt_S4 = 3[$LCS_wt_3,0].L
+   89.             $MR_wt_S5 = or( 16, $MR_wt_S4 )
+   89.             3[$LCS_wt_3,0].L = $MR_wt_S5
+   89.             call __allocate( $_allo_P1, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+   90.             $ierr_S6 = ierr
+   90.             if ( $ierr_S6 /= 0 ) then
+   91.                $_StackCntrl_O1 = $_StaticCntrl_O14
+   91.                1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c0,0:10] )
+   91.                $_StackIolist_O16 = $_StaticIolist_O15
+   91.                0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O16 ),0].L ) ), 8 ),0].L = loc( ierr )
+   91.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O16 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   92.                _f90_adjustl( substr[t$99,0:10], substr[c0,0:10] )
+   92.                t$100 = 50 + ( _ltrim( substr[t$99,0:10] ) )
+   92.                t$102 = int( _alloc( max( 0, t$100 ) ), 8 )
+   92.                $LCS_4 = max( 0, t$100 )
+   92.                substr[0,t$102:$LCS_4] = //( '**(CreateWatch)** allocate TimeCpu returned error ', substr[t$99,0:_ltrim( substr[t$99,0:10] )] )
+   92.                call fatalerror( substr[0,t$102:$LCS_4] )
+   92.                _free( t$102 )
+   92.             endif
+   94.             $MR_nw_S7 = 0[loc( nw ),0]
+   94.             $CS_S8 = max( 0, 1 + $MR_nw_S7 )
+   94.             $F_A33 = $CS_S8
+   94.             $I_S14 = 0
+   94.             $LCS_1_6 = -1 + $CS_S8
+   94.             $LCS_F_7 = -1 + $F_A33
+   94.             if ( $LCS_F_7 > $LCS_1_6 ) then
+   94.                $LB_Y0 = 0
+   94.                $UB_Y1 = $LCS_1_6
+   94.                $Subscript_Y2 = 0
+   94.                $Subscript_Y3 = $LCS_F_7
+   94.                $Subscript_Y4 = 1
+   94.                _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+   94.             endif
+   94.             $MR_wt_S9 = 1[loc( wt ),0].L
+   94.             if ( $F_A33 >= 4 ) then
+   94.                $TC_0 = and( -4, $F_A33 )
+   94.                $LC_S13 = -$TC_0
+   94.                $SI_S12 = 0
+   94.                $LIS_S10[0:4:1] = _bcst( 0.0, 4 )
+   94.                $LIS_S11 = int( $MR_wt_S9, 8 )
+   94.                do
+   94.                   0[$LIS_S11 + $SI_S12:4:1] = $LIS_S10[0:4:1]
+   94.                   $SI_S12 = 16 + $SI_S12
+   94.                   $LC_S13 = 4 + $LC_S13
+   94.                   if ( $LC_S13 >= 0 ) exit
+   94.                enddo
+   94.                $I_S14 = $TC_0
+   94.             endif
+   94.             if ( $F_A33 > $I_S14 ) then
+   94.                $LIS_S15 = int( $MR_wt_S9, 8 )
+   94.                do
+   94.                   0[$LIS_S15,$I_S14] = 0.0
+   94.                   $I_S14 = 1 + $I_S14
+   94.                   if ( $I_S14 >= $F_A33 ) exit
+   94.                enddo
+   94.             endif
+   96.             $LCS_wt_8 = loc( wt )
+   96.             16[$LCS_wt_8,0].L = 0
+   96.             17[$LCS_wt_8,0].L = ( max( 0, 1 + $MR_nw_S7 ) )
+   96.             18[$LCS_wt_8,0].L = 1
+   96.             0[loc( $_allo_P2 ),0].L = 0x1000000000001L
+   96.             1[loc( $_allo_P2 ),0].L = loc( 10[$LCS_wt_8,0].L )
+   96.             $MR_wt_S16 = 12[$LCS_wt_8,0].L
+   96.             $MR_wt_S17 = or( 16, $MR_wt_S16 )
+   96.             12[$LCS_wt_8,0].L = $MR_wt_S17
+   96.             call __allocate( $_allo_P2, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+   97.             $ierr_S18 = ierr
+   97.             if ( $ierr_S18 /= 0 ) then
+   98.                $_StackCntrl_O1 = $_StaticCntrl_O17
+   98.                1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c0,0:10] )
+   98.                $_StackIolist_O19 = $_StaticIolist_O18
+   98.                0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O19 ),0].L ) ), 8 ),0].L = loc( ierr )
+   98.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O19 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   99.                _f90_adjustl( substr[t$103,0:10], substr[c0,0:10] )
+   99.                t$104 = 51 + ( _ltrim( substr[t$103,0:10] ) )
+   99.                t$106 = int( _alloc( max( 0, t$104 ) ), 8 )
+   99.                $LCS_9 = max( 0, t$104 )
+   99.                substr[0,t$106:$LCS_9] = //( '**(CreateWatch)** allocate TimeWall returned error ', substr[t$103,0:_ltrim( substr[t$103,0:10] )] )
+   99.                call fatalerror( substr[0,t$106:$LCS_9] )
+   99.                _free( t$106 )
+   99.             endif
+  101.             $MR_nw_S19 = 0[loc( nw ),0]
+  101.             $CS_S20 = max( 0, 1 + $MR_nw_S19 )
+  101.             $F_A34 = $CS_S20
+  101.             $I_S26 = 0
+  101.             $LCS_1_11 = -1 + $CS_S20
+  101.             $LCS_F_12 = -1 + $F_A34
+  101.             if ( $LCS_F_12 > $LCS_1_11 ) then
+  101.                $LB_Y0 = 0
+  101.                $UB_Y1 = $LCS_1_11
+  101.                $Subscript_Y2 = 0
+  101.                $Subscript_Y3 = $LCS_F_12
+  101.                $Subscript_Y4 = 1
+  101.                _rbounds_error( $_File_Y40, $Line_Y44, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y45 )
+  101.             endif
+  101.             $MR_wt_S21 = 10[loc( wt ),0].L
+  101.             if ( $F_A34 >= 4 ) then
+  101.                $TC_3 = and( -4, $F_A34 )
+  101.                $LC_S25 = -$TC_3
+  101.                $SI_S24 = 0
+  101.                $LIS_S22[0:4:1] = _bcst( 0.0, 4 )
+  101.                $LIS_S23 = int( $MR_wt_S21, 8 )
+  101.                do
+  101.                   0[$LIS_S23 + $SI_S24:4:1] = $LIS_S22[0:4:1]
+  101.                   $SI_S24 = 16 + $SI_S24
+  101.                   $LC_S25 = 4 + $LC_S25
+  101.                   if ( $LC_S25 >= 0 ) exit
+  101.                enddo
+  101.                $I_S26 = $TC_3
+  101.             endif
+  101.             if ( $F_A34 > $I_S26 ) then
+  101.                $LIS_S27 = int( $MR_wt_S21, 8 )
+  101.                do
+  101.                   0[$LIS_S27,$I_S26] = 0.0
+  101.                   $I_S26 = 1 + $I_S26
+  101.                   if ( $I_S26 >= $F_A34 ) exit
+  101.                enddo
+  101.             endif
+  103.             $LCS_wt_13 = loc( wt )
+  103.             25[$LCS_wt_13,0].L = 0
+  103.             26[$LCS_wt_13,0].L = ( max( 0, 1 + $MR_nw_S19 ) )
+  103.             27[$LCS_wt_13,0].L = 16
+  103.             0[loc( $_allo_P3 ),0].L = 0x1000000000001L
+  103.             1[loc( $_allo_P3 ),0].L = loc( 19[$LCS_wt_13,0].L )
+  103.             $MR_wt_S28 = 21[$LCS_wt_13,0].L
+  103.             $MR_wt_S29 = or( 16, $MR_wt_S28 )
+  103.             21[$LCS_wt_13,0].L = $MR_wt_S29
+  103.             call __allocate( $_allo_P3, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  104.             $ierr_S30 = ierr
+  104.             if ( $ierr_S30 /= 0 ) then
+  105.                $_StackCntrl_O1 = $_StaticCntrl_O20
+  105.                1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c0,0:10] )
+  105.                $_StackIolist_O22 = $_StaticIolist_O21
+  105.                0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O22 ),0].L ) ), 8 ),0].L = loc( ierr )
+  105.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O22 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  106.                _f90_adjustl( substr[t$107,0:10], substr[c0,0:10] )
+  106.                t$108 = 47 + ( _ltrim( substr[t$107,0:10] ) )
+  106.                t$110 = int( _alloc( max( 0, t$108 ) ), 8 )
+  106.                $LCS_14 = max( 0, t$108 )
+  106.                substr[0,t$110:$LCS_14] = //( '**(CreateWatch)** allocate Name returned error ', substr[t$107,0:_ltrim( substr[t$107,0:10] )] )
+  106.                call fatalerror( substr[0,t$110:$LCS_14] )
+  106.                _free( t$110 )
+  106.             endif
+  108.             $MR_nw_S31 = 0[loc( nw ),0]
+  108.             $CS_S32 = max( 0, 1 + $MR_nw_S31 )
+  108.             $F_A35 = $CS_S32
+  108.             $I_S34 = 0
+  108.             $LCS_1_16 = -1 + $CS_S32
+  108.             $LCS_F_17 = -1 + $F_A35
+  108.             if ( $LCS_F_17 > $LCS_1_16 ) then
+  108.                $LB_Y0 = 0
+  108.                $UB_Y1 = $LCS_1_16
+  108.                $Subscript_Y2 = 0
+  108.                $Subscript_Y3 = $LCS_F_17
+  108.                $Subscript_Y4 = 1
+  108.                _rbounds_error( $_File_Y40, $Line_Y46, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y47 )
+  108.             endif
+  108.             $SC_wt_I4 = 19[loc( wt ),0].L
+  108.             $SR_S33 = 0
+  108.             do
+  108.                substr[$SC_wt_I4,$SR_S33:16] = '          '
+  108.                $SR_S33 = 16 + $SR_S33
+  108.                $I_S34 = 1 + $I_S34
+  108.                if ( $I_S34 >= $F_A35 ) exit
+  108.             enddo
+  109.             $LCS_1_18 = -1 + ( max( 0, 1 + $MR_nw_S31 ) )
+  109.             if ( $LCS_1_18 < 0 ) then
+  109.                $LB_Y0 = 0
+  109.                $UB_Y1 = $LCS_1_18
+  109.                $Subscript_Y5 = 0
+  109.                _bounds_error( $_File_Y40, $Line_Y48, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y49 )
+  109.             endif
+  109.             substr[$SC_wt_I4,0:16] = 'Total '
+  113.             call _cpu_time_4( tc )
+  114.             $t_S0 = irtc_rate_i8
+  114.             $Flat_S1 = _rtc
+  115.             if ( _rsh( $t_S0, 14 ) == 0 ) then
+  116.                _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O23 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StaticIolist_O25 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  116.                substr[t$189,0:4] = ' '
+  116.                call _stop( substr[t$189,0:1] )
+  116.             endif
+  118.             $CS_3 = 1.0 / real( _rsh( $t_S0, 14 ) )
+  118.             56[loc( wt ),0] = $CS_3
+  123.             $MR_nw_S35 = 0[loc( nw ),0]
+  123.             $CS_S36 = max( 0, 1 + $MR_nw_S35 )
+  123.             $CS_CS0_2 = -1 + $CS_S36
+  123.             if ( $CS_CS0_2 < 0 ) then
+  123.                $LB_Y0 = 0
+  123.                $UB_Y1 = $CS_CS0_2
+  123.                $Subscript_Y5 = 0
+  123.                _bounds_error( $_File_Y40, $Line_Y50, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y51 )
+  123.             endif
+  123.             $MR_tc_28 = tc
+  123.             $MR_wt_S37 = 1[loc( wt ),0].L
+  123.             0[int( $MR_wt_S37, 8 ),0] = -$MR_tc_28
+  124.             if ( $CS_CS0_2 < 0 ) then
+  124.                $LB_Y0 = 0
+  124.                $UB_Y1 = $CS_CS0_2
+  124.                $Subscript_Y5 = 0
+  124.                _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  124.             endif
+  124.             $LCS_wt_21 = loc( wt )
+  124.             $MR_wt_S38 = 10[$LCS_wt_21,0].L
+  124.             $CS_4 = -( real( and( 0x7fffffff, _rsh( $Flat_S1, 14 ) ) ) * $CS_3 )
+  124.             0[int( $MR_wt_S38, 8 ),0] = $CS_4
+  128.             $MR_firstw_S39 = 0[loc( firstw ),0]
+  128.             1[$LCS_wt_21,0] = $MR_firstw_S39
+  129.             if ( or( $MR_firstw_S39, -1 + $CS_S36 - $MR_firstw_S39 ) < 0 ) then
+  129.                $LB_Y0 = 0
+  129.                $UB_Y1 = -1 + $CS_S36
+  129.                $Subscript_Y5 = $MR_firstw_S39
+  129.                _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y55 )
+  129.             endif
+  129.             $LCS_MR_firstw_24 = $MR_firstw_S39
+  129.             0[int( $MR_wt_S37, 8 ),$LCS_MR_firstw_24] = -$MR_tc_28
+  130.             if ( or( $MR_firstw_S39, -1 + $CS_S36 - $MR_firstw_S39 ) < 0 ) then
+  130.                $LB_Y0 = 0
+  130.                $UB_Y1 = -1 + $CS_S36
+  130.                $Subscript_Y5 = $LCS_MR_firstw_24
+  130.                _bounds_error( $_File_Y40, $Line_Y56, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y57 )
+  130.             endif
+  130.             0[int( $MR_wt_S38, 8 ),$MR_firstw_S39] = $CS_4
+  130.          endif
+  130.       endif
+  131.       return
+  131.       end
+  131.       
+  139.       
+  139.       subroutine destroywatch( wt )
+   33.       if ( t$44 == 0 ) then
+   33.          0[loc( t$57 ),0] = 2
+   33.          0[loc( t$58 ),0] = 0
+   33.          0[loc( t$59 ),0] = 0
+   33.          0[loc( t$54 ),0].L = int( loc( t$43 ), 8 )
+   33.          0[loc( t$55 ),0].L = 0
+   33.          0[loc( t$56 ),0].L = int( loc( t$53 ), 8 )
+   33.          t$44 = __get_dynamic_type( 2, 0[loc( t$54 ),0].L, 0[loc( t$57 ),0], 1, 0[loc( t$55 ),0].L, 0[loc( t$56 ),0].L, 0[loc( t$58 ),0], 0[loc( t$59 ),0] )
+   33.       endif
+  146.       0[loc( $_allo_P0 ),0].L = 0x1000000000001L
+  146.       1[loc( $_allo_P0 ),0].L = loc( 1[loc( wt ),0].L )
+  146.       call __deallocate( $_allo_P0, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  146.       $LCS_wt_0 = loc( wt )
+  146.       $MR_wt_S0 = 3[$LCS_wt_0,0].L
+  146.       $MR_wt_S1 = and( 0xfffffffffffffffeUL, $MR_wt_S0 )
+  146.       3[$LCS_wt_0,0].L = $MR_wt_S1
+  147.       $ierr_S2 = ierr
+  147.       if ( $ierr_S2 /= 0 ) then
+  148.          $_StackCntrl_O1 = $_StaticCntrl_O0
+  148.          1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c0,0:10] )
+  148.          $_StackIolist_O3 = $_StaticIolist_O2
+  148.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O3 ),0].L ) ), 8 ),0].L = loc( ierr )
+  148.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O3 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  149.          _f90_adjustl( substr[t$113,0:10], substr[c0,0:10] )
+  149.          t$114 = 53 + ( _ltrim( substr[t$113,0:10] ) )
+  149.          t$116 = int( _alloc( max( 0, t$114 ) ), 8 )
+  149.          $LCS_1 = max( 0, t$114 )
+  149.          substr[0,t$116:$LCS_1] = //( '**(DestroyWatch)** deallocate TimeCpu returned error ', substr[t$113,0:_ltrim( substr[t$113,0:10] )] )
+  149.          call fatalerror( substr[0,t$116:$LCS_1] )
+  149.          _free( t$116 )
+  149.       endif
+  152.       0[loc( $_allo_P1 ),0].L = 0x1000000000001L
+  152.       1[loc( $_allo_P1 ),0].L = loc( 10[loc( wt ),0].L )
+  152.       call __deallocate( $_allo_P1, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  152.       $LCS_wt_2 = loc( wt )
+  152.       $MR_wt_S3 = 12[$LCS_wt_2,0].L
+  152.       $MR_wt_S4 = and( 0xfffffffffffffffeUL, $MR_wt_S3 )
+  152.       12[$LCS_wt_2,0].L = $MR_wt_S4
+  153.       $ierr_S5 = ierr
+  153.       if ( $ierr_S5 /= 0 ) then
+  154.          $_StackCntrl_O1 = $_StaticCntrl_O5
+  154.          1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c0,0:10] )
+  154.          $_StackIolist_O7 = $_StaticIolist_O6
+  154.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O7 ),0].L ) ), 8 ),0].L = loc( ierr )
+  154.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O7 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  155.          _f90_adjustl( substr[t$117,0:10], substr[c0,0:10] )
+  155.          t$118 = 54 + ( _ltrim( substr[t$117,0:10] ) )
+  155.          t$120 = int( _alloc( max( 0, t$118 ) ), 8 )
+  155.          $LCS_3 = max( 0, t$118 )
+  155.          substr[0,t$120:$LCS_3] = //( '**(DestroyWatch)** deallocate TimeWall returned error ', substr[t$117,0:_ltrim( substr[t$117,0:10] )] )
+  155.          call fatalerror( substr[0,t$120:$LCS_3] )
+  155.          _free( t$120 )
+  155.       endif
+  158.       0[loc( $_allo_P2 ),0].L = 0x1000000000001L
+  158.       1[loc( $_allo_P2 ),0].L = loc( 19[loc( wt ),0].L )
+  158.       call __deallocate( $_allo_P2, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  158.       $LCS_wt_4 = loc( wt )
+  158.       $MR_wt_S6 = 21[$LCS_wt_4,0].L
+  158.       $MR_wt_S7 = and( 0xfffffffffffffffeUL, $MR_wt_S6 )
+  158.       21[$LCS_wt_4,0].L = $MR_wt_S7
+  159.       $ierr_S8 = ierr
+  159.       if ( $ierr_S8 /= 0 ) then
+  160.          $_StackCntrl_O1 = $_StaticCntrl_O8
+  160.          1[loc( $_StackCntrl_O1 ),0].L = loc( substr[c0,0:10] )
+  160.          $_StackIolist_O10 = $_StaticIolist_O9
+  160.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O10 ),0].L ) ), 8 ),0].L = loc( ierr )
+  160.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O10 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  161.          _f90_adjustl( substr[t$121,0:10], substr[c0,0:10] )
+  161.          t$122 = 50 + ( _ltrim( substr[t$121,0:10] ) )
+  161.          t$124 = int( _alloc( max( 0, t$122 ) ), 8 )
+  161.          $LCS_5 = max( 0, t$122 )
+  161.          substr[0,t$124:$LCS_5] = //( '**(DestroyWatch)** deallocate Name returned error ', substr[t$121,0:_ltrim( substr[t$121,0:10] )] )
+  161.          call fatalerror( substr[0,t$124:$LCS_5] )
+  161.          _free( t$124 )
+  161.       endif
+  163.       return
+  163.       end
+  163.       
+  171.       
+  171.       subroutine dumpwatch( wt, unit, name )
+  171.       !  use before definition covert$69 = 0
+   33.       if ( t$44 == 0 ) then
+   33.          0[loc( t$65 ),0] = 2
+   33.          0[loc( t$66 ),0] = 0
+   33.          0[loc( t$67 ),0] = 0
+   33.          0[loc( t$62 ),0].L = int( loc( t$43 ), 8 )
+   33.          0[loc( t$63 ),0].L = 0
+   33.          0[loc( t$64 ),0].L = int( loc( t$61 ), 8 )
+   33.          t$44 = __get_dynamic_type( 2, 0[loc( t$62 ),0].L, 0[loc( t$65 ),0], 1, 0[loc( t$63 ),0].L, 0[loc( t$64 ),0].L, 0[loc( t$66 ),0], 0[loc( t$67 ),0] )
+   33.       endif
+  171.       if ( cri_pointer( 0 ) /= loc( substr[name,0:_len( name )] ) ) then
+  171.          t$69 = _len( name )
+  171.       endif
+  181.       call _cpu_time_4( tc )
+  182.       $Flat_S0 = _rtc
+  183.       $LCS_wt_0 = loc( wt )
+  183.       $MR_wt_19 = 56[$LCS_wt_0,0]
+  183.       $CS_MR_wt_0 = real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) ) * $MR_wt_19
+  187.       $MR_wt_S3 = 8[$LCS_wt_0,0].L
+  187.       $MR_wt_S2 = 7[$LCS_wt_0,0].L
+  187.       $LCS_1_1 = -1 + $MR_wt_S2 + $MR_wt_S3
+  187.       if ( or( $LCS_1_1, -$MR_wt_S2 ) < 0 ) then
+  187.          $LB_Y0 = $MR_wt_S2
+  187.          $UB_Y1 = $LCS_1_1
+  187.          $Subscript_Y5 = 0
+  187.          _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  187.       endif
+  187.       $LCS_1_2 = -1 + $MR_wt_S2 + $MR_wt_S3
+  187.       if ( or( $LCS_1_2, -$MR_wt_S2 ) < 0 ) then
+  187.          $LB_Y0 = $MR_wt_S2
+  187.          $UB_Y1 = $LCS_1_2
+  187.          $Subscript_Y5 = 0
+  187.          _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  187.       endif
+  187.       $LCS_wt_3 = loc( wt )
+  187.       $MR_wt_S5 = 1[$LCS_wt_3,0].L
+  187.       $MR_wt_S4 = 9[$LCS_wt_3,0].L
+  187.       $LCS_4 = -( $MR_wt_S2 * $MR_wt_S4 )
+  187.       $LCS_MR_wt_5 = int( $MR_wt_S5, 8 )
+  187.       $MR_wt_S6 = 0[$LCS_MR_wt_5,$LCS_4]
+  187.       $MR_tc_25 = tc
+  187.       $MR_wt_S7 = $MR_tc_25 + $MR_wt_S6
+  187.       0[$LCS_MR_wt_5,$LCS_4] = $MR_wt_S7
+  188.       $MR_wt_S8 = 1[$LCS_wt_3,0]
+  188.       $CS_S9 = or( $MR_wt_S8 - $MR_wt_S2, $MR_wt_S2 + -1 + $MR_wt_S3 - $MR_wt_S8 ) >= 0
+  188.       if ( $CS_S9 == .false. ) then
+  188.          $LB_Y0 = $MR_wt_S2
+  188.          $UB_Y1 = -1 + $MR_wt_S2 + $MR_wt_S3
+  188.          $Subscript_Y5 = $MR_wt_S8
+  188.          _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+  188.       endif
+  188.       if ( $CS_S9 == .false. ) then
+  188.          $LB_Y0 = $MR_wt_S2
+  188.          $UB_Y1 = -1 + $MR_wt_S2 + $MR_wt_S3
+  188.          $Subscript_Y5 = $MR_wt_S8
+  188.          _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+  188.       endif
+  188.       $LCS_MR_wt_6 = ( $MR_wt_S8 - $MR_wt_S2 ) * $MR_wt_S4
+  188.       $LCS_MR_wt_7 = int( $MR_wt_S5, 8 )
+  188.       $MR_wt_S10 = 0[$LCS_MR_wt_7,$LCS_MR_wt_6]
+  188.       $MR_wt_S11 = $MR_tc_25 + $MR_wt_S10
+  188.       0[$LCS_MR_wt_7,$LCS_MR_wt_6] = $MR_wt_S11
+  189.       $LCS_wt_8 = loc( wt )
+  189.       $MR_wt_S13 = 17[$LCS_wt_8,0].L
+  189.       $MR_wt_S12 = 16[$LCS_wt_8,0].L
+  189.       $LCS_1_9 = -1 + $MR_wt_S12 + $MR_wt_S13
+  189.       if ( or( $LCS_1_9, -$MR_wt_S12 ) < 0 ) then
+  189.          $LB_Y0 = $MR_wt_S12
+  189.          $UB_Y1 = $LCS_1_9
+  189.          $Subscript_Y5 = 0
+  189.          _bounds_error( $_File_Y40, $Line_Y48, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y49 )
+  189.       endif
+  189.       $LCS_1_10 = -1 + $MR_wt_S12 + $MR_wt_S13
+  189.       if ( or( $LCS_1_10, -$MR_wt_S12 ) < 0 ) then
+  189.          $LB_Y0 = $MR_wt_S12
+  189.          $UB_Y1 = $LCS_1_10
+  189.          $Subscript_Y5 = 0
+  189.          _bounds_error( $_File_Y40, $Line_Y48, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y49 )
+  189.       endif
+  189.       $LCS_wt_11 = loc( wt )
+  189.       $MR_wt_S15 = 10[$LCS_wt_11,0].L
+  189.       $MR_wt_S14 = 18[$LCS_wt_11,0].L
+  189.       $LCS_12 = -( $MR_wt_S12 * $MR_wt_S14 )
+  189.       $LCS_MR_wt_13 = int( $MR_wt_S15, 8 )
+  189.       $MR_wt_S16 = 0[$LCS_MR_wt_13,$LCS_12]
+  189.       $CS_MR_wt_2 = $CS_MR_wt_0
+  189.       $MR_wt_S17 = $CS_MR_wt_2 + $MR_wt_S16
+  189.       0[$LCS_MR_wt_13,$LCS_12] = $MR_wt_S17
+  190.       $CS_S18 = or( $MR_wt_S8 - $MR_wt_S12, $MR_wt_S12 + -1 + $MR_wt_S13 - $MR_wt_S8 ) >= 0
+  190.       if ( $CS_S18 == .false. ) then
+  190.          $LB_Y0 = $MR_wt_S12
+  190.          $UB_Y1 = -1 + $MR_wt_S12 + $MR_wt_S13
+  190.          $Subscript_Y5 = $MR_wt_S8
+  190.          _bounds_error( $_File_Y40, $Line_Y51, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y52 )
+  190.       endif
+  190.       if ( $CS_S18 == .false. ) then
+  190.          $LB_Y0 = $MR_wt_S12
+  190.          $UB_Y1 = -1 + $MR_wt_S12 + $MR_wt_S13
+  190.          $Subscript_Y5 = $MR_wt_S8
+  190.          _bounds_error( $_File_Y40, $Line_Y51, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y52 )
+  190.       endif
+  190.       $LCS_MR_wt_14 = ( $MR_wt_S8 - $MR_wt_S12 ) * $MR_wt_S14
+  190.       $LCS_MR_wt_15 = int( $MR_wt_S15, 8 )
+  190.       $MR_wt_S19 = 0[$LCS_MR_wt_15,$LCS_MR_wt_14]
+  190.       $MR_wt_S20 = $CS_MR_wt_2 + $MR_wt_S19
+  190.       0[$LCS_MR_wt_15,$LCS_MR_wt_14] = $MR_wt_S20
+  194.       $LCS_unit_16 = loc( unit )
+  194.       if ( cri_pointer( 0 ) /= loc( 0[$LCS_unit_16,0] ) ) then
+  195.          $MR_unit_34 = 0[$LCS_unit_16,0]
+  195.          t$126 = $MR_unit_34
+  195.          substr[t$127,0:7] = 'UNKNOWN'
+  195.          0[loc( t$128 ),0].L = 0x100000000000000L
+  195. !dir$ suppress t$126
+  195.          1[loc( t$128 ),0].L = int( loc( t$126 ), 8 )
+  195.          2[loc( t$128 ),0].L = 0
+  195.          3[loc( t$128 ),0].L = 0
+  195. !dir$ suppress substr[name,0:_ltrim( substr[name,0:max( 0, t$69 )] )]
+  195.          4[loc( t$128 ),0].L = int( loc( substr[name,0:_ltrim( substr[name,0:max( 0, t$69 )] )] ), 8 )
+  195.          5[loc( t$128 ),0].L = _ltrim( substr[name,0:max( 0, t$69 )] )
+  195. !dir$ suppress substr[t$127,0:7]
+  195.          6[loc( t$128 ),0].L = int( loc( substr[t$127,0:7] ), 8 )
+  195.          7[loc( t$128 ),0].L = 7
+  195.          8[loc( t$128 ),0].L = 0
+  195.          10[loc( t$128 ),0].L = 0
+  195.          12[loc( t$128 ),0].L = 0
+  195.          13[loc( t$128 ),0].L = 0
+  195.          15[loc( t$128 ),0].L = 0
+  195.          17[loc( t$128 ),0].L = 0
+  195.          19[loc( t$128 ),0].L = 0
+  195.          21[loc( t$128 ),0].L = 0
+  195.          23[loc( t$128 ),0].L = 0
+  195.          24[loc( t$128 ),0].L = 0
+  195.          26[loc( t$128 ),0].L = 0
+  195.          28[loc( t$128 ),0].L = 0
+  195.          30[loc( t$128 ),0].L = 0
+  195.          32[loc( t$128 ),0].L = 0
+  195.          34[loc( t$128 ),0].L = 0
+  195.          t$125 = _open( t$128 )
+  196.          $Unit_temp_O0 = $MR_unit_34
+  196.          $_StackCntrl_O4 = $_StaticCntrl_O3
+  196.          $MR_StackCntrl_S21 = loc( $Unit_temp_O0 )
+  196.          1[loc( $_StackCntrl_O4 ),0].L = $MR_StackCntrl_S21
+  196.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O4 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StaticIolist_O5 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  197.          $LCS_wt_17 = loc( wt )
+  197.          $MR_wt_S22 = 0[$LCS_wt_17,0]
+  197.          if ( $MR_wt_S22 > 0 ) then
+  197.             $I_L197_S23 = 0
+  200.             $LIS_S41 = $MR_wt_S22
+  198.             $LIS_E5 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O10 ),0].L ) ), 8 )
+  198.             $LIS_E4 = $MR_unit_34
+  199.             $LIS_E3 = loc( t$143 )
+  199.             $LIS_E2 = loc( t$137 )
+  199.             $LIS_E1 = loc( t$132 )
+  199.             do
+  199.                $MR_wt_S25 = 25[$LCS_wt_17,0].L
+  199.                $MR_wt_S24 = 26[$LCS_wt_17,0].L
+  199.                $LCS_IL197_18 = 1 + $I_L197_S23
+  199.                if ( ( $LCS_IL197_18 < $MR_wt_S25 .or. $LCS_IL197_18 > -1 + $MR_wt_S24 + $MR_wt_S25 ) /= .false. ) then
+  199.                   substr[t$133,0:12] = 'Watches.f90'
+  199.                   substr[t$134,0:5] = 'NAME'
+  199.                   t$126 = $MR_wt_S25
+  199.                   t$135 = -1 + t$126 + $MR_wt_S24
+  199.                   t$136 = $LCS_IL197_18
+  199.                   $Con_P109 = 199
+  199.                   $Con_P110 = 1
+  199.                   call _bounds_error( substr[t$133,0:12], $Con_P109, substr[t$134,0:5], $Con_P110, t$126, t$135, t$136, 0[$LIS_E1,0].L )
+  199.                endif
+  199.                $MR_wt_S27 = 7[$LCS_wt_17,0].L
+  199.                $MR_wt_S26 = 8[$LCS_wt_17,0].L
+  199.                $LCS_IL197_19 = 1 + $I_L197_S23
+  199.                $LCS_1_20 = -1 + $MR_wt_S26 + $MR_wt_S27
+  199.                if ( ( $LCS_IL197_19 < $MR_wt_S27 .or. $LCS_IL197_19 > $LCS_1_20 ) /= .false. ) then
+  199.                   substr[t$138,0:12] = 'Watches.f90'
+  199.                   substr[t$139,0:8] = 'TIMECPU'
+  199.                   t$140 = $MR_wt_S27
+  199.                   t$141 = $LCS_1_20
+  199.                   t$142 = $LCS_IL197_19
+  199.                   $Con_P109 = 199
+  199.                   $Con_P110 = 1
+  199.                   call _bounds_error( substr[t$138,0:12], $Con_P109, substr[t$139,0:8], $Con_P110, t$140, t$141, t$142, 0[$LIS_E2,0].L )
+  199.                endif
+  199.                $MR_wt_S29 = 16[$LCS_wt_17,0].L
+  199.                $MR_wt_S28 = 17[$LCS_wt_17,0].L
+  199.                $LCS_IL197_21 = 1 + $I_L197_S23
+  199.                $LCS_1_22 = -1 + $MR_wt_S28 + $MR_wt_S29
+  199.                if ( ( $LCS_IL197_21 < $MR_wt_S29 .or. $LCS_IL197_21 > $LCS_1_22 ) /= .false. ) then
+  199.                   substr[t$144,0:12] = 'Watches.f90'
+  199.                   substr[t$145,0:9] = 'TIMEWALL'
+  199.                   t$146 = $MR_wt_S29
+  199.                   t$147 = $LCS_1_22
+  199.                   t$148 = $LCS_IL197_21
+  199.                   $Con_P109 = 199
+  199.                   $Con_P110 = 1
+  199.                   call _bounds_error( substr[t$144,0:12], $Con_P109, substr[t$145,0:9], $Con_P110, t$146, t$147, t$148, 0[$LIS_E3,0].L )
+  199.                endif
+  198.                $Unit_temp_O1 = $LIS_E4
+  198.                $_StackCntrl_O4 = $_StaticCntrl_O8
+  198.                $MR_StackCntrl_S30 = loc( $Unit_temp_O1 )
+  198.                1[loc( $_StackCntrl_O4 ),0].L = $MR_StackCntrl_S30
+  198.                $_StackIolist_O10 = $_StaticIolist_O9
+  198.                $MR_wt_S32 = 27[$LCS_wt_17,0].L
+  198.                $MR_wt_S31 = 25[$LCS_wt_17,0].L
+  198.                0[$LIS_E5,0].L = loc( substr[19[$LCS_wt_17,0].L,( 1 + $I_L197_S23 - $MR_wt_S31 ) * $MR_wt_S32:16] )
+  198.                $_StackDv_P1 = $_StaticDV_P9
+  198.                $MR_wt_S33 = 1[$LCS_wt_17,0].L
+  198.                $LCS_wt_23 = loc( 0[int( $MR_wt_S33, 8 ),0] )
+  198.                0[loc( $_StackDv_P1 ),0].L = pointer to array[1] of real( $LCS_wt_23 )
+  198.                1[loc( $_StackDv_P1 ),0].L = 32
+  198.                2[loc( $_StackDv_P1 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P1 ),0].L )
+  198.                23[loc( $_StackDv_P1 )].B = 1
+  198.                4[loc( $_StackDv_P1 ),0].L = int( $LCS_wt_23, 8 )
+  198.                5[loc( $_StackDv_P1 ),0].L = 32
+  198.                21[loc( $_StackDv_P1 )].B = 0
+  198.                6[loc( $_StackDv_P1 ),0] = 0
+  198.                $MR_wt_S34 = 7[$LCS_wt_17,0].L
+  198.                6[loc( $_StackDv_P1 ),0].L = $MR_wt_S34
+  198.                $MR_wt_S35 = 8[$LCS_wt_17,0].L
+  198.                7[loc( $_StackDv_P1 ),0].L = $MR_wt_S35
+  198.                $MR_wt_S36 = 9[$LCS_wt_17,0].L
+  198.                8[loc( $_StackDv_P1 ),0].L = $MR_wt_S36
+  198.                6[loc( $_StackIolist_O10 ),0].L = int( loc( $_StackDv_P1 ), 8 )
+  198.                $LCS_IL197_25 = 1 + $I_L197_S23
+  198.                $DVindex_O11 = $LCS_IL197_25
+  198.                8[loc( $_StackIolist_O10 ),0].L = int( loc( $DVindex_O11 ), 8 )
+  198.                $_StackDv_P2 = $_StaticDV_P10
+  198.                $MR_wt_S37 = 10[$LCS_wt_17,0].L
+  198.                $LCS_wt_24 = loc( 0[int( $MR_wt_S37, 8 ),0] )
+  198.                0[loc( $_StackDv_P2 ),0].L = pointer to array[1] of real( $LCS_wt_24 )
+  198.                1[loc( $_StackDv_P2 ),0].L = 32
+  198.                2[loc( $_StackDv_P2 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P2 ),0].L )
+  198.                23[loc( $_StackDv_P2 )].B = 1
+  198.                4[loc( $_StackDv_P2 ),0].L = int( $LCS_wt_24, 8 )
+  198.                5[loc( $_StackDv_P2 ),0].L = 32
+  198.                21[loc( $_StackDv_P2 )].B = 0
+  198.                6[loc( $_StackDv_P2 ),0] = 0
+  198.                $MR_wt_S38 = 16[$LCS_wt_17,0].L
+  198.                6[loc( $_StackDv_P2 ),0].L = $MR_wt_S38
+  198.                $MR_wt_S39 = 17[$LCS_wt_17,0].L
+  198.                7[loc( $_StackDv_P2 ),0].L = $MR_wt_S39
+  198.                $MR_wt_S40 = 18[$LCS_wt_17,0].L
+  198.                8[loc( $_StackDv_P2 ),0].L = $MR_wt_S40
+  198.                10[loc( $_StackIolist_O10 ),0].L = int( loc( $_StackDv_P2 ), 8 )
+  198.                $DVindex_O12 = $LCS_IL197_25
+  198.                12[loc( $_StackIolist_O10 ),0].L = int( loc( $DVindex_O12 ), 8 )
+  198.                2[loc( $_StackDv_P1 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P1 ),0].L ) )
+  198.                2[loc( $_StackDv_P2 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P2 ),0].L ) )
+  198.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O4 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O10 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  200.                $I_L197_S23 = 1 + $I_L197_S23
+  200.                if ( $I_L197_S23 >= $LIS_S41 ) exit
+  200.             enddo
+  200.          endif
+  202.          $LCS_wt_26 = loc( wt )
+  202.          $MR_wt_S43 = 26[$LCS_wt_26,0].L
+  202.          $MR_wt_S42 = 25[$LCS_wt_26,0].L
+  202.          if ( ( 0 < $MR_wt_S42 .or. 0 > -1 + $MR_wt_S42 + $MR_wt_S43 ) /= .false. ) then
+  202.             substr[t$150,0:12] = 'Watches.f90'
+  202.             substr[t$151,0:5] = 'NAME'
+  202.             t$126 = $MR_wt_S42
+  202.             t$135 = -1 + t$126 + $MR_wt_S43
+  202.             $Con_P109 = 202
+  202.             $Con_P110 = 1
+  202.             $Con_P111 = 0
+  202.             call _bounds_error( substr[t$150,0:12], $Con_P109, substr[t$151,0:5], $Con_P110, t$126, t$135, $Con_P111, 0[loc( t$149 ),0].L )
+  202.          endif
+  202.          $LCS_wt_27 = loc( wt )
+  202.          $MR_wt_S45 = 8[$LCS_wt_27,0].L
+  202.          $MR_wt_S44 = 7[$LCS_wt_27,0].L
+  202.          $LCS_1_28 = -1 + $MR_wt_S44 + $MR_wt_S45
+  202.          if ( ( 0 < $MR_wt_S44 .or. 0 > $LCS_1_28 ) /= .false. ) then
+  202.             substr[t$153,0:12] = 'Watches.f90'
+  202.             substr[t$154,0:8] = 'TIMECPU'
+  202.             t$136 = $MR_wt_S44
+  202.             t$140 = $LCS_1_28
+  202.             $Con_P109 = 202
+  202.             $Con_P110 = 1
+  202.             $Con_P111 = 0
+  202.             call _bounds_error( substr[t$153,0:12], $Con_P109, substr[t$154,0:8], $Con_P110, t$136, t$140, $Con_P111, 0[loc( t$152 ),0].L )
+  202.          endif
+  202.          $LCS_wt_29 = loc( wt )
+  202.          $MR_wt_S47 = 17[$LCS_wt_29,0].L
+  202.          $MR_wt_S46 = 16[$LCS_wt_29,0].L
+  202.          $LCS_1_30 = -1 + $MR_wt_S46 + $MR_wt_S47
+  202.          if ( ( 0 < $MR_wt_S46 .or. 0 > $LCS_1_30 ) /= .false. ) then
+  202.             substr[t$156,0:12] = 'Watches.f90'
+  202.             substr[t$157,0:9] = 'TIMEWALL'
+  202.             t$141 = $MR_wt_S46
+  202.             t$142 = $LCS_1_30
+  202.             $Con_P109 = 202
+  202.             $Con_P110 = 1
+  202.             $Con_P111 = 0
+  202.             call _bounds_error( substr[t$156,0:12], $Con_P109, substr[t$157,0:9], $Con_P110, t$141, t$142, $Con_P111, 0[loc( t$155 ),0].L )
+  202.          endif
+  201.          $Unit_temp_O2 = $MR_unit_34
+  201.          $_StackCntrl_O4 = $_StaticCntrl_O13
+  201.          $MR_StackCntrl_S48 = loc( $Unit_temp_O2 )
+  201.          1[loc( $_StackCntrl_O4 ),0].L = $MR_StackCntrl_S48
+  201.          $_StackIolist_O15 = $_StaticIolist_O14
+  201.          $LCS_wt_31 = loc( wt )
+  201.          $MR_wt_S49 = 27[$LCS_wt_31,0].L
+  201.          $MR_wt_S50 = 25[$LCS_wt_31,0].L
+  201.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O15 ),0].L ) ), 8 ),0].L = loc( substr[19[$LCS_wt_31,0].L,-( $MR_wt_S49 * $MR_wt_S50 ):16] )
+  201.          $_StackDv_P3 = $_StaticDV_P11
+  201.          $MR_wt_S51 = 1[$LCS_wt_31,0].L
+  201.          $LCS_wt_32 = loc( 0[int( $MR_wt_S51, 8 ),0] )
+  201.          0[loc( $_StackDv_P3 ),0].L = pointer to array[1] of real( $LCS_wt_32 )
+  201.          1[loc( $_StackDv_P3 ),0].L = 32
+  201.          2[loc( $_StackDv_P3 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P3 ),0].L )
+  201.          23[loc( $_StackDv_P3 )].B = 1
+  201.          4[loc( $_StackDv_P3 ),0].L = int( $LCS_wt_32, 8 )
+  201.          5[loc( $_StackDv_P3 ),0].L = 32
+  201.          21[loc( $_StackDv_P3 )].B = 0
+  201.          6[loc( $_StackDv_P3 ),0] = 0
+  201.          $MR_wt_S52 = 7[$LCS_wt_31,0].L
+  201.          6[loc( $_StackDv_P3 ),0].L = $MR_wt_S52
+  201.          $MR_wt_S53 = 8[$LCS_wt_31,0].L
+  201.          7[loc( $_StackDv_P3 ),0].L = $MR_wt_S53
+  201.          $MR_wt_S54 = 9[$LCS_wt_31,0].L
+  201.          8[loc( $_StackDv_P3 ),0].L = $MR_wt_S54
+  201.          6[loc( $_StackIolist_O15 ),0].L = int( loc( $_StackDv_P3 ), 8 )
+  201.          $DVindex_O16 = 0
+  201.          8[loc( $_StackIolist_O15 ),0].L = int( loc( $DVindex_O16 ), 8 )
+  201.          $_StackDv_P4 = $_StaticDV_P12
+  201.          $MR_wt_S55 = 10[$LCS_wt_31,0].L
+  201.          $LCS_wt_33 = loc( 0[int( $MR_wt_S55, 8 ),0] )
+  201.          0[loc( $_StackDv_P4 ),0].L = pointer to array[1] of real( $LCS_wt_33 )
+  201.          1[loc( $_StackDv_P4 ),0].L = 32
+  201.          2[loc( $_StackDv_P4 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P4 ),0].L )
+  201.          23[loc( $_StackDv_P4 )].B = 1
+  201.          4[loc( $_StackDv_P4 ),0].L = int( $LCS_wt_33, 8 )
+  201.          5[loc( $_StackDv_P4 ),0].L = 32
+  201.          21[loc( $_StackDv_P4 )].B = 0
+  201.          6[loc( $_StackDv_P4 ),0] = 0
+  201.          $MR_wt_S56 = 16[$LCS_wt_31,0].L
+  201.          6[loc( $_StackDv_P4 ),0].L = $MR_wt_S56
+  201.          $MR_wt_S57 = 17[$LCS_wt_31,0].L
+  201.          7[loc( $_StackDv_P4 ),0].L = $MR_wt_S57
+  201.          $MR_wt_S58 = 18[$LCS_wt_31,0].L
+  201.          8[loc( $_StackDv_P4 ),0].L = $MR_wt_S58
+  201.          10[loc( $_StackIolist_O15 ),0].L = int( loc( $_StackDv_P4 ), 8 )
+  201.          $DVindex_O17 = 0
+  201.          12[loc( $_StackIolist_O15 ),0].L = int( loc( $DVindex_O17 ), 8 )
+  201.          2[loc( $_StackDv_P3 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P3 ),0].L ) )
+  201.          2[loc( $_StackDv_P4 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P4 ),0].L ) )
+  201.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O4 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O15 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  201.       else
+  204.          _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O18 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StaticIolist_O19 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  205.          $LCS_wt_34 = loc( wt )
+  205.          $MR_wt_S59 = 0[$LCS_wt_34,0]
+  205.          if ( $MR_wt_S59 > 0 ) then
+  205.             $I_L205_S60 = 0
+  208.             $LIS_S77 = $MR_wt_S59
+  206.             $LIS_E10 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O23 ),0].L ) ), 8 )
+  207.             $LIS_E9 = loc( t$167 )
+  207.             $LIS_E8 = loc( t$164 )
+  207.             $LIS_E7 = loc( t$161 )
+  207.             do
+  207.                $MR_wt_S62 = 25[$LCS_wt_34,0].L
+  207.                $MR_wt_S61 = 26[$LCS_wt_34,0].L
+  207.                $LCS_IL205_35 = 1 + $I_L205_S60
+  207.                $LCS_1_36 = -1 + $MR_wt_S61 + $MR_wt_S62
+  207.                if ( ( $LCS_IL205_35 < $MR_wt_S62 .or. $LCS_IL205_35 > $LCS_1_36 ) /= .false. ) then
+  207.                   substr[t$162,0:12] = 'Watches.f90'
+  207.                   substr[t$163,0:5] = 'NAME'
+  207.                   t$146 = $MR_wt_S62
+  207.                   t$147 = $LCS_1_36
+  207.                   t$148 = $LCS_IL205_35
+  207.                   $Con_P109 = 207
+  207.                   $Con_P110 = 1
+  207.                   call _bounds_error( substr[t$162,0:12], $Con_P109, substr[t$163,0:5], $Con_P110, t$146, t$147, t$148, 0[$LIS_E7,0].L )
+  207.                endif
+  207.                $MR_wt_S64 = 7[$LCS_wt_34,0].L
+  207.                $MR_wt_S63 = 8[$LCS_wt_34,0].L
+  207.                $LCS_IL205_37 = 1 + $I_L205_S60
+  207.                if ( ( $LCS_IL205_37 < $MR_wt_S64 .or. $LCS_IL205_37 > -1 + $MR_wt_S63 + $MR_wt_S64 ) /= .false. ) then
+  207.                   substr[t$165,0:12] = 'Watches.f90'
+  207.                   substr[t$166,0:8] = 'TIMECPU'
+  207.                   t$126 = $MR_wt_S64
+  207.                   t$135 = -1 + t$126 + $MR_wt_S63
+  207.                   t$136 = $LCS_IL205_37
+  207.                   $Con_P109 = 207
+  207.                   $Con_P110 = 1
+  207.                   call _bounds_error( substr[t$165,0:12], $Con_P109, substr[t$166,0:8], $Con_P110, t$126, t$135, t$136, 0[$LIS_E8,0].L )
+  207.                endif
+  207.                $MR_wt_S66 = 16[$LCS_wt_34,0].L
+  207.                $MR_wt_S65 = 17[$LCS_wt_34,0].L
+  207.                $LCS_IL205_38 = 1 + $I_L205_S60
+  207.                $LCS_1_39 = -1 + $MR_wt_S65 + $MR_wt_S66
+  207.                if ( ( $LCS_IL205_38 < $MR_wt_S66 .or. $LCS_IL205_38 > $LCS_1_39 ) /= .false. ) then
+  207.                   substr[t$168,0:12] = 'Watches.f90'
+  207.                   substr[t$169,0:9] = 'TIMEWALL'
+  207.                   t$140 = $MR_wt_S66
+  207.                   t$141 = $LCS_1_39
+  207.                   t$142 = $LCS_IL205_38
+  207.                   $Con_P109 = 207
+  207.                   $Con_P110 = 1
+  207.                   call _bounds_error( substr[t$168,0:12], $Con_P109, substr[t$169,0:9], $Con_P110, t$140, t$141, t$142, 0[$LIS_E9,0].L )
+  207.                endif
+  206.                $_StackIolist_O23 = $_StaticIolist_O22
+  206.                $MR_wt_S68 = 27[$LCS_wt_34,0].L
+  206.                $MR_wt_S67 = 25[$LCS_wt_34,0].L
+  206.                0[$LIS_E10,0].L = loc( substr[19[$LCS_wt_34,0].L,( 1 + $I_L205_S60 - $MR_wt_S67 ) * $MR_wt_S68:16] )
+  206.                $_StackDv_P5 = $_StaticDV_P13
+  206.                $MR_wt_S69 = 1[$LCS_wt_34,0].L
+  206.                $LCS_wt_40 = loc( 0[int( $MR_wt_S69, 8 ),0] )
+  206.                0[loc( $_StackDv_P5 ),0].L = pointer to array[1] of real( $LCS_wt_40 )
+  206.                1[loc( $_StackDv_P5 ),0].L = 32
+  206.                2[loc( $_StackDv_P5 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P5 ),0].L )
+  206.                23[loc( $_StackDv_P5 )].B = 1
+  206.                4[loc( $_StackDv_P5 ),0].L = int( $LCS_wt_40, 8 )
+  206.                5[loc( $_StackDv_P5 ),0].L = 32
+  206.                21[loc( $_StackDv_P5 )].B = 0
+  206.                6[loc( $_StackDv_P5 ),0] = 0
+  206.                $MR_wt_S70 = 7[$LCS_wt_34,0].L
+  206.                6[loc( $_StackDv_P5 ),0].L = $MR_wt_S70
+  206.                $MR_wt_S71 = 8[$LCS_wt_34,0].L
+  206.                7[loc( $_StackDv_P5 ),0].L = $MR_wt_S71
+  206.                $MR_wt_S72 = 9[$LCS_wt_34,0].L
+  206.                8[loc( $_StackDv_P5 ),0].L = $MR_wt_S72
+  206.                6[loc( $_StackIolist_O23 ),0].L = int( loc( $_StackDv_P5 ), 8 )
+  206.                $LCS_IL205_42 = 1 + $I_L205_S60
+  206.                $DVindex_O24 = $LCS_IL205_42
+  206.                8[loc( $_StackIolist_O23 ),0].L = int( loc( $DVindex_O24 ), 8 )
+  206.                $_StackDv_P6 = $_StaticDV_P14
+  206.                $MR_wt_S73 = 10[$LCS_wt_34,0].L
+  206.                $LCS_wt_41 = loc( 0[int( $MR_wt_S73, 8 ),0] )
+  206.                0[loc( $_StackDv_P6 ),0].L = pointer to array[1] of real( $LCS_wt_41 )
+  206.                1[loc( $_StackDv_P6 ),0].L = 32
+  206.                2[loc( $_StackDv_P6 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P6 ),0].L )
+  206.                23[loc( $_StackDv_P6 )].B = 1
+  206.                4[loc( $_StackDv_P6 ),0].L = int( $LCS_wt_41, 8 )
+  206.                5[loc( $_StackDv_P6 ),0].L = 32
+  206.                21[loc( $_StackDv_P6 )].B = 0
+  206.                6[loc( $_StackDv_P6 ),0] = 0
+  206.                $MR_wt_S74 = 16[$LCS_wt_34,0].L
+  206.                6[loc( $_StackDv_P6 ),0].L = $MR_wt_S74
+  206.                $MR_wt_S75 = 17[$LCS_wt_34,0].L
+  206.                7[loc( $_StackDv_P6 ),0].L = $MR_wt_S75
+  206.                $MR_wt_S76 = 18[$LCS_wt_34,0].L
+  206.                8[loc( $_StackDv_P6 ),0].L = $MR_wt_S76
+  206.                10[loc( $_StackIolist_O23 ),0].L = int( loc( $_StackDv_P6 ), 8 )
+  206.                $DVindex_O25 = $LCS_IL205_42
+  206.                12[loc( $_StackIolist_O23 ),0].L = int( loc( $DVindex_O25 ), 8 )
+  206.                2[loc( $_StackDv_P5 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P5 ),0].L ) )
+  206.                2[loc( $_StackDv_P6 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P6 ),0].L ) )
+  206.                _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O21 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O23 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  208.                $I_L205_S60 = 1 + $I_L205_S60
+  208.                if ( $I_L205_S60 >= $LIS_S77 ) exit
+  208.             enddo
+  208.          endif
+  210.          $LCS_wt_43 = loc( wt )
+  210.          $MR_wt_S79 = 26[$LCS_wt_43,0].L
+  210.          $MR_wt_S78 = 25[$LCS_wt_43,0].L
+  210.          $LCS_1_44 = -1 + $MR_wt_S78 + $MR_wt_S79
+  210.          if ( ( 0 < $MR_wt_S78 .or. 0 > $LCS_1_44 ) /= .false. ) then
+  210.             substr[t$171,0:12] = 'Watches.f90'
+  210.             substr[t$172,0:5] = 'NAME'
+  210.             t$146 = $MR_wt_S78
+  210.             t$147 = $LCS_1_44
+  210.             $Con_P109 = 210
+  210.             $Con_P110 = 1
+  210.             $Con_P111 = 0
+  210.             call _bounds_error( substr[t$171,0:12], $Con_P109, substr[t$172,0:5], $Con_P110, t$146, t$147, $Con_P111, 0[loc( t$170 ),0].L )
+  210.          endif
+  210.          $LCS_wt_45 = loc( wt )
+  210.          $MR_wt_S81 = 8[$LCS_wt_45,0].L
+  210.          $MR_wt_S80 = 7[$LCS_wt_45,0].L
+  210.          $LCS_1_46 = -1 + $MR_wt_S80 + $MR_wt_S81
+  210.          if ( ( 0 < $MR_wt_S80 .or. 0 > $LCS_1_46 ) /= .false. ) then
+  210.             substr[t$174,0:12] = 'Watches.f90'
+  210.             substr[t$175,0:8] = 'TIMECPU'
+  210.             t$148 = $MR_wt_S80
+  210.             t$126 = $LCS_1_46
+  210.             $Con_P109 = 210
+  210.             $Con_P110 = 1
+  210.             $Con_P111 = 0
+  210.             call _bounds_error( substr[t$174,0:12], $Con_P109, substr[t$175,0:8], $Con_P110, t$148, t$126, $Con_P111, 0[loc( t$173 ),0].L )
+  210.          endif
+  210.          $LCS_wt_47 = loc( wt )
+  210.          $MR_wt_S83 = 17[$LCS_wt_47,0].L
+  210.          $MR_wt_S82 = 16[$LCS_wt_47,0].L
+  210.          $LCS_1_48 = -1 + $MR_wt_S82 + $MR_wt_S83
+  210.          if ( ( 0 < $MR_wt_S82 .or. 0 > $LCS_1_48 ) /= .false. ) then
+  210.             substr[t$177,0:12] = 'Watches.f90'
+  210.             substr[t$178,0:9] = 'TIMEWALL'
+  210.             t$135 = $MR_wt_S82
+  210.             t$136 = $LCS_1_48
+  210.             $Con_P109 = 210
+  210.             $Con_P110 = 1
+  210.             $Con_P111 = 0
+  210.             call _bounds_error( substr[t$177,0:12], $Con_P109, substr[t$178,0:9], $Con_P110, t$135, t$136, $Con_P111, 0[loc( t$176 ),0].L )
+  210.          endif
+  209.          $_StackIolist_O28 = $_StaticIolist_O27
+  209.          $LCS_wt_49 = loc( wt )
+  209.          $MR_wt_S84 = 27[$LCS_wt_49,0].L
+  209.          $MR_wt_S85 = 25[$LCS_wt_49,0].L
+  209.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O28 ),0].L ) ), 8 ),0].L = loc( substr[19[$LCS_wt_49,0].L,-( $MR_wt_S84 * $MR_wt_S85 ):16] )
+  209.          $_StackDv_P7 = $_StaticDV_P15
+  209.          $MR_wt_S86 = 1[$LCS_wt_49,0].L
+  209.          $LCS_wt_50 = loc( 0[int( $MR_wt_S86, 8 ),0] )
+  209.          0[loc( $_StackDv_P7 ),0].L = pointer to array[1] of real( $LCS_wt_50 )
+  209.          1[loc( $_StackDv_P7 ),0].L = 32
+  209.          2[loc( $_StackDv_P7 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P7 ),0].L )
+  209.          23[loc( $_StackDv_P7 )].B = 1
+  209.          4[loc( $_StackDv_P7 ),0].L = int( $LCS_wt_50, 8 )
+  209.          5[loc( $_StackDv_P7 ),0].L = 32
+  209.          21[loc( $_StackDv_P7 )].B = 0
+  209.          6[loc( $_StackDv_P7 ),0] = 0
+  209.          $MR_wt_S87 = 7[$LCS_wt_49,0].L
+  209.          6[loc( $_StackDv_P7 ),0].L = $MR_wt_S87
+  209.          $MR_wt_S88 = 8[$LCS_wt_49,0].L
+  209.          7[loc( $_StackDv_P7 ),0].L = $MR_wt_S88
+  209.          $MR_wt_S89 = 9[$LCS_wt_49,0].L
+  209.          8[loc( $_StackDv_P7 ),0].L = $MR_wt_S89
+  209.          6[loc( $_StackIolist_O28 ),0].L = int( loc( $_StackDv_P7 ), 8 )
+  209.          $DVindex_O29 = 0
+  209.          8[loc( $_StackIolist_O28 ),0].L = int( loc( $DVindex_O29 ), 8 )
+  209.          $_StackDv_P8 = $_StaticDV_P16
+  209.          $MR_wt_S90 = 10[$LCS_wt_49,0].L
+  209.          $LCS_wt_51 = loc( 0[int( $MR_wt_S90, 8 ),0] )
+  209.          0[loc( $_StackDv_P8 ),0].L = pointer to array[1] of real( $LCS_wt_51 )
+  209.          1[loc( $_StackDv_P8 ),0].L = 32
+  209.          2[loc( $_StackDv_P8 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P8 ),0].L )
+  209.          23[loc( $_StackDv_P8 )].B = 1
+  209.          4[loc( $_StackDv_P8 ),0].L = int( $LCS_wt_51, 8 )
+  209.          5[loc( $_StackDv_P8 ),0].L = 32
+  209.          21[loc( $_StackDv_P8 )].B = 0
+  209.          6[loc( $_StackDv_P8 ),0] = 0
+  209.          $MR_wt_S91 = 16[$LCS_wt_49,0].L
+  209.          6[loc( $_StackDv_P8 ),0].L = $MR_wt_S91
+  209.          $MR_wt_S92 = 17[$LCS_wt_49,0].L
+  209.          7[loc( $_StackDv_P8 ),0].L = $MR_wt_S92
+  209.          $MR_wt_S93 = 18[$LCS_wt_49,0].L
+  209.          8[loc( $_StackDv_P8 ),0].L = $MR_wt_S93
+  209.          10[loc( $_StackIolist_O28 ),0].L = int( loc( $_StackDv_P8 ), 8 )
+  209.          $DVindex_O30 = 0
+  209.          12[loc( $_StackIolist_O28 ),0].L = int( loc( $DVindex_O30 ), 8 )
+  209.          2[loc( $_StackDv_P7 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P7 ),0].L ) )
+  209.          2[loc( $_StackDv_P8 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P8 ),0].L ) )
+  209.          _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O26 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O28 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O7 ) ) )
+  209.       endif
+  215.       $LCS_wt_52 = loc( wt )
+  215.       $MR_wt_S95 = 8[$LCS_wt_52,0].L
+  215.       $MR_wt_S94 = 7[$LCS_wt_52,0].L
+  215.       $LCS_1_53 = -1 + $MR_wt_S94 + $MR_wt_S95
+  215.       if ( or( $LCS_1_53, -$MR_wt_S94 ) < 0 ) then
+  215.          $LB_Y0 = $MR_wt_S94
+  215.          $UB_Y1 = $LCS_1_53
+  215.          $Subscript_Y5 = 0
+  215.          _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y55 )
+  215.       endif
+  215.       $LCS_1_54 = -1 + $MR_wt_S94 + $MR_wt_S95
+  215.       if ( or( $LCS_1_54, -$MR_wt_S94 ) < 0 ) then
+  215.          $LB_Y0 = $MR_wt_S94
+  215.          $UB_Y1 = $LCS_1_54
+  215.          $Subscript_Y5 = 0
+  215.          _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y55 )
+  215.       endif
+  215.       $LCS_wt_55 = loc( wt )
+  215.       $MR_wt_S97 = 1[$LCS_wt_55,0].L
+  215.       $MR_wt_S96 = 9[$LCS_wt_55,0].L
+  215.       $LCS_56 = -( $MR_wt_S94 * $MR_wt_S96 )
+  215.       $LCS_MR_wt_57 = int( $MR_wt_S97, 8 )
+  215.       $MR_wt_S98 = 0[$LCS_MR_wt_57,$LCS_56]
+  215.       $MR_wt_S99 = $MR_wt_S98 - $MR_tc_25
+  215.       0[$LCS_MR_wt_57,$LCS_56] = $MR_wt_S99
+  216.       $MR_wt_S100 = 1[$LCS_wt_55,0]
+  216.       $CS_S101 = or( $MR_wt_S100 - $MR_wt_S94, $MR_wt_S94 + -1 + $MR_wt_S95 - $MR_wt_S100 ) >= 0
+  216.       if ( $CS_S101 == .false. ) then
+  216.          $LB_Y0 = $MR_wt_S94
+  216.          $UB_Y1 = -1 + $MR_wt_S94 + $MR_wt_S95
+  216.          $Subscript_Y5 = $MR_wt_S100
+  216.          _bounds_error( $_File_Y40, $Line_Y57, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y58 )
+  216.       endif
+  216.       if ( $CS_S101 == .false. ) then
+  216.          $LB_Y0 = $MR_wt_S94
+  216.          $UB_Y1 = -1 + $MR_wt_S94 + $MR_wt_S95
+  216.          $Subscript_Y5 = $MR_wt_S100
+  216.          _bounds_error( $_File_Y40, $Line_Y57, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y58 )
+  216.       endif
+  216.       $LCS_MR_wt_58 = ( $MR_wt_S100 - $MR_wt_S94 ) * $MR_wt_S96
+  216.       $LCS_MR_wt_59 = int( $MR_wt_S97, 8 )
+  216.       $MR_wt_S102 = 0[$LCS_MR_wt_59,$LCS_MR_wt_58]
+  216.       $MR_wt_S103 = $MR_wt_S102 - $MR_tc_25
+  216.       0[$LCS_MR_wt_59,$LCS_MR_wt_58] = $MR_wt_S103
+  217.       $LCS_wt_60 = loc( wt )
+  217.       $MR_wt_S105 = 17[$LCS_wt_60,0].L
+  217.       $MR_wt_S104 = 16[$LCS_wt_60,0].L
+  217.       $LCS_1_61 = -1 + $MR_wt_S104 + $MR_wt_S105
+  217.       if ( or( $LCS_1_61, -$MR_wt_S104 ) < 0 ) then
+  217.          $LB_Y0 = $MR_wt_S104
+  217.          $UB_Y1 = $LCS_1_61
+  217.          $Subscript_Y5 = 0
+  217.          _bounds_error( $_File_Y40, $Line_Y60, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y61 )
+  217.       endif
+  217.       $LCS_1_62 = -1 + $MR_wt_S104 + $MR_wt_S105
+  217.       if ( or( $LCS_1_62, -$MR_wt_S104 ) < 0 ) then
+  217.          $LB_Y0 = $MR_wt_S104
+  217.          $UB_Y1 = $LCS_1_62
+  217.          $Subscript_Y5 = 0
+  217.          _bounds_error( $_File_Y40, $Line_Y60, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y61 )
+  217.       endif
+  217.       $LCS_wt_63 = loc( wt )
+  217.       $MR_wt_S107 = 10[$LCS_wt_63,0].L
+  217.       $MR_wt_S106 = 18[$LCS_wt_63,0].L
+  217.       $LCS_64 = -( $MR_wt_S104 * $MR_wt_S106 )
+  217.       $LCS_MR_wt_65 = int( $MR_wt_S107, 8 )
+  217.       $MR_wt_S108 = 0[$LCS_MR_wt_65,$LCS_64]
+  217.       $MR_wt_S109 = $MR_wt_S108 - $CS_MR_wt_0
+  217.       0[$LCS_MR_wt_65,$LCS_64] = $MR_wt_S109
+  218.       $CS_S110 = or( $MR_wt_S100 - $MR_wt_S104, $MR_wt_S104 + -1 + $MR_wt_S105 - $MR_wt_S100 ) >= 0
+  218.       if ( $CS_S110 == .false. ) then
+  218.          $LB_Y0 = $MR_wt_S104
+  218.          $UB_Y1 = -1 + $MR_wt_S104 + $MR_wt_S105
+  218.          $Subscript_Y5 = $MR_wt_S100
+  218.          _bounds_error( $_File_Y40, $Line_Y63, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y64 )
+  218.       endif
+  218.       if ( $CS_S110 == .false. ) then
+  218.          $LB_Y0 = $MR_wt_S104
+  218.          $UB_Y1 = -1 + $MR_wt_S104 + $MR_wt_S105
+  218.          $Subscript_Y5 = $MR_wt_S100
+  218.          _bounds_error( $_File_Y40, $Line_Y63, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y64 )
+  218.       endif
+  218.       $LCS_MR_wt_66 = ( $MR_wt_S100 - $MR_wt_S104 ) * $MR_wt_S106
+  218.       $LCS_MR_wt_67 = int( $MR_wt_S107, 8 )
+  218.       $MR_wt_S111 = 0[$LCS_MR_wt_67,$LCS_MR_wt_66]
+  218.       $MR_wt_S112 = $MR_wt_S111 - $CS_MR_wt_0
+  218.       0[$LCS_MR_wt_67,$LCS_MR_wt_66] = $MR_wt_S112
+  219.       return
+  219.       end
+  219.       
+  227.       
+  227.       subroutine changewatch( wt, tp )
+   33.       if ( t$44 == 0 ) then
+   33.          0[loc( t$74 ),0] = 2
+   33.          0[loc( t$75 ),0] = 0
+   33.          0[loc( t$76 ),0] = 0
+   33.          0[loc( t$71 ),0].L = int( loc( t$43 ), 8 )
+   33.          0[loc( t$72 ),0].L = 0
+   33.          0[loc( t$73 ),0].L = int( loc( t$70 ), 8 )
+   33.          t$44 = __get_dynamic_type( 2, 0[loc( t$71 ),0].L, 0[loc( t$74 ),0], 1, 0[loc( t$72 ),0].L, 0[loc( t$73 ),0].L, 0[loc( t$75 ),0], 0[loc( t$76 ),0] )
+   33.       endif
+  239.       $MR_tp_S1 = 0[loc( tp ),0]
+  239.       $LCS_wt_0 = loc( wt )
+  239.       $MR_wt_S2 = 1[$LCS_wt_0,0]
+  239.       if ( $MR_wt_S2 - $MR_tp_S1 /= 0 ) then
+  241.          if ( $MR_tp_S1 > 0 ) then
+  241.             $MR_wt_S3 = 0[$LCS_wt_0,0]
+  241.             if ( $MR_tp_S1 > $MR_wt_S3 ) then
+  241.                goto 10
+  241.             endif
+  241.          else
+  241.    10       continue
+  242.             $_StackCntrl_O2 = $_StaticCntrl_O1
+  242.             1[loc( $_StackCntrl_O2 ),0].L = loc( substr[c0,0:10] )
+  242.             $_StackIolist_O4 = $_StaticIolist_O3
+  242.             0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O4 ),0].L ) ), 8 ),0].L = loc( 0[loc( tp ),0] )
+  242.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O4 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  243.             $MR_wt_S4 = 0[loc( wt ),0]
+  243.             $IOitem_O0 = $MR_wt_S4
+  243.             $_StackCntrl_O2 = $_StaticCntrl_O6
+  243.             1[loc( $_StackCntrl_O2 ),0].L = loc( substr[c1,0:10] )
+  243.             $_StackIolist_O8 = $_StaticIolist_O7
+  243.             0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O8 ),0].L ) ), 8 ),0].L = loc( $IOitem_O0 )
+  243.             _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O8 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  244.             _f90_adjustl( substr[t$179,0:10], substr[c0,0:10] )
+  246.             _f90_adjustl( substr[t$180,0:10], substr[c1,0:10] )
+  244.             t$181 = ( _ltrim( substr[t$179,0:10] ) ) + 73 + ( _ltrim( substr[t$180,0:10] ) )
+  246.             t$183 = int( _alloc( max( 0, t$181 ) ), 8 )
+  246.             $LCS_1 = max( 0, t$181 )
+  246.             substr[0,t$183:$LCS_1] = //( '**(ChangeWatch)** input watch (', //( substr[t$179,0:_ltrim( substr[t$179,0:10] )], //( ') should be > 0 and < number of watches (', //( substr[t$180,0:_ltrim( substr[t$180,0:10] )], ')' ) ) ) )
+  244.             call fatalerror( substr[0,t$183:$LCS_1] )
+  246.             _free( t$183 )
+  246.          endif
+  251.          call _cpu_time_4( tc )
+  252.          $Flat_S0 = _rtc
+  257.          $LCS_wt_2 = loc( wt )
+  257.          $MR_wt_8 = 8[$LCS_wt_2,0].L
+  257.          $MR_wt_9 = 7[$LCS_wt_2,0].L
+  257.          $CS_0 = or( $MR_wt_S2 - $MR_wt_9, $MR_wt_8 + -1 + $MR_wt_9 - $MR_wt_S2 ) >= 0
+  257.          if ( $CS_0 == .false. ) then
+  257.             $LB_Y0 = $MR_wt_9
+  257.             $UB_Y1 = -1 + $MR_wt_8 + $MR_wt_9
+  257.             $Subscript_Y5 = $MR_wt_S2
+  257.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  257.          endif
+  257.          if ( $CS_0 == .false. ) then
+  257.             $LB_Y0 = $MR_wt_9
+  257.             $UB_Y1 = -1 + $MR_wt_8 + $MR_wt_9
+  257.             $Subscript_Y5 = $MR_wt_S2
+  257.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  257.          endif
+  257.          $LCS_wt_3 = loc( wt )
+  257.          $MR_wt_10 = 1[$LCS_wt_3,0].L
+  257.          $MR_wt_11 = 9[$LCS_wt_3,0].L
+  257.          $LCS_6 = $MR_wt_S2
+  257.          $LCS_MR_wt_4 = $MR_wt_11 * ( $LCS_6 - $MR_wt_9 )
+  257.          $LCS_MR_wt_5 = int( $MR_wt_10, 8 )
+  257.          $MR_wt_S5 = 0[$LCS_MR_wt_5,$LCS_MR_wt_4]
+  257.          $MR_tc_13 = tc
+  257.          $MR_wt_S6 = $MR_tc_13 + $MR_wt_S5
+  257.          0[$LCS_MR_wt_5,$LCS_MR_wt_4] = $MR_wt_S6
+  258.          $MR_wt_14 = 17[$LCS_wt_3,0].L
+  258.          $MR_wt_15 = 16[$LCS_wt_3,0].L
+  258.          $CS_1_1 = $MR_wt_14 + -1 + $MR_wt_15 - $MR_wt_S2
+  258.          if ( or( $CS_1_1, $LCS_6 - $MR_wt_15 ) < 0 ) then
+  258.             $LB_Y0 = $MR_wt_15
+  258.             $UB_Y1 = -1 + $MR_wt_14 + $MR_wt_15
+  258.             $Subscript_Y5 = $MR_wt_S2
+  258.             _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+  258.          endif
+  258.          if ( or( $CS_1_1, $MR_wt_S2 - $MR_wt_15 ) < 0 ) then
+  258.             $LB_Y0 = $MR_wt_15
+  258.             $UB_Y1 = -1 + $MR_wt_14 + $MR_wt_15
+  258.             $Subscript_Y5 = $MR_wt_S2
+  258.             _bounds_error( $_File_Y40, $Line_Y45, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y46 )
+  258.          endif
+  258.          $LCS_wt_7 = loc( wt )
+  258.          $MR_wt_16 = 56[$LCS_wt_7,0]
+  258.          $MR_wt_17 = 10[$LCS_wt_7,0].L
+  258.          $MR_wt_18 = 18[$LCS_wt_7,0].L
+  258.          $LCS_MR_wt_8 = ( $MR_wt_S2 - $MR_wt_15 ) * $MR_wt_18
+  258.          $LCS_MR_wt_9 = int( $MR_wt_17, 8 )
+  258.          $MR_wt_S7 = 0[$LCS_MR_wt_9,$LCS_MR_wt_8]
+  258.          $CS_MR_wt_2 = ( real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) ) * $MR_wt_16 )
+  258.          $MR_wt_S8 = $CS_MR_wt_2 + $MR_wt_S7
+  258.          0[$LCS_MR_wt_9,$LCS_MR_wt_8] = $MR_wt_S8
+  262.          $MR_tp_S9 = 0[loc( tp ),0]
+  262.          1[$LCS_wt_7,0] = $MR_tp_S9
+  263.          $CS_3 = or( $MR_tp_S9 - $MR_wt_9, $MR_wt_8 + -1 + $MR_wt_9 - $MR_tp_S9 ) >= 0
+  263.          if ( $CS_3 == .false. ) then
+  263.             $LB_Y0 = $MR_wt_9
+  263.             $UB_Y1 = -1 + $MR_wt_8 + $MR_wt_9
+  263.             $Subscript_Y5 = $MR_tp_S9
+  263.             _bounds_error( $_File_Y40, $Line_Y48, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y49 )
+  263.          endif
+  263.          if ( $CS_3 == .false. ) then
+  263.             $LB_Y0 = $MR_wt_9
+  263.             $UB_Y1 = -1 + $MR_wt_8 + $MR_wt_9
+  263.             $Subscript_Y5 = $MR_tp_S9
+  263.             _bounds_error( $_File_Y40, $Line_Y48, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y49 )
+  263.          endif
+  263.          $LCS_12 = $MR_tp_S9
+  263.          $LCS_MR_wt_10 = $MR_wt_11 * ( $LCS_12 - $MR_wt_9 )
+  263.          $LCS_MR_wt_11 = int( $MR_wt_10, 8 )
+  263.          $MR_wt_S10 = 0[$LCS_MR_wt_11,$LCS_MR_wt_10]
+  263.          $MR_wt_S11 = $MR_wt_S10 - $MR_tc_13
+  263.          0[$LCS_MR_wt_11,$LCS_MR_wt_10] = $MR_wt_S11
+  264.          $CS_1_4 = $MR_wt_14 + -1 + $MR_wt_15 - $MR_tp_S9
+  264.          if ( or( $CS_1_4, $LCS_12 - $MR_wt_15 ) < 0 ) then
+  264.             $LB_Y0 = $MR_wt_15
+  264.             $UB_Y1 = -1 + $MR_wt_14 + $MR_wt_15
+  264.             $Subscript_Y5 = $MR_tp_S9
+  264.             _bounds_error( $_File_Y40, $Line_Y51, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y52 )
+  264.          endif
+  264.          if ( or( $CS_1_4, $MR_tp_S9 - $MR_wt_15 ) < 0 ) then
+  264.             $LB_Y0 = $MR_wt_15
+  264.             $UB_Y1 = -1 + $MR_wt_14 + $MR_wt_15
+  264.             $Subscript_Y5 = $MR_tp_S9
+  264.             _bounds_error( $_File_Y40, $Line_Y51, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y52 )
+  264.          endif
+  264.          $LCS_MR_wt_13 = ( $MR_tp_S9 - $MR_wt_15 ) * $MR_wt_18
+  264.          $LCS_MR_wt_14 = int( $MR_wt_17, 8 )
+  264.          $MR_wt_S12 = 0[$LCS_MR_wt_14,$LCS_MR_wt_13]
+  264.          $MR_wt_S13 = $MR_wt_S12 - $CS_MR_wt_2
+  264.          0[$LCS_MR_wt_14,$LCS_MR_wt_13] = $MR_wt_S13
+  264.       endif
+  265.       return
+  265.       end
+  265.       
+  271.       
+  271.       subroutine namewatch( wt, tp, namew )
+   33.       if ( t$44 == 0 ) then
+   33.          0[loc( t$82 ),0] = 2
+   33.          0[loc( t$83 ),0] = 0
+   33.          0[loc( t$84 ),0] = 0
+   33.          0[loc( t$79 ),0].L = int( loc( t$43 ), 8 )
+   33.          0[loc( t$80 ),0].L = 0
+   33.          0[loc( t$81 ),0].L = int( loc( t$78 ), 8 )
+   33.          t$44 = __get_dynamic_type( 2, 0[loc( t$79 ),0].L, 0[loc( t$82 ),0], 1, 0[loc( t$80 ),0].L, 0[loc( t$81 ),0].L, 0[loc( t$83 ),0], 0[loc( t$84 ),0] )
+   33.       endif
+  281.       $MR_tp_S0 = 0[loc( tp ),0]
+  281.       if ( $MR_tp_S0 > 0 ) then
+  281.          $MR_wt_S1 = 0[loc( wt ),0]
+  281.          if ( $MR_tp_S0 > $MR_wt_S1 ) then
+  281.             goto 10
+  281.          endif
+  281.       else
+  281.    10    continue
+  282.          $_StackCntrl_O2 = $_StaticCntrl_O1
+  282.          1[loc( $_StackCntrl_O2 ),0].L = loc( substr[c0,0:10] )
+  282.          $_StackIolist_O4 = $_StaticIolist_O3
+  282.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O4 ),0].L ) ), 8 ),0].L = loc( 0[loc( tp ),0] )
+  282.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O4 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  283.          $MR_wt_S2 = 0[loc( wt ),0]
+  283.          $IOitem_O0 = $MR_wt_S2
+  283.          $_StackCntrl_O2 = $_StaticCntrl_O6
+  283.          1[loc( $_StackCntrl_O2 ),0].L = loc( substr[c1,0:10] )
+  283.          $_StackIolist_O8 = $_StaticIolist_O7
+  283.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O8 ),0].L ) ), 8 ),0].L = loc( $IOitem_O0 )
+  283.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O8 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  284.          _f90_adjustl( substr[t$184,0:10], substr[c0,0:10] )
+  286.          _f90_adjustl( substr[t$185,0:10], substr[c1,0:10] )
+  284.          t$186 = ( _ltrim( substr[t$184,0:10] ) ) + 71 + ( _ltrim( substr[t$185,0:10] ) )
+  286.          t$188 = int( _alloc( max( 0, t$186 ) ), 8 )
+  286.          $LCS_0 = max( 0, t$186 )
+  286.          substr[0,t$188:$LCS_0] = //( '**(NameWatch)** input watch (', //( substr[t$184,0:_ltrim( substr[t$184,0:10] )], //( ') should be > 0 and < number of watches (', //( substr[t$185,0:_ltrim( substr[t$185,0:10] )], ')' ) ) ) )
+  284.          call fatalerror( substr[0,t$188:$LCS_0] )
+  286.          _free( t$188 )
+  286.       endif
+  288.       $MR_tp_S3 = 0[loc( tp ),0]
+  288.       $LCS_wt_1 = loc( wt )
+  288.       $MR_wt_6 = 26[$LCS_wt_1,0].L
+  288.       $MR_wt_7 = 25[$LCS_wt_1,0].L
+  288.       if ( or( $MR_tp_S3 - $MR_wt_7, $MR_wt_6 + -1 + $MR_wt_7 - $MR_tp_S3 ) < 0 ) then
+  288.          $LB_Y0 = $MR_wt_7
+  288.          $UB_Y1 = -1 + $MR_wt_6 + $MR_wt_7
+  288.          $Subscript_Y5 = $MR_tp_S3
+  288.          _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  288.       endif
+  288.       $LCS_wt_2 = loc( wt )
+  288.       substr[19[$LCS_wt_2,0].L,27[$LCS_wt_2,0].L * ( $MR_tp_S3 - $MR_wt_7 ):16] = substr[namew,0:_len( namew )]
+  289.       return
+  289.       end
+  289.       
+  292.       
+  292.       subroutine fatalerror( message )
+  297.       $_StackIolist_O3 = $_StaticIolist_O2
+  297.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O3 ),0].L ) ), 8 ),0].L = loc( substr[message,0:_len( message )] )
+  297.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O0 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O3 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  298.       substr[t$189,0:4] = ' '
+  298.       call _stop( substr[t$189,0:1] )
+  299.       return
+  299.       end
+  299.       
+    1.       
+    1.       module watches
+    1.       end
+    1.       

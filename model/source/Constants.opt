@@ -1,0 +1,81 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Constants.f90
+       !        File                  :  Constants.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+  121.       
+  121.       subroutine initconstants( kmax )
+  127.       coriol = 1.1908537313104409e-4
+  128.       root2 = 1.4142135623730951
+  129.       tov%header%a_contig = 1
+  129.       tov%dim_1%LB = 1
+  129.       tov%dim_1%EX = _zla( 0, kmax )
+  129.       tov%dim_1%SM = 1
+  129.       $_allo_P0(0) = 0x1000000000001L
+  129.       $_allo_P0(1) = loc( tov )
+  129.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  130.       $F_A33 = _zla( 0, kmax )
+  130.       if ( _zla( 0, kmax ) > 0 ) then
+  130.          $I_A1 = 0
+  130. !dir$ ivdep
+  130.          do
+  130.             (tov%base_addr)(1 + $I_A1, 0) = 300.0
+  130.             $I_A1 = 1 + $I_A1
+  130.             if ( $I_A1 >= $F_A33 ) exit
+  130.          enddo
+  130.       endif
+  131.       tdampr%header%a_contig = 1
+  131.       tdampr%dim_1%LB = 1
+  131.       tdampr%dim_1%EX = ( max( 0, kmax ) )
+  131.       tdampr%dim_1%SM = 1
+  131.       $_allo_P1(0) = 0x1000000000001L
+  131.       $_allo_P1(1) = loc( tdampr )
+  131.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  132.       $F_A34 = ( max( 0, kmax ) )
+  132.       if ( kmax > 0 ) then
+  132.          $I_A1 = 0
+  132. !dir$ ivdep
+  132.          do
+  132.             (tdampr%base_addr)(1 + $I_A1, 0) = 10.0
+  132.             $I_A1 = 1 + $I_A1
+  132.             if ( $I_A1 >= $F_A34 ) exit
+  132.          enddo
+  132.       endif
+  133.       tdampf%header%a_contig = 1
+  133.       tdampf%dim_1%LB = 1
+  133.       tdampf%dim_1%EX = ( max( 0, kmax ) )
+  133.       tdampf%dim_1%SM = 1
+  133.       $_allo_P2(0) = 0x1000000000001L
+  133.       $_allo_P2(1) = loc( tdampf )
+  133.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  134.       (tdampf%base_addr)(1, 0) = 2.0
+  134.       (tdampf%base_addr)(2, 0) = 5.0
+  134.       $F_A35 = ( -2 + kmax )
+  134.       if ( -2 + kmax > 0 ) then
+  134.          $I_A1 = 0
+  134. !dir$ ivdep
+  134.          do
+  134.             (tdampf%base_addr)(3 + $I_A1, 0) = 10.0
+  134.             $I_A1 = 1 + $I_A1
+  134.             if ( $I_A1 >= $F_A35 ) exit
+  134.          enddo
+  134.       endif
+  136.       return
+  136.       end
+  136.       
+  116.       
+  116.       module constants
+  116.       end
+  116.       

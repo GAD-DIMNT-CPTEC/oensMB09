@@ -1,0 +1,237 @@
+#!/bin/bash -x
+#
+#************************************************************#
+#                                                            #
+#     Name:        setrecfctFCT03RTQ0126L028.MACHINE #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  recomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/setrecfct.1.FCT03RTQ0126L028.una.10101819:11.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N ENSMODEL03R
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=20101018
+HOUR=19:11
+echo 'Date: '$DATE
+echo 'Hour: '$HOUR
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+TYPES=FCT03R 
+echo ${TYPES}
+export TYPES 
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+LABELI=2004032600
+echo ${LABELI}
+export LABELI
+#   LABELF = yyyymmddhh
+#   LABELF = input file final label
+#
+LABELF=2004032812
+echo ${LABELF}
+export LABELF
+#
+#   Prefix names for the FORTRAN files
+#
+#   NAMEL - List file name prefix
+#   NAMES - Input spectral file name prefix
+#   NAMER - Output gridded file name prefix
+#
+#   Suffix names for the FORTRAN files
+#
+#   EXTL - List file name suffix
+#   ERSi - Input spectral file name suffix
+#   ERRi - Output gridded file name suffix
+#
+NAMEL=G${TYPES}
+echo ${NAMEL}
+export NAMEL
+NAMES=G${TYPES}
+echo ${NAMES}
+export NAMES
+NAMER=G${TYPES}
+echo ${NAMER}
+export NAMER
+if [ "${TYPES}" = ANLAVN ] 
+then
+EXTL=S.unf
+echo ${EXTL}
+export EXTL
+ERS1=S.unf
+echo ${ERS1}
+export ERS1
+ERR1=R.unf
+echo ${ERR1}
+export ERR1
+else
+EXTL=F.fct
+echo ${EXTL}
+export EXTL
+ERS1=F.fct
+echo ${ERS1}
+export ERS1
+ERR1=R.fct
+echo ${ERR1}
+export ERR1
+fi
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   IOPERMOD is the directory for input file.
+#
+OPERMOD=/scratch/p01211/oens-1.0.0
+SOPERMOD=/scratch/p01211/oens-1.0.0
+ROPERMOD=/scratch/p01211/oens-1.0.0
+IOPERMOD=/scratch/p01211/oens-1.0.0/model/datain
+export OPERMOD SOPERMOD ROPERMOD IOPERMOD
+echo ${OPERMOD}
+echo ${SOPERMOD}
+echo ${ROPERMOD}
+echo ${IOPERMOD}
+#
+cd ${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=L028
+TRUNC=TQ0126
+export TRUNC LEV
+#
+#   Set machine
+MACH=una
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+echo run
+COMPILE=run
+echo ${COMPILE}
+export COMPILE
+#
+#   Set FORTRAN compilation flags
+#
+#   -integer_size 64 sets the integer basic numeric size to 8 bytes
+#   -real_size 64    sets the real basic numeric size to 8 bytes
+#
+#
+#FTNFLAG='-Wf" -pvctl noaltcode -O nodiv nomove "'
+FTNFLAG='  -h byteswapio -s real64 -s integer64  '
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=${OPERMOD}/include/${TRUNC}${LEV}
+CPP=" -I${INC}"
+export INC CPP
+#
+#   Set FORTRAN compiler name
+#
+#F77="f90 -V -float0 -ew "
+F77="ftn  "
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#    is associated with FORTRAN file unit = n
+#
+#FFF=FORT
+#export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#FORT_CONVERT10=BIG_ENDIAN
+#FORT_CONVERT20=BIG_ENDIAN
+#export FORT_CONVERT10 FORT_CONVERT20
+#
+F_UFMTIEEE=10,20
+F_UFMTADJUST10=TYPE2
+#AMM F_UFMTADJUST20=TYPE2
+#AMM export F_UFMTIEEE F_UFMTADJUST10 F_UFMTADJUST20
+export F_UFMTIEEE F_UFMTADJUST10
+#
+#  Now, build the necessary INCLUDE for the choosen truncation and 
+#       vertical resolution.. 
+#
+  if [ "${COMPILE}" != "run" ]
+  then
+#
+cd ${INC}
+#
+cat <<EOT1 > recfct.n
+      INTEGER IMAX,JMAX,MEND,KMAX,LMAX
+      PARAMETER (IMAX=384,JMAX=192,MEND=126,KMAX=28,LMAX=17)
+EOT1
+if (diff recfct.n recfct.h > /dev/null)
+then
+    echo "recfct.n and recfct.h are the same"
+    rm -f recfct.n
+else
+    echo "recfct.n and recfct.h are different"
+    mv recfct.n recfct.h
+fi
+#
+#  End of includes
+#
+fi
+#
+#  Now, build the necessary NAMELIST input:
+#
+GNAMEL=${NAMEL}${LABELI}${LABELF}${EXTL}.${TRUNC}${LEV}
+echo ${GNAMEL}
+echo ${SOPERMOD}/recfct/datain/${GNAMEL}
+#
+cat <<EOT2 > ${SOPERMOD}/recfct/datain/${GNAMEL}
+${NAMES}${LABELI}${LABELF}${ERS1}.${TRUNC}${LEV}
+${NAMER}${LABELI}${LABELF}${ERR1}.${TRUNC}${LEV}
+EOT2
+#
+cat <<EOT3 > ${SOPERMOD}/recfct/datain/recfct${TYPES}.nml
+ &DATAIN
+  LDIM=1
+  DIRL='${SOPERMOD}/recfct/datain/ '
+  DIRS='${ROPERMOD}/model/dataout/${TRUNC}${LEV}/${LABELI}/  '
+  DIRR='${ROPERMOD}/recfct/dataout/${TRUNC}${LEV}/ '
+  GNAMEL='${GNAMEL} '
+ &END
+EOT3
+#
+#
+mkdir -p ${ROPERMOD}/recfct/dataout/${TRUNC}${LEV}/
+cd ${OPERMOD}/run
+#
+#   Run Decomposition
+#
+${OPERMOD}/recfct/scripts/recfct.scr
+#

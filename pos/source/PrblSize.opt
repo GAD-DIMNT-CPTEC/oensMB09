@@ -1,0 +1,325 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  PrblSize.f90
+       !        File                  :  PrblSize.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   44.       
+   44.       subroutine createprblsize
+   50.       _fread( _clist( 0, 0, 3,  _substr(trunc,3,4), Null_Arg, Null_Arg, t$2,  _substr(t$1,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( mend, 0x2000200000000L ) ) )
+   52.       _fread( _clist( 0, 0, 3,  _substr(lev,2,3), Null_Arg, Null_Arg, t$4,  _substr(t$3,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( kmax, 0x2000200000000L ) ) )
+   54.       $Flat_S1 = ceiling( 15.287712379549449 )
+   54.       $Flat_S0 = ceiling( 9.6454726043004548 )
+   54.       $Flat_S2 = ceiling( 6.5840593484403582 )
+   54.       ifft%header%a_contig = 1
+   54.       ifft%dim_1%LB = 1
+   54.       ifft%dim_1%EX = _zla( 0, ( $Flat_S1 + $Flat_S0 * $Flat_S1 + $Flat_S1 * $Flat_S2 + $Flat_S0 * $Flat_S1 * $Flat_S2 ) )
+   54.       ifft%dim_1%SM = 1
+   54.       $_allo_P3(0) = 0x1000000000001L
+   54.       $_allo_P3(1) = loc( ifft )
+   54.       call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+   54.       $F_A33 = _zla( 0, ( $Flat_S1 + $Flat_S0 * $Flat_S1 + $Flat_S1 * $Flat_S2 + $Flat_S0 * $Flat_S1 * $Flat_S2 ) )
+   54.       if ( _zla( 0, ( $Flat_S1 + $Flat_S0 * $Flat_S1 + $Flat_S1 * $Flat_S2 + $Flat_S0 * $Flat_S1 * $Flat_S2 ) ) > 0 ) then
+   54.          $I_L54_37 = 0
+   54. !dir$ ivdep
+   54.          do
+   54.             (ifft%base_addr)(1 + $I_L54_37, 0) = 0
+   54.             $I_L54_37 = 1 + $I_L54_37
+   54.             if ( $I_L54_37 >= $F_A33 ) exit
+   54.          enddo
+   54.       endif
+   54.       $n_S8 = 0
+   54.       if ( $Flat_S1 > 0 ) then
+   54.          if ( $Flat_S0 >= 0 ) then
+   54.             if ( $Flat_S2 >= 0 ) then
+   54.                $I_L54_41 = 0
+   54.                do
+   54.                   if ( _lsh( 1, ( 1 + $I_L54_41 ) ) > 40000 ) exit
+   54.                   $I_L54_39 = 0
+   54.                   do
+   54.                      if ( 3 ** $I_L54_39 * _lsh( 1, ( 1 + $I_L54_41 ) ) > 40000 ) exit
+   54.                      $I_L54_31 = 0
+   54. !dir$ ivdep
+   54.                      do
+   54.                         $jfft_S7 = 5 ** $I_L54_31 * 3 ** $I_L54_39 * _lsh( 1, ( 1 + $I_L54_41 ) )
+   54.                         if ( 5 ** $I_L54_31 * 3 ** $I_L54_39 * _lsh( 1, ( 1 + $I_L54_41 ) ) > 40000 ) then
+   54.                            $n_S8 = ( $n_S8 + $I_L54_31 )
+   54.                            goto 10
+   54.                         endif
+   54.                         (ifft%base_addr)(1 + $n_S8 + $I_L54_31, 0) = $jfft_S7
+   54.                         $I_L54_31 = 1 + $I_L54_31
+   54.                         if ( $I_L54_31 >= 1 + $Flat_S2 ) exit
+   54.                      enddo
+   54.                      $n_S8 = ( 1 + $Flat_S2 + $n_S8 )
+   54.    10                continue
+   54.                      $I_L54_39 = 1 + $I_L54_39
+   54.                      if ( $I_L54_39 >= 1 + $Flat_S0 ) exit
+   54.                   enddo
+   54.                   $I_L54_41 = 1 + $I_L54_41
+   54.                   if ( $I_L54_41 >= $Flat_S1 ) exit
+   54.                enddo
+   54.             endif
+   54.          endif
+   54.       endif
+   54.       if ( -1 + $n_S8 > 0 ) then
+   54.          do
+   54.             $check_S11 = 0
+   54.             $I_L54_33 = 0
+   54. !dir$ unroll 4
+   54.             do
+   54.                if ( (ifft%base_addr)(1 + $I_L54_33, 0) > (ifft%base_addr)(2 + $I_L54_33, 0) ) then
+   54.                   $jfft_S10 = (ifft%base_addr)(1 + $I_L54_33, 0)
+   54.                   (ifft%base_addr)(1 + $I_L54_33, 0) = (ifft%base_addr)(2 + $I_L54_33, 0)
+   54.                   (ifft%base_addr)(2 + $I_L54_33, 0) = $jfft_S10
+   54.                   $check_S11 = 1
+   54.                endif
+   54.                $I_L54_33 = 1 + $I_L54_33
+   54.                if ( $I_L54_33 >= -1 + $n_S8 ) exit
+   54.             enddo
+   54.             if ( $check_S11 == 0 ) exit
+   54.          enddo
+   54.       endif
+   54.       imax = 1 + mend * cvmg( 2, 3, linear )
+   54.       if ( $n_S8 > 0 ) then
+   54.          $I_L54_35 = 0
+   54. !dir$ ivdep
+   54.          do
+   54.             if ( (ifft%base_addr)(1 + $I_L54_35, 0) >= 1 + mend * cvmg( 2, 3, linear ) ) then
+   54.                imax = (ifft%base_addr)(1 + $I_L54_35, 0)
+   54.                goto 20
+   54.             endif
+   54.             $I_L54_35 = 1 + $I_L54_35
+   54.             if ( $I_L54_35 >= $n_S8 ) exit
+   54.          enddo
+   54.       endif
+   54.    20 continue
+   54.       jmax = imax / 2
+   54.       if ( mod( imax / 2, 2 ) /= 0 ) then
+   54.          jmax = 1 + imax / 2
+   54.       endif
+   54.       $_allo_P4(0) = 0x1000000000001L
+   54.       $_allo_P4(1) = loc( ifft )
+   54.       call __deallocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+   54.       ifft%header%assoc = 0
+   56.       ixp = 2
+   57.       mend1 = 1 + mend
+   58.       nend1 = 1 + mend
+   59.       mend2 = 2 + mend
+   60.       mnwv2 = 2 + mend * mend + 3 * mend
+   61.       mnwv0 = ( 2 + mend * mend + 3 * mend ) / 2
+   62.       mnwv3 = 4 + mend * mend + 5 * mend
+   63.       mnwv1 = ( 4 + mend * mend + 5 * mend ) / 2
+   64.       imx = 2 + imax
+   65.       jmaxhf = jmax / 2
+   66.       ngaus = imax * jmax
+   67.       ijkmax = kmax * imax * jmax
+   68.       kmaxp = 1 + kmax
+   70.       call createpressurelevels
+   72.       return
+   72.       end
+   72.       
+   75.       
+   75.       subroutine createpressurelevels
+   85.       if ( nmand <= 0 ) then
+   86.          nmand = 1
+   87.          pmandinput%header%a_contig = 1
+   87.          pmandinput%dim_1%LB = 1
+   87.          pmandinput%dim_1%EX = 1
+   87.          pmandinput%dim_1%SM = 1
+   87.          $_allo_P0(0) = 0x1000000000001L
+   87.          $_allo_P0(1) = loc( pmandinput )
+   87.          call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+   88.          (pmandinput%base_addr)(1, 0) = 0.0
+   88.       else
+   90.          pmandinput%header%a_contig = 1
+   90.          pmandinput%dim_1%LB = 1
+   90.          pmandinput%dim_1%EX = ( max( 0, nmand ) )
+   90.          pmandinput%dim_1%SM = 1
+   90.          $_allo_P1(0) = 0x1000000000001L
+   90.          $_allo_P1(1) = loc( pmandinput )
+   90.          call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+   91.          if ( nmand < 10 ) then
+   92.             _fwrite( _clist( 0, 0, 3,  _substr(fmtmand,2,3), Null_Arg, Null_Arg, t$6,  _substr(t$5,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( nmand, 0x2000200000000L ) ) )
+   92.          else
+   94.             _fwrite( _clist( 0, 0, 3,  _substr(fmtmand,2,3), Null_Arg, Null_Arg, t$8,  _substr(t$7,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 10, 0x2000200000000L ) ) )
+   94.          endif
+   96.          $Unit_temp_O0 = nfinp
+   96.          _fread( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, Null_Arg,  _substr(fmtmand,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (&)(pmandinput%base_addr)(+:( 1, ( max( 0, nmand ) ), 1 ), 0), 0x804060300000000L ) ) )
+   96.       endif
+   99.       $Unit_temp_O2 = nfprt
+   99.       _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, t$10,  _substr(t$9,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' PmandInput:', 0x800600000000L ) ) )
+  100.       $Unit_temp_O3 = nfprt
+  100.       _fwrite( _clist( 0, 0, 3, $Unit_temp_O3, Null_Arg, Null_Arg, Null_Arg,  _substr(fmtmand,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (&)(pmandinput%base_addr)(+:( 1, pmandinput%dim_1%EX, 1 ), 0), 0x804060300000000L ) ) )
+  101.       $Unit_temp_O4 = nfprt
+  101.       _fwrite( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, t$12,  _substr(t$11,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ', 0x800600000000L ) ) )
+  103.       lmax = cvmg( 18, nmand, (pmandinput%base_addr)(nmand, 0) <= 0.0 )
+  110.       if ( ( nmand <= 0 .or. nmand > pmandinput%dim_1%EX ) /= .false. ) then
+  110.           _substr(t$16,1,13) = 'PrblSize.f90'
+  110.           _substr(t$17,1,11) = 'PMANDINPUT'
+  110.          t$18 = 1
+  110.          t$19 = pmandinput%dim_1%EX
+  110.          t$20 = nmand
+  110.          call _bounds_error(  _substr(t$16,1,13), 110,  _substr(t$17,1,11), 1, t$18, t$19, t$20, t$15 )
+  110.       endif
+  108.       $Unit_temp_O5 = nfprt
+  108.       $IOitem_O6 = (pmandinput%base_addr)(nmand, 0)
+  108.       _fwrite( _clist( 0, 0, 3, $Unit_temp_O5, Null_Arg, Null_Arg, t$14,  _substr(t$13,1,20), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' Lmax = ', 0x800600000000L ), _iotype( lmax, 0x2000200000000L ), _iotype( '   nMand = ', 0x800600000000L ), _iotype( nmand, 0x2000200000000L ), _iotype( '   PmandInput(nMand) = ', 0x800600000000L ), _iotype( $IOitem_O6, 0x804060300000000L ) ) )
+  112.       pmand%header%a_contig = 1
+  112.       pmand%dim_1%LB = 1
+  112.       pmand%dim_1%EX = ( max( 0, lmax ) )
+  112.       pmand%dim_1%SM = 1
+  112.       alnpmd%header%a_contig = 1
+  112.       alnpmd%dim_1%LB = 1
+  112.       alnpmd%dim_1%EX = ( max( 0, lmax ) )
+  112.       alnpmd%dim_1%SM = 1
+  112.       $_allo_P2(0) = 0x2000000000001L
+  112.       $_allo_P2(1) = loc( pmand )
+  112.       $_allo_P2(2) = loc( alnpmd )
+  112.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  114.       if ( (pmandinput%base_addr)(nmand, 0) == 0.0 ) then
+  115.          $I_L115_10 = 0
+  115. !dir$ ivdep
+  115.          do
+  115.             (pmand%base_addr)(1 + $I_L115_10, 0) = t$21(1 + $I_L115_10)
+  115.             $I_L115_10 = 1 + $I_L115_10
+  115.             if ( $I_L115_10 >= 18 ) exit
+  115.          enddo
+  115.       else
+  119.          $F_A33 = ( max( 0, lmax ) )
+  119.          if ( lmax > 0 ) then
+  119.             $SC_pmandinput_I2 = pmandinput%dim_1%EX
+  119.             $SC_pmandinput_I3 = pmandinput%dim_1%LB
+  119.             $I_L119_12 = 0
+  119. !dir$ ivdep
+  119.             do
+  119.                (pmand%base_addr)(1 + $I_L119_12, 0) = (pmandinput%base_addr)($SC_pmandinput_I3 + $I_L119_12, 0)
+  119.                $I_L119_12 = 1 + $I_L119_12
+  119.                if ( $I_L119_12 >= $F_A33 ) exit
+  119.             enddo
+  119.          endif
+  119.       endif
+  122.       if ( lmax > 0 ) then
+  122.          $I_L122_8 = 0
+  122. !dir$ ivdep
+  122.          do
+  123.             (alnpmd%base_addr)(1 + $I_L122_8, 0) = log( (pmand%base_addr)(1 + $I_L122_8, 0) )
+  124.             $I_L122_8 = 1 + $I_L122_8
+  122.             if ( $I_L122_8 >= lmax ) exit
+  122.          enddo
+  122.       endif
+  126.       return
+  126.       end
+  126.       
+  143.       
+  143.       subroutine getimaxjmax( mend, imax, jmax )
+  145.       $Flat_S1 = ceiling( 15.287712379549449 )
+  146.       $Flat_S0 = ceiling( 9.6454726043004548 )
+  147.       $Flat_S2 = ceiling( 6.5840593484403582 )
+  150.       ifft%header%a_contig = 1
+  150.       ifft%dim_1%LB = 1
+  150.       ifft%dim_1%EX = _zla( 0, ( $Flat_S1 + $Flat_S0 * $Flat_S1 + $Flat_S1 * $Flat_S2 + $Flat_S0 * $Flat_S1 * $Flat_S2 ) )
+  150.       ifft%dim_1%SM = 1
+  150.       $_allo_P3(0) = 0x1000000000001L
+  150.       $_allo_P3(1) = loc( ifft )
+  150.       call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+  151.       $F_A33 = _zla( 0, ( $Flat_S1 + $Flat_S0 * $Flat_S1 + $Flat_S1 * $Flat_S2 + $Flat_S0 * $Flat_S1 * $Flat_S2 ) )
+  151.       if ( _zla( 0, ( $Flat_S1 + $Flat_S0 * $Flat_S1 + $Flat_S1 * $Flat_S2 + $Flat_S0 * $Flat_S1 * $Flat_S2 ) ) > 0 ) then
+  151.          $I_L151_37 = 0
+  151. !dir$ ivdep
+  151.          do
+  151.             (ifft%base_addr)(1 + $I_L151_37, 0) = 0
+  151.             $I_L151_37 = 1 + $I_L151_37
+  151.             if ( $I_L151_37 >= $F_A33 ) exit
+  151.          enddo
+  151.       endif
+  153.       $n_S8 = 0
+  154.       if ( $Flat_S1 > 0 ) then
+  157.          if ( $Flat_S0 >= 0 ) then
+  160.             if ( $Flat_S2 >= 0 ) then
+  154.                $I_L154_41 = 0
+  154.                do
+  156.                   if ( _lsh( 1, ( 1 + $I_L154_41 ) ) > 40000 ) exit
+  157.                   $I_L157_39 = 0
+  157.                   do
+  159.                      if ( 3 ** $I_L157_39 * _lsh( 1, ( 1 + $I_L154_41 ) ) > 40000 ) exit
+  160.                      $I_L160_31 = 0
+  160. !dir$ ivdep
+  160.                      do
+  161.                         $jfft_S7 = 5 ** $I_L160_31 * 3 ** $I_L157_39 * _lsh( 1, ( 1 + $I_L154_41 ) )
+  162.                         if ( 5 ** $I_L160_31 * 3 ** $I_L157_39 * _lsh( 1, ( 1 + $I_L154_41 ) ) > 40000 ) then
+  163.                            $n_S8 = ( $n_S8 + $I_L160_31 )
+  163.                            goto 10
+  163.                         endif
+  164.                         (ifft%base_addr)(1 + $n_S8 + $I_L160_31, 0) = $jfft_S7
+  165.                         $I_L160_31 = 1 + $I_L160_31
+  163.                         if ( $I_L160_31 >= 1 + $Flat_S2 ) exit
+  163.                      enddo
+  163.                      $n_S8 = ( 1 + $Flat_S2 + $n_S8 )
+  163.    10                continue
+  166.                      $I_L157_39 = 1 + $I_L157_39
+  165.                      if ( $I_L157_39 >= 1 + $Flat_S0 ) exit
+  165.                   enddo
+  167.                   $I_L154_41 = 1 + $I_L154_41
+  166.                   if ( $I_L154_41 >= $Flat_S1 ) exit
+  166.                enddo
+  166.             endif
+  166.          endif
+  166.       endif
+  174.       if ( -1 + $n_S8 > 0 ) then
+  174.          do
+  172.             $check_S11 = 0
+  174.             $I_L174_33 = 0
+  174. !dir$ unroll 4
+  174.             do
+  175.                if ( (ifft%base_addr)(1 + $I_L174_33, 0) > (ifft%base_addr)(2 + $I_L174_33, 0) ) then
+  176.                   $jfft_S10 = (ifft%base_addr)(1 + $I_L174_33, 0)
+  177.                   (ifft%base_addr)(1 + $I_L174_33, 0) = (ifft%base_addr)(2 + $I_L174_33, 0)
+  178.                   (ifft%base_addr)(2 + $I_L174_33, 0) = $jfft_S10
+  179.                   $check_S11 = 1
+  179.                endif
+  181.                $I_L174_33 = 1 + $I_L174_33
+  180.                if ( $I_L174_33 >= -1 + $n_S8 ) exit
+  180.             enddo
+  181.             if ( $check_S11 == 0 ) exit
+  181.          enddo
+  181.       endif
+  190.       imax = 1 + mend * cvmg( 2, 3, linear )
+  191.       if ( $n_S8 > 0 ) then
+  191.          $I_L191_35 = 0
+  191. !dir$ ivdep
+  191.          do
+  192.             if ( (ifft%base_addr)(1 + $I_L191_35, 0) >= 1 + mend * cvmg( 2, 3, linear ) ) then
+  193.                imax = (ifft%base_addr)(1 + $I_L191_35, 0)
+  193.                goto 20
+  193.             endif
+  196.             $I_L191_35 = 1 + $I_L191_35
+  195.             if ( $I_L191_35 >= $n_S8 ) exit
+  195.          enddo
+  195.       endif
+  195.    20 continue
+  197.       jmax = imax / 2
+  198.       if ( mod( imax / 2, 2 ) /= 0 ) then
+  198.          jmax = 1 + imax / 2
+  198.       endif
+  200.       $_allo_P4(0) = 0x1000000000001L
+  200.       $_allo_P4(1) = loc( ifft )
+  200.       call __deallocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+  200.       ifft%header%assoc = 0
+  202.       return
+  202.       end
+  202.       
+   34.       
+   34.       module prblsize
+   34.       end
+   34.       

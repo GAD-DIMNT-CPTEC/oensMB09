@@ -1,0 +1,54 @@
+#!/bin/ksh -x
+#
+#********************************************************#
+#                                                        #
+#     Name:     eofwin.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               the wind eof                             #
+#                                                        #
+#     Date:        February 11th, 1998.                  #
+#     Last change: August   14th, 2000.                  #
+#                                                        #
+#********************************************************#
+#
+echo "EOFW           -x-  RUNNING ..."
+#    Set directories:
+#
+source=${OPERMOD}/eofwind/source
+bin=${SOPERMOD}/eof/bin/${RESOL}${NIVEL};mkdir -p ${bin}
+#AMM input=${ROPERMOD}/eof/datain;mkdir -p ${input}
+out=${ROPERMOD}/eof/dataout/${RESOL}${NIVEL};mkdir -p ${out}
+inp=${SOPERMOD}/eof/datain;mkdir -p ${inp}
+outp=${OPERMOD}/eofwind/output;mkdir -p ${outp}
+#
+#   Check if the makefile will compile:
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f eofwin.mk
+exit
+  fi
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f eofwin.mk clean
+make -f eofwin.mk
+exit
+  fi
+#
+cd ${bin}
+#
+echo "./eofwin.${TRUNC}${LEV} < ${inp}/eofwin${NUM}.nml > $outp/eofwin.${LABELI}.${HOUR}.${TRUNC}${LEV}"
+./eofwin.${TRUNC}${LEV} < ${inp}/eofwin${NUM}.nml > ${outp}/eofwin.${LABELI}.${HOUR}.${TRUNC}${LEV}
+#

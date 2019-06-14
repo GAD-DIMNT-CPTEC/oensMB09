@@ -1,0 +1,28 @@
+#!/bin/bash
+#PBS -o eslogin04:/scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/grh/exec/setout/Out.grh.2004032600.1304631960.%s.MPI1.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N EnsGRH
+#PBS -q pesq.q
+
+export PBS_SERVER=aux20-eth4
+
+if [[ Linux == "Linux" || Linux == "linux" ]]; then
+export F_UFMTENDIAN=10,20,30,40,50,60,70,80
+export GFORTRAN_CONVERT_UNIT=big_endian:10,20,30,40,50,60,70,80
+fi
+export KMP_STACKSIZE=128m
+ulimit -s unlimited
+cd /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/grh/exec
+#time /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/grh/exec/PostGridHistory < /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/grh/exec/PostGridHistory.nml
+optserver=aux
+if [[ (${optserver} = "aux") ]]; then
+$ /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/grh/exec/PostGridHistory < /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/grh/exec/PostGridHistory.nml
+else
+time aprun -n 1 -N 1  /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/grh/exec/PostGridHistory < /scratch1/grupos/pad/home/paulo.kubota/oens-1.0.0/grh/exec/PostGridHistory.nml
+fi
+

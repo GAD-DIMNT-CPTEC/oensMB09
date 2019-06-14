@@ -1,0 +1,129 @@
+#!/bin/bash
+#
+#************************************************************#
+#                                                            #
+#     Name:        setfftpTQ0126L028.Linux          #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  the environmental variables and start     #
+#                  the FFT and Legendre Transform            #
+#                  Library script.                           #
+#                                                            #
+#************************************************************#
+#
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/setfftpTQ0126L028.Linux.2010100809:42.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N 
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=20101008
+HOUR=09:42
+echo 'Date: '${DATE}
+echo 'Hour: '${HOUR}
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#
+OPERMOD=/scratch/p01211/oens-1.0.0
+SOPERMOD=/scratch/p01211/oens-1.0.0
+export OPERMOD SOPERMOD
+echo ${OPERMOD}
+echo ${SOPERMOD}
+#
+cd ${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=L028
+TRUNC=TQ0126
+export TRUNC LEV
+#
+#   Set machine
+MACH=Linux
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+echo clean
+COMPILE=clean
+echo ${COMPILE}
+export COMPILE
+#
+#   Set FORTRAN compilation flags
+#
+#   -integer_size 64 sets the integer basic numeric size to 8 bytes
+#   -real_size 64    sets the real basic numeric size to 8 bytes
+#
+#
+#FTNFLAG='-Wf" -pvctl noaltcode -O nodiv nomove "'
+FTNFLAG='  -h byteswapio -s integer64 -s real64  '
+
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=${OPERMOD}/include/${TRUNC}${LEV}
+CPP=" -I${INC}"
+export INC CPP
+#
+#   Set FORTRAN compiler name
+#
+#F77="f90 -V -float0 -ew "
+F77="ftn  "
+export F77
+#
+#  Now, build the necessary INCLUDE for the choosen
+#       truncation and vertical resolution. 
+#
+  if [ "${COMPILE}" != "run" ]
+  then
+#
+cd ${INC}
+#
+cat <<EOT1 > fftpln.n
+      INTEGER IMAX,JMAX,MEND,KMAX
+      PARAMETER (IMAX=384,JMAX=192,MEND=126,KMAX=28)
+EOT1
+if (diff fftpln.n fftpln.h > /dev/null)
+then
+    echo "fftpln.n and fftpln.h are the same"
+    rm -f fftpln.n
+else
+    echo "fftpln.n and fftpln.h are different"
+    mv fftpln.n fftpln.h
+fi
+#
+#  End of includes
+#
+fi
+#
+cd ${OPERMOD}/run
+#
+#   Run FFT and PLN Library
+#
+${OPERMOD}/fftpln/scripts/fftpln.scr
+#

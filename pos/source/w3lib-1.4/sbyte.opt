@@ -1,0 +1,41 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  sbyte.f
+       !        File                  :  sbyte.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    1.       
+    1.       subroutine sbyte( iout, in, iskip, nbyte )
+   41.       icon = 32 + -nbyte
+   42.       if ( 32 + -nbyte >= 0 ) then
+   43.          mask = masks(nbyte)
+   47.          index = _rsh( iskip, 5 )
+   51.          ii = mod( iskip, 32 )
+   53.          j = and( mask, in )
+   54.          movel = 32 + -nbyte + -mod( iskip, 32 )
+   58.          if ( 32 + -nbyte + -mod( iskip, 32 ) > 0 ) then
+   59.             msk = cvmg( lshift( mask, abs( 32 + -nbyte + -mod( iskip, 32 ) ) ), rshift( mask, abs( 32 + -nbyte + -mod( iskip, 32 ) ) ), 32 + -nbyte + -mod( iskip, 32 ) > 0 )
+   60.             iout(1 + _rsh( iskip, 5 )) = or( notand( cvmg( lshift( mask, abs( 32 + -nbyte + -mod( iskip, 32 ) ) ), rshift( mask, abs( 32 + -nbyte + -mod( iskip, 32 ) ) ), 32 + -nbyte + -mod( iskip, 32 ) > 0 ), iout(1 + _rsh( iskip, 5 )) ), cvmg( lshift( and( mask, in ), abs( 32 + -nbyte + -mod( iskip, 32 ) ) ), rshift( and( mask, in ), abs( 32 + -nbyte + -mod( iskip, 32 ) ) ), 32 + -nbyte + -mod( iskip, 32 ) > 0 ) )
+   65.          else if ( 32 + -nbyte + -mod( iskip, 32 ) < 0 ) then
+   66.             msk = masks(32 + -mod( iskip, 32 ))
+   67.             iout(1 + _rsh( iskip, 5 )) = or( notand( msk, iout(1 + _rsh( iskip, 5 )) ), cvmg( lshift( and( mask, in ), abs( 32 + -nbyte + -mod( iskip, 32 ) ) ), rshift( and( mask, in ), abs( 32 + -nbyte + -mod( iskip, 32 ) ) ), 32 + -nbyte + -mod( iskip, 32 ) > 0 ) )
+   69.             itemp = and( iout(2 + _rsh( iskip, 5 )), masks(64 + -nbyte + -mod( iskip, 32 )) )
+   70.             iout(2 + _rsh( iskip, 5 )) = or( itemp, cvmg( lshift( and( mask, in ), abs( 64 + -nbyte + -mod( iskip, 32 ) ) ), rshift( and( mask, in ), abs( 64 + -nbyte + -mod( iskip, 32 ) ) ), 64 + -nbyte + -mod( iskip, 32 ) > 0 ) )
+   70.          else
+   75.             iout(1 + _rsh( iskip, 5 )) = or( and( mask, in ), notand( mask, iout(1 + _rsh( iskip, 5 )) ) )
+   75.          endif
+   75.       endif
+   79.       return
+   79.       end
+   79.       

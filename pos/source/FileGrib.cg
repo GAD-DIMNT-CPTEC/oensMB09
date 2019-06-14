@@ -1,0 +1,1531 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  FileGrib.f90
+       !        File                  :  FileGrib.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   16.       
+   16.       subroutine gdspdssetion( kgds, kpds )
+   32.       $LC_S152 = -50
+   32.       $SI_S151 = 0
+   32.       $LIS_S150[0:4:1] = _bcst( 0, 4 )
+   32.       do
+   32.          0[$SI_S151 + loc( kpds ):4:1] = $LIS_S150[0:4:1]
+   33.          0[$SI_S151 + loc( kgds ):4:1] = $LIS_S150[0:4:1]
+   32.          $SI_S151 = 16 + $SI_S151
+   32.          $LC_S152 = 1 + $LC_S152
+   32.          if ( $LC_S152 >= 0 ) exit
+   32.       enddo
+   37.       $idrt_S235 = 4
+   38.       if ( 44[loc( kpds13 ),0] /= .false. ) then
+   38.          $idrt_S235 = 0
+   38.       endif
+   40.       iday_anl = 0
+   40.       iday_fct = 0
+   40.       $CS_dd_anl_0 = loc( dd_anl )
+   40.       $MR_yy_anl_3 = 12[$CS_dd_anl_0,0]
+   40.       $MR_yy_fct_4 = 14[$CS_dd_anl_0,0]
+   40.       $LCS_MR_yy_fct_1 = $MR_yy_fct_4 - $MR_yy_anl_3
+   40.       if ( $LCS_MR_yy_fct_1 >= 0 ) then
+   40.          if ( mod( real( $MR_yy_fct_4 ), 4.0 ) == 0.0 ) then
+   40.             if ( $LCS_MR_yy_fct_1 > 0 ) then
+   40.                $MR_mm_anl_S153 = 8[$CS_dd_anl_0,0]
+   40.                if ( -1 + $MR_mm_anl_S153 > 0 ) then
+   40.                   $I_L40_S156 = 0
+   40.                   $LCS_2 = $MR_mm_anl_S153
+   40.                   if ( -13 + $LCS_2 > 0 ) then
+   40.                      $LB_Y0 = 1
+   40.                      $UB_Y1 = 12
+   40.                      $Subscript_Y2 = 1
+   40.                      $Subscript_Y3 = -1 + $LCS_2
+   40.                      $Subscript_Y4 = 1
+   40.                      _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+   40.                   endif
+   40.                   $SC_iday_anl_I0 = 0
+   40.                   $LCS_3 = $MR_mm_anl_S153
+   40.                   if ( -5 + $LCS_3 >= 0 ) then
+   40.                      $TC_2 = and( -4, -1 + $LCS_3 )
+   40.                      $VR_iday_anl_5[0:4:1] = _bcst( 0, 4 )
+   40.                      $LC_S155 = -$TC_2
+   40.                      $SI_S154 = 0
+   40.                      $LIS_S15 = loc( monlb )
+   40.                      do
+   40.                         $VR_iday_anl_5[0:4:1] = $VR_iday_anl_5[0:4:1] + 0[$LIS_S15 + $SI_S154:4:1]
+   40.                         $SI_S154 = 16 + $SI_S154
+   40.                         $LC_S155 = 4 + $LC_S155
+   40.                         if ( $LC_S155 >= 0 ) exit
+   40.                      enddo
+   40.                      $SC_iday_anl_I0 = _rpls( $VR_iday_anl_5[0:4:1], 4, 1 )
+   40.                      $I_L40_S156 = $TC_2
+   40.                   endif
+   40.                   $LCS_1_4 = -1 + $MR_mm_anl_S153
+   40.                   if ( $LCS_1_4 > $I_L40_S156 ) then
+   40.                      $LIS_S19 = loc( monlb )
+   40.                      do
+   40.                         $SC_iday_anl_I0 = $SC_iday_anl_I0 + 0[$LIS_S19,$I_L40_S156]
+   40.                         $I_L40_S156 = 1 + $I_L40_S156
+   40.                         if ( $I_L40_S156 >= $LCS_1_4 ) exit
+   40.                      enddo
+   40.                   endif
+   40.                   iday_anl = $SC_iday_anl_I0
+   40.                endif
+   40.                $iday_fct_S29 = 0
+   40.                $VR_iday_fct_S157[0:4:1] = _bcst( 0, 4 )
+   40.                $LIS_S21 = loc( monlb )
+   40.                !  === Begin Short Vector Loop ===
+   40.                $VPO_monlb_S158[0:4:1] = 0[$LIS_S21:4:1]
+   40.                $VP_monlb_S160[0:4:1] = 4[$LIS_S21:4:1]
+   40.                $VR_iday_fct_S159[0:4:1] = $VR_iday_fct_S157[0:4:1] + $VPO_monlb_S158[0:4:1]
+   40.                $VP_monlb_S162[0:4:1] = 8[$LIS_S21:4:1]
+   40.                $VR_iday_fct_S161[0:4:1] = $VR_iday_fct_S159[0:4:1] + $VP_monlb_S160[0:4:1]
+   40.                $VR_iday_fct_S163[0:4:1] = $VR_iday_fct_S161[0:4:1] + $VP_monlb_S162[0:4:1]
+   40.                !  === End Short Vector Loop ===
+   40.                $iday_fct_S164 = $iday_fct_S29 + _rpls( $VR_iday_fct_S163[0:4:1], 4, 1 )
+   40.                iday_fct = $iday_fct_S164
+   40.                $LCS_MR_yy_fct_5 = $MR_yy_fct_4 - $MR_yy_anl_3
+   40.                if ( 1 < $LCS_MR_yy_fct_5 ) then
+   40.                   $I_L40_S176 = 0
+   40.                   $LCS_6 = $LCS_MR_yy_fct_5
+   40.                   if ( -5 + $LCS_6 >= 0 ) then
+   40.                      $I_L40_S175 = 0
+   40.                      $LIS_S46 = _rsh( -1 + $LCS_6, 2 )
+   40.                      $LIS_S165[0:4:1] = _bcst( 2, 4 )
+   40.                      $VSC_monlb_S166[0:4:1] = 8[$LIS_S21:4:1]
+   40.                      $VSC_monlb_S167[0:4:1] = 4[$LIS_S21:4:1]
+   40.                      $VSC_monlb_S168[0:4:1] = 0[$LIS_S21:4:1]
+   40.                      $LIS_S172[0:4:1] = _lsh( $VSC_monlb_S166[0:4:1], $LIS_S165[0:4:1] )
+   40.                      $LIS_S171[0:4:1] = _lsh( $VSC_monlb_S167[0:4:1], $LIS_S165[0:4:1] )
+   40.                      $LIS_S170[0:4:1] = _lsh( $VSC_monlb_S168[0:4:1], $LIS_S165[0:4:1] )
+   40. !dir$ blocking_size( 16, 16 )
+   40.                      do
+   40.                         !  === Begin Short Vector Loop ===
+   40.                         $VR_iday_fct_S173[0:4:1] = $LIS_S170[0:4:1] + $LIS_S171[0:4:1]
+   40.                         $VR_iday_fct_S174[0:4:1] = $LIS_S172[0:4:1] + $VR_iday_fct_S173[0:4:1]
+   40.                         !  === End Short Vector Loop ===
+   40.                         $iday_fct_S164 = $iday_fct_S164 + _rpls( $VR_iday_fct_S174[0:4:1], 4, 1 )
+   40.                         $I_L40_S175 = 1 + $I_L40_S175
+   40.                         if ( $I_L40_S175 >= $LIS_S46 ) exit
+   40.                      enddo
+   40.                      iday_fct = $iday_fct_S164
+   40.                      $I_L40_S176 = and( -4, -1 + $MR_yy_fct_4 - $MR_yy_anl_3 )
+   40.                   endif
+   40.                   if ( $I_L40_S176 < -1 + $MR_yy_fct_4 - $MR_yy_anl_3 ) then
+   40.                      $I_L40_S183 = 0
+   40.                      $LIS_E5 = ( -$MR_yy_anl_3 + $MR_yy_fct_4 + -1 - $I_L40_S176 )
+   40.                      $VSC_monlb_S180[0:4:1] = 8[$LIS_S21:4:1]
+   40.                      $VSC_monlb_S177[0:4:1] = 4[$LIS_S21:4:1]
+   40.                      $VSC_monlb_S178[0:4:1] = 0[$LIS_S21:4:1]
+   40.                      $LIS_S181[0:4:1] = $VSC_monlb_S177[0:4:1] + $VSC_monlb_S178[0:4:1]
+   40. !dir$ blocking_size( 16, 16 )
+   40.                      do
+   40.                         !  === Begin Short Vector Loop ===
+   40.                         $VR_iday_fct_S182[0:4:1] = $VSC_monlb_S180[0:4:1] + $LIS_S181[0:4:1]
+   40.                         !  === End Short Vector Loop ===
+   40.                         $iday_fct_S164 = $iday_fct_S164 + _rpls( $VR_iday_fct_S182[0:4:1], 4, 1 )
+   40.                         $I_L40_S183 = 1 + $I_L40_S183
+   40.                         if ( $I_L40_S183 >= $LIS_E5 ) exit
+   40.                      enddo
+   40.                      iday_fct = $iday_fct_S164
+   40.                   endif
+   40.                endif
+   40.             endif
+   40.             if ( $MR_yy_fct_4 - $MR_yy_anl_3 == 0 ) then
+   40.                $MR_mm_anl_S184 = 8[$CS_dd_anl_0,0]
+   40.                if ( -1 + $MR_mm_anl_S184 > 0 ) then
+   40.                   $I_L40_S188 = 0
+   40.                   $LCS_7 = $MR_mm_anl_S184
+   40.                   if ( -13 + $LCS_7 > 0 ) then
+   40.                      $LB_Y0 = 1
+   40.                      $UB_Y1 = 12
+   40.                      $Subscript_Y2 = 1
+   40.                      $Subscript_Y3 = -1 + $LCS_7
+   40.                      $Subscript_Y4 = 1
+   40.                      _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y45 )
+   40.                   endif
+   40.                   $iday_anl_S185 = iday_anl
+   40.                   $iday_anl_S66 = $iday_anl_S185
+   40.                   $LCS_8 = $MR_mm_anl_S184
+   40.                   if ( -5 + $LCS_8 >= 0 ) then
+   40.                      $TC_15 = and( -4, -1 + $LCS_8 )
+   40.                      $VR_iday_anl_18[0:4:1] = _bcst( 0, 4 )
+   40.                      $LC_S187 = -$TC_15
+   40.                      $SI_S186 = 0
+   40.                      $LIS_S63 = loc( monlb )
+   40.                      do
+   40.                         $VR_iday_anl_18[0:4:1] = $VR_iday_anl_18[0:4:1] + 0[$LIS_S63 + $SI_S186:4:1]
+   40.                         $SI_S186 = 16 + $SI_S186
+   40.                         $LC_S187 = 4 + $LC_S187
+   40.                         if ( $LC_S187 >= 0 ) exit
+   40.                      enddo
+   40.                      $iday_anl_S66 = $iday_anl_S185 + _rpls( $VR_iday_anl_18[0:4:1], 4, 1 )
+   40.                      $I_L40_S188 = $TC_15
+   40.                   endif
+   40.                   $LCS_1_9 = -1 + $MR_mm_anl_S184
+   40.                   if ( $LCS_1_9 > $I_L40_S188 ) then
+   40.                      $LIS_S68 = loc( monlb )
+   40.                      do
+   40.                         $iday_anl_S66 = $iday_anl_S66 + 0[$LIS_S68,$I_L40_S188]
+   40.                         $I_L40_S188 = 1 + $I_L40_S188
+   40.                         if ( $I_L40_S188 >= $LCS_1_9 ) exit
+   40.                      enddo
+   40.                   endif
+   40.                   iday_anl = $iday_anl_S66
+   40.                endif
+   40.             endif
+   40.             $MR_mm_fct_S189 = 10[$CS_dd_anl_0,0]
+   40.             if ( -1 + $MR_mm_fct_S189 > 0 ) then
+   40.                $I_L40_S193 = 0
+   40.                $LCS_10 = $MR_mm_fct_S189
+   40.                if ( -13 + $LCS_10 > 0 ) then
+   40.                   $LB_Y0 = 1
+   40.                   $UB_Y1 = 12
+   40.                   $Subscript_Y2 = 1
+   40.                   $Subscript_Y3 = -1 + $LCS_10
+   40.                   $Subscript_Y4 = 1
+   40.                   _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y46, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y47 )
+   40.                endif
+   40.                $iday_fct_S190 = iday_fct
+   40.                $iday_fct_S74 = $iday_fct_S190
+   40.                $LCS_11 = $MR_mm_fct_S189
+   40.                if ( -5 + $LCS_11 >= 0 ) then
+   40.                   $TC_19 = and( -4, -1 + $LCS_11 )
+   40.                   $VR_iday_fct_22[0:4:1] = _bcst( 0, 4 )
+   40.                   $LC_S192 = -$TC_19
+   40.                   $SI_S191 = 0
+   40.                   $LIS_S71 = loc( monlb )
+   40.                   do
+   40.                      $VR_iday_fct_22[0:4:1] = $VR_iday_fct_22[0:4:1] + 0[$LIS_S71 + $SI_S191:4:1]
+   40.                      $SI_S191 = 16 + $SI_S191
+   40.                      $LC_S192 = 4 + $LC_S192
+   40.                      if ( $LC_S192 >= 0 ) exit
+   40.                   enddo
+   40.                   $iday_fct_S74 = $iday_fct_S190 + _rpls( $VR_iday_fct_22[0:4:1], 4, 1 )
+   40.                   $I_L40_S193 = $TC_19
+   40.                endif
+   40.                $LCS_1_12 = -1 + $MR_mm_fct_S189
+   40.                if ( $LCS_1_12 > $I_L40_S193 ) then
+   40.                   $LIS_S76 = loc( monlb )
+   40.                   do
+   40.                      $iday_fct_S74 = $iday_fct_S74 + 0[$LIS_S76,$I_L40_S193]
+   40.                      $I_L40_S193 = 1 + $I_L40_S193
+   40.                      if ( $I_L40_S193 >= $LCS_1_12 ) exit
+   40.                   enddo
+   40.                endif
+   40.                iday_fct = $iday_fct_S74
+   40.             endif
+   40.          else
+   40.             if ( $MR_yy_fct_4 - $MR_yy_anl_3 > 0 ) then
+   40.                $MR_mm_anl_S194 = 8[$CS_dd_anl_0,0]
+   40.                if ( -1 + $MR_mm_anl_S194 > 0 ) then
+   40.                   $I_L40_S197 = 0
+   40.                   $LCS_13 = $MR_mm_anl_S194
+   40.                   if ( -13 + $LCS_13 > 0 ) then
+   40.                      $LB_Y0 = 1
+   40.                      $UB_Y1 = 12
+   40.                      $Subscript_Y2 = 1
+   40.                      $Subscript_Y3 = -1 + $LCS_13
+   40.                      $Subscript_Y4 = 1
+   40.                      _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y48, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y49 )
+   40.                   endif
+   40.                   $SC_iday_anl_I0 = 0
+   40.                   $LCS_14 = $MR_mm_anl_S194
+   40.                   if ( -5 + $LCS_14 >= 0 ) then
+   40.                      $TC_23 = and( -4, -1 + $LCS_14 )
+   40.                      $VR_iday_anl_26[0:4:1] = _bcst( 0, 4 )
+   40.                      $LC_S196 = -$TC_23
+   40.                      $SI_S195 = 0
+   40.                      $LIS_S79 = loc( monlb )
+   40.                      do
+   40.                         $VR_iday_anl_26[0:4:1] = $VR_iday_anl_26[0:4:1] + 16[$LIS_S79 + $SI_S195:4:1]
+   40.                         $SI_S195 = 16 + $SI_S195
+   40.                         $LC_S196 = 4 + $LC_S196
+   40.                         if ( $LC_S196 >= 0 ) exit
+   40.                      enddo
+   40.                      $SC_iday_anl_I0 = _rpls( $VR_iday_anl_26[0:4:1], 4, 1 )
+   40.                      $I_L40_S197 = $TC_23
+   40.                   endif
+   40.                   $LCS_1_15 = -1 + $MR_mm_anl_S194
+   40.                   if ( $LCS_1_15 > $I_L40_S197 ) then
+   40.                      $LIS_S83 = loc( monlb )
+   40.                      do
+   40.                         $SC_iday_anl_I0 = $SC_iday_anl_I0 + 16[$LIS_S83,$I_L40_S197]
+   40.                         $I_L40_S197 = 1 + $I_L40_S197
+   40.                         if ( $I_L40_S197 >= $LCS_1_15 ) exit
+   40.                      enddo
+   40.                   endif
+   40.                   iday_anl = $SC_iday_anl_I0
+   40.                endif
+   40.                $iday_fct_S93 = 0
+   40.                $VR_iday_fct_S198[0:4:1] = _bcst( 0, 4 )
+   40.                $LIS_S85 = loc( monlb )
+   40.                !  === Begin Short Vector Loop ===
+   40.                $VPO_monln_S199[0:4:1] = 16[$LIS_S85:4:1]
+   40.                $VP_monln_S201[0:4:1] = 20[$LIS_S85:4:1]
+   40.                $VR_iday_fct_S200[0:4:1] = $VR_iday_fct_S198[0:4:1] + $VPO_monln_S199[0:4:1]
+   40.                $VP_monln_S203[0:4:1] = 24[$LIS_S85:4:1]
+   40.                $VR_iday_fct_S202[0:4:1] = $VR_iday_fct_S200[0:4:1] + $VP_monln_S201[0:4:1]
+   40.                $VR_iday_fct_S204[0:4:1] = $VR_iday_fct_S202[0:4:1] + $VP_monln_S203[0:4:1]
+   40.                !  === End Short Vector Loop ===
+   40.                $iday_fct_S205 = $iday_fct_S93 + _rpls( $VR_iday_fct_S204[0:4:1], 4, 1 )
+   40.                iday_fct = $iday_fct_S205
+   40.                $LCS_MR_yy_fct_16 = $MR_yy_fct_4 - $MR_yy_anl_3
+   40.                if ( 1 < $LCS_MR_yy_fct_16 ) then
+   40.                   $I_L40_S217 = 0
+   40.                   $LCS_17 = $LCS_MR_yy_fct_16
+   40.                   if ( -5 + $LCS_17 >= 0 ) then
+   40.                      $I_L40_S216 = 0
+   40.                      $LIS_S110 = _rsh( -1 + $LCS_17, 2 )
+   40.                      $LIS_S206[0:4:1] = _bcst( 2, 4 )
+   40.                      $VSC_monln_S207[0:4:1] = 24[$LIS_S85:4:1]
+   40.                      $VSC_monln_S208[0:4:1] = 20[$LIS_S85:4:1]
+   40.                      $VSC_monln_S209[0:4:1] = 16[$LIS_S85:4:1]
+   40.                      $LIS_S213[0:4:1] = _lsh( $VSC_monln_S207[0:4:1], $LIS_S206[0:4:1] )
+   40.                      $LIS_S212[0:4:1] = _lsh( $VSC_monln_S208[0:4:1], $LIS_S206[0:4:1] )
+   40.                      $LIS_S211[0:4:1] = _lsh( $VSC_monln_S209[0:4:1], $LIS_S206[0:4:1] )
+   40. !dir$ blocking_size( 16, 16 )
+   40.                      do
+   40.                         !  === Begin Short Vector Loop ===
+   40.                         $VR_iday_fct_S214[0:4:1] = $LIS_S211[0:4:1] + $LIS_S212[0:4:1]
+   40.                         $VR_iday_fct_S215[0:4:1] = $LIS_S213[0:4:1] + $VR_iday_fct_S214[0:4:1]
+   40.                         !  === End Short Vector Loop ===
+   40.                         $iday_fct_S205 = $iday_fct_S205 + _rpls( $VR_iday_fct_S215[0:4:1], 4, 1 )
+   40.                         $I_L40_S216 = 1 + $I_L40_S216
+   40.                         if ( $I_L40_S216 >= $LIS_S110 ) exit
+   40.                      enddo
+   40.                      iday_fct = $iday_fct_S205
+   40.                      $I_L40_S217 = and( -4, -1 + $MR_yy_fct_4 - $MR_yy_anl_3 )
+   40.                   endif
+   40.                   if ( $I_L40_S217 < -1 + $MR_yy_fct_4 - $MR_yy_anl_3 ) then
+   40.                      $I_L40_S224 = 0
+   40.                      $LIS_E9 = ( -$MR_yy_anl_3 + $MR_yy_fct_4 + -1 - $I_L40_S217 )
+   40.                      $VSC_monln_S221[0:4:1] = 24[$LIS_S85:4:1]
+   40.                      $VSC_monln_S218[0:4:1] = 20[$LIS_S85:4:1]
+   40.                      $VSC_monln_S219[0:4:1] = 16[$LIS_S85:4:1]
+   40.                      $LIS_S222[0:4:1] = $VSC_monln_S218[0:4:1] + $VSC_monln_S219[0:4:1]
+   40. !dir$ blocking_size( 16, 16 )
+   40.                      do
+   40.                         !  === Begin Short Vector Loop ===
+   40.                         $VR_iday_fct_S223[0:4:1] = $VSC_monln_S221[0:4:1] + $LIS_S222[0:4:1]
+   40.                         !  === End Short Vector Loop ===
+   40.                         $iday_fct_S205 = $iday_fct_S205 + _rpls( $VR_iday_fct_S223[0:4:1], 4, 1 )
+   40.                         $I_L40_S224 = 1 + $I_L40_S224
+   40.                         if ( $I_L40_S224 >= $LIS_E9 ) exit
+   40.                      enddo
+   40.                      iday_fct = $iday_fct_S205
+   40.                   endif
+   40.                endif
+   40.             endif
+   40.             if ( $MR_yy_fct_4 - $MR_yy_anl_3 == 0 ) then
+   40.                $MR_mm_anl_S225 = 8[$CS_dd_anl_0,0]
+   40.                if ( -1 + $MR_mm_anl_S225 > 0 ) then
+   40.                   $I_L40_S229 = 0
+   40.                   $LCS_18 = $MR_mm_anl_S225
+   40.                   if ( -13 + $LCS_18 > 0 ) then
+   40.                      $LB_Y0 = 1
+   40.                      $UB_Y1 = 12
+   40.                      $Subscript_Y2 = 1
+   40.                      $Subscript_Y3 = -1 + $LCS_18
+   40.                      $Subscript_Y4 = 1
+   40.                      _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y50, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y51 )
+   40.                   endif
+   40.                   $iday_anl_S226 = iday_anl
+   40.                   $iday_anl_S130 = $iday_anl_S226
+   40.                   $LCS_19 = $MR_mm_anl_S225
+   40.                   if ( -5 + $LCS_19 >= 0 ) then
+   40.                      $TC_36 = and( -4, -1 + $LCS_19 )
+   40.                      $VR_iday_anl_39[0:4:1] = _bcst( 0, 4 )
+   40.                      $LC_S228 = -$TC_36
+   40.                      $SI_S227 = 0
+   40.                      $LIS_S127 = loc( monlb )
+   40.                      do
+   40.                         $VR_iday_anl_39[0:4:1] = $VR_iday_anl_39[0:4:1] + 16[$LIS_S127 + $SI_S227:4:1]
+   40.                         $SI_S227 = 16 + $SI_S227
+   40.                         $LC_S228 = 4 + $LC_S228
+   40.                         if ( $LC_S228 >= 0 ) exit
+   40.                      enddo
+   40.                      $iday_anl_S130 = $iday_anl_S226 + _rpls( $VR_iday_anl_39[0:4:1], 4, 1 )
+   40.                      $I_L40_S229 = $TC_36
+   40.                   endif
+   40.                   $LCS_1_20 = -1 + $MR_mm_anl_S225
+   40.                   if ( $LCS_1_20 > $I_L40_S229 ) then
+   40.                      $LIS_S132 = loc( monlb )
+   40.                      do
+   40.                         $iday_anl_S130 = $iday_anl_S130 + 16[$LIS_S132,$I_L40_S229]
+   40.                         $I_L40_S229 = 1 + $I_L40_S229
+   40.                         if ( $I_L40_S229 >= $LCS_1_20 ) exit
+   40.                      enddo
+   40.                   endif
+   40.                   iday_anl = $iday_anl_S130
+   40.                endif
+   40.             endif
+   40.             $MR_mm_fct_S230 = 10[$CS_dd_anl_0,0]
+   40.             if ( -1 + $MR_mm_fct_S230 > 0 ) then
+   40.                $I_L40_S234 = 0
+   40.                $LCS_21 = $MR_mm_fct_S230
+   40.                if ( -13 + $LCS_21 > 0 ) then
+   40.                   $LB_Y0 = 1
+   40.                   $UB_Y1 = 12
+   40.                   $Subscript_Y2 = 1
+   40.                   $Subscript_Y3 = -1 + $LCS_21
+   40.                   $Subscript_Y4 = 1
+   40.                   _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y52, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y53 )
+   40.                endif
+   40.                $iday_fct_S231 = iday_fct
+   40.                $iday_fct_S138 = $iday_fct_S231
+   40.                $LCS_22 = $MR_mm_fct_S230
+   40.                if ( -5 + $LCS_22 >= 0 ) then
+   40.                   $TC_40 = and( -4, -1 + $LCS_22 )
+   40.                   $VR_iday_fct_43[0:4:1] = _bcst( 0, 4 )
+   40.                   $LC_S233 = -$TC_40
+   40.                   $SI_S232 = 0
+   40.                   $LIS_S135 = loc( monlb )
+   40.                   do
+   40.                      $VR_iday_fct_43[0:4:1] = $VR_iday_fct_43[0:4:1] + 16[$LIS_S135 + $SI_S232:4:1]
+   40.                      $SI_S232 = 16 + $SI_S232
+   40.                      $LC_S233 = 4 + $LC_S233
+   40.                      if ( $LC_S233 >= 0 ) exit
+   40.                   enddo
+   40.                   $iday_fct_S138 = $iday_fct_S231 + _rpls( $VR_iday_fct_43[0:4:1], 4, 1 )
+   40.                   $I_L40_S234 = $TC_40
+   40.                endif
+   40.                $LCS_1_23 = -1 + $MR_mm_fct_S230
+   40.                if ( $LCS_1_23 > $I_L40_S234 ) then
+   40.                   $LIS_S140 = loc( monlb )
+   40.                   do
+   40.                      $iday_fct_S138 = $iday_fct_S138 + 16[$LIS_S140,$I_L40_S234]
+   40.                      $I_L40_S234 = 1 + $I_L40_S234
+   40.                      if ( $I_L40_S234 >= $LCS_1_23 ) exit
+   40.                   enddo
+   40.                endif
+   40.                iday_fct = $iday_fct_S138
+   40.             endif
+   40.          endif
+   40.       endif
+   45.       $LCS_kgds_24 = loc( kgds )
+   45.       0[$LCS_kgds_24,0] = modulo( $idrt_S235, 256 )
+   46.       $LCS_idim_25 = loc( idim )
+   46.       $MR_kgds_S236 = 0[$LCS_idim_25,0]
+   46.       1[$LCS_kgds_24,0] = $MR_kgds_S236
+   47.       $MR_jdim_18 = 2[$LCS_idim_25,0]
+   47.       2[$LCS_kgds_24,0] = $MR_jdim_18
+   48.       if ( $idrt_S235 == 4 ) then
+   52.          $CS_glat_3 = loc( glat )
+   52.          $MR_glat_20 = 7[$CS_glat_3,0].L
+   52.          $MR_glat_21 = 6[$CS_glat_3,0].L
+   52.          $LCS_27 = $MR_glat_20 + $MR_glat_21
+   52.          if ( or( -2 + $LCS_27, 1 - $MR_glat_21 ) < 0 ) then
+   52.             $LB_Y0 = $MR_glat_21
+   52.             $UB_Y1 = -1 + $LCS_27
+   52.             $Subscript_Y5 = 1
+   52.             _bounds_error( $_File_Y40, $Line_Y55, $_Name_Y54, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y56 )
+   52.          endif
+   52.          $MR_glat_22 = 0[$CS_glat_3,0].L
+   52.          $MR_kgds_S237 = _rnd( 1000.0 * 1[int( $MR_glat_22, 8 ),-$MR_glat_21].L )
+   52.          3[loc( kgds ),0] = $MR_kgds_S237
+   49.       else if ( $idrt_S235 == 0 ) then
+   50.          3[$LCS_kgds_24,0] = -90000
+   50.       endif
+   54.       $LCS_kgds_28 = loc( kgds )
+   54.       4[$LCS_kgds_28,0] = 0
+   55.       5[$LCS_kgds_28,0] = 128
+   56.       $MR_kgds_S238 = 3[$LCS_kgds_28,0]
+   56.       6[$LCS_kgds_28,0] = -$MR_kgds_S238
+   57.       $MR_kgds_S239 = 1[$LCS_kgds_28,0]
+   57.       $LCS_29 = 360000.0 / real( $MR_kgds_S239 )
+   57.       7[$LCS_kgds_28,0] = _rnd( real( -1 + $MR_kgds_S239 ) * $LCS_29 )
+   58.       8[$LCS_kgds_28,0] = _rnd( $LCS_29 )
+   59.       if ( $idrt_S235 == 4 ) then
+   63.          $MR_kgds_S242 = _ash( $MR_jdim_18 + _rsh( $MR_jdim_18, 31 ), 1 )
+   63.          9[loc( kgds ),0] = $MR_kgds_S242
+   60.       else if ( $idrt_S235 == 0 ) then
+   61.          $MR_kgds_S240 = 2[$LCS_kgds_28,0]
+   61.          $MR_kgds_S241 = _rnd( 180000.0 / real( -1 + $MR_kgds_S240 ) )
+   61.          9[$LCS_kgds_28,0] = $MR_kgds_S241
+   61.       endif
+   66.       $LC_S245 = -2
+   66.       $SI_S244 = 0
+   66.       $LIS_S243[0:4:1] = _bcst( 0, 4 )
+   66.       $LIS_E13 = loc( kgds )
+   66.       do
+   66.          10[$LIS_E13 + $SI_S244:4:1] = $LIS_S243[0:4:1]
+   66.          $SI_S244 = 16 + $SI_S244
+   66.          $LC_S245 = 1 + $LC_S245
+   66.          if ( $LC_S245 >= 0 ) exit
+   66.       enddo
+   66.       $I_L66_88 = 8
+   66.       $LCS_kgds_30 = loc( kgds )
+   66.       10[$LCS_kgds_30,$I_L66_88] = 0
+   67.       19[$LCS_kgds_30,0] = 255
+   68.       $LC_S248 = -45
+   68.       $SI_S247 = 0
+   68.       $LIS_S246[0:4:1] = _bcst( 0, 4 )
+   68.       do
+   68.          20[$LIS_E13 + $SI_S247:4:1] = $LIS_S246[0:4:1]
+   68.          $SI_S247 = 16 + $SI_S247
+   68.          $LC_S248 = 1 + $LC_S248
+   68.          if ( $LC_S248 >= 0 ) exit
+   68.       enddo
+   73.       $LCS_kpds_31 = loc( kpds )
+   73.       0[$LCS_kpds_31,0] = 46
+   74.       1[$LCS_kpds_31,0] = 0
+   75.       2[$LCS_kpds_31,0] = 255
+   76.       3[$LCS_kpds_31,0] = 128
+   77.       4[$LCS_kpds_31,0] = 2
+   78.       5[$LCS_kpds_31,0] = 1
+   79.       6[$LCS_kpds_31,0] = 102
+   80.       $MR_postclim_29 = postclim
+   80.       if ( $MR_postclim_29 /= .false. ) then
+   81.          $MR_kpds_S249 = cvmg( -1900 + $MR_yy_fct_4, -2000 + $MR_yy_fct_4, $MR_yy_anl_3 <= 2000 )
+   81.          7[$LCS_kpds_31,0] = $MR_kpds_S249
+   86.          $MR_mm_fct_S250 = 10[$CS_dd_anl_0,0]
+   86.          8[$LCS_kpds_31,0] = $MR_mm_fct_S250
+   87.          $MR_dd_fct_S251 = 2[$CS_dd_anl_0,0]
+   87.          9[$LCS_kpds_31,0] = $MR_dd_fct_S251
+   88.          $MR_hh_fct_S252 = 6[$CS_dd_anl_0,0]
+   88.          10[$LCS_kpds_31,0] = $MR_hh_fct_S252
+   88.       else
+   90.          $MR_kpds_S253 = cvmg( -1900 + $MR_yy_anl_3, -2000 + $MR_yy_anl_3, $MR_yy_anl_3 <= 2000 )
+   90.          $LCS_kpds_33 = loc( kpds )
+   90.          7[$LCS_kpds_33,0] = $MR_kpds_S253
+   95.          $MR_mm_anl_S254 = 8[$CS_dd_anl_0,0]
+   95.          8[$LCS_kpds_33,0] = $MR_mm_anl_S254
+   96.          $MR_dd_anl_S255 = 0[$CS_dd_anl_0,0]
+   96.          9[$LCS_kpds_33,0] = $MR_dd_anl_S255
+   97.          $MR_hh_anl_S256 = 4[$CS_dd_anl_0,0]
+   97.          10[$LCS_kpds_33,0] = $MR_hh_anl_S256
+   97.       endif
+   99.       $LCS_kpds_35 = loc( kpds )
+   99.       11[$LCS_kpds_35,0] = 0
+  122.       $MR_kpds13_38 = 0[loc( kpds13 ),0]
+  122.       12[$LCS_kpds_35,0] = $MR_kpds13_38
+  122.       $SW_MR_kpds13_V102 = $MR_kpds13_38
+  123.       switch( 1 + -1 + $SW_MR_kpds13_V102 )
+  123.       
+  124.          case 1 :
+  124.             $dhfct_S257 = 1
+  124.             goto 10
+  126.          case 2 :
+  126.             $dhfct_S257 = 24
+  126.             goto 10
+  128.          case 3 :
+  128.             $dhfct_S257 = 720
+  128.             goto 10
+  130.          case 11 :
+  130.             $dhfct_S257 = 6
+  130.             goto 10
+  132.          case 4 :
+  132.             $dhfct_S257 = 8760
+  132.             goto 10
+  134.          case 10 :
+  134.             $dhfct_S257 = 3
+  134.             goto 10
+  136.          case 12 :
+  136.             $dhfct_S257 = 12
+  136.    10       continue
+  143.             if ( $MR_postclim_29 /= .false. ) then
+  144.                13[loc( kpds ),0] = 0
+  144.             else
+  146.                $MR_dd_anl_S260 = 0[$CS_dd_anl_0,0]
+  146.                $MR_dd_fct_S258 = 2[$CS_dd_anl_0,0]
+  146.                $iday_anl_S261 = iday_anl
+  146.                $iday_fct_S259 = iday_fct
+  146.                $MR_hh_anl_S262 = 4[$CS_dd_anl_0,0]
+  146.                $MR_hh_fct_S263 = 6[$CS_dd_anl_0,0]
+  146.                13[loc( kpds ),0] = ( 24 * ( $MR_dd_fct_S258 + $iday_fct_S259 ) + -24 * ( $MR_dd_anl_S260 + $iday_anl_S261 ) + $MR_hh_fct_S263 - $MR_hh_anl_S262 ) / $dhfct_S257
+  146.             endif
+  148.             $LCS_kpds_37 = loc( kpds )
+  148.             14[$LCS_kpds_37,0] = 0
+  149.             15[$LCS_kpds_37,0] = int( $MR_postclim_29 /= 0 )
+  154.             16[$LCS_kpds_37,0] = 0
+  155.             17[$LCS_kpds_37,0] = 1
+  156.             18[$LCS_kpds_37,0] = 254
+  157.             19[$LCS_kpds_37,0] = 0
+  158.             20[$LCS_kpds_37,0] = cvmg( 20, 21, $MR_yy_anl_3 <= 2000 )
+  163.             21[$LCS_kpds_37,0] = 0
+  164.             22[$LCS_kpds_37,0] = 0
+  165.             23[$LCS_kpds_37,0] = 0
+  170.             24[$LCS_kpds_37,0] = 32
+  171.             25[$LCS_kpds_37,0] = 0
+  172.             26[$LCS_kpds_37,0] = 0
+  173.             27[$LCS_kpds_37,0] = 0
+  138.          case 13 :
+  138.          case 5 : 9 :
+  138.          case 0 :
+  138.             _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O0 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StaticIolist_O2 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  139.             substr[t$32,0:4] = ' '
+  139.             call _stop( substr[t$32,0:1] )
+  175.       return
+  175.       end
+  175.       
+  178.       
+  178.       subroutine writegrbfield( var, ndim, kgds, kpds, bfr, l )
+  178.       $CARG_ndim_I4 = 0[loc( ndim ),0]
+  178.       $CARG_l_I5 = 0[loc( l ),0]
+  180.       if ( 0[loc( t$34 ),0] == 0 ) then
+  180.          0[loc( t$12 ),0] = 2
+  180.          0[loc( t$13 ),0] = 0
+  180.          0[loc( t$14 ),0] = 0
+  180.          0[loc( t$9 ),0].L = int( loc( t$33 ), 8 )
+  180.          0[loc( t$10 ),0].L = 0
+  180.          0[loc( t$11 ),0].L = int( loc( t$8 ), 8 )
+  180.          0[loc( t$34 ),0] = __get_dynamic_type( 2, 0[loc( t$9 ),0].L, 0[loc( t$12 ),0], 1, 0[loc( t$10 ),0].L, 0[loc( t$11 ),0].L, 0[loc( t$13 ),0], 0[loc( t$14 ),0] )
+  180.       endif
+  180.       if ( 0[loc( t$36 ),0] == 0 ) then
+  180.          0[loc( t$20 ),0] = 2
+  180.          0[loc( t$21 ),0] = 0
+  180.          0[loc( t$22 ),0] = 0
+  180.          0[loc( t$17 ),0].L = int( loc( t$35 ), 8 )
+  180.          0[loc( t$18 ),0].L = 0
+  180.          0[loc( t$19 ),0].L = int( loc( t$16 ), 8 )
+  180.          0[loc( t$36 ),0] = __get_dynamic_type( 2, 0[loc( t$17 ),0].L, 0[loc( t$20 ),0], 1, 0[loc( t$18 ),0].L, 0[loc( t$19 ),0].L, 0[loc( t$21 ),0], 0[loc( t$22 ),0] )
+  180.       endif
+  180.       if ( 0[loc( t$38 ),0] == 0 ) then
+  180.          0[loc( t$28 ),0] = 2
+  180.          0[loc( t$29 ),0] = 0
+  180.          0[loc( t$30 ),0] = 0
+  180.          0[loc( t$25 ),0].L = int( loc( t$37 ), 8 )
+  180.          0[loc( t$26 ),0].L = 0
+  180.          0[loc( t$27 ),0].L = int( loc( t$24 ), 8 )
+  180.          0[loc( t$38 ),0] = __get_dynamic_type( 2, 0[loc( t$25 ),0].L, 0[loc( t$28 ),0], 1, 0[loc( t$26 ),0].L, 0[loc( t$27 ),0].L, 0[loc( t$29 ),0], 0[loc( t$30 ),0] )
+  180.       endif
+  178.       t$3 = int( _alloc( _lsh( max( 0, $CARG_ndim_I4 ), 3 ) ), 8 )
+  201.       t$4 = t$3
+  198.       $LCS_CARG_ndim_0 = $CARG_ndim_I4
+  198.       t$6 = t$3 + _lsh( max( 0, $LCS_CARG_ndim_0 ), 2 )
+  203.       $F_A37 = $LCS_CARG_ndim_0
+  203.       if ( $CARG_ndim_I4 > 0 ) then !  99.50%
+  203.          $I_L203_S10 = 0
+  203.          if ( $F_A37 > $LCS_CARG_ndim_0 ) then
+  203.             $LB_Y0 = 1
+  203.             $UB_Y1 = $LCS_CARG_ndim_0
+  203.             $Subscript_Y2 = 1
+  203.             $Subscript_Y3 = $F_A37
+  203.             $Subscript_Y4 = 1
+  203.             _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+  203.             $LB_Y0 = 1
+  203.             $UB_Y1 = $CARG_ndim_I4
+  203.             $Subscript_Y2 = 1
+  203.             $Subscript_Y3 = $F_A37
+  203.             $Subscript_Y4 = 1
+  203.             _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y45 )
+  203.          endif
+  203.          if ( $F_A37 >= 4 ) then
+  203.             $TC_0 = and( -4, $F_A37 )
+  203.             $LC_S9 = -$TC_0
+  203.             $SI_S8 = 0
+  203.             do
+  203.                0[t$4 + _lsh( $SI_S8, 2 ):4:1] = real( 0[_lsh( $SI_S8, 3 ) + loc( bfr ):4:1].L )
+  203.                $SI_S8 = 4 + $SI_S8
+  203.                $LC_S9 = 4 + $LC_S9
+  203.                if ( $LC_S9 >= 0 ) exit
+  203.             enddo
+  203.             $I_L203_S10 = $TC_0
+  203.          endif
+  203.          if ( $F_A37 > $I_L203_S10 ) then
+  203.             do
+  203.                0[t$4,$I_L203_S10] = real( 0[loc( bfr ),$I_L203_S10].L )
+  203.                $I_L203_S10 = 1 + $I_L203_S10
+  203.                if ( $I_L203_S10 >= $F_A37 ) exit
+  203.             enddo
+  203.          endif
+  203.       endif
+  204.       kf = $CARG_ndim_I4
+  219.       $Reduc_S11 = inf
+  219.       $LCS_CARG_ndim_1 = $CARG_ndim_I4
+  219.       $F_A46 = $LCS_CARG_ndim_1
+  219.       if ( $CARG_ndim_I4 > 0 ) then !  99.50%
+  219.          $I_L219_S14 = 0
+  219.          if ( $F_A46 > $LCS_CARG_ndim_1 ) then
+  219.             $LB_Y0 = 1
+  219.             $UB_Y1 = $LCS_CARG_ndim_1
+  219.             $Subscript_Y2 = 1
+  219.             $Subscript_Y3 = $F_A46
+  219.             $Subscript_Y4 = 1
+  219.             _rbounds_error( $_File_Y40, $Line_Y47, $_Name_Y46, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y48 )
+  219.          endif
+  219.          if ( $F_A46 >= 4 ) then
+  219.             $TC_3 = and( -4, $F_A46 )
+  219.             $VR_Reduc_6[0:4:1] = _bcst( $Reduc_S11, 4 )
+  219.             $LC_S13 = -$TC_3
+  219.             $SI_S12 = 0
+  219.             do
+  219.                $VR_Reduc_6[0:4:1] = min( $VR_Reduc_6[0:4:1], 0[t$4 + $SI_S12:4:1] )
+  219.                $SI_S12 = 16 + $SI_S12
+  219.                $LC_S13 = 4 + $LC_S13
+  219.                if ( $LC_S13 >= 0 ) exit
+  219.             enddo
+  219.             $Reduc_S11 = _rmin( $VR_Reduc_6[0:4:1], 4, 1 )
+  219.             $I_L219_S14 = $TC_3
+  219.          endif
+  219.          if ( $F_A46 > $I_L219_S14 ) then
+  219.             do
+  219.                $Reduc_S11 = min( $Reduc_S11, 0[t$4,$I_L219_S14] )
+  219.                $I_L219_S14 = 1 + $I_L219_S14
+  219.                if ( $I_L219_S14 >= $F_A46 ) exit
+  219.             enddo
+  219.          endif
+  219.       endif
+  219.       t$33 = $Reduc_S11
+  219.       $Reduc_S15 = -infe-15
+  219.       $LCS_CARG_ndim_2 = $CARG_ndim_I4
+  219.       $F_A49 = $LCS_CARG_ndim_2
+  219.       if ( $CARG_ndim_I4 > 0 ) then !  99.50%
+  219.          $I_L219_S18 = 0
+  219.          if ( $F_A49 > $LCS_CARG_ndim_2 ) then
+  219.             $LB_Y0 = 1
+  219.             $UB_Y1 = $LCS_CARG_ndim_2
+  219.             $Subscript_Y2 = 1
+  219.             $Subscript_Y3 = $F_A49
+  219.             $Subscript_Y4 = 1
+  219.             _rbounds_error( $_File_Y40, $Line_Y47, $_Name_Y49, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y50 )
+  219.          endif
+  219.          if ( $F_A49 >= 4 ) then
+  219.             $TC_7 = and( -4, $F_A49 )
+  219.             $VR_Reduc_10[0:4:1] = _bcst( $Reduc_S15, 4 )
+  219.             $LC_S17 = -$TC_7
+  219.             $SI_S16 = 0
+  219.             do
+  219.                $VR_Reduc_10[0:4:1] = max( $VR_Reduc_10[0:4:1], 0[t$4 + $SI_S16:4:1] )
+  219.                $SI_S16 = 16 + $SI_S16
+  219.                $LC_S17 = 4 + $LC_S17
+  219.                if ( $LC_S17 >= 0 ) exit
+  219.             enddo
+  219.             $Reduc_S15 = _rmax( $VR_Reduc_10[0:4:1], 4, 1 )
+  219.             $I_L219_S18 = $TC_7
+  219.          endif
+  219.          if ( $F_A49 > $I_L219_S18 ) then
+  219.             do
+  219.                $Reduc_S15 = max( $Reduc_S15, 0[t$4,$I_L219_S18] )
+  219.                $I_L219_S18 = 1 + $I_L219_S18
+  219.                if ( $I_L219_S18 >= $F_A49 ) exit
+  219.             enddo
+  219.          endif
+  219.       endif
+  219.       t$34 = $Reduc_S15
+  219.       $MR_kpds_S19 = 4[loc( kpds ),0]
+  219.       $IOitem_O1 = $MR_kpds_S19
+  219.       $_StackIolist_O5 = $_StaticIolist_O3
+  219.       0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O5 ),0].L ) ), 8 ),0].L = loc( $IOitem_O1 )
+  219.       0[int( pointer to c_union Pointer_union( loc( 15[loc( $_StackIolist_O5 ),0].L ) ), 8 ),0].L = loc( t$33 )
+  219.       0[int( pointer to c_union Pointer_union( loc( 23[loc( $_StackIolist_O5 ),0].L ) ), 8 ),0].L = loc( t$34 )
+  219.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O5 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O8 ) ) )
+  220.       $CS_pmand_0 = loc( pmand )
+  220.       $MR_pmand_S21 = 7[$CS_pmand_0,0].L
+  220.       $MR_pmand_S20 = 6[$CS_pmand_0,0].L
+  220.       $LCS_4 = $CARG_l_I5
+  220.       $LCS_1_5 = -1 + $MR_pmand_S20 + $MR_pmand_S21
+  220.       if ( ( $LCS_4 < $MR_pmand_S20 .or. $LCS_4 > $LCS_1_5 ) /= .false. ) then
+  220.          substr[t$36,0:13] = 'FileGrib.f90'
+  220.          substr[t$37,0:6] = 'PMAND'
+  220.          t$38 = $MR_pmand_S20
+  220.          t$39 = $LCS_1_5
+  220.          t$40 = $CARG_l_I5
+  220.          $Con_P51 = 220
+  220.          $Con_P52 = 1
+  220.          call _bounds_error( substr[t$36,0:13], $Con_P51, substr[t$37,0:6], $Con_P52, t$38, t$39, t$40, 0[loc( t$35 ),0].L )
+  220.       endif
+  220.       $LCS_pmand_6 = loc( pmand )
+  220.       $MR_pmand_S22 = 0[$LCS_pmand_6,0].L
+  220.       $MR_pmand_S23 = 6[$LCS_pmand_6,0].L
+  220.       $IOitem_O0 = 0[int( $MR_pmand_S22, 8 ),$CARG_l_I5 - $MR_pmand_S23].L
+  220.       $_StackIolist_O12 = $_StaticIolist_O10
+  220.       0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O12 ),0].L ) ), 8 ),0].L = loc( $IOitem_O0 )
+  220.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O9 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O12 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O8 ) ) )
+  225.       $varfound_S31 = .false.
+  226.       $CS_size_tb_1 = loc( size_tb )
+  226.       $t_S0 = 0[$CS_size_tb_1,0]
+  226.       if ( $t_S0 > 0 ) then
+  227.          $LCS_table1_7 = loc( table1 )
+  227.          $MR_table1_S24 = 7[$LCS_table1_7,0].L
+  227.          $MR_table1_S25 = 6[$LCS_table1_7,0].L
+  226.          $I_L226_S27 = 0
+  227.          $MR_table1_S26 = 0[$LCS_table1_7,0].L
+  227.          $SR_S29 = 104 + -104 * $MR_table1_S25
+  232.          $LIS_E5 = $t_S0
+  227.          $LCS_8 = $MR_table1_S24 + $MR_table1_S25
+  227.          $LIS_S28 = ( -1 + $LCS_8 )
+  227.          $LIS_E3 = ( -2 + $LCS_8 )
+  227.          $LIS_E2 = ( 1 - $MR_table1_S25 )
+  227.          do
+  227.             if ( or( $LIS_E2 + $I_L226_S27, $LIS_E3 - $I_L226_S27 ) < 0 ) then
+  227.                $LB_Y0 = $MR_table1_S25
+  227.                $UB_Y1 = $LIS_S28
+  227.                $Subscript_Y5 = 1 + $I_L226_S27
+  227.                _bounds_error( $_File_Y40, $Line_Y52, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y53 )
+  227.             endif
+  227.             if ( substr[$MR_table1_S26,$SR_S29:4] == substr[var,0:4] ) then
+  228.                $varfound_S31 = .true.
+  229.                $itab1_S30 = ( 1 + $I_L226_S27 )
+  229.                itab1 = $itab1_S30
+  229.                goto 10
+  229.             endif
+  227.             $SR_S29 = 104 + $SR_S29
+  232.             $I_L226_S27 = 1 + $I_L226_S27
+  231.             if ( $I_L226_S27 >= $LIS_E5 ) exit
+  231.          enddo
+  231.       endif
+  231.    10 continue
+  233.       if ( $varfound_S31 == .false. ) then
+  234.          substr[t$44,0:35] = //( 'Variable ', //( substr[var,0:4], ' not found in table 1.' ) )
+  234.          $_StackIolist_O15 = $_StaticIolist_O14
+  234.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O15 ),0].L ) ), 8 ),0].L = loc( substr[t$44,0:35] )
+  234.          _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O13 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O15 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O8 ) ) )
+  235.          $Con_P53 = 6
+  235.          call flush( $Con_P53, 0 )
+  236.          substr[t$45,0:4] = ' '
+  236.          call _stop( substr[t$45,0:1] )
+  236.       else
+  240.          $varfound_S44 = .false.
+  241.          $t_S3 = 1[$CS_size_tb_1,0]
+  241.          if ( $t_S3 > 0 ) then
+  242.             $LCS_table1_9 = loc( table1 )
+  242.             $MR_table2_S32 = 16[$LCS_table1_9,0].L
+  242.             $MR_table2_S33 = 15[$LCS_table1_9,0].L
+  242.             $MR_table1_S34 = 7[$LCS_table1_9,0].L
+  242.             $MR_table1_S35 = 6[$LCS_table1_9,0].L
+  241.             $I_L241_S41 = 0
+  242.             $MR_table2_S36 = 9[$LCS_table1_9,0].L
+  242.             $itab1_S37 = itab1
+  242.             $MR_table1_S38 = 0[$LCS_table1_9,0].L
+  242.             $SR_S42 = 68 + -68 * $MR_table2_S33
+  247.             $LIS_E12 = $t_S3
+  242.             $LCS_69_10 = ( 69 + 104 * ( $itab1_S37 - $MR_table1_S35 ) )
+  242.             $LCS_11 = $MR_table2_S32 + $MR_table2_S33
+  242.             $LIS_E9 = ( -1 + $LCS_11 )
+  242.             $LIS_E8 = ( -2 + $LCS_11 )
+  242.             $LIS_E7 = ( 1 - $MR_table2_S33 )
+  242.             $LIS_E6 = $itab1_S37
+  242.             $LIS_S40 = ( -1 + $MR_table1_S34 + $MR_table1_S35 )
+  242.             do
+  242.                $CS_S39 = or( $itab1_S37 - $MR_table1_S35, $MR_table1_S34 + -1 + $MR_table1_S35 - $itab1_S37 ) >= 0
+  242.                if ( $CS_S39 == .false. ) then
+  242.                   $LB_Y0 = $MR_table1_S35
+  242.                   $UB_Y1 = $LIS_S40
+  242.                   $Subscript_Y5 = $LIS_E6
+  242.                   _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y55 )
+  242.                endif
+  242.                if ( $CS_S39 == .false. ) then
+  242.                   $LB_Y0 = $MR_table1_S35
+  242.                   $UB_Y1 = $LIS_S40
+  242.                   $Subscript_Y5 = $LIS_E6
+  242.                   _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y55 )
+  242.                endif
+  242.                $CS_4 = or( $LIS_E7 + $I_L241_S41, $LIS_E8 - $I_L241_S41 ) >= 0
+  242.                if ( $CS_4 == .false. ) then
+  242.                   $LB_Y0 = $MR_table2_S33
+  242.                   $UB_Y1 = $LIS_E9
+  242.                   $Subscript_Y5 = 1 + $I_L241_S41
+  242.                   _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y57, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y58 )
+  242.                endif
+  242.                if ( $CS_4 == .false. ) then
+  242.                   $LB_Y0 = $MR_table2_S33
+  242.                   $UB_Y1 = $LIS_E9
+  242.                   $Subscript_Y5 = 1 + $I_L241_S41
+  242.                   _bounds_error( $_File_Y40, $Line_Y54, $_Name_Y57, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y58 )
+  242.                endif
+  242.                if ( substr[$MR_table1_S38,$LCS_69_10:_ltrim( substr[$MR_table1_S38,$LCS_69_10:6] )] == substr[$MR_table2_S36,$SR_S42:_ltrim( substr[$MR_table2_S36,$SR_S42:8] )] ) then
+  243.                   $varfound_S44 = .true.
+  244.                   $itab2_S43 = ( 1 + $I_L241_S41 )
+  244.                   itab2 = $itab2_S43
+  244.                   goto 20
+  244.                endif
+  242.                $SR_S42 = 68 + $SR_S42
+  247.                $I_L241_S41 = 1 + $I_L241_S41
+  246.                if ( $I_L241_S41 >= $LIS_E12 ) exit
+  246.             enddo
+  246.          endif
+  246.    20    continue
+  248.          if ( $varfound_S44 == .false. ) then
+  249.             $CS_table1_S45 = loc( table1 )
+  249.             $MR_table1_S47 = 6[$CS_table1_S45,0].L
+  249.             $MR_table1_S48 = 7[$CS_table1_S45,0].L
+  249.             $itab1_S46 = itab1
+  249.             $LCS_13 = $itab1_S46
+  249.             $LCS_1_14 = -1 + $MR_table1_S47 + $MR_table1_S48
+  249.             if ( ( $LCS_13 < $MR_table1_S47 .or. $LCS_13 > $LCS_1_14 ) /= .false. ) then
+  249.                substr[t$50,0:13] = 'FileGrib.f90'
+  249.                substr[t$51,0:7] = 'TABLE1'
+  249.                t$38 = $MR_table1_S47
+  249.                t$39 = $LCS_1_14
+  249.                t$40 = $itab1_S46
+  249.                $Con_P51 = 249
+  249.                $Con_P52 = 1
+  249.                call _bounds_error( substr[t$50,0:13], $Con_P51, substr[t$51,0:7], $Con_P52, t$38, t$39, t$40, 0[loc( t$49 ),0].L )
+  249.             endif
+  249.             $MR_table1_S49 = 6[$CS_table1_S45,0].L
+  249.             $MR_table1_S50 = 7[$CS_table1_S45,0].L
+  249.             $LCS_16 = $itab1_S46
+  249.             $LCS_1_17 = -1 + $MR_table1_S49 + $MR_table1_S50
+  249.             if ( ( $LCS_16 < $MR_table1_S49 .or. $LCS_16 > $LCS_1_17 ) /= .false. ) then
+  249.                substr[t$53,0:13] = 'FileGrib.f90'
+  249.                substr[t$54,0:7] = 'TABLE1'
+  249.                t$55 = $MR_table1_S49
+  249.                t$56 = $LCS_1_17
+  249.                t$57 = $itab1_S46
+  249.                $Con_P51 = 249
+  249.                $Con_P52 = 1
+  249.                call _bounds_error( substr[t$53,0:13], $Con_P51, substr[t$54,0:7], $Con_P52, t$55, t$56, t$57, 0[loc( t$52 ),0].L )
+  249.             endif
+  249.             $MR_table1_S51 = 6[$CS_table1_S45,0].L
+  249.             $MR_table1_S52 = 7[$CS_table1_S45,0].L
+  249.             $LCS_19 = $itab1_S46
+  249.             $LCS_1_20 = -1 + $MR_table1_S51 + $MR_table1_S52
+  249.             if ( ( $LCS_19 < $MR_table1_S51 .or. $LCS_19 > $LCS_1_20 ) /= .false. ) then
+  249.                substr[t$59,0:13] = 'FileGrib.f90'
+  249.                substr[t$60,0:7] = 'TABLE1'
+  249.                t$61 = $MR_table1_S51
+  249.                t$62 = $LCS_1_20
+  249.                t$63 = $itab1_S46
+  249.                $Con_P51 = 249
+  249.                $Con_P52 = 1
+  249.                call _bounds_error( substr[t$59,0:13], $Con_P51, substr[t$60,0:7], $Con_P52, t$61, t$62, t$63, 0[loc( t$58 ),0].L )
+  249.             endif
+  249.             t$64 = 36 + ( _ltrim( substr[0[$CS_table1_S45,0].L,69 + 104 * ( itab1 + -6[$CS_table1_S45,0].L ):6] ) )
+  249.             t$66 = int( _alloc( max( 0, t$64 ) ), 8 )
+  249.             $LCS_table1_23 = 0[$CS_table1_S45,0].L
+  249.             $LCS_table1_24 = 6[$CS_table1_S45,0].L
+  249.             $LCS_25 = max( 0, t$64 )
+  249.             $LCS_69_49 = 69 + 104 * ( itab1 - $LCS_table1_24 )
+  249.             substr[0,t$66:$LCS_25] = //( 'Type of Level ', //( substr[$LCS_table1_23,$LCS_69_49:_ltrim( substr[$LCS_table1_23,$LCS_69_49:6] )], ' not found in table 2.' ) )
+  249.             $_StackIolist_O18 = $_StaticIolist_O17
+  249.             0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O18 ),0].L ) ), 8 ),0].L = loc( substr[0,t$66:$LCS_25] )
+  249.             _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O16 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O18 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O8 ) ) )
+  249.             _free( t$66 )
+  250.             _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O19 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StaticIolist_O20 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O8 ) ) )
+  251.             $MR_table1_S53 = 6[$CS_table1_S45,0].L
+  251.             $MR_table1_S54 = 7[$CS_table1_S45,0].L
+  251.             $CS_S55 = or( $itab1_S46 - $MR_table1_S53, $MR_table1_S53 + -1 + $MR_table1_S54 - $itab1_S46 ) >= 0
+  251.             if ( $CS_S55 == .false. ) then
+  251.                $LB_Y0 = $MR_table1_S53
+  251.                $UB_Y1 = -1 + $MR_table1_S53 + $MR_table1_S54
+  251.                $Subscript_Y5 = $itab1_S46
+  251.                _bounds_error( $_File_Y40, $Line_Y60, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y61 )
+  251.             endif
+  251.             $MR_table1_S56 = 0[$CS_table1_S45,0].L
+  251.             $MR_table1_S57 = 1[int( $MR_table1_S56, 8 ),26 * ( $itab1_S46 - $MR_table1_S53 )]
+  251.             $LCS_kpds_27 = loc( kpds )
+  251.             4[$LCS_kpds_27,0] = $MR_table1_S57
+  252.             5[$LCS_kpds_27,0] = 100
+  253.             $MR_pmand_S59 = 7[$CS_pmand_0,0].L
+  253.             $MR_pmand_S58 = 6[$CS_pmand_0,0].L
+  253.             if ( or( $CARG_l_I5 - $MR_pmand_S58, $MR_pmand_S58 + -1 + $MR_pmand_S59 - $CARG_l_I5 ) < 0 ) then
+  253.                $LB_Y0 = $MR_pmand_S58
+  253.                $UB_Y1 = -1 + $MR_pmand_S58 + $MR_pmand_S59
+  253.                $Subscript_Y5 = $CARG_l_I5
+  253.                _bounds_error( $_File_Y40, $Line_Y63, $_Name_Y62, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y64 )
+  253.             endif
+  253.             $MR_pmand_S60 = 0[$CS_pmand_0,0].L
+  253.             $MR_kpds_S61 = int( 0[int( $MR_pmand_S60, 8 ),$CARG_l_I5 - $MR_pmand_S58].L )
+  253.             6[loc( kpds ),0] = $MR_kpds_S61
+  253.          else
+  260.             $itab1_S46 = itab1
+  260.             $CS_table1_S62 = loc( table1 )
+  260.             $MR_table1_S53 = 6[$CS_table1_S62,0].L
+  260.             $MR_table1_S54 = 7[$CS_table1_S62,0].L
+  260.             $CS_S55 = or( $itab1_S46 - $MR_table1_S53, $MR_table1_S53 + -1 + $MR_table1_S54 - $itab1_S46 ) >= 0
+  260.             if ( $CS_S55 == .false. ) then
+  260.                $LB_Y0 = $MR_table1_S53
+  260.                $UB_Y1 = -1 + $MR_table1_S53 + $MR_table1_S54
+  260.                $Subscript_Y5 = $itab1_S46
+  260.                _bounds_error( $_File_Y40, $Line_Y65, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y66 )
+  260.             endif
+  260.             $MR_table1_S56 = 0[$CS_table1_S62,0].L
+  260.             $MR_table1_S63 = 1[int( $MR_table1_S56, 8 ),26 * ( $itab1_S46 - $MR_table1_S53 )]
+  260.             4[loc( kpds ),0] = $MR_table1_S63
+  261.             $itab2_S64 = itab2
+  261.             $MR_table2_S65 = 15[$CS_table1_S62,0].L
+  261.             $MR_table2_S66 = 16[$CS_table1_S62,0].L
+  261.             $CS_1_6 = $MR_table2_S65 + -1 + $MR_table2_S66 - $itab2_S64
+  261.             if ( or( $CS_1_6, $itab2_S64 - $MR_table2_S65 ) < 0 ) then
+  261.                $LB_Y0 = $MR_table2_S65
+  261.                $UB_Y1 = -1 + $MR_table2_S65 + $MR_table2_S66
+  261.                $Subscript_Y5 = $itab2_S64
+  261.                _bounds_error( $_File_Y40, $Line_Y67, $_Name_Y57, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y68 )
+  261.             endif
+  261.             $MR_table2_S67 = 9[$CS_table1_S62,0].L
+  261.             $LCS_31 = $itab2_S64 - $MR_table2_S65
+  261.             5[loc( kpds ),0] = 13[int( $MR_table2_S67, 8 ),17 * $LCS_31]
+  263.             if ( $CARG_l_I5 == 1 ) then
+  263.                if ( or( $LCS_31, $CS_1_6 ) < 0 ) then
+  263.                   $LB_Y0 = $MR_table2_S65
+  263.                   $UB_Y1 = -1 + $MR_table2_S65 + $MR_table2_S66
+  263.                   $Subscript_Y5 = $itab2_S64
+  263.                   _bounds_error( $_File_Y40, $Line_Y69, $_Name_Y57, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y70 )
+  263.                endif
+  263.                $MR_kpds_S68 = 16[int( $MR_table2_S67, 8 ),17 * ( $itab2_S64 - $MR_table2_S65 )]
+  263.                6[loc( kpds ),0] = $MR_kpds_S68
+  263.             endif
+  263.          endif
+  266.          if ( $CS_S55 == .false. ) then
+  266.             $LB_Y0 = $MR_table1_S53
+  266.             $UB_Y1 = -1 + $MR_table1_S53 + $MR_table1_S54
+  266.             $Subscript_Y5 = $itab1_S46
+  266.             _bounds_error( $_File_Y40, $Line_Y71, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y72 )
+  266.          endif
+  266.          $MR_table1_40 = 19[int( $MR_table1_S56, 8 ),26 * ( $itab1_S46 - $MR_table1_S53 )]
+  266.          if ( $MR_table1_40 == -999 ) then
+  267.             ibs = 0
+  267.          else
+  269.             if ( $CS_S55 == .false. ) then
+  269.                $LB_Y0 = $MR_table1_S53
+  269.                $UB_Y1 = -1 + $MR_table1_S53 + $MR_table1_S54
+  269.                $Subscript_Y5 = $itab1_S46
+  269.                _bounds_error( $_File_Y40, $Line_Y73, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y74 )
+  269.             endif
+  269.             ibs = $MR_table1_40
+  269.          endif
+  272.          if ( $CS_S55 == .false. ) then
+  272.             $LB_Y0 = $MR_table1_S53
+  272.             $UB_Y1 = -1 + $MR_table1_S53 + $MR_table1_S54
+  272.             $Subscript_Y5 = $itab1_S46
+  272.             _bounds_error( $_File_Y40, $Line_Y75, $_Name_Y51, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y76 )
+  272.          endif
+  272.          nbits = 20[int( $MR_table1_S56, 8 ),26 * ( $itab1_S46 - $MR_table1_S53 )]
+  276.          if ( $CARG_ndim_I4 > 0 ) then
+  276.             $I_L276_S69 = 0
+  277.             $LIS_E16 = -1.0e-15
+  277.             $LIS_E15 = $CARG_ndim_I4
+  277.             $LIS_E14 = ( -1 + $CARG_ndim_I4 )
+  277.             $LIS_E13 = 1.0e-15
+  277.             do
+  277.                $MR_bfr4_44 = 0[t$4,$I_L276_S69]
+  277.                if ( $MR_bfr4_44 <= $LIS_E13 ) then
+  277.                   if ( $LIS_E14 - $I_L276_S69 < 0 ) then
+  277.                      $LB_Y0 = 1
+  277.                      $UB_Y1 = $LIS_E15
+  277.                      $Subscript_Y5 = 1 + $I_L276_S69
+  277.                      _bounds_error( $_File_Y40, $Line_Y78, $_Name_Y77, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y79 )
+  277.                   endif
+  277.                   if ( $MR_bfr4_44 >= $LIS_E16 ) then
+  277.                      if ( $LIS_E14 - $I_L276_S69 < 0 ) then
+  277.                         $LB_Y0 = 1
+  277.                         $UB_Y1 = $LIS_E15
+  277.                         $Subscript_Y5 = 1 + $I_L276_S69
+  277.                         _bounds_error( $_File_Y40, $Line_Y78, $_Name_Y77, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y79 )
+  277.                      endif
+  277.                      0[t$4,$I_L276_S69] = 0.0
+  277.                   endif
+  277.                endif
+  281.                $I_L276_S69 = 1 + $I_L276_S69
+  277.                if ( $I_L276_S69 >= $LIS_E15 ) exit
+  277.             enddo
+  277.          endif
+  285.          if ( substr[var,0:4] == 'PREC' ) then
+  281.             goto 30
+  285.          else if ( substr[var,0:4] == 'PRGE' ) then
+  285.             goto 30
+  285.          else if ( substr[var,0:4] == 'PRCV' ) then
+  285.             goto 30
+  285.          else if ( substr[var,0:4] == 'NEVE' ) then
+  285.    30       continue
+  288.             $LCS_kpds_32 = loc( kpds )
+  288.             $MR_kpds_S70 = 13[$LCS_kpds_32,0]
+  289.             $MR_kpds_S71 = -1 + $MR_kpds_S70
+  289.             13[$LCS_kpds_32,0] = $MR_kpds_S71
+  290.             14[$LCS_kpds_32,0] = $MR_kpds_S70
+  291.             15[$LCS_kpds_32,0] = 4
+  291.          endif
+  295.          if ( ens /= .false. ) then
+  302.             $LCS_kens_33 = loc( kens )
+  302.             0[$LCS_kens_33,0] = 1
+  311.             if ( substr[prefx,0:3] == 'AVN' ) then
+  312.                1[$LCS_kens_33,0] = 1
+  313.                2[$LCS_kens_33,0] = 1
+  314.             else if ( substr[prefx,0:3] == '01P' ) then
+  319.                $LCS_kens_34 = loc( kens )
+  319.                1[$LCS_kens_34,0] = 3
+  320.                2[$LCS_kens_34,0] = 1
+  320.             else if ( substr[prefx,0:3] == '02P' ) then
+  322.                $LCS_kens_35 = loc( kens )
+  322.                1[$LCS_kens_35,0] = 3
+  323.                2[$LCS_kens_35,0] = 2
+  323.             else if ( substr[prefx,0:3] == '03P' ) then
+  325.                $LCS_kens_36 = loc( kens )
+  325.                1[$LCS_kens_36,0] = 3
+  326.                2[$LCS_kens_36,0] = 3
+  326.             else if ( substr[prefx,0:3] == '04P' ) then
+  328.                $LCS_kens_37 = loc( kens )
+  328.                1[$LCS_kens_37,0] = 3
+  329.                2[$LCS_kens_37,0] = 4
+  329.             else if ( substr[prefx,0:3] == '05P' ) then
+  331.                $LCS_kens_38 = loc( kens )
+  331.                1[$LCS_kens_38,0] = 3
+  332.                2[$LCS_kens_38,0] = 5
+  332.             else if ( substr[prefx,0:3] == '06P' ) then
+  334.                $LCS_kens_39 = loc( kens )
+  334.                1[$LCS_kens_39,0] = 3
+  335.                2[$LCS_kens_39,0] = 6
+  335.             else if ( substr[prefx,0:3] == '07P' ) then
+  337.                $LCS_kens_40 = loc( kens )
+  337.                1[$LCS_kens_40,0] = 3
+  338.                2[$LCS_kens_40,0] = 7
+  338.             else if ( substr[prefx,0:3] == '01N' ) then
+  340.                $LCS_kens_41 = loc( kens )
+  340.                1[$LCS_kens_41,0] = 2
+  341.                2[$LCS_kens_41,0] = 1
+  341.             else if ( substr[prefx,0:3] == '02N' ) then
+  343.                $LCS_kens_42 = loc( kens )
+  343.                1[$LCS_kens_42,0] = 2
+  344.                2[$LCS_kens_42,0] = 2
+  344.             else if ( substr[prefx,0:3] == '03N' ) then
+  346.                $LCS_kens_43 = loc( kens )
+  346.                1[$LCS_kens_43,0] = 2
+  347.                2[$LCS_kens_43,0] = 3
+  347.             else if ( substr[prefx,0:3] == '04N' ) then
+  349.                $LCS_kens_44 = loc( kens )
+  349.                1[$LCS_kens_44,0] = 2
+  350.                2[$LCS_kens_44,0] = 4
+  350.             else if ( substr[prefx,0:3] == '05N' ) then
+  352.                $LCS_kens_45 = loc( kens )
+  352.                1[$LCS_kens_45,0] = 2
+  353.                2[$LCS_kens_45,0] = 5
+  353.             else if ( substr[prefx,0:3] == '06N' ) then
+  355.                $LCS_kens_46 = loc( kens )
+  355.                1[$LCS_kens_46,0] = 2
+  356.                2[$LCS_kens_46,0] = 6
+  356.             else if ( substr[prefx,0:3] == '07N' ) then
+  358.                $LCS_kens_47 = loc( kens )
+  358.                1[$LCS_kens_47,0] = 2
+  359.                2[$LCS_kens_47,0] = 7
+  359.             endif
+  364.             $LCS_kens_48 = loc( kens )
+  364.             3[$LCS_kens_48,0] = 1
+  365.             4[$LCS_kens_48,0] = 255
+  369.             $Con_P53 = 51
+  369.             call putgben( $Con_P53, kf, 0[loc( kpds ),0], 0[loc( kgds ),0], 0[$LCS_kens_48,0], ibs, nbits, 0[t$6,0], 0[t$4,0], iret )
+  371.             $iret_S72 = iret
+  371.             if ( $iret_S72 /= 0 ) then
+  374.                $_StackIolist_O26 = $_StaticIolist_O24
+  374.                0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O26 ),0].L ) ), 8 ),0].L = loc( iret )
+  374.                _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O22 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O26 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O8 ) ) )
+  375.                substr[t$70,0:10] = 'WRITE_GRIB'
+  375.                call _stop( substr[t$70,0:10] )
+  375.             else
+  375.                goto 40
+  375.             endif
+  375.          else
+  383.             $Con_P53 = 51
+  383.             call putgbn( $Con_P53, kf, 0[loc( kpds ),0], 0[loc( kgds ),0], ibs, nbits, 0[t$6,0], 0[t$4,0], iret )
+  385.             $iret_S73 = iret
+  385.             if ( $iret_S73 == 0 ) then
+  386.                $_StackIolist_O31 = $_StaticIolist_O29
+  386.                0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O31 ),0].L ) ), 8 ),0].L = loc( iret )
+  386.                _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O27 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O31 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O8 ) ) )
+  386.    40          continue
+  178.                _free( t$3 )
+  178.             else
+  388.                $_StackIolist_O36 = $_StaticIolist_O34
+  388.                0[int( pointer to c_union Pointer_union( loc( 7[loc( $_StackIolist_O36 ),0].L ) ), 8 ),0].L = loc( iret )
+  388.                _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O32 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O36 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O8 ) ) )
+  389.                substr[t$71,0:10] = 'WRITE_GRIB'
+  389.                call _stop( substr[t$71,0:10] )
+  389.             endif
+  389.          endif
+  389.       endif
+  394.       return
+  394.       end
+  394.       
+  395.       
+  395.       subroutine gethours( hh_anl, dd_anl, mm_anl, yy_anl, hh_fct, dd_fct, mm_fct, yy_fct, fct_hours, anl_hours )
+  395.       $CARG_hh_anl_I0 = 0[loc( hh_anl ),0]
+  395.       $CARG_dd_anl_I1 = 0[loc( dd_anl ),0]
+  395.       $CARG_mm_anl_I2 = 0[loc( mm_anl ),0]
+  395.       $CARG_yy_anl_I3 = 0[loc( yy_anl ),0]
+  395.       $CARG_hh_fct_I4 = 0[loc( hh_fct ),0]
+  413.       iday_anl = 0
+  414.       iday_fct = 0
+  415.       $MR_yy_fct_5 = 0[loc( yy_fct ),0]
+  415.       $LCS_MR_yy_fct_0 = $MR_yy_fct_5 - $CARG_yy_anl_I3
+  415.       if ( $LCS_MR_yy_fct_0 >= 0 ) then
+  416.          if ( mod( real( $MR_yy_fct_5 ), 4.0 ) == 0.0 ) then
+  449.             if ( $LCS_MR_yy_fct_0 > 0 ) then
+  418.                if ( -1 + $CARG_mm_anl_I2 > 0 ) then
+  418.                   $I_L418_S131 = 0
+  419.                   $LCS_1 = $CARG_mm_anl_I2
+  419.                   if ( -13 + $LCS_1 > 0 ) then
+  419.                      $LB_Y0 = 1
+  419.                      $UB_Y1 = 12
+  419.                      $Subscript_Y2 = 1
+  419.                      $Subscript_Y3 = -1 + $LCS_1
+  419.                      $Subscript_Y4 = 1
+  419.                      _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+  419.                   endif
+  419.                   $SC_iday_anl_I5 = 0
+  418.                   $LCS_2 = $CARG_mm_anl_I2
+  418.                   if ( -5 + $LCS_2 >= 0 ) then
+  418.                      $TC_0 = and( -4, -1 + $LCS_2 )
+  419.                      $VR_iday_anl_3[0:4:1] = _bcst( 0, 4 )
+  418.                      $LC_S130 = -$TC_0
+  418.                      $SI_S129 = 0
+  419.                      $LIS_S9 = loc( monlb )
+  419.                      do
+  419.                         $VR_iday_anl_3[0:4:1] = $VR_iday_anl_3[0:4:1] + 0[$LIS_S9 + $SI_S129:4:1]
+  418.                         $SI_S129 = 16 + $SI_S129
+  418.                         $LC_S130 = 4 + $LC_S130
+  418.                         if ( $LC_S130 >= 0 ) exit
+  418.                      enddo
+  419.                      $SC_iday_anl_I5 = _rpls( $VR_iday_anl_3[0:4:1], 4, 1 )
+  418.                      $I_L418_S131 = $TC_0
+  418.                   endif
+  418.                   $LCS_1_3 = -1 + $CARG_mm_anl_I2
+  418.                   if ( $LCS_1_3 > $I_L418_S131 ) then
+  419.                      $LIS_S13 = loc( monlb )
+  419.                      do
+  419.                         $SC_iday_anl_I5 = $SC_iday_anl_I5 + 0[$LIS_S13,$I_L418_S131]
+  420.                         $I_L418_S131 = 1 + $I_L418_S131
+  418.                         if ( $I_L418_S131 >= $LCS_1_3 ) exit
+  418.                      enddo
+  418.                   endif
+  419.                   iday_anl = $SC_iday_anl_I5
+  419.                endif
+  429.                $iday_fct_S23 = 0
+  429.                $VR_iday_fct_S132[0:4:1] = _bcst( 0, 4 )
+  429.                $LIS_S15 = loc( monlb )
+  428.                !  === Begin Short Vector Loop ===
+  428.                $VPO_monlb_S133[0:4:1] = 0[$LIS_S15:4:1]
+  429.                $VP_monlb_S135[0:4:1] = 4[$LIS_S15:4:1]
+  429.                $VR_iday_fct_S134[0:4:1] = $VR_iday_fct_S132[0:4:1] + $VPO_monlb_S133[0:4:1]
+  429.                $VP_monlb_S137[0:4:1] = 8[$LIS_S15:4:1]
+  429.                $VR_iday_fct_S136[0:4:1] = $VR_iday_fct_S134[0:4:1] + $VP_monlb_S135[0:4:1]
+  429.                $VR_iday_fct_S138[0:4:1] = $VR_iday_fct_S136[0:4:1] + $VP_monlb_S137[0:4:1]
+  428.                !  === End Short Vector Loop ===
+  429.                $iday_fct_S139 = $iday_fct_S23 + _rpls( $VR_iday_fct_S138[0:4:1], 4, 1 )
+  429.                iday_fct = $iday_fct_S139
+  449.                $LCS_MR_yy_fct_4 = $MR_yy_fct_5 - $CARG_yy_anl_I3
+  449.                if ( 1 < $LCS_MR_yy_fct_4 ) then
+  415.                   $I_L415_S151 = 0
+  415.                   $LCS_5 = $LCS_MR_yy_fct_4
+  415.                   if ( -5 + $LCS_5 >= 0 ) then
+  415.                      $I_L415_S150 = 0
+  449.                      $LIS_S39 = _rsh( -1 + $LCS_5, 2 )
+  429.                      $LIS_S140[0:4:1] = _bcst( 2, 4 )
+  429.                      $VSC_monlb_S141[0:4:1] = 8[$LIS_S15:4:1]
+  429.                      $VSC_monlb_S142[0:4:1] = 4[$LIS_S15:4:1]
+  428.                      $VSC_monlb_S143[0:4:1] = 0[$LIS_S15:4:1]
+  429.                      $LIS_S147[0:4:1] = _lsh( $VSC_monlb_S141[0:4:1], $LIS_S140[0:4:1] )
+  429.                      $LIS_S146[0:4:1] = _lsh( $VSC_monlb_S142[0:4:1], $LIS_S140[0:4:1] )
+  429.                      $LIS_S145[0:4:1] = _lsh( $VSC_monlb_S143[0:4:1], $LIS_S140[0:4:1] )
+  429. !dir$ blocking_size( 16, 16 )
+  429.                      do
+  428.                         !  === Begin Short Vector Loop ===
+  429.                         $VR_iday_fct_S148[0:4:1] = $LIS_S145[0:4:1] + $LIS_S146[0:4:1]
+  429.                         $VR_iday_fct_S149[0:4:1] = $LIS_S147[0:4:1] + $VR_iday_fct_S148[0:4:1]
+  428.                         !  === End Short Vector Loop ===
+  429.                         $iday_fct_S139 = $iday_fct_S139 + _rpls( $VR_iday_fct_S149[0:4:1], 4, 1 )
+  449.                         $I_L415_S150 = 1 + $I_L415_S150
+  448.                         if ( $I_L415_S150 >= $LIS_S39 ) exit
+  448.                      enddo
+  429.                      iday_fct = $iday_fct_S139
+  449.                      $I_L415_S151 = and( -4, -1 + $MR_yy_fct_5 - $CARG_yy_anl_I3 )
+  449.                   endif
+  415.                   if ( $I_L415_S151 < -1 + $MR_yy_fct_5 - $CARG_yy_anl_I3 ) then
+  415.                      $I_L415_S158 = 0
+  449.                      $LIS_E5 = ( -$CARG_yy_anl_I3 + $MR_yy_fct_5 + -1 - $I_L415_S151 )
+  429.                      $VSC_monlb_S155[0:4:1] = 8[$LIS_S15:4:1]
+  429.                      $VSC_monlb_S152[0:4:1] = 4[$LIS_S15:4:1]
+  428.                      $VSC_monlb_S153[0:4:1] = 0[$LIS_S15:4:1]
+  429.                      $LIS_S156[0:4:1] = $VSC_monlb_S152[0:4:1] + $VSC_monlb_S153[0:4:1]
+  429. !dir$ blocking_size( 16, 16 )
+  429.                      do
+  428.                         !  === Begin Short Vector Loop ===
+  429.                         $VR_iday_fct_S157[0:4:1] = $VSC_monlb_S155[0:4:1] + $LIS_S156[0:4:1]
+  428.                         !  === End Short Vector Loop ===
+  429.                         $iday_fct_S139 = $iday_fct_S139 + _rpls( $VR_iday_fct_S157[0:4:1], 4, 1 )
+  449.                         $I_L415_S158 = 1 + $I_L415_S158
+  448.                         if ( $I_L415_S158 >= $LIS_E5 ) exit
+  448.                      enddo
+  429.                      iday_fct = $iday_fct_S139
+  429.                   endif
+  429.                endif
+  429.             endif
+  417.             if ( $MR_yy_fct_5 - $CARG_yy_anl_I3 == 0 ) then
+  418.                if ( -1 + $CARG_mm_anl_I2 > 0 ) then
+  418.                   $I_L418_S162 = 0
+  419.                   $LCS_6 = $CARG_mm_anl_I2
+  419.                   if ( -13 + $LCS_6 > 0 ) then
+  419.                      $LB_Y0 = 1
+  419.                      $UB_Y1 = 12
+  419.                      $Subscript_Y2 = 1
+  419.                      $Subscript_Y3 = -1 + $LCS_6
+  419.                      $Subscript_Y4 = 1
+  419.                      _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y45 )
+  419.                   endif
+  419.                   $iday_anl_S159 = iday_anl
+  419.                   $iday_anl_S57 = $iday_anl_S159
+  418.                   $LCS_7 = $CARG_mm_anl_I2
+  418.                   if ( -5 + $LCS_7 >= 0 ) then
+  418.                      $TC_13 = and( -4, -1 + $LCS_7 )
+  419.                      $VR_iday_anl_16[0:4:1] = _bcst( 0, 4 )
+  418.                      $LC_S161 = -$TC_13
+  418.                      $SI_S160 = 0
+  419.                      $LIS_S54 = loc( monlb )
+  419.                      do
+  419.                         $VR_iday_anl_16[0:4:1] = $VR_iday_anl_16[0:4:1] + 0[$LIS_S54 + $SI_S160:4:1]
+  418.                         $SI_S160 = 16 + $SI_S160
+  418.                         $LC_S161 = 4 + $LC_S161
+  418.                         if ( $LC_S161 >= 0 ) exit
+  418.                      enddo
+  419.                      $iday_anl_S57 = $iday_anl_S159 + _rpls( $VR_iday_anl_16[0:4:1], 4, 1 )
+  418.                      $I_L418_S162 = $TC_13
+  418.                   endif
+  418.                   $LCS_1_8 = -1 + $CARG_mm_anl_I2
+  418.                   if ( $LCS_1_8 > $I_L418_S162 ) then
+  419.                      $LIS_S59 = loc( monlb )
+  419.                      do
+  419.                         $iday_anl_S57 = $iday_anl_S57 + 0[$LIS_S59,$I_L418_S162]
+  420.                         $I_L418_S162 = 1 + $I_L418_S162
+  418.                         if ( $I_L418_S162 >= $LCS_1_8 ) exit
+  418.                      enddo
+  418.                   endif
+  419.                   iday_anl = $iday_anl_S57
+  419.                endif
+  419.             endif
+  424.             $MR_mm_fct_S163 = 0[loc( mm_fct ),0]
+  424.             if ( -1 + $MR_mm_fct_S163 > 0 ) then
+  424.                $I_L424_S167 = 0
+  425.                $LCS_9 = $MR_mm_fct_S163
+  425.                if ( -13 + $LCS_9 > 0 ) then
+  425.                   $LB_Y0 = 1
+  425.                   $UB_Y1 = 12
+  425.                   $Subscript_Y2 = 1
+  425.                   $Subscript_Y3 = -1 + $LCS_9
+  425.                   $Subscript_Y4 = 1
+  425.                   _rbounds_error( $_File_Y40, $Line_Y47, $_Name_Y46, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y48 )
+  425.                endif
+  425.                $iday_fct_S164 = iday_fct
+  425.                $iday_fct_S65 = $iday_fct_S164
+  424.                $LCS_10 = $MR_mm_fct_S163
+  424.                if ( -5 + $LCS_10 >= 0 ) then
+  424.                   $TC_17 = and( -4, -1 + $LCS_10 )
+  425.                   $VR_iday_fct_20[0:4:1] = _bcst( 0, 4 )
+  424.                   $LC_S166 = -$TC_17
+  424.                   $SI_S165 = 0
+  425.                   $LIS_S62 = loc( monlb )
+  425.                   do
+  425.                      $VR_iday_fct_20[0:4:1] = $VR_iday_fct_20[0:4:1] + 0[$LIS_S62 + $SI_S165:4:1]
+  424.                      $SI_S165 = 16 + $SI_S165
+  424.                      $LC_S166 = 4 + $LC_S166
+  424.                      if ( $LC_S166 >= 0 ) exit
+  424.                   enddo
+  425.                   $iday_fct_S65 = $iday_fct_S164 + _rpls( $VR_iday_fct_20[0:4:1], 4, 1 )
+  424.                   $I_L424_S167 = $TC_17
+  424.                endif
+  424.                $LCS_1_11 = -1 + $MR_mm_fct_S163
+  424.                if ( $LCS_1_11 > $I_L424_S167 ) then
+  425.                   $LIS_S67 = loc( monlb )
+  425.                   do
+  425.                      $iday_fct_S65 = $iday_fct_S65 + 0[$LIS_S67,$I_L424_S167]
+  426.                      $I_L424_S167 = 1 + $I_L424_S167
+  424.                      if ( $I_L424_S167 >= $LCS_1_11 ) exit
+  424.                   enddo
+  424.                endif
+  425.                iday_fct = $iday_fct_S65
+  425.             endif
+  425.          else
+  449.             if ( $MR_yy_fct_5 - $CARG_yy_anl_I3 > 0 ) then
+  434.                if ( -1 + $CARG_mm_anl_I2 > 0 ) then
+  434.                   $I_L434_S170 = 0
+  435.                   $LCS_12 = $CARG_mm_anl_I2
+  435.                   if ( -13 + $LCS_12 > 0 ) then
+  435.                      $LB_Y0 = 1
+  435.                      $UB_Y1 = 12
+  435.                      $Subscript_Y2 = 1
+  435.                      $Subscript_Y3 = -1 + $LCS_12
+  435.                      $Subscript_Y4 = 1
+  435.                      _rbounds_error( $_File_Y40, $Line_Y50, $_Name_Y49, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y51 )
+  435.                   endif
+  435.                   $SC_iday_anl_I5 = 0
+  434.                   $LCS_13 = $CARG_mm_anl_I2
+  434.                   if ( -5 + $LCS_13 >= 0 ) then
+  434.                      $TC_21 = and( -4, -1 + $LCS_13 )
+  435.                      $VR_iday_anl_24[0:4:1] = _bcst( 0, 4 )
+  434.                      $LC_S169 = -$TC_21
+  434.                      $SI_S168 = 0
+  435.                      $LIS_S69 = loc( monlb )
+  435.                      do
+  435.                         $VR_iday_anl_24[0:4:1] = $VR_iday_anl_24[0:4:1] + 16[$LIS_S69 + $SI_S168:4:1]
+  434.                         $SI_S168 = 16 + $SI_S168
+  434.                         $LC_S169 = 4 + $LC_S169
+  434.                         if ( $LC_S169 >= 0 ) exit
+  434.                      enddo
+  435.                      $SC_iday_anl_I5 = _rpls( $VR_iday_anl_24[0:4:1], 4, 1 )
+  434.                      $I_L434_S170 = $TC_21
+  434.                   endif
+  434.                   $LCS_1_14 = -1 + $CARG_mm_anl_I2
+  434.                   if ( $LCS_1_14 > $I_L434_S170 ) then
+  435.                      $LIS_S73 = loc( monlb )
+  435.                      do
+  435.                         $SC_iday_anl_I5 = $SC_iday_anl_I5 + 16[$LIS_S73,$I_L434_S170]
+  436.                         $I_L434_S170 = 1 + $I_L434_S170
+  434.                         if ( $I_L434_S170 >= $LCS_1_14 ) exit
+  434.                      enddo
+  434.                   endif
+  435.                   iday_anl = $SC_iday_anl_I5
+  435.                endif
+  445.                $iday_fct_S83 = 0
+  445.                $VR_iday_fct_S171[0:4:1] = _bcst( 0, 4 )
+  445.                $LIS_S75 = loc( monlb )
+  444.                !  === Begin Short Vector Loop ===
+  444.                $VPO_monln_S172[0:4:1] = 16[$LIS_S75:4:1]
+  445.                $VP_monln_S174[0:4:1] = 20[$LIS_S75:4:1]
+  445.                $VR_iday_fct_S173[0:4:1] = $VR_iday_fct_S171[0:4:1] + $VPO_monln_S172[0:4:1]
+  445.                $VP_monln_S176[0:4:1] = 24[$LIS_S75:4:1]
+  445.                $VR_iday_fct_S175[0:4:1] = $VR_iday_fct_S173[0:4:1] + $VP_monln_S174[0:4:1]
+  445.                $VR_iday_fct_S177[0:4:1] = $VR_iday_fct_S175[0:4:1] + $VP_monln_S176[0:4:1]
+  444.                !  === End Short Vector Loop ===
+  445.                $iday_fct_S178 = $iday_fct_S83 + _rpls( $VR_iday_fct_S177[0:4:1], 4, 1 )
+  445.                iday_fct = $iday_fct_S178
+  449.                $LCS_MR_yy_fct_15 = $MR_yy_fct_5 - $CARG_yy_anl_I3
+  449.                if ( 1 < $LCS_MR_yy_fct_15 ) then
+  415.                   $I_L415_S190 = 0
+  415.                   $LCS_16 = $LCS_MR_yy_fct_15
+  415.                   if ( -5 + $LCS_16 >= 0 ) then
+  415.                      $I_L415_S189 = 0
+  449.                      $LIS_S99 = _rsh( -1 + $LCS_16, 2 )
+  445.                      $LIS_S179[0:4:1] = _bcst( 2, 4 )
+  445.                      $VSC_monln_S180[0:4:1] = 24[$LIS_S75:4:1]
+  445.                      $VSC_monln_S181[0:4:1] = 20[$LIS_S75:4:1]
+  444.                      $VSC_monln_S182[0:4:1] = 16[$LIS_S75:4:1]
+  445.                      $LIS_S186[0:4:1] = _lsh( $VSC_monln_S180[0:4:1], $LIS_S179[0:4:1] )
+  445.                      $LIS_S185[0:4:1] = _lsh( $VSC_monln_S181[0:4:1], $LIS_S179[0:4:1] )
+  445.                      $LIS_S184[0:4:1] = _lsh( $VSC_monln_S182[0:4:1], $LIS_S179[0:4:1] )
+  445. !dir$ blocking_size( 16, 16 )
+  445.                      do
+  444.                         !  === Begin Short Vector Loop ===
+  445.                         $VR_iday_fct_S187[0:4:1] = $LIS_S184[0:4:1] + $LIS_S185[0:4:1]
+  445.                         $VR_iday_fct_S188[0:4:1] = $LIS_S186[0:4:1] + $VR_iday_fct_S187[0:4:1]
+  444.                         !  === End Short Vector Loop ===
+  445.                         $iday_fct_S178 = $iday_fct_S178 + _rpls( $VR_iday_fct_S188[0:4:1], 4, 1 )
+  449.                         $I_L415_S189 = 1 + $I_L415_S189
+  448.                         if ( $I_L415_S189 >= $LIS_S99 ) exit
+  448.                      enddo
+  445.                      iday_fct = $iday_fct_S178
+  449.                      $I_L415_S190 = and( -4, -1 + $MR_yy_fct_5 - $CARG_yy_anl_I3 )
+  449.                   endif
+  415.                   if ( $I_L415_S190 < -1 + $MR_yy_fct_5 - $CARG_yy_anl_I3 ) then
+  415.                      $I_L415_S197 = 0
+  449.                      $LIS_E9 = ( -$CARG_yy_anl_I3 + $MR_yy_fct_5 + -1 - $I_L415_S190 )
+  445.                      $VSC_monln_S194[0:4:1] = 24[$LIS_S75:4:1]
+  445.                      $VSC_monln_S191[0:4:1] = 20[$LIS_S75:4:1]
+  444.                      $VSC_monln_S192[0:4:1] = 16[$LIS_S75:4:1]
+  445.                      $LIS_S195[0:4:1] = $VSC_monln_S191[0:4:1] + $VSC_monln_S192[0:4:1]
+  445. !dir$ blocking_size( 16, 16 )
+  445.                      do
+  444.                         !  === Begin Short Vector Loop ===
+  445.                         $VR_iday_fct_S196[0:4:1] = $VSC_monln_S194[0:4:1] + $LIS_S195[0:4:1]
+  444.                         !  === End Short Vector Loop ===
+  445.                         $iday_fct_S178 = $iday_fct_S178 + _rpls( $VR_iday_fct_S196[0:4:1], 4, 1 )
+  449.                         $I_L415_S197 = 1 + $I_L415_S197
+  448.                         if ( $I_L415_S197 >= $LIS_E9 ) exit
+  448.                      enddo
+  445.                      iday_fct = $iday_fct_S178
+  445.                   endif
+  445.                endif
+  445.             endif
+  433.             if ( $MR_yy_fct_5 - $CARG_yy_anl_I3 == 0 ) then
+  434.                if ( -1 + $CARG_mm_anl_I2 > 0 ) then
+  434.                   $I_L434_S201 = 0
+  435.                   $LCS_17 = $CARG_mm_anl_I2
+  435.                   if ( -13 + $LCS_17 > 0 ) then
+  435.                      $LB_Y0 = 1
+  435.                      $UB_Y1 = 12
+  435.                      $Subscript_Y2 = 1
+  435.                      $Subscript_Y3 = -1 + $LCS_17
+  435.                      $Subscript_Y4 = 1
+  435.                      _rbounds_error( $_File_Y40, $Line_Y50, $_Name_Y52, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y53 )
+  435.                   endif
+  435.                   $iday_anl_S198 = iday_anl
+  435.                   $iday_anl_S117 = $iday_anl_S198
+  434.                   $LCS_18 = $CARG_mm_anl_I2
+  434.                   if ( -5 + $LCS_18 >= 0 ) then
+  434.                      $TC_34 = and( -4, -1 + $LCS_18 )
+  435.                      $VR_iday_anl_37[0:4:1] = _bcst( 0, 4 )
+  434.                      $LC_S200 = -$TC_34
+  434.                      $SI_S199 = 0
+  435.                      $LIS_S114 = loc( monlb )
+  435.                      do
+  435.                         $VR_iday_anl_37[0:4:1] = $VR_iday_anl_37[0:4:1] + 16[$LIS_S114 + $SI_S199:4:1]
+  434.                         $SI_S199 = 16 + $SI_S199
+  434.                         $LC_S200 = 4 + $LC_S200
+  434.                         if ( $LC_S200 >= 0 ) exit
+  434.                      enddo
+  435.                      $iday_anl_S117 = $iday_anl_S198 + _rpls( $VR_iday_anl_37[0:4:1], 4, 1 )
+  434.                      $I_L434_S201 = $TC_34
+  434.                   endif
+  434.                   $LCS_1_19 = -1 + $CARG_mm_anl_I2
+  434.                   if ( $LCS_1_19 > $I_L434_S201 ) then
+  435.                      $LIS_S119 = loc( monlb )
+  435.                      do
+  435.                         $iday_anl_S117 = $iday_anl_S117 + 16[$LIS_S119,$I_L434_S201]
+  436.                         $I_L434_S201 = 1 + $I_L434_S201
+  434.                         if ( $I_L434_S201 >= $LCS_1_19 ) exit
+  434.                      enddo
+  434.                   endif
+  435.                   iday_anl = $iday_anl_S117
+  435.                endif
+  435.             endif
+  440.             $MR_mm_fct_S202 = 0[loc( mm_fct ),0]
+  440.             if ( -1 + $MR_mm_fct_S202 > 0 ) then
+  440.                $I_L440_S206 = 0
+  441.                $LCS_20 = $MR_mm_fct_S202
+  441.                if ( -13 + $LCS_20 > 0 ) then
+  441.                   $LB_Y0 = 1
+  441.                   $UB_Y1 = 12
+  441.                   $Subscript_Y2 = 1
+  441.                   $Subscript_Y3 = -1 + $LCS_20
+  441.                   $Subscript_Y4 = 1
+  441.                   _rbounds_error( $_File_Y40, $Line_Y55, $_Name_Y54, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y56 )
+  441.                endif
+  441.                $iday_fct_S203 = iday_fct
+  441.                $iday_fct_S125 = $iday_fct_S203
+  440.                $LCS_21 = $MR_mm_fct_S202
+  440.                if ( -5 + $LCS_21 >= 0 ) then
+  440.                   $TC_38 = and( -4, -1 + $LCS_21 )
+  441.                   $VR_iday_fct_41[0:4:1] = _bcst( 0, 4 )
+  440.                   $LC_S205 = -$TC_38
+  440.                   $SI_S204 = 0
+  441.                   $LIS_S122 = loc( monlb )
+  441.                   do
+  441.                      $VR_iday_fct_41[0:4:1] = $VR_iday_fct_41[0:4:1] + 16[$LIS_S122 + $SI_S204:4:1]
+  440.                      $SI_S204 = 16 + $SI_S204
+  440.                      $LC_S205 = 4 + $LC_S205
+  440.                      if ( $LC_S205 >= 0 ) exit
+  440.                   enddo
+  441.                   $iday_fct_S125 = $iday_fct_S203 + _rpls( $VR_iday_fct_41[0:4:1], 4, 1 )
+  440.                   $I_L440_S206 = $TC_38
+  440.                endif
+  440.                $LCS_1_22 = -1 + $MR_mm_fct_S202
+  440.                if ( $LCS_1_22 > $I_L440_S206 ) then
+  441.                   $LIS_S127 = loc( monlb )
+  441.                   do
+  441.                      $iday_fct_S125 = $iday_fct_S125 + 16[$LIS_S127,$I_L440_S206]
+  442.                      $I_L440_S206 = 1 + $I_L440_S206
+  440.                      if ( $I_L440_S206 >= $LCS_1_22 ) exit
+  440.                   enddo
+  440.                endif
+  441.                iday_fct = $iday_fct_S125
+  441.             endif
+  441.          endif
+  441.       endif
+  453.       $iday_anl_S207 = iday_anl
+  453.       0[loc( anl_hours ),0] = 24 * ( $CARG_dd_anl_I1 + $iday_anl_S207 ) + -24 + $CARG_hh_anl_I0
+  454.       $iday_fct_S208 = iday_fct
+  454.       0[loc( fct_hours ),0] = 24 * ( 0[loc( dd_fct ),0] + $iday_fct_S208 ) + -24 + $CARG_hh_fct_I4
+  455.       return
+  455.       end
+  455.       
+    6.       
+    6.       module filegrib
+    6.       end
+    6.       

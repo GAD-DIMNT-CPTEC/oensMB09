@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/Out.model_CTRL.2004032600.1287437797.%s.MPI16.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=16
+#PBS -l mppnppn=2
+#PBS -l mppdepth=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N ENSMODCTR
+#
+cd /scratch/p01211/oens-1.0.0/model/exec
+date
+export OMP_NUM_THREADS=1
+time aprun -n  16 -N  2 -d 1 -ss  /scratch/p01211/oens-1.0.0/model/exec/ParModel_MPI -i /scratch/p01211/oens-1.0.0/model/exec/MODELIN
+date
+

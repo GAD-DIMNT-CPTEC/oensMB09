@@ -1,0 +1,1912 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  FFT.f90
+       !        File                  :  FFT.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+  130.       
+  130.       subroutine createfft
+  135.       if ( created /= .false. ) then
+  136.          $Unit_temp_O0 = nferr
+  136.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$6,  _substr(t$5,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(CreateFFT)**', 0x800600000000L ), _iotype( ' invoked without destroying previous FFT', 0x800600000000L ) ) )
+  138.           _substr(t$177,1,4) = ' '
+  138.          call _stop(  _substr(t$177,1,1) )
+  138.       else
+  140.          created = .true.
+  141.          ngiven = imax
+  142.          call factorize( ngiven )
+  143.          sin60 = 8.660254037844386e-1
+  143.          sin36 = 5.8778525229247314e-1
+  143.          sin72 = 9.5105651629515353e-1
+  143.          cos36 = 8.0901699437494745e-1
+  143.          cos72 = 3.0901699437494745e-1
+  143.          trigs%header%a_contig = 1
+  143.          trigs%dim_1%LB = 1
+  143.          trigs%dim_1%EX = _zla( 0, ( 2 * ngiven / 2 + 2 * ( 1 + ngiven / 2 ) / 2 ) )
+  143.          trigs%dim_1%SM = 1
+  143.          $_allo_P11(0) = 0x1000000000001L
+  143.          $_allo_P11(1) = loc( trigs )
+  143.          call __allocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+  143.          $del_S1 = ( 6.2831853071795862 * 1.0/( real( ngiven / 2, 8 ) ) )
+  143.          if ( 2 * ngiven / 2 > 0 ) then
+  143.             $I_L143_8 = 0
+  143. !dir$ ivdep
+  143.             do
+  143.                $Coss_P9 = coss( ( 5.0e-1 * $del_S1 * real( 2 * $I_L143_8, 8 ) ) )
+  143.                $Flat_S2 = real( $Coss_P9, 8 )
+  143.                (trigs%base_addr)(1 + 2 * $I_L143_8, 0) = $Flat_S2
+  143.                $Flat_S3 = cimag( $Coss_P9 )
+  143.                (trigs%base_addr)(2 + 2 * $I_L143_8, 0) = $Flat_S3
+  143.                $I_L143_8 = 1 + $I_L143_8
+  143.                if ( $I_L143_8 >= ( 1 + 2 * ngiven / 2 ) / 2 ) exit
+  143.             enddo
+  143.          endif
+  143.          $del_S5 = 5.0e-1 * $del_S1
+  143.          if ( 2 * ( 1 + ngiven / 2 ) / 2 > 0 ) then
+  143.             $I_L143_10 = 0
+  143. !dir$ ivdep
+  143.             do
+  143.                $Coss_P10 = coss( ( 5.0e-1 * $del_S5 * real( 2 * $I_L143_10, 8 ) ) )
+  143.                $Flat_S6 = real( $Coss_P10, 8 )
+  143.                (trigs%base_addr)(1 + 2 * ngiven / 2 + 2 * $I_L143_10, 0) = $Flat_S6
+  143.                $Flat_S7 = cimag( $Coss_P10 )
+  143.                (trigs%base_addr)(2 + 2 * ngiven / 2 + 2 * $I_L143_10, 0) = $Flat_S7
+  143.                $I_L143_10 = 1 + $I_L143_10
+  143.                if ( $I_L143_10 >= ( 1 + 2 * ( 1 + ngiven / 2 ) / 2 ) / 2 ) exit
+  143.             enddo
+  143.          endif
+  143.       endif
+  145.       return
+  145.       end
+  145.       
+  148.       
+  148.       subroutine factorize( nin )
+  167.       call nextpossiblesize( nin, nout, powers(1) )
+  169.       if ( nout + -nin /= 0 ) then
+  170.          _fwrite( _clist( 0, 0, 3,  _substr(charint,1,15), Null_Arg, Null_Arg, t$9,  _substr(t$8,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( nin, 0x2000200000000L ) ) )
+  172.          _f90_adjustl(  _substr(t$178,1,15),  _substr(charint,1,15) )
+  171.          t$179 = _ltrim(  _substr(t$178,1,15) )
+  172.          t$181 = int( _alloc( _zla( 0, t$179 ) ), 8 )
+  172.           _substr(t$180,1,_zla( 0, t$179 )) =  _substr(t$178,1,_ltrim(  _substr(t$178,1,15) ))
+  171.          $Unit_temp_O0 = nferr
+  171.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$11,  _substr(t$10,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Factorize)**', 0x800600000000L ), _iotype( ' FFT size = ', 0x800600000000L ), _iotype(  _substr(t$180,1,_zla( 0, t$179 )), 0x800600000000L ), _iotype( ' not factorizable ', 0x800600000000L ) ) )
+  172.          _free( t$181 )
+  173.          _fwrite( _clist( 0, 0, 3,  _substr(charint,1,15), Null_Arg, Null_Arg, t$13,  _substr(t$12,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( nout, 0x2000200000000L ) ) )
+  175.          _f90_adjustl(  _substr(t$182,1,15),  _substr(charint,1,15) )
+  174.          t$183 = _ltrim(  _substr(t$182,1,15) )
+  175.          t$185 = int( _alloc( _zla( 0, t$183 ) ), 8 )
+  175.           _substr(t$184,1,_zla( 0, t$183 )) =  _substr(t$182,1,_ltrim(  _substr(t$182,1,15) ))
+  174.          $Unit_temp_O1 = nferr
+  174.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$15,  _substr(t$14,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Factorize)**', 0x800600000000L ), _iotype( ' Next factorizable FFT size is ', 0x800600000000L ), _iotype(  _substr(t$184,1,_zla( 0, t$183 )), 0x800600000000L ) ) )
+  175.          _free( t$185 )
+  176.           _substr(t$186,1,4) = ' '
+  176.          call _stop(  _substr(t$186,1,1) )
+  176.       else
+  179.          $Reduc_A34 = 0
+  179.          $I_A35 = 0
+  179. !dir$ ivdep
+  179.          do
+  179.             $Reduc_A34 = $Reduc_A34 + powers(1 + $I_A35)
+  179.             $I_A35 = 1 + $I_A35
+  179.             if ( $I_A35 >= 4 ) exit
+  179.          enddo
+  180.          factors%header%a_contig = 1
+  180.          factors%dim_1%LB = 1
+  180.          factors%dim_1%EX = ( max( 0, 1 + $Reduc_A34 ) )
+  180.          factors%dim_1%SM = 1
+  180.          $_allo_P0(0) = 0x1000000000001L
+  180.          $_allo_P0(1) = loc( factors )
+  180.          call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  181.          (factors%base_addr)(1, 0) = $Reduc_A34
+  182.          $ifac_S3 = 1
+  183.          $I_L183_8 = 0
+  183. !dir$ loop_info (automatic) cache_nt( base )
+  183.          do
+  184.             $j_S2 = permutation(1 + $I_L183_8)
+  185.             $F_A36 = powers($j_S2)
+  185.             if ( powers($j_S2) > 0 ) then
+  185.                $SCA_base_I0 = base($j_S2)
+  185.                $I_L185_6 = 0
+  185. !dir$ ivdep
+  185.                do
+  185.                   (factors%base_addr)(1 + $ifac_S3 + $I_L185_6, 0) = $SCA_base_I0
+  185.                   $I_L185_6 = 1 + $I_L185_6
+  185.                   if ( $I_L185_6 >= $F_A36 ) exit
+  185.                enddo
+  185.             endif
+  186.             $ifac_S3 = $ifac_S3 + powers($j_S2)
+  187.             $I_L183_8 = 1 + $I_L183_8
+  183.             if ( $I_L183_8 >= 4 ) exit
+  183.          enddo
+  183.       endif
+  189.       return
+  189.       end
+  189.       
+  192.       
+  192.       subroutine nextpossiblesize( nin, nout, powers )
+  212.       if ( nin <= 0 ) then
+  213.          _fwrite( _clist( 0, 0, 3,  _substr(charnin,1,15), Null_Arg, Null_Arg, t$18,  _substr(t$17,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( nin, 0x2000200000000L ) ) )
+  215.          _f90_adjustl(  _substr(t$188,1,15),  _substr(charnin,1,15) )
+  214.          t$189 = _ltrim(  _substr(t$188,1,15) )
+  215.          t$191 = int( _alloc( _zla( 0, t$189 ) ), 8 )
+  215.           _substr(t$190,1,_zla( 0, t$189 )) =  _substr(t$188,1,_ltrim(  _substr(t$188,1,15) ))
+  214.          $Unit_temp_O0 = nferr
+  214.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$20,  _substr(t$19,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(NextPossibleSize)**', 0x800600000000L ), _iotype( ' Meaningless FFT size = ', 0x800600000000L ), _iotype(  _substr(t$190,1,_zla( 0, t$189 )), 0x800600000000L ) ) )
+  215.          _free( t$191 )
+  216.           _substr(t$192,1,4) = ' '
+  216.          call _stop(  _substr(t$192,1,1) )
+  216.       else
+  217.          nout = cvmg( 1 + nin, nin, mod( nin, 2 ) /= 0 )
+  227.          $left_S1 = cvmg( 1 + nin, nin, mod( nin, 2 ) /= 0 ) / 2
+  228.          $I_A1 = 0
+  228. !dir$ ivdep
+  228.          do
+  228.             powers(1 + $I_A1) = 0
+  228.             $I_A1 = 1 + $I_A1
+  228.             if ( $I_A1 >= 4 ) exit
+  228.          enddo
+  232.          $I_L232_13 = 0
+  232.          do
+  234.             $SC_base_I0 = base(1 + $I_L232_13)
+  234.             do
+  234.                if ( mod( $left_S1, $SC_base_I0 ) /= 0 ) goto 10
+  236.                $left_S1 = $left_S1 / $SC_base_I0
+  236.             enddo
+  236.    10       continue
+  241.             $I_L232_13 = 1 + $I_L232_13
+  237.             if ( $I_L232_13 >= 4 ) exit
+  237.          enddo
+  243.          if ( $left_S1 /= 1 ) then
+  245.             if ( cvmg( 1 + nin, nin, mod( nin, 2 ) /= 0 ) < 0x7ffffffe ) then
+  226.                $I_nout_15 = 0
+  226.                do
+  227.                   $left_S1 = ( 2 + cvmg( 1 + nin, nin, mod( nin, 2 ) /= 0 ) + 2 * $I_nout_15 ) / 2
+  228.                   $I_A1 = 0
+  228. !dir$ ivdep
+  228.                   do
+  228.                      powers(1 + $I_A1) = 0
+  228.                      $I_A1 = 1 + $I_A1
+  228.                      if ( $I_A1 >= 4 ) exit
+  228.                   enddo
+  232.                   $I_L232_11 = 0
+  232.                   do
+  234.                      $SC_base_I1 = base(1 + $I_L232_11)
+  234.                      do
+  234.                         if ( mod( $left_S1, $SC_base_I1 ) /= 0 ) goto 20
+  236.                         $left_S1 = $left_S1 / $SC_base_I1
+  236.                      enddo
+  236.    20                continue
+  241.                      $I_L232_11 = 1 + $I_L232_11
+  237.                      if ( $I_L232_11 >= 4 ) exit
+  237.                   enddo
+  243.                   if ( $left_S1 == 1 ) then
+  246.                      nout = ( 2 + cvmg( 1 + nin, nin, mod( nin, 2 ) /= 0 ) + 2 * $I_nout_15 )
+  246.                      goto 40
+  246.                   endif
+  245.                   $I_nout_15 = 1 + $I_nout_15
+  245.                   if ( $I_nout_15 >= _rsh( 0x7fffffff + -cvmg( 1 + nin, nin, mod( nin, 2 ) /= 0 ), 1 ) ) exit
+  245.                enddo
+  246.                nout = ( and( 0xfffffffffffffffeUL, 0x7fffffff + -cvmg( 1 + nin, nin, mod( nin, 2 ) /= 0 ) ) + cvmg( 1 + nin, nin, mod( nin, 2 ) /= 0 ) )
+  246.                goto 30
+  246.             else
+  246.    30          continue
+  248.                _fwrite( _clist( 0, 0, 3,  _substr(charnin,1,15), Null_Arg, Null_Arg, t$22,  _substr(t$21,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( nin, 0x2000200000000L ) ) )
+  250.                _f90_adjustl(  _substr(t$194,1,15),  _substr(charnin,1,15) )
+  249.                t$195 = _ltrim(  _substr(t$194,1,15) )
+  250.                t$197 = int( _alloc( max( 0, t$195 ) ), 8 )
+  250.                 _substr(t$196,1,max( 0, t$195 )) =  _substr(t$194,1,_ltrim(  _substr(t$194,1,15) ))
+  249.                $Unit_temp_O1 = nferr
+  249.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$24,  _substr(t$23,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(NextPossibleSize)**', 0x800600000000L ), _iotype( ' Next factorizable FFT size > ', 0x800600000000L ), _iotype(  _substr(t$196,1,max( 0, t$195 )), 0x800600000000L ), _iotype( ' is not representable in this machine', 0x800600000000L ) ) )
+  250.                _free( t$197 )
+  251.                 _substr(t$198,1,4) = ' '
+  251.                call _stop(  _substr(t$198,1,1) )
+  251.             endif
+  251.          endif
+  251.       endif
+  251.    40 continue
+  255.       return
+  255.       end
+  255.       
+  258.       
+  258.       subroutine trigfactors( nin )
+  270.       sin60 = 8.660254037844386e-1
+  271.       sin36 = 5.8778525229247314e-1
+  272.       sin72 = 9.5105651629515353e-1
+  273.       cos36 = 8.0901699437494745e-1
+  274.       cos72 = 3.0901699437494745e-1
+  278.       trigs%header%a_contig = 1
+  278.       trigs%dim_1%LB = 1
+  278.       trigs%dim_1%EX = _zla( 0, ( 2 * nin / 2 + 2 * ( 1 + nin / 2 ) / 2 ) )
+  278.       trigs%dim_1%SM = 1
+  278.       $_allo_P11(0) = 0x1000000000001L
+  278.       $_allo_P11(1) = loc( trigs )
+  278.       call __allocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+  281.       $del_S1 = ( 6.2831853071795862 * 1.0/( real( nin / 2, 8 ) ) )
+  283.       if ( 2 * nin / 2 > 0 ) then
+  283.          $I_L283_8 = 0
+  283. !dir$ ivdep
+  283.          do
+  285.             $Coss_P9 = coss( ( 5.0e-1 * $del_S1 * real( 2 * $I_L283_8, 8 ) ) )
+  285.             $Flat_S2 = real( $Coss_P9, 8 )
+  285.             (trigs%base_addr)(1 + 2 * $I_L283_8, 0) = $Flat_S2
+  286.             $Flat_S3 = cimag( $Coss_P9 )
+  286.             (trigs%base_addr)(2 + 2 * $I_L283_8, 0) = $Flat_S3
+  287.             $I_L283_8 = 1 + $I_L283_8
+  283.             if ( $I_L283_8 >= ( 1 + 2 * nin / 2 ) / 2 ) exit
+  283.          enddo
+  283.       endif
+  289.       $del_S5 = 5.0e-1 * $del_S1
+  290.       if ( 2 * ( 1 + nin / 2 ) / 2 > 0 ) then
+  290.          $I_L290_10 = 0
+  290. !dir$ ivdep
+  290.          do
+  292.             $Coss_P10 = coss( ( 5.0e-1 * $del_S5 * real( 2 * $I_L290_10, 8 ) ) )
+  292.             $Flat_S6 = real( $Coss_P10, 8 )
+  292.             (trigs%base_addr)(1 + 2 * nin / 2 + 2 * $I_L290_10, 0) = $Flat_S6
+  293.             $Flat_S7 = cimag( $Coss_P10 )
+  293.             (trigs%base_addr)(2 + 2 * nin / 2 + 2 * $I_L290_10, 0) = $Flat_S7
+  294.             $I_L290_10 = 1 + $I_L290_10
+  290.             if ( $I_L290_10 >= ( 1 + 2 * ( 1 + nin / 2 ) / 2 ) / 2 ) exit
+  290.          enddo
+  290.       endif
+  296.       return
+  296.       end
+  296.       
+  299.       
+  299.       subroutine destroyfft
+  307.       if ( created == .false. ) then
+  308.          $Unit_temp_O0 = nferr
+  308.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$26,  _substr(t$25,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(DestroyFFT)**', 0x800600000000L ), _iotype( ' there is no FFT to destroy', 0x800600000000L ) ) )
+  309.           _substr(t$205,1,4) = ' '
+  309.          call _stop(  _substr(t$205,1,1) )
+  309.       else
+  312.          created = .false.
+  313.          $_allo_P0(0) = 0x1000000000001L
+  313.          $_allo_P0(1) = loc( factors )
+  313.          call __deallocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  313.          factors%header%assoc = 0
+  314.          $_allo_P1(0) = 0x1000000000001L
+  314.          $_allo_P1(1) = loc( trigs )
+  314.          call __deallocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  314.          trigs%header%assoc = 0
+  314.       endif
+  316.       return
+  316.       end
+  316.       
+  319.       
+  319.       subroutine splitfour( fin, a, b, ldin, n, nh, lot )
+  319.       t$27 = ldin
+  319.       t$28 = lot
+  328.       t$101 = _zla( 0, ldin )
+  319.       t$102 = _zla( 0, ldin )
+  328.       t$103 = _zla( 0, lot )
+  319.       t$104 = _zla( 0, ldin ) * _zla( 0, lot )
+  319.       t$29 = nh
+  319.       t$105 = _zla( 0, lot )
+  329.       t$106 = _zla( 0, nh )
+  319.       t$107 = _zla( 0, lot ) * _zla( 0, nh )
+  337.       if ( lot > 0 ) then
+  337.          $I_L337_16 = 0
+  337. !dir$ ivdep
+  337.          do
+  338.             a(1 + $I_L337_16, 1) = fin(1, 1 + $I_L337_16) + fin(1 + n, 1 + $I_L337_16)
+  339.             b(1 + $I_L337_16, 1) = fin(1, 1 + $I_L337_16) + -fin(1 + n, 1 + $I_L337_16)
+  340.             $I_L337_16 = 1 + $I_L337_16
+  337.             if ( $I_L337_16 >= lot ) exit
+  337.          enddo
+  337.       endif
+  342.       if ( -2 + ( 1 + nh ) / 2 >= 0 ) then
+  343.          $SC_trigs_I0 = trigs%dim_1%EX
+  343.          $SC_trigs_I1 = trigs%dim_1%LB
+  346.          if ( lot > 0 ) then
+  342.             $I_L342_22 = 0
+  342. !dir$ ivdep
+  342.             do
+  343.                $c_S3 = (trigs%base_addr)(3 + n + 2 * $I_L342_22, 0)
+  344.                $s_S4 = (trigs%base_addr)(4 + n + 2 * $I_L342_22, 0)
+  346.                $I_L346_18 = 0
+  346.                do
+  347.                   a(1 + $I_L346_18, 2 + $I_L342_22) = ( fin(3 + 2 * $I_L342_22, 1 + $I_L346_18) + fin(-1 + n + -2 * $I_L342_22, 1 + $I_L346_18) ) + -( $c_S3 * ( fin(n + -2 * $I_L342_22, 1 + $I_L346_18) + fin(4 + 2 * $I_L342_22, 1 + $I_L346_18) ) + $s_S4 * ( fin(3 + 2 * $I_L342_22, 1 + $I_L346_18) + -fin(-1 + n + -2 * $I_L342_22, 1 + $I_L346_18) ) )
+  350.                   a(1 + $I_L346_18, nh + -$I_L342_22) = ( fin(3 + 2 * $I_L342_22, 1 + $I_L346_18) + fin(-1 + n + -2 * $I_L342_22, 1 + $I_L346_18) ) + ( $c_S3 * ( fin(n + -2 * $I_L342_22, 1 + $I_L346_18) + fin(4 + 2 * $I_L342_22, 1 + $I_L346_18) ) + $s_S4 * ( fin(3 + 2 * $I_L342_22, 1 + $I_L346_18) + -fin(-1 + n + -2 * $I_L342_22, 1 + $I_L346_18) ) )
+  353.                   b(1 + $I_L346_18, 2 + $I_L342_22) = ( fin(4 + 2 * $I_L342_22, 1 + $I_L346_18) + -fin(n + -2 * $I_L342_22, 1 + $I_L346_18) ) + ( -( $s_S4 * ( fin(n + -2 * $I_L342_22, 1 + $I_L346_18) + fin(4 + 2 * $I_L342_22, 1 + $I_L346_18) ) ) + $c_S3 * ( fin(3 + 2 * $I_L342_22, 1 + $I_L346_18) + -fin(-1 + n + -2 * $I_L342_22, 1 + $I_L346_18) ) )
+  356.                   b(1 + $I_L346_18, nh + -$I_L342_22) = ( -( $s_S4 * ( fin(n + -2 * $I_L342_22, 1 + $I_L346_18) + fin(4 + 2 * $I_L342_22, 1 + $I_L346_18) ) ) + $c_S3 * ( fin(3 + 2 * $I_L342_22, 1 + $I_L346_18) + -fin(-1 + n + -2 * $I_L342_22, 1 + $I_L346_18) ) ) + -( fin(4 + 2 * $I_L342_22, 1 + $I_L346_18) + -fin(n + -2 * $I_L342_22, 1 + $I_L346_18) )
+  359.                   $I_L346_18 = 1 + $I_L346_18
+  346.                   if ( $I_L346_18 >= lot ) exit
+  346.                enddo
+  360.                $I_L342_22 = 1 + $I_L342_22
+  359.                if ( $I_L342_22 >= -1 + ( 1 + nh ) / 2 ) exit
+  359.             enddo
+  359.          endif
+  359.       endif
+  361.       if ( nh >= 2 ) then
+  361.          if ( mod( nh, 2 ) == 0 ) then
+  363.             if ( lot > 0 ) then
+  363.                $I_L363_20 = 0
+  363. !dir$ ivdep
+  363.                do
+  364.                   a(1 + $I_L363_20, 1 + nh / 2) = 2.0 * fin(1 + nh, 1 + $I_L363_20)
+  365.                   b(1 + $I_L363_20, 1 + nh / 2) = -2.0 * fin(2 + nh, 1 + $I_L363_20)
+  366.                   $I_L363_20 = 1 + $I_L363_20
+  363.                   if ( $I_L363_20 >= lot ) exit
+  363.                enddo
+  363.             endif
+  363.          endif
+  363.       endif
+  369.       return
+  369.       end
+  369.       
+  372.       
+  372.       subroutine joinfour( a, b, fout, ldout, n, nh, lot )
+  372.       t$31 = lot
+  372.       t$32 = nh
+  382.       t$108 = _zla( 0, lot )
+  372.       t$109 = _zla( 0, lot )
+  382.       t$110 = _zla( 0, nh )
+  372.       t$111 = _zla( 0, lot ) * _zla( 0, nh )
+  372.       t$30 = ldout
+  381.       t$112 = _zla( 0, ldout )
+  372.       t$113 = _zla( 0, ldout )
+  372.       t$114 = _zla( 0, lot ) * _zla( 0, ldout )
+  390.       $scale_S1 = 1.0/( real( n, 8 ) )
+  391.       $scalh_S6 = 5.0e-1 * 1.0/( real( n, 8 ) )
+  394.       if ( lot > 0 ) then
+  394.          $I_L394_16 = 0
+  394. !dir$ ivdep
+  394.          do
+  395.             fout(1, 1 + $I_L394_16) = $scale_S1 * ( a(1 + $I_L394_16, 1) + b(1 + $I_L394_16, 1) )
+  396.             fout(1 + n, 1 + $I_L394_16) = $scale_S1 * ( a(1 + $I_L394_16, 1) + -b(1 + $I_L394_16, 1) )
+  397.             fout(2, 1 + $I_L394_16) = 0.0
+  398.             $I_L394_16 = 1 + $I_L394_16
+  394.             if ( $I_L394_16 >= lot ) exit
+  394.          enddo
+  394.       endif
+  400.       if ( -2 + ( 1 + nh ) / 2 >= 0 ) then
+  401.          $SC_trigs_I0 = trigs%dim_1%EX
+  401.          $SC_trigs_I1 = trigs%dim_1%LB
+  404.          if ( lot > 0 ) then
+  400.             $I_L400_22 = 0
+  400.             do
+  401.                $c_S5 = (trigs%base_addr)(3 + n + 2 * $I_L400_22, 0)
+  402.                $s_S4 = (trigs%base_addr)(4 + n + 2 * $I_L400_22, 0)
+  404.                $I_L404_18 = 0
+  404. !dir$ ivdep
+  404.                do
+  405.                   fout(3 + 2 * $I_L400_22, 1 + $I_L404_18) = $scalh_S6 * ( ( a(1 + $I_L404_18, 2 + $I_L400_22) + a(1 + $I_L404_18, nh + -$I_L400_22) ) + ( $s_S4 * ( a(1 + $I_L404_18, 2 + $I_L400_22) + -a(1 + $I_L404_18, nh + -$I_L400_22) ) + $c_S5 * ( b(1 + $I_L404_18, 2 + $I_L400_22) + b(1 + $I_L404_18, nh + -$I_L400_22) ) ) )
+  408.                   fout(-1 + n + -2 * $I_L400_22, 1 + $I_L404_18) = $scalh_S6 * ( ( a(1 + $I_L404_18, 2 + $I_L400_22) + a(1 + $I_L404_18, nh + -$I_L400_22) ) + -( $s_S4 * ( a(1 + $I_L404_18, 2 + $I_L400_22) + -a(1 + $I_L404_18, nh + -$I_L400_22) ) + $c_S5 * ( b(1 + $I_L404_18, 2 + $I_L400_22) + b(1 + $I_L404_18, nh + -$I_L400_22) ) ) )
+  411.                   fout(4 + 2 * $I_L400_22, 1 + $I_L404_18) = $scalh_S6 * ( ( b(1 + $I_L404_18, nh + -$I_L400_22) + -b(1 + $I_L404_18, 2 + $I_L400_22) ) + ( -( $s_S4 * ( b(1 + $I_L404_18, 2 + $I_L400_22) + b(1 + $I_L404_18, nh + -$I_L400_22) ) ) + $c_S5 * ( a(1 + $I_L404_18, 2 + $I_L400_22) + -a(1 + $I_L404_18, nh + -$I_L400_22) ) ) )
+  414.                   fout(n + -2 * $I_L400_22, 1 + $I_L404_18) = $scalh_S6 * ( ( -( $s_S4 * ( b(1 + $I_L404_18, 2 + $I_L400_22) + b(1 + $I_L404_18, nh + -$I_L400_22) ) ) + $c_S5 * ( a(1 + $I_L404_18, 2 + $I_L400_22) + -a(1 + $I_L404_18, nh + -$I_L400_22) ) ) + -( b(1 + $I_L404_18, nh + -$I_L400_22) + -b(1 + $I_L404_18, 2 + $I_L400_22) ) )
+  417.                   $I_L404_18 = 1 + $I_L404_18
+  404.                   if ( $I_L404_18 >= lot ) exit
+  404.                enddo
+  418.                $I_L400_22 = 1 + $I_L400_22
+  417.                if ( $I_L400_22 >= -1 + ( 1 + nh ) / 2 ) exit
+  417.             enddo
+  417.          endif
+  417.       endif
+  420.       if ( nh >= 2 ) then
+  420.          if ( mod( nh, 2 ) == 0 ) then
+  422.             if ( lot > 0 ) then
+  422.                $I_L422_20 = 0
+  422. !dir$ ivdep
+  422.                do
+  423.                   fout(1 + nh, 1 + $I_L422_20) = $scale_S1 * a(1 + $I_L422_20, 1 + nh / 2)
+  424.                   fout(2 + nh, 1 + $I_L422_20) = -( $scale_S1 * b(1 + $I_L422_20, 1 + nh / 2) )
+  425.                   $I_L422_20 = 1 + $I_L422_20
+  422.                   if ( $I_L422_20 >= lot ) exit
+  422.                enddo
+  422.             endif
+  422.          endif
+  422.       endif
+  428.       $F_A33 = lot
+  428.       $F_A34 = ( -1 + ldout + -n )
+  428.       if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  428.          $I_A2 = 0
+  428.          do
+  428.             $I_A1 = 0
+  428. !dir$ ivdep
+  428.             do
+  428.                fout(2 + n + $I_A1, 1 + $I_A2) = 0.0
+  428.                $I_A1 = 1 + $I_A1
+  428.                if ( $I_A1 >= $F_A34 ) exit
+  428.             enddo
+  428.             $I_A2 = 1 + $I_A2
+  428.             if ( $I_A2 >= $F_A33 ) exit
+  428.          enddo
+  428.       endif
+  430.       return
+  430.       end
+  430.       
+  433.       
+  433.       subroutine splitgaus( fin, a, b, ldin, nh, lot )
+  433.       t$33 = ldin
+  433.       t$34 = lot
+  441.       t$115 = _zla( 0, ldin )
+  433.       t$116 = _zla( 0, ldin )
+  441.       t$117 = _zla( 0, lot )
+  433.       t$118 = _zla( 0, ldin ) * _zla( 0, lot )
+  433.       t$35 = nh
+  433.       t$119 = _zla( 0, lot )
+  442.       t$120 = _zla( 0, nh )
+  433.       t$121 = _zla( 0, lot ) * _zla( 0, nh )
+  447.       if ( nh > 0 ) then
+  448.          if ( lot > 0 ) then
+  447.             $I_L447_10 = 0
+  447.             do
+  448.                $I_L448_8 = 0
+  448. !dir$ ivdep
+  448.                do
+  449.                   a(1 + $I_L448_8, 1 + $I_L447_10) = fin(1 + 2 * $I_L447_10, 1 + $I_L448_8)
+  450.                   b(1 + $I_L448_8, 1 + $I_L447_10) = fin(2 + 2 * $I_L447_10, 1 + $I_L448_8)
+  451.                   $I_L448_8 = 1 + $I_L448_8
+  448.                   if ( $I_L448_8 >= lot ) exit
+  448.                enddo
+  452.                $I_L447_10 = 1 + $I_L447_10
+  451.                if ( $I_L447_10 >= nh ) exit
+  451.             enddo
+  451.          endif
+  451.       endif
+  454.       return
+  454.       end
+  454.       
+  457.       
+  457.       subroutine joingaus( a, b, fout, ldout, nh, lot )
+  457.       t$37 = lot
+  457.       t$38 = nh
+  466.       t$122 = _zla( 0, lot )
+  457.       t$123 = _zla( 0, lot )
+  466.       t$124 = _zla( 0, nh )
+  457.       t$125 = _zla( 0, lot ) * _zla( 0, nh )
+  457.       t$36 = ldout
+  465.       t$126 = _zla( 0, ldout )
+  457.       t$127 = _zla( 0, ldout )
+  457.       t$128 = _zla( 0, lot ) * _zla( 0, ldout )
+  471.       if ( nh > 0 ) then
+  472.          if ( lot > 0 ) then
+  471.             $I_L471_10 = 0
+  471.             do
+  472.                $I_L472_8 = 0
+  472. !dir$ ivdep
+  472.                do
+  473.                   fout(1 + 2 * $I_L471_10, 1 + $I_L472_8) = a(1 + $I_L472_8, 1 + $I_L471_10)
+  474.                   fout(2 + 2 * $I_L471_10, 1 + $I_L472_8) = b(1 + $I_L472_8, 1 + $I_L471_10)
+  475.                   $I_L472_8 = 1 + $I_L472_8
+  472.                   if ( $I_L472_8 >= lot ) exit
+  472.                enddo
+  476.                $I_L471_10 = 1 + $I_L471_10
+  475.                if ( $I_L471_10 >= nh ) exit
+  475.             enddo
+  475.          endif
+  475.       endif
+  478.       $F_A33 = lot
+  478.       $F_A34 = ( ldout + -2 * nh )
+  478.       if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  478.          $I_A2 = 0
+  478.          do
+  478.             $I_A1 = 0
+  478. !dir$ ivdep
+  478.             do
+  478.                fout(1 + $I_A1 + 2 * nh, 1 + $I_A2) = 0.0
+  478.                $I_A1 = 1 + $I_A1
+  478.                if ( $I_A1 >= $F_A34 ) exit
+  478.             enddo
+  478.             $I_A2 = 1 + $I_A2
+  478.             if ( $I_A2 >= $F_A33 ) exit
+  478.          enddo
+  478.       endif
+  480.       return
+  480.       end
+  480.       
+  483.       
+  483.       subroutine onepass( a, b, c, d, lot, nh, ifac, la )
+  483.       t$39 = lot
+  483.       t$40 = nh
+  492.       t$129 = _zla( 0, lot )
+  483.       t$130 = _zla( 0, lot )
+  492.       t$131 = _zla( 0, nh )
+  483.       t$132 = _zla( 0, lot ) * _zla( 0, nh )
+  515.       $m_S2 = nh / ifac
+  530.       if ( ifac == 2 ) then
+  531.          if ( la > 0 ) then
+  533.             if ( lot > 0 ) then
+  531.                $I_L531_108 = 0
+  531.                do
+  533.                   $I_L533_92 = 0
+  533. !dir$ ivdep
+  533.                   do
+  534.                      c(1 + $I_L533_92, 1 + $I_L531_108) = a(1 + $I_L533_92, 1 + $I_L531_108) + a(1 + $I_L533_92, 1 + $m_S2 + $I_L531_108)
+  535.                      c(1 + $I_L533_92, 1 + la + $I_L531_108) = a(1 + $I_L533_92, 1 + $I_L531_108) + -a(1 + $I_L533_92, 1 + $m_S2 + $I_L531_108)
+  536.                      d(1 + $I_L533_92, 1 + $I_L531_108) = b(1 + $I_L533_92, 1 + $I_L531_108) + b(1 + $I_L533_92, 1 + $m_S2 + $I_L531_108)
+  537.                      d(1 + $I_L533_92, 1 + la + $I_L531_108) = b(1 + $I_L533_92, 1 + $I_L531_108) + -b(1 + $I_L533_92, 1 + $m_S2 + $I_L531_108)
+  538.                      $I_L533_92 = 1 + $I_L533_92
+  533.                      if ( $I_L533_92 >= lot ) exit
+  533.                   enddo
+  539.                   $I_L531_108 = 1 + $I_L531_108
+  538.                   if ( $I_L531_108 >= la ) exit
+  538.                enddo
+  538.             endif
+  538.          endif
+  540.          if ( ( $m_S2 + -la /= 1 .and. xor( la, -1 + $m_S2 + -la ) < 0 ) == .false. ) then
+  540.             $t_S12 = ( -1 + $m_S2 ) / la
+  542.             $SC_trigs_I0 = trigs%dim_1%EX
+  542.             $SC_trigs_I1 = trigs%dim_1%LB
+  546.             if ( la > 0 ) then
+  548.                if ( lot > 0 ) then
+  540.                   $I_L540_118 = 0
+  540. !dir$ loop_info (automatic) cache_nt( trigs )
+  540.                   do
+  542.                      $c1_S9 = (trigs%base_addr)(1 + 2 * la + 2 * la * $I_L540_118, 0)
+  543.                      $s1_S11 = (trigs%base_addr)(2 + 2 * la + 2 * la * $I_L540_118, 0)
+  546.                      $I_L546_110 = 0
+  546.                      do
+  548.                         $I_L548_94 = 0
+  548. !dir$ ivdep
+  548.                         do
+  549.                            $wka_S8 = a(1 + $I_L548_94, 1 + la + $I_L546_110 + la * $I_L540_118) + -a(1 + $I_L548_94, 1 + la + $m_S2 + $I_L546_110 + la * $I_L540_118)
+  550.                            c(1 + $I_L548_94, 1 + $I_L546_110 + 2 * la + 2 * la * $I_L540_118) = a(1 + $I_L548_94, 1 + la + $m_S2 + $I_L546_110 + la * $I_L540_118) + a(1 + $I_L548_94, 1 + la + $I_L546_110 + la * $I_L540_118)
+  551.                            $wkb_S10 = b(1 + $I_L548_94, 1 + la + $I_L546_110 + la * $I_L540_118) + -b(1 + $I_L548_94, 1 + la + $m_S2 + $I_L546_110 + la * $I_L540_118)
+  552.                            d(1 + $I_L548_94, 1 + $I_L546_110 + 2 * la + 2 * la * $I_L540_118) = b(1 + $I_L548_94, 1 + la + $m_S2 + $I_L546_110 + la * $I_L540_118) + b(1 + $I_L548_94, 1 + la + $I_L546_110 + la * $I_L540_118)
+  553.                            c(1 + $I_L548_94, 1 + $I_L546_110 + 3 * la + 2 * la * $I_L540_118) = -( $wkb_S10 * $s1_S11 ) + $wka_S8 * $c1_S9
+  554.                            d(1 + $I_L548_94, 1 + $I_L546_110 + 3 * la + 2 * la * $I_L540_118) = $c1_S9 * $wkb_S10 + $wka_S8 * $s1_S11
+  555.                            $I_L548_94 = 1 + $I_L548_94
+  548.                            if ( $I_L548_94 >= lot ) exit
+  548.                         enddo
+  556.                         $I_L546_110 = 1 + $I_L546_110
+  555.                         if ( $I_L546_110 >= la ) exit
+  555.                      enddo
+  557.                      $I_L540_118 = 1 + $I_L540_118
+  556.                      if ( $I_L540_118 >= $t_S12 ) exit
+  556.                   enddo
+  556.                endif
+  556.             endif
+  556.          endif
+  558.       else if ( ifac == 3 ) then
+  559.          if ( la > 0 ) then
+  561.             if ( lot > 0 ) then
+  559.                $I_L559_106 = 0
+  559.                do
+  561.                   $I_L561_90 = 0
+  561. !dir$ ivdep
+  561.                   do
+  562.                      $wka_S15 = a(1 + $I_L561_90, 1 + $I_L559_106 + 2 * $m_S2) + a(1 + $I_L561_90, 1 + $m_S2 + $I_L559_106)
+  563.                      $wksina_S18 = sin60 * ( a(1 + $I_L561_90, 1 + $m_S2 + $I_L559_106) + -a(1 + $I_L561_90, 1 + $I_L559_106 + 2 * $m_S2) )
+  564.                      $wkb_S17 = b(1 + $I_L561_90, 1 + $I_L559_106 + 2 * $m_S2) + b(1 + $I_L561_90, 1 + $m_S2 + $I_L559_106)
+  565.                      $wksinb_S16 = sin60 * ( b(1 + $I_L561_90, 1 + $m_S2 + $I_L559_106) + -b(1 + $I_L561_90, 1 + $I_L559_106 + 2 * $m_S2) )
+  566.                      c(1 + $I_L561_90, 1 + $I_L559_106) = $wka_S15 + a(1 + $I_L561_90, 1 + $I_L559_106)
+  567.                      c(1 + $I_L561_90, 1 + la + $I_L559_106) = -$wksinb_S16 + ( a(1 + $I_L561_90, 1 + $I_L559_106) + -5.0e-1 * $wka_S15 )
+  568.                      c(1 + $I_L561_90, 1 + $I_L559_106 + 2 * la) = $wksinb_S16 + ( a(1 + $I_L561_90, 1 + $I_L559_106) + -5.0e-1 * $wka_S15 )
+  569.                      d(1 + $I_L561_90, 1 + $I_L559_106) = $wkb_S17 + b(1 + $I_L561_90, 1 + $I_L559_106)
+  570.                      d(1 + $I_L561_90, 1 + la + $I_L559_106) = $wksina_S18 + ( b(1 + $I_L561_90, 1 + $I_L559_106) + -5.0e-1 * $wkb_S17 )
+  571.                      d(1 + $I_L561_90, 1 + $I_L559_106 + 2 * la) = -$wksina_S18 + ( b(1 + $I_L561_90, 1 + $I_L559_106) + -5.0e-1 * $wkb_S17 )
+  572.                      $I_L561_90 = 1 + $I_L561_90
+  561.                      if ( $I_L561_90 >= lot ) exit
+  561.                   enddo
+  573.                   $I_L559_106 = 1 + $I_L559_106
+  572.                   if ( $I_L559_106 >= la ) exit
+  572.                enddo
+  572.             endif
+  572.          endif
+  574.          if ( ( $m_S2 + -la /= 1 .and. xor( la, -1 + $m_S2 + -la ) < 0 ) == .false. ) then
+  574.             $t_S31 = ( -1 + $m_S2 ) / la
+  577.             $SC_trigs_I0 = trigs%dim_1%EX
+  577.             $SC_trigs_I1 = trigs%dim_1%LB
+  584.             if ( la > 0 ) then
+  586.                if ( lot > 0 ) then
+  574.                   $I_L574_120 = 0
+  574. !dir$ loop_info (automatic) cache_nt( trigs )
+  574.                   do
+  577.                      $c1_S26 = (trigs%base_addr)(1 + 2 * la + 2 * la * $I_L574_120, 0)
+  578.                      $s1_S28 = (trigs%base_addr)(2 + 2 * la + 2 * la * $I_L574_120, 0)
+  579.                      $c2_S29 = (trigs%base_addr)(1 + 4 * la + 4 * la * $I_L574_120, 0)
+  580.                      $s2_S30 = (trigs%base_addr)(2 + 4 * la + 4 * la * $I_L574_120, 0)
+  584.                      $I_L584_112 = 0
+  584.                      do
+  586.                         $I_L586_96 = 0
+  586. !dir$ ivdep
+  586.                         do
+  587.                            $wka_S23 = a(1 + $I_L586_96, 1 + la + $m_S2 + $I_L584_112 + la * $I_L574_120) + a(1 + $I_L586_96, 1 + la + $I_L584_112 + 2 * $m_S2 + la * $I_L574_120)
+  588.                            $wksina_S27 = sin60 * ( a(1 + $I_L586_96, 1 + la + $m_S2 + $I_L584_112 + la * $I_L574_120) + -a(1 + $I_L586_96, 1 + la + $I_L584_112 + 2 * $m_S2 + la * $I_L574_120) )
+  589.                            $wkb_S24 = b(1 + $I_L586_96, 1 + la + $m_S2 + $I_L584_112 + la * $I_L574_120) + b(1 + $I_L586_96, 1 + la + $I_L584_112 + 2 * $m_S2 + la * $I_L574_120)
+  590.                            $wksinb_S25 = sin60 * ( b(1 + $I_L586_96, 1 + la + $m_S2 + $I_L584_112 + la * $I_L574_120) + -b(1 + $I_L586_96, 1 + la + $I_L584_112 + 2 * $m_S2 + la * $I_L574_120) )
+  591.                            c(1 + $I_L586_96, 1 + $I_L584_112 + 3 * la + 3 * la * $I_L574_120) = $wka_S23 + a(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120)
+  592.                            d(1 + $I_L586_96, 1 + $I_L584_112 + 3 * la + 3 * la * $I_L574_120) = $wkb_S24 + b(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120)
+  593.                            c(1 + $I_L586_96, 1 + $I_L584_112 + 4 * la + 3 * la * $I_L574_120) = -( $s1_S28 * ( $wksina_S27 + ( b(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120) + -5.0e-1 * $wkb_S24 ) ) ) + $c1_S26 * ( -$wksinb_S25 + ( a(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120) + -5.0e-1 * $wka_S23 ) )
+  595.                            d(1 + $I_L586_96, 1 + $I_L584_112 + 4 * la + 3 * la * $I_L574_120) = $s1_S28 * ( -$wksinb_S25 + ( a(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120) + -5.0e-1 * $wka_S23 ) ) + $c1_S26 * ( $wksina_S27 + ( b(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120) + -5.0e-1 * $wkb_S24 ) )
+  597.                            c(1 + $I_L586_96, 1 + $I_L584_112 + 5 * la + 3 * la * $I_L574_120) = -( $s2_S30 * ( -$wksina_S27 + ( b(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120) + -5.0e-1 * $wkb_S24 ) ) ) + $c2_S29 * ( $wksinb_S25 + ( a(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120) + -5.0e-1 * $wka_S23 ) )
+  599.                            d(1 + $I_L586_96, 1 + $I_L584_112 + 5 * la + 3 * la * $I_L574_120) = $s2_S30 * ( $wksinb_S25 + ( a(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120) + -5.0e-1 * $wka_S23 ) ) + $c2_S29 * ( -$wksina_S27 + ( b(1 + $I_L586_96, 1 + la + $I_L584_112 + la * $I_L574_120) + -5.0e-1 * $wkb_S24 ) )
+  601.                            $I_L586_96 = 1 + $I_L586_96
+  586.                            if ( $I_L586_96 >= lot ) exit
+  586.                         enddo
+  602.                         $I_L584_112 = 1 + $I_L584_112
+  601.                         if ( $I_L584_112 >= la ) exit
+  601.                      enddo
+  603.                      $I_L574_120 = 1 + $I_L574_120
+  602.                      if ( $I_L574_120 >= $t_S31 ) exit
+  602.                   enddo
+  602.                endif
+  602.             endif
+  602.          endif
+  602.       else if ( ifac == 4 ) then
+  605.          if ( la > 0 ) then
+  607.             if ( lot > 0 ) then
+  605.                $I_L605_104 = 0
+  605.                do
+  607.                   $I_L607_88 = 0
+  607. !dir$ ivdep
+  607.                   do
+  608.                      $wkaacp_S34 = a(1 + $I_L607_88, 1 + $I_L605_104 + 2 * $m_S2) + a(1 + $I_L607_88, 1 + $I_L605_104)
+  609.                      $wkaacm_S37 = a(1 + $I_L607_88, 1 + $I_L605_104) + -a(1 + $I_L607_88, 1 + $I_L605_104 + 2 * $m_S2)
+  610.                      $wkbacp_S36 = b(1 + $I_L607_88, 1 + $I_L605_104 + 2 * $m_S2) + b(1 + $I_L607_88, 1 + $I_L605_104)
+  611.                      $wkbacm_S35 = b(1 + $I_L607_88, 1 + $I_L605_104) + -b(1 + $I_L607_88, 1 + $I_L605_104 + 2 * $m_S2)
+  612.                      c(1 + $I_L607_88, 1 + $I_L605_104) = $wkaacp_S34 + ( a(1 + $I_L607_88, 1 + $I_L605_104 + 3 * $m_S2) + a(1 + $I_L607_88, 1 + $m_S2 + $I_L605_104) )
+  613.                      c(1 + $I_L607_88, 1 + $I_L605_104 + 2 * la) = $wkaacp_S34 + -( a(1 + $I_L607_88, 1 + $I_L605_104 + 3 * $m_S2) + a(1 + $I_L607_88, 1 + $m_S2 + $I_L605_104) )
+  614.                      d(1 + $I_L607_88, 1 + la + $I_L605_104) = $wkbacm_S35 + ( a(1 + $I_L607_88, 1 + $m_S2 + $I_L605_104) + -a(1 + $I_L607_88, 1 + $I_L605_104 + 3 * $m_S2) )
+  615.                      d(1 + $I_L607_88, 1 + $I_L605_104 + 3 * la) = $wkbacm_S35 + -( a(1 + $I_L607_88, 1 + $m_S2 + $I_L605_104) + -a(1 + $I_L607_88, 1 + $I_L605_104 + 3 * $m_S2) )
+  616.                      d(1 + $I_L607_88, 1 + $I_L605_104) = $wkbacp_S36 + ( b(1 + $I_L607_88, 1 + $I_L605_104 + 3 * $m_S2) + b(1 + $I_L607_88, 1 + $m_S2 + $I_L605_104) )
+  617.                      d(1 + $I_L607_88, 1 + $I_L605_104 + 2 * la) = $wkbacp_S36 + -( b(1 + $I_L607_88, 1 + $I_L605_104 + 3 * $m_S2) + b(1 + $I_L607_88, 1 + $m_S2 + $I_L605_104) )
+  618.                      c(1 + $I_L607_88, 1 + la + $I_L605_104) = $wkaacm_S37 + -( b(1 + $I_L607_88, 1 + $m_S2 + $I_L605_104) + -b(1 + $I_L607_88, 1 + $I_L605_104 + 3 * $m_S2) )
+  619.                      c(1 + $I_L607_88, 1 + $I_L605_104 + 3 * la) = $wkaacm_S37 + ( b(1 + $I_L607_88, 1 + $m_S2 + $I_L605_104) + -b(1 + $I_L607_88, 1 + $I_L605_104 + 3 * $m_S2) )
+  620.                      $I_L607_88 = 1 + $I_L607_88
+  607.                      if ( $I_L607_88 >= lot ) exit
+  607.                   enddo
+  621.                   $I_L605_104 = 1 + $I_L605_104
+  620.                   if ( $I_L605_104 >= la ) exit
+  620.                enddo
+  620.             endif
+  620.          endif
+  622.          if ( ( $m_S2 + -la /= 1 .and. xor( la, -1 + $m_S2 + -la ) < 0 ) == .false. ) then
+  622.             $t_S52 = ( -1 + $m_S2 ) / la
+  626.             $SC_trigs_I0 = trigs%dim_1%EX
+  626.             $SC_trigs_I1 = trigs%dim_1%LB
+  636.             if ( la > 0 ) then
+  638.                if ( lot > 0 ) then
+  622.                   $I_L622_122 = 0
+  622. !dir$ loop_info (automatic) cache_nt( trigs )
+  622.                   do
+  626.                      $c1_S47 = (trigs%base_addr)(1 + 2 * la + 2 * la * $I_L622_122, 0)
+  627.                      $s1_S49 = (trigs%base_addr)(2 + 2 * la + 2 * la * $I_L622_122, 0)
+  628.                      $c2_S44 = (trigs%base_addr)(1 + 4 * la + 4 * la * $I_L622_122, 0)
+  629.                      $s2_S45 = (trigs%base_addr)(2 + 4 * la + 4 * la * $I_L622_122, 0)
+  630.                      $c3_S50 = (trigs%base_addr)(1 + 6 * la + 6 * la * $I_L622_122, 0)
+  631.                      $s3_S51 = (trigs%base_addr)(2 + 6 * la + 6 * la * $I_L622_122, 0)
+  636.                      $I_L636_114 = 0
+  636.                      do
+  638.                         $I_L638_98 = 0
+  638. !dir$ ivdep
+  638.                         do
+  639.                            $wkaacp_S42 = a(1 + $I_L638_98, 1 + la + $I_L636_114 + la * $I_L622_122) + a(1 + $I_L638_98, 1 + la + $I_L636_114 + 2 * $m_S2 + la * $I_L622_122)
+  640.                            $wkbacp_S43 = b(1 + $I_L638_98, 1 + la + $I_L636_114 + la * $I_L622_122) + b(1 + $I_L638_98, 1 + la + $I_L636_114 + 2 * $m_S2 + la * $I_L622_122)
+  641.                            $wkaacm_S46 = a(1 + $I_L638_98, 1 + la + $I_L636_114 + la * $I_L622_122) + -a(1 + $I_L638_98, 1 + la + $I_L636_114 + 2 * $m_S2 + la * $I_L622_122)
+  642.                            $wkbacm_S48 = b(1 + $I_L638_98, 1 + la + $I_L636_114 + la * $I_L622_122) + -b(1 + $I_L638_98, 1 + la + $I_L636_114 + 2 * $m_S2 + la * $I_L622_122)
+  643.                            c(1 + $I_L638_98, 1 + $I_L636_114 + 4 * la + 4 * la * $I_L622_122) = $wkaacp_S42 + ( a(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + a(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) )
+  644.                            d(1 + $I_L638_98, 1 + $I_L636_114 + 4 * la + 4 * la * $I_L622_122) = $wkbacp_S43 + ( b(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + b(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) )
+  645.                            c(1 + $I_L638_98, 1 + $I_L636_114 + 6 * la + 4 * la * $I_L622_122) = -( $s2_S45 * ( $wkbacp_S43 + -( b(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + b(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) ) ) + $c2_S44 * ( $wkaacp_S42 + -( a(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + a(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) )
+  647.                            d(1 + $I_L638_98, 1 + $I_L636_114 + 6 * la + 4 * la * $I_L622_122) = $s2_S45 * ( $wkaacp_S42 + -( a(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + a(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) ) + $c2_S44 * ( $wkbacp_S43 + -( b(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + b(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) )
+  649.                            c(1 + $I_L638_98, 1 + $I_L636_114 + 5 * la + 4 * la * $I_L622_122) = -( $s1_S49 * ( $wkbacm_S48 + ( a(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + -a(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) ) ) + $c1_S47 * ( $wkaacm_S46 + -( b(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + -b(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) )
+  651.                            d(1 + $I_L638_98, 1 + $I_L636_114 + 5 * la + 4 * la * $I_L622_122) = $s1_S49 * ( $wkaacm_S46 + -( b(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + -b(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) ) + $c1_S47 * ( $wkbacm_S48 + ( a(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + -a(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) )
+  653.                            c(1 + $I_L638_98, 1 + $I_L636_114 + 7 * la + 4 * la * $I_L622_122) = -( $s3_S51 * ( $wkbacm_S48 + -( a(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + -a(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) ) ) + $c3_S50 * ( $wkaacm_S46 + ( b(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + -b(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) )
+  655.                            d(1 + $I_L638_98, 1 + $I_L636_114 + 7 * la + 4 * la * $I_L622_122) = $s3_S51 * ( $wkaacm_S46 + ( b(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + -b(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) ) + $c3_S50 * ( $wkbacm_S48 + -( a(1 + $I_L638_98, 1 + la + $m_S2 + $I_L636_114 + la * $I_L622_122) + -a(1 + $I_L638_98, 1 + la + $I_L636_114 + 3 * $m_S2 + la * $I_L622_122) ) )
+  657.                            $I_L638_98 = 1 + $I_L638_98
+  638.                            if ( $I_L638_98 >= lot ) exit
+  638.                         enddo
+  658.                         $I_L636_114 = 1 + $I_L636_114
+  657.                         if ( $I_L636_114 >= la ) exit
+  657.                      enddo
+  659.                      $I_L622_122 = 1 + $I_L622_122
+  658.                      if ( $I_L622_122 >= $t_S52 ) exit
+  658.                   enddo
+  658.                endif
+  658.             endif
+  658.          endif
+  658.       else if ( ifac == 5 ) then
+  661.          if ( la > 0 ) then
+  663.             if ( lot > 0 ) then
+  661.                $I_L661_102 = 0
+  661.                do
+  663.                   $I_L663_86 = 0
+  663. !dir$ ivdep
+  663.                   do
+  664.                      c(1 + $I_L663_86, 1 + $I_L661_102) = a(1 + $I_L663_86, 1 + $I_L661_102) + ( a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) + ( a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) )
+  665.                      d(1 + $I_L663_86, 1 + $I_L661_102) = b(1 + $I_L663_86, 1 + $I_L661_102) + ( b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) + ( b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) )
+  668.                      c(1 + $I_L663_86, 1 + la + $I_L661_102) = ( a(1 + $I_L663_86, 1 + $I_L661_102) + -( cos36 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) ) + cos72 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) ) ) + -( sin36 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) + -b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) ) + sin72 * ( b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) + -b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) ) )
+  673.                      c(1 + $I_L663_86, 1 + $I_L661_102 + 4 * la) = ( a(1 + $I_L663_86, 1 + $I_L661_102) + -( cos36 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) ) + cos72 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) ) ) + ( sin36 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) + -b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) ) + sin72 * ( b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) + -b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) ) )
+  678.                      d(1 + $I_L663_86, 1 + la + $I_L661_102) = ( b(1 + $I_L663_86, 1 + $I_L661_102) + -( cos36 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) ) + cos72 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) ) ) + ( sin36 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) + -a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) ) + sin72 * ( a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) + -a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) ) )
+  683.                      d(1 + $I_L663_86, 1 + $I_L661_102 + 4 * la) = ( b(1 + $I_L663_86, 1 + $I_L661_102) + -( cos36 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) ) + cos72 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) ) ) + -( sin36 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) + -a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) ) + sin72 * ( a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) + -a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) ) )
+  688.                      c(1 + $I_L663_86, 1 + $I_L661_102 + 2 * la) = ( a(1 + $I_L663_86, 1 + $I_L661_102) + -( cos36 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) ) ) + cos72 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) ) + -( -( sin72 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) + -b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) ) ) + sin36 * ( b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) + -b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) ) )
+  693.                      c(1 + $I_L663_86, 1 + $I_L661_102 + 3 * la) = ( a(1 + $I_L663_86, 1 + $I_L661_102) + -( cos36 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) ) ) + cos72 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) ) + ( -( sin72 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) + -b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) ) ) + sin36 * ( b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) + -b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) ) )
+  698.                      d(1 + $I_L663_86, 1 + $I_L661_102 + 2 * la) = ( b(1 + $I_L663_86, 1 + $I_L661_102) + -( cos36 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) ) ) + cos72 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) ) + ( -( sin72 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) + -a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) ) ) + sin36 * ( a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) + -a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) ) )
+  703.                      d(1 + $I_L663_86, 1 + $I_L661_102 + 3 * la) = ( b(1 + $I_L663_86, 1 + $I_L661_102) + -( cos36 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) + b(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) ) ) + cos72 * ( b(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) + b(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) ) ) + -( -( sin72 * ( a(1 + $I_L663_86, 1 + $I_L661_102 + 2 * $m_S2) + -a(1 + $I_L663_86, 1 + $I_L661_102 + 3 * $m_S2) ) ) + sin36 * ( a(1 + $I_L663_86, 1 + $m_S2 + $I_L661_102) + -a(1 + $I_L663_86, 1 + $I_L661_102 + 4 * $m_S2) ) )
+  708.                      $I_L663_86 = 1 + $I_L663_86
+  663.                      if ( $I_L663_86 >= lot ) exit
+  663.                   enddo
+  709.                   $I_L661_102 = 1 + $I_L661_102
+  708.                   if ( $I_L661_102 >= la ) exit
+  708.                enddo
+  708.             endif
+  708.          endif
+  710.          if ( ( $m_S2 + -la /= 1 .and. xor( la, -1 + $m_S2 + -la ) < 0 ) == .false. ) then
+  710.             $t_S67 = ( -1 + $m_S2 ) / la
+  715.             $SC_trigs_I0 = trigs%dim_1%EX
+  715.             $SC_trigs_I1 = trigs%dim_1%LB
+  728.             if ( la > 0 ) then
+  730.                if ( lot > 0 ) then
+  710.                   $I_L710_124 = 0
+  710. !dir$ loop_info (automatic) cache_nt( trigs )
+  710.                   do
+  715.                      $c1_S59 = (trigs%base_addr)(1 + 2 * la + 2 * la * $I_L710_124, 0)
+  716.                      $s1_S60 = (trigs%base_addr)(2 + 2 * la + 2 * la * $I_L710_124, 0)
+  717.                      $c2_S63 = (trigs%base_addr)(1 + 4 * la + 4 * la * $I_L710_124, 0)
+  718.                      $s2_S64 = (trigs%base_addr)(2 + 4 * la + 4 * la * $I_L710_124, 0)
+  719.                      $c3_S65 = (trigs%base_addr)(1 + 6 * la + 6 * la * $I_L710_124, 0)
+  720.                      $s3_S66 = (trigs%base_addr)(2 + 6 * la + 6 * la * $I_L710_124, 0)
+  721.                      $c4_S61 = (trigs%base_addr)(1 + 8 * la + 8 * la * $I_L710_124, 0)
+  722.                      $s4_S62 = (trigs%base_addr)(2 + 8 * la + 8 * la * $I_L710_124, 0)
+  728.                      $I_L728_116 = 0
+  728.                      do
+  730.                         $I_L730_100 = 0
+  730. !dir$ ivdep
+  730.                         do
+  731.                            c(1 + $I_L730_100, 1 + $I_L728_116 + 5 * la + 5 * la * $I_L710_124) = a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) )
+  734.                            d(1 + $I_L730_100, 1 + $I_L728_116 + 5 * la + 5 * la * $I_L710_124) = b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) + ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) )
+  737.                            c(1 + $I_L730_100, 1 + $I_L728_116 + 6 * la + 5 * la * $I_L710_124) = -( $s1_S60 * ( ( sin72 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + sin36 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) ) ) ) + $c1_S59 * ( -( sin72 * ( b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + sin36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) )
+  747.                            d(1 + $I_L730_100, 1 + $I_L728_116 + 6 * la + 5 * la * $I_L710_124) = $s1_S60 * ( -( sin72 * ( b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + sin36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) ) + $c1_S59 * ( ( sin72 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + sin36 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) ) )
+  757.                            c(1 + $I_L730_100, 1 + $I_L728_116 + 9 * la + 5 * la * $I_L710_124) = -( $s4_S62 * ( ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) ) + -( sin72 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + sin36 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) ) ) + $c4_S61 * ( ( sin72 * ( b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + sin36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) )
+  767.                            d(1 + $I_L730_100, 1 + $I_L728_116 + 9 * la + 5 * la * $I_L710_124) = $s4_S62 * ( ( sin72 * ( b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + sin36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) ) + $c4_S61 * ( ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) ) + -( sin72 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) + sin36 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) )
+  777.                            c(1 + $I_L730_100, 1 + $I_L728_116 + 7 * la + 5 * la * $I_L710_124) = -( $s2_S64 * ( ( -( sin72 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + sin36 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) ) + cos72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) ) ) ) ) + $c2_S63 * ( -( -( sin72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + sin36 * ( b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) )
+  787.                            d(1 + $I_L730_100, 1 + $I_L728_116 + 7 * la + 5 * la * $I_L710_124) = $s2_S64 * ( -( -( sin72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + sin36 * ( b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) ) + $c2_S63 * ( ( -( sin72 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + sin36 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) ) + cos72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) ) ) )
+  797.                            c(1 + $I_L730_100, 1 + $I_L728_116 + 8 * la + 5 * la * $I_L710_124) = -( $s3_S66 * ( ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) ) + cos72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) ) ) + -( -( sin72 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + sin36 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) ) ) + $c3_S65 * ( ( -( sin72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + sin36 * ( b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) )
+  807.                            d(1 + $I_L730_100, 1 + $I_L728_116 + 8 * la + 5 * la * $I_L710_124) = $s3_S66 * ( ( -( sin72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + sin36 * ( b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) + cos72 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) ) + $c3_S65 * ( ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + la * $I_L710_124) + -( cos36 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) ) ) + cos72 * ( b(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) + b(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) ) ) + -( -( sin72 * ( a(1 + $I_L730_100, 1 + la + $I_L728_116 + 2 * $m_S2 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 3 * $m_S2 + la * $I_L710_124) ) ) + sin36 * ( a(1 + $I_L730_100, 1 + la + $m_S2 + $I_L728_116 + la * $I_L710_124) + -a(1 + $I_L730_100, 1 + la + $I_L728_116 + 4 * $m_S2 + la * $I_L710_124) ) ) )
+  817.                            $I_L730_100 = 1 + $I_L730_100
+  730.                            if ( $I_L730_100 >= lot ) exit
+  730.                         enddo
+  818.                         $I_L728_116 = 1 + $I_L728_116
+  817.                         if ( $I_L728_116 >= la ) exit
+  817.                      enddo
+  819.                      $I_L710_124 = 1 + $I_L710_124
+  818.                      if ( $I_L710_124 >= $t_S67 ) exit
+  818.                   enddo
+  818.                endif
+  818.             endif
+  818.          endif
+  818.       endif
+  822.       return
+  822.       end
+  822.       
+  825.       
+  825.       subroutine dir( fin, fout, ldin, ldout, n, lot )
+  825.       t$41 = ldin
+  825.       t$42 = lot
+  834.       t$133 = _zla( 0, ldin )
+  825.       t$134 = _zla( 0, ldin )
+  834.       t$135 = _zla( 0, lot )
+  825.       t$136 = _zla( 0, ldin ) * _zla( 0, lot )
+  825.       t$43 = ldout
+  835.       t$137 = _zla( 0, ldout )
+  825.       t$138 = _zla( 0, ldout )
+  825.       t$139 = _zla( 0, lot ) * _zla( 0, ldout )
+  825.       t$44 = n / 2
+  825.       t$140 = _zla( 0, lot )
+  847.       t$141 = _zla( 0, t$44 )
+  825.       t$142 = _zla( 0, t$44 ) * _zla( 0, lot )
+  847.       t$145 = 8 * _zla( 0, t$44 ) * _zla( 0, lot )
+  847.       t$146 = 8 * ( 7 + 8 * _zla( 0, t$44 ) * _zla( 0, lot ) ) / 8
+  847.       t$148 = t$146 + 8 * _zla( 0, t$44 ) * _zla( 0, lot )
+  847.       t$149 = 8 * ( 7 + t$146 + 8 * _zla( 0, t$44 ) * _zla( 0, lot ) ) / 8
+  847.       t$151 = t$149 + 8 * _zla( 0, t$44 ) * _zla( 0, lot )
+  847.       t$152 = 8 * ( 7 + t$149 + 8 * _zla( 0, t$44 ) * _zla( 0, lot ) ) / 8
+  847.       t$154 = t$152 + 8 * _zla( 0, t$44 ) * _zla( 0, lot )
+  825.       t$143 = int( _alloc( t$152 + 8 * _zla( 0, t$44 ) * _zla( 0, lot ) ), 8 )
+  847.       t$144 = t$143
+  847.       t$147 = t$146 + t$143
+  847.       t$150 = t$149 + t$143
+  847.       t$153 = t$152 + t$143
+  849.       if ( created == .false. ) then
+  850.          $Unit_temp_O0 = nferr
+  850.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$46,  _substr(t$45,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Dir)**   ', 0x800600000000L ), _iotype( ' FFT was not created', 0x800600000000L ) ) )
+  851.           _substr(t$314,1,4) = ' '
+  851.          call _stop(  _substr(t$314,1,1) )
+  852.       else if ( ngiven + -n /= 0 ) then
+  853.          _fwrite( _clist( 0, 0, 3,  _substr(charint1,1,15), Null_Arg, Null_Arg, t$48,  _substr(t$47,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( n, 0x2000200000000L ) ) )
+  854.          _fwrite( _clist( 0, 0, 3,  _substr(charint2,1,15), Null_Arg, Null_Arg, t$50,  _substr(t$49,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ngiven, 0x2000200000000L ) ) )
+  856.          _f90_adjustl(  _substr(t$315,1,15),  _substr(charint1,1,15) )
+  855.          t$317 = _ltrim(  _substr(t$315,1,15) )
+  856.          t$319 = int( _alloc( _zla( 0, t$317 ) ), 8 )
+  856.           _substr(t$318,1,_zla( 0, t$317 )) =  _substr(t$315,1,_ltrim(  _substr(t$315,1,15) ))
+  857.          _f90_adjustl(  _substr(t$316,1,15),  _substr(charint2,1,15) )
+  855.          t$320 = _ltrim(  _substr(t$316,1,15) )
+  857.          t$322 = int( _alloc( _zla( 0, t$320 ) ), 8 )
+  857.           _substr(t$321,1,_zla( 0, t$320 )) =  _substr(t$316,1,_ltrim(  _substr(t$316,1,15) ))
+  855.          $Unit_temp_O1 = nferr
+  855.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$52,  _substr(t$51,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Dir)**   ', 0x800600000000L ), _iotype( ' FFT invoked with size ', 0x800600000000L ), _iotype(  _substr(t$318,1,_zla( 0, t$317 )), 0x800600000000L ), _iotype( ' but created with size ', 0x800600000000L ), _iotype(  _substr(t$321,1,_zla( 0, t$320 )), 0x800600000000L ) ) )
+  857.          _free( t$322 )
+  856.          _free( t$319 )
+  858.           _substr(t$323,1,4) = ' '
+  858.          call _stop(  _substr(t$323,1,1) )
+  858.       else if ( ldout < 1 + n ) then
+  860.          _fwrite( _clist( 0, 0, 3,  _substr(charint1,1,15), Null_Arg, Null_Arg, t$54,  _substr(t$53,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ldout, 0x2000200000000L ) ) )
+  861.          $IOitem_O2 = 1 + n
+  861.          _fwrite( _clist( 0, 0, 3,  _substr(charint2,1,15), Null_Arg, Null_Arg, t$56,  _substr(t$55,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O2, 0x2000200000000L ) ) )
+  863.          _f90_adjustl(  _substr(t$324,1,15),  _substr(charint1,1,15) )
+  862.          t$326 = _ltrim(  _substr(t$324,1,15) )
+  863.          t$328 = int( _alloc( _zla( 0, t$326 ) ), 8 )
+  863.           _substr(t$327,1,_zla( 0, t$326 )) =  _substr(t$324,1,_ltrim(  _substr(t$324,1,15) ))
+  864.          _f90_adjustl(  _substr(t$325,1,15),  _substr(charint2,1,15) )
+  862.          t$329 = _ltrim(  _substr(t$325,1,15) )
+  864.          t$331 = int( _alloc( _zla( 0, t$329 ) ), 8 )
+  864.           _substr(t$330,1,_zla( 0, t$329 )) =  _substr(t$325,1,_ltrim(  _substr(t$325,1,15) ))
+  862.          $Unit_temp_O3 = nferr
+  862.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O3, Null_Arg, Null_Arg, t$58,  _substr(t$57,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Dir)**   ', 0x800600000000L ), _iotype( ' Output field has first dimension ', 0x800600000000L ), _iotype(  _substr(t$327,1,_zla( 0, t$326 )), 0x800600000000L ), _iotype( '; should be at least ', 0x800600000000L ), _iotype(  _substr(t$330,1,_zla( 0, t$329 )), 0x800600000000L ) ) )
+  864.          _free( t$331 )
+  863.          _free( t$328 )
+  865.           _substr(t$332,1,4) = ' '
+  865.          call _stop(  _substr(t$332,1,1) )
+  865.       else if ( ldin < n ) then
+  867.          _fwrite( _clist( 0, 0, 3,  _substr(charint1,1,15), Null_Arg, Null_Arg, t$60,  _substr(t$59,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ldin, 0x2000200000000L ) ) )
+  868.          _fwrite( _clist( 0, 0, 3,  _substr(charint2,1,15), Null_Arg, Null_Arg, t$62,  _substr(t$61,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( n, 0x2000200000000L ) ) )
+  870.          _f90_adjustl(  _substr(t$333,1,15),  _substr(charint1,1,15) )
+  869.          t$335 = _ltrim(  _substr(t$333,1,15) )
+  870.          t$337 = int( _alloc( _zla( 0, t$335 ) ), 8 )
+  870.           _substr(t$336,1,_zla( 0, t$335 )) =  _substr(t$333,1,_ltrim(  _substr(t$333,1,15) ))
+  871.          _f90_adjustl(  _substr(t$334,1,15),  _substr(charint2,1,15) )
+  869.          t$338 = _ltrim(  _substr(t$334,1,15) )
+  871.          t$340 = int( _alloc( _zla( 0, t$338 ) ), 8 )
+  871.           _substr(t$339,1,_zla( 0, t$338 )) =  _substr(t$334,1,_ltrim(  _substr(t$334,1,15) ))
+  869.          $Unit_temp_O4 = nferr
+  869.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, t$64,  _substr(t$63,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Dir)**   ', 0x800600000000L ), _iotype( ' Input field has first dimension ', 0x800600000000L ), _iotype(  _substr(t$336,1,_zla( 0, t$335 )), 0x800600000000L ), _iotype( '; should be at least ', 0x800600000000L ), _iotype(  _substr(t$339,1,_zla( 0, t$338 )), 0x800600000000L ) ) )
+  871.          _free( t$340 )
+  870.          _free( t$337 )
+  872.           _substr(t$341,1,4) = ' '
+  872.          call _stop(  _substr(t$341,1,1) )
+  872.       else
+  875.          $nfax_S2 = (factors%base_addr)(1, 0)
+  876.          nh = n / 2
+  878.          t$33 = ldin
+  878.          t$34 = lot
+  878.          t$115 = max( 0, ldin )
+  878.          t$116 = max( 0, ldin )
+  878.          t$117 = max( 0, lot )
+  878.          t$118 = max( 0, ldin ) * max( 0, lot )
+  878.          t$35 = n / 2
+  878.          t$119 = max( 0, lot )
+  878.          t$120 = max( 0, n / 2 )
+  878.          t$121 = max( 0, lot ) * max( 0, n / 2 )
+  878.          if ( n >= 2 ) then
+  878.             if ( lot > 0 ) then
+  878.                $I_L878_60 = 0
+  878.                do
+  878.                   $I_L878_44 = 0
+  878. !dir$ ivdep
+  878.                   do
+  878.                      a(1 + $I_L878_44, 1 + $I_L878_60) = fin(1 + 2 * $I_L878_60, 1 + $I_L878_44)
+  878.                      b(1 + $I_L878_44, 1 + $I_L878_60) = fin(2 + 2 * $I_L878_60, 1 + $I_L878_44)
+  878.                      $I_L878_44 = 1 + $I_L878_44
+  878.                      if ( $I_L878_44 >= lot ) exit
+  878.                   enddo
+  878.                   $I_L878_60 = 1 + $I_L878_60
+  878.                   if ( $I_L878_60 >= n / 2 ) exit
+  878.                enddo
+  878.             endif
+  878.          endif
+  880.          la = 1
+  881.          $ab2cd_S3 = .true.
+  882.          if ( $nfax_S2 > 0 ) then
+  882.             $I_L882_46 = 0
+  882.             do
+  883.                if ( $ab2cd_S3 /= .false. ) then
+  884.                   call onepass( a(1, 1), b(1, 1), c(1, 1), d(1, 1), lot, nh, (factors%base_addr)(2 + $I_L882_46, 0), la )
+  885.                   $ab2cd_S3 = .false.
+  885.                else
+  887.                   call onepass( c(1, 1), d(1, 1), a(1, 1), b(1, 1), lot, nh, (factors%base_addr)(2 + $I_L882_46, 0), la )
+  888.                   $ab2cd_S3 = .true.
+  888.                endif
+  890.                la = la * (factors%base_addr)(2 + $I_L882_46, 0)
+  891.                $I_L882_46 = 1 + $I_L882_46
+  889.                if ( $I_L882_46 >= $nfax_S2 ) exit
+  889.             enddo
+  889.          endif
+  893.          if ( $ab2cd_S3 /= .false. ) then
+  894.             t$31 = lot
+  894.             t$32 = nh
+  894.             t$108 = max( 0, lot )
+  894.             t$109 = max( 0, lot )
+  894.             t$110 = max( 0, nh )
+  894.             t$111 = max( 0, lot ) * max( 0, nh )
+  894.             t$30 = ldout
+  894.             t$112 = max( 0, ldout )
+  894.             t$113 = max( 0, ldout )
+  894.             t$114 = max( 0, lot ) * max( 0, ldout )
+  894.             $scale_S5 = 1.0/( real( n, 8 ) )
+  894.             $scalh_S11 = 5.0e-1 * $scale_S5
+  894.             if ( lot > 0 ) then
+  894.                $I_L894_48 = 0
+  894. !dir$ ivdep
+  894.                do
+  894.                   fout(1, 1 + $I_L894_48) = $scale_S5 * ( a(1 + $I_L894_48, 1) + b(1 + $I_L894_48, 1) )
+  894.                   fout(1 + n, 1 + $I_L894_48) = $scale_S5 * ( a(1 + $I_L894_48, 1) + -b(1 + $I_L894_48, 1) )
+  894.                   fout(2, 1 + $I_L894_48) = 0.0
+  894.                   $I_L894_48 = 1 + $I_L894_48
+  894.                   if ( $I_L894_48 >= lot ) exit
+  894.                enddo
+  894.             endif
+  894.             if ( -2 + ( 1 + nh ) / 2 >= 0 ) then
+  894.                $SC_trigs_I0 = trigs%dim_1%EX
+  894.                $SC_trigs_I1 = trigs%dim_1%LB
+  894.                if ( lot > 0 ) then
+  894.                   $I_L894_64 = 0
+  894.                   do
+  894.                      $c_S10 = (trigs%base_addr)(3 + n + 2 * $I_L894_64, 0)
+  894.                      $s_S9 = (trigs%base_addr)(4 + n + 2 * $I_L894_64, 0)
+  894.                      $I_L894_56 = 0
+  894. !dir$ ivdep
+  894.                      do
+  894.                         fout(3 + 2 * $I_L894_64, 1 + $I_L894_56) = $scalh_S11 * ( ( a(1 + $I_L894_56, 2 + $I_L894_64) + a(1 + $I_L894_56, nh + -$I_L894_64) ) + ( $s_S9 * ( a(1 + $I_L894_56, 2 + $I_L894_64) + -a(1 + $I_L894_56, nh + -$I_L894_64) ) + $c_S10 * ( b(1 + $I_L894_56, 2 + $I_L894_64) + b(1 + $I_L894_56, nh + -$I_L894_64) ) ) )
+  894.                         fout(-1 + n + -2 * $I_L894_64, 1 + $I_L894_56) = $scalh_S11 * ( ( a(1 + $I_L894_56, 2 + $I_L894_64) + a(1 + $I_L894_56, nh + -$I_L894_64) ) + -( $s_S9 * ( a(1 + $I_L894_56, 2 + $I_L894_64) + -a(1 + $I_L894_56, nh + -$I_L894_64) ) + $c_S10 * ( b(1 + $I_L894_56, 2 + $I_L894_64) + b(1 + $I_L894_56, nh + -$I_L894_64) ) ) )
+  894.                         fout(4 + 2 * $I_L894_64, 1 + $I_L894_56) = $scalh_S11 * ( ( b(1 + $I_L894_56, nh + -$I_L894_64) + -b(1 + $I_L894_56, 2 + $I_L894_64) ) + ( -( $s_S9 * ( b(1 + $I_L894_56, 2 + $I_L894_64) + b(1 + $I_L894_56, nh + -$I_L894_64) ) ) + $c_S10 * ( a(1 + $I_L894_56, 2 + $I_L894_64) + -a(1 + $I_L894_56, nh + -$I_L894_64) ) ) )
+  894.                         fout(n + -2 * $I_L894_64, 1 + $I_L894_56) = $scalh_S11 * ( ( -( $s_S9 * ( b(1 + $I_L894_56, 2 + $I_L894_64) + b(1 + $I_L894_56, nh + -$I_L894_64) ) ) + $c_S10 * ( a(1 + $I_L894_56, 2 + $I_L894_64) + -a(1 + $I_L894_56, nh + -$I_L894_64) ) ) + -( b(1 + $I_L894_56, nh + -$I_L894_64) + -b(1 + $I_L894_56, 2 + $I_L894_64) ) )
+  894.                         $I_L894_56 = 1 + $I_L894_56
+  894.                         if ( $I_L894_56 >= lot ) exit
+  894.                      enddo
+  894.                      $I_L894_64 = 1 + $I_L894_64
+  894.                      if ( $I_L894_64 >= -1 + ( 1 + nh ) / 2 ) exit
+  894.                   enddo
+  894.                endif
+  894.             endif
+  894.             if ( nh >= 2 ) then
+  894.                if ( mod( nh, 2 ) == 0 ) then
+  894.                   if ( lot > 0 ) then
+  894.                      $I_L894_58 = 0
+  894. !dir$ ivdep
+  894.                      do
+  894.                         fout(1 + nh, 1 + $I_L894_58) = $scale_S5 * a(1 + $I_L894_58, 1 + nh / 2)
+  894.                         fout(2 + nh, 1 + $I_L894_58) = -( $scale_S5 * b(1 + $I_L894_58, 1 + nh / 2) )
+  894.                         $I_L894_58 = 1 + $I_L894_58
+  894.                         if ( $I_L894_58 >= lot ) exit
+  894.                      enddo
+  894.                   endif
+  894.                endif
+  894.             endif
+  894.             $F_A33 = lot
+  894.             $F_A34 = ( -1 + ldout + -n )
+  894.             if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  894.                $I_A2 = 0
+  894.                do
+  894.                   $I_A1 = 0
+  894. !dir$ ivdep
+  894.                   do
+  894.                      fout(2 + n + $I_A1, 1 + $I_A2) = 0.0
+  894.                      $I_A1 = 1 + $I_A1
+  894.                      if ( $I_A1 >= $F_A34 ) exit
+  894.                   enddo
+  894.                   $I_A2 = 1 + $I_A2
+  894.                   if ( $I_A2 >= $F_A33 ) exit
+  894.                enddo
+  894.             endif
+  894.          else
+  896.             t$31 = lot
+  896.             t$32 = nh
+  896.             t$108 = max( 0, lot )
+  896.             t$109 = max( 0, lot )
+  896.             t$110 = max( 0, nh )
+  896.             t$111 = max( 0, lot ) * max( 0, nh )
+  896.             t$30 = ldout
+  896.             t$112 = max( 0, ldout )
+  896.             t$113 = max( 0, ldout )
+  896.             t$114 = max( 0, lot ) * max( 0, ldout )
+  896.             $scale_S5 = 1.0/( real( n, 8 ) )
+  896.             $scalh_S18 = 5.0e-1 * 1.0/( real( n, 8 ) )
+  896.             if ( lot > 0 ) then
+  896.                $I_L896_50 = 0
+  896. !dir$ ivdep
+  896.                do
+  896.                   fout(1, 1 + $I_L896_50) = $scale_S5 * ( c(1 + $I_L896_50, 1) + d(1 + $I_L896_50, 1) )
+  896.                   fout(1 + n, 1 + $I_L896_50) = $scale_S5 * ( c(1 + $I_L896_50, 1) + -d(1 + $I_L896_50, 1) )
+  896.                   fout(2, 1 + $I_L896_50) = 0.0
+  896.                   $I_L896_50 = 1 + $I_L896_50
+  896.                   if ( $I_L896_50 >= lot ) exit
+  896.                enddo
+  896.             endif
+  896.             if ( -2 + ( 1 + nh ) / 2 >= 0 ) then
+  896.                $SC_trigs_I0 = trigs%dim_1%EX
+  896.                $SC_trigs_I1 = trigs%dim_1%LB
+  896.                if ( lot > 0 ) then
+  896.                   $I_L896_62 = 0
+  896.                   do
+  896.                      $c_S17 = (trigs%base_addr)(3 + n + 2 * $I_L896_62, 0)
+  896.                      $s_S16 = (trigs%base_addr)(4 + n + 2 * $I_L896_62, 0)
+  896.                      $I_L896_52 = 0
+  896. !dir$ ivdep
+  896.                      do
+  896.                         fout(3 + 2 * $I_L896_62, 1 + $I_L896_52) = $scalh_S18 * ( ( c(1 + $I_L896_52, 2 + $I_L896_62) + c(1 + $I_L896_52, nh + -$I_L896_62) ) + ( $s_S16 * ( c(1 + $I_L896_52, 2 + $I_L896_62) + -c(1 + $I_L896_52, nh + -$I_L896_62) ) + $c_S17 * ( d(1 + $I_L896_52, 2 + $I_L896_62) + d(1 + $I_L896_52, nh + -$I_L896_62) ) ) )
+  896.                         fout(-1 + n + -2 * $I_L896_62, 1 + $I_L896_52) = $scalh_S18 * ( ( c(1 + $I_L896_52, 2 + $I_L896_62) + c(1 + $I_L896_52, nh + -$I_L896_62) ) + -( $s_S16 * ( c(1 + $I_L896_52, 2 + $I_L896_62) + -c(1 + $I_L896_52, nh + -$I_L896_62) ) + $c_S17 * ( d(1 + $I_L896_52, 2 + $I_L896_62) + d(1 + $I_L896_52, nh + -$I_L896_62) ) ) )
+  896.                         fout(4 + 2 * $I_L896_62, 1 + $I_L896_52) = $scalh_S18 * ( ( d(1 + $I_L896_52, nh + -$I_L896_62) + -d(1 + $I_L896_52, 2 + $I_L896_62) ) + ( -( $s_S16 * ( d(1 + $I_L896_52, 2 + $I_L896_62) + d(1 + $I_L896_52, nh + -$I_L896_62) ) ) + $c_S17 * ( c(1 + $I_L896_52, 2 + $I_L896_62) + -c(1 + $I_L896_52, nh + -$I_L896_62) ) ) )
+  896.                         fout(n + -2 * $I_L896_62, 1 + $I_L896_52) = $scalh_S18 * ( ( -( $s_S16 * ( d(1 + $I_L896_52, 2 + $I_L896_62) + d(1 + $I_L896_52, nh + -$I_L896_62) ) ) + $c_S17 * ( c(1 + $I_L896_52, 2 + $I_L896_62) + -c(1 + $I_L896_52, nh + -$I_L896_62) ) ) + -( d(1 + $I_L896_52, nh + -$I_L896_62) + -d(1 + $I_L896_52, 2 + $I_L896_62) ) )
+  896.                         $I_L896_52 = 1 + $I_L896_52
+  896.                         if ( $I_L896_52 >= lot ) exit
+  896.                      enddo
+  896.                      $I_L896_62 = 1 + $I_L896_62
+  896.                      if ( $I_L896_62 >= -1 + ( 1 + nh ) / 2 ) exit
+  896.                   enddo
+  896.                endif
+  896.             endif
+  896.             if ( nh >= 2 ) then
+  896.                if ( mod( nh, 2 ) == 0 ) then
+  896.                   if ( lot > 0 ) then
+  896.                      $I_L896_54 = 0
+  896. !dir$ ivdep
+  896.                      do
+  896.                         fout(1 + nh, 1 + $I_L896_54) = $scale_S5 * c(1 + $I_L896_54, 1 + nh / 2)
+  896.                         fout(2 + nh, 1 + $I_L896_54) = -( $scale_S5 * d(1 + $I_L896_54, 1 + nh / 2) )
+  896.                         $I_L896_54 = 1 + $I_L896_54
+  896.                         if ( $I_L896_54 >= lot ) exit
+  896.                      enddo
+  896.                   endif
+  896.                endif
+  896.             endif
+  896.             $F_A35 = lot
+  896.             $F_A36 = ( -1 + ldout + -n )
+  896.             if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+  896.                $I_A2 = 0
+  896.                do
+  896.                   $I_A1 = 0
+  896. !dir$ ivdep
+  896.                   do
+  896.                      fout(2 + n + $I_A1, 1 + $I_A2) = 0.0
+  896.                      $I_A1 = 1 + $I_A1
+  896.                      if ( $I_A1 >= $F_A36 ) exit
+  896.                   enddo
+  896.                   $I_A2 = 1 + $I_A2
+  896.                   if ( $I_A2 >= $F_A35 ) exit
+  896.                enddo
+  896.             endif
+  896.          endif
+  825.          _free( t$143 )
+  825.       endif
+  899.       return
+  899.       end
+  899.       
+  902.       
+  902.       subroutine dird1( fin, fout )
+  902.       fin%dim_1%LB = 1
+  902.       fout%dim_1%LB = 1
+  911.       din = _zla( 0, fin%dim_1%EX )
+  912.       dout = _zla( 0, fout%dim_1%EX )
+  914.       t$346 = 0
+  914.       t$349 = 0
+  914.       if ( fin%header%a_contig == 1 ) then
+  914. !dir$ suppress (fin%base_addr)(1, 0)
+  914.          t$345 = loc( (fin%base_addr)(1, 0) )
+  914.       else
+  914.          t$346 = fin%dim_1%EX
+  914.          t$349 = int( _alloc( max( 0, 8 * max( 0, fin%dim_1%EX ) ) ), 8 )
+  914.          $F_A33 = fin%dim_1%EX
+  914.          if ( fin%dim_1%EX > 0 ) then
+  914.             $SC_fin_I6 = fin%dim_1%SM
+  914.             $SC_fin_I5 = fin%dim_1%EX
+  914.             $I_L914_4 = 0
+  914. !dir$ ivdep
+  914.             do
+  914.                t$348(1 + $I_L914_4) = (fin%base_addr)(1 + $I_L914_4, 0)
+  914.                $I_L914_4 = 1 + $I_L914_4
+  914.                if ( $I_L914_4 >= $F_A33 ) exit
+  914.             enddo
+  914.          endif
+  914. !dir$ suppress t$348
+  914.          t$345 = loc( t$348 )
+  914.       endif
+  914.       t$351 = 0
+  914.       t$354 = 0
+  914.       if ( fout%header%a_contig == 1 ) then
+  914. !dir$ suppress (fout%base_addr)(1, 0)
+  914.          t$350 = loc( (fout%base_addr)(1, 0) )
+  914.       else
+  914.          t$351 = fout%dim_1%EX
+  914.          t$354 = int( _alloc( max( 0, 8 * max( 0, fout%dim_1%EX ) ) ), 8 )
+  914. !dir$ suppress t$353
+  914.          t$350 = loc( t$353 )
+  914.       endif
+  914.       call dir( t$345, t$350, din, dout, ngiven, 1 )
+  914.       if ( fout%header%a_contig /= 1 ) then
+  914.          $F_A34 = t$351
+  914.          if ( t$351 > 0 ) then
+  914.             $SC_fout_I8 = fout%dim_1%SM
+  914.             $SC_fout_I7 = fout%dim_1%EX
+  914.             $SC_fout_I9 = fout%dim_1%LB
+  914.             $I_L914_6 = 0
+  914. !dir$ ivdep
+  914.             do
+  914.                (fout%base_addr)(1 + $I_L914_6, 0) = t$353(1 + $I_L914_6)
+  914.                $I_L914_6 = 1 + $I_L914_6
+  914.                if ( $I_L914_6 >= $F_A34 ) exit
+  914.             enddo
+  914.          endif
+  914.          _free( t$354 )
+  914.       endif
+  914.       if ( fin%header%a_contig /= 1 ) then
+  914.          _free( t$349 )
+  914.       endif
+  916.       return
+  916.       end
+  916.       
+  919.       
+  919.       subroutine dird2( fin, fout )
+  919.       fin%dim_1%LB = 1
+  919.       fin%dim_2%LB = 1
+  919.       fout%dim_1%LB = 1
+  919.       fout%dim_2%LB = 1
+  928.       d2in = fin%dim_2%EX
+  931.       if ( fout%dim_2%EX + -fin%dim_2%EX /= 0 ) then
+  932.          $Unit_temp_O0 = nferr
+  932.          $_IOitem_P0(0) = fin%dim_2%EX
+  932.          $_IOitem_P0(1) = fout%dim_2%EX
+  932.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$66,  _substr(t$65,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(DirD2)**', 0x800600000000L ), _iotype( ' Error: dim 2 of fin, fout, differ: ', 0x800600000000L ), _iotype( (&)$_IOitem_P0(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+  934.           _substr(t$355,1,4) = ' '
+  934.          call _stop(  _substr(t$355,1,1) )
+  934.       else
+  937.          din = fin%dim_1%EX
+  938.          dout = fout%dim_1%EX
+  940.          t$357 = 0
+  940.          t$358 = 0
+  940.          t$362 = 0
+  940.          if ( fin%header%a_contig == 1 ) then
+  940. !dir$ suppress (fin%base_addr)(1, 1, 0)
+  940.             t$356 = loc( (fin%base_addr)(1, 1, 0) )
+  940.          else
+  940.             t$357 = fin%dim_1%EX
+  940.             t$358 = fin%dim_2%EX
+  940.             t$362 = int( _alloc( max( 0, 8 * max( 0, fin%dim_2%EX ) * max( 0, fin%dim_1%EX ) ) ), 8 )
+  940.             $F_A33 = fin%dim_2%EX
+  940.             $F_A34 = fin%dim_1%EX
+  940.             if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  940.                $SC_fin_I9 = fin%dim_1%SM
+  940.                $SC_fin_I11 = fin%dim_2%SM
+  940.                $SC_fin_I8 = fin%dim_1%EX
+  940.                $SC_fin_I10 = fin%dim_2%EX
+  940.                $I_L940_8 = 0
+  940.                do
+  940.                   $I_L940_4 = 0
+  940. !dir$ ivdep
+  940.                   do
+  940.                      t$361(1 + $I_L940_4, 1 + $I_L940_8) = (fin%base_addr)(1 + $I_L940_4, 1 + $I_L940_8, 0)
+  940.                      $I_L940_4 = 1 + $I_L940_4
+  940.                      if ( $I_L940_4 >= $F_A34 ) exit
+  940.                   enddo
+  940.                   $I_L940_8 = 1 + $I_L940_8
+  940.                   if ( $I_L940_8 >= $F_A33 ) exit
+  940.                enddo
+  940.             endif
+  940. !dir$ suppress t$361
+  940.             t$356 = loc( t$361 )
+  940.          endif
+  940.          t$364 = 0
+  940.          t$365 = 0
+  940.          $t_S0 = 0
+  940.          t$369 = 0
+  940.          if ( fout%header%a_contig == 1 ) then
+  940. !dir$ suppress (fout%base_addr)(1, 1, 0)
+  940.             t$363 = loc( (fout%base_addr)(1, 1, 0) )
+  940.          else
+  940.             t$364 = fout%dim_1%EX
+  940.             t$365 = fout%dim_2%EX
+  940.             $t_S0 = fout%dim_1%EX
+  940.             t$369 = int( _alloc( max( 0, 8 * max( 0, fout%dim_2%EX ) * max( 0, fout%dim_1%EX ) ) ), 8 )
+  940. !dir$ suppress t$368
+  940.             t$363 = loc( t$368 )
+  940.          endif
+  940.          call dir( t$356, t$363, din, dout, ngiven, d2in )
+  940.          if ( fout%header%a_contig /= 1 ) then
+  940.             $F_A35 = t$365
+  940.             $F_A36 = t$364
+  940.             if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+  940.                $SC_fout_I12 = fout%dim_1%SM
+  940.                $SC_fout_I14 = fout%dim_2%SM
+  940.                $SC_fout_I15 = fout%dim_2%LB
+  940.                $SC_fout_I13 = fout%dim_1%LB
+  940.                $I_L940_10 = 0
+  940.                do
+  940.                   $I_L940_6 = 0
+  940. !dir$ ivdep
+  940.                   do
+  940.                      (fout%base_addr)($SC_fout_I13 + $I_L940_6, $SC_fout_I15 + $I_L940_10, 0) = t$368(1 + $I_L940_6, 1 + $I_L940_10)
+  940.                      $I_L940_6 = 1 + $I_L940_6
+  940.                      if ( $I_L940_6 >= $F_A36 ) exit
+  940.                   enddo
+  940.                   $I_L940_10 = 1 + $I_L940_10
+  940.                   if ( $I_L940_10 >= $F_A35 ) exit
+  940.                enddo
+  940.             endif
+  940.             _free( t$369 )
+  940.          endif
+  940.          if ( fin%header%a_contig /= 1 ) then
+  940.             _free( t$362 )
+  940.          endif
+  940.       endif
+  942.       return
+  942.       end
+  942.       
+  945.       
+  945.       subroutine dird3( fin, fout )
+  945.       fin%dim_1%LB = 1
+  945.       fin%dim_2%LB = 1
+  945.       fin%dim_3%LB = 1
+  945.       fout%dim_1%LB = 1
+  945.       fout%dim_2%LB = 1
+  945.       fout%dim_3%LB = 1
+  958.       if ( fout%dim_2%EX + -fin%dim_2%EX /= 0 ) then
+  959.          $Unit_temp_O0 = nferr
+  959.          $_IOitem_P0(0) = fin%dim_2%EX
+  959.          $_IOitem_P0(1) = fout%dim_2%EX
+  959.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$68,  _substr(t$67,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(DirD3)**', 0x800600000000L ), _iotype( ' Error: dim 2 of fin, fout, differ: ', 0x800600000000L ), _iotype( (&)$_IOitem_P0(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+  961.           _substr(t$370,1,4) = ' '
+  961.          call _stop(  _substr(t$370,1,1) )
+  962.       else if ( fout%dim_3%EX + -fin%dim_3%EX /= 0 ) then
+  967.          $Unit_temp_O1 = nferr
+  967.          $_IOitem_P1(0) = fin%dim_3%EX
+  967.          $_IOitem_P1(1) = fout%dim_3%EX
+  967.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$70,  _substr(t$69,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(DirD3)**', 0x800600000000L ), _iotype( ' Error: dim 3 of fin, fout, differ: ', 0x800600000000L ), _iotype( (&)$_IOitem_P1(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+  969.           _substr(t$371,1,4) = ' '
+  969.          call _stop(  _substr(t$371,1,1) )
+  969.       else
+  972.          din = fin%dim_1%EX
+  973.          dout = fout%dim_1%EX
+  974.          dio = ( fin%dim_2%EX * fin%dim_3%EX )
+  976.          t$373 = 0
+  976.          t$374 = 0
+  976.          t$375 = 0
+  976.          t$380 = 0
+  976.          if ( fin%header%a_contig == 1 ) then
+  976. !dir$ suppress (fin%base_addr)(1, 1, 1, 0)
+  976.             t$372 = loc( (fin%base_addr)(1, 1, 1, 0) )
+  976.          else
+  976.             t$373 = fin%dim_1%EX
+  976.             t$374 = fin%dim_2%EX
+  976.             t$375 = fin%dim_3%EX
+  976.             t$380 = int( _alloc( max( 0, 8 * max( 0, fin%dim_3%EX ) * max( 0, fin%dim_2%EX ) * max( 0, fin%dim_1%EX ) ) ), 8 )
+  976.             $F_A33 = fin%dim_3%EX
+  976.             $F_A34 = fin%dim_2%EX
+  976.             $F_A35 = fin%dim_1%EX
+  976.             if ( and( and( -$F_A34, -$F_A33 ), -$F_A35 ) < 0 ) then
+  976.                $SC_fin_I13 = fin%dim_1%SM
+  976.                $SC_fin_I15 = fin%dim_2%SM
+  976.                $SC_fin_I17 = fin%dim_3%SM
+  976.                $SC_fin_I12 = fin%dim_1%EX
+  976.                $SC_fin_I16 = fin%dim_3%EX
+  976.                $SC_fin_I14 = fin%dim_2%EX
+  976.                $I_L976_12 = 0
+  976.                do
+  976.                   $I_L976_8 = 0
+  976.                   do
+  976.                      $I_L976_4 = 0
+  976. !dir$ ivdep
+  976. !dir$ loop_info (automatic) cache_nt( fin )
+  976.                      do
+  976.                         t$379(1 + $I_L976_4, 1 + $I_L976_8, 1 + $I_L976_12) = (fin%base_addr)(1 + $I_L976_4, 1 + $I_L976_8, 1 + $I_L976_12, 0)
+  976.                         $I_L976_4 = 1 + $I_L976_4
+  976.                         if ( $I_L976_4 >= $F_A35 ) exit
+  976.                      enddo
+  976.                      $I_L976_8 = 1 + $I_L976_8
+  976.                      if ( $I_L976_8 >= $F_A34 ) exit
+  976.                   enddo
+  976.                   $I_L976_12 = 1 + $I_L976_12
+  976.                   if ( $I_L976_12 >= $F_A33 ) exit
+  976.                enddo
+  976.             endif
+  976. !dir$ suppress t$379
+  976.             t$372 = loc( t$379 )
+  976.          endif
+  976.          t$382 = 0
+  976.          t$383 = 0
+  976.          t$384 = 0
+  976.          $t_S0 = 0
+  976.          $t_S1 = 0
+  976.          t$389 = 0
+  976.          if ( fout%header%a_contig == 1 ) then
+  976. !dir$ suppress (fout%base_addr)(1, 1, 1, 0)
+  976.             t$381 = loc( (fout%base_addr)(1, 1, 1, 0) )
+  976.          else
+  976.             t$382 = fout%dim_1%EX
+  976.             t$383 = fout%dim_2%EX
+  976.             t$384 = fout%dim_3%EX
+  976.             $t_S0 = fout%dim_1%EX
+  976.             $t_S1 = fout%dim_2%EX * fout%dim_1%EX
+  976.             t$389 = int( _alloc( max( 0, 8 * max( 0, fout%dim_3%EX ) * max( 0, fout%dim_2%EX ) * max( 0, fout%dim_1%EX ) ) ), 8 )
+  976. !dir$ suppress t$388
+  976.             t$381 = loc( t$388 )
+  976.          endif
+  976.          call dir( t$372, t$381, din, dout, ngiven, dio )
+  976.          if ( fout%header%a_contig /= 1 ) then
+  976.             $F_A36 = t$384
+  976.             $F_A37 = t$383
+  976.             $F_A38 = t$382
+  976.             if ( and( and( -$F_A37, -$F_A36 ), -$F_A38 ) < 0 ) then
+  976.                $SC_fout_I18 = fout%dim_1%SM
+  976.                $SC_fout_I20 = fout%dim_2%SM
+  976.                $SC_fout_I22 = fout%dim_3%SM
+  976.                $SC_fout_I23 = fout%dim_3%LB
+  976.                $SC_fout_I21 = fout%dim_2%LB
+  976.                $SC_fout_I19 = fout%dim_1%LB
+  976.                $I_L976_14 = 0
+  976.                do
+  976.                   $I_L976_10 = 0
+  976.                   do
+  976.                      $I_L976_6 = 0
+  976. !dir$ ivdep
+  976. !dir$ loop_info (automatic) cache_nt( fout )
+  976.                      do
+  976.                         (fout%base_addr)($SC_fout_I19 + $I_L976_6, $SC_fout_I21 + $I_L976_10, $SC_fout_I23 + $I_L976_14, 0) = t$388(1 + $I_L976_6, 1 + $I_L976_10, 1 + $I_L976_14)
+  976.                         $I_L976_6 = 1 + $I_L976_6
+  976.                         if ( $I_L976_6 >= $F_A38 ) exit
+  976.                      enddo
+  976.                      $I_L976_10 = 1 + $I_L976_10
+  976.                      if ( $I_L976_10 >= $F_A37 ) exit
+  976.                   enddo
+  976.                   $I_L976_14 = 1 + $I_L976_14
+  976.                   if ( $I_L976_14 >= $F_A36 ) exit
+  976.                enddo
+  976.             endif
+  976.             _free( t$389 )
+  976.          endif
+  976.          if ( fin%header%a_contig /= 1 ) then
+  976.             _free( t$380 )
+  976.          endif
+  976.       endif
+  978.       return
+  978.       end
+  978.       
+  981.       
+  981.       subroutine inv( fin, fout, ldin, ldout, n, lot )
+  981.       t$71 = ldin
+  981.       t$72 = lot
+  990.       t$155 = _zla( 0, ldin )
+  981.       t$156 = _zla( 0, ldin )
+  990.       t$157 = _zla( 0, lot )
+  981.       t$158 = _zla( 0, ldin ) * _zla( 0, lot )
+  981.       t$73 = ldout
+  991.       t$159 = _zla( 0, ldout )
+  981.       t$160 = _zla( 0, ldout )
+  981.       t$161 = _zla( 0, lot ) * _zla( 0, ldout )
+  981.       t$74 = n / 2
+  981.       t$162 = _zla( 0, lot )
+ 1004.       t$163 = _zla( 0, t$74 )
+  981.       t$164 = _zla( 0, t$74 ) * _zla( 0, lot )
+ 1004.       t$167 = 8 * _zla( 0, t$74 ) * _zla( 0, lot )
+ 1004.       t$168 = 8 * ( 7 + 8 * _zla( 0, t$74 ) * _zla( 0, lot ) ) / 8
+ 1004.       t$170 = t$168 + 8 * _zla( 0, t$74 ) * _zla( 0, lot )
+ 1004.       t$171 = 8 * ( 7 + t$168 + 8 * _zla( 0, t$74 ) * _zla( 0, lot ) ) / 8
+ 1004.       t$173 = t$171 + 8 * _zla( 0, t$74 ) * _zla( 0, lot )
+ 1004.       t$174 = 8 * ( 7 + t$171 + 8 * _zla( 0, t$74 ) * _zla( 0, lot ) ) / 8
+ 1004.       t$176 = t$174 + 8 * _zla( 0, t$74 ) * _zla( 0, lot )
+  981.       t$165 = int( _alloc( t$174 + 8 * _zla( 0, t$74 ) * _zla( 0, lot ) ), 8 )
+ 1004.       t$166 = t$165
+ 1004.       t$169 = t$168 + t$165
+ 1004.       t$172 = t$171 + t$165
+ 1004.       t$175 = t$174 + t$165
+ 1006.       if ( created == .false. ) then
+ 1007.          $Unit_temp_O0 = nferr
+ 1007.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$76,  _substr(t$75,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Inv)**   ', 0x800600000000L ), _iotype( ' FFT was not created', 0x800600000000L ) ) )
+ 1008.           _substr(t$390,1,4) = ' '
+ 1008.          call _stop(  _substr(t$390,1,1) )
+ 1009.       else if ( ngiven + -n /= 0 ) then
+ 1010.          _fwrite( _clist( 0, 0, 3,  _substr(charint1,1,15), Null_Arg, Null_Arg, t$78,  _substr(t$77,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( n, 0x2000200000000L ) ) )
+ 1011.          _fwrite( _clist( 0, 0, 3,  _substr(charint2,1,15), Null_Arg, Null_Arg, t$80,  _substr(t$79,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ngiven, 0x2000200000000L ) ) )
+ 1013.          _f90_adjustl(  _substr(t$391,1,15),  _substr(charint1,1,15) )
+ 1012.          t$393 = _ltrim(  _substr(t$391,1,15) )
+ 1013.          t$395 = int( _alloc( _zla( 0, t$393 ) ), 8 )
+ 1013.           _substr(t$394,1,_zla( 0, t$393 )) =  _substr(t$391,1,_ltrim(  _substr(t$391,1,15) ))
+ 1014.          _f90_adjustl(  _substr(t$392,1,15),  _substr(charint2,1,15) )
+ 1012.          t$396 = _ltrim(  _substr(t$392,1,15) )
+ 1014.          t$398 = int( _alloc( _zla( 0, t$396 ) ), 8 )
+ 1014.           _substr(t$397,1,_zla( 0, t$396 )) =  _substr(t$392,1,_ltrim(  _substr(t$392,1,15) ))
+ 1012.          $Unit_temp_O1 = nferr
+ 1012.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$82,  _substr(t$81,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Inv)**   ', 0x800600000000L ), _iotype( ' FFT invoked with size ', 0x800600000000L ), _iotype(  _substr(t$394,1,_zla( 0, t$393 )), 0x800600000000L ), _iotype( ' but created with size ', 0x800600000000L ), _iotype(  _substr(t$397,1,_zla( 0, t$396 )), 0x800600000000L ) ) )
+ 1014.          _free( t$398 )
+ 1013.          _free( t$395 )
+ 1015.           _substr(t$399,1,4) = ' '
+ 1015.          call _stop(  _substr(t$399,1,1) )
+ 1015.       else if ( ldin < 1 + n ) then
+ 1017.          _fwrite( _clist( 0, 0, 3,  _substr(charint1,1,15), Null_Arg, Null_Arg, t$84,  _substr(t$83,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ldin, 0x2000200000000L ) ) )
+ 1018.          $IOitem_O2 = 1 + n
+ 1018.          _fwrite( _clist( 0, 0, 3,  _substr(charint2,1,15), Null_Arg, Null_Arg, t$86,  _substr(t$85,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O2, 0x2000200000000L ) ) )
+ 1020.          _f90_adjustl(  _substr(t$400,1,15),  _substr(charint1,1,15) )
+ 1019.          t$402 = _ltrim(  _substr(t$400,1,15) )
+ 1020.          t$404 = int( _alloc( _zla( 0, t$402 ) ), 8 )
+ 1020.           _substr(t$403,1,_zla( 0, t$402 )) =  _substr(t$400,1,_ltrim(  _substr(t$400,1,15) ))
+ 1021.          _f90_adjustl(  _substr(t$401,1,15),  _substr(charint2,1,15) )
+ 1019.          t$405 = _ltrim(  _substr(t$401,1,15) )
+ 1021.          t$407 = int( _alloc( _zla( 0, t$405 ) ), 8 )
+ 1021.           _substr(t$406,1,_zla( 0, t$405 )) =  _substr(t$401,1,_ltrim(  _substr(t$401,1,15) ))
+ 1019.          $Unit_temp_O3 = nferr
+ 1019.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O3, Null_Arg, Null_Arg, t$88,  _substr(t$87,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Inv)**   ', 0x800600000000L ), _iotype( ' Input field has first dimension ', 0x800600000000L ), _iotype(  _substr(t$403,1,_zla( 0, t$402 )), 0x800600000000L ), _iotype( '; should be at least ', 0x800600000000L ), _iotype(  _substr(t$406,1,_zla( 0, t$405 )), 0x800600000000L ) ) )
+ 1021.          _free( t$407 )
+ 1020.          _free( t$404 )
+ 1022.           _substr(t$408,1,4) = ' '
+ 1022.          call _stop(  _substr(t$408,1,1) )
+ 1022.       else if ( ldout < n ) then
+ 1024.          _fwrite( _clist( 0, 0, 3,  _substr(charint1,1,15), Null_Arg, Null_Arg, t$90,  _substr(t$89,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ldout, 0x2000200000000L ) ) )
+ 1025.          _fwrite( _clist( 0, 0, 3,  _substr(charint2,1,15), Null_Arg, Null_Arg, t$92,  _substr(t$91,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( n, 0x2000200000000L ) ) )
+ 1027.          _f90_adjustl(  _substr(t$409,1,15),  _substr(charint1,1,15) )
+ 1026.          t$411 = _ltrim(  _substr(t$409,1,15) )
+ 1027.          t$413 = int( _alloc( _zla( 0, t$411 ) ), 8 )
+ 1027.           _substr(t$412,1,_zla( 0, t$411 )) =  _substr(t$409,1,_ltrim(  _substr(t$409,1,15) ))
+ 1028.          _f90_adjustl(  _substr(t$410,1,15),  _substr(charint2,1,15) )
+ 1026.          t$414 = _ltrim(  _substr(t$410,1,15) )
+ 1028.          t$416 = int( _alloc( _zla( 0, t$414 ) ), 8 )
+ 1028.           _substr(t$415,1,_zla( 0, t$414 )) =  _substr(t$410,1,_ltrim(  _substr(t$410,1,15) ))
+ 1026.          $Unit_temp_O4 = nferr
+ 1026.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, t$94,  _substr(t$93,1,4), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(Inv)**   ', 0x800600000000L ), _iotype( ' Output field has first dimension ', 0x800600000000L ), _iotype(  _substr(t$412,1,_zla( 0, t$411 )), 0x800600000000L ), _iotype( '; should be at least ', 0x800600000000L ), _iotype(  _substr(t$415,1,_zla( 0, t$414 )), 0x800600000000L ) ) )
+ 1028.          _free( t$416 )
+ 1027.          _free( t$413 )
+ 1029.           _substr(t$417,1,4) = ' '
+ 1029.          call _stop(  _substr(t$417,1,1) )
+ 1029.       else
+ 1032.          $nfax_S6 = (factors%base_addr)(1, 0)
+ 1033.          nh = n / 2
+ 1035.          t$27 = ldin
+ 1035.          t$28 = lot
+ 1035.          t$101 = max( 0, ldin )
+ 1035.          t$102 = max( 0, ldin )
+ 1035.          t$103 = max( 0, lot )
+ 1035.          t$104 = max( 0, ldin ) * max( 0, lot )
+ 1035.          t$29 = n / 2
+ 1035.          t$105 = max( 0, lot )
+ 1035.          t$106 = max( 0, n / 2 )
+ 1035.          t$107 = max( 0, lot ) * max( 0, n / 2 )
+ 1035.          if ( lot > 0 ) then
+ 1035.             $I_L1035_36 = 0
+ 1035. !dir$ ivdep
+ 1035.             do
+ 1035.                a(1 + $I_L1035_36, 1) = fin(1, 1 + $I_L1035_36) + fin(1 + n, 1 + $I_L1035_36)
+ 1035.                b(1 + $I_L1035_36, 1) = fin(1, 1 + $I_L1035_36) + -fin(1 + n, 1 + $I_L1035_36)
+ 1035.                $I_L1035_36 = 1 + $I_L1035_36
+ 1035.                if ( $I_L1035_36 >= lot ) exit
+ 1035.             enddo
+ 1035.          endif
+ 1035.          if ( -2 + ( 1 + n / 2 ) / 2 >= 0 ) then
+ 1035.             $SC_trigs_I0 = trigs%dim_1%EX
+ 1035.             $SC_trigs_I1 = trigs%dim_1%LB
+ 1035.             if ( lot > 0 ) then
+ 1035.                $I_L1035_48 = 0
+ 1035.                do
+ 1035.                   $c_S3 = (trigs%base_addr)(3 + n + 2 * $I_L1035_48, 0)
+ 1035.                   $s_S4 = (trigs%base_addr)(4 + n + 2 * $I_L1035_48, 0)
+ 1035.                   $I_L1035_38 = 0
+ 1035. !dir$ ivdep
+ 1035.                   do
+ 1035.                      a(1 + $I_L1035_38, 2 + $I_L1035_48) = ( fin(3 + 2 * $I_L1035_48, 1 + $I_L1035_38) + fin(-1 + n + -2 * $I_L1035_48, 1 + $I_L1035_38) ) + -( $c_S3 * ( fin(n + -2 * $I_L1035_48, 1 + $I_L1035_38) + fin(4 + 2 * $I_L1035_48, 1 + $I_L1035_38) ) + $s_S4 * ( fin(3 + 2 * $I_L1035_48, 1 + $I_L1035_38) + -fin(-1 + n + -2 * $I_L1035_48, 1 + $I_L1035_38) ) )
+ 1035.                      a(1 + $I_L1035_38, n / 2 + -$I_L1035_48) = ( fin(3 + 2 * $I_L1035_48, 1 + $I_L1035_38) + fin(-1 + n + -2 * $I_L1035_48, 1 + $I_L1035_38) ) + ( $c_S3 * ( fin(n + -2 * $I_L1035_48, 1 + $I_L1035_38) + fin(4 + 2 * $I_L1035_48, 1 + $I_L1035_38) ) + $s_S4 * ( fin(3 + 2 * $I_L1035_48, 1 + $I_L1035_38) + -fin(-1 + n + -2 * $I_L1035_48, 1 + $I_L1035_38) ) )
+ 1035.                      b(1 + $I_L1035_38, 2 + $I_L1035_48) = ( fin(4 + 2 * $I_L1035_48, 1 + $I_L1035_38) + -fin(n + -2 * $I_L1035_48, 1 + $I_L1035_38) ) + ( -( $s_S4 * ( fin(n + -2 * $I_L1035_48, 1 + $I_L1035_38) + fin(4 + 2 * $I_L1035_48, 1 + $I_L1035_38) ) ) + $c_S3 * ( fin(3 + 2 * $I_L1035_48, 1 + $I_L1035_38) + -fin(-1 + n + -2 * $I_L1035_48, 1 + $I_L1035_38) ) )
+ 1035.                      b(1 + $I_L1035_38, n / 2 + -$I_L1035_48) = ( -( $s_S4 * ( fin(n + -2 * $I_L1035_48, 1 + $I_L1035_38) + fin(4 + 2 * $I_L1035_48, 1 + $I_L1035_38) ) ) + $c_S3 * ( fin(3 + 2 * $I_L1035_48, 1 + $I_L1035_38) + -fin(-1 + n + -2 * $I_L1035_48, 1 + $I_L1035_38) ) ) + -( fin(4 + 2 * $I_L1035_48, 1 + $I_L1035_38) + -fin(n + -2 * $I_L1035_48, 1 + $I_L1035_38) )
+ 1035.                      $I_L1035_38 = 1 + $I_L1035_38
+ 1035.                      if ( $I_L1035_38 >= lot ) exit
+ 1035.                   enddo
+ 1035.                   $I_L1035_48 = 1 + $I_L1035_48
+ 1035.                   if ( $I_L1035_48 >= -1 + ( 1 + n / 2 ) / 2 ) exit
+ 1035.                enddo
+ 1035.             endif
+ 1035.          endif
+ 1035.          if ( n / 2 >= 2 ) then
+ 1035.             if ( mod( n / 2, 2 ) == 0 ) then
+ 1035.                if ( lot > 0 ) then
+ 1035.                   $I_L1035_40 = 0
+ 1035. !dir$ ivdep
+ 1035.                   do
+ 1035.                      a(1 + $I_L1035_40, 1 + n / 4) = 2.0 * fin(1 + n / 2, 1 + $I_L1035_40)
+ 1035.                      b(1 + $I_L1035_40, 1 + n / 4) = -2.0 * fin(2 + n / 2, 1 + $I_L1035_40)
+ 1035.                      $I_L1035_40 = 1 + $I_L1035_40
+ 1035.                      if ( $I_L1035_40 >= lot ) exit
+ 1035.                   enddo
+ 1035.                endif
+ 1035.             endif
+ 1035.          endif
+ 1037.          la = 1
+ 1038.          $ab2cd_S7 = .true.
+ 1039.          if ( $nfax_S6 > 0 ) then
+ 1039.             $I_L1039_42 = 0
+ 1039.             do
+ 1040.                if ( $ab2cd_S7 /= .false. ) then
+ 1041.                   call onepass( a(1, 1), b(1, 1), c(1, 1), d(1, 1), lot, nh, (factors%base_addr)(2 + $I_L1039_42, 0), la )
+ 1042.                   $ab2cd_S7 = .false.
+ 1042.                else
+ 1044.                   call onepass( c(1, 1), d(1, 1), a(1, 1), b(1, 1), lot, nh, (factors%base_addr)(2 + $I_L1039_42, 0), la )
+ 1045.                   $ab2cd_S7 = .true.
+ 1045.                endif
+ 1047.                la = la * (factors%base_addr)(2 + $I_L1039_42, 0)
+ 1048.                $I_L1039_42 = 1 + $I_L1039_42
+ 1046.                if ( $I_L1039_42 >= $nfax_S6 ) exit
+ 1046.             enddo
+ 1046.          endif
+ 1050.          if ( $ab2cd_S7 /= .false. ) then
+ 1051.             t$37 = lot
+ 1051.             t$38 = nh
+ 1051.             t$122 = max( 0, lot )
+ 1051.             t$123 = max( 0, lot )
+ 1051.             t$124 = max( 0, nh )
+ 1051.             t$125 = max( 0, lot ) * max( 0, nh )
+ 1051.             t$36 = ldout
+ 1051.             t$126 = max( 0, ldout )
+ 1051.             t$127 = max( 0, ldout )
+ 1051.             t$128 = max( 0, lot ) * max( 0, ldout )
+ 1051.             if ( nh > 0 ) then
+ 1051.                if ( lot > 0 ) then
+ 1051.                   $I_L1051_52 = 0
+ 1051.                   do
+ 1051.                      $I_L1051_46 = 0
+ 1051. !dir$ ivdep
+ 1051.                      do
+ 1051.                         fout(1 + 2 * $I_L1051_52, 1 + $I_L1051_46) = a(1 + $I_L1051_46, 1 + $I_L1051_52)
+ 1051.                         fout(2 + 2 * $I_L1051_52, 1 + $I_L1051_46) = b(1 + $I_L1051_46, 1 + $I_L1051_52)
+ 1051.                         $I_L1051_46 = 1 + $I_L1051_46
+ 1051.                         if ( $I_L1051_46 >= lot ) exit
+ 1051.                      enddo
+ 1051.                      $I_L1051_52 = 1 + $I_L1051_52
+ 1051.                      if ( $I_L1051_52 >= nh ) exit
+ 1051.                   enddo
+ 1051.                endif
+ 1051.             endif
+ 1051.             $F_A33 = lot
+ 1051.             $F_A34 = ( ldout + -2 * nh )
+ 1051.             if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+ 1051.                $I_A2 = 0
+ 1051.                do
+ 1051.                   $I_A1 = 0
+ 1051. !dir$ ivdep
+ 1051.                   do
+ 1051.                      fout(1 + $I_A1 + 2 * nh, 1 + $I_A2) = 0.0
+ 1051.                      $I_A1 = 1 + $I_A1
+ 1051.                      if ( $I_A1 >= $F_A34 ) exit
+ 1051.                   enddo
+ 1051.                   $I_A2 = 1 + $I_A2
+ 1051.                   if ( $I_A2 >= $F_A33 ) exit
+ 1051.                enddo
+ 1051.             endif
+ 1051.          else
+ 1053.             t$37 = lot
+ 1053.             t$38 = nh
+ 1053.             t$122 = max( 0, lot )
+ 1053.             t$123 = max( 0, lot )
+ 1053.             t$124 = max( 0, nh )
+ 1053.             t$125 = max( 0, lot ) * max( 0, nh )
+ 1053.             t$36 = ldout
+ 1053.             t$126 = max( 0, ldout )
+ 1053.             t$127 = max( 0, ldout )
+ 1053.             t$128 = max( 0, lot ) * max( 0, ldout )
+ 1053.             if ( nh > 0 ) then
+ 1053.                if ( lot > 0 ) then
+ 1053.                   $I_L1053_50 = 0
+ 1053.                   do
+ 1053.                      $I_L1053_44 = 0
+ 1053. !dir$ ivdep
+ 1053.                      do
+ 1053.                         fout(1 + 2 * $I_L1053_50, 1 + $I_L1053_44) = c(1 + $I_L1053_44, 1 + $I_L1053_50)
+ 1053.                         fout(2 + 2 * $I_L1053_50, 1 + $I_L1053_44) = d(1 + $I_L1053_44, 1 + $I_L1053_50)
+ 1053.                         $I_L1053_44 = 1 + $I_L1053_44
+ 1053.                         if ( $I_L1053_44 >= lot ) exit
+ 1053.                      enddo
+ 1053.                      $I_L1053_50 = 1 + $I_L1053_50
+ 1053.                      if ( $I_L1053_50 >= nh ) exit
+ 1053.                   enddo
+ 1053.                endif
+ 1053.             endif
+ 1053.             $F_A35 = lot
+ 1053.             $F_A36 = ( ldout + -2 * nh )
+ 1053.             if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+ 1053.                $I_A2 = 0
+ 1053.                do
+ 1053.                   $I_A1 = 0
+ 1053. !dir$ ivdep
+ 1053.                   do
+ 1053.                      fout(1 + $I_A1 + 2 * nh, 1 + $I_A2) = 0.0
+ 1053.                      $I_A1 = 1 + $I_A1
+ 1053.                      if ( $I_A1 >= $F_A36 ) exit
+ 1053.                   enddo
+ 1053.                   $I_A2 = 1 + $I_A2
+ 1053.                   if ( $I_A2 >= $F_A35 ) exit
+ 1053.                enddo
+ 1053.             endif
+ 1053.          endif
+  981.          _free( t$165 )
+  981.       endif
+ 1056.       return
+ 1056.       end
+ 1056.       
+ 1059.       
+ 1059.       subroutine invd1( fin, fout )
+ 1059.       fin%dim_1%LB = 1
+ 1059.       fout%dim_1%LB = 1
+ 1068.       din = _zla( 0, fin%dim_1%EX )
+ 1069.       dout = _zla( 0, fout%dim_1%EX )
+ 1071.       t$422 = 0
+ 1071.       t$425 = 0
+ 1071.       if ( fin%header%a_contig == 1 ) then
+ 1071. !dir$ suppress (fin%base_addr)(1, 0)
+ 1071.          t$421 = loc( (fin%base_addr)(1, 0) )
+ 1071.       else
+ 1071.          t$422 = fin%dim_1%EX
+ 1071.          t$425 = int( _alloc( max( 0, 8 * max( 0, fin%dim_1%EX ) ) ), 8 )
+ 1071.          $F_A33 = fin%dim_1%EX
+ 1071.          if ( fin%dim_1%EX > 0 ) then
+ 1071.             $SC_fin_I6 = fin%dim_1%SM
+ 1071.             $SC_fin_I5 = fin%dim_1%EX
+ 1071.             $I_L1071_4 = 0
+ 1071. !dir$ ivdep
+ 1071.             do
+ 1071.                t$424(1 + $I_L1071_4) = (fin%base_addr)(1 + $I_L1071_4, 0)
+ 1071.                $I_L1071_4 = 1 + $I_L1071_4
+ 1071.                if ( $I_L1071_4 >= $F_A33 ) exit
+ 1071.             enddo
+ 1071.          endif
+ 1071. !dir$ suppress t$424
+ 1071.          t$421 = loc( t$424 )
+ 1071.       endif
+ 1071.       t$427 = 0
+ 1071.       t$430 = 0
+ 1071.       if ( fout%header%a_contig == 1 ) then
+ 1071. !dir$ suppress (fout%base_addr)(1, 0)
+ 1071.          t$426 = loc( (fout%base_addr)(1, 0) )
+ 1071.       else
+ 1071.          t$427 = fout%dim_1%EX
+ 1071.          t$430 = int( _alloc( max( 0, 8 * max( 0, fout%dim_1%EX ) ) ), 8 )
+ 1071. !dir$ suppress t$429
+ 1071.          t$426 = loc( t$429 )
+ 1071.       endif
+ 1071.       call inv( t$421, t$426, din, dout, ngiven, 1 )
+ 1071.       if ( fout%header%a_contig /= 1 ) then
+ 1071.          $F_A34 = t$427
+ 1071.          if ( t$427 > 0 ) then
+ 1071.             $SC_fout_I8 = fout%dim_1%SM
+ 1071.             $SC_fout_I7 = fout%dim_1%EX
+ 1071.             $SC_fout_I9 = fout%dim_1%LB
+ 1071.             $I_L1071_6 = 0
+ 1071. !dir$ ivdep
+ 1071.             do
+ 1071.                (fout%base_addr)(1 + $I_L1071_6, 0) = t$429(1 + $I_L1071_6)
+ 1071.                $I_L1071_6 = 1 + $I_L1071_6
+ 1071.                if ( $I_L1071_6 >= $F_A34 ) exit
+ 1071.             enddo
+ 1071.          endif
+ 1071.          _free( t$430 )
+ 1071.       endif
+ 1071.       if ( fin%header%a_contig /= 1 ) then
+ 1071.          _free( t$425 )
+ 1071.       endif
+ 1073.       return
+ 1073.       end
+ 1073.       
+ 1076.       
+ 1076.       subroutine invd2( fin, fout )
+ 1076.       fin%dim_1%LB = 1
+ 1076.       fin%dim_2%LB = 1
+ 1076.       fout%dim_1%LB = 1
+ 1076.       fout%dim_2%LB = 1
+ 1087.       d2in = fin%dim_2%EX
+ 1090.       if ( fout%dim_2%EX + -fin%dim_2%EX /= 0 ) then
+ 1091.          $Unit_temp_O0 = nferr
+ 1091.          $_IOitem_P0(0) = fin%dim_2%EX
+ 1091.          $_IOitem_P0(1) = fout%dim_2%EX
+ 1091.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$96,  _substr(t$95,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InvD2)**', 0x800600000000L ), _iotype( ' Error: dim 2 of fin, fout, differ: ', 0x800600000000L ), _iotype( (&)$_IOitem_P0(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+ 1093.           _substr(t$431,1,4) = ' '
+ 1093.          call _stop(  _substr(t$431,1,1) )
+ 1093.       else
+ 1096.          din = fin%dim_1%EX
+ 1097.          dout = fout%dim_1%EX
+ 1099.          t$433 = 0
+ 1099.          t$434 = 0
+ 1099.          t$438 = 0
+ 1099.          if ( fin%header%a_contig == 1 ) then
+ 1099. !dir$ suppress (fin%base_addr)(1, 1, 0)
+ 1099.             t$432 = loc( (fin%base_addr)(1, 1, 0) )
+ 1099.          else
+ 1099.             t$433 = fin%dim_1%EX
+ 1099.             t$434 = fin%dim_2%EX
+ 1099.             t$438 = int( _alloc( max( 0, 8 * max( 0, fin%dim_2%EX ) * max( 0, fin%dim_1%EX ) ) ), 8 )
+ 1099.             $F_A33 = fin%dim_2%EX
+ 1099.             $F_A34 = fin%dim_1%EX
+ 1099.             if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+ 1099.                $SC_fin_I9 = fin%dim_1%SM
+ 1099.                $SC_fin_I11 = fin%dim_2%SM
+ 1099.                $SC_fin_I8 = fin%dim_1%EX
+ 1099.                $SC_fin_I10 = fin%dim_2%EX
+ 1099.                $I_L1099_8 = 0
+ 1099.                do
+ 1099.                   $I_L1099_4 = 0
+ 1099. !dir$ ivdep
+ 1099.                   do
+ 1099.                      t$437(1 + $I_L1099_4, 1 + $I_L1099_8) = (fin%base_addr)(1 + $I_L1099_4, 1 + $I_L1099_8, 0)
+ 1099.                      $I_L1099_4 = 1 + $I_L1099_4
+ 1099.                      if ( $I_L1099_4 >= $F_A34 ) exit
+ 1099.                   enddo
+ 1099.                   $I_L1099_8 = 1 + $I_L1099_8
+ 1099.                   if ( $I_L1099_8 >= $F_A33 ) exit
+ 1099.                enddo
+ 1099.             endif
+ 1099. !dir$ suppress t$437
+ 1099.             t$432 = loc( t$437 )
+ 1099.          endif
+ 1099.          t$440 = 0
+ 1099.          t$441 = 0
+ 1099.          $t_S0 = 0
+ 1099.          t$445 = 0
+ 1099.          if ( fout%header%a_contig == 1 ) then
+ 1099. !dir$ suppress (fout%base_addr)(1, 1, 0)
+ 1099.             t$439 = loc( (fout%base_addr)(1, 1, 0) )
+ 1099.          else
+ 1099.             t$440 = fout%dim_1%EX
+ 1099.             t$441 = fout%dim_2%EX
+ 1099.             $t_S0 = fout%dim_1%EX
+ 1099.             t$445 = int( _alloc( max( 0, 8 * max( 0, fout%dim_2%EX ) * max( 0, fout%dim_1%EX ) ) ), 8 )
+ 1099. !dir$ suppress t$444
+ 1099.             t$439 = loc( t$444 )
+ 1099.          endif
+ 1099.          call inv( t$432, t$439, din, dout, ngiven, d2in )
+ 1099.          if ( fout%header%a_contig /= 1 ) then
+ 1099.             $F_A35 = t$441
+ 1099.             $F_A36 = t$440
+ 1099.             if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+ 1099.                $SC_fout_I12 = fout%dim_1%SM
+ 1099.                $SC_fout_I14 = fout%dim_2%SM
+ 1099.                $SC_fout_I15 = fout%dim_2%LB
+ 1099.                $SC_fout_I13 = fout%dim_1%LB
+ 1099.                $I_L1099_10 = 0
+ 1099.                do
+ 1099.                   $I_L1099_6 = 0
+ 1099. !dir$ ivdep
+ 1099.                   do
+ 1099.                      (fout%base_addr)($SC_fout_I13 + $I_L1099_6, $SC_fout_I15 + $I_L1099_10, 0) = t$444(1 + $I_L1099_6, 1 + $I_L1099_10)
+ 1099.                      $I_L1099_6 = 1 + $I_L1099_6
+ 1099.                      if ( $I_L1099_6 >= $F_A36 ) exit
+ 1099.                   enddo
+ 1099.                   $I_L1099_10 = 1 + $I_L1099_10
+ 1099.                   if ( $I_L1099_10 >= $F_A35 ) exit
+ 1099.                enddo
+ 1099.             endif
+ 1099.             _free( t$445 )
+ 1099.          endif
+ 1099.          if ( fin%header%a_contig /= 1 ) then
+ 1099.             _free( t$438 )
+ 1099.          endif
+ 1099.       endif
+ 1101.       return
+ 1101.       end
+ 1101.       
+ 1104.       
+ 1104.       subroutine invd3( fin, fout )
+ 1104.       fin%dim_1%LB = 1
+ 1104.       fin%dim_2%LB = 1
+ 1104.       fin%dim_3%LB = 1
+ 1104.       fout%dim_1%LB = 1
+ 1104.       fout%dim_2%LB = 1
+ 1104.       fout%dim_3%LB = 1
+ 1117.       if ( fout%dim_2%EX + -fin%dim_2%EX /= 0 ) then
+ 1118.          $Unit_temp_O0 = nferr
+ 1118.          $_IOitem_P0(0) = fin%dim_2%EX
+ 1118.          $_IOitem_P0(1) = fout%dim_2%EX
+ 1118.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$98,  _substr(t$97,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InvD3)**', 0x800600000000L ), _iotype( ' Error: dim 2 of fin, fout, differ: ', 0x800600000000L ), _iotype( (&)$_IOitem_P0(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+ 1120.           _substr(t$446,1,4) = ' '
+ 1120.          call _stop(  _substr(t$446,1,1) )
+ 1121.       else if ( fout%dim_3%EX + -fin%dim_3%EX /= 0 ) then
+ 1126.          $Unit_temp_O1 = nferr
+ 1126.          $_IOitem_P1(0) = fin%dim_3%EX
+ 1126.          $_IOitem_P1(1) = fout%dim_3%EX
+ 1126.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$100,  _substr(t$99,1,9), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InvD3)**', 0x800600000000L ), _iotype( ' Error: dim 3 of fin, fout, differ: ', 0x800600000000L ), _iotype( (&)$_IOitem_P1(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+ 1128.           _substr(t$447,1,4) = ' '
+ 1128.          call _stop(  _substr(t$447,1,1) )
+ 1128.       else
+ 1131.          din = fin%dim_1%EX
+ 1132.          dout = fout%dim_1%EX
+ 1133.          dio = ( fin%dim_2%EX * fin%dim_3%EX )
+ 1135.          t$449 = 0
+ 1135.          t$450 = 0
+ 1135.          t$451 = 0
+ 1135.          t$456 = 0
+ 1135.          if ( fin%header%a_contig == 1 ) then
+ 1135. !dir$ suppress (fin%base_addr)(1, 1, 1, 0)
+ 1135.             t$448 = loc( (fin%base_addr)(1, 1, 1, 0) )
+ 1135.          else
+ 1135.             t$449 = fin%dim_1%EX
+ 1135.             t$450 = fin%dim_2%EX
+ 1135.             t$451 = fin%dim_3%EX
+ 1135.             t$456 = int( _alloc( max( 0, 8 * max( 0, fin%dim_3%EX ) * max( 0, fin%dim_2%EX ) * max( 0, fin%dim_1%EX ) ) ), 8 )
+ 1135.             $F_A33 = fin%dim_3%EX
+ 1135.             $F_A34 = fin%dim_2%EX
+ 1135.             $F_A35 = fin%dim_1%EX
+ 1135.             if ( and( and( -$F_A34, -$F_A33 ), -$F_A35 ) < 0 ) then
+ 1135.                $SC_fin_I13 = fin%dim_1%SM
+ 1135.                $SC_fin_I15 = fin%dim_2%SM
+ 1135.                $SC_fin_I17 = fin%dim_3%SM
+ 1135.                $SC_fin_I12 = fin%dim_1%EX
+ 1135.                $SC_fin_I16 = fin%dim_3%EX
+ 1135.                $SC_fin_I14 = fin%dim_2%EX
+ 1135.                $I_L1135_12 = 0
+ 1135.                do
+ 1135.                   $I_L1135_8 = 0
+ 1135.                   do
+ 1135.                      $I_L1135_4 = 0
+ 1135. !dir$ ivdep
+ 1135. !dir$ loop_info (automatic) cache_nt( fin )
+ 1135.                      do
+ 1135.                         t$455(1 + $I_L1135_4, 1 + $I_L1135_8, 1 + $I_L1135_12) = (fin%base_addr)(1 + $I_L1135_4, 1 + $I_L1135_8, 1 + $I_L1135_12, 0)
+ 1135.                         $I_L1135_4 = 1 + $I_L1135_4
+ 1135.                         if ( $I_L1135_4 >= $F_A35 ) exit
+ 1135.                      enddo
+ 1135.                      $I_L1135_8 = 1 + $I_L1135_8
+ 1135.                      if ( $I_L1135_8 >= $F_A34 ) exit
+ 1135.                   enddo
+ 1135.                   $I_L1135_12 = 1 + $I_L1135_12
+ 1135.                   if ( $I_L1135_12 >= $F_A33 ) exit
+ 1135.                enddo
+ 1135.             endif
+ 1135. !dir$ suppress t$455
+ 1135.             t$448 = loc( t$455 )
+ 1135.          endif
+ 1135.          t$458 = 0
+ 1135.          t$459 = 0
+ 1135.          t$460 = 0
+ 1135.          $t_S0 = 0
+ 1135.          $t_S1 = 0
+ 1135.          t$465 = 0
+ 1135.          if ( fout%header%a_contig == 1 ) then
+ 1135. !dir$ suppress (fout%base_addr)(1, 1, 1, 0)
+ 1135.             t$457 = loc( (fout%base_addr)(1, 1, 1, 0) )
+ 1135.          else
+ 1135.             t$458 = fout%dim_1%EX
+ 1135.             t$459 = fout%dim_2%EX
+ 1135.             t$460 = fout%dim_3%EX
+ 1135.             $t_S0 = fout%dim_1%EX
+ 1135.             $t_S1 = fout%dim_2%EX * fout%dim_1%EX
+ 1135.             t$465 = int( _alloc( max( 0, 8 * max( 0, fout%dim_3%EX ) * max( 0, fout%dim_2%EX ) * max( 0, fout%dim_1%EX ) ) ), 8 )
+ 1135. !dir$ suppress t$464
+ 1135.             t$457 = loc( t$464 )
+ 1135.          endif
+ 1135.          call inv( t$448, t$457, din, dout, ngiven, dio )
+ 1135.          if ( fout%header%a_contig /= 1 ) then
+ 1135.             $F_A36 = t$460
+ 1135.             $F_A37 = t$459
+ 1135.             $F_A38 = t$458
+ 1135.             if ( and( and( -$F_A37, -$F_A36 ), -$F_A38 ) < 0 ) then
+ 1135.                $SC_fout_I18 = fout%dim_1%SM
+ 1135.                $SC_fout_I20 = fout%dim_2%SM
+ 1135.                $SC_fout_I22 = fout%dim_3%SM
+ 1135.                $SC_fout_I23 = fout%dim_3%LB
+ 1135.                $SC_fout_I21 = fout%dim_2%LB
+ 1135.                $SC_fout_I19 = fout%dim_1%LB
+ 1135.                $I_L1135_14 = 0
+ 1135.                do
+ 1135.                   $I_L1135_10 = 0
+ 1135.                   do
+ 1135.                      $I_L1135_6 = 0
+ 1135. !dir$ ivdep
+ 1135. !dir$ loop_info (automatic) cache_nt( fout )
+ 1135.                      do
+ 1135.                         (fout%base_addr)($SC_fout_I19 + $I_L1135_6, $SC_fout_I21 + $I_L1135_10, $SC_fout_I23 + $I_L1135_14, 0) = t$464(1 + $I_L1135_6, 1 + $I_L1135_10, 1 + $I_L1135_14)
+ 1135.                         $I_L1135_6 = 1 + $I_L1135_6
+ 1135.                         if ( $I_L1135_6 >= $F_A38 ) exit
+ 1135.                      enddo
+ 1135.                      $I_L1135_10 = 1 + $I_L1135_10
+ 1135.                      if ( $I_L1135_10 >= $F_A37 ) exit
+ 1135.                   enddo
+ 1135.                   $I_L1135_14 = 1 + $I_L1135_14
+ 1135.                   if ( $I_L1135_14 >= $F_A36 ) exit
+ 1135.                enddo
+ 1135.             endif
+ 1135.             _free( t$465 )
+ 1135.          endif
+ 1135.          if ( fin%header%a_contig /= 1 ) then
+ 1135.             _free( t$456 )
+ 1135.          endif
+ 1135.       endif
+ 1137.       return
+ 1137.       end
+ 1137.       
+  119.       
+  119.       module fft
+  119.       end
+  119.       

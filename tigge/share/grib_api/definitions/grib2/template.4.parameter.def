@@ -1,0 +1,31 @@
+label "Parameter information";
+
+#  Parameter category
+codetable[1] parameterCategory 'grib2/4.1.[discipline:l].table';
+
+#  Parameter number
+codetable[1] parameterNumber 'grib2/4.2.[discipline:l].[parameterCategory:l].table';
+
+#  Type of generating process
+codetable[1] typeOfGeneratingProcess 'grib2/4.3.table';
+
+#  Background generating process identifier
+# (defined by originating centre)                                      
+unsigned[1] backgroundGeneratingProcessIdentifier = 255; # = generatingProcessIdentifier;
+
+#  Analysis or forecast generating processes identifier
+# (defined by originating centre)                                      
+unsigned[1] generatingProcessIdentifier ;
+
+#  Hours of observational data cutoff after reference time
+# NOTE 1 NOT FOUND                                                     
+unsigned[2] hoursAfterReferenceTimeOfDataCutoff ;
+
+#  Minutes of observational data cutoff after reference time
+unsigned[1] minutesAfterReferenceTimeOfDataCutoff ;
+
+#  Indicator of unit of time range
+codetable[1] indicatorOfUnitOfTimeRange 'grib2/4.4.table';
+
+#  Forecast time in units defined by octet 18
+unsigned[4] forecastTime ;

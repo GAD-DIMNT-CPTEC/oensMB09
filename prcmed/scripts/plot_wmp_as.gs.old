@@ -1,0 +1,95 @@
+say 'put datei nweek case dirfig dirbia dirscr'
+pull ctime
+
+say 'ctime='ctime
+
+datei=subwrd(ctime,1)
+nweek=subwrd(ctime,2)
+case=subwrd(ctime,3)
+dirfig=subwrd(ctime,4)
+dirbia=subwrd(ctime,5)
+dirscr=subwrd(ctime,6)
+dirfig=dirfig%'/'
+dirbia=dirbia%'/'
+dirscr=dirscr%'/'
+
+yyi=substr(datei,1,4)
+mmi=substr(datei,5,2)
+ddi=substr(datei,7,2)
+hhi=substr(datei,9,2)
+
+*
+*   Open ctls
+*
+'run openctl.gs'
+
+'set display color white'
+'c'
+'set grid off'
+'set mpdset brmap_mres'
+
+lati= -60.00; latf= 15.00;
+loni=-101.25; lonf=-11.25;
+'set lat 'lati' 'latf
+'set lon 'loni' 'lonf
+
+*
+*   Get the end dates
+*
+t=1
+'q files'
+while (t <= nweek)
+  clm=3*t
+  linfl=sublin(result,clm)
+  wrdfl=subwrd(linfl,2)
+  datef.t=substr(wrdfl,16,10)
+  t=t+1
+endwhile
+
+*
+*   Plot the pictures
+*
+t=1
+while (t <= nweek)
+clm=t
+fct=t+nweek
+
+'c'
+
+yyf=substr(datef.t,1,4)
+mmf=substr(datef.t,5,2)
+ddf=substr(datef.t,7,2)
+hhf=substr(datef.t,9,2)
+
+'set grads off'
+'run rgbset.gs'
+'set gxout shaded'
+'set map 1 1 5'
+'set clevs -35 -30 -25 -20 -15 -10 -5 0 5 10 15 20 25 30 35'
+'set ccols 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95'
+'pfct=prec.'fct'(t=1)'
+'pclm=lterp(prec.'clm'(t=1),pfct)'
+'anml=pfct-pclm'
+'d anml'
+'run cbar.gs'
+
+'set font 0'
+'set string 1 c 10'
+'set strsiz 0.15 0.23'
+'draw string 5.5 8.3 CPTEC ENSEMBLE FORECAST - Precipitation anomaly'
+'set string 1 c 6'
+'set strsiz 0.13 0.21'
+'draw string 5.5 7.95 Week 't' Forecast from 'mmi'/'ddi'/'yyi', valid end date 'mmf'/'ddf'/'yyf'' 
+'set string 1 l 5'
+'set strsiz 0.13 0.13'
+'draw string 9.8 1.0 (mm/day)'
+
+'printim 'dirfig'lprec_anomaly_as'datei''datef.t'.png png x800 y600'
+'printim 'dirfig'prec_anomaly_as'datei''datef.t'.png png x640 y480'
+'!'dirscr'convert2 -crop 0x0 'dirfig'prec_anomaly_as'datei''datef.t'.png  'dirfig'prec_anomaly_as'datei''datef.t'.png'
+
+t=t+1
+endwhile
+
+'quit'
+*

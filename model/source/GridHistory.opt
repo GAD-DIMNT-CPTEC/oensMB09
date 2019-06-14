@@ -1,0 +1,2754 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  GridHistory.f90
+       !        File                  :  GridHistory.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+  312.       
+  312.       subroutine initgridhistfields
+  313.       ghaf%header%a_contig = 1
+  313.       ghaf%dim_1%LB = 1
+  313.       ghaf%dim_1%EX = 83
+  313.       ghaf%dim_1%SM = 17
+  313.       $_allo_P0(0) = 0x1000000000001L
+  313.       $_allo_P0(1) = loc( ghaf )
+  313.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  316.       $I_L316_0 = 0
+  316.       do
+  316.           _substr((ghaf%base_addr)(1 + $I_L316_0, 0)%fldsname,1,40) =  _substr(t$221(1 + $I_L316_0),1,40)
+  316.          $I_L316_0 = 1 + $I_L316_0
+  316.          if ( $I_L316_0 >= 83 ) exit
+  316.       enddo
+  361.       $I_L361_2 = 0
+  361. !dir$ ivdep
+  361.       do
+  361.          (ghaf%base_addr)(1 + $I_L361_2, 0)%surfflds = t$222(1 + $I_L361_2)
+  373.          (ghaf%base_addr)(1 + $I_L361_2, 0)%ungrafld = t$223(1 + $I_L361_2)
+  361.          $I_L361_2 = 1 + $I_L361_2
+  361.          if ( $I_L361_2 >= 83 ) exit
+  361.       enddo
+  385.       $I_L385_4 = 0
+  385.       do
+  385.           _substr((ghaf%base_addr)(1 + $I_L385_4, 0)%tfrmgf,1,1) =  _substr(t$224(1 + $I_L385_4),1,1)
+  385.          $I_L385_4 = 1 + $I_L385_4
+  385.          if ( $I_L385_4 >= 83 ) exit
+  385.       enddo
+  397.       $I_L397_6 = 0
+  397.       do
+  397.           _substr((ghaf%base_addr)(1 + $I_L397_6, 0)%gradsfld,1,4) =  _substr(t$225(1 + $I_L397_6),1,4)
+  397.          $I_L397_6 = 1 + $I_L397_6
+  397.          if ( $I_L397_6 >= 83 ) exit
+  397.       enddo
+  409.       return
+  409.       end
+  409.       
+  413.       
+  413.       subroutine initgridhistory( del, idate, iov, allghf_in, grhflg_in, nfghds, nfghloc, nfghdr, imax_in, jmax_in, ibmax_in, jbmax_in, ibperij_in, jbperij_in, kmax_in, ibmaxperjb_in, imaxperj_in )
+  413.       del%dim_1%LB = 1
+  413.       t$3 = ( 1 + -iov )
+  413.       t$4 = ( iov + imax_in )
+  413.       t$6 = ( 2 + jmax_in )
+  413.       t$147 = ( imax_in + 2 * iov )
+  421.       t$148 = _zla( 0, ( imax_in + 2 * iov ) )
+  413.       t$149 = _zla( 0, ( imax_in + 2 * iov ) )
+  413.       t$150 = 4 + jmax_in
+  421.       t$151 = _zla( 0, 4 + jmax_in )
+  413.       t$152 = _zla( 0, 4 + jmax_in ) * _zla( 0, ( imax_in + 2 * iov ) )
+  413.       ibmaxperjb_in%dim_1%LB = 1
+  413.       imaxperj_in%dim_1%LB = 1
+  413.       t$12 = jmax_in
+  457.       t$153 = _zla( 0, jmax_in )
+  457.       t$156 = 8 * _zla( 0, jmax_in )
+  413.       t$11 = imax_in
+  456.       t$157 = _zla( 0, imax_in )
+  456.       t$158 = 8 * ( 7 + 8 * _zla( 0, jmax_in ) ) / 8
+  436.       t$160 = t$158 + 8 * _zla( 0, imax_in )
+  435.       islocal = $_StaticDV_P4
+  435.       islocal%base_addr = pointer to array[1] of integer( 0 )
+  435.       islocal%header%el_len = 32
+  435.       islocal%header%assoc = 0
+  435.       islocal%header%ptr_alloc = 0
+  435.       islocal%header%p_or_a = 2
+  435.       islocal%header%a_contig = 1
+  435.       islocal%header%n_dim = 1
+  435.       islocal%header%orig_base = 0
+  435.       islocal%header%orig_size = 0
+  435.       islocal%header%n_codim = 0
+  435.       islocal%header%dv_versn = 2
+  435.       islocal%header%dv_smunit = 32
+  435.       islocal%header%d_type = 0
+  435.       islocal%header%n_params = 0
+  435.       islocal%header%d_type_idx = 10
+  435.       islocal%dim_1%LB = 1
+  435.       islocal%dim_1%EX = 0
+  435.       islocal%dim_1%SM = 1
+  456.       jslocal = $_StaticDV_P5
+  456.       jslocal%base_addr = pointer to array[1] of integer( 0 )
+  456.       jslocal%header%el_len = 32
+  456.       jslocal%header%assoc = 0
+  456.       jslocal%header%ptr_alloc = 0
+  456.       jslocal%header%p_or_a = 2
+  456.       jslocal%header%a_contig = 1
+  456.       jslocal%header%n_dim = 1
+  456.       jslocal%header%orig_base = 0
+  456.       jslocal%header%orig_size = 0
+  456.       jslocal%header%n_codim = 0
+  456.       jslocal%header%dv_versn = 2
+  456.       jslocal%header%dv_smunit = 32
+  456.       jslocal%header%d_type = 0
+  456.       jslocal%header%n_params = 0
+  456.       jslocal%header%d_type_idx = 10
+  456.       jslocal%dim_1%LB = 1
+  456.       jslocal%dim_1%EX = 0
+  456.       jslocal%dim_1%SM = 1
+  413.       t$154 = int( _alloc( t$158 + 8 * _zla( 0, imax_in ) ), 8 )
+  457.       t$155 = t$154
+  456.       t$159 = t$158 + t$154
+  459.       ghaf%header%a_contig = 1
+  459.       ghaf%dim_1%LB = 1
+  459.       ghaf%dim_1%EX = 83
+  459.       ghaf%dim_1%SM = 17
+  459.       $_allo_P6(0) = 0x1000000000001L
+  459.       $_allo_P6(1) = loc( ghaf )
+  459.       call __allocate( $_allo_P6, 0, 0, _fcd( 0, 0 ) )
+  459.       $I_L459_244 = 0
+  459.       do
+  459.           _substr((ghaf%base_addr)(1 + $I_L459_244, 0)%fldsname,1,40) =  _substr(t$221(1 + $I_L459_244),1,40)
+  459.          $I_L459_244 = 1 + $I_L459_244
+  459.          if ( $I_L459_244 >= 83 ) exit
+  459.       enddo
+  459.       $I_L459_246 = 0
+  459. !dir$ ivdep
+  459.       do
+  459.          (ghaf%base_addr)(1 + $I_L459_246, 0)%surfflds = t$222(1 + $I_L459_246)
+  459.          (ghaf%base_addr)(1 + $I_L459_246, 0)%ungrafld = t$223(1 + $I_L459_246)
+  459.          $I_L459_246 = 1 + $I_L459_246
+  459.          if ( $I_L459_246 >= 83 ) exit
+  459.       enddo
+  459.       $I_L459_248 = 0
+  459.       do
+  459.           _substr((ghaf%base_addr)(1 + $I_L459_248, 0)%tfrmgf,1,1) =  _substr(t$224(1 + $I_L459_248),1,1)
+  459.          $I_L459_248 = 1 + $I_L459_248
+  459.          if ( $I_L459_248 >= 83 ) exit
+  459.       enddo
+  459.       $I_L459_250 = 0
+  459.       do
+  459.           _substr((ghaf%base_addr)(1 + $I_L459_250, 0)%gradsfld,1,4) =  _substr(t$225(1 + $I_L459_250),1,4)
+  459.          $I_L459_250 = 1 + $I_L459_250
+  459.          if ( $I_L459_250 >= 83 ) exit
+  459.       enddo
+  462.       ibperij%header%a_contig = 1
+  462.       ibperij%dim_1%LB = 1
+  462.       ibperij%dim_1%EX = ( max( 0, imax_in ) )
+  462.       ibperij%dim_1%SM = 1
+  462.       ibperij%dim_2%LB = 1
+  462.       ibperij%dim_2%EX = ( max( 0, jmax_in ) )
+  462.       ibperij%dim_2%SM = ( max( 0, imax_in ) )
+  462.       $_allo_P7(0) = 0x1000000000001L
+  462.       $_allo_P7(1) = loc( ibperij )
+  462.       call __allocate( $_allo_P7, 0, 0, _fcd( 0, 0 ) )
+  463.       $F_A37 = ( max( 0, jmax_in ) )
+  463.       $F_A38 = ( max( 0, imax_in ) )
+  463.       if ( and( -$F_A38, -$F_A37 ) < 0 ) then
+  463.          $I_L463_322 = 0
+  463.          do
+  463.             $I_L463_252 = 0
+  463. !dir$ ivdep
+  463.             do
+  463.                (ibperij%base_addr)(1 + $I_L463_252, 1 + $I_L463_322, 0) = -1
+  463.                $I_L463_252 = 1 + $I_L463_252
+  463.                if ( $I_L463_252 >= $F_A38 ) exit
+  463.             enddo
+  463.             $I_L463_322 = 1 + $I_L463_322
+  463.             if ( $I_L463_322 >= $F_A37 ) exit
+  463.          enddo
+  463.       endif
+  464.       jbperij%header%a_contig = 1
+  464.       jbperij%dim_1%LB = 1
+  464.       jbperij%dim_1%EX = ( max( 0, imax_in ) )
+  464.       jbperij%dim_1%SM = 1
+  464.       jbperij%dim_2%LB = 1
+  464.       jbperij%dim_2%EX = ( max( 0, jmax_in ) )
+  464.       jbperij%dim_2%SM = ( max( 0, imax_in ) )
+  464.       $_allo_P8(0) = 0x1000000000001L
+  464.       $_allo_P8(1) = loc( jbperij )
+  464.       call __allocate( $_allo_P8, 0, 0, _fcd( 0, 0 ) )
+  465.       $F_A39 = ( max( 0, jmax_in ) )
+  465.       $F_A40 = ( max( 0, imax_in ) )
+  465.       if ( and( -$F_A40, -$F_A39 ) < 0 ) then
+  465.          $I_L465_324 = 0
+  465.          do
+  465.             $I_L465_254 = 0
+  465. !dir$ ivdep
+  465.             do
+  465.                (jbperij%base_addr)(1 + $I_L465_254, 1 + $I_L465_324, 0) = -1
+  465.                $I_L465_254 = 1 + $I_L465_254
+  465.                if ( $I_L465_254 >= $F_A40 ) exit
+  465.             enddo
+  465.             $I_L465_324 = 1 + $I_L465_324
+  465.             if ( $I_L465_324 >= $F_A39 ) exit
+  465.          enddo
+  465.       endif
+  466.       ibmaxperjb%header%a_contig = 1
+  466.       ibmaxperjb%dim_1%LB = 1
+  466.       ibmaxperjb%dim_1%EX = ( max( 0, jbmax_in ) )
+  466.       ibmaxperjb%dim_1%SM = 1
+  466.       $_allo_P9(0) = 0x1000000000001L
+  466.       $_allo_P9(1) = loc( ibmaxperjb )
+  466.       call __allocate( $_allo_P9, 0, 0, _fcd( 0, 0 ) )
+  467.       $F_A41 = ( max( 0, jbmax_in ) )
+  467.       if ( jbmax_in > 0 ) then
+  467.          $I_L467_256 = 0
+  467. !dir$ ivdep
+  467.          do
+  467.             (ibmaxperjb%base_addr)(1 + $I_L467_256, 0) = -1
+  467.             $I_L467_256 = 1 + $I_L467_256
+  467.             if ( $I_L467_256 >= $F_A41 ) exit
+  467.          enddo
+  467.       endif
+  468.       imaxperj%header%a_contig = 1
+  468.       imaxperj%dim_1%LB = 1
+  468.       imaxperj%dim_1%EX = ( max( 0, jmax_in ) )
+  468.       imaxperj%dim_1%SM = 1
+  468.       $_allo_P10(0) = 0x1000000000001L
+  468.       $_allo_P10(1) = loc( imaxperj )
+  468.       call __allocate( $_allo_P10, 0, 0, _fcd( 0, 0 ) )
+  469.       $F_A42 = ( max( 0, jmax_in ) )
+  469.       if ( jmax_in > 0 ) then
+  469.          $I_L469_258 = 0
+  469. !dir$ ivdep
+  469.          do
+  469.             (imaxperj%base_addr)(1 + $I_L469_258, 0) = -1
+  469.             $I_L469_258 = 1 + $I_L469_258
+  469.             if ( $I_L469_258 >= $F_A42 ) exit
+  469.          enddo
+  469.       endif
+  473.       allghf = allghf_in
+  474.       grhflg = grhflg_in
+  475.       grhon = .false.
+  477.       imax = imax_in
+  478.       jmax = jmax_in
+  479.       ibmax = ibmax_in
+  480.       jbmax = jbmax_in
+  481.       $F_A43 = jmax_in
+  481.       $F_A44 = imax_in
+  481.       if ( and( -$F_A44, -$F_A43 ) < 0 ) then
+  481.          $I_L481_326 = 0
+  481.          do
+  481.             $I_L481_260 = 0
+  481. !dir$ ivdep
+  481.             do
+  481.                (ibperij%base_addr)(1 + $I_L481_260, 1 + $I_L481_326, 0) = ibperij_in(1 + $I_L481_260, 1 + $I_L481_326)
+  481.                $I_L481_260 = 1 + $I_L481_260
+  481.                if ( $I_L481_260 >= $F_A44 ) exit
+  481.             enddo
+  481.             $I_L481_326 = 1 + $I_L481_326
+  481.             if ( $I_L481_326 >= $F_A43 ) exit
+  481.          enddo
+  481.       endif
+  482.       $F_A45 = jmax_in
+  482.       $F_A46 = imax_in
+  482.       if ( and( -$F_A46, -$F_A45 ) < 0 ) then
+  482.          $I_L482_328 = 0
+  482.          do
+  482.             $I_L482_262 = 0
+  482. !dir$ ivdep
+  482.             do
+  482.                (jbperij%base_addr)(1 + $I_L482_262, 1 + $I_L482_328, 0) = jbperij_in(1 + $I_L482_262, 1 + $I_L482_328)
+  482.                $I_L482_262 = 1 + $I_L482_262
+  482.                if ( $I_L482_262 >= $F_A46 ) exit
+  482.             enddo
+  482.             $I_L482_328 = 1 + $I_L482_328
+  482.             if ( $I_L482_328 >= $F_A45 ) exit
+  482.          enddo
+  482.       endif
+  483.       $F_A47 = ( max( 0, jmax_in ) )
+  483.       if ( jmax_in > 0 ) then
+  483.          $SC_imaxperj_in_I75 = imaxperj_in%dim_1%SM
+  483.          $SC_imaxperj_in_I74 = imaxperj_in%dim_1%EX
+  483.          $I_L483_264 = 0
+  483. !dir$ ivdep
+  483.          do
+  483.             (imaxperj%base_addr)(1 + $I_L483_264, 0) = (imaxperj_in%base_addr)(1 + $I_L483_264, 0)
+  483.             $I_L483_264 = 1 + $I_L483_264
+  483.             if ( $I_L483_264 >= $F_A47 ) exit
+  483.          enddo
+  483.       endif
+  484.       kmax = kmax_in
+  485.       $F_A48 = ( max( 0, jbmax_in ) )
+  485.       if ( jbmax_in > 0 ) then
+  485.          $SC_ibmaxperjb_in_I77 = ibmaxperjb_in%dim_1%SM
+  485.          $SC_ibmaxperjb_in_I76 = ibmaxperjb_in%dim_1%EX
+  485.          $I_L485_266 = 0
+  485. !dir$ ivdep
+  485.          do
+  485.             (ibmaxperjb%base_addr)(1 + $I_L485_266, 0) = (ibmaxperjb_in%base_addr)(1 + $I_L485_266, 0)
+  485.             $I_L485_266 = 1 + $I_L485_266
+  485.             if ( $I_L485_266 >= $F_A48 ) exit
+  485.          enddo
+  485.       endif
+  489.       if ( grhflg_in == .false. ) then
+  490.          dogrh%header%a_contig = 1
+  490.          dogrh%dim_1%LB = 1
+  490.          dogrh%dim_1%EX = 83
+  490.          dogrh%dim_1%SM = 1
+  490.          dogrh%dim_2%LB = 1
+  490.          dogrh%dim_2%EX = ( max( 0, jbmax_in ) )
+  490.          dogrh%dim_2%SM = 83
+  490.          $_allo_P11(0) = 0x1000000000001L
+  490.          $_allo_P11(1) = loc( dogrh )
+  490.          call __allocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+  491.          $F_A49 = ( max( 0, jbmax_in ) )
+  491.          if ( jbmax_in > 0 ) then
+  491.             $I_L491_330 = 0
+  491.             do
+  491.                $I_L491_268 = 0
+  491. !dir$ ivdep
+  491.                do
+  491.                   (dogrh%base_addr)(1 + $I_L491_268, 1 + $I_L491_330, 0) = .false.
+  491.                   $I_L491_268 = 1 + $I_L491_268
+  491.                   if ( $I_L491_268 >= 83 ) exit
+  491.                enddo
+  491.                $I_L491_330 = 1 + $I_L491_330
+  491.                if ( $I_L491_330 >= $F_A49 ) exit
+  491.             enddo
+  491.          endif
+  436.          $_allo_P12(0) = 0x2000000000001L
+  436.          $_allo_P12(1) = loc( jslocal )
+  436.          $_allo_P12(2) = loc( islocal )
+  436.          call _dealloc( $_allo_P12, 0, 0, _fcd( 0, 0 ) )
+  413.          _free( t$154 )
+  413.       else
+  497.          $I_L497_200 = 0
+  497. !dir$ ivdep
+  497.          do
+  498.             if ( (ghaf%base_addr)(1 + $I_L497_200, 0)%surfflds /= .false. ) then
+  499.                (ghaf%base_addr)(1 + $I_L497_200, 0)%lyrsflds = 1
+  499.             else
+  501.                (ghaf%base_addr)(1 + $I_L497_200, 0)%lyrsflds = kmax_in
+  501.             endif
+  503.             $I_L497_200 = 1 + $I_L497_200
+  502.             if ( $I_L497_200 >= 83 ) exit
+  502.          enddo
+  507.          if ( nfctrl(55) > 0 ) then
+  508.             $Unit_temp_O0 = nfprt
+  508.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$34,  _substr(t$33,1,118), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  509.             $I_L509_202 = 0
+  509.             do
+  510.                if ( ( ( 1 + $I_L509_202 ) < ghaf%dim_1%LB .or. ( 1 + $I_L509_202 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  510.                    _substr(t$229,1,16) = 'GridHistory.f90'
+  510.                    _substr(t$230,1,5) = 'GHAF'
+  510.                   t$231 = ghaf%dim_1%LB
+  510.                   t$232 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  510.                   t$233 = 1 + $I_L509_202
+  510.                   call _bounds_error(  _substr(t$229,1,16), 1010,  _substr(t$230,1,5), 1, t$231, t$232, t$233, t$228 )
+  510.                endif
+  511.                if ( ( ( 1 + $I_L509_202 ) < ghaf%dim_1%LB .or. ( 1 + $I_L509_202 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  511.                    _substr(t$235,1,16) = 'GridHistory.f90'
+  511.                    _substr(t$236,1,5) = 'GHAF'
+  511.                   t$237 = ghaf%dim_1%LB
+  511.                   t$238 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  511.                   t$239 = 1 + $I_L509_202
+  511.                   call _bounds_error(  _substr(t$235,1,16), 1011,  _substr(t$236,1,5), 1, t$237, t$238, t$239, t$234 )
+  511.                endif
+  512.                if ( ( ( 1 + $I_L509_202 ) < ghaf%dim_1%LB .or. ( 1 + $I_L509_202 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  512.                    _substr(t$241,1,16) = 'GridHistory.f90'
+  512.                    _substr(t$242,1,5) = 'GHAF'
+  512.                   t$243 = ghaf%dim_1%LB
+  512.                   t$244 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  512.                   t$245 = 1 + $I_L509_202
+  512.                   call _bounds_error(  _substr(t$241,1,16), 1012,  _substr(t$242,1,5), 1, t$243, t$244, t$245, t$240 )
+  512.                endif
+  513.                if ( ( ( 1 + $I_L509_202 ) < ghaf%dim_1%LB .or. ( 1 + $I_L509_202 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  513.                    _substr(t$247,1,16) = 'GridHistory.f90'
+  513.                    _substr(t$248,1,5) = 'GHAF'
+  513.                   t$249 = ghaf%dim_1%LB
+  513.                   t$250 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  513.                   t$251 = 1 + $I_L509_202
+  513.                   call _bounds_error(  _substr(t$247,1,16), 1013,  _substr(t$248,1,5), 1, t$249, t$250, t$251, t$246 )
+  513.                endif
+  514.                if ( ( ( 1 + $I_L509_202 ) < ghaf%dim_1%LB .or. ( 1 + $I_L509_202 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  514.                    _substr(t$253,1,16) = 'GridHistory.f90'
+  514.                    _substr(t$254,1,5) = 'GHAF'
+  514.                   t$255 = ghaf%dim_1%LB
+  514.                   t$256 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  514.                   t$257 = 1 + $I_L509_202
+  514.                   call _bounds_error(  _substr(t$253,1,16), 1014,  _substr(t$254,1,5), 1, t$255, t$256, t$257, t$252 )
+  514.                endif
+  510.                $Unit_temp_O1 = nfprt
+  510.                $IOitem_O2 = ( 1 + $I_L509_202 )
+  510.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$38,  _substr(t$37,1,40), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O2, 0x2000200000000L ), _iotype(  _substr((ghaf%base_addr)(1 + $I_L509_202, 0)%fldsname,1,40), 0x800600000000L ), _iotype( (ghaf%base_addr)(1 + $I_L509_202, 0)%lyrsflds, 0x2000200000000L ), _iotype( (ghaf%base_addr)(1 + $I_L509_202, 0)%ungrafld, 0x2000200000000L ), _iotype(  _substr((ghaf%base_addr)(1 + $I_L509_202, 0)%tfrmgf,1,1), 0x800600000000L ), _iotype(  _substr((ghaf%base_addr)(1 + $I_L509_202, 0)%gradsfld,1,4), 0x800600000000L ) ) )
+  515.                $I_L509_202 = 1 + $I_L509_202
+  515.                if ( $I_L509_202 >= 83 ) exit
+  515.             enddo
+  515.          endif
+  521.          ierr = 0
+  520.          t$231 = nfghds
+  521.           _substr(t$259,1,4) = 'OLD'
+  520.           _substr(t$260,1,10) = 'SEQUENTIAL'
+  520.           _substr(t$261,1,9) = 'FORMATTED'
+  521.           _substr(t$262,1,4) = 'READ'
+  520.          t$263(1) = 0x100000000000000L
+  520. !dir$ suppress t$231
+  520.          t$263(2) = int( loc( t$231 ), 8 )
+  520. !dir$ suppress ierr
+  520.          t$263(3) = int( loc( ierr ), 8 )
+  520.          t$263(4) = 0
+  520. !dir$ suppress  _substr(fnameghtable,1,_ltrim(  _substr(fnameghtable,1,209) ))
+  520.          t$263(5) = int( loc(  _substr(fnameghtable,1,_ltrim(  _substr(fnameghtable,1,209) )) ), 8 )
+  520.          t$263(6) = _ltrim(  _substr(fnameghtable,1,209) )
+  520. !dir$ suppress  _substr(t$259,1,3)
+  520.          t$263(7) = int( loc(  _substr(t$259,1,3) ), 8 )
+  520.          t$263(8) = 3
+  520. !dir$ suppress  _substr(t$260,1,10)
+  520.          t$263(9) = int( loc(  _substr(t$260,1,10) ), 8 )
+  520.          t$263(10) = 10
+  520. !dir$ suppress  _substr(t$261,1,9)
+  520.          t$263(11) = int( loc(  _substr(t$261,1,9) ), 8 )
+  520.          t$263(12) = 9
+  520.          t$263(13) = 0
+  520.          t$263(14) = 0
+  520.          t$263(16) = 0
+  520. !dir$ suppress  _substr(t$262,1,4)
+  520.          t$263(18) = int( loc(  _substr(t$262,1,4) ), 8 )
+  520.          t$263(19) = 4
+  520.          t$263(20) = 0
+  520.          t$263(22) = 0
+  520.          t$263(24) = 0x2000200000000L
+  520.          t$263(25) = 0
+  520.          t$263(27) = 0
+  520.          t$263(29) = 0
+  520.          t$263(31) = 0
+  520.          t$263(33) = 0
+  520.          t$263(35) = 0
+  520.          t$258 = _open( t$263 )
+  522.          if ( ierr /= 0 ) then
+  523.             $Unit_temp_O3 = nfprt
+  523.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O3, Null_Arg, Null_Arg, t$14,  _substr(t$13,1,51), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(fnameghtable,1,_ltrim(  _substr(fnameghtable,1,209) )), 0x800600000000L ), _iotype( ierr, 0x2000200000000L ) ) )
+  525.              _substr(t$264,1,11) = '**(ERROR)**'
+  525.             call _stop(  _substr(t$264,1,11) )
+  526.          else if ( allghf /= .false. ) then
+  529.             ngrfld = 83
+  529.             goto 10
+  529.          else if ( nfghds > 0 ) then
+  531.             ngrfld = 0
+  531.             do
+  533.                $Unit_temp_O4 = nfghds
+  533.                t$265 = _fread( _clist( 0, 1, 3, $Unit_temp_O4, ierr, Null_Arg, t$42,  _substr(t$41,1,11), Null_Arg, Null_Arg, Null_Arg, 0x2000200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  534.                if ( ierr /= 0 ) goto 60
+  533.             enddo
+  533.    60       continue
+  536.             if ( ierr > 0 ) then
+  537.                $Unit_temp_O5 = nfprt
+  537.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O5, Null_Arg, Null_Arg, t$16,  _substr(t$15,1,29), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InitGridHistory)**', 0x800600000000L ), _iotype( nfghds, 0x2000200000000L ) ) )
+  538.                $Unit_temp_O6 = nferr
+  538.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O6, Null_Arg, Null_Arg, t$18,  _substr(t$17,1,29), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InitGridHistory)**', 0x800600000000L ), _iotype( nfghds, 0x2000200000000L ) ) )
+  539.                 _substr(t$266,1,21) = '**(InitGridHistory)**'
+  539.                call _stop(  _substr(t$266,1,21) )
+  539.             else
+  539.                goto 10
+  539.             endif
+  539.          else
+  539.    10       continue
+  546.             if ( ngrfld /= 0 ) then
+  544.                goto 20
+  544.             else if ( allghf == .false. ) then
+  547.                $Unit_temp_O7 = nfprt
+  547.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O7, Null_Arg, Null_Arg, t$60,  _substr(t$59,1,98), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  548.                $Unit_temp_O8 = nferr
+  548.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O8, Null_Arg, Null_Arg, t$60,  _substr(t$59,1,98), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  549.                 _substr(t$267,1,21) = '**(InitGridHistory)**'
+  549.                call _stop(  _substr(t$267,1,21) )
+  549.             else
+  549.    20          continue
+  555.                if ( allghf /= .false. ) then
+  557.                   $SC_ghaf_I0 = ghaf%dim_1%EX
+  557.                   $SC_ghaf_I1 = ghaf%dim_1%LB
+  556.                   $I_L556_204 = 0
+  556. !dir$ ivdep
+  556.                   do
+  557.                      (ghaf%base_addr)(1 + $I_L556_204, 0)%isreqfld = .true.
+  558.                      $I_L556_204 = 1 + $I_L556_204
+  556.                      if ( $I_L556_204 >= 83 ) exit
+  556.                   enddo
+  556.                   goto 30
+  556.                else
+  560.                   $SC_ghaf_I78 = ghaf%dim_1%EX
+  560.                   $SC_ghaf_I79 = ghaf%dim_1%LB
+  560.                   $I_L560_270 = 0
+  560. !dir$ ivdep
+  560.                   do
+  560.                      (ghaf%base_addr)(1 + $I_L560_270, 0)%isreqfld = .false.
+  560.                      $I_L560_270 = 1 + $I_L560_270
+  560.                      if ( $I_L560_270 >= 83 ) exit
+  560.                   enddo
+  561.                   t$232 = nfghds
+  561.                   t$269 = __rewf( t$232, 0, 0, 0x100000000000000L, 0, 0 )
+  562.                   if ( nfctrl(55) > 0 ) then
+  562.                      $Unit_temp_O9 = nfprt
+  562.                      _fwrite( _clist( 0, 0, 3, $Unit_temp_O9, Null_Arg, Null_Arg, t$40,  _substr(t$39,1,90), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  562.                   endif
+  563.                   if ( ngrfld > 0 ) then
+  565.                      $SC_nfctrl_I2 = nfctrl(55)
+  568.                      $SC_ghaf_I0 = ghaf%dim_1%EX
+  568.                      $SC_ghaf_I1 = ghaf%dim_1%LB
+  563.                      $I_L563_310 = 0
+  563.                      do
+  563.                         n = ( 1 + $I_L563_310 )
+  564.                         $Unit_temp_O10 = nfghds
+  564.                         _fread( _clist( 0, 0, 3, $Unit_temp_O10, Null_Arg, Null_Arg, t$42,  _substr(t$41,1,11), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(rdesc,1,40), 0x800600000000L ), _iotype( unigrafld, 0x2000200000000L ) ) )
+  565.                         if ( $SC_nfctrl_I2 > 0 ) then
+  565.                            $Unit_temp_O11 = nfprt
+  565.                            _fwrite( _clist( 0, 0, 3, $Unit_temp_O11, Null_Arg, Null_Arg, t$44,  _substr(t$43,1,22), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( n, 0x2000200000000L ), _iotype(  _substr(rdesc,1,40), 0x800600000000L ), _iotype( unigrafld, 0x2000200000000L ) ) )
+  565.                         endif
+  566.                         $notfound_S4 = .true.
+  567.                         $I_L567_206 = 0
+  567. !dir$ ivdep
+  567.                         do
+  568.                            if (  _substr((ghaf%base_addr)(1 + $I_L567_206, 0)%fldsname,1,40) ==  _substr(rdesc,1,40) ) then
+  569.                               (ghaf%base_addr)(1 + $I_L567_206, 0)%isreqfld = .true.
+  570.                               $notfound_S4 = .false.
+  570.                               goto 50
+  570.                            endif
+  573.                            $I_L567_206 = 1 + $I_L567_206
+  572.                            if ( $I_L567_206 >= 83 ) exit
+  572.                         enddo
+  572.    50                   continue
+  574.                         if ( $notfound_S4 /= .false. ) then
+  575.                            $Unit_temp_O12 = nfprt
+  575.                            _fwrite( _clist( 0, 0, 3, $Unit_temp_O12, Null_Arg, Null_Arg, t$20,  _substr(t$19,1,41), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InitGridHistory)**', 0x800600000000L ), _iotype(  _substr(rdesc,1,_ltrim(  _substr(rdesc,1,40) )), 0x800600000000L ) ) )
+  576.                            $Unit_temp_O13 = nferr
+  576.                            _fwrite( _clist( 0, 0, 3, $Unit_temp_O13, Null_Arg, Null_Arg, t$22,  _substr(t$21,1,41), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InitGridHistory)**', 0x800600000000L ), _iotype(  _substr(rdesc,1,_ltrim(  _substr(rdesc,1,40) )), 0x800600000000L ) ) )
+  577.                             _substr(t$274,1,21) = '**(InitGridHistory)**'
+  577.                            call _stop(  _substr(t$274,1,21) )
+  577.                            goto 70
+  577.                         endif
+  579.                         $I_L563_310 = 1 + $I_L563_310
+  579.                         if ( $I_L563_310 >= ngrfld ) exit
+  579.                      enddo
+  579.                      goto 30
+  579.                   else
+  579.    30                continue
+  584.                      nghsl = 0
+  586.                      $SC_ghaf_I0 = ghaf%dim_1%EX
+  586.                      $SC_ghaf_I1 = ghaf%dim_1%LB
+  585.                      $I_L585_306 = 0
+  585. !dir$ unroll 4
+  585.                      do
+  586.                         if ( (ghaf%base_addr)(1 + $I_L585_306, 0)%isreqfld /= .false. ) then
+  587.                            (ghaf%base_addr)(1 + $I_L585_306, 0)%locgrfld = 1 + nghsl
+  588.                            nghsl = nghsl + (ghaf%base_addr)(1 + $I_L585_306, 0)%lyrsflds
+  588.                         endif
+  592.                         $I_L585_306 = 1 + $I_L585_306
+  591.                         if ( $I_L585_306 >= 83 ) exit
+  591.                      enddo
+  585.                      $I_L585_308 = 0
+  585. !dir$ unroll 4
+  585.                      do
+  586.                         if ( (ghaf%base_addr)(1 + $I_L585_308, 0)%isreqfld == .false. ) then
+  590.                            (ghaf%base_addr)(1 + $I_L585_308, 0)%locgrfld = 0
+  590.                         endif
+  592.                         $I_L585_308 = 1 + $I_L585_308
+  591.                         if ( $I_L585_308 >= 83 ) exit
+  591.                      enddo
+  597.                      ierr = 0
+  596.                      t$233 = nfghloc
+  597.                       _substr(t$277,1,4) = 'OLD'
+  596.                       _substr(t$278,1,10) = 'SEQUENTIAL'
+  596.                       _substr(t$279,1,9) = 'FORMATTED'
+  597.                       _substr(t$280,1,4) = 'READ'
+  596.                      t$281(1) = 0x100000000000000L
+  596. !dir$ suppress t$233
+  596.                      t$281(2) = int( loc( t$233 ), 8 )
+  596. !dir$ suppress ierr
+  596.                      t$281(3) = int( loc( ierr ), 8 )
+  596.                      t$281(4) = 0
+  596. !dir$ suppress  _substr(fnameghloc,1,_ltrim(  _substr(fnameghloc,1,212) ))
+  596.                      t$281(5) = int( loc(  _substr(fnameghloc,1,_ltrim(  _substr(fnameghloc,1,212) )) ), 8 )
+  596.                      t$281(6) = _ltrim(  _substr(fnameghloc,1,212) )
+  596. !dir$ suppress  _substr(t$277,1,3)
+  596.                      t$281(7) = int( loc(  _substr(t$277,1,3) ), 8 )
+  596.                      t$281(8) = 3
+  596. !dir$ suppress  _substr(t$278,1,10)
+  596.                      t$281(9) = int( loc(  _substr(t$278,1,10) ), 8 )
+  596.                      t$281(10) = 10
+  596. !dir$ suppress  _substr(t$279,1,9)
+  596.                      t$281(11) = int( loc(  _substr(t$279,1,9) ), 8 )
+  596.                      t$281(12) = 9
+  596.                      t$281(13) = 0
+  596.                      t$281(14) = 0
+  596.                      t$281(16) = 0
+  596. !dir$ suppress  _substr(t$280,1,4)
+  596.                      t$281(18) = int( loc(  _substr(t$280,1,4) ), 8 )
+  596.                      t$281(19) = 4
+  596.                      t$281(20) = 0
+  596.                      t$281(22) = 0
+  596.                      t$281(24) = 0x2000200000000L
+  596.                      t$281(25) = 0
+  596.                      t$281(27) = 0
+  596.                      t$281(29) = 0
+  596.                      t$281(31) = 0
+  596.                      t$281(33) = 0
+  596.                      t$281(35) = 0
+  596.                      t$276 = _open( t$281 )
+  598.                      if ( ierr /= 0 ) then
+  599.                         $Unit_temp_O14 = nfprt
+  599.                         _fwrite( _clist( 0, 0, 3, $Unit_temp_O14, Null_Arg, Null_Arg, t$24,  _substr(t$23,1,51), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(fnameghloc,1,_ltrim(  _substr(fnameghloc,1,212) )), 0x800600000000L ), _iotype( ierr, 0x2000200000000L ) ) )
+  601.                          _substr(t$282,1,11) = '**(ERROR)**'
+  601.                         call _stop(  _substr(t$282,1,11) )
+  601.                      else
+  603.                         ngpts = 0
+  603.                         do
+  605.                            $Unit_temp_O15 = nfghloc
+  605.                            t$283 = _fread( _clist( 0, 1, 3, $Unit_temp_O15, ierr, Null_Arg, t$26,  _substr(t$25,1,19), Null_Arg, Null_Arg, Null_Arg, 0x2000200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  606.                            if ( ierr /= 0 ) goto 40
+  605.                         enddo
+  605.    40                   continue
+  608.                         if ( ierr > 0 ) then
+  609.                            $Unit_temp_O16 = nfprt
+  609.                            _fwrite( _clist( 0, 0, 3, $Unit_temp_O16, Null_Arg, Null_Arg, t$28,  _substr(t$27,1,29), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InitGridHistory)**', 0x800600000000L ), _iotype( nfghloc, 0x2000200000000L ) ) )
+  610.                            $Unit_temp_O17 = nferr
+  610.                            _fwrite( _clist( 0, 0, 3, $Unit_temp_O17, Null_Arg, Null_Arg, t$30,  _substr(t$29,1,29), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(InitGridHistory)**', 0x800600000000L ), _iotype( nfghloc, 0x2000200000000L ) ) )
+  611.                             _substr(t$284,1,21) = '**(InitGridHistory)**'
+  611.                            call _stop(  _substr(t$284,1,21) )
+  611.                         else
+  619.                            gptslocal%header%a_contig = 1
+  619.                            gptslocal%dim_1%LB = 1
+  619.                            gptslocal%dim_1%EX = ( max( 0, ngpts ) )
+  619.                            gptslocal%dim_1%SM = 1
+  619.                            $_allo_P13(0) = 0x1000000000001L
+  619.                            $_allo_P13(1) = loc( gptslocal )
+  619.                            call __allocate( $_allo_P13, 0, 0, _fcd( 0, 0 ) )
+  620.                            ngptsperproc%header%a_contig = 1
+  620.                            ngptsperproc%dim_1%LB = 0
+  620.                            ngptsperproc%dim_1%EX = ( max( 0, maxnodes ) )
+  620.                            ngptsperproc%dim_1%SM = 1
+  620.                            $_allo_P14(0) = 0x1000000000001L
+  620.                            $_allo_P14(1) = loc( ngptsperproc )
+  620.                            call __allocate( $_allo_P14, 0, 0, _fcd( 0, 0 ) )
+  621.                            procmap%header%a_contig = 1
+  621.                            procmap%dim_1%LB = 1
+  621.                            procmap%dim_1%EX = ( max( 0, ngpts ) )
+  621.                            procmap%dim_1%SM = 1
+  621.                            $_allo_P15(0) = 0x1000000000001L
+  621.                            $_allo_P15(1) = loc( procmap )
+  621.                            call __allocate( $_allo_P15, 0, 0, _fcd( 0, 0 ) )
+  622.                            jslocal%header%a_contig = 1
+  622.                            jslocal%dim_1%LB = 1
+  622.                            jslocal%dim_1%EX = ( max( 0, ngpts ) )
+  622.                            jslocal%dim_1%SM = 1
+  622.                            $_allo_P16(0) = 0x1000000000001L
+  622.                            $_allo_P16(1) = loc( jslocal )
+  622.                            call __allocate( $_allo_P16, 0, 0, _fcd( 0, 0 ) )
+  623.                            islocal%header%a_contig = 1
+  623.                            islocal%dim_1%LB = 1
+  623.                            islocal%dim_1%EX = ( max( 0, ngpts ) )
+  623.                            islocal%dim_1%SM = 1
+  623.                            $_allo_P17(0) = 0x1000000000001L
+  623.                            $_allo_P17(1) = loc( islocal )
+  623.                            call __allocate( $_allo_P17, 0, 0, _fcd( 0, 0 ) )
+  624.                            ptctyglobal%header%a_contig = 1
+  624.                            ptctyglobal%dim_1%LB = 1
+  624.                            ptctyglobal%dim_1%EX = ( max( 0, ngpts ) )
+  624.                            ptctyglobal%dim_1%SM = 40
+  624.                            $_allo_P18(0) = 0x1000000000001L
+  624.                            $_allo_P18(1) = loc( ptctyglobal )
+  624.                            call __allocate( $_allo_P18, 0, 0, _fcd( 0, 0 ) )
+  625.                            ptcoorglobal%header%a_contig = 1
+  625.                            ptcoorglobal%dim_1%LB = 1
+  625.                            ptcoorglobal%dim_1%EX = ( max( 0, ngpts ) )
+  625.                            ptcoorglobal%dim_1%SM = 18
+  625.                            $_allo_P19(0) = 0x1000000000001L
+  625.                            $_allo_P19(1) = loc( ptcoorglobal )
+  625.                            call __allocate( $_allo_P19, 0, 0, _fcd( 0, 0 ) )
+  626.                            ptlonglobal%header%a_contig = 1
+  626.                            ptlonglobal%dim_1%LB = 1
+  626.                            ptlonglobal%dim_1%EX = ( max( 0, ngpts ) )
+  626.                            ptlonglobal%dim_1%SM = 1
+  626.                            $_allo_P20(0) = 0x1000000000001L
+  626.                            $_allo_P20(1) = loc( ptlonglobal )
+  626.                            call __allocate( $_allo_P20, 0, 0, _fcd( 0, 0 ) )
+  627.                            ptlatglobal%header%a_contig = 1
+  627.                            ptlatglobal%dim_1%LB = 1
+  627.                            ptlatglobal%dim_1%EX = ( max( 0, ngpts ) )
+  627.                            ptlatglobal%dim_1%SM = 1
+  627.                            $_allo_P21(0) = 0x1000000000001L
+  627.                            $_allo_P21(1) = loc( ptlatglobal )
+  627.                            call __allocate( $_allo_P21, 0, 0, _fcd( 0, 0 ) )
+  631.                            t$237 = nfghloc
+  631.                            t$285 = __rewf( t$237, 0, 0, 0x100000000000000L, 0, 0 )
+  632.                            $t_S6 = ngpts
+  632.                            if ( ngpts > 0 ) then
+  632.                               $I_L632_208 = 0
+  632.                               do
+  633.                                  $Unit_temp_O18 = nfghloc
+  633.                                  _fread( _clist( 0, 0, 2, $Unit_temp_O18, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  633.                                  if ( ( 1 + $I_L632_208 < _dv_lb( ptctyglobal, 1 ) .or. ( 1 + $I_L632_208 ) > -1 + _dv_lb( ptctyglobal, 1 ) + _dv_ex( ptctyglobal, 1 ) ) /= .false. ) then
+  633.                                      _substr(t$290,1,16) = 'GridHistory.f90'
+  633.                                      _substr(t$291,1,12) = 'PTCTYGLOBAL'
+  633.                                     t$238 = _dv_lb( ptctyglobal, 1 )
+  633.                                     t$239 = -1 + _dv_lb( ptctyglobal, 1 ) + _dv_ex( ptctyglobal, 1 )
+  633.                                     t$243 = 1 + $I_L632_208
+  633.                                     call _bounds_error(  _substr(t$290,1,16), 1133,  _substr(t$291,1,12), 1, t$238, t$239, t$243, t$289 )
+  633.                                  endif
+  633.                                  $Unit_temp_O19 = nfghloc
+  633.                                  _fread( _clist( 0, 0, 0, $Unit_temp_O19, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr((ptctyglobal%base_addr)(1 + $I_L632_208, 0),1,40), 0x800600000000L ) ) )
+  633.                                  if ( ( ( 1 + $I_L632_208 ) < ptlonglobal%dim_1%LB .or. ( 1 + $I_L632_208 ) > -1 + ptlonglobal%dim_1%LB + ptlonglobal%dim_1%EX ) /= .false. ) then
+  633.                                      _substr(t$293,1,16) = 'GridHistory.f90'
+  633.                                      _substr(t$294,1,12) = 'PTLONGLOBAL'
+  633.                                     t$244 = ptlonglobal%dim_1%LB
+  633.                                     t$245 = -1 + ptlonglobal%dim_1%LB + ptlonglobal%dim_1%EX
+  633.                                     t$249 = 1 + $I_L632_208
+  633.                                     call _bounds_error(  _substr(t$293,1,16), 1133,  _substr(t$294,1,12), 1, t$244, t$245, t$249, t$292 )
+  633.                                  endif
+  633.                                  $Unit_temp_O20 = nfghloc
+  633.                                  _fread( _clist( 0, 0, 0, $Unit_temp_O20, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (ptlonglobal%base_addr)(1 + $I_L632_208, 0), 0x804060300000000L ) ) )
+  633.                                  if ( ( ( 1 + $I_L632_208 ) < ptlatglobal%dim_1%LB .or. ( 1 + $I_L632_208 ) > -1 + ptlatglobal%dim_1%LB + ptlatglobal%dim_1%EX ) /= .false. ) then
+  633.                                      _substr(t$296,1,16) = 'GridHistory.f90'
+  633.                                      _substr(t$297,1,12) = 'PTLATGLOBAL'
+  633.                                     t$250 = ptlatglobal%dim_1%LB
+  633.                                     t$251 = -1 + ptlatglobal%dim_1%LB + ptlatglobal%dim_1%EX
+  633.                                     t$255 = 1 + $I_L632_208
+  633.                                     call _bounds_error(  _substr(t$296,1,16), 1133,  _substr(t$297,1,12), 1, t$250, t$251, t$255, t$295 )
+  633.                                  endif
+  633.                                  $Unit_temp_O21 = nfghloc
+  633.                                  _fread( _clist( 0, 0, 0, $Unit_temp_O21, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (ptlatglobal%base_addr)(1 + $I_L632_208, 0), 0x804060300000000L ) ) )
+  633.                                  $Unit_temp_O22 = nfghloc
+  633.                                  _fread( _clist( 0, 0, 1, $Unit_temp_O22, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  634.                                  $I_L632_208 = 1 + $I_L632_208
+  634.                                  if ( $I_L632_208 >= $t_S6 ) exit
+  634.                               enddo
+  634.                            endif
+  636.                            $tm_S15 = imaxperj%dim_1%LB
+  636.                            tm$6 = loc( (ptlonglobal%base_addr)(ptlonglobal%dim_1%LB, 0) )
+  636.                            ghlon = _copyin( (ptlonglobal%base_addr)(ptlonglobal%dim_1%LB, 0) )
+  636.                            tm$8 = loc( (ptlatglobal%base_addr)(ptlatglobal%dim_1%LB, 0) )
+  636.                            ghlat = _copyin( (ptlatglobal%base_addr)(ptlatglobal%dim_1%LB, 0) )
+  636.                            tm$10 = loc(  _substr((ptcoorglobal%base_addr)(_dv_lb( ptcoorglobal, 1 ), 0),1,18) )
+  636.                            label = _copyin(  _substr((ptcoorglobal%base_addr)(_dv_lb( ptcoorglobal, 1 ), 0),1,18) )
+  636.                            imaxperj%dim_1%LB = 1
+  636.                            t$61 = ngpts
+  636.                            t$161 = max( 0, ngpts )
+  636.                            t$162 = 18
+  636.                            t$65 = jmax
+  636.                            t$163 = max( 0, jmax )
+  636.                            t$166 = 8 * max( 0, jmax )
+  636.                            t$64 = imax
+  636.                            t$167 = max( 0, imax )
+  636.                            t$168 = 8 * ( 7 + 8 * max( 0, jmax ) ) / 8
+  636.                            t$170 = t$168 + 8 * max( 0, imax )
+  636.                            t$164 = int( _alloc( t$168 + 8 * max( 0, imax ) ), 8 )
+  636.                            t$165 = t$164
+  636.                            t$169 = t$168 + t$164
+  636.                            $F_A50 = ngpts
+  636.                            if ( ngpts > 0 ) then
+  636.                               $I_L636_272 = 0
+  636. !dir$ ivdep
+  636.                               do
+  636.                                  ghlon(1 + $I_L636_272) = 1.7453292519943295e-2 * ghlon(1 + $I_L636_272)
+  636.                                  $I_L636_272 = 1 + $I_L636_272
+  636.                                  if ( $I_L636_272 >= $F_A50 ) exit
+  636.                               enddo
+  636.                            endif
+  636.                            $F_A51 = ngpts
+  636.                            if ( ngpts > 0 ) then
+  636.                               $I_L636_274 = 0
+  636. !dir$ ivdep
+  636.                               do
+  636.                                  ghlat(1 + $I_L636_274) = 1.7453292519943295e-2 * ( 90.0 + ghlat(1 + $I_L636_274) )
+  636.                                  $I_L636_274 = 1 + $I_L636_274
+  636.                                  if ( $I_L636_274 >= $F_A51 ) exit
+  636.                               enddo
+  636.                               $SC_lati_I4 = lati%dim_1%EX
+  636.                               $SC_lati_I5 = lati%dim_1%LB
+  636.                               $SC_imaxperj_I6 = imaxperj%dim_1%EX
+  636.                               $I_L636_312 = 0
+  636.                               do
+  636.                                  $F_A52 = jmax
+  636.                                  if ( jmax > 0 ) then
+  636.                                     $I_L636_276 = 0
+  636. !dir$ ivdep
+  636.                                     do
+  636.                                        dlat(1 + $I_L636_276) = 1000.0
+  636.                                        $I_L636_276 = 1 + $I_L636_276
+  636.                                        if ( $I_L636_276 >= $F_A52 ) exit
+  636.                                     enddo
+  636.                                     $SC_ghlat_I3 = ghlat(1 + $I_L636_312)
+  636.                                     $I_L636_210 = 0
+  636. !dir$ ivdep
+  636.                                     do
+  636.                                        dlat(1 + $I_L636_210) = abs( (lati%base_addr)(1 + $I_L636_210, 0) + -$SC_ghlat_I3 )
+  636.                                        $I_L636_210 = 1 + $I_L636_210
+  636.                                        if ( $I_L636_210 >= jmax ) exit
+  636.                                     enddo
+  636.                                  endif
+  636.                                  $SCA_MLoc_I61 = 0
+  636.                                  $F_A55 = jmax
+  636.                                  if ( jmax > 0 ) then
+  636.                                     $Reduc_A56 = inf0.0
+  636.                                     $I_L636_278 = 0
+  636. !dir$ ivdep
+  636.                                     do
+  636.                                        $A57 = dlat(1 + $I_L636_278)
+  636.                                        if ( $A57 < $Reduc_A56 ) then
+  636.                                           $Reduc_A56 = $A57
+  636.                                           $SCA_MLoc_I61 = 1 + $I_L636_278
+  636.                                        endif
+  636.                                        $I_L636_278 = 1 + $I_L636_278
+  636.                                        if ( $I_L636_278 >= $F_A55 ) exit
+  636.                                     enddo
+  636.                                  endif
+  636.                                  $F_A58 = imax
+  636.                                  if ( imax > 0 ) then
+  636.                                     $I_L636_280 = 0
+  636. !dir$ ivdep
+  636.                                     do
+  636.                                        dlon(1 + $I_L636_280) = 1000.0
+  636.                                        $I_L636_280 = 1 + $I_L636_280
+  636.                                        if ( $I_L636_280 >= $F_A58 ) exit
+  636.                                     enddo
+  636.                                  endif
+  636.                                  $t_S9 = (imaxperj%base_addr)($SCA_MLoc_I61, 0)
+  636.                                  if ( $t_S9 > 0 ) then
+  636.                                     $SC_ghlon_I7 = ghlon(1 + $I_L636_312)
+  636.                                     $I_L636_212 = 0
+  636. !dir$ ivdep
+  636.                                     do
+  636.                                        dlon(1 + $I_L636_212) = abs( -$SC_ghlon_I7 + ( 6.2831853071795862 * ( $I_L636_212 * 1.0/( real( $t_S9, 8 ) ) ) ) )
+  636.                                        $I_L636_212 = 1 + $I_L636_212
+  636.                                        if ( $I_L636_212 >= $t_S9 ) exit
+  636.                                     enddo
+  636.                                  endif
+  636.                                  $SCA_MLoc_I58 = 0
+  636.                                  $F_A61 = imax
+  636.                                  if ( imax > 0 ) then
+  636.                                     $Reduc_A62 = inf831853071795862
+  636.                                     $I_L636_282 = 0
+  636. !dir$ ivdep
+  636.                                     do
+  636.                                        $A63 = dlon(1 + $I_L636_282)
+  636.                                        if ( $A63 < $Reduc_A62 ) then
+  636.                                           $Reduc_A62 = $A63
+  636.                                           $SCA_MLoc_I58 = 1 + $I_L636_282
+  636.                                        endif
+  636.                                        $I_L636_282 = 1 + $I_L636_282
+  636.                                        if ( $I_L636_282 >= $F_A61 ) exit
+  636.                                     enddo
+  636.                                  endif
+  636.                                  ghlat(1 + $I_L636_312) = 57.295779513082323 * (lati%base_addr)($SCA_MLoc_I61, 0)
+  636.                                  ghlon(1 + $I_L636_312) = 360.0 * ( 1.0/( real( $t_S9, 8 ) ) * ( -1 + $SCA_MLoc_I58 ) )
+  636.                                  $I_L636_312 = 1 + $I_L636_312
+  636.                                  if ( $I_L636_312 >= ngpts ) exit
+  636.                               enddo
+  636.                            endif
+  636.                            t$407 = int( _alloc( max( 0, 4 * max( 0, ngpts ) ) ), 8 )
+  636.                            $F_A64 = ngpts
+  636.                            if ( ngpts > 0 ) then
+  636.                               $I_L636_284 = 0
+  636. !dir$ ivdep
+  636.                               do
+  636.                                  t$406(1 + $I_L636_284) = ghlon(1 + $I_L636_284) > 180.0
+  636.                                  $I_L636_284 = 1 + $I_L636_284
+  636.                                  if ( $I_L636_284 >= $F_A64 ) exit
+  636.                               enddo
+  636.                            endif
+  636.                            $F_A65 = ngpts
+  636.                            if ( ngpts > 0 ) then
+  636.                               $I_L636_286 = 0
+  636. !dir$ ivdep
+  636.                               do
+  636.                                  if ( t$406(1 + $I_L636_286) /= 0 ) then
+  636.                                     ghlon(1 + $I_L636_286) = -360.0 + ghlon(1 + $I_L636_286)
+  636.                                  endif
+  636.                                  $I_L636_286 = 1 + $I_L636_286
+  636.                                  if ( $I_L636_286 >= $F_A65 ) exit
+  636.                               enddo
+  636.                            endif
+  636.                            _free( t$407 )
+  636.                            $F_A66 = ngpts
+  636.                            if ( ngpts > 0 ) then
+  636.                               $I_L636_288 = 0
+  636. !dir$ ivdep
+  636.                               do
+  636.                                  ghlat(1 + $I_L636_288) = -90.0 + ghlat(1 + $I_L636_288)
+  636.                                  $I_L636_288 = 1 + $I_L636_288
+  636.                                  if ( $I_L636_288 >= $F_A66 ) exit
+  636.                               enddo
+  636.                            endif
+  636.                            if ( ngpts > 0 ) then
+  636.                               $I_L636_214 = 0
+  636.                               do
+  636.                                  londeg = int( abs( ghlon(1 + $I_L636_214) ) )
+  636.                                  $lonsig_S12 = int( sign( 1.0, ghlon(1 + $I_L636_214) ) )
+  636.                                  $lonmin_S11 = _rnd( 60.0 * ( -( real( londeg, 8 ) ) + abs( ghlon(1 + $I_L636_214) ) ) )
+  636.                                  if ( $lonsig_S12 < 0 ) then
+  636.                                      _substr(lonhem,1,1) = 'W'
+  636.                                  else
+  636.                                      _substr(lonhem,1,1) = 'E'
+  636.                                  endif
+  636.                                  latdeg = int( abs( ghlat(1 + $I_L636_214) ) )
+  636.                                  $latsig_S14 = int( sign( 1.1000000000000001, ghlat(1 + $I_L636_214) ) )
+  636.                                  $latmin_S13 = _rnd( 60.0 * ( -( real( latdeg, 8 ) ) + abs( ghlat(1 + $I_L636_214) ) ) )
+  636.                                  if ( $latsig_S14 < 0 ) then
+  636.                                      _substr(lathem,1,1) = 'S'
+  636.                                  else
+  636.                                      _substr(lathem,1,1) = 'N'
+  636.                                  endif
+  636.                                  $IOitem_O23 = ( 1 + $I_L636_214 )
+  636.                                  $_IOitem_P0(0) = londeg
+  636.                                  $_IOitem_P0(1) = min( 99, $lonmin_S11 )
+  636.                                  $_IOitem_P1(0) = latdeg
+  636.                                  $_IOitem_P1(1) = min( 99, $latmin_S13 )
+  636.                                  _fwrite( _clist( 0, 0, 3,  _substr(label(1 + $I_L636_214),1,18), Null_Arg, Null_Arg, t$67,  _substr(t$66,1,29), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (&)$_IOitem_P0(:( 0, 1, 1 )), 0x2000200000000L ), _iotype(  _substr(lonhem,1,1), 0x800600000000L ), _iotype( (&)$_IOitem_P1(:( 0, 1, 1 )), 0x2000200000000L ), _iotype(  _substr(lathem,1,1), 0x800600000000L ), _iotype( '_', 0x800600000000L ), _iotype( $IOitem_O23, 0x2000200000000L ) ) )
+  636.                                  $I_L636_214 = 1 + $I_L636_214
+  636.                                  if ( $I_L636_214 >= ngpts ) exit
+  636.                               enddo
+  636.                            endif
+  636.                            t$413 = int( _alloc( max( 0, 4 * max( 0, ngpts ) ) ), 8 )
+  636.                            $F_A67 = ngpts
+  636.                            if ( ngpts > 0 ) then
+  636.                               $I_L636_290 = 0
+  636. !dir$ ivdep
+  636.                               do
+  636.                                  t$412(1 + $I_L636_290) = ghlon(1 + $I_L636_290) < 0.0
+  636.                                  $I_L636_290 = 1 + $I_L636_290
+  636.                                  if ( $I_L636_290 >= $F_A67 ) exit
+  636.                               enddo
+  636.                            endif
+  636.                            $F_A68 = ngpts
+  636.                            if ( ngpts > 0 ) then
+  636.                               $I_L636_292 = 0
+  636. !dir$ ivdep
+  636.                               do
+  636.                                  if ( t$412(1 + $I_L636_292) /= 0 ) then
+  636.                                     ghlon(1 + $I_L636_292) = 360.0 + ghlon(1 + $I_L636_292)
+  636.                                  endif
+  636.                                  $I_L636_292 = 1 + $I_L636_292
+  636.                                  if ( $I_L636_292 >= $F_A68 ) exit
+  636.                               enddo
+  636.                            endif
+  636.                            _free( t$413 )
+  636.                            _free( t$164 )
+  636.                             _substr((ptcoorglobal%base_addr)(_dv_lb( ptcoorglobal, 1 ), 0),1,18) = _copyout( label )
+  636.                            (ptlatglobal%base_addr)(ptlatglobal%dim_1%LB, 0) = _copyout( ghlat )
+  636.                            (ptlonglobal%base_addr)(ptlonglobal%dim_1%LB, 0) = _copyout( ghlon )
+  636.                            imaxperj%dim_1%LB = $tm_S15
+  638.                            ngptslocal = 0
+  639.                            $F_A69 = ngptsperproc%dim_1%EX
+  639.                            if ( ngptsperproc%dim_1%EX > 0 ) then
+  639.                               $SC_ngptsperproc_I80 = ngptsperproc%dim_1%EX
+  639.                               $SC_ngptsperproc_I81 = ngptsperproc%dim_1%LB
+  639.                               $I_L639_294 = 0
+  639. !dir$ ivdep
+  639.                               do
+  639.                                  (ngptsperproc%base_addr)($SC_ngptsperproc_I81 + $I_L639_294, 0) = 0
+  639.                                  $I_L639_294 = 1 + $I_L639_294
+  639.                                  if ( $I_L639_294 >= $F_A69 ) exit
+  639.                               enddo
+  639.                            endif
+  640.                            if ( ngpts > 0 ) then
+  653.                               $SC_gridmap_I13 = gridmap%dim_1%EX
+  653.                               $SC_gridmap_I14 = gridmap%dim_1%LB
+  653.                               $SC_gridmap_I16 = gridmap%dim_2%SM
+  653.                               $SC_gridmap_I15 = gridmap%dim_2%EX
+  653.                               $SC_gridmap_I17 = gridmap%dim_2%LB
+  643.                               $SC_lati_I4 = lati%dim_1%EX
+  643.                               $SC_lati_I5 = lati%dim_1%LB
+  641.                               $SC_ptlatglobal_I8 = ptlatglobal%dim_1%EX
+  641.                               $SC_ptlatglobal_I9 = ptlatglobal%dim_1%LB
+  648.                               $SC_ptlonglobal_I10 = ptlonglobal%dim_1%EX
+  648.                               $SC_ptlonglobal_I11 = ptlonglobal%dim_1%LB
+  660.                               $SC_islocal_I25 = islocal%dim_1%EX
+  659.                               $SC_jslocal_I24 = jslocal%dim_1%EX
+  653.                               $SC_procmap_I18 = procmap%dim_1%EX
+  653.                               $SC_procmap_I19 = procmap%dim_1%LB
+  654.                               $SC_ngptsperproc_I20 = ngptsperproc%dim_1%EX
+  654.                               $SC_ngptsperproc_I21 = ngptsperproc%dim_1%LB
+  658.                               $SC_gptslocal_I22 = gptslocal%dim_1%EX
+  658.                               $SC_gptslocal_I23 = gptslocal%dim_1%LB
+  647.                               $SC_imaxperj_I6 = imaxperj%dim_1%EX
+  640.                               $I_L640_314 = 0
+  640.                               do
+  641.                                  $lat_S17 = -1.7453292519943295e-2 * ( -90.0 + (ptlatglobal%base_addr)(1 + $I_L640_314, 0) )
+  642.                                  if ( jmax > 0 ) then
+  642.                                     $I_L642_216 = 0
+  642. !dir$ ivdep
+  642.                                     do
+  643.                                        dlat(1 + $I_L642_216) = abs( (lati%base_addr)(1 + $I_L642_216, 0) + -$lat_S17 )
+  644.                                        $I_L642_216 = 1 + $I_L642_216
+  642.                                        if ( $I_L642_216 >= jmax ) exit
+  642.                                     enddo
+  642.                                  endif
+  645.                                  $SCA_MLoc_I68 = 0
+  645.                                  $F_A72 = jmax_in
+  645.                                  if ( jmax_in > 0 ) then
+  645.                                     $Reduc_A73 = inf.0
+  645.                                     $I_L645_296 = 0
+  645. !dir$ ivdep
+  645.                                     do
+  645.                                        $A74 = dlat(1 + $I_L645_296)
+  645.                                        if ( $A74 < $Reduc_A73 ) then
+  645.                                           $Reduc_A73 = $A74
+  645.                                           $SCA_MLoc_I68 = 1 + $I_L645_296
+  645.                                        endif
+  645.                                        $I_L645_296 = 1 + $I_L645_296
+  645.                                        if ( $I_L645_296 >= $F_A72 ) exit
+  645.                                     enddo
+  645.                                  endif
+  647.                                  $t_S20 = (imaxperj%base_addr)($SCA_MLoc_I68, 0)
+  647.                                  if ( $t_S20 > 0 ) then
+  648.                                     $SC_ptlonglobal_I12 = (ptlonglobal%base_addr)(1 + $I_L640_314, 0)
+  647.                                     $I_L647_218 = 0
+  647. !dir$ ivdep
+  647.                                     do
+  648.                                        dlon(1 + $I_L647_218) = abs( -( 1.7453292519943295e-2 * $SC_ptlonglobal_I12 ) + ( 6.2831853071795862 * ( $I_L647_218 * 1.0/( real( $t_S20, 8 ) ) ) ) )
+  650.                                        $I_L647_218 = 1 + $I_L647_218
+  647.                                        if ( $I_L647_218 >= $t_S20 ) exit
+  647.                                     enddo
+  647.                                  endif
+  651.                                  $SCA_MLoc_I64 = 0
+  651.                                  $F_A77 = imax_in
+  651.                                  if ( imax_in > 0 ) then
+  651.                                     $Reduc_A78 = inf831853071795862
+  651.                                     $I_L651_298 = 0
+  651. !dir$ ivdep
+  651.                                     do
+  651.                                        $A79 = dlon(1 + $I_L651_298)
+  651.                                        if ( $A79 < $Reduc_A78 ) then
+  651.                                           $Reduc_A78 = $A79
+  651.                                           $SCA_MLoc_I64 = 1 + $I_L651_298
+  651.                                        endif
+  651.                                        $I_L651_298 = 1 + $I_L651_298
+  651.                                        if ( $I_L651_298 >= $F_A77 ) exit
+  651.                                     enddo
+  651.                                  endif
+  653.                                  (procmap%base_addr)(1 + $I_L640_314, 0) = (gridmap%base_addr)($SCA_MLoc_I64, $SCA_MLoc_I68, 0)
+  654.                                  (ngptsperproc%base_addr)((gridmap%base_addr)($SCA_MLoc_I64, $SCA_MLoc_I68, 0), 0) = 1 + (ngptsperproc%base_addr)((gridmap%base_addr)($SCA_MLoc_I64, $SCA_MLoc_I68, 0), 0)
+  656.                                  if ( myid + -(gridmap%base_addr)($SCA_MLoc_I64, $SCA_MLoc_I68, 0) == 0 ) then
+  657.                                     ngptslocal = 1 + ngptslocal
+  658.                                     (gptslocal%base_addr)(ngptslocal, 0) = ( 1 + $I_L640_314 )
+  659.                                     (jslocal%base_addr)(ngptslocal, 0) = $SCA_MLoc_I68
+  660.                                     (islocal%base_addr)(ngptslocal, 0) = $SCA_MLoc_I64
+  660.                                  endif
+  662.                                  $I_L640_314 = 1 + $I_L640_314
+  661.                                  if ( $I_L640_314 >= ngpts ) exit
+  661.                               enddo
+  640.                               iblocmin(1) = $SCA_MLoc_I64
+  640.                               jblocmin(1) = $SCA_MLoc_I68
+  640.                            endif
+  663.                            mapglobal%header%a_contig = 1
+  663.                            mapglobal%dim_1%LB = 1
+  663.                            mapglobal%dim_1%EX = ( max( 0, ngpts ) )
+  663.                            mapglobal%dim_1%SM = 1
+  663.                            $_allo_P22(0) = 0x1000000000001L
+  663.                            $_allo_P22(1) = loc( mapglobal )
+  663.                            call __allocate( $_allo_P22, 0, 0, _fcd( 0, 0 ) )
+  664.                            $i_S25 = 1
+  665.                            if ( maxnodes > 0 ) then
+  667.                               $SC_procmap_I18 = procmap%dim_1%EX
+  667.                               $SC_procmap_I19 = procmap%dim_1%LB
+  666.                               if ( ngpts > 0 ) then
+  665.                                  $I_L665_316 = 0
+  665.                                  do
+  666.                                     $I_L666_220 = 0
+  666. !dir$ ivdep
+  666.                                     do
+  667.                                        if ( $I_L665_316 + -(procmap%base_addr)(1 + $I_L666_220, 0) == 0 ) then
+  668.                                           (mapglobal%base_addr)($i_S25, 0) = ( 1 + $I_L666_220 )
+  669.                                           $i_S25 = 1 + $i_S25
+  669.                                        endif
+  671.                                        $I_L666_220 = 1 + $I_L666_220
+  670.                                        if ( $I_L666_220 >= ngpts ) exit
+  670.                                     enddo
+  672.                                     $I_L665_316 = 1 + $I_L665_316
+  671.                                     if ( $I_L665_316 >= maxnodes ) exit
+  671.                                  enddo
+  671.                               endif
+  671.                            endif
+  676.                            map%header%a_contig = 1
+  676.                            map%dim_1%LB = 1
+  676.                            map%dim_1%EX = ( max( 0, ngptslocal ) )
+  676.                            map%dim_1%SM = 1
+  676.                            $_allo_P23(0) = 0x1000000000001L
+  676.                            $_allo_P23(1) = loc( map )
+  676.                            call __allocate( $_allo_P23, 0, 0, _fcd( 0, 0 ) )
+  677.                            $nloc_S31 = 0
+  678.                            if ( mylastlat + -myfirstlat >= 0 ) then
+  679.                               $SC_mylastlon_I28 = mylastlon%dim_1%EX
+  679.                               $SC_mylastlon_I29 = mylastlon%dim_1%LB
+  679.                               $SC_myfirstlon_I26 = myfirstlon%dim_1%EX
+  679.                               $SC_myfirstlon_I27 = myfirstlon%dim_1%LB
+  681.                               $SC_islocal_I25 = islocal%dim_1%EX
+  681.                               $SC_jslocal_I24 = jslocal%dim_1%EX
+  680.                               if ( ngptslocal > 0 ) then
+  678.                                  $I_L678_334 = 0
+  678.                                  do
+  679.                                     $t_S27 = (myfirstlon%base_addr)(myfirstlat + $I_L678_334, 0)
+  679.                                     $t_S28 = (mylastlon%base_addr)(myfirstlat + $I_L678_334, 0)
+  679.                                     if ( $t_S28 + -$t_S27 >= 0 ) then
+  679.                                        $I_L679_318 = 0
+  679.                                        do
+  680.                                           $I_L680_222 = 0
+  680. !dir$ ivdep
+  680.                                           do
+  681.                                              if ( (jslocal%base_addr)(1 + $I_L680_222, 0) + -myfirstlat + -$I_L678_334 == 0 ) then
+  681.                                                 if ( (islocal%base_addr)(1 + $I_L680_222, 0) + -$t_S27 + -$I_L679_318 == 0 ) then
+  682.                                                    $nloc_S31 = 1 + $nloc_S31
+  684.                                                    (map%base_addr)(1 + $I_L680_222, 0) = $nloc_S31
+  684.                                                 endif
+  684.                                              endif
+  686.                                              $I_L680_222 = 1 + $I_L680_222
+  685.                                              if ( $I_L680_222 >= ngptslocal ) exit
+  685.                                           enddo
+  687.                                           $I_L679_318 = 1 + $I_L679_318
+  686.                                           if ( $I_L679_318 >= 1 + $t_S28 + -$t_S27 ) exit
+  686.                                        enddo
+  686.                                     endif
+  688.                                     $I_L678_334 = 1 + $I_L678_334
+  687.                                     if ( $I_L678_334 >= 1 + mylastlat + -myfirstlat ) exit
+  687.                                  enddo
+  687.                               endif
+  687.                            endif
+  692.                            gpt%header%a_contig = 1
+  692.                            gpt%dim_1%LB = 1
+  692.                            gpt%dim_1%EX = ( max( 0, ngptslocal ) )
+  692.                            gpt%dim_1%SM = 28
+  692.                            $_allo_P24(0) = 0x1000000000001L
+  692.                            $_allo_P24(1) = loc( gpt )
+  692.                            call __allocate( $_allo_P24, 0, 0, _fcd( 0, 0 ) )
+  692.                            if ( ( max( 0, ngptslocal ) ) > 0 ) then
+  692.                               $I_L692_224 = 0
+  692.                               do
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos = $_StaticDV_P25
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%base_addr = pointer to array[1] of real (kind=8)( 0 )
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%el_len = 64
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%assoc = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%ptr_alloc = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%p_or_a = 1
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%a_contig = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%n_dim = 1
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%orig_base = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%orig_size = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%n_codim = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%dv_versn = 2
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%dv_smunit = 64
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%d_type = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%n_params = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%header%d_type_idx = 13
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%dim_1%LB = 1
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%dim_1%EX = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%dignos%dim_1%SM = 1
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd = $_StaticDV_P26
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%base_addr = pointer to array[1] of integer( 0 )
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%el_len = 32
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%assoc = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%ptr_alloc = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%p_or_a = 1
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%a_contig = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%n_dim = 1
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%orig_base = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%orig_size = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%n_codim = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%dv_versn = 2
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%dv_smunit = 32
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%d_type = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%n_params = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%header%d_type_idx = 10
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%dim_1%LB = 1
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%dim_1%EX = 0
+  692.                                  (gpt%base_addr)(1 + $I_L692_224, 0)%inrefd%dim_1%SM = 1
+  692.                                  $I_L692_224 = 1 + $I_L692_224
+  692.                                  if ( $I_L692_224 >= ( max( 0, ngptslocal ) ) ) exit
+  692.                               enddo
+  692.                            endif
+  693.                            ngptsperjb%header%a_contig = 1
+  693.                            ngptsperjb%dim_1%LB = 1
+  693.                            ngptsperjb%dim_1%EX = ( max( 0, jbmax ) )
+  693.                            ngptsperjb%dim_1%SM = 1
+  693.                            $_allo_P27(0) = 0x1000000000001L
+  693.                            $_allo_P27(1) = loc( ngptsperjb )
+  693.                            call __allocate( $_allo_P27, 0, 0, _fcd( 0, 0 ) )
+  694.                            iniperjb%header%a_contig = 1
+  694.                            iniperjb%dim_1%LB = 1
+  694.                            iniperjb%dim_1%EX = ( max( 0, jbmax ) )
+  694.                            iniperjb%dim_1%SM = 1
+  694.                            $_allo_P28(0) = 0x1000000000001L
+  694.                            $_allo_P28(1) = loc( iniperjb )
+  694.                            call __allocate( $_allo_P28, 0, 0, _fcd( 0, 0 ) )
+  698.                            if ( ngptslocal > 0 ) then
+  702.                               $SC_ptlatglobal_I8 = ptlatglobal%dim_1%EX
+  702.                               $SC_ptlatglobal_I9 = ptlatglobal%dim_1%LB
+  701.                               $SC_ptlonglobal_I10 = ptlonglobal%dim_1%EX
+  701.                               $SC_ptlonglobal_I11 = ptlonglobal%dim_1%LB
+  700.                               $SC_gptslocal_I22 = gptslocal%dim_1%EX
+  700.                               $SC_gptslocal_I23 = gptslocal%dim_1%LB
+  698.                               $I_L698_226 = 0
+  698. !dir$ unroll 2
+  698.                               do
+  699.                                  $nloc_S34 = (map%base_addr)(1 + $I_L698_226, 0)
+  700.                                   _substr((gpt%base_addr)($nloc_S34, 0)%ptcty,1,40) =  _substr((ptctyglobal%base_addr)((gptslocal%base_addr)(1 + $I_L698_226, 0), 0),1,40)
+  701.                                  (gpt%base_addr)($nloc_S34, 0)%ptlon = (ptlonglobal%base_addr)((gptslocal%base_addr)(1 + $I_L698_226, 0), 0)
+  702.                                  (gpt%base_addr)($nloc_S34, 0)%ptlat = -1.7453292519943295e-2 * ( -90.0 + (ptlatglobal%base_addr)((gptslocal%base_addr)(1 + $I_L698_226, 0), 0) )
+  703.                                   _substr((gpt%base_addr)($nloc_S34, 0)%ptcoor,1,11) =  _substr((ptcoorglobal%base_addr)((gptslocal%base_addr)(1 + $I_L698_226, 0), 0),1,11)
+  704.                                  $I_L698_226 = 1 + $I_L698_226
+  698.                                  if ( $I_L698_226 >= ngptslocal ) exit
+  698.                               enddo
+  698.                            endif
+  707.                            if ( nfctrl(55) > 0 ) then
+  708.                               $Unit_temp_O24 = nfprt
+  708.                               _fwrite( _clist( 0, 0, 3, $Unit_temp_O24, Null_Arg, Null_Arg, t$46,  _substr(t$45,1,59), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  709.                               $t_S36 = ngptslocal
+  709.                               if ( ngptslocal > 0 ) then
+  709.                                  $I_L709_228 = 0
+  709.                                  do
+  710.                                     n = (map%base_addr)(1 + $I_L709_228, 0)
+  712.                                     if ( ( n < gpt%dim_1%LB .or. n > -1 + gpt%dim_1%LB + gpt%dim_1%EX ) /= .false. ) then
+  712.                                         _substr(t$337,1,16) = 'GridHistory.f90'
+  712.                                         _substr(t$338,1,4) = 'GPT'
+  712.                                        t$256 = gpt%dim_1%LB
+  712.                                        t$257 = -1 + gpt%dim_1%LB + gpt%dim_1%EX
+  712.                                        t$231 = n
+  712.                                        call _bounds_error(  _substr(t$337,1,16), 1212,  _substr(t$338,1,4), 1, t$256, t$257, t$231, t$336 )
+  712.                                     endif
+  712.                                     if ( ( n < gpt%dim_1%LB .or. n > -1 + gpt%dim_1%LB + gpt%dim_1%EX ) /= .false. ) then
+  712.                                         _substr(t$340,1,16) = 'GridHistory.f90'
+  712.                                         _substr(t$341,1,4) = 'GPT'
+  712.                                        t$232 = gpt%dim_1%LB
+  712.                                        t$233 = -1 + gpt%dim_1%LB + gpt%dim_1%EX
+  712.                                        t$237 = n
+  712.                                        call _bounds_error(  _substr(t$340,1,16), 1212,  _substr(t$341,1,4), 1, t$232, t$233, t$237, t$339 )
+  712.                                     endif
+  713.                                     if ( ( n < gpt%dim_1%LB .or. n > -1 + gpt%dim_1%LB + gpt%dim_1%EX ) /= .false. ) then
+  713.                                         _substr(t$343,1,16) = 'GridHistory.f90'
+  713.                                         _substr(t$344,1,4) = 'GPT'
+  713.                                        t$238 = gpt%dim_1%LB
+  713.                                        t$239 = -1 + gpt%dim_1%LB + gpt%dim_1%EX
+  713.                                        t$243 = n
+  713.                                        call _bounds_error(  _substr(t$343,1,16), 1213,  _substr(t$344,1,4), 1, t$238, t$239, t$243, t$342 )
+  713.                                     endif
+  713.                                     if ( ( n < gpt%dim_1%LB .or. n > -1 + gpt%dim_1%LB + gpt%dim_1%EX ) /= .false. ) then
+  713.                                         _substr(t$346,1,16) = 'GridHistory.f90'
+  713.                                         _substr(t$347,1,4) = 'GPT'
+  713.                                        t$244 = gpt%dim_1%LB
+  713.                                        t$245 = -1 + gpt%dim_1%LB + gpt%dim_1%EX
+  713.                                        t$249 = n
+  713.                                        call _bounds_error(  _substr(t$346,1,16), 1213,  _substr(t$347,1,4), 1, t$244, t$245, t$249, t$345 )
+  713.                                     endif
+  711.                                     $Unit_temp_O25 = nfprt
+  711.                                     $IOitem_O26 = (gpt%base_addr)(n, 0)%ptlon
+  711.                                     $IOitem_O27 = 90.0 + -57.295779513082323 * (gpt%base_addr)(n, 0)%ptlat
+  711.                                     $_IOitem_P2(0) = myid
+  711.                                     $_IOitem_P2(1) = n
+  711.                                     _fwrite( _clist( 0, 0, 3, $Unit_temp_O25, Null_Arg, Null_Arg, t$32,  _substr(t$31,1,29), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (&)$_IOitem_P2(:( 0, 1, 1 )), 0x2000200000000L ), _iotype(  _substr((gpt%base_addr)(n, 0)%ptcty,1,40), 0x800600000000L ), _iotype( $IOitem_O26, 0x804060300000000L ), _iotype( $IOitem_O27, 0x4000300000000L ), _iotype(  _substr((gpt%base_addr)(n, 0)%ptcoor,1,11), 0x800600000000L ) ) )
+  714.                                     $I_L709_228 = 1 + $I_L709_228
+  714.                                     if ( $I_L709_228 >= $t_S36 ) exit
+  714.                                  enddo
+  714.                               endif
+  714.                            endif
+  719.                            $t_S38 = ngptslocal
+  719.                            if ( ngptslocal > 0 ) then
+  719.                               $I_L719_230 = 0
+  719.                               do
+  720.                                  if ( t$144 == 0 ) then
+  720.                                     t$183(1) = 4
+  720.                                     t$184(1) = 0
+  720.                                     t$185(1) = 0
+  720.                                     t$180(1) = int( loc( t$143 ), 8 )
+  720.                                     t$181(1) = 0
+  720.                                     t$182(1) = int( loc( t$179 ), 8 )
+  720.                                     t$144 = __get_dynamic_type( 2, t$180(1), t$183(1), 1, t$181(1), t$182(1), t$184(1), t$185(1) )
+  720.                                  endif
+  720.                                  if ( (gpt%base_addr)(1 + $I_L719_230, 0)%dignos%header%assoc == 1 ) then
+  720.                                     (gpt%base_addr)(1 + $I_L719_230, 0)%dignos%header%assoc = 0
+  720.                                  endif
+  720.                                  (gpt%base_addr)(1 + $I_L719_230, 0)%dignos%header%a_contig = 1
+  720.                                  (gpt%base_addr)(1 + $I_L719_230, 0)%dignos%dim_1%LB = 1
+  720.                                  (gpt%base_addr)(1 + $I_L719_230, 0)%dignos%dim_1%EX = ( max( 0, nghsl ) )
+  720.                                  (gpt%base_addr)(1 + $I_L719_230, 0)%dignos%dim_1%SM = 1
+  720.                                  $_allo_P29(0) = 0x1000000000001L
+  720.                                  $_allo_P29(1) = loc( (gpt%base_addr)(1 + $I_L719_230, 0)%dignos )
+  720.                                  call __allocate( $_allo_P29, 0, 0, _fcd( 0, 0 ) )
+  721.                                  if ( t$144 == 0 ) then
+  721.                                     t$191(1) = 4
+  721.                                     t$192(1) = 0
+  721.                                     t$193(1) = 0
+  721.                                     t$188(1) = int( loc( t$143 ), 8 )
+  721.                                     t$189(1) = 0
+  721.                                     t$190(1) = int( loc( t$187 ), 8 )
+  721.                                     t$144 = __get_dynamic_type( 2, t$188(1), t$191(1), 1, t$189(1), t$190(1), t$192(1), t$193(1) )
+  721.                                  endif
+  721.                                  if ( (gpt%base_addr)(1 + $I_L719_230, 0)%inrefd%header%assoc == 1 ) then
+  721.                                     (gpt%base_addr)(1 + $I_L719_230, 0)%inrefd%header%assoc = 0
+  721.                                  endif
+  721.                                  (gpt%base_addr)(1 + $I_L719_230, 0)%inrefd%header%a_contig = 1
+  721.                                  (gpt%base_addr)(1 + $I_L719_230, 0)%inrefd%dim_1%LB = 1
+  721.                                  (gpt%base_addr)(1 + $I_L719_230, 0)%inrefd%dim_1%EX = ( max( 0, ngrfld ) )
+  721.                                  (gpt%base_addr)(1 + $I_L719_230, 0)%inrefd%dim_1%SM = 1
+  721.                                  $_allo_P30(0) = 0x1000000000001L
+  721.                                  $_allo_P30(1) = loc( (gpt%base_addr)(1 + $I_L719_230, 0)%inrefd )
+  721.                                  call __allocate( $_allo_P30, 0, 0, _fcd( 0, 0 ) )
+  722.                                  $I_L719_230 = 1 + $I_L719_230
+  721.                                  if ( $I_L719_230 >= $t_S38 ) exit
+  721.                               enddo
+  721.                            endif
+  724.                            if ( ngptslocal > 0 ) then
+  730.                               $SC_gpt_I32 = gpt%dim_1%EX
+  730.                               $SC_gpt_I33 = gpt%dim_1%LB
+  725.                               $SC_map_I30 = map%dim_1%EX
+  725.                               $SC_map_I31 = map%dim_1%LB
+  728.                               $SC_ghaf_I0 = ghaf%dim_1%EX
+  728.                               $SC_ghaf_I1 = ghaf%dim_1%LB
+  730.                               $SC_gpt_I50 = gpt%dim_1%EX
+  730.                               $SC_gpt_I51 = gpt%dim_1%LB
+  724.                               $I_L724_320 = 0
+  724.                               do
+  725.                                  $n_S42 = (map%base_addr)(1 + $I_L724_320, 0)
+  726.                                  $ib_S41 = 0
+  727.                                  $I_L727_232 = 0
+  727. !dir$ ivdep
+  727.                                  do
+  728.                                     if ( (ghaf%base_addr)(1 + $I_L727_232, 0)%isreqfld /= .false. ) then
+  729.                                        $ib_S41 = 1 + $ib_S41
+  730.                                        ((gpt%base_addr)($n_S42, 0)%inrefd%base_addr)($ib_S41, 0) = ( 1 + $I_L727_232 )
+  730.                                     endif
+  732.                                     $I_L727_232 = 1 + $I_L727_232
+  731.                                     if ( $I_L727_232 >= 83 ) exit
+  731.                                  enddo
+  733.                                  $I_L724_320 = 1 + $I_L724_320
+  732.                                  if ( $I_L724_320 >= ngptslocal ) exit
+  732.                               enddo
+  732.                            endif
+  737.                            $F_A80 = ngptsperjb%dim_1%EX
+  737.                            if ( ngptsperjb%dim_1%EX > 0 ) then
+  737.                               $SC_ngptsperjb_I82 = ngptsperjb%dim_1%EX
+  737.                               $SC_ngptsperjb_I83 = ngptsperjb%dim_1%LB
+  737.                               $I_L737_300 = 0
+  737. !dir$ ivdep
+  737.                               do
+  737.                                  (ngptsperjb%base_addr)($SC_ngptsperjb_I83 + $I_L737_300, 0) = 0
+  737.                                  $I_L737_300 = 1 + $I_L737_300
+  737.                                  if ( $I_L737_300 >= $F_A80 ) exit
+  737.                               enddo
+  737.                            endif
+  738.                            if ( ngptslocal > 0 ) then
+  742.                               $SC_ngptsperjb_I44 = ngptsperjb%dim_1%EX
+  742.                               $SC_ngptsperjb_I45 = ngptsperjb%dim_1%LB
+  740.                               $SC_gpt_I32 = gpt%dim_1%EX
+  740.                               $SC_gpt_I33 = gpt%dim_1%LB
+  739.                               $SC_map_I30 = map%dim_1%EX
+  739.                               $SC_map_I31 = map%dim_1%LB
+  740.                               $SC_islocal_I25 = islocal%dim_1%EX
+  740.                               $SC_jslocal_I24 = jslocal%dim_1%EX
+  741.                               $SC_jbperij_I42 = jbperij%dim_2%SM
+  741.                               $SC_jbperij_I41 = jbperij%dim_2%EX
+  741.                               $SC_jbperij_I43 = jbperij%dim_2%LB
+  741.                               $SC_jbperij_I39 = jbperij%dim_1%EX
+  741.                               $SC_jbperij_I40 = jbperij%dim_1%LB
+  740.                               $SC_ibperij_I37 = ibperij%dim_2%SM
+  740.                               $SC_ibperij_I36 = ibperij%dim_2%EX
+  740.                               $SC_ibperij_I38 = ibperij%dim_2%LB
+  740.                               $SC_ibperij_I34 = ibperij%dim_1%EX
+  740.                               $SC_ibperij_I35 = ibperij%dim_1%LB
+  738.                               $I_L738_234 = 0
+  738. !dir$ ivdep
+  738.                               do
+  739.                                  $n_S44 = (map%base_addr)(1 + $I_L738_234, 0)
+  740.                                  (gpt%base_addr)($n_S44, 0)%ibloc = (ibperij%base_addr)((islocal%base_addr)(1 + $I_L738_234, 0), (jslocal%base_addr)(1 + $I_L738_234, 0), 0)
+  741.                                  $SVU_P40 = (jbperij%base_addr)((islocal%base_addr)(1 + $I_L738_234, 0), (jslocal%base_addr)(1 + $I_L738_234, 0), 0)
+  741.                                  (gpt%base_addr)($n_S44, 0)%jbloc = $SVU_P40
+  742.                                  (ngptsperjb%base_addr)($SVU_P40, 0) = _vu_plus( (ngptsperjb%base_addr)($SVU_P40, 0), 1 )
+  743.                                  $I_L738_234 = 1 + $I_L738_234
+  738.                                  if ( $I_L738_234 >= ngptslocal ) exit
+  738.                               enddo
+  738.                            endif
+  745.                            (iniperjb%base_addr)(1, 0) = 0
+  746.                            if ( -2 + jbmax >= 0 ) then
+  747.                               $SC_iniperjb_I46 = iniperjb%dim_1%EX
+  747.                               $SC_iniperjb_I47 = iniperjb%dim_1%LB
+  747.                               $SC_ngptsperjb_I44 = ngptsperjb%dim_1%EX
+  747.                               $SC_ngptsperjb_I45 = ngptsperjb%dim_1%LB
+  746.                               $iniperjb_WR0_R0 = (iniperjb%base_addr)(1, 0)
+  746.                               $I_L746_236 = 0
+  746. !dir$ unroll 4
+  746.                               do
+  747.                                  $iniperjb_WR0_R0 = $iniperjb_WR0_R0 + (ngptsperjb%base_addr)(1 + $I_L746_236, 0)
+  747.                                  (iniperjb%base_addr)(2 + $I_L746_236, 0) = $iniperjb_WR0_R0
+  748.                                  $I_L746_236 = 1 + $I_L746_236
+  746.                                  if ( $I_L746_236 >= -1 + jbmax ) exit
+  746.                               enddo
+  746.                            endif
+  752.                            dogrh%header%a_contig = 1
+  752.                            dogrh%dim_1%LB = 1
+  752.                            dogrh%dim_1%EX = 83
+  752.                            dogrh%dim_1%SM = 1
+  752.                            dogrh%dim_2%LB = 1
+  752.                            dogrh%dim_2%EX = ( max( 0, jbmax ) )
+  752.                            dogrh%dim_2%SM = 83
+  752.                            $_allo_P31(0) = 0x1000000000001L
+  752.                            $_allo_P31(1) = loc( dogrh )
+  752.                            call __allocate( $_allo_P31, 0, 0, _fcd( 0, 0 ) )
+  753.                            if ( jbmax > 0 ) then
+  754.                               $SC_ngptsperjb_I44 = ngptsperjb%dim_1%EX
+  754.                               $SC_ngptsperjb_I45 = ngptsperjb%dim_1%LB
+  755.                               $SC_ghaf_I0 = ghaf%dim_1%EX
+  755.                               $SC_ghaf_I1 = ghaf%dim_1%LB
+  753.                               $I_L753_332 = 0
+  753.                               do
+  754.                                  if ( (ngptsperjb%base_addr)(1 + $I_L753_332, 0) > 0 ) then
+  755.                                     $I_L755_302 = 0
+  755. !dir$ ivdep
+  755.                                     do
+  755.                                        (dogrh%base_addr)(1 + $I_L755_302, 1 + $I_L753_332, 0) = (ghaf%base_addr)($SC_ghaf_I1 + $I_L755_302, 0)%isreqfld
+  755.                                        $I_L755_302 = 1 + $I_L755_302
+  755.                                        if ( $I_L755_302 >= 83 ) exit
+  755.                                     enddo
+  755.                                  else
+  757.                                     $I_L757_304 = 0
+  757. !dir$ ivdep
+  757.                                     do
+  757.                                        (dogrh%base_addr)(1 + $I_L757_304, 1 + $I_L753_332, 0) = .false.
+  757.                                        $I_L757_304 = 1 + $I_L757_304
+  757.                                        if ( $I_L757_304 >= 83 ) exit
+  757.                                     enddo
+  757.                                  endif
+  759.                                  $I_L753_332 = 1 + $I_L753_332
+  758.                                  if ( $I_L753_332 >= jbmax ) exit
+  758.                               enddo
+  758.                            endif
+  760.                            if ( myid == 0 ) then
+  762.                               $Unit_temp_O28 = nfghdr
+  762.                               _fwrite( _clist( 0, 0, 3, $Unit_temp_O28, Null_Arg, Null_Arg, t$52,  _substr(t$51,1,8), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'GRID POINT HISTORY  ', 0x800600000000L ) ) )
+  763.                               $Unit_temp_O29 = nfghdr
+  763.                               $_IOitem_P3(0) = ibmax
+  763.                               $_IOitem_P3(1) = jbmax
+  763.                               $_IOitem_P3(2) = kmax
+  763.                               $_IOitem_P3(3) = kmax
+  763.                               $_IOitem_P3(4) = ngpts
+  763.                               $_IOitem_P3(5) = nghsl
+  763.                               $_IOitem_P3(6) = nghsl
+  763.                               _fwrite( _clist( 0, 0, 3, $Unit_temp_O29, Null_Arg, Null_Arg, t$56,  _substr(t$55,1,24), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '0003', 0x800600000000L ), _iotype( 'SEQU', 0x800600000000L ), _iotype( (&)$_IOitem_P3(:( 0, 6, 1 )), 0x2000200000000L ), _iotype( (&)idate(+:( 1, 4, 1 )), 0x2000200000000L ), _iotype( 'TAPE', 0x800600000000L ) ) )
+  765.                               t$364 = 24 + ( _ltrim(  _substr(trunclev,1,10) ) ) + ( _ltrim(  _substr(start,1,200) ) )
+  765.                               t$366 = int( _alloc( max( 0, t$364 ) ), 8 )
+  765.                                _substr(t$365,1,max( 0, t$364 )) = //( 'CPTEC AGCM R1.2 2001  ', //(  _substr(trunclev,1,_ltrim(  _substr(trunclev,1,10) )), //( '  ',  _substr(start,1,_ltrim(  _substr(start,1,200) )) ) ) )
+  765.                               $Unit_temp_O30 = nfghdr
+  765.                               _fwrite( _clist( 0, 0, 3, $Unit_temp_O30, Null_Arg, Null_Arg, t$54,  _substr(t$53,1,8), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$365,1,max( 0, t$364 )), 0x800600000000L ) ) )
+  765.                               _free( t$366 )
+  766.                               $Unit_temp_O31 = nfghdr
+  766.                               _fwrite( _clist( 0, 0, 2, $Unit_temp_O31, Null_Arg, Null_Arg, t$58,  _substr(t$57,1,11), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  766.                               $t_S47 = kmax
+  766.                               if ( kmax > 0 ) then
+  766.                                  $SC_del_I49 = del%dim_1%SM
+  766.                                  $SC_del_I48 = del%dim_1%EX
+  766.                                  $I_L766_238 = 0
+  766.                                  do
+  766.                                     if ( ( ( 1 + $I_L766_238 ) <= 0 .or. ( 1 + $I_L766_238 ) > $SC_del_I48 ) /= .false. ) then
+  766.                                         _substr(t$371,1,16) = 'GridHistory.f90'
+  766.                                         _substr(t$372,1,4) = 'DEL'
+  766.                                        t$250 = $SC_del_I48
+  766.                                        t$251 = 1 + $I_L766_238
+  766.                                        call _bounds_error(  _substr(t$371,1,16), 1266,  _substr(t$372,1,4), 1, 1, t$250, t$251, t$370 )
+  766.                                     endif
+  766.                                     $Unit_temp_O32 = nfghdr
+  766.                                     $IOitem_O33 = (del%base_addr)(1 + $I_L766_238, 0)
+  766.                                     _fwrite( _clist( 0, 0, 0, $Unit_temp_O32, Null_Arg, Null_Arg, t$58,  _substr(t$57,1,11), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O33, 0x804060300000000L ) ) )
+  766.                                     $I_L766_238 = 1 + $I_L766_238
+  766.                                     if ( $I_L766_238 >= 1 + max( 0, -1 + $t_S47 ) ) exit
+  766.                                  enddo
+  766.                               endif
+  766.                               $Unit_temp_O34 = nfghdr
+  766.                               _fwrite( _clist( 0, 0, 1, $Unit_temp_O34, Null_Arg, Null_Arg, t$58,  _substr(t$57,1,11), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  767.                               $I_L767_240 = 0
+  767.                               do
+  768.                                  if ( (ghaf%base_addr)(1 + $I_L767_240, 0)%isreqfld /= .false. ) then
+  769.                                     if ( ( ( 1 + $I_L767_240 ) < ghaf%dim_1%LB .or. ( 1 + $I_L767_240 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  769.                                         _substr(t$375,1,16) = 'GridHistory.f90'
+  769.                                         _substr(t$376,1,5) = 'GHAF'
+  769.                                        t$255 = ghaf%dim_1%LB
+  769.                                        t$256 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  769.                                        t$257 = 1 + $I_L767_240
+  769.                                        call _bounds_error(  _substr(t$375,1,16), 1269,  _substr(t$376,1,5), 1, t$255, t$256, t$257, t$374 )
+  769.                                     endif
+  770.                                     if ( ( ( 1 + $I_L767_240 ) < ghaf%dim_1%LB .or. ( 1 + $I_L767_240 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  770.                                         _substr(t$378,1,16) = 'GridHistory.f90'
+  770.                                         _substr(t$379,1,5) = 'GHAF'
+  770.                                        t$231 = ghaf%dim_1%LB
+  770.                                        t$232 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  770.                                        t$233 = 1 + $I_L767_240
+  770.                                        call _bounds_error(  _substr(t$378,1,16), 1270,  _substr(t$379,1,5), 1, t$231, t$232, t$233, t$377 )
+  770.                                     endif
+  771.                                     if ( ( ( 1 + $I_L767_240 ) < ghaf%dim_1%LB .or. ( 1 + $I_L767_240 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  771.                                         _substr(t$381,1,16) = 'GridHistory.f90'
+  771.                                         _substr(t$382,1,5) = 'GHAF'
+  771.                                        t$237 = ghaf%dim_1%LB
+  771.                                        t$238 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  771.                                        t$239 = 1 + $I_L767_240
+  771.                                        call _bounds_error(  _substr(t$381,1,16), 1271,  _substr(t$382,1,5), 1, t$237, t$238, t$239, t$380 )
+  771.                                     endif
+  772.                                     if ( ( ( 1 + $I_L767_240 ) < ghaf%dim_1%LB .or. ( 1 + $I_L767_240 ) > -1 + ghaf%dim_1%LB + ghaf%dim_1%EX ) /= .false. ) then
+  772.                                         _substr(t$384,1,16) = 'GridHistory.f90'
+  772.                                         _substr(t$385,1,5) = 'GHAF'
+  772.                                        t$243 = ghaf%dim_1%LB
+  772.                                        t$244 = -1 + ghaf%dim_1%LB + ghaf%dim_1%EX
+  772.                                        t$245 = 1 + $I_L767_240
+  772.                                        call _bounds_error(  _substr(t$384,1,16), 1272,  _substr(t$385,1,5), 1, t$243, t$244, t$245, t$383 )
+  772.                                     endif
+  769.                                     $Unit_temp_O35 = nfghdr
+  769.                                     _fwrite( _clist( 0, 0, 3, $Unit_temp_O35, Null_Arg, Null_Arg, t$36,  _substr(t$35,1,23), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr((ghaf%base_addr)(1 + $I_L767_240, 0)%fldsname,1,40), 0x800600000000L ), _iotype( (ghaf%base_addr)(1 + $I_L767_240, 0)%lyrsflds, 0x2000200000000L ), _iotype( (ghaf%base_addr)(1 + $I_L767_240, 0)%ungrafld, 0x2000200000000L ), _iotype(  _substr((ghaf%base_addr)(1 + $I_L767_240, 0)%gradsfld,1,4), 0x800600000000L ) ) )
+  769.                                  endif
+  774.                                  $I_L767_240 = 1 + $I_L767_240
+  773.                                  if ( $I_L767_240 >= 83 ) exit
+  773.                               enddo
+  775.                               $t_S48 = ngpts
+  775.                               if ( ngpts > 0 ) then
+  775.                                  $I_L775_242 = 0
+  775.                                  do
+  776.                                     if ( ( 1 + $I_L775_242 < _dv_lb( ptctyglobal, 1 ) .or. ( 1 + $I_L775_242 ) > -1 + _dv_lb( ptctyglobal, 1 ) + _dv_ex( ptctyglobal, 1 ) ) /= .false. ) then
+  776.                                         _substr(t$390,1,16) = 'GridHistory.f90'
+  776.                                         _substr(t$391,1,12) = 'PTCTYGLOBAL'
+  776.                                        t$249 = _dv_lb( ptctyglobal, 1 )
+  776.                                        t$250 = -1 + _dv_lb( ptctyglobal, 1 ) + _dv_ex( ptctyglobal, 1 )
+  776.                                        t$251 = 1 + $I_L775_242
+  776.                                        call _bounds_error(  _substr(t$390,1,16), 1276,  _substr(t$391,1,12), 1, t$249, t$250, t$251, t$389 )
+  776.                                     endif
+  776.                                     if ( ( 1 + $I_L775_242 < _dv_lb( ptcoorglobal, 1 ) .or. ( 1 + $I_L775_242 ) > -1 + _dv_lb( ptcoorglobal, 1 ) + _dv_ex( ptcoorglobal, 1 ) ) /= .false. ) then
+  776.                                         _substr(t$393,1,16) = 'GridHistory.f90'
+  776.                                         _substr(t$394,1,13) = 'PTCOORGLOBAL'
+  776.                                        t$255 = _dv_lb( ptcoorglobal, 1 )
+  776.                                        t$256 = -1 + _dv_lb( ptcoorglobal, 1 ) + _dv_ex( ptcoorglobal, 1 )
+  776.                                        t$257 = 1 + $I_L775_242
+  776.                                        call _bounds_error(  _substr(t$393,1,16), 1276,  _substr(t$394,1,13), 1, t$255, t$256, t$257, t$392 )
+  776.                                     endif
+  776.                                     $Unit_temp_O36 = nfghdr
+  776.                                     _fwrite( _clist( 0, 0, 3, $Unit_temp_O36, Null_Arg, Null_Arg, t$48,  _substr(t$47,1,15), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr((ptctyglobal%base_addr)(1 + $I_L775_242, 0),1,40), 0x800600000000L ), _iotype(  _substr((ptcoorglobal%base_addr)(1 + $I_L775_242, 0),1,18), 0x800600000000L ) ) )
+  777.                                     $I_L775_242 = 1 + $I_L775_242
+  777.                                     if ( $I_L775_242 >= $t_S48 ) exit
+  777.                                  enddo
+  777.                               endif
+  778.                               t$231 = nfghdr
+  778.                               t$395 = __eofw( t$231, 0, 0, 0x100000000000000L, 0, 0 )
+  778.                            endif
+  436.                            $_allo_P32(0) = 0x2000000000001L
+  436.                            $_allo_P32(1) = loc( jslocal )
+  436.                            $_allo_P32(2) = loc( islocal )
+  436.                            call _dealloc( $_allo_P32, 0, 0, _fcd( 0, 0 ) )
+  413.                            _free( t$154 )
+  413.                         endif
+  413.                      endif
+  413.                   endif
+  413.                endif
+  413.             endif
+  413.          endif
+  413.       endif
+  413.    70 continue
+  797.       return
+  797.       end
+  797.       
+  799.       
+  799.       subroutine gridhistlabel( nmax, imax, jmax, imaxperj, ghlon, ghlat, label )
+  799.       imaxperj%dim_1%LB = 1
+  799.       t$61 = nmax
+  820.       t$161 = _zla( 0, nmax )
+  799.       t$162 = _len( label )
+  799.       t$65 = jmax
+  843.       t$163 = _zla( 0, jmax )
+  843.       t$166 = 8 * _zla( 0, jmax )
+  799.       t$64 = imax
+  842.       t$167 = _zla( 0, imax )
+  842.       t$168 = 8 * ( 7 + 8 * _zla( 0, jmax ) ) / 8
+  842.       t$170 = t$168 + 8 * _zla( 0, imax )
+  799.       t$164 = int( _alloc( t$168 + 8 * _zla( 0, imax ) ), 8 )
+  843.       t$165 = t$164
+  842.       t$169 = t$168 + t$164
+  853.       $F_A35 = nmax
+  853.       if ( nmax > 0 ) then
+  853.          $I_L853_32 = 0
+  853. !dir$ ivdep
+  853.          do
+  853.             ghlon(1 + $I_L853_32) = 1.7453292519943295e-2 * ghlon(1 + $I_L853_32)
+  853.             $I_L853_32 = 1 + $I_L853_32
+  853.             if ( $I_L853_32 >= $F_A35 ) exit
+  853.          enddo
+  853.       endif
+  854.       $F_A36 = nmax
+  854.       if ( nmax > 0 ) then
+  854.          $I_L854_34 = 0
+  854. !dir$ ivdep
+  854.          do
+  854.             ghlat(1 + $I_L854_34) = 1.7453292519943295e-2 * ( 90.0 + ghlat(1 + $I_L854_34) )
+  854.             $I_L854_34 = 1 + $I_L854_34
+  854.             if ( $I_L854_34 >= $F_A36 ) exit
+  854.          enddo
+  863.          $SC_imaxperj_I4 = imaxperj%dim_1%SM
+  863.          $SC_imaxperj_I3 = imaxperj%dim_1%EX
+  858.          $SC_lati_I1 = lati%dim_1%EX
+  858.          $SC_lati_I2 = lati%dim_1%LB
+  855.          $I_L855_54 = 0
+  855.          do
+  856.             $F_A37 = jmax
+  856.             if ( jmax > 0 ) then
+  856.                $I_L856_36 = 0
+  856. !dir$ ivdep
+  856.                do
+  856.                   dlat(1 + $I_L856_36) = 1000.0
+  856.                   $I_L856_36 = 1 + $I_L856_36
+  856.                   if ( $I_L856_36 >= $F_A37 ) exit
+  856.                enddo
+  858.                $SC_ghlat_I0 = ghlat(1 + $I_L855_54)
+  857.                $I_L857_26 = 0
+  857. !dir$ ivdep
+  857.                do
+  858.                   dlat(1 + $I_L857_26) = abs( (lati%base_addr)(1 + $I_L857_26, 0) + -$SC_ghlat_I0 )
+  859.                   $I_L857_26 = 1 + $I_L857_26
+  857.                   if ( $I_L857_26 >= jmax ) exit
+  857.                enddo
+  857.             endif
+  860.             $SCA_MLoc_I11 = 0
+  860.             $F_A40 = jmax
+  860.             if ( jmax > 0 ) then
+  860.                $Reduc_A41 = inf0.0
+  860.                $I_L860_38 = 0
+  860. !dir$ ivdep
+  860.                do
+  860.                   $A42 = dlat(1 + $I_L860_38)
+  860.                   if ( $A42 < $Reduc_A41 ) then
+  860.                      $Reduc_A41 = $A42
+  860.                      $SCA_MLoc_I11 = 1 + $I_L860_38
+  860.                   endif
+  860.                   $I_L860_38 = 1 + $I_L860_38
+  860.                   if ( $I_L860_38 >= $F_A40 ) exit
+  860.                enddo
+  860.             endif
+  862.             $F_A43 = imax
+  862.             if ( imax > 0 ) then
+  862.                $I_L862_40 = 0
+  862. !dir$ ivdep
+  862.                do
+  862.                   dlon(1 + $I_L862_40) = 1000.0
+  862.                   $I_L862_40 = 1 + $I_L862_40
+  862.                   if ( $I_L862_40 >= $F_A43 ) exit
+  862.                enddo
+  862.             endif
+  863.             $t_S2 = (imaxperj%base_addr)($SCA_MLoc_I11, 0)
+  863.             if ( $t_S2 > 0 ) then
+  864.                $SC_ghlon_I5 = ghlon(1 + $I_L855_54)
+  863.                $I_L863_28 = 0
+  863. !dir$ ivdep
+  863.                do
+  864.                   dlon(1 + $I_L863_28) = abs( -$SC_ghlon_I5 + ( 6.2831853071795862 * ( $I_L863_28 * 1.0/( real( $t_S2, 8 ) ) ) ) )
+  866.                   $I_L863_28 = 1 + $I_L863_28
+  863.                   if ( $I_L863_28 >= $t_S2 ) exit
+  863.                enddo
+  863.             endif
+  867.             $SCA_MLoc_I8 = 0
+  867.             $F_A46 = imax
+  867.             if ( imax > 0 ) then
+  867.                $Reduc_A47 = inf831853071795862
+  867.                $I_L867_42 = 0
+  867. !dir$ ivdep
+  867.                do
+  867.                   $A48 = dlon(1 + $I_L867_42)
+  867.                   if ( $A48 < $Reduc_A47 ) then
+  867.                      $Reduc_A47 = $A48
+  867.                      $SCA_MLoc_I8 = 1 + $I_L867_42
+  867.                   endif
+  867.                   $I_L867_42 = 1 + $I_L867_42
+  867.                   if ( $I_L867_42 >= $F_A46 ) exit
+  867.                enddo
+  867.             endif
+  868.             ghlat(1 + $I_L855_54) = 57.295779513082323 * (lati%base_addr)($SCA_MLoc_I11, 0)
+  869.             ghlon(1 + $I_L855_54) = 360.0 * ( 1.0/( real( $t_S2, 8 ) ) * ( -1 + $SCA_MLoc_I8 ) )
+  870.             $I_L855_54 = 1 + $I_L855_54
+  868.             if ( $I_L855_54 >= nmax ) exit
+  868.          enddo
+  868.       endif
+  871.       t$407 = int( _alloc( max( 0, 4 * _zla( 0, nmax ) ) ), 8 )
+  871.       $F_A49 = nmax
+  871.       if ( nmax > 0 ) then
+  871.          $I_L871_44 = 0
+  871. !dir$ ivdep
+  871.          do
+  871.             t$406(1 + $I_L871_44) = ghlon(1 + $I_L871_44) > 180.0
+  871.             $I_L871_44 = 1 + $I_L871_44
+  871.             if ( $I_L871_44 >= $F_A49 ) exit
+  871.          enddo
+  871.       endif
+  872.       $F_A50 = nmax
+  872.       if ( nmax > 0 ) then
+  872.          $I_L872_46 = 0
+  872. !dir$ ivdep
+  872.          do
+  872.             if ( t$406(1 + $I_L872_46) /= 0 ) then
+  872.                ghlon(1 + $I_L872_46) = -360.0 + ghlon(1 + $I_L872_46)
+  872.             endif
+  872.             $I_L872_46 = 1 + $I_L872_46
+  872.             if ( $I_L872_46 >= $F_A50 ) exit
+  872.          enddo
+  872.       endif
+  871.       _free( t$407 )
+  874.       $F_A51 = nmax
+  874.       if ( nmax > 0 ) then
+  874.          $I_L874_48 = 0
+  874. !dir$ ivdep
+  874.          do
+  874.             ghlat(1 + $I_L874_48) = -90.0 + ghlat(1 + $I_L874_48)
+  874.             $I_L874_48 = 1 + $I_L874_48
+  874.             if ( $I_L874_48 >= $F_A51 ) exit
+  874.          enddo
+  874.       endif
+  876.       if ( nmax > 0 ) then
+  876.          $I_L876_30 = 0
+  876.          do
+  878.             londeg = int( abs( ghlon(1 + $I_L876_30) ) )
+  879.             $lonsig_S5 = int( sign( 1.0, ghlon(1 + $I_L876_30) ) )
+  880.             $lonmin_S4 = _rnd( 60.0 * ( -( real( londeg, 8 ) ) + abs( ghlon(1 + $I_L876_30) ) ) )
+  882.             if ( $lonsig_S5 < 0 ) then
+  883.                 _substr(lonhem,1,1) = 'W'
+  883.             else
+  885.                 _substr(lonhem,1,1) = 'E'
+  885.             endif
+  888.             latdeg = int( abs( ghlat(1 + $I_L876_30) ) )
+  889.             $latsig_S7 = int( sign( 1.1000000000000001, ghlat(1 + $I_L876_30) ) )
+  890.             $latmin_S6 = _rnd( 60.0 * ( -( real( latdeg, 8 ) ) + abs( ghlat(1 + $I_L876_30) ) ) )
+  892.             if ( $latsig_S7 < 0 ) then
+  893.                 _substr(lathem,1,1) = 'S'
+  893.             else
+  895.                 _substr(lathem,1,1) = 'N'
+  895.             endif
+  898.             $IOitem_O0 = ( 1 + $I_L876_30 )
+  898.             $_IOitem_P0(0) = londeg
+  898.             $_IOitem_P0(1) = min( 99, $lonmin_S4 )
+  898.             $_IOitem_P1(0) = latdeg
+  898.             $_IOitem_P1(1) = min( 99, $latmin_S6 )
+  898.             _fwrite( _clist( 0, 0, 3,  _substr(label(1 + $I_L876_30),1,_len( label )), Null_Arg, Null_Arg, t$67,  _substr(t$66,1,29), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (&)$_IOitem_P0(:( 0, 1, 1 )), 0x2000200000000L ), _iotype(  _substr(lonhem,1,1), 0x800600000000L ), _iotype( (&)$_IOitem_P1(:( 0, 1, 1 )), 0x2000200000000L ), _iotype(  _substr(lathem,1,1), 0x800600000000L ), _iotype( '_', 0x800600000000L ), _iotype( $IOitem_O0, 0x2000200000000L ) ) )
+  900.             $I_L876_30 = 1 + $I_L876_30
+  900.             if ( $I_L876_30 >= nmax ) exit
+  900.          enddo
+  900.       endif
+  901.       t$413 = int( _alloc( max( 0, 4 * _zla( 0, nmax ) ) ), 8 )
+  901.       $F_A52 = nmax
+  901.       if ( nmax > 0 ) then
+  901.          $I_L901_50 = 0
+  901. !dir$ ivdep
+  901.          do
+  901.             t$412(1 + $I_L901_50) = ghlon(1 + $I_L901_50) < 0.0
+  901.             $I_L901_50 = 1 + $I_L901_50
+  901.             if ( $I_L901_50 >= $F_A52 ) exit
+  901.          enddo
+  901.       endif
+  902.       $F_A53 = nmax
+  902.       if ( nmax > 0 ) then
+  902.          $I_L902_52 = 0
+  902. !dir$ ivdep
+  902.          do
+  902.             if ( t$412(1 + $I_L902_52) /= 0 ) then
+  902.                ghlon(1 + $I_L902_52) = 360.0 + ghlon(1 + $I_L902_52)
+  902.             endif
+  902.             $I_L902_52 = 1 + $I_L902_52
+  902.             if ( $I_L902_52 >= $F_A53 ) exit
+  902.          enddo
+  902.       endif
+  901.       _free( t$413 )
+  799.       _free( t$164 )
+  905.       return
+  905.       end
+  905.       
+  908.       
+  908.       subroutine nullify_grid( a, nlyr )
+  151.       if ( t$146 == 0 ) then
+  151.          t$175(1) = 3
+  151.          t$176(1) = 0
+  151.          t$177(1) = 0
+  151.          t$172(1) = int( loc( t$145 ), 8 )
+  151.          t$173(1) = 0
+  151.          t$174(1) = int( loc( t$171 ), 8 )
+  151.          t$146 = __get_dynamic_type( 2, t$172(1), t$175(1), 1, t$173(1), t$174(1), t$176(1), t$177(1) )
+  151.       endif
+  912.       if ( a%alcpt%header%assoc == 1 ) then
+  912.          a%alcpt%header%assoc = 0
+  912.       endif
+  913.       a%alcpt%header%a_contig = 1
+  913.       a%alcpt%dim_1%LB = 1
+  913.       a%alcpt%dim_1%EX = ( max( 0, nlyr ) )
+  913.       a%alcpt%dim_1%SM = 1
+  913.       $_allo_P0(0) = 0x1000000000001L
+  913.       $_allo_P0(1) = loc( a%alcpt )
+  913.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  914.       if ( nlyr > 0 ) then
+  914.          $I_L914_4 = 0
+  914. !dir$ ivdep
+  914.          do
+  915.             (a%alcpt%base_addr)(1 + $I_L914_4, 0) = 0
+  916.             $I_L914_4 = 1 + $I_L914_4
+  914.             if ( $I_L914_4 >= nlyr ) exit
+  914.          enddo
+  914.       endif
+  917.       return
+  917.       end
+  917.       
+  919.       
+  919.       subroutine nullify_dignos( a, nlyr )
+  132.       if ( t$144 == 0 ) then
+  132.          t$183(1) = 4
+  132.          t$184(1) = 0
+  132.          t$185(1) = 0
+  132.          t$180(1) = int( loc( t$143 ), 8 )
+  132.          t$181(1) = 0
+  132.          t$182(1) = int( loc( t$179 ), 8 )
+  132.          t$144 = __get_dynamic_type( 2, t$180(1), t$183(1), 1, t$181(1), t$182(1), t$184(1), t$185(1) )
+  132.       endif
+  922.       if ( a%dignos%header%assoc == 1 ) then
+  922.          a%dignos%header%assoc = 0
+  922.       endif
+  923.       a%dignos%header%a_contig = 1
+  923.       a%dignos%dim_1%LB = 1
+  923.       a%dignos%dim_1%EX = ( max( 0, nlyr ) )
+  923.       a%dignos%dim_1%SM = 1
+  923.       $_allo_P0(0) = 0x1000000000001L
+  923.       $_allo_P0(1) = loc( a%dignos )
+  923.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  924.       return
+  924.       end
+  924.       
+  926.       
+  926.       subroutine nullify_inrefd( a, nlyr )
+  132.       if ( t$144 == 0 ) then
+  132.          t$191(1) = 4
+  132.          t$192(1) = 0
+  132.          t$193(1) = 0
+  132.          t$188(1) = int( loc( t$143 ), 8 )
+  132.          t$189(1) = 0
+  132.          t$190(1) = int( loc( t$187 ), 8 )
+  132.          t$144 = __get_dynamic_type( 2, t$188(1), t$191(1), 1, t$189(1), t$190(1), t$192(1), t$193(1) )
+  132.       endif
+  929.       if ( a%inrefd%header%assoc == 1 ) then
+  929.          a%inrefd%header%assoc = 0
+  929.       endif
+  930.       a%inrefd%header%a_contig = 1
+  930.       a%inrefd%dim_1%LB = 1
+  930.       a%inrefd%dim_1%EX = ( max( 0, nlyr ) )
+  930.       a%inrefd%dim_1%SM = 1
+  930.       $_allo_P0(0) = 0x1000000000001L
+  930.       $_allo_P0(1) = loc( a%inrefd )
+  930.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  931.       return
+  931.       end
+  931.       
+  968.       
+  968.       subroutine writegridhistorytopo( fgzs, topogridh, nfghtop )
+  933.       fgzs%dim_1%LB = 1
+  933.       fgzs%dim_2%LB = 1
+  933.       t$195 = _len( topogridh )
+  933.       t$69 = ngptslocal
+  938.       t$196 = _zla( 0, ngptslocal )
+  938.       t$199 = 8 * _zla( 0, ngptslocal )
+  933.       t$68 = ngpts
+  937.       t$200 = _zla( 0, ngpts )
+  937.       t$201 = 8 * ( 7 + 8 * _zla( 0, ngptslocal ) ) / 8
+  937.       t$203 = t$201 + 8 * _zla( 0, ngpts )
+  933.       t$197 = int( _alloc( t$201 + 8 * _zla( 0, ngpts ) ), 8 )
+  938.       t$198 = t$197
+  937.       t$202 = t$201 + t$197
+  941.       if ( grhflg == .false. ) then
+  933.          _free( t$197 )
+  943.       else if ( myid == 0 ) then
+  946.          ierr = 0
+  945.          t$418 = nfghtop
+  946.           _substr(t$419,1,7) = 'REPLACE'
+  945.           _substr(t$420,1,10) = 'SEQUENTIAL'
+  945.           _substr(t$421,1,11) = 'UNFORMATTED'
+  946.           _substr(t$422,1,5) = 'WRITE'
+  945.          t$423(1) = 0x100000000000000L
+  945. !dir$ suppress t$418
+  945.          t$423(2) = int( loc( t$418 ), 8 )
+  945. !dir$ suppress ierr
+  945.          t$423(3) = int( loc( ierr ), 8 )
+  945.          t$423(4) = 0
+  945. !dir$ suppress  _substr(topogridh,1,_ltrim(  _substr(topogridh,1,max( 0, t$195 )) ))
+  945.          t$423(5) = int( loc(  _substr(topogridh,1,_ltrim(  _substr(topogridh,1,_len( topogridh )) )) ), 8 )
+  945.          t$423(6) = _ltrim(  _substr(topogridh,1,_len( topogridh )) )
+  945. !dir$ suppress  _substr(t$419,1,7)
+  945.          t$423(7) = int( loc(  _substr(t$419,1,7) ), 8 )
+  945.          t$423(8) = 7
+  945. !dir$ suppress  _substr(t$420,1,10)
+  945.          t$423(9) = int( loc(  _substr(t$420,1,10) ), 8 )
+  945.          t$423(10) = 10
+  945. !dir$ suppress  _substr(t$421,1,11)
+  945.          t$423(11) = int( loc(  _substr(t$421,1,11) ), 8 )
+  945.          t$423(12) = 11
+  945.          t$423(13) = 0
+  945.          t$423(14) = 0
+  945.          t$423(16) = 0
+  945. !dir$ suppress  _substr(t$422,1,5)
+  945.          t$423(18) = int( loc(  _substr(t$422,1,5) ), 8 )
+  945.          t$423(19) = 5
+  945.          t$423(20) = 0
+  945.          t$423(22) = 0
+  945.          t$423(24) = 0x2000200000000L
+  945.          t$423(25) = 0
+  945.          t$423(27) = 0
+  945.          t$423(29) = 0
+  945.          t$423(31) = 0
+  945.          t$423(33) = 0
+  945.          t$423(35) = 0
+  945.          t$417 = _open( t$423 )
+  947.          if ( ierr /= 0 ) then
+  948.             $Unit_temp_O0 = nfprt
+  948.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$71,  _substr(t$70,1,51), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(topogridh,1,_ltrim(  _substr(topogridh,1,_len( topogridh )) )), 0x800600000000L ), _iotype( ierr, 0x2000200000000L ) ) )
+  950.              _substr(t$424,1,11) = '**(ERROR)**'
+  950.             call _stop(  _substr(t$424,1,11) )
+  950.          else
+  950.             goto 10
+  950.          endif
+  950.       else
+  950.    10    continue
+  955.          if ( ngptslocal > 0 ) then
+  957.             $SC_fgzs_I3 = fgzs%dim_1%SM
+  957.             $SC_fgzs_I2 = fgzs%dim_1%EX
+  957.             $SC_fgzs_I7 = fgzs%dim_2%SM
+  957.             $SC_fgzs_I6 = fgzs%dim_2%EX
+  957.             $SC_gpt_I4 = gpt%dim_1%EX
+  957.             $SC_gpt_I5 = gpt%dim_1%LB
+  956.             $SC_map_I0 = map%dim_1%EX
+  956.             $SC_map_I1 = map%dim_1%LB
+  955.             $I_L955_4 = 0
+  955. !dir$ ivdep
+  955.             do
+  956.                $n_S1 = (map%base_addr)(1 + $I_L955_4, 0)
+  957.                grhloc(1 + $I_L955_4) = 1.020408163265306e-1 * (fgzs%base_addr)((gpt%base_addr)($n_S1, 0)%ibloc, (gpt%base_addr)($n_S1, 0)%jbloc, 0)
+  958.                $I_L955_4 = 1 + $I_L955_4
+  955.                if ( $I_L955_4 >= ngptslocal ) exit
+  955.             enddo
+  955.          endif
+  960.          if ( maxnodes > 1 ) then
+  961.             call collect_grid_his( grhloc(1), grhtop(1), ngpts, ngptslocal, 0, 1, (ngptsperproc%base_addr)(ngptsperproc%dim_1%LB, 0), (mapglobal%base_addr)(mapglobal%dim_1%LB, 0) )
+  963.             if ( myid == 0 ) then
+  963. !dir$ suppress grhtop(1)
+  963.                t$428 = $_StaticDV_P0
+  963.                t$428%base_addr = pointer to array[1] of real (kind=8)( loc( grhtop(1) ) )
+  963.                t$428%header%el_len = 64
+  963.                t$428%header%assoc = 1
+  963.                t$428%header%ptr_alloc = 0
+  963.                t$428%header%p_or_a = 0
+  963.                t$428%header%a_contig = 1
+  963.                t$428%header%n_dim = 1
+  963.                t$428%header%orig_base = 0
+  963.                t$428%header%orig_size = 0
+  963.                t$428%header%n_codim = 0
+  963.                t$428%header%dv_versn = 2
+  963.                t$428%header%dv_smunit = 64
+  963.                t$428%header%d_type = 0
+  963.                t$428%header%n_params = 0
+  963.                t$428%header%d_type_idx = 13
+  963.                t$428%dim_1%LB = 1
+  963.                t$428%dim_1%EX = _zla( 0, t$68 )
+  963.                t$428%dim_1%SM = 1
+  963.                call wrtopogrdh8( nfghtop, t$428 )
+  963.             endif
+  963.          else
+  965. !dir$ suppress grhtop(1)
+  965.             t$429 = $_StaticDV_P1
+  965.             t$429%base_addr = pointer to array[1] of real (kind=8)( loc( grhtop(1) ) )
+  965.             t$429%header%el_len = 64
+  965.             t$429%header%assoc = 1
+  965.             t$429%header%ptr_alloc = 0
+  965.             t$429%header%p_or_a = 0
+  965.             t$429%header%a_contig = 1
+  965.             t$429%header%n_dim = 1
+  965.             t$429%header%orig_base = 0
+  965.             t$429%header%orig_size = 0
+  965.             t$429%header%n_codim = 0
+  965.             t$429%header%dv_versn = 2
+  965.             t$429%header%dv_smunit = 64
+  965.             t$429%header%d_type = 0
+  965.             t$429%header%n_params = 0
+  965.             t$429%header%d_type_idx = 13
+  965.             t$429%dim_1%LB = 1
+  965.             t$429%dim_1%EX = _zla( 0, t$68 )
+  965.             t$429%dim_1%SM = 1
+  965.             call wrtopogrdh8( nfghtop, t$429 )
+  965.          endif
+  933.          _free( t$197 )
+  933.       endif
+  968.       return
+  968.       end
+  968.       
+  972.       
+  972.       subroutine store2d( field, fid, jb, cf )
+  972.       field%dim_1%LB = 1
+  972.       field%dim_2%LB = 1
+  986.       if ( ( grhflg .and. grhon ) /= .false. ) then
+  990.          dim2 = field%dim_2%EX
+  991.          if ( fid <= 0 .orelse. fid > 83 ) then
+  992.             $Unit_temp_O8 = nfprt
+  992.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O8, Null_Arg, Null_Arg, t$73,  _substr(t$72,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( fid, 0x2000200000000L ) ) )
+  993.             $Unit_temp_O9 = nferr
+  993.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O9, Null_Arg, Null_Arg, t$75,  _substr(t$74,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( fid, 0x2000200000000L ) ) )
+  994.              _substr(t$431,1,22) = '**(StoreGridHistory)**'
+  994.             call _stop(  _substr(t$431,1,22) )
+  994.          else
+  995.             if ( jb <= 0 .orelse. jb > jbmax ) then
+  996.                $Unit_temp_O6 = nfprt
+  996.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O6, Null_Arg, Null_Arg, t$77,  _substr(t$76,1,30), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( jb, 0x2000200000000L ) ) )
+  997.                $Unit_temp_O7 = nferr
+  997.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O7, Null_Arg, Null_Arg, t$79,  _substr(t$78,1,30), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( jb, 0x2000200000000L ) ) )
+  998.                 _substr(t$432,1,22) = '**(StoreGridHistory)**'
+  998.                call _stop(  _substr(t$432,1,22) )
+  998.             else
+  999.                if ( (ibmaxperjb%base_addr)(jb, 0) + -field%dim_1%EX /= 0 ) then
+ 1000.                   if ( ( jb < ibmaxperjb%dim_1%LB .or. jb > -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX ) /= .false. ) then
+ 1000.                       _substr(t$434,1,16) = 'GridHistory.f90'
+ 1000.                       _substr(t$435,1,11) = 'IBMAXPERJB'
+ 1000.                      t$436 = ibmaxperjb%dim_1%LB
+ 1000.                      t$437 = -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX
+ 1000.                      t$438 = jb
+ 1000.                      call _bounds_error(  _substr(t$434,1,16), 1500,  _substr(t$435,1,11), 1, t$436, t$437, t$438, t$433 )
+ 1000.                   endif
+ 1000.                   $Unit_temp_O0 = nfprt
+ 1000.                   $IOitem_O1 = (ibmaxperjb%base_addr)(jb, 0)
+ 1000.                   $_IOitem_P0(0) = field%dim_1%EX
+ 1000.                   $_IOitem_P0(1) = $IOitem_O1
+ 1000.                   $_IOitem_P0(2) = ibmax
+ 1000.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$81,  _substr(t$80,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P0(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1001.                   if ( ( jb < ibmaxperjb%dim_1%LB .or. jb > -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX ) /= .false. ) then
+ 1001.                       _substr(t$440,1,16) = 'GridHistory.f90'
+ 1001.                       _substr(t$441,1,11) = 'IBMAXPERJB'
+ 1001.                      t$436 = ibmaxperjb%dim_1%LB
+ 1001.                      t$437 = -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX
+ 1001.                      t$438 = jb
+ 1001.                      call _bounds_error(  _substr(t$440,1,16), 1501,  _substr(t$441,1,11), 1, t$436, t$437, t$438, t$439 )
+ 1001.                   endif
+ 1001.                   $Unit_temp_O2 = nferr
+ 1001.                   $IOitem_O3 = (ibmaxperjb%base_addr)(jb, 0)
+ 1001.                   $_IOitem_P1(0) = field%dim_1%EX
+ 1001.                   $_IOitem_P1(1) = $IOitem_O3
+ 1001.                   $_IOitem_P1(2) = ibmax
+ 1001.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, t$83,  _substr(t$82,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P1(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1002.                    _substr(t$442,1,22) = '**(StoreGridHistory)**'
+ 1002.                   call _stop(  _substr(t$442,1,22) )
+ 1003.                else if ( kmax + -field%dim_2%EX /= 0 ) then
+ 1004.                   $Unit_temp_O4 = nfprt
+ 1004.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, t$85,  _substr(t$84,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( dim2, 0x2000200000000L ) ) )
+ 1005.                   $Unit_temp_O5 = nferr
+ 1005.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O5, Null_Arg, Null_Arg, t$87,  _substr(t$86,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( dim2, 0x2000200000000L ) ) )
+ 1006.                    _substr(t$443,1,22) = '**(StoreGridHistory)**'
+ 1006.                   call _stop(  _substr(t$443,1,22) )
+ 1006.                else
+ 1009.                   $kfirst_S5 = (ghaf%base_addr)(fid, 0)%locgrfld
+ 1010.                   if ( loc( cf ) /= 0 ) then
+ 1011.                      if ( kmax > 0 ) then
+ 1014.                         $SC_field_I9 = field%dim_1%SM
+ 1014.                         $SC_field_I11 = field%dim_2%SM
+ 1013.                         $SC_gpt_I6 = gpt%dim_1%EX
+ 1013.                         $SC_gpt_I7 = gpt%dim_1%LB
+ 1012.                         $SC_ngptsperjb_I5 = (ngptsperjb%base_addr)(jb, 0)
+ 1012.                         $SC_iniperjb_I2 = (iniperjb%base_addr)(jb, 0)
+ 1014.                         $SC_field_I10 = field%dim_2%EX
+ 1014.                         $SC_field_I8 = field%dim_1%EX
+ 1012.                         if ( $SC_ngptsperjb_I5 > 0 ) then
+ 1014.                            $SC_gpt_I12 = gpt%dim_1%EX
+ 1014.                            $SC_gpt_I13 = gpt%dim_1%LB
+ 1012.                            $SI_L1012_30_G1 = 0
+ 1012.                            do
+ 1011.                               $SI_L1011_26_G4 = 0
+ 1011.                               do
+ 1012.                                  $I_L1012_38 = 0
+ 1012. !dir$ shortloop16
+ 1012. !dir$ blocking_size( 4, 4 )
+ 1012.                                  do
+ 1011.                                     $SCA_gpt_I14 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1012_38 + 4 * $SI_L1012_30_G1, 0)%ibloc
+ 1011.                                     $SCA_gpt_I15 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1012_38 + 4 * $SI_L1012_30_G1, 0)%dignos%dim_1%EX
+ 1011.                                     $SCA_gpt_I16 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1012_38 + 4 * $SI_L1012_30_G1, 0)%dignos%dim_1%SM
+ 1011.                                     $SCA_gpt_I17 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1012_38 + 4 * $SI_L1012_30_G1, 0)%dignos%dim_1%LB
+ 1011.                                     $I_L1011_35 = 0
+ 1011. !dir$ ivdep
+ 1011. !dir$ blocking_size( 256, 256 )
+ 1011.                                     do
+ 1014.                                        ((gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1012_38 + 4 * $SI_L1012_30_G1, 0)%dignos%base_addr)($kfirst_S5 + $I_L1011_35 + 256 * $SI_L1011_26_G4, 0) = cf * (field%base_addr)($SCA_gpt_I14, 1 + $I_L1011_35 + 256 * $SI_L1011_26_G4, 0)
+ 1011.                                        $I_L1011_35 = 1 + $I_L1011_35
+ 1012.                                        if ( $I_L1011_35 >= min( kmax, 256 + 256 * $SI_L1011_26_G4 ) + -256 * $SI_L1011_26_G4 ) exit
+ 1012.                                     enddo
+ 1012.                                     $I_L1012_38 = 1 + $I_L1012_38
+ 1012.                                     if ( $I_L1012_38 >= min( $SC_ngptsperjb_I5, 4 + 4 * $SI_L1012_30_G1 ) + -4 * $SI_L1012_30_G1 ) exit
+ 1012.                                  enddo
+ 1011.                                  $SI_L1011_26_G4 = 1 + $SI_L1011_26_G4
+ 1015.                                  if ( $SI_L1011_26_G4 >= _rsh( 255 + kmax, 8 ) ) exit
+ 1015.                               enddo
+ 1012.                               $SI_L1012_30_G1 = 1 + $SI_L1012_30_G1
+ 1012.                               if ( $SI_L1012_30_G1 >= _rsh( 3 + $SC_ngptsperjb_I5, 2 ) ) exit
+ 1012.                            enddo
+ 1012.                         endif
+ 1012.                      endif
+ 1017.                   else if ( kmax > 0 ) then
+ 1021.                      $SC_field_I9 = field%dim_1%SM
+ 1021.                      $SC_field_I11 = field%dim_2%SM
+ 1020.                      $SC_gpt_I6 = gpt%dim_1%EX
+ 1020.                      $SC_gpt_I7 = gpt%dim_1%LB
+ 1019.                      $SC_ngptsperjb_I5 = (ngptsperjb%base_addr)(jb, 0)
+ 1019.                      $SC_iniperjb_I2 = (iniperjb%base_addr)(jb, 0)
+ 1021.                      $SC_field_I10 = field%dim_2%EX
+ 1021.                      $SC_field_I8 = field%dim_1%EX
+ 1019.                      if ( $SC_ngptsperjb_I5 > 0 ) then
+ 1021.                         $SC_gpt_I12 = gpt%dim_1%EX
+ 1021.                         $SC_gpt_I13 = gpt%dim_1%LB
+ 1019.                         $SI_L1019_28_G7 = 0
+ 1019.                         do
+ 1018.                            $SI_L1018_24_G10 = 0
+ 1018.                            do
+ 1019.                               $I_L1019_41 = 0
+ 1019. !dir$ shortloop16
+ 1019. !dir$ blocking_size( 4, 4 )
+ 1019.                               do
+ 1018.                                  $SCA_gpt_I18 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1019_41 + 4 * $SI_L1019_28_G7, 0)%ibloc
+ 1018.                                  $SCA_gpt_I19 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1019_41 + 4 * $SI_L1019_28_G7, 0)%dignos%dim_1%EX
+ 1018.                                  $SCA_gpt_I20 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1019_41 + 4 * $SI_L1019_28_G7, 0)%dignos%dim_1%SM
+ 1018.                                  $SCA_gpt_I21 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1019_41 + 4 * $SI_L1019_28_G7, 0)%dignos%dim_1%LB
+ 1018.                                  $I_L1018_32 = 0
+ 1018. !dir$ ivdep
+ 1018. !dir$ blocking_size( 256, 256 )
+ 1018.                                  do
+ 1021.                                     ((gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1019_41 + 4 * $SI_L1019_28_G7, 0)%dignos%base_addr)($kfirst_S5 + $I_L1018_32 + 256 * $SI_L1018_24_G10, 0) = (field%base_addr)($SCA_gpt_I18, 1 + $I_L1018_32 + 256 * $SI_L1018_24_G10, 0)
+ 1018.                                     $I_L1018_32 = 1 + $I_L1018_32
+ 1019.                                     if ( $I_L1018_32 >= min( kmax, 256 + 256 * $SI_L1018_24_G10 ) + -256 * $SI_L1018_24_G10 ) exit
+ 1019.                                  enddo
+ 1019.                                  $I_L1019_41 = 1 + $I_L1019_41
+ 1019.                                  if ( $I_L1019_41 >= min( $SC_ngptsperjb_I5, 4 + 4 * $SI_L1019_28_G7 ) + -4 * $SI_L1019_28_G7 ) exit
+ 1019.                               enddo
+ 1018.                               $SI_L1018_24_G10 = 1 + $SI_L1018_24_G10
+ 1022.                               if ( $SI_L1018_24_G10 >= _rsh( 255 + kmax, 8 ) ) exit
+ 1022.                            enddo
+ 1019.                            $SI_L1019_28_G7 = 1 + $SI_L1019_28_G7
+ 1019.                            if ( $SI_L1019_28_G7 >= _rsh( 3 + $SC_ngptsperjb_I5, 2 ) ) exit
+ 1019.                         enddo
+ 1019.                      endif
+ 1019.                   endif
+ 1019.                endif
+ 1019.             endif
+ 1019.          endif
+ 1019.       endif
+ 1025.       return
+ 1025.       end
+ 1025.       
+ 1032.       
+ 1032.       subroutine store1d( field, fid, jb, cf )
+ 1032.       field%dim_1%LB = 1
+ 1044.       if ( ( grhflg .and. grhon ) /= .false. ) then
+ 1048.          if ( fid <= 0 .orelse. fid > 83 ) then
+ 1049.             $Unit_temp_O6 = nfprt
+ 1049.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O6, Null_Arg, Null_Arg, t$89,  _substr(t$88,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( fid, 0x2000200000000L ) ) )
+ 1050.             $Unit_temp_O7 = nferr
+ 1050.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O7, Null_Arg, Null_Arg, t$91,  _substr(t$90,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( fid, 0x2000200000000L ) ) )
+ 1051.              _substr(t$459,1,22) = '**(StoreGridHistory)**'
+ 1051.             call _stop(  _substr(t$459,1,22) )
+ 1051.          else
+ 1052.             if ( jb <= 0 .orelse. jb > jbmax ) then
+ 1053.                $Unit_temp_O4 = nfprt
+ 1053.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, t$93,  _substr(t$92,1,30), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( jb, 0x2000200000000L ) ) )
+ 1054.                $Unit_temp_O5 = nferr
+ 1054.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O5, Null_Arg, Null_Arg, t$95,  _substr(t$94,1,30), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( jb, 0x2000200000000L ) ) )
+ 1055.                 _substr(t$460,1,22) = '**(StoreGridHistory)**'
+ 1055.                call _stop(  _substr(t$460,1,22) )
+ 1055.             else
+ 1056.                if ( (ibmaxperjb%base_addr)(jb, 0) + -field%dim_1%EX /= 0 ) then
+ 1057.                   if ( ( jb < ibmaxperjb%dim_1%LB .or. jb > -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX ) /= .false. ) then
+ 1057.                       _substr(t$462,1,16) = 'GridHistory.f90'
+ 1057.                       _substr(t$463,1,11) = 'IBMAXPERJB'
+ 1057.                      t$464 = ibmaxperjb%dim_1%LB
+ 1057.                      t$465 = -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX
+ 1057.                      t$466 = jb
+ 1057.                      call _bounds_error(  _substr(t$462,1,16), 1557,  _substr(t$463,1,11), 1, t$464, t$465, t$466, t$461 )
+ 1057.                   endif
+ 1057.                   $Unit_temp_O0 = nfprt
+ 1057.                   $IOitem_O1 = (ibmaxperjb%base_addr)(jb, 0)
+ 1057.                   $_IOitem_P0(0) = field%dim_1%EX
+ 1057.                   $_IOitem_P0(1) = $IOitem_O1
+ 1057.                   $_IOitem_P0(2) = ibmax
+ 1057.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$97,  _substr(t$96,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P0(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1058.                   if ( ( jb < ibmaxperjb%dim_1%LB .or. jb > -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX ) /= .false. ) then
+ 1058.                       _substr(t$468,1,16) = 'GridHistory.f90'
+ 1058.                       _substr(t$469,1,11) = 'IBMAXPERJB'
+ 1058.                      t$464 = ibmaxperjb%dim_1%LB
+ 1058.                      t$465 = -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX
+ 1058.                      t$466 = jb
+ 1058.                      call _bounds_error(  _substr(t$468,1,16), 1558,  _substr(t$469,1,11), 1, t$464, t$465, t$466, t$467 )
+ 1058.                   endif
+ 1058.                   $Unit_temp_O2 = nferr
+ 1058.                   $IOitem_O3 = (ibmaxperjb%base_addr)(jb, 0)
+ 1058.                   $_IOitem_P1(0) = field%dim_1%EX
+ 1058.                   $_IOitem_P1(1) = $IOitem_O3
+ 1058.                   $_IOitem_P1(2) = ibmax
+ 1058.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, t$99,  _substr(t$98,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P1(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1059.                    _substr(t$470,1,22) = '**(StoreGridHistory)**'
+ 1059.                   call _stop(  _substr(t$470,1,22) )
+ 1059.                else
+ 1062.                   $kfirst_S4 = (ghaf%base_addr)(fid, 0)%locgrfld
+ 1063.                   if ( loc( cf ) /= 0 ) then
+ 1064.                      $t_S0 = 1 + (iniperjb%base_addr)(jb, 0)
+ 1064.                      $t_S1 = (iniperjb%base_addr)(jb, 0) + (ngptsperjb%base_addr)(jb, 0)
+ 1064.                      if ( $t_S1 + -$t_S0 >= 0 ) then
+ 1066.                         $SC_field_I3 = field%dim_1%SM
+ 1065.                         $SC_gpt_I0 = gpt%dim_1%EX
+ 1065.                         $SC_gpt_I1 = gpt%dim_1%LB
+ 1066.                         $SC_field_I2 = field%dim_1%EX
+ 1066.                         $SC_gpt_I4 = gpt%dim_1%EX
+ 1066.                         $SC_gpt_I5 = gpt%dim_1%LB
+ 1064.                         $I_L1064_8 = 0
+ 1064. !dir$ ivdep
+ 1064.                         do
+ 1065.                            $i_S3 = (gpt%base_addr)($t_S0 + $I_L1064_8, 0)%ibloc
+ 1066.                            ((gpt%base_addr)($t_S0 + $I_L1064_8, 0)%dignos%base_addr)($kfirst_S4, 0) = cf * (field%base_addr)($i_S3, 0)
+ 1067.                            $I_L1064_8 = 1 + $I_L1064_8
+ 1064.                            if ( $I_L1064_8 >= 1 + $t_S1 + -$t_S0 ) exit
+ 1064.                         enddo
+ 1064.                      endif
+ 1064.                   else
+ 1069.                      $t_S6 = 1 + (iniperjb%base_addr)(jb, 0)
+ 1069.                      $t_S7 = (iniperjb%base_addr)(jb, 0) + (ngptsperjb%base_addr)(jb, 0)
+ 1069.                      if ( $t_S7 + -$t_S6 >= 0 ) then
+ 1071.                         $SC_field_I3 = field%dim_1%SM
+ 1070.                         $SC_gpt_I0 = gpt%dim_1%EX
+ 1070.                         $SC_gpt_I1 = gpt%dim_1%LB
+ 1071.                         $SC_field_I2 = field%dim_1%EX
+ 1071.                         $SC_gpt_I4 = gpt%dim_1%EX
+ 1071.                         $SC_gpt_I5 = gpt%dim_1%LB
+ 1069.                         $I_L1069_10 = 0
+ 1069. !dir$ ivdep
+ 1069.                         do
+ 1070.                            $i_S9 = (gpt%base_addr)($t_S6 + $I_L1069_10, 0)%ibloc
+ 1071.                            ((gpt%base_addr)($t_S6 + $I_L1069_10, 0)%dignos%base_addr)($kfirst_S4, 0) = (field%base_addr)($i_S9, 0)
+ 1072.                            $I_L1069_10 = 1 + $I_L1069_10
+ 1069.                            if ( $I_L1069_10 >= 1 + $t_S7 + -$t_S6 ) exit
+ 1069.                         enddo
+ 1069.                      endif
+ 1069.                   endif
+ 1069.                endif
+ 1069.             endif
+ 1069.          endif
+ 1069.       endif
+ 1074.       return
+ 1074.       end
+ 1074.       
+ 1135.       
+ 1135.       subroutine writegridhistory( nfghou, ifday, tod, idate )
+ 1081.       t$100 = ngptslocal
+ 1081.       t$101 = nghsl
+ 1094.       t$204 = _zla( 0, ngptslocal )
+ 1081.       t$205 = _zla( 0, ngptslocal )
+ 1094.       t$206 = _zla( 0, nghsl )
+ 1081.       t$207 = _zla( 0, ngptslocal ) * _zla( 0, nghsl )
+ 1094.       t$210 = 8 * _zla( 0, ngptslocal ) * _zla( 0, nghsl )
+ 1081.       t$102 = ngpts
+ 1095.       t$211 = _zla( 0, ngpts )
+ 1081.       t$212 = _zla( 0, ngpts )
+ 1081.       t$213 = _zla( 0, nghsl ) * _zla( 0, ngpts )
+ 1095.       t$214 = 8 * ( 7 + 8 * _zla( 0, ngptslocal ) * _zla( 0, nghsl ) ) / 8
+ 1095.       t$216 = t$214 + 8 * _zla( 0, nghsl ) * _zla( 0, ngpts )
+ 1081.       t$208 = int( _alloc( t$214 + 8 * _zla( 0, nghsl ) * _zla( 0, ngpts ) ), 8 )
+ 1094.       t$209 = t$208
+ 1095.       t$215 = t$214 + t$208
+ 1097.       if ( ( grhflg .and. grhon ) == .false. ) then
+ 1081.          _free( t$208 )
+ 1081.       else
+ 1100.          call tmstmp2( idate(1), ifday, tod, iqstmp(3), iqstmp(4), iqstmp(5), iqstmp(6) )
+ 1103.          iqstmp(2) = int( ( -3.125e-2 + mod( 3.125e-2 + tod, 3600.0 ) ) ) / 60
+ 1104.          iqstmp(1) = mod( int( ( -3.125e-2 + mod( 3.125e-2 + tod, 3600.0 ) ) ), 60 )
+ 1105.          $I_L1105_20 = 0
+ 1105. !dir$ ivdep
+ 1105.          do
+ 1106.             stmp(1 + $I_L1105_20) = real( iqstmp(1 + $I_L1105_20), 8 )
+ 1107.             $I_L1105_20 = 1 + $I_L1105_20
+ 1105.             if ( $I_L1105_20 >= 6 ) exit
+ 1105.          enddo
+ 1108.          if ( nghsl > 0 ) then
+ 1111.             $SC_gpt_I2 = gpt%dim_1%EX
+ 1111.             $SC_gpt_I3 = gpt%dim_1%LB
+ 1110.             $SC_map_I0 = map%dim_1%EX
+ 1110.             $SC_map_I1 = map%dim_1%LB
+ 1109.             if ( ngptslocal > 0 ) then
+ 1111.                $SC_gpt_I4 = gpt%dim_1%EX
+ 1111.                $SC_gpt_I5 = gpt%dim_1%LB
+ 1108.                $I_L1108_28 = 0
+ 1108.                do
+ 1109.                   $I_L1109_22 = 0
+ 1109. !dir$ unroll 4
+ 1109.                   do
+ 1110.                      $n_S2 = (map%base_addr)(1 + $I_L1109_22, 0)
+ 1111.                      qwork(1 + $I_L1109_22, 1 + $I_L1108_28) = ((gpt%base_addr)($n_S2, 0)%dignos%base_addr)(1 + $I_L1108_28, 0)
+ 1112.                      $I_L1109_22 = 1 + $I_L1109_22
+ 1109.                      if ( $I_L1109_22 >= ngptslocal ) exit
+ 1109.                   enddo
+ 1113.                   $I_L1108_28 = 1 + $I_L1108_28
+ 1112.                   if ( $I_L1108_28 >= nghsl ) exit
+ 1112.                enddo
+ 1112.             endif
+ 1112.          endif
+ 1114.          if ( allghf == .false. ) then
+ 1114.             if ( ngptslocal > 0 ) then
+ 1115.                $m_S5 = 1
+ 1116.                $I_L1116_24 = 0
+ 1116.                do
+ 1117.                   if ( (ghaf%base_addr)(1 + $I_L1116_24, 0)%isreqfld /= .false. ) then
+ 1118.                      t$488 = ngpts * (ghaf%base_addr)(1 + $I_L1116_24, 0)%lyrsflds
+ 1118.                      call cnvray( qwork(1, $m_S5), t$488, (ghaf%base_addr)(1 + $I_L1116_24, 0)%ungrafld, (ghaf%base_addr)(1 + $I_L1116_24, 0)%ungrafld )
+ 1120.                      $m_S5 = $m_S5 + (ghaf%base_addr)(1 + $I_L1116_24, 0)%lyrsflds
+ 1120.                   endif
+ 1122.                   $I_L1116_24 = 1 + $I_L1116_24
+ 1121.                   if ( $I_L1116_24 >= 83 ) exit
+ 1121.                enddo
+ 1121.             endif
+ 1121.          endif
+ 1125.          if ( maxnodes > 1 ) then
+ 1126.             call collect_grid_his( qwork(1, 1), work(1, 1), ngpts, ngptslocal, 0, nghsl, (ngptsperproc%base_addr)(ngptsperproc%dim_1%LB, 0), (mapglobal%base_addr)(mapglobal%dim_1%LB, 0) )
+ 1128.             if ( myid == 0 ) then
+ 1128. !dir$ suppress stmp(1)
+ 1128.                t$489 = $_StaticDV_P0
+ 1128.                t$489%base_addr = pointer to array[1] of real (kind=8)( loc( stmp(1) ) )
+ 1128.                t$489%header%el_len = 64
+ 1128.                t$489%header%assoc = 1
+ 1128.                t$489%header%ptr_alloc = 0
+ 1128.                t$489%header%p_or_a = 0
+ 1128.                t$489%header%a_contig = 1
+ 1128.                t$489%header%n_dim = 1
+ 1128.                t$489%header%orig_base = 0
+ 1128.                t$489%header%orig_size = 0
+ 1128.                t$489%header%n_codim = 0
+ 1128.                t$489%header%dv_versn = 2
+ 1128.                t$489%header%dv_smunit = 64
+ 1128.                t$489%header%d_type = 0
+ 1128.                t$489%header%n_params = 0
+ 1128.                t$489%header%d_type_idx = 13
+ 1128.                t$489%dim_1%LB = 1
+ 1128.                t$489%dim_1%EX = 6
+ 1128.                t$489%dim_1%SM = 1
+ 1128. !dir$ suppress work(1, 1)
+ 1128.                t$490 = $_StaticDV_P1
+ 1128.                t$490%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( work(1, 1) ) )
+ 1128.                t$490%header%el_len = 64
+ 1128.                t$490%header%assoc = 1
+ 1128.                t$490%header%ptr_alloc = 0
+ 1128.                t$490%header%p_or_a = 0
+ 1128.                t$490%header%a_contig = 1
+ 1128.                t$490%header%n_dim = 2
+ 1128.                t$490%header%orig_base = 0
+ 1128.                t$490%header%orig_size = 0
+ 1128.                t$490%header%n_codim = 0
+ 1128.                t$490%header%dv_versn = 2
+ 1128.                t$490%header%dv_smunit = 64
+ 1128.                t$490%header%d_type = 0
+ 1128.                t$490%header%n_params = 0
+ 1128.                t$490%header%d_type_idx = 13
+ 1128.                t$490%dim_1%LB = 1
+ 1128.                t$490%dim_1%EX = _zla( 0, t$102 )
+ 1128.                t$490%dim_1%SM = 1
+ 1128.                t$490%dim_2%LB = 1
+ 1128.                t$490%dim_2%EX = _zla( 0, t$101 )
+ 1128.                t$490%dim_2%SM = _zla( 0, t$102 )
+ 1128.                call writegrdh8( nfghou, t$489, t$490 )
+ 1128.             endif
+ 1128.          else
+ 1130. !dir$ suppress stmp(1)
+ 1130.             t$491 = $_StaticDV_P2
+ 1130.             t$491%base_addr = pointer to array[1] of real (kind=8)( loc( stmp(1) ) )
+ 1130.             t$491%header%el_len = 64
+ 1130.             t$491%header%assoc = 1
+ 1130.             t$491%header%ptr_alloc = 0
+ 1130.             t$491%header%p_or_a = 0
+ 1130.             t$491%header%a_contig = 1
+ 1130.             t$491%header%n_dim = 1
+ 1130.             t$491%header%orig_base = 0
+ 1130.             t$491%header%orig_size = 0
+ 1130.             t$491%header%n_codim = 0
+ 1130.             t$491%header%dv_versn = 2
+ 1130.             t$491%header%dv_smunit = 64
+ 1130.             t$491%header%d_type = 0
+ 1130.             t$491%header%n_params = 0
+ 1130.             t$491%header%d_type_idx = 13
+ 1130.             t$491%dim_1%LB = 1
+ 1130.             t$491%dim_1%EX = 6
+ 1130.             t$491%dim_1%SM = 1
+ 1130. !dir$ suppress qwork(1, 1)
+ 1130.             t$492 = $_StaticDV_P3
+ 1130.             t$492%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( qwork(1, 1) ) )
+ 1130.             t$492%header%el_len = 64
+ 1130.             t$492%header%assoc = 1
+ 1130.             t$492%header%ptr_alloc = 0
+ 1130.             t$492%header%p_or_a = 0
+ 1130.             t$492%header%a_contig = 1
+ 1130.             t$492%header%n_dim = 2
+ 1130.             t$492%header%orig_base = 0
+ 1130.             t$492%header%orig_size = 0
+ 1130.             t$492%header%n_codim = 0
+ 1130.             t$492%header%dv_versn = 2
+ 1130.             t$492%header%dv_smunit = 64
+ 1130.             t$492%header%d_type = 0
+ 1130.             t$492%header%n_params = 0
+ 1130.             t$492%header%d_type_idx = 13
+ 1130.             t$492%dim_1%LB = 1
+ 1130.             t$492%dim_1%EX = _zla( 0, t$100 )
+ 1130.             t$492%dim_1%SM = 1
+ 1130.             t$492%dim_2%LB = 1
+ 1130.             t$492%dim_2%EX = _zla( 0, t$101 )
+ 1130.             t$492%dim_2%SM = _zla( 0, t$100 )
+ 1130.             call writegrdh8( nfghou, t$491, t$492 )
+ 1130.          endif
+ 1132.          if ( ngptslocal > 0 ) then
+ 1133.             $SC_gpt_I2 = gpt%dim_1%EX
+ 1133.             $SC_gpt_I3 = gpt%dim_1%LB
+ 1133.             $SC_gpt_I4 = gpt%dim_1%EX
+ 1133.             $SC_gpt_I5 = gpt%dim_1%LB
+ 1132.             $I_L1132_32 = 0
+ 1132.             do
+ 1133.                $F_A33 = (gpt%base_addr)(1 + $I_L1132_32, 0)%dignos%dim_1%EX
+ 1133.                if ( (gpt%base_addr)(1 + $I_L1132_32, 0)%dignos%dim_1%EX > 0 ) then
+ 1133.                   $SCA_gpt_I6 = (gpt%base_addr)(1 + $I_L1132_32, 0)%dignos%dim_1%EX
+ 1133.                   $SCA_gpt_I7 = (gpt%base_addr)(1 + $I_L1132_32, 0)%dignos%dim_1%SM
+ 1133.                   $SCA_gpt_I8 = (gpt%base_addr)(1 + $I_L1132_32, 0)%dignos%dim_1%LB
+ 1133.                   $I_L1133_30 = 0
+ 1133. !dir$ ivdep
+ 1133.                   do
+ 1133.                      ((gpt%base_addr)(1 + $I_L1132_32, 0)%dignos%base_addr)($SCA_gpt_I8 + $I_L1133_30, 0) = 0.0
+ 1133.                      $I_L1133_30 = 1 + $I_L1133_30
+ 1133.                      if ( $I_L1133_30 >= $F_A33 ) exit
+ 1133.                   enddo
+ 1133.                endif
+ 1134.                $I_L1132_32 = 1 + $I_L1132_32
+ 1132.                if ( $I_L1132_32 >= ngptslocal ) exit
+ 1132.             enddo
+ 1132.          endif
+ 1081.          _free( t$208 )
+ 1081.       endif
+ 1135.       return
+ 1135.       end
+ 1135.       
+ 1142.       
+ 1142.       subroutine storemaskedgridhistory( field, imask, fid, jb, cf )
+ 1142.       field%dim_1%LB = 1
+ 1142.       imask%dim_1%LB = 1
+ 1142.       t$104 = ibmax
+ 1151.       t$217 = _zla( 0, ibmax )
+ 1151.       t$220 = 8 * _zla( 0, ibmax )
+ 1142.       t$218 = int( _alloc( 8 * _zla( 0, ibmax ) ), 8 )
+ 1151.       t$219 = t$218
+ 1154.       if ( ( grhflg .and. grhon ) == .false. ) then
+ 1142.          _free( t$218 )
+ 1142.       else
+ 1157.          $ncount_S1 = 0
+ 1158.          if ( imask%dim_1%EX > 0 ) then
+ 1161.             $SC_field_I3 = field%dim_1%SM
+ 1161.             $SC_field_I2 = field%dim_1%EX
+ 1159.             $SC_imask_I1 = imask%dim_1%SM
+ 1159.             $SC_imask_I0 = imask%dim_1%EX
+ 1158.             $I_L1158_4 = 0
+ 1158. !dir$ ivdep
+ 1158.             do
+ 1159.                if ( (imask%base_addr)(1 + $I_L1158_4, 0) > 0 ) then
+ 1160.                   $ncount_S1 = 1 + $ncount_S1
+ 1161.                   bfr(1 + $I_L1158_4) = (field%base_addr)($ncount_S1, 0)
+ 1161.                else
+ 1163.                   bfr(1 + $I_L1158_4) = 0.0
+ 1163.                endif
+ 1165.                $I_L1158_4 = 1 + $I_L1158_4
+ 1164.                if ( $I_L1158_4 >= $SC_imask_I0 ) exit
+ 1164.             enddo
+ 1164.          endif
+ 1166.          if ( loc( cf ) /= 0 ) then
+ 1167. !dir$ suppress bfr(1)
+ 1167.             t$500 = $_StaticDV_P0
+ 1167.             t$500%base_addr = pointer to array[1] of real (kind=8)( loc( bfr(1) ) )
+ 1167.             t$500%header%el_len = 64
+ 1167.             t$500%header%assoc = 1
+ 1167.             t$500%header%ptr_alloc = 0
+ 1167.             t$500%header%p_or_a = 0
+ 1167.             t$500%header%a_contig = 1
+ 1167.             t$500%header%n_dim = 1
+ 1167.             t$500%header%orig_base = 0
+ 1167.             t$500%header%orig_size = 0
+ 1167.             t$500%header%n_codim = 0
+ 1167.             t$500%header%dv_versn = 2
+ 1167.             t$500%header%dv_smunit = 64
+ 1167.             t$500%header%d_type = 0
+ 1167.             t$500%header%n_params = 0
+ 1167.             t$500%header%d_type_idx = 13
+ 1167.             t$500%dim_1%LB = 1
+ 1167.             t$500%dim_1%EX = ( max( 0, imask%dim_1%EX ) )
+ 1167.             t$500%dim_1%SM = 1
+ 1167.             call store1d( t$500, fid, jb, cf )
+ 1167.          else
+ 1169. !dir$ suppress bfr(1)
+ 1169.             t$501 = $_StaticDV_P1
+ 1169.             t$501%base_addr = pointer to array[1] of real (kind=8)( loc( bfr(1) ) )
+ 1169.             t$501%header%el_len = 64
+ 1169.             t$501%header%assoc = 1
+ 1169.             t$501%header%ptr_alloc = 0
+ 1169.             t$501%header%p_or_a = 0
+ 1169.             t$501%header%a_contig = 1
+ 1169.             t$501%header%n_dim = 1
+ 1169.             t$501%header%orig_base = 0
+ 1169.             t$501%header%orig_size = 0
+ 1169.             t$501%header%n_codim = 0
+ 1169.             t$501%header%dv_versn = 2
+ 1169.             t$501%header%dv_smunit = 64
+ 1169.             t$501%header%d_type = 0
+ 1169.             t$501%header%n_params = 0
+ 1169.             t$501%header%d_type_idx = 13
+ 1169.             t$501%dim_1%LB = 1
+ 1169.             t$501%dim_1%EX = ( max( 0, imask%dim_1%EX ) )
+ 1169.             t$501%dim_1%SM = 1
+ 1169.             call store1d( t$501, fid, jb, 0 )
+ 1169.          endif
+ 1142.          _free( t$218 )
+ 1142.       endif
+ 1171.       return
+ 1171.       end
+ 1171.       
+ 1176.       
+ 1176.       subroutine turnongridhistory
+ 1177.       grhon = grhflg
+ 1178.       return
+ 1178.       end
+ 1178.       
+ 1183.       
+ 1183.       subroutine turnoffgridhistory
+ 1184.       grhon = .false.
+ 1185.       return
+ 1185.       end
+ 1185.       
+ 1189.       
+ 1189.       logical
+ 1189.       function isgridhistoryon
+ 1192.       isgridhistoryon = grhflg .and. grhon
+ 1192.       return
+ 1192.       end
+ 1192.       
+ 1200.       
+ 1200.       subroutine store2dv( field, fid, jb, cf )
+ 1200.       field%dim_1%LB = 1
+ 1200.       field%dim_2%LB = 1
+ 1200.       cf%dim_1%LB = 1
+ 1215.       if ( ( grhflg .and. grhon ) /= .false. ) then
+ 1219.          dim2 = field%dim_2%EX
+ 1221.          if ( fid <= 0 .orelse. fid > 83 ) then
+ 1222.             $Unit_temp_O10 = nfprt
+ 1222.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O10, Null_Arg, Null_Arg, t$106,  _substr(t$105,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( fid, 0x2000200000000L ) ) )
+ 1223.             $Unit_temp_O11 = nferr
+ 1223.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O11, Null_Arg, Null_Arg, t$108,  _substr(t$107,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( fid, 0x2000200000000L ) ) )
+ 1224.              _substr(t$503,1,22) = '**(StoreGridHistory)**'
+ 1224.             call _stop(  _substr(t$503,1,22) )
+ 1224.          else
+ 1225.             if ( jb <= 0 .orelse. jb > jbmax ) then
+ 1226.                $Unit_temp_O8 = nfprt
+ 1226.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O8, Null_Arg, Null_Arg, t$110,  _substr(t$109,1,30), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( jb, 0x2000200000000L ) ) )
+ 1227.                $Unit_temp_O9 = nferr
+ 1227.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O9, Null_Arg, Null_Arg, t$112,  _substr(t$111,1,30), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( jb, 0x2000200000000L ) ) )
+ 1228.                 _substr(t$504,1,22) = '**(StoreGridHistory)**'
+ 1228.                call _stop(  _substr(t$504,1,22) )
+ 1228.             else
+ 1229.                if ( (ibmaxperjb%base_addr)(jb, 0) + -field%dim_1%EX /= 0 ) then
+ 1230.                   if ( ( jb < ibmaxperjb%dim_1%LB .or. jb > -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX ) /= .false. ) then
+ 1230.                       _substr(t$506,1,16) = 'GridHistory.f90'
+ 1230.                       _substr(t$507,1,11) = 'IBMAXPERJB'
+ 1230.                      t$508 = ibmaxperjb%dim_1%LB
+ 1230.                      t$509 = -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX
+ 1230.                      t$510 = jb
+ 1230.                      call _bounds_error(  _substr(t$506,1,16), 1730,  _substr(t$507,1,11), 1, t$508, t$509, t$510, t$505 )
+ 1230.                   endif
+ 1230.                   $Unit_temp_O0 = nfprt
+ 1230.                   $IOitem_O1 = (ibmaxperjb%base_addr)(jb, 0)
+ 1230.                   $_IOitem_P0(0) = field%dim_1%EX
+ 1230.                   $_IOitem_P0(1) = $IOitem_O1
+ 1230.                   $_IOitem_P0(2) = ibmax
+ 1230.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$114,  _substr(t$113,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P0(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1231.                   if ( ( jb < ibmaxperjb%dim_1%LB .or. jb > -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX ) /= .false. ) then
+ 1231.                       _substr(t$512,1,16) = 'GridHistory.f90'
+ 1231.                       _substr(t$513,1,11) = 'IBMAXPERJB'
+ 1231.                      t$508 = ibmaxperjb%dim_1%LB
+ 1231.                      t$509 = -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX
+ 1231.                      t$510 = jb
+ 1231.                      call _bounds_error(  _substr(t$512,1,16), 1731,  _substr(t$513,1,11), 1, t$508, t$509, t$510, t$511 )
+ 1231.                   endif
+ 1231.                   $Unit_temp_O2 = nferr
+ 1231.                   $IOitem_O3 = (ibmaxperjb%base_addr)(jb, 0)
+ 1231.                   $_IOitem_P1(0) = field%dim_1%EX
+ 1231.                   $_IOitem_P1(1) = $IOitem_O3
+ 1231.                   $_IOitem_P1(2) = ibmax
+ 1231.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, t$116,  _substr(t$115,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P1(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1232.                    _substr(t$514,1,22) = '**(StoreGridHistory)**'
+ 1232.                   call _stop(  _substr(t$514,1,22) )
+ 1233.                else if ( kmax + -field%dim_2%EX /= 0 ) then
+ 1234.                   $Unit_temp_O4 = nfprt
+ 1234.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, t$118,  _substr(t$117,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( dim2, 0x2000200000000L ) ) )
+ 1235.                   $Unit_temp_O5 = nferr
+ 1235.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O5, Null_Arg, Null_Arg, t$120,  _substr(t$119,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( dim2, 0x2000200000000L ) ) )
+ 1236.                    _substr(t$515,1,22) = '**(StoreGridHistory)**'
+ 1236.                   call _stop(  _substr(t$515,1,22) )
+ 1236.                else if ( cf%dim_1%EX + -field%dim_1%EX /= 0 ) then
+ 1238.                   $Unit_temp_O6 = nfprt
+ 1238.                   $_IOitem_P2(0) = field%dim_1%EX
+ 1238.                   $_IOitem_P2(1) = cf%dim_1%EX
+ 1238.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O6, Null_Arg, Null_Arg, t$122,  _substr(t$121,1,64), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P2(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+ 1239.                   $Unit_temp_O7 = nferr
+ 1239.                   $_IOitem_P3(0) = field%dim_1%EX
+ 1239.                   $_IOitem_P3(1) = cf%dim_1%EX
+ 1239.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O7, Null_Arg, Null_Arg, t$124,  _substr(t$123,1,64), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P3(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+ 1240.                    _substr(t$516,1,22) = '**(StoreGridHistory)**'
+ 1240.                   call _stop(  _substr(t$516,1,22) )
+ 1240.                else
+ 1243.                   $kfirst_S5 = (ghaf%base_addr)(fid, 0)%locgrfld
+ 1244.                   if ( kmax > 0 ) then
+ 1247.                      $SC_cf_I13 = cf%dim_1%SM
+ 1247.                      $SC_field_I9 = field%dim_1%SM
+ 1247.                      $SC_field_I11 = field%dim_2%SM
+ 1246.                      $SC_gpt_I6 = gpt%dim_1%EX
+ 1246.                      $SC_gpt_I7 = gpt%dim_1%LB
+ 1245.                      $SC_ngptsperjb_I5 = (ngptsperjb%base_addr)(jb, 0)
+ 1245.                      $SC_iniperjb_I2 = (iniperjb%base_addr)(jb, 0)
+ 1247.                      $SC_cf_I12 = cf%dim_1%EX
+ 1247.                      $SC_field_I10 = field%dim_2%EX
+ 1247.                      $SC_field_I8 = field%dim_1%EX
+ 1245.                      if ( $SC_ngptsperjb_I5 > 0 ) then
+ 1247.                         $SC_gpt_I14 = gpt%dim_1%EX
+ 1247.                         $SC_gpt_I15 = gpt%dim_1%LB
+ 1245.                         $SI_L1245_14_G1 = 0
+ 1245.                         do
+ 1244.                            $SI_L1244_12_G4 = 0
+ 1244.                            do
+ 1245.                               $I_L1245_19 = 0
+ 1245. !dir$ shortloop16
+ 1245. !dir$ blocking_size( 4, 4 )
+ 1245.                               do
+ 1244.                                  $SCA_gpt_I16 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1245_19 + 4 * $SI_L1245_14_G1, 0)%ibloc
+ 1244.                                  $SCA_gpt_I17 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1245_19 + 4 * $SI_L1245_14_G1, 0)%dignos%dim_1%EX
+ 1244.                                  $SCA_gpt_I18 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1245_19 + 4 * $SI_L1245_14_G1, 0)%dignos%dim_1%SM
+ 1244.                                  $SCA_gpt_I19 = (gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1245_19 + 4 * $SI_L1245_14_G1, 0)%dignos%dim_1%LB
+ 1244.                                  $I_L1244_16 = 0
+ 1244. !dir$ ivdep
+ 1244. !dir$ blocking_size( 256, 256 )
+ 1244.                                  do
+ 1247.                                     ((gpt%base_addr)(1 + $SC_iniperjb_I2 + $I_L1245_19 + 4 * $SI_L1245_14_G1, 0)%dignos%base_addr)($kfirst_S5 + $I_L1244_16 + 256 * $SI_L1244_12_G4, 0) = (cf%base_addr)($SCA_gpt_I16, 0) * (field%base_addr)($SCA_gpt_I16, 1 + $I_L1244_16 + 256 * $SI_L1244_12_G4, 0)
+ 1244.                                     $I_L1244_16 = 1 + $I_L1244_16
+ 1245.                                     if ( $I_L1244_16 >= min( kmax, 256 + 256 * $SI_L1244_12_G4 ) + -256 * $SI_L1244_12_G4 ) exit
+ 1245.                                  enddo
+ 1245.                                  $I_L1245_19 = 1 + $I_L1245_19
+ 1245.                                  if ( $I_L1245_19 >= min( $SC_ngptsperjb_I5, 4 + 4 * $SI_L1245_14_G1 ) + -4 * $SI_L1245_14_G1 ) exit
+ 1245.                               enddo
+ 1244.                               $SI_L1244_12_G4 = 1 + $SI_L1244_12_G4
+ 1248.                               if ( $SI_L1244_12_G4 >= _rsh( 255 + kmax, 8 ) ) exit
+ 1248.                            enddo
+ 1245.                            $SI_L1245_14_G1 = 1 + $SI_L1245_14_G1
+ 1245.                            if ( $SI_L1245_14_G1 >= _rsh( 3 + $SC_ngptsperjb_I5, 2 ) ) exit
+ 1245.                         enddo
+ 1245.                      endif
+ 1245.                   endif
+ 1245.                endif
+ 1245.             endif
+ 1245.          endif
+ 1245.       endif
+ 1250.       return
+ 1250.       end
+ 1250.       
+ 1257.       
+ 1257.       subroutine store1dv( field, fid, jb, cf )
+ 1257.       field%dim_1%LB = 1
+ 1257.       cf%dim_1%LB = 1
+ 1269.       if ( ( grhflg .and. grhon ) /= .false. ) then
+ 1274.          if ( fid <= 0 .orelse. fid > 83 ) then
+ 1275.             $Unit_temp_O8 = nfprt
+ 1275.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O8, Null_Arg, Null_Arg, t$126,  _substr(t$125,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( fid, 0x2000200000000L ) ) )
+ 1276.             $Unit_temp_O9 = nferr
+ 1276.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O9, Null_Arg, Null_Arg, t$128,  _substr(t$127,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( fid, 0x2000200000000L ) ) )
+ 1277.              _substr(t$525,1,22) = '**(StoreGridHistory)**'
+ 1277.             call _stop(  _substr(t$525,1,22) )
+ 1277.          else
+ 1278.             if ( jb <= 0 .orelse. jb > jbmax ) then
+ 1279.                $Unit_temp_O6 = nfprt
+ 1279.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O6, Null_Arg, Null_Arg, t$130,  _substr(t$129,1,30), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( jb, 0x2000200000000L ) ) )
+ 1280.                $Unit_temp_O7 = nferr
+ 1280.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O7, Null_Arg, Null_Arg, t$132,  _substr(t$131,1,30), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( jb, 0x2000200000000L ) ) )
+ 1281.                 _substr(t$526,1,22) = '**(StoreGridHistory)**'
+ 1281.                call _stop(  _substr(t$526,1,22) )
+ 1281.             else
+ 1282.                if ( (ibmaxperjb%base_addr)(jb, 0) + -field%dim_1%EX /= 0 ) then
+ 1283.                   if ( ( jb < ibmaxperjb%dim_1%LB .or. jb > -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX ) /= .false. ) then
+ 1283.                       _substr(t$528,1,16) = 'GridHistory.f90'
+ 1283.                       _substr(t$529,1,11) = 'IBMAXPERJB'
+ 1283.                      t$530 = ibmaxperjb%dim_1%LB
+ 1283.                      t$531 = -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX
+ 1283.                      t$532 = jb
+ 1283.                      call _bounds_error(  _substr(t$528,1,16), 1783,  _substr(t$529,1,11), 1, t$530, t$531, t$532, t$527 )
+ 1283.                   endif
+ 1283.                   $Unit_temp_O0 = nfprt
+ 1283.                   $IOitem_O1 = (ibmaxperjb%base_addr)(jb, 0)
+ 1283.                   $_IOitem_P0(0) = field%dim_1%EX
+ 1283.                   $_IOitem_P0(1) = $IOitem_O1
+ 1283.                   $_IOitem_P0(2) = ibmax
+ 1283.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$134,  _substr(t$133,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P0(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1284.                   if ( ( jb < ibmaxperjb%dim_1%LB .or. jb > -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX ) /= .false. ) then
+ 1284.                       _substr(t$534,1,16) = 'GridHistory.f90'
+ 1284.                       _substr(t$535,1,11) = 'IBMAXPERJB'
+ 1284.                      t$530 = ibmaxperjb%dim_1%LB
+ 1284.                      t$531 = -1 + ibmaxperjb%dim_1%LB + ibmaxperjb%dim_1%EX
+ 1284.                      t$532 = jb
+ 1284.                      call _bounds_error(  _substr(t$534,1,16), 1784,  _substr(t$535,1,11), 1, t$530, t$531, t$532, t$533 )
+ 1284.                   endif
+ 1284.                   $Unit_temp_O2 = nferr
+ 1284.                   $IOitem_O3 = (ibmaxperjb%base_addr)(jb, 0)
+ 1284.                   $_IOitem_P1(0) = field%dim_1%EX
+ 1284.                   $_IOitem_P1(1) = $IOitem_O3
+ 1284.                   $_IOitem_P1(2) = ibmax
+ 1284.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, t$136,  _substr(t$135,1,50), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P1(:( 0, 2, 1 )), 0x2000200000000L ) ) )
+ 1285.                    _substr(t$536,1,22) = '**(StoreGridHistory)**'
+ 1285.                   call _stop(  _substr(t$536,1,22) )
+ 1286.                else if ( cf%dim_1%EX + -field%dim_1%EX /= 0 ) then
+ 1287.                   $Unit_temp_O4 = nfprt
+ 1287.                   $_IOitem_P2(0) = field%dim_1%EX
+ 1287.                   $_IOitem_P2(1) = cf%dim_1%EX
+ 1287.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, t$138,  _substr(t$137,1,64), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P2(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+ 1288.                   $Unit_temp_O5 = nferr
+ 1288.                   $_IOitem_P3(0) = field%dim_1%EX
+ 1288.                   $_IOitem_P3(1) = cf%dim_1%EX
+ 1288.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O5, Null_Arg, Null_Arg, t$140,  _substr(t$139,1,64), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(StoreGridHistory)**', 0x800600000000L ), _iotype( (&)$_IOitem_P3(:( 0, 1, 1 )), 0x2000200000000L ) ) )
+ 1289.                    _substr(t$537,1,22) = '**(StoreGridHistory)**'
+ 1289.                   call _stop(  _substr(t$537,1,22) )
+ 1289.                else
+ 1292.                   $kfirst_S4 = (ghaf%base_addr)(fid, 0)%locgrfld
+ 1293.                   $t_S0 = 1 + (iniperjb%base_addr)(jb, 0)
+ 1293.                   $t_S1 = (iniperjb%base_addr)(jb, 0) + (ngptsperjb%base_addr)(jb, 0)
+ 1293.                   if ( $t_S1 + -$t_S0 >= 0 ) then
+ 1295.                      $SC_cf_I3 = cf%dim_1%SM
+ 1295.                      $SC_field_I5 = field%dim_1%SM
+ 1294.                      $SC_gpt_I0 = gpt%dim_1%EX
+ 1294.                      $SC_gpt_I1 = gpt%dim_1%LB
+ 1295.                      $SC_cf_I2 = cf%dim_1%EX
+ 1295.                      $SC_field_I4 = field%dim_1%EX
+ 1295.                      $SC_gpt_I6 = gpt%dim_1%EX
+ 1295.                      $SC_gpt_I7 = gpt%dim_1%LB
+ 1293.                      $I_L1293_4 = 0
+ 1293. !dir$ ivdep
+ 1293.                      do
+ 1294.                         $i_S3 = (gpt%base_addr)($t_S0 + $I_L1293_4, 0)%ibloc
+ 1295.                         ((gpt%base_addr)($t_S0 + $I_L1293_4, 0)%dignos%base_addr)($kfirst_S4, 0) = (field%base_addr)($i_S3, 0) * (cf%base_addr)($i_S3, 0)
+ 1296.                         $I_L1293_4 = 1 + $I_L1293_4
+ 1293.                         if ( $I_L1293_4 >= 1 + $t_S1 + -$t_S0 ) exit
+ 1293.                      enddo
+ 1293.                   endif
+ 1293.                endif
+ 1293.             endif
+ 1293.          endif
+ 1293.       endif
+ 1297.       return
+ 1297.       end
+ 1297.       
+    6.       
+    6.       module gridhistory
+    6.       end
+    6.       

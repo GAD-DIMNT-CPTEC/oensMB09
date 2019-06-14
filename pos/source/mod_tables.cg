@@ -1,0 +1,923 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  mod_tables.f90
+       !        File                  :  mod_tables.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   53.       
+   53.       subroutine init_tables( datalib )
+   59.       is = max( 1, _ltrim( substr[datalib,0:_len( datalib )] ) )
+   61.       $I_L61_S2 = 0
+   79.       $LIS_E8 = loc( size_tb )
+   77.       $LIS_E7 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O28 ),0].L ) ), 8 )
+   71.       $LIS_E6 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O24 ),0].L ) ), 8 )
+   70.       $LIS_E5 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O20 ),0].L ) ), 8 )
+   69.       $LIS_E4 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O16 ),0].L ) ), 8 )
+   68.       $LIS_E3 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O12 ),0].L ) ), 8 )
+   67.       $LIS_E2 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O8 ),0].L ) ), 8 )
+   65.       $LIS_E1 = _len( datalib )
+   63.       $LIS_E0 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O3 ),0].L ) ), 8 )
+   63.       do
+   61.          k = ( 1 + $I_L61_S2 )
+   63.          $_StackCntrl_O1 = $_StaticCntrl_O0
+   63.          1[loc( $_StackCntrl_O1 ),0].L = loc( substr[ic,0:1] )
+   63.          $_StackIolist_O3 = $_StaticIolist_O2
+   63.          0[$LIS_E0,0].L = loc( k )
+   63.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O3 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   65.          t$43 = 63
+   65.          t$44 = 9 + ( _ltrim( substr[datalib,0:$LIS_E1] ) )
+   65.          t$46 = int( _alloc( max( 0, t$44 ) ), 8 )
+   65.          substr[0,t$46:max( 0, t$44 )] = //( substr[datalib,0:_ltrim( substr[datalib,0:$LIS_E1] )], //( '/', //( 'tab', //( substr[ic,0:1], '.dat' ) ) ) )
+   65.          substr[t$47,0:4] = 'OLD'
+   65.          substr[t$48,0:10] = 'SEQUENTIAL'
+   65.          0[loc( t$49 ),0].L = 0x100000000000000L
+   65. !dir$ suppress t$43
+   65.          1[loc( t$49 ),0].L = int( loc( t$43 ), 8 )
+   65.          2[loc( t$49 ),0].L = 0
+   65.          3[loc( t$49 ),0].L = 0
+   65. !dir$ suppress substr[0,t$46:max( 0, t$44 )]
+   65.          $LCS_0 = max( 0, t$44 )
+   65.          4[loc( t$49 ),0].L = int( loc( substr[0,t$46:$LCS_0] ), 8 )
+   65.          5[loc( t$49 ),0].L = $LCS_0
+   65. !dir$ suppress substr[t$47,0:3]
+   65.          6[loc( t$49 ),0].L = int( loc( substr[t$47,0:3] ), 8 )
+   65.          7[loc( t$49 ),0].L = 3
+   65. !dir$ suppress substr[t$48,0:10]
+   65.          8[loc( t$49 ),0].L = int( loc( substr[t$48,0:10] ), 8 )
+   65.          9[loc( t$49 ),0].L = 10
+   65.          10[loc( t$49 ),0].L = 0
+   65.          12[loc( t$49 ),0].L = 0
+   65.          13[loc( t$49 ),0].L = 0
+   65.          15[loc( t$49 ),0].L = 0
+   65.          17[loc( t$49 ),0].L = 0
+   65.          19[loc( t$49 ),0].L = 0
+   65.          21[loc( t$49 ),0].L = 0
+   65.          23[loc( t$49 ),0].L = 0
+   65.          24[loc( t$49 ),0].L = 0
+   65.          26[loc( t$49 ),0].L = 0
+   65.          28[loc( t$49 ),0].L = 0
+   65.          30[loc( t$49 ),0].L = 0
+   65.          32[loc( t$49 ),0].L = 0
+   65.          34[loc( t$49 ),0].L = 0
+   65.          t$42 = _open( t$49 )
+   65.          _free( t$46 )
+   67.          $_StackIolist_O8 = $_StaticIolist_O7
+   67.          0[$LIS_E2,0].L = loc( substr[lixo,0:200] )
+   67.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O5 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O8 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   68.          $_StackIolist_O12 = $_StaticIolist_O11
+   68.          0[$LIS_E3,0].L = loc( substr[lixo,0:200] )
+   68.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O9 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O12 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   69.          $_StackIolist_O16 = $_StaticIolist_O15
+   69.          0[$LIS_E4,0].L = loc( substr[lixo,0:200] )
+   69.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O13 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O16 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   70.          $_StackIolist_O20 = $_StaticIolist_O19
+   70.          0[$LIS_E5,0].L = loc( substr[lixo,0:200] )
+   70.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O20 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   71.          $_StackIolist_O24 = $_StaticIolist_O23
+   71.          0[$LIS_E6,0].L = loc( substr[lixo,0:200] )
+   71.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O21 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O24 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   73.          $i_S3 = 0
+   73.          ierr = 0
+   73.          do
+   77.             $_StackCntrl_O1 = $_StaticCntrl_O25
+   77.             3[loc( $_StackCntrl_O1 ),0].L = loc( ierr )
+   77.             $_StackIolist_O28 = $_StaticIolist_O27
+   77.             0[$LIS_E7,0].L = loc( substr[lixo,0:200] )
+   76.             $i_S3 = 1 + $i_S3
+   77.             t$50 = _frf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O28 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+   77.             if ( ierr /= 0 ) exit
+   77.          enddo
+   79.          0[$LIS_E8,$I_L61_S2] = -1 + $i_S3
+   81.          t$43 = 63
+   81.          0[loc( t$52 ),0].L = 0x100000000000000L
+   81. !dir$ suppress t$43
+   81.          1[loc( t$52 ),0].L = int( loc( t$43 ), 8 )
+   81.          2[loc( t$52 ),0].L = 0
+   81.          3[loc( t$52 ),0].L = 0
+   81.          4[loc( t$52 ),0].L = 0
+   81.          6[loc( t$52 ),0].L = 0
+   81.          7[loc( t$52 ),0].L = 0
+   81.          t$51 = _close( t$52 )
+   82.          $I_L61_S2 = 1 + $I_L61_S2
+   82.          if ( $I_L61_S2 >= 3 ) exit
+   82.       enddo
+   83.       $LCS_table1_1 = loc( table1 )
+   83.       6[$LCS_table1_1,0].L = 1
+   83.       $LCS_size_tb_2 = loc( size_tb )
+   83.       7[$LCS_table1_1,0].L = ( max( 0, 0[$LCS_size_tb_2,0] ) )
+   83.       8[$LCS_table1_1,0].L = 26
+   83.       15[$LCS_table1_1,0].L = 1
+   83.       16[$LCS_table1_1,0].L = ( max( 0, 1[$LCS_size_tb_2,0] ) )
+   83.       17[$LCS_table1_1,0].L = 17
+   83.       24[$LCS_table1_1,0].L = 1
+   83.       25[$LCS_table1_1,0].L = ( max( 0, 2[$LCS_size_tb_2,0] ) )
+   83.       26[$LCS_table1_1,0].L = 6
+   83.       0[loc( $_allo_P0 ),0].L = 0x3000000000001L
+   83.       1[loc( $_allo_P0 ),0].L = loc( table1 )
+   83.       2[loc( $_allo_P0 ),0].L = loc( table2 )
+   83.       3[loc( $_allo_P0 ),0].L = loc( table3 )
+   83.       $MR_table3_S4 = 20[$LCS_table1_1,0].L
+   83.       $MR_table3_S5 = or( 16, $MR_table3_S4 )
+   83.       20[$LCS_table1_1,0].L = $MR_table3_S5
+   83.       $MR_table2_S6 = 11[$LCS_table1_1,0].L
+   83.       $MR_table2_S7 = or( 16, $MR_table2_S6 )
+   83.       11[$LCS_table1_1,0].L = $MR_table2_S7
+   83.       $MR_table1_S8 = 2[$LCS_table1_1,0].L
+   83.       $MR_table1_S9 = or( 16, $MR_table1_S8 )
+   83.       2[$LCS_table1_1,0].L = $MR_table1_S9
+   83.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+   84.       call readtables( substr[datalib,0:_len( datalib )] )
+   85.       return
+   85.       end
+   85.       
+   87.       
+   87.       subroutine readtables( datalib )
+   94.       is = max( 1, _ltrim( substr[datalib,0:_len( datalib )] ) )
+   96.       $I_L96_S2 = 0
+  141.       $LIS_E44 = loc( t$160 )
+  140.       $LIS_E43 = loc( t$157 )
+  139.       $LIS_E42 = loc( t$154 )
+  138.       $LIS_E41 = loc( t$151 )
+  135.       $LIS_E40 = loc( t$148 )
+  134.       $LIS_E39 = loc( t$145 )
+  133.       $LIS_E38 = loc( t$142 )
+  132.       $LIS_E37 = loc( t$139 )
+  131.       $LIS_E36 = loc( t$136 )
+  130.       $LIS_E35 = loc( t$133 )
+  129.       $LIS_E34 = loc( t$130 )
+  128.       $LIS_E33 = loc( t$127 )
+  127.       $LIS_E32 = loc( t$124 )
+  123.       $LIS_E31 = loc( t$118 )
+  122.       $LIS_E30 = loc( t$112 )
+  121.       $LIS_E29 = loc( t$106 )
+  120.       $LIS_E28 = loc( t$100 )
+  119.       $LIS_E27 = loc( t$94 )
+  118.       $LIS_E26 = loc( t$88 )
+  117.       $LIS_E25 = loc( t$82 )
+  116.       $LIS_E24 = loc( t$76 )
+  115.       $LIS_E23 = loc( t$70 )
+  114.       $LIS_E22 = loc( t$65 )
+  114.       $LIS_E21 = loc( table1 )
+  110.       $LIS_E20 = loc( size_tb )
+  108.       $LIS_E19 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O24 ),0].L ) ), 8 )
+  107.       $LIS_E18 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O20 ),0].L ) ), 8 )
+  106.       $LIS_E17 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O16 ),0].L ) ), 8 )
+  105.       $LIS_E16 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O12 ),0].L ) ), 8 )
+  104.       $LIS_E15 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O8 ),0].L ) ), 8 )
+  102.       $LIS_E14 = _len( datalib )
+   98.       $LIS_E13 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O3 ),0].L ) ), 8 )
+   98.       do
+   96.          k = ( 1 + $I_L96_S2 )
+   98.          $_StackCntrl_O1 = $_StaticCntrl_O0
+   98.          1[loc( $_StackCntrl_O1 ),0].L = loc( substr[ic,0:1] )
+   98.          $_StackIolist_O3 = $_StaticIolist_O2
+   98.          0[$LIS_E13,0].L = loc( k )
+   98.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O1 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O3 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  102.          t$55 = 63
+  102.          t$56 = 9 + ( _ltrim( substr[datalib,0:$LIS_E14] ) )
+  102.          t$58 = int( _alloc( max( 0, t$56 ) ), 8 )
+  102.          substr[0,t$58:max( 0, t$56 )] = //( substr[datalib,0:_ltrim( substr[datalib,0:$LIS_E14] )], //( '/', //( 'tab', //( substr[ic,0:1], '.dat' ) ) ) )
+  102.          substr[t$59,0:4] = 'OLD'
+  102.          substr[t$60,0:10] = 'SEQUENTIAL'
+  102.          0[loc( t$61 ),0].L = 0x100000000000000L
+  102. !dir$ suppress t$55
+  102.          1[loc( t$61 ),0].L = int( loc( t$55 ), 8 )
+  102.          2[loc( t$61 ),0].L = 0
+  102.          3[loc( t$61 ),0].L = 0
+  102. !dir$ suppress substr[0,t$58:max( 0, t$56 )]
+  102.          $LCS_0 = max( 0, t$56 )
+  102.          4[loc( t$61 ),0].L = int( loc( substr[0,t$58:$LCS_0] ), 8 )
+  102.          5[loc( t$61 ),0].L = $LCS_0
+  102. !dir$ suppress substr[t$59,0:3]
+  102.          6[loc( t$61 ),0].L = int( loc( substr[t$59,0:3] ), 8 )
+  102.          7[loc( t$61 ),0].L = 3
+  102. !dir$ suppress substr[t$60,0:10]
+  102.          8[loc( t$61 ),0].L = int( loc( substr[t$60,0:10] ), 8 )
+  102.          9[loc( t$61 ),0].L = 10
+  102.          10[loc( t$61 ),0].L = 0
+  102.          12[loc( t$61 ),0].L = 0
+  102.          13[loc( t$61 ),0].L = 0
+  102.          15[loc( t$61 ),0].L = 0
+  102.          17[loc( t$61 ),0].L = 0
+  102.          19[loc( t$61 ),0].L = 0
+  102.          21[loc( t$61 ),0].L = 0
+  102.          23[loc( t$61 ),0].L = 0
+  102.          24[loc( t$61 ),0].L = 0
+  102.          26[loc( t$61 ),0].L = 0
+  102.          28[loc( t$61 ),0].L = 0
+  102.          30[loc( t$61 ),0].L = 0
+  102.          32[loc( t$61 ),0].L = 0
+  102.          34[loc( t$61 ),0].L = 0
+  102.          t$54 = _open( t$61 )
+  102.          _free( t$58 )
+  104.          $_StackIolist_O8 = $_StaticIolist_O7
+  104.          0[$LIS_E15,0].L = loc( substr[lixo,0:200] )
+  104.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O5 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O8 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  105.          $_StackIolist_O12 = $_StaticIolist_O11
+  105.          0[$LIS_E16,0].L = loc( substr[lixo,0:200] )
+  105.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O9 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O12 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  106.          $_StackIolist_O16 = $_StaticIolist_O15
+  106.          0[$LIS_E17,0].L = loc( substr[lixo,0:200] )
+  106.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O13 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O16 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  107.          $_StackIolist_O20 = $_StaticIolist_O19
+  107.          0[$LIS_E18,0].L = loc( substr[lixo,0:200] )
+  107.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O17 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O20 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  108.          $_StackIolist_O24 = $_StaticIolist_O23
+  108.          0[$LIS_E19,0].L = loc( substr[lixo,0:200] )
+  108.          _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O21 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O24 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  110.          $t_S1 = 0[$LIS_E20,$I_L96_S2]
+  110.          if ( $t_S1 > 0 ) then
+  112.             if ( $I_L96_S2 == 0 ) then
+  110.                $I_L110_S3 = 0
+  113.                $SR_S52 = 198
+  113.                $SR_S47 = 188
+  113.                $SR_S32 = 173
+  113.                $SR_S27 = 168
+  113.                $SR_S22 = 152
+  113.                $SR_S17 = 112
+  113.                $SR_S7 = 104
+  144.                $LIS_S54 = $t_S1
+  113.                $LIS_E51 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O70 ),0].L ) ), 8 )
+  113.                $LIS_E50 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O66 ),0].L ) ), 8 )
+  113.                $LIS_E49 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O52 ),0].L ) ), 8 )
+  113.                $LIS_E48 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O48 ),0].L ) ), 8 )
+  113.                $LIS_E47 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O44 ),0].L ) ), 8 )
+  113.                $LIS_E46 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O40 ),0].L ) ), 8 )
+  113.                $LIS_E45 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O31 ),0].L ) ), 8 )
+  113.                do
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O25 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O27 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  114.                   $MR_table1_S5 = 6[$LIS_E21,0].L
+  114.                   $MR_table1_S4 = 7[$LIS_E21,0].L
+  114.                   $LCS_IL110_1 = 1 + $I_L110_S3
+  114.                   if ( ( $LCS_IL110_1 < $MR_table1_S5 .or. $LCS_IL110_1 > -1 + $MR_table1_S4 + $MR_table1_S5 ) /= .false. ) then
+  114.                      substr[t$66,0:15] = 'mod_tables.f90'
+  114.                      substr[t$67,0:7] = 'TABLE1'
+  114.                      t$55 = $MR_table1_S5
+  114.                      t$68 = -1 + t$55 + $MR_table1_S4
+  114.                      t$69 = $LCS_IL110_1
+  114.                      $Con_P97 = 114
+  114.                      $Con_P98 = 1
+  114.                      call _bounds_error( substr[t$66,0:15], $Con_P97, substr[t$67,0:7], $Con_P98, t$55, t$68, t$69, 0[$LIS_E22,0].L )
+  114.                   endif
+  113.                   $_StackIolist_O31 = $_StaticIolist_O30
+  113.                   $MR_table1_S6 = 6[$LIS_E21,0].L
+  113.                   $MR_table1_S8 = 0[$LIS_E21,0].L
+  113.                   0[$LIS_E45,0].L = loc( substr[$MR_table1_S8,$SR_S7 + -104 * $MR_table1_S6:4] )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O28 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O31 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  115.                   $MR_table1_S10 = 6[$LIS_E21,0].L
+  115.                   $MR_table1_S9 = 7[$LIS_E21,0].L
+  115.                   $LCS_IL110_2 = 1 + $I_L110_S3
+  115.                   $LCS_1_3 = -1 + $MR_table1_S9 + $MR_table1_S10
+  115.                   if ( ( $LCS_IL110_2 < $MR_table1_S10 .or. $LCS_IL110_2 > $LCS_1_3 ) /= .false. ) then
+  115.                      substr[t$71,0:15] = 'mod_tables.f90'
+  115.                      substr[t$72,0:7] = 'TABLE1'
+  115.                      t$73 = $MR_table1_S10
+  115.                      t$74 = $LCS_1_3
+  115.                      t$75 = $LCS_IL110_2
+  115.                      $Con_P97 = 115
+  115.                      $Con_P98 = 1
+  115.                      call _bounds_error( substr[t$71,0:15], $Con_P97, substr[t$72,0:7], $Con_P98, t$73, t$74, t$75, 0[$LIS_E23,0].L )
+  115.                   endif
+  113.                   $_StackDv_P0 = $_StaticDV_P10
+  113.                   $MR_table1_S11 = 0[$LIS_E21,0].L
+  113.                   $LCS_table1_4 = loc( 1[int( $MR_table1_S11, 8 ),0] )
+  113.                   0[loc( $_StackDv_P0 ),0].L = pointer to array[1] of integer( $LCS_table1_4 )
+  113.                   1[loc( $_StackDv_P0 ),0].L = 32
+  113.                   2[loc( $_StackDv_P0 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P0 ),0].L )
+  113.                   23[loc( $_StackDv_P0 )].B = 1
+  113.                   4[loc( $_StackDv_P0 ),0].L = int( $LCS_table1_4, 8 )
+  113.                   5[loc( $_StackDv_P0 ),0].L = 32
+  113.                   21[loc( $_StackDv_P0 )].B = 0
+  113.                   6[loc( $_StackDv_P0 ),0] = 0
+  113.                   $MR_table1_S12 = 6[$LIS_E21,0].L
+  113.                   6[loc( $_StackDv_P0 ),0].L = $MR_table1_S12
+  113.                   $MR_table1_S13 = 7[$LIS_E21,0].L
+  113.                   7[loc( $_StackDv_P0 ),0].L = $MR_table1_S13
+  113.                   8[loc( $_StackDv_P0 ),0].L = 26
+  113.                   $_StackIolist_O35 = $_StaticIolist_O34
+  113.                   2[loc( $_StackIolist_O35 ),0].L = int( loc( $_StackDv_P0 ), 8 )
+  113.                   $DVindex_O36 = 1 + $I_L110_S3
+  113.                   4[loc( $_StackIolist_O35 ),0].L = int( loc( $DVindex_O36 ), 8 )
+  113.                   2[loc( $_StackDv_P0 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P0 ),0].L ) )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O32 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O35 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  116.                   $MR_table1_S15 = 6[$LIS_E21,0].L
+  116.                   $MR_table1_S14 = 7[$LIS_E21,0].L
+  116.                   $LCS_IL110_5 = 1 + $I_L110_S3
+  116.                   $LCS_1_6 = -1 + $MR_table1_S14 + $MR_table1_S15
+  116.                   if ( ( $LCS_IL110_5 < $MR_table1_S15 .or. $LCS_IL110_5 > $LCS_1_6 ) /= .false. ) then
+  116.                      substr[t$77,0:15] = 'mod_tables.f90'
+  116.                      substr[t$78,0:7] = 'TABLE1'
+  116.                      t$79 = $MR_table1_S15
+  116.                      t$80 = $LCS_1_6
+  116.                      t$81 = $LCS_IL110_5
+  116.                      $Con_P97 = 116
+  116.                      $Con_P98 = 1
+  116.                      call _bounds_error( substr[t$77,0:15], $Con_P97, substr[t$78,0:7], $Con_P98, t$79, t$80, t$81, 0[$LIS_E24,0].L )
+  116.                   endif
+  113.                   $_StackIolist_O40 = $_StaticIolist_O39
+  113.                   $MR_table1_S16 = 6[$LIS_E21,0].L
+  113.                   $MR_table1_S18 = 0[$LIS_E21,0].L
+  113.                   0[$LIS_E46,0].L = loc( substr[$MR_table1_S18,$SR_S17 + -104 * $MR_table1_S16:40] )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O37 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O40 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  117.                   $MR_table1_S20 = 6[$LIS_E21,0].L
+  117.                   $MR_table1_S19 = 7[$LIS_E21,0].L
+  117.                   $LCS_IL110_7 = 1 + $I_L110_S3
+  117.                   $LCS_1_8 = -1 + $MR_table1_S19 + $MR_table1_S20
+  117.                   if ( ( $LCS_IL110_7 < $MR_table1_S20 .or. $LCS_IL110_7 > $LCS_1_8 ) /= .false. ) then
+  117.                      substr[t$83,0:15] = 'mod_tables.f90'
+  117.                      substr[t$84,0:7] = 'TABLE1'
+  117.                      t$85 = $MR_table1_S20
+  117.                      t$86 = $LCS_1_8
+  117.                      t$87 = $LCS_IL110_7
+  117.                      $Con_P97 = 117
+  117.                      $Con_P98 = 1
+  117.                      call _bounds_error( substr[t$83,0:15], $Con_P97, substr[t$84,0:7], $Con_P98, t$85, t$86, t$87, 0[$LIS_E25,0].L )
+  117.                   endif
+  113.                   $_StackIolist_O44 = $_StaticIolist_O43
+  113.                   $MR_table1_S21 = 6[$LIS_E21,0].L
+  113.                   $MR_table1_S23 = 0[$LIS_E21,0].L
+  113.                   0[$LIS_E47,0].L = loc( substr[$MR_table1_S23,$SR_S22 + -104 * $MR_table1_S21:16] )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O41 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O44 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  118.                   $MR_table1_S25 = 6[$LIS_E21,0].L
+  118.                   $MR_table1_S24 = 7[$LIS_E21,0].L
+  118.                   $LCS_IL110_9 = 1 + $I_L110_S3
+  118.                   $LCS_1_10 = -1 + $MR_table1_S24 + $MR_table1_S25
+  118.                   if ( ( $LCS_IL110_9 < $MR_table1_S25 .or. $LCS_IL110_9 > $LCS_1_10 ) /= .false. ) then
+  118.                      substr[t$89,0:15] = 'mod_tables.f90'
+  118.                      substr[t$90,0:7] = 'TABLE1'
+  118.                      t$91 = $MR_table1_S25
+  118.                      t$92 = $LCS_1_10
+  118.                      t$93 = $LCS_IL110_9
+  118.                      $Con_P97 = 118
+  118.                      $Con_P98 = 1
+  118.                      call _bounds_error( substr[t$89,0:15], $Con_P97, substr[t$90,0:7], $Con_P98, t$91, t$92, t$93, 0[$LIS_E26,0].L )
+  118.                   endif
+  113.                   $_StackIolist_O48 = $_StaticIolist_O47
+  113.                   $MR_table1_S26 = 6[$LIS_E21,0].L
+  113.                   $MR_table1_S28 = 0[$LIS_E21,0].L
+  113.                   0[$LIS_E48,0].L = loc( substr[$MR_table1_S28,$SR_S27 + -104 * $MR_table1_S26:5] )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O45 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O48 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  119.                   $MR_table1_S30 = 6[$LIS_E21,0].L
+  119.                   $MR_table1_S29 = 7[$LIS_E21,0].L
+  119.                   $LCS_IL110_11 = 1 + $I_L110_S3
+  119.                   $LCS_1_12 = -1 + $MR_table1_S29 + $MR_table1_S30
+  119.                   if ( ( $LCS_IL110_11 < $MR_table1_S30 .or. $LCS_IL110_11 > $LCS_1_12 ) /= .false. ) then
+  119.                      substr[t$95,0:15] = 'mod_tables.f90'
+  119.                      substr[t$96,0:7] = 'TABLE1'
+  119.                      t$97 = $MR_table1_S30
+  119.                      t$98 = $LCS_1_12
+  119.                      t$99 = $LCS_IL110_11
+  119.                      $Con_P97 = 119
+  119.                      $Con_P98 = 1
+  119.                      call _bounds_error( substr[t$95,0:15], $Con_P97, substr[t$96,0:7], $Con_P98, t$97, t$98, t$99, 0[$LIS_E27,0].L )
+  119.                   endif
+  113.                   $_StackIolist_O52 = $_StaticIolist_O51
+  113.                   $MR_table1_S31 = 6[$LIS_E21,0].L
+  113.                   $MR_table1_S33 = 0[$LIS_E21,0].L
+  113.                   0[$LIS_E49,0].L = loc( substr[$MR_table1_S33,$SR_S32 + -104 * $MR_table1_S31:6] )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O49 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O52 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  120.                   $MR_table1_S35 = 6[$LIS_E21,0].L
+  120.                   $MR_table1_S34 = 7[$LIS_E21,0].L
+  120.                   $LCS_IL110_13 = 1 + $I_L110_S3
+  120.                   $LCS_1_14 = -1 + $MR_table1_S34 + $MR_table1_S35
+  120.                   if ( ( $LCS_IL110_13 < $MR_table1_S35 .or. $LCS_IL110_13 > $LCS_1_14 ) /= .false. ) then
+  120.                      substr[t$101,0:15] = 'mod_tables.f90'
+  120.                      substr[t$102,0:7] = 'TABLE1'
+  120.                      t$103 = $MR_table1_S35
+  120.                      t$104 = $LCS_1_14
+  120.                      t$105 = $LCS_IL110_13
+  120.                      $Con_P97 = 120
+  120.                      $Con_P98 = 1
+  120.                      call _bounds_error( substr[t$101,0:15], $Con_P97, substr[t$102,0:7], $Con_P98, t$103, t$104, t$105, 0[$LIS_E28,0].L )
+  120.                   endif
+  113.                   $_StackDv_P1 = $_StaticDV_P11
+  113.                   $MR_table1_S36 = 0[$LIS_E21,0].L
+  113.                   $LCS_table1_15 = loc( 19[int( $MR_table1_S36, 8 ),0] )
+  113.                   0[loc( $_StackDv_P1 ),0].L = pointer to array[1] of integer( $LCS_table1_15 )
+  113.                   1[loc( $_StackDv_P1 ),0].L = 32
+  113.                   2[loc( $_StackDv_P1 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P1 ),0].L )
+  113.                   23[loc( $_StackDv_P1 )].B = 1
+  113.                   4[loc( $_StackDv_P1 ),0].L = int( $LCS_table1_15, 8 )
+  113.                   5[loc( $_StackDv_P1 ),0].L = 32
+  113.                   21[loc( $_StackDv_P1 )].B = 0
+  113.                   6[loc( $_StackDv_P1 ),0] = 0
+  113.                   $MR_table1_S37 = 6[$LIS_E21,0].L
+  113.                   6[loc( $_StackDv_P1 ),0].L = $MR_table1_S37
+  113.                   $MR_table1_S38 = 7[$LIS_E21,0].L
+  113.                   7[loc( $_StackDv_P1 ),0].L = $MR_table1_S38
+  113.                   8[loc( $_StackDv_P1 ),0].L = 26
+  113.                   $_StackIolist_O56 = $_StaticIolist_O55
+  113.                   2[loc( $_StackIolist_O56 ),0].L = int( loc( $_StackDv_P1 ), 8 )
+  113.                   $DVindex_O57 = 1 + $I_L110_S3
+  113.                   4[loc( $_StackIolist_O56 ),0].L = int( loc( $DVindex_O57 ), 8 )
+  113.                   2[loc( $_StackDv_P1 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P1 ),0].L ) )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O53 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O56 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  121.                   $MR_table1_S40 = 6[$LIS_E21,0].L
+  121.                   $MR_table1_S39 = 7[$LIS_E21,0].L
+  121.                   $LCS_IL110_16 = 1 + $I_L110_S3
+  121.                   $LCS_1_17 = -1 + $MR_table1_S39 + $MR_table1_S40
+  121.                   if ( ( $LCS_IL110_16 < $MR_table1_S40 .or. $LCS_IL110_16 > $LCS_1_17 ) /= .false. ) then
+  121.                      substr[t$107,0:15] = 'mod_tables.f90'
+  121.                      substr[t$108,0:7] = 'TABLE1'
+  121.                      t$109 = $MR_table1_S40
+  121.                      t$110 = $LCS_1_17
+  121.                      t$111 = $LCS_IL110_16
+  121.                      $Con_P97 = 121
+  121.                      $Con_P98 = 1
+  121.                      call _bounds_error( substr[t$107,0:15], $Con_P97, substr[t$108,0:7], $Con_P98, t$109, t$110, t$111, 0[$LIS_E29,0].L )
+  121.                   endif
+  113.                   $_StackDv_P2 = $_StaticDV_P12
+  113.                   $MR_table1_S41 = 0[$LIS_E21,0].L
+  113.                   $LCS_table1_18 = loc( 20[int( $MR_table1_S41, 8 ),0] )
+  113.                   0[loc( $_StackDv_P2 ),0].L = pointer to array[1] of integer( $LCS_table1_18 )
+  113.                   1[loc( $_StackDv_P2 ),0].L = 32
+  113.                   2[loc( $_StackDv_P2 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P2 ),0].L )
+  113.                   23[loc( $_StackDv_P2 )].B = 1
+  113.                   4[loc( $_StackDv_P2 ),0].L = int( $LCS_table1_18, 8 )
+  113.                   5[loc( $_StackDv_P2 ),0].L = 32
+  113.                   21[loc( $_StackDv_P2 )].B = 0
+  113.                   6[loc( $_StackDv_P2 ),0] = 0
+  113.                   $MR_table1_S42 = 6[$LIS_E21,0].L
+  113.                   6[loc( $_StackDv_P2 ),0].L = $MR_table1_S42
+  113.                   $MR_table1_S43 = 7[$LIS_E21,0].L
+  113.                   7[loc( $_StackDv_P2 ),0].L = $MR_table1_S43
+  113.                   8[loc( $_StackDv_P2 ),0].L = 26
+  113.                   $_StackIolist_O61 = $_StaticIolist_O60
+  113.                   2[loc( $_StackIolist_O61 ),0].L = int( loc( $_StackDv_P2 ), 8 )
+  113.                   $DVindex_O62 = 1 + $I_L110_S3
+  113.                   4[loc( $_StackIolist_O61 ),0].L = int( loc( $DVindex_O62 ), 8 )
+  113.                   2[loc( $_StackDv_P2 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P2 ),0].L ) )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O58 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O61 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  122.                   $MR_table1_S45 = 6[$LIS_E21,0].L
+  122.                   $MR_table1_S44 = 7[$LIS_E21,0].L
+  122.                   $LCS_IL110_19 = 1 + $I_L110_S3
+  122.                   $LCS_1_20 = -1 + $MR_table1_S44 + $MR_table1_S45
+  122.                   if ( ( $LCS_IL110_19 < $MR_table1_S45 .or. $LCS_IL110_19 > $LCS_1_20 ) /= .false. ) then
+  122.                      substr[t$113,0:15] = 'mod_tables.f90'
+  122.                      substr[t$114,0:7] = 'TABLE1'
+  122.                      t$115 = $MR_table1_S45
+  122.                      t$116 = $LCS_1_20
+  122.                      t$117 = $LCS_IL110_19
+  122.                      $Con_P97 = 122
+  122.                      $Con_P98 = 1
+  122.                      call _bounds_error( substr[t$113,0:15], $Con_P97, substr[t$114,0:7], $Con_P98, t$115, t$116, t$117, 0[$LIS_E30,0].L )
+  122.                   endif
+  113.                   $_StackIolist_O66 = $_StaticIolist_O65
+  113.                   $MR_table1_S46 = 6[$LIS_E21,0].L
+  113.                   $MR_table1_S48 = 0[$LIS_E21,0].L
+  113.                   0[$LIS_E50,0].L = loc( substr[$MR_table1_S48,$SR_S47 + -104 * $MR_table1_S46:10] )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O63 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O66 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  123.                   $MR_table1_S50 = 6[$LIS_E21,0].L
+  123.                   $MR_table1_S49 = 7[$LIS_E21,0].L
+  123.                   $LCS_IL110_21 = 1 + $I_L110_S3
+  123.                   $LCS_1_22 = -1 + $MR_table1_S49 + $MR_table1_S50
+  123.                   if ( ( $LCS_IL110_21 < $MR_table1_S50 .or. $LCS_IL110_21 > $LCS_1_22 ) /= .false. ) then
+  123.                      substr[t$119,0:15] = 'mod_tables.f90'
+  123.                      substr[t$120,0:7] = 'TABLE1'
+  123.                      t$121 = $MR_table1_S50
+  123.                      t$122 = $LCS_1_22
+  123.                      t$123 = $LCS_IL110_21
+  123.                      $Con_P97 = 123
+  123.                      $Con_P98 = 1
+  123.                      call _bounds_error( substr[t$119,0:15], $Con_P97, substr[t$120,0:7], $Con_P98, t$121, t$122, t$123, 0[$LIS_E31,0].L )
+  123.                   endif
+  113.                   $_StackIolist_O70 = $_StaticIolist_O69
+  113.                   $MR_table1_S51 = 6[$LIS_E21,0].L
+  113.                   $MR_table1_S53 = 0[$LIS_E21,0].L
+  113.                   0[$LIS_E51,0].L = loc( substr[$MR_table1_S53,$SR_S52 + -104 * $MR_table1_S51:10] )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O67 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O70 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  113.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O71 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O73 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  113.                   $SR_S52 = 104 + $SR_S52
+  113.                   $SR_S47 = 104 + $SR_S47
+  113.                   $SR_S32 = 104 + $SR_S32
+  113.                   $SR_S27 = 104 + $SR_S27
+  113.                   $SR_S22 = 104 + $SR_S22
+  113.                   $SR_S17 = 104 + $SR_S17
+  113.                   $SR_S7 = 104 + $SR_S7
+  144.                   $I_L110_S3 = 1 + $I_L110_S3
+  142.                   if ( $I_L110_S3 >= $LIS_S54 ) exit
+  142.                enddo
+  142.             else if ( $I_L96_S2 == 1 ) then
+  110.                $I_L110_S55 = 0
+  126.                $SR_S79 = 116
+  126.                $SR_S74 = 110
+  126.                $SR_S69 = 102
+  126.                $SR_S64 = 76
+  126.                $SR_S59 = 68
+  144.                $LIS_S101 = $t_S1
+  126.                $LIS_E57 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O96 ),0].L ) ), 8 )
+  126.                $LIS_E56 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O92 ),0].L ) ), 8 )
+  126.                $LIS_E55 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O88 ),0].L ) ), 8 )
+  126.                $LIS_E54 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O84 ),0].L ) ), 8 )
+  126.                $LIS_E53 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O80 ),0].L ) ), 8 )
+  126.                do
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O74 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O76 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  127.                   $MR_table2_S57 = 15[$LIS_E21,0].L
+  127.                   $MR_table2_S56 = 16[$LIS_E21,0].L
+  127.                   $LCS_IL110_23 = 1 + $I_L110_S55
+  127.                   if ( ( $LCS_IL110_23 < $MR_table2_S57 .or. $LCS_IL110_23 > -1 + $MR_table2_S56 + $MR_table2_S57 ) /= .false. ) then
+  127.                      substr[t$125,0:15] = 'mod_tables.f90'
+  127.                      substr[t$126,0:7] = 'TABLE2'
+  127.                      t$55 = $MR_table2_S57
+  127.                      t$68 = -1 + t$55 + $MR_table2_S56
+  127.                      t$69 = $LCS_IL110_23
+  127.                      $Con_P97 = 127
+  127.                      $Con_P98 = 1
+  127.                      call _bounds_error( substr[t$125,0:15], $Con_P97, substr[t$126,0:7], $Con_P98, t$55, t$68, t$69, 0[$LIS_E32,0].L )
+  127.                   endif
+  126.                   $_StackIolist_O80 = $_StaticIolist_O79
+  126.                   $MR_table2_S58 = 15[$LIS_E21,0].L
+  126.                   $MR_table2_S60 = 9[$LIS_E21,0].L
+  126.                   0[$LIS_E53,0].L = loc( substr[$MR_table2_S60,$SR_S59 + -68 * $MR_table2_S58:8] )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O77 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O80 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  128.                   $MR_table2_S62 = 15[$LIS_E21,0].L
+  128.                   $MR_table2_S61 = 16[$LIS_E21,0].L
+  128.                   $LCS_IL110_24 = 1 + $I_L110_S55
+  128.                   $LCS_1_25 = -1 + $MR_table2_S61 + $MR_table2_S62
+  128.                   if ( ( $LCS_IL110_24 < $MR_table2_S62 .or. $LCS_IL110_24 > $LCS_1_25 ) /= .false. ) then
+  128.                      substr[t$128,0:15] = 'mod_tables.f90'
+  128.                      substr[t$129,0:7] = 'TABLE2'
+  128.                      t$73 = $MR_table2_S62
+  128.                      t$74 = $LCS_1_25
+  128.                      t$75 = $LCS_IL110_24
+  128.                      $Con_P97 = 128
+  128.                      $Con_P98 = 1
+  128.                      call _bounds_error( substr[t$128,0:15], $Con_P97, substr[t$129,0:7], $Con_P98, t$73, t$74, t$75, 0[$LIS_E33,0].L )
+  128.                   endif
+  126.                   $_StackIolist_O84 = $_StaticIolist_O83
+  126.                   $MR_table2_S63 = 15[$LIS_E21,0].L
+  126.                   $MR_table2_S65 = 9[$LIS_E21,0].L
+  126.                   0[$LIS_E54,0].L = loc( substr[$MR_table2_S65,$SR_S64 + -68 * $MR_table2_S63:26] )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O81 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O84 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  129.                   $MR_table2_S67 = 15[$LIS_E21,0].L
+  129.                   $MR_table2_S66 = 16[$LIS_E21,0].L
+  129.                   $LCS_IL110_26 = 1 + $I_L110_S55
+  129.                   $LCS_1_27 = -1 + $MR_table2_S66 + $MR_table2_S67
+  129.                   if ( ( $LCS_IL110_26 < $MR_table2_S67 .or. $LCS_IL110_26 > $LCS_1_27 ) /= .false. ) then
+  129.                      substr[t$131,0:15] = 'mod_tables.f90'
+  129.                      substr[t$132,0:7] = 'TABLE2'
+  129.                      t$79 = $MR_table2_S67
+  129.                      t$80 = $LCS_1_27
+  129.                      t$81 = $LCS_IL110_26
+  129.                      $Con_P97 = 129
+  129.                      $Con_P98 = 1
+  129.                      call _bounds_error( substr[t$131,0:15], $Con_P97, substr[t$132,0:7], $Con_P98, t$79, t$80, t$81, 0[$LIS_E34,0].L )
+  129.                   endif
+  126.                   $_StackIolist_O88 = $_StaticIolist_O87
+  126.                   $MR_table2_S68 = 15[$LIS_E21,0].L
+  126.                   $MR_table2_S70 = 9[$LIS_E21,0].L
+  126.                   0[$LIS_E55,0].L = loc( substr[$MR_table2_S70,$SR_S69 + -68 * $MR_table2_S68:8] )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O85 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O88 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  130.                   $MR_table2_S72 = 15[$LIS_E21,0].L
+  130.                   $MR_table2_S71 = 16[$LIS_E21,0].L
+  130.                   $LCS_IL110_28 = 1 + $I_L110_S55
+  130.                   $LCS_1_29 = -1 + $MR_table2_S71 + $MR_table2_S72
+  130.                   if ( ( $LCS_IL110_28 < $MR_table2_S72 .or. $LCS_IL110_28 > $LCS_1_29 ) /= .false. ) then
+  130.                      substr[t$134,0:15] = 'mod_tables.f90'
+  130.                      substr[t$135,0:7] = 'TABLE2'
+  130.                      t$85 = $MR_table2_S72
+  130.                      t$86 = $LCS_1_29
+  130.                      t$87 = $LCS_IL110_28
+  130.                      $Con_P97 = 130
+  130.                      $Con_P98 = 1
+  130.                      call _bounds_error( substr[t$134,0:15], $Con_P97, substr[t$135,0:7], $Con_P98, t$85, t$86, t$87, 0[$LIS_E35,0].L )
+  130.                   endif
+  126.                   $_StackIolist_O92 = $_StaticIolist_O91
+  126.                   $MR_table2_S73 = 15[$LIS_E21,0].L
+  126.                   $MR_table2_S75 = 9[$LIS_E21,0].L
+  126.                   0[$LIS_E56,0].L = loc( substr[$MR_table2_S75,$SR_S74 + -68 * $MR_table2_S73:6] )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O89 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O92 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  131.                   $MR_table2_S77 = 15[$LIS_E21,0].L
+  131.                   $MR_table2_S76 = 16[$LIS_E21,0].L
+  131.                   $LCS_IL110_30 = 1 + $I_L110_S55
+  131.                   $LCS_1_31 = -1 + $MR_table2_S76 + $MR_table2_S77
+  131.                   if ( ( $LCS_IL110_30 < $MR_table2_S77 .or. $LCS_IL110_30 > $LCS_1_31 ) /= .false. ) then
+  131.                      substr[t$137,0:15] = 'mod_tables.f90'
+  131.                      substr[t$138,0:7] = 'TABLE2'
+  131.                      t$91 = $MR_table2_S77
+  131.                      t$92 = $LCS_1_31
+  131.                      t$93 = $LCS_IL110_30
+  131.                      $Con_P97 = 131
+  131.                      $Con_P98 = 1
+  131.                      call _bounds_error( substr[t$137,0:15], $Con_P97, substr[t$138,0:7], $Con_P98, t$91, t$92, t$93, 0[$LIS_E36,0].L )
+  131.                   endif
+  126.                   $_StackIolist_O96 = $_StaticIolist_O95
+  126.                   $MR_table2_S78 = 15[$LIS_E21,0].L
+  126.                   $MR_table2_S80 = 9[$LIS_E21,0].L
+  126.                   0[$LIS_E57,0].L = loc( substr[$MR_table2_S80,$SR_S79 + -68 * $MR_table2_S78:4] )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O93 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O96 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  132.                   $MR_table2_S82 = 15[$LIS_E21,0].L
+  132.                   $MR_table2_S81 = 16[$LIS_E21,0].L
+  132.                   $LCS_IL110_32 = 1 + $I_L110_S55
+  132.                   $LCS_1_33 = -1 + $MR_table2_S81 + $MR_table2_S82
+  132.                   if ( ( $LCS_IL110_32 < $MR_table2_S82 .or. $LCS_IL110_32 > $LCS_1_33 ) /= .false. ) then
+  132.                      substr[t$140,0:15] = 'mod_tables.f90'
+  132.                      substr[t$141,0:7] = 'TABLE2'
+  132.                      t$97 = $MR_table2_S82
+  132.                      t$98 = $LCS_1_33
+  132.                      t$99 = $LCS_IL110_32
+  132.                      $Con_P97 = 132
+  132.                      $Con_P98 = 1
+  132.                      call _bounds_error( substr[t$140,0:15], $Con_P97, substr[t$141,0:7], $Con_P98, t$97, t$98, t$99, 0[$LIS_E37,0].L )
+  132.                   endif
+  126.                   $_StackDv_P3 = $_StaticDV_P13
+  126.                   $MR_table2_S83 = 9[$LIS_E21,0].L
+  126.                   $LCS_table2_34 = loc( 13[int( $MR_table2_S83, 8 ),0] )
+  126.                   0[loc( $_StackDv_P3 ),0].L = pointer to array[1] of integer( $LCS_table2_34 )
+  126.                   1[loc( $_StackDv_P3 ),0].L = 32
+  126.                   2[loc( $_StackDv_P3 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P3 ),0].L )
+  126.                   23[loc( $_StackDv_P3 )].B = 1
+  126.                   4[loc( $_StackDv_P3 ),0].L = int( $LCS_table2_34, 8 )
+  126.                   5[loc( $_StackDv_P3 ),0].L = 32
+  126.                   21[loc( $_StackDv_P3 )].B = 0
+  126.                   6[loc( $_StackDv_P3 ),0] = 0
+  126.                   $MR_table2_S84 = 15[$LIS_E21,0].L
+  126.                   6[loc( $_StackDv_P3 ),0].L = $MR_table2_S84
+  126.                   $MR_table2_S85 = 16[$LIS_E21,0].L
+  126.                   7[loc( $_StackDv_P3 ),0].L = $MR_table2_S85
+  126.                   8[loc( $_StackDv_P3 ),0].L = 17
+  126.                   $_StackIolist_O100 = $_StaticIolist_O99
+  126.                   2[loc( $_StackIolist_O100 ),0].L = int( loc( $_StackDv_P3 ), 8 )
+  126.                   $DVindex_O101 = 1 + $I_L110_S55
+  126.                   4[loc( $_StackIolist_O100 ),0].L = int( loc( $DVindex_O101 ), 8 )
+  126.                   2[loc( $_StackDv_P3 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P3 ),0].L ) )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O97 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O100 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  133.                   $MR_table2_S87 = 15[$LIS_E21,0].L
+  133.                   $MR_table2_S86 = 16[$LIS_E21,0].L
+  133.                   $LCS_IL110_35 = 1 + $I_L110_S55
+  133.                   $LCS_1_36 = -1 + $MR_table2_S86 + $MR_table2_S87
+  133.                   if ( ( $LCS_IL110_35 < $MR_table2_S87 .or. $LCS_IL110_35 > $LCS_1_36 ) /= .false. ) then
+  133.                      substr[t$143,0:15] = 'mod_tables.f90'
+  133.                      substr[t$144,0:7] = 'TABLE2'
+  133.                      t$103 = $MR_table2_S87
+  133.                      t$104 = $LCS_1_36
+  133.                      t$105 = $LCS_IL110_35
+  133.                      $Con_P97 = 133
+  133.                      $Con_P98 = 1
+  133.                      call _bounds_error( substr[t$143,0:15], $Con_P97, substr[t$144,0:7], $Con_P98, t$103, t$104, t$105, 0[$LIS_E38,0].L )
+  133.                   endif
+  126.                   $_StackDv_P4 = $_StaticDV_P14
+  126.                   $MR_table2_S88 = 9[$LIS_E21,0].L
+  126.                   $LCS_table2_37 = loc( 14[int( $MR_table2_S88, 8 ),0] )
+  126.                   0[loc( $_StackDv_P4 ),0].L = pointer to array[1] of integer( $LCS_table2_37 )
+  126.                   1[loc( $_StackDv_P4 ),0].L = 32
+  126.                   2[loc( $_StackDv_P4 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P4 ),0].L )
+  126.                   23[loc( $_StackDv_P4 )].B = 1
+  126.                   4[loc( $_StackDv_P4 ),0].L = int( $LCS_table2_37, 8 )
+  126.                   5[loc( $_StackDv_P4 ),0].L = 32
+  126.                   21[loc( $_StackDv_P4 )].B = 0
+  126.                   6[loc( $_StackDv_P4 ),0] = 0
+  126.                   $MR_table2_S89 = 15[$LIS_E21,0].L
+  126.                   6[loc( $_StackDv_P4 ),0].L = $MR_table2_S89
+  126.                   $MR_table2_S90 = 16[$LIS_E21,0].L
+  126.                   7[loc( $_StackDv_P4 ),0].L = $MR_table2_S90
+  126.                   8[loc( $_StackDv_P4 ),0].L = 17
+  126.                   $_StackIolist_O105 = $_StaticIolist_O104
+  126.                   2[loc( $_StackIolist_O105 ),0].L = int( loc( $_StackDv_P4 ), 8 )
+  126.                   $DVindex_O106 = 1 + $I_L110_S55
+  126.                   4[loc( $_StackIolist_O105 ),0].L = int( loc( $DVindex_O106 ), 8 )
+  126.                   2[loc( $_StackDv_P4 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P4 ),0].L ) )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O102 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O105 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  134.                   $MR_table2_S92 = 15[$LIS_E21,0].L
+  134.                   $MR_table2_S91 = 16[$LIS_E21,0].L
+  134.                   $LCS_IL110_38 = 1 + $I_L110_S55
+  134.                   $LCS_1_39 = -1 + $MR_table2_S91 + $MR_table2_S92
+  134.                   if ( ( $LCS_IL110_38 < $MR_table2_S92 .or. $LCS_IL110_38 > $LCS_1_39 ) /= .false. ) then
+  134.                      substr[t$146,0:15] = 'mod_tables.f90'
+  134.                      substr[t$147,0:7] = 'TABLE2'
+  134.                      t$109 = $MR_table2_S92
+  134.                      t$110 = $LCS_1_39
+  134.                      t$111 = $LCS_IL110_38
+  134.                      $Con_P97 = 134
+  134.                      $Con_P98 = 1
+  134.                      call _bounds_error( substr[t$146,0:15], $Con_P97, substr[t$147,0:7], $Con_P98, t$109, t$110, t$111, 0[$LIS_E39,0].L )
+  134.                   endif
+  126.                   $_StackDv_P5 = $_StaticDV_P15
+  126.                   $MR_table2_S93 = 9[$LIS_E21,0].L
+  126.                   $LCS_table2_40 = loc( 15[int( $MR_table2_S93, 8 ),0] )
+  126.                   0[loc( $_StackDv_P5 ),0].L = pointer to array[1] of integer( $LCS_table2_40 )
+  126.                   1[loc( $_StackDv_P5 ),0].L = 32
+  126.                   2[loc( $_StackDv_P5 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P5 ),0].L )
+  126.                   23[loc( $_StackDv_P5 )].B = 1
+  126.                   4[loc( $_StackDv_P5 ),0].L = int( $LCS_table2_40, 8 )
+  126.                   5[loc( $_StackDv_P5 ),0].L = 32
+  126.                   21[loc( $_StackDv_P5 )].B = 0
+  126.                   6[loc( $_StackDv_P5 ),0] = 0
+  126.                   $MR_table2_S94 = 15[$LIS_E21,0].L
+  126.                   6[loc( $_StackDv_P5 ),0].L = $MR_table2_S94
+  126.                   $MR_table2_S95 = 16[$LIS_E21,0].L
+  126.                   7[loc( $_StackDv_P5 ),0].L = $MR_table2_S95
+  126.                   8[loc( $_StackDv_P5 ),0].L = 17
+  126.                   $_StackIolist_O110 = $_StaticIolist_O109
+  126.                   2[loc( $_StackIolist_O110 ),0].L = int( loc( $_StackDv_P5 ), 8 )
+  126.                   $DVindex_O111 = 1 + $I_L110_S55
+  126.                   4[loc( $_StackIolist_O110 ),0].L = int( loc( $DVindex_O111 ), 8 )
+  126.                   2[loc( $_StackDv_P5 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P5 ),0].L ) )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O107 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O110 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  135.                   $MR_table2_S97 = 15[$LIS_E21,0].L
+  135.                   $MR_table2_S96 = 16[$LIS_E21,0].L
+  135.                   $LCS_IL110_41 = 1 + $I_L110_S55
+  135.                   $LCS_1_42 = -1 + $MR_table2_S96 + $MR_table2_S97
+  135.                   if ( ( $LCS_IL110_41 < $MR_table2_S97 .or. $LCS_IL110_41 > $LCS_1_42 ) /= .false. ) then
+  135.                      substr[t$149,0:15] = 'mod_tables.f90'
+  135.                      substr[t$150,0:7] = 'TABLE2'
+  135.                      t$115 = $MR_table2_S97
+  135.                      t$116 = $LCS_1_42
+  135.                      t$117 = $LCS_IL110_41
+  135.                      $Con_P97 = 135
+  135.                      $Con_P98 = 1
+  135.                      call _bounds_error( substr[t$149,0:15], $Con_P97, substr[t$150,0:7], $Con_P98, t$115, t$116, t$117, 0[$LIS_E40,0].L )
+  135.                   endif
+  126.                   $_StackDv_P6 = $_StaticDV_P16
+  126.                   $MR_table2_S98 = 9[$LIS_E21,0].L
+  126.                   $LCS_table2_43 = loc( 16[int( $MR_table2_S98, 8 ),0] )
+  126.                   0[loc( $_StackDv_P6 ),0].L = pointer to array[1] of integer( $LCS_table2_43 )
+  126.                   1[loc( $_StackDv_P6 ),0].L = 32
+  126.                   2[loc( $_StackDv_P6 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P6 ),0].L )
+  126.                   23[loc( $_StackDv_P6 )].B = 1
+  126.                   4[loc( $_StackDv_P6 ),0].L = int( $LCS_table2_43, 8 )
+  126.                   5[loc( $_StackDv_P6 ),0].L = 32
+  126.                   21[loc( $_StackDv_P6 )].B = 0
+  126.                   6[loc( $_StackDv_P6 ),0] = 0
+  126.                   $MR_table2_S99 = 15[$LIS_E21,0].L
+  126.                   6[loc( $_StackDv_P6 ),0].L = $MR_table2_S99
+  126.                   $MR_table2_S100 = 16[$LIS_E21,0].L
+  126.                   7[loc( $_StackDv_P6 ),0].L = $MR_table2_S100
+  126.                   8[loc( $_StackDv_P6 ),0].L = 17
+  126.                   $_StackIolist_O115 = $_StaticIolist_O114
+  126.                   2[loc( $_StackIolist_O115 ),0].L = int( loc( $_StackDv_P6 ), 8 )
+  126.                   $DVindex_O116 = 1 + $I_L110_S55
+  126.                   4[loc( $_StackIolist_O115 ),0].L = int( loc( $DVindex_O116 ), 8 )
+  126.                   2[loc( $_StackDv_P6 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P6 ),0].L ) )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O112 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O115 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  126.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O117 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O119 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  126.                   $SR_S79 = 68 + $SR_S79
+  126.                   $SR_S74 = 68 + $SR_S74
+  126.                   $SR_S69 = 68 + $SR_S69
+  126.                   $SR_S64 = 68 + $SR_S64
+  126.                   $SR_S59 = 68 + $SR_S59
+  144.                   $I_L110_S55 = 1 + $I_L110_S55
+  142.                   if ( $I_L110_S55 >= $LIS_S101 ) exit
+  142.                enddo
+  142.             else
+  110.                $I_L110_S102 = 0
+  137.                $SR_S106 = 24
+  144.                $LIS_S123 = $t_S1
+  137.                $LIS_E58 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O126 ),0].L ) ), 8 )
+  137.                do
+  137.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O120 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O122 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  138.                   $MR_table3_S104 = 24[$LIS_E21,0].L
+  138.                   $MR_table3_S103 = 25[$LIS_E21,0].L
+  138.                   $LCS_IL110_44 = 1 + $I_L110_S102
+  138.                   $LCS_1_45 = -1 + $MR_table3_S103 + $MR_table3_S104
+  138.                   if ( ( $LCS_IL110_44 < $MR_table3_S104 .or. $LCS_IL110_44 > $LCS_1_45 ) /= .false. ) then
+  138.                      substr[t$152,0:15] = 'mod_tables.f90'
+  138.                      substr[t$153,0:7] = 'TABLE3'
+  138.                      t$121 = $MR_table3_S104
+  138.                      t$122 = $LCS_1_45
+  138.                      t$123 = $LCS_IL110_44
+  138.                      $Con_P97 = 138
+  138.                      $Con_P98 = 1
+  138.                      call _bounds_error( substr[t$152,0:15], $Con_P97, substr[t$153,0:7], $Con_P98, t$121, t$122, t$123, 0[$LIS_E41,0].L )
+  138.                   endif
+  137.                   $_StackIolist_O126 = $_StaticIolist_O125
+  137.                   $MR_table3_S105 = 24[$LIS_E21,0].L
+  137.                   $MR_table3_S107 = 18[$LIS_E21,0].L
+  137.                   0[$LIS_E58,0].L = loc( substr[$MR_table3_S107,$SR_S106 + -24 * $MR_table3_S105:10] )
+  137.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O123 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O126 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  139.                   $MR_table3_S109 = 24[$LIS_E21,0].L
+  139.                   $MR_table3_S108 = 25[$LIS_E21,0].L
+  139.                   $LCS_IL110_46 = 1 + $I_L110_S102
+  139.                   if ( ( $LCS_IL110_46 < $MR_table3_S109 .or. $LCS_IL110_46 > -1 + $MR_table3_S108 + $MR_table3_S109 ) /= .false. ) then
+  139.                      substr[t$155,0:15] = 'mod_tables.f90'
+  139.                      substr[t$156,0:7] = 'TABLE3'
+  139.                      t$55 = $MR_table3_S109
+  139.                      t$68 = -1 + t$55 + $MR_table3_S108
+  139.                      t$69 = $LCS_IL110_46
+  139.                      $Con_P97 = 139
+  139.                      $Con_P98 = 1
+  139.                      call _bounds_error( substr[t$155,0:15], $Con_P97, substr[t$156,0:7], $Con_P98, t$55, t$68, t$69, 0[$LIS_E42,0].L )
+  139.                   endif
+  137.                   $_StackDv_P7 = $_StaticDV_P17
+  137.                   $MR_table3_S110 = 18[$LIS_E21,0].L
+  137.                   $LCS_table3_47 = loc( 3[int( $MR_table3_S110, 8 ),0] )
+  137.                   0[loc( $_StackDv_P7 ),0].L = pointer to array[1] of integer( $LCS_table3_47 )
+  137.                   1[loc( $_StackDv_P7 ),0].L = 32
+  137.                   2[loc( $_StackDv_P7 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P7 ),0].L )
+  137.                   23[loc( $_StackDv_P7 )].B = 1
+  137.                   4[loc( $_StackDv_P7 ),0].L = int( $LCS_table3_47, 8 )
+  137.                   5[loc( $_StackDv_P7 ),0].L = 32
+  137.                   21[loc( $_StackDv_P7 )].B = 0
+  137.                   6[loc( $_StackDv_P7 ),0] = 0
+  137.                   $MR_table3_S111 = 24[$LIS_E21,0].L
+  137.                   6[loc( $_StackDv_P7 ),0].L = $MR_table3_S111
+  137.                   $MR_table3_S112 = 25[$LIS_E21,0].L
+  137.                   7[loc( $_StackDv_P7 ),0].L = $MR_table3_S112
+  137.                   8[loc( $_StackDv_P7 ),0].L = 6
+  137.                   $_StackIolist_O130 = $_StaticIolist_O129
+  137.                   2[loc( $_StackIolist_O130 ),0].L = int( loc( $_StackDv_P7 ), 8 )
+  137.                   $DVindex_O131 = 1 + $I_L110_S102
+  137.                   4[loc( $_StackIolist_O130 ),0].L = int( loc( $DVindex_O131 ), 8 )
+  137.                   2[loc( $_StackDv_P7 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P7 ),0].L ) )
+  137.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O127 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O130 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  140.                   $MR_table3_S114 = 24[$LIS_E21,0].L
+  140.                   $MR_table3_S113 = 25[$LIS_E21,0].L
+  140.                   $LCS_IL110_48 = 1 + $I_L110_S102
+  140.                   $LCS_1_49 = -1 + $MR_table3_S113 + $MR_table3_S114
+  140.                   if ( ( $LCS_IL110_48 < $MR_table3_S114 .or. $LCS_IL110_48 > $LCS_1_49 ) /= .false. ) then
+  140.                      substr[t$158,0:15] = 'mod_tables.f90'
+  140.                      substr[t$159,0:7] = 'TABLE3'
+  140.                      t$73 = $MR_table3_S114
+  140.                      t$74 = $LCS_1_49
+  140.                      t$75 = $LCS_IL110_48
+  140.                      $Con_P97 = 140
+  140.                      $Con_P98 = 1
+  140.                      call _bounds_error( substr[t$158,0:15], $Con_P97, substr[t$159,0:7], $Con_P98, t$73, t$74, t$75, 0[$LIS_E43,0].L )
+  140.                   endif
+  137.                   $_StackDv_P8 = $_StaticDV_P18
+  137.                   $MR_table3_S115 = 18[$LIS_E21,0].L
+  137.                   $LCS_table3_50 = loc( 4[int( $MR_table3_S115, 8 ),0] )
+  137.                   0[loc( $_StackDv_P8 ),0].L = pointer to array[1] of integer( $LCS_table3_50 )
+  137.                   1[loc( $_StackDv_P8 ),0].L = 32
+  137.                   2[loc( $_StackDv_P8 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P8 ),0].L )
+  137.                   23[loc( $_StackDv_P8 )].B = 1
+  137.                   4[loc( $_StackDv_P8 ),0].L = int( $LCS_table3_50, 8 )
+  137.                   5[loc( $_StackDv_P8 ),0].L = 32
+  137.                   21[loc( $_StackDv_P8 )].B = 0
+  137.                   6[loc( $_StackDv_P8 ),0] = 0
+  137.                   $MR_table3_S116 = 24[$LIS_E21,0].L
+  137.                   6[loc( $_StackDv_P8 ),0].L = $MR_table3_S116
+  137.                   $MR_table3_S117 = 25[$LIS_E21,0].L
+  137.                   7[loc( $_StackDv_P8 ),0].L = $MR_table3_S117
+  137.                   8[loc( $_StackDv_P8 ),0].L = 6
+  137.                   $_StackIolist_O135 = $_StaticIolist_O134
+  137.                   2[loc( $_StackIolist_O135 ),0].L = int( loc( $_StackDv_P8 ), 8 )
+  137.                   $DVindex_O136 = 1 + $I_L110_S102
+  137.                   4[loc( $_StackIolist_O135 ),0].L = int( loc( $DVindex_O136 ), 8 )
+  137.                   2[loc( $_StackDv_P8 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P8 ),0].L ) )
+  137.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O132 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O135 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  141.                   $MR_table3_S119 = 24[$LIS_E21,0].L
+  141.                   $MR_table3_S118 = 25[$LIS_E21,0].L
+  141.                   $LCS_IL110_51 = 1 + $I_L110_S102
+  141.                   $LCS_1_52 = -1 + $MR_table3_S118 + $MR_table3_S119
+  141.                   if ( ( $LCS_IL110_51 < $MR_table3_S119 .or. $LCS_IL110_51 > $LCS_1_52 ) /= .false. ) then
+  141.                      substr[t$161,0:15] = 'mod_tables.f90'
+  141.                      substr[t$162,0:7] = 'TABLE3'
+  141.                      t$79 = $MR_table3_S119
+  141.                      t$80 = $LCS_1_52
+  141.                      t$81 = $LCS_IL110_51
+  141.                      $Con_P97 = 141
+  141.                      $Con_P98 = 1
+  141.                      call _bounds_error( substr[t$161,0:15], $Con_P97, substr[t$162,0:7], $Con_P98, t$79, t$80, t$81, 0[$LIS_E44,0].L )
+  141.                   endif
+  137.                   $_StackDv_P9 = $_StaticDV_P19
+  137.                   $MR_table3_S120 = 18[$LIS_E21,0].L
+  137.                   $LCS_table3_53 = loc( 5[int( $MR_table3_S120, 8 ),0] )
+  137.                   0[loc( $_StackDv_P9 ),0].L = pointer to array[1] of integer( $LCS_table3_53 )
+  137.                   1[loc( $_StackDv_P9 ),0].L = 32
+  137.                   2[loc( $_StackDv_P9 ),0].L = and( 0xffffffffffffffe0UL, 2[loc( $_StackDv_P9 ),0].L )
+  137.                   23[loc( $_StackDv_P9 )].B = 1
+  137.                   4[loc( $_StackDv_P9 ),0].L = int( $LCS_table3_53, 8 )
+  137.                   5[loc( $_StackDv_P9 ),0].L = 32
+  137.                   21[loc( $_StackDv_P9 )].B = 0
+  137.                   6[loc( $_StackDv_P9 ),0] = 0
+  137.                   $MR_table3_S121 = 24[$LIS_E21,0].L
+  137.                   6[loc( $_StackDv_P9 ),0].L = $MR_table3_S121
+  137.                   $MR_table3_S122 = 25[$LIS_E21,0].L
+  137.                   7[loc( $_StackDv_P9 ),0].L = $MR_table3_S122
+  137.                   8[loc( $_StackDv_P9 ),0].L = 6
+  137.                   $_StackIolist_O140 = $_StaticIolist_O139
+  137.                   2[loc( $_StackIolist_O140 ),0].L = int( loc( $_StackDv_P9 ), 8 )
+  137.                   $DVindex_O141 = 1 + $I_L110_S102
+  137.                   4[loc( $_StackIolist_O140 ),0].L = int( loc( $DVindex_O141 ), 8 )
+  137.                   2[loc( $_StackDv_P9 ),0].L = or( 65600, and( -4294967265UL, 2[loc( $_StackDv_P9 ),0].L ) )
+  137.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O137 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O140 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  137.                   _frf( pointer to integer (kind=8)( loc( $_StaticCntrl_O142 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $StaticIolist_O144 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O4 ) ) )
+  137.                   $SR_S106 = 24 + $SR_S106
+  144.                   $I_L110_S102 = 1 + $I_L110_S102
+  142.                   if ( $I_L110_S102 >= $LIS_S123 ) exit
+  142.                enddo
+  142.             endif
+  142.          endif
+  145.          $I_L96_S2 = 1 + $I_L96_S2
+  144.          if ( $I_L96_S2 >= 3 ) exit
+  144.       enddo
+  146.       54[loc( table1 ),0] = .true.
+  148.       return
+  148.       end
+  148.       
+    5.       
+    5.       module tables
+    5.       end
+    5.       

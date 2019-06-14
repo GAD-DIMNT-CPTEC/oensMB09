@@ -1,0 +1,189 @@
+#!/bin/ksh 
+#help#
+#**********************************************************#
+#                                                          #
+#     Name:           plumes.scr                           #
+#                                                          #
+#     Function:       This script makes the gifs of        #
+#                     probabilistic grid history forecast  #
+#                     It runs in K shell.                  #
+#                                                          #
+#     labeli:           November  2007                     #
+#     Last change:    November  2007                       #
+#                                                          #
+#     Valid Arguments for plumes.scr                       #
+#                                                          #
+#     First :         : nothing for help or                #
+#     First : trcm    : horizontal resolution              #
+#    Second : lv      : vertical resolution                #
+#     Third : labeli  : initial forecasting label          #
+#    Fourth : fctdays : number of forecast days            #
+#      Fifth: nmembers: number of members of ensemble      #
+#      Sixth:    prefx: preffix for input and output files #
+#                                                          #
+#             LABELx : yyyymmddhh                          #
+#                      yyyy = four digit year              #
+#                        mm = two digit month              #
+#                        dd = two digit day                #
+#                        hh = two digit hour               #
+#                                                          #
+#**********************************************************#
+#help#
+#
+# Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ] 
+then
+cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+# Test of Valid Arguments
+#
+if [ -z "${1}" ] 
+then
+   echo "trcm is not set"
+   exit
+else
+   trcm=${1}
+fi
+if [ -z "${2}" ] 
+then
+   echo "lv is not set"
+   exit
+else
+   lv=${2}
+fi
+if [ -z  "${3}" ] 
+then
+   echo "labeli is not set (yyyymmddhh)"
+   exit 1
+else
+   labeli=${3}
+fi
+if [ -z "${4}" ] 
+then
+   echo "fctdays is not set"
+   exit
+else
+   fctdays=${4}
+fi
+if [ -z "${5}" ] 
+then
+   echo "nmembers is not set"
+   exit
+else
+   nmembers=${5}
+fi
+if [ -z "${6}" ] 
+then
+   echo "prefx is not set"
+   exit
+else
+   prefx=${6}
+fi
+
+#
+# Set model resolution
+#
+
+trunc=T${trcm}
+lev=L${lv}
+resol=${trunc}${lev}
+labelf=`caldate.3.0.2 ${labeli} + ${fctdays}d 'yyyymmddhh'`
+gname=GFGN
+fileloc=LOCMM${labeli}${labelf}.${resol}
+ps=local
+
+#
+# Set directories
+#
+
+yy=`echo ${labeli} | cut -c 1-4`
+mm=`echo ${labeli} | cut -c 5-6`
+dd=`echo ${labeli} | cut -c 7-8`
+hh=`echo ${labeli} | cut -c 9-10`
+
+#dirbct=/${BANGU}/PLUMES/${yy}/${mm}/${dd}
+dirbct=/gfs/dk10/mod_glob/oens/plumes/dataout/T126L28
+dirfig=/gfs/dk10/mod_glob/oens/produtos/grh
+
+
+if [ -z "${ps}" ]
+then
+ps=psuperf
+fi
+
+#
+# Set GADDIR
+#
+
+export GAUDFT=/usr/local/grads/udf/udft
+export GADDIR=/usr/local/grads/dat
+export GRADSB=/usr/local/grads/bin
+export GASCRP=/usr/local/grads/lib
+
+#
+# Generate the figures of plumes
+#
+
+/usr/local/grads/bin/gradsc -bp << EOT
+run plumes.gs
+${labeli} ${labelf} ${gname} ${resol} ${ps} ${nmembers} ${fileloc} ${dirbct} ${dirfig} 1 360
+quit
+EOT
+#
+label=${labeli}${labelf}
+labeld=${labelr}${labels}
+#
+cat <<EOT > puttag.${label}
+user pnt &arun/a*
+bin
+quote site umask 0122
+cd /web1/ftp/pub/produtos/ensemble/GGH${trunc}
+EOT
+cat deltag.${label}.out >> puttag.${label}
+cat puttag.${label}.out >> puttag.${label}
+cat <<EOT >> puttag.${label}
+quit
+EOT
+
+#Adma - Comentado temporariamente
+echo "ftp -in tucupi.cptec.inpe.br < puttag.${label}"
+#AMM ftp -in tucupi.cptec.inpe.br < puttag.${label}
+
+rm -f puttag.${label}
+rm -f puttag.${label}*.out
+rm -f deltag.${label}*.out
+rm -f prefixn${label}*.${resol}
+rm -f localn${label}*.${resol}
+rm -f identn${label}*.${resol}
+#
+#AMM for i in `awk '{ print $2}' puttag.${label}.out`
+#AMM do
+#AMM rm -f $i
+#AMM done
+#AMM rm -f deltag.${label}.out puttag.${label}.out
+#AMM rm -f identn${labeld}.${resol} localn${labeld}.${resol} prefixn${labeld}.${resol}
+#AMM echo rm -f GFGNNMC${labeld}M.unf.${resol}
+#AMM rm -f GFGNNMC${labeld}M.unf.${resol}
+#AMM echo rm -f GFGNNMC${labeld}M.unf.${resol}.ctl
+#AMM rm -f GFGNNMC${labeld}M.unf.${resol}.ctl
+#
+#REMOVE ARQUIVOS ANTIGOS
+#
+#
+labelr9=`caldate.3.0.2 ${labeli} - 9d 'yyyymmddhh'`
+echo "labelr9="${labelr9}   
+labelr10=`caldate.3.0.2 ${labeli} - 10d 'yyyymmddhh'`
+echo "labelr10="${labelr10}   
+labelr11=`caldate.3.0.2 ${labeli} - 11d 'yyyymmddhh'`
+echo "labelr11="${labelr11}   
+rm -f GFGN*${labelr11}*M.unf.${trunc}${lev}*
+rm -f GFGN*${labelr10}*M.unf.${trunc}${lev}*
+rm -f GFGN*${labelr9}*M.unf.${trunc}${lev}*
+#Adma - Comentado temporariamente
+#rm -f ./*/*${labelr11}*.gif
+#rm -f ./*/*${labelr10}*.gif
+#rm -f ./*/*${labelr9}*.gif
+#

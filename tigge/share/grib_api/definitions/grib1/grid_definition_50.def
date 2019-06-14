@@ -1,0 +1,33 @@
+# grib 1 -> 2
+constant gridDefinitionTemplateNumber     = 50;
+
+# START 1/grid_definition.spherical_harmonic_coefficients ----------------------------------------------------------------------
+# GRID DEFINITION spherical harmonic coefficients (including rotated, stretched, or stretched and rotated)
+#  J - pentagonal resolution parameter
+unsigned[2] pentagonalResolutionParameterJ ;
+
+alias J = pentagonalResolutionParameterJ;
+#  K - pentagonal resolution parameter
+unsigned[2] pentagonalResolutionParameterK ;
+
+alias K = pentagonalResolutionParameterK;
+#  M - pentagonal resolution parameter
+unsigned[2] pentagonalResolutionParameterM ;
+
+alias M = pentagonalResolutionParameterM;
+
+constant _T = -1 : hidden;
+meta numberOfValues spectral_truncation(J,K,M,_T) : optional;
+
+#  Representation type
+codetable[1] representationType 'grib1/9.table';
+
+#  Representation mode
+codetable[1] representationMode 'grib1/10.table';
+
+#  Set to zero
+# (reserved)
+pad padding_grid50_1(18);
+
+# For now, to make section2 happy
+constant Nj = 0;

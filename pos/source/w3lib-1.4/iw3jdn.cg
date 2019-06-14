@@ -1,0 +1,32 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  iw3jdn.f
+       !        File                  :  iw3jdn.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    1.       
+    1.       integer
+    1.       function iw3jdn( iyear, month, iday )
+    1.       $CARG_iyear_I0 = 0[loc( iyear ),0]
+    1.       $CARG_month_I1 = 0[loc( month ),0]
+    1.       $CARG_iday_I2 = 0[loc( iday ),0]
+   57.       $LCS_1 = ( -14 + $CARG_month_I1 ) / 12
+   57.       $LCS_CARG_iyear_0 = $CARG_iyear_I0 + $LCS_1
+   57.       $PRT_P3 = 3 * ( 4900 + $LCS_CARG_iyear_0 ) / 100
+   57.       $PRT_P4 = 7012800 + 1461 * $LCS_CARG_iyear_0
+   57.       $iw3jdn_S0 = ( 367 * $CARG_month_I1 + -734 + -4404 * $LCS_1 ) / 12 + _ash( $PRT_P4 + _rsh( _ash( $PRT_P4, 1 ), 30 ), 2 ) + -32075 + $CARG_iday_I2 - _ash( $PRT_P3 + _rsh( _ash( $PRT_P3, 1 ), 30 ), 2 )
+   62.       iw3jdn = $iw3jdn_S0
+   62.       return
+   62.       end
+   62.       

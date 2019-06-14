@@ -1,0 +1,86 @@
+#!/bin/bash -x
+#
+#************************************************************#
+#                                                            #
+#     Name:      setperreco06TQ0126L028.una#
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  recomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/setperreco.1.06TQ0126L028.una.2010101819:29.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N ENSRRECO06
+# 
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=20101018
+HOUR=19:29
+echo 'Date: '${DATE}
+echo 'Hour: '${HOUR}
+export DATE HOUR
+#
+NUM=06
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+LABELI=2004032600
+echo ${LABELI}
+export LABELI
+NFDAYS=15
+export NFDAYS
+#
+cd /scratch/p01211/oens-1.0.0/model/dataout/TQ0126L028/${LABELI}
+#rm -f GFCT${NUM}R${LABELI}${LABELI}*
+#rm -f GFCT${NUM}R${LABELI}*.dir.TQ0126L028
+#rm -f GFCT${NUM}R${LABELI}*.dir.TQ0126L028.files
+
+for arq in `ls GFCT${NUM}R${LABELI}*F.fct.TQ0126L028`
+do
+      ln -sf /scratch/p01211/oens-1.0.0/model/dataout/TQ0126L028/${LABELI}/$arq /scratch/p01211/oens-1.0.0/model/datain/
+done
+#
+ext=R.fct.TQ0126L028
+echo 
+cd  /scratch/p01211/oens-1.0.0/model/datain
+rm -f lst.GFCT${NUM}R${LABELI}.dr
+ls -l GFCT${NUM}R${LABELI}* > lst.GFCT${NUM}R${LABELI}.dr
+awk '{ print $8 }' lst.GFCT${NUM}R${LABELI}.dr  >  lst.GFCT${NUM}R${LABELI}
+xx=`awk '{ print substr($1,18,10) }' lst.GFCT${NUM}R${LABELI}`
+echo 
+cd /scratch/p01211/oens-1.0.0/eof/datain
+\rm templ${NUM}${LABELI} 
+for i in ${xx} 
+do
+cd /scratch/p01211/oens-1.0.0/eof/datain
+cat <<EOT1 >> templ${NUM}${LABELI}
+/scratch/p01211/oens-1.0.0/recfct/dataout/TQ0126L028/GFCTCTR${LABELI}${i}${ext}
+/scratch/p01211/oens-1.0.0/recfct/dataout/TQ0126L028/GFCT${NUM}R${LABELI}${i}${ext}
+EOT1
+
+ls -ltr /scratch/p01211/oens-1.0.0/eof/datain/templ${NUM}${LABELI}
+
+cd /scratch/p01211/oens-1.0.0/run
+for arq in `ls /scratch/p01211/oens-1.0.0/recfct/dataout/TQ0126L028/GFCT${NUM}R${LABELI}*.fct*`
+do
+      echo ln -sf $arq /scratch/p01211/oens-1.0.0/model/datain/
+      ln -sf $arq /scratch/p01211/oens-1.0.0/model/datain/
+done
+/scratch/p01211/oens-1.0.0/run/runrecfct1.una run 126 28 FCT${NUM}R ${LABELI} ${i}   ${NUM}R  
+done
+
+cd /scratch/p01211/oens-1.0.0/run
+/scratch/p01211/oens-1.0.0/run/runeofs1.una run 126 28 NO ${NUM} ${LABELI} ${NFDAYS} 7
+#

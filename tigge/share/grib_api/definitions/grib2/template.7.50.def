@@ -1,0 +1,23 @@
+
+# START 2/template.7.50 ----------------------------------------------------------------------
+# TEMPLATE 7.50, Spectral data - simple packing
+# Octets 6-nn : Binary data values - binary string, with each
+# (scaled)
+
+   meta packedCodedValues data_simple_packing(
+              section7Length,
+              offsetBeforeData,
+              offsetOfSection,
+              numberOfBitsContainingEachPackedValue,
+              referenceValue,
+              binaryScaleFactor,
+              decimalScaleFactor
+    ) : read_only;
+
+    meta codedValues data_g2shsimple_packing(
+              packedCodedValues,
+              realPartOfCoefficient,
+              numberOfValues
+            ) : read_only;
+
+# END   2/template.7.50 ----------------------------------------------------------------------
