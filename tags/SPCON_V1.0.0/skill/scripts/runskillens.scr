@@ -1,0 +1,946 @@
+#!/bin/ksh -x
+
+#help#
+#***********************************************************************#
+#                                                                       #
+#     Name:           runprobagr.sx6                                    #
+#                                                                       #
+#     Function:       This script evaluate the probabilities            #
+#                     from CPTEC global ensemble forecasting.           #
+#                     It runs in Korn Shell.                            #
+#                                                                       #
+#     Date:           Apr 04th, 2005.                                   #
+#     Last change:    Apr 04th, 2005.                                   #
+#                                                                       #
+#     Valid Arguments for runprobagr.sx6:                               #
+#                                                                       #
+#      First:    COMPILE: help, make, clean or run                      #
+#     Second:        TRC: three-digit triangular truncation             #
+#      Third:         LV: two-digit number of vertical sigma-layers     #
+#     Fourth:     LABELI: initial forecasting label                     #
+#      Fifth:     NFCTDY: number of forecasting days                    #
+#      Sixth:     NMEMBR: number of members of the ensemble             #
+#    Seventh:      PREFX: preffix for input and output files            #
+#                                                                       #
+#                  LABELx: yyyymmddhh                                   #
+#                          yyyy = four digit year                       #
+#                            mm = two digit month                       #
+#                            dd = two digit day                         #
+#                            hh = two digit hour                        #
+#                                                                       #
+#***********************************************************************#
+#end#
+#
+#       Help:
+#
+#
+echo "INICIANDO... \(set \-x\)"
+set -x
+
+. ../../include/config.sx6
+
+LABELI=$1
+if [ -s $LABELI ]; then
+      echo "ERRO: FALTA PARAMETRO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+      exit 1
+else
+      if [ ${#LABELI} -lt 10 ]; then
+            echo "ERRO: PARAMETRO INCORRETO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+            exit 2
+      else
+            YYYY=`echo $LABELI |cut -c 1-4`
+            MM=`echo $LABELI |cut -c 5-6`
+            DD=`echo $LABELI |cut -c 7-8`
+            HH=`echo $LABELI |cut -c 9-10`
+
+            LABELF=`date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}"`
+            YYYYF=`echo $LABELF |cut -c 1-4`
+            MMF=`echo $LABELF |cut -c 5-6`
+            DDF=`echo $LABELF |cut -c 7-8`
+            HHF=`echo $LABELF |cut -c 9-10`
+      fi
+fi
+
+PREFX=$2
+
+if [ -s $PREFX ]; then
+      echo "ERRO - PARAMETRO PERT\nFORMATO: runrectigge.sx6 yyyymmddhh 01N"
+      exit 2
+fi
+NFCTDY=${FSCT}
+NMDAYS=${FSCT}
+#NMEMBR=`echo "${NPERT}*2+1" | bc -l`
+NMEMBR=`echo "${NPERT}*2+1" | bc -l` # +1 para ler enmrmv
+OUT=out
+NPROC=1
+RESOL=T${TRC}
+#
+#  End of setting parameters to run
+#
+cd ${OPERM}/SKILL/scripts
+#
+echo "rm -f setskillens.${RESOL}.scr"
+#rm -f setskillens.${RESOL}.scr
+cat <<EOT > setskillens.${RESOL}.scr
+#!/bin/ksh
+#
+# Set initial current date
+#
+export datei=\`date\`
+echo "  Date Begin = \${datei}"
+#
+# Set directories and printer
+#
+export DIRSKL=${OPERM}/SKILL/scripts
+export DIROUT=${ROPERM}/skill
+echo "DIRSKL = \${DIRSKL}"
+#
+# Set labels
+#
+export LABELI=${LABELI}
+echo "LABELI = \${LABELI}"
+#
+echo \${LABELI} > labeli.${RESOL}.out
+yi=\`awk '{ print substr(\$1,1,4) }' labeli.${RESOL}.out\`
+mi=\`awk '{ print substr(\$1,5,2) }' labeli.${RESOL}.out\`
+di=\`awk '{ print substr(\$1,7,2) }' labeli.${RESOL}.out\`
+hi=\`awk '{ print substr(\$1,9,2) }' labeli.${RESOL}.out\`
+rm -f labeli.${RESOL}.out
+#
+# Run skill
+#
+if [ "\${hi}" = "00" -o "\${hi}" = "12" ]
+then
+#
+cd \${DIRSKL}
+#
+export GAUDFT=/usr/local/grads/udf/udft
+export GADDIR=/usr/local/grads/dat
+export GRADSB=/usr/local/grads/bin
+export GASCRP=/usr/local/grads/lib
+#
+rm -f nmembers.${RESOL}.n
+rm -f nmdays.${RESOL}.n
+rm -f filec.${RESOL}.n
+rm -f *.pr
+
+#
+#
+#
+# CRIA SCRIPT GS PARA O SKILL1
+#
+#
+#
+
+
+cat << EOF1 > skill1.${RESOL}.gs
+say 'Enter yy mm dd hh'
+pull ctime
+yy=subwrd(ctime,1)
+mm=subwrd(ctime,2)
+dd=subwrd(ctime,3)
+hh=subwrd(ctime,4)
+mb=subwrd(ctime,5)
+nd=subwrd(ctime,6)
+resol=subwrd(ctime,7)
+*say 'mb='mb
+*say 'nd='nd
+*
+say 'dayinty.'resol'.ksh 'yy' 'mm' 'dd' 'hh' T${TRC}L${LV} GPOS${PREFX} ${BANGU}/GPOS/${YYYY}/${MM}/${DD}/ /gfs/home3/modoper/tempo/global/oens/SKILL/CLIMA/'
+'!dayinty.'resol'.ksh 'yy' 'mm' 'dd' 'hh' T${TRC}L${LV} GPOS${PREFX} ${BANGU}/GPOS/${YYYY}/${MM}/${DD}/ /gfs/home3/modoper/tempo/global/oens/SKILL/CLIMA/'
+*
+rec=read(fileinput.resol)
+filei=sublin(rec,2)
+rec=read(fileinput.resol)
+fnmanl=sublin(rec,2)
+call=0
+while (call < 1)
+call=2
+if (filei = unavl)
+say ' Analysis: 'filei': 'fnmanl
+break
+else
+say ' Analysis: 'filei': 'fnmanl
+endif
+*
+*   Create ctls
+'!doctl.ksh 'yy''mm''dd''hh' '${PREFX}' 'nd
+say '!doctl.ksh 'yy''mm''dd''hh' '${PREFX}' 'nd
+
+*
+*   Open ctls
+'run openctl.'resol'.gs'
+*
+*
+'q files'
+say result
+*'quit'
+'set t 1'
+'query dims'
+time=sublin(result,5)
+tim=subwrd(time,6)
+*
+'!rm -f skillt.'tim'.'resol'.pr'
+'!rm -f skillg.'tim'.'resol'.pr skgeo.'tim'.'resol'.pr'
+'!rm -f skillw.'tim'.'resol'.pr skwin.'tim'.'resol'.pr'
+'!rm -f skills.'tim'.'resol'.pr sksfc.'tim'.'resol'.pr'
+*
+ttl=' Skill of Ensemble Operational CPTEC/COLA T126L28 Spectral Global Model'
+ttm='   using as Control Initial Condition NMC T126L28 Spectral Analysis'
+ttn=' perturbation method: EOF based perturbation (Zhang and Krishnamurti) '
+*say ' '
+*say ttl
+*say ttm
+filenamet='skillt.'tim'.'resol'.pr'
+rec=write(filenamet,ttl,append)
+rec=write(filenamet,ttm,append)
+rec=close(filenamet)
+*
+tg=' Geopotential Height and Tv Anomalies, Bias and RMSE for Total Field'
+tr=' -------------------------------------------------------------------'
+ta=' Analysis Date: 'tim
+*say ' '
+*say tg
+*say ' '
+*say ta
+filenameg='skillg.'tim'.'resol'.pr'
+rec=write(filenameg,' ',append)
+rec=write(filenameg,tg,append)
+rec=write(filenameg,tr,append)
+rec=write(filenameg,' ',append)
+rec=write(filenameg,ta,append)
+rec=close(filenameg)
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 850'
+'run skgeo.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 850'
+'run skgeo.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 850'
+'run skgeo.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 850'
+'run skgeo.'resol'.gs'
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 500'
+'run skgeo.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 500'
+'run skgeo.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 500'
+'run skgeo.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 500'
+'run skgeo.'resol'.gs'
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 250'
+'run skgeo.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 250'
+'run skgeo.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 250'
+'run skgeo.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 250'
+'run skgeo.'resol'.gs'
+*
+*say ' '
+say ' -99.9 for all values means that data are unavailable'
+*
+tw=' Zonal and Meridional Wind Anomalies, Bias and RMSE Total Wind'
+ts=' -------------------------------------------------------------'
+tb=' Analysis Date: 'tim
+*say ' '
+*say tw
+*say ' '
+*say tb
+filenamew='skillw.'tim'.'resol'.pr'
+rec=write(filenamew,' ',append)
+rec=write(filenamew,tw,append)
+rec=write(filenamew,ts,append)
+rec=write(filenamew,' ',append)
+rec=write(filenamew,tb,append)
+rec=close(filenamew)
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 850'
+'run skwin.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 850'
+'run skwin.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 850'
+'run skwin.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 850'
+'run skwin.'resol'.gs'
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 500'
+'run skwin.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 500'
+'run skwin.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 500'
+'run skwin.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 500'
+'run skwin.'resol'.gs'
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 250'
+'run skwin.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 250'
+'run skwin.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 250'
+'run skwin.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 250'
+'run skwin.'resol'.gs'
+*
+*AMM tp=' Sea Level Pressure and Tv Anomalies, Bias and RMSE for Total Field'
+*AMM tv=' ------------------------------------------------------------------'
+*AMM tc=' Analysis Date: 'tim
+*AMM say ' '
+*AMM say tp
+*AMM say ' '
+*AMM say tc
+*AMM filenames='skills.'tim'.'resol'.pr'
+*AMM rec=write(filenames,' ',append)
+*AMM rec=write(filenames,tp,append)
+*AMM rec=write(filenames,tv,append)
+*AMM rec=write(filenames,' ',append)
+*AMM rec=write(filenames,tc,append)
+*AMM rec=close(filenames)
+*
+*AMM 'set lon 0 360'
+*AMM 'set lat 20 80'
+*AMM 'set lev 1000'
+*AMM 'run sksfc.'resol'.gs'
+*AMM 'set lon 0 360'
+*AMM 'set lat -80 -20'
+*AMM 'set lev 1000'
+*AMM 'run sksfc.'resol'.gs'
+*AMM 'set lon 0 360'
+*AMM 'set lat -20 20'
+*AMM 'set lev 1000'
+*AMM 'run sksfc.'resol'.gs'
+*AMM 'set lon -101.25 -11.25'
+*AMM 'set lat -60 15'
+*AMM 'set lev 1000'
+*AMM 'run sksfc.'resol'.gs'
+*
+'!rm -f skgwu.'tim'.'resol'.pr'
+filenameu='skgwu.'tim'.'resol'.pr'
+rec=write(filenameu,' ',append)
+rec=write(filenameu,' -99.9 means that data are unavailable',append)
+rec=close(filenameu)
+*
+dirskl='${ROPERM}/skill'
+'!rm -f skillg.'tim'.ens.m02'
+'!cat skillt.'tim'.'resol'.pr skillg.'tim'.'resol'.pr skgeo.'tim'.'resol'.pr skgwu.'tim'.'resol'.pr > skillg.'tim'.ens.m02'
+'!mv skillg.'tim'.ens.m02 'dirskl''
+'!rm -f skillw.'tim'.ens.m02'
+'!cat skillt.'tim'.'resol'.pr skillw.'tim'.'resol'.pr skwin.'tim'.'resol'.pr skgwu.'tim'.'resol'.pr > skillw.'tim'.ens.m02'
+'!mv skillw.'tim'.ens.m02 'dirskl''
+'!rm -f skills.'tim'.ens.m02'
+*AMM '!cat skillt.'tim'.'resol'.pr skills.'tim'.'resol'.pr sksfc.'tim'.'resol'.pr skgwu.'tim'.'resol'.pr > skills.'tim'.ens.m02'
+*AMM '!mv skills.'tim'.ens.m02 'dirskl''
+'!rm -f skillt.'tim'.'resol'.pr'
+'!rm -f skillg.'tim'.'resol'.pr skgeo.'tim'.'resol'.pr'
+'!rm -f skillw.'tim'.'resol'.pr skwin.'tim'.'resol'.pr'
+*AMM '!rm -f skills.'tim'.'resol'.pr sksfc.'tim'.'resol'.pr'
+'!rm -f skgwu.'tim'.'resol'.pr'
+*
+endwhile
+*
+'!rm -f lterp.in lterp.out'
+*
+EOF1
+#
+#
+#
+# FIM DA CRIACAO DO SCRIPT GS PARA O SKILL1
+#
+#
+#
+
+
+#
+#
+#
+# CRIA SCRIPT GS PARA O SKILL2
+#
+#
+#
+
+cat << EOF1 > skill2.${RESOL}.gs
+say 'Enter yy mm dd hh'
+pull ctime
+yy=subwrd(ctime,1)
+mm=subwrd(ctime,2)
+dd=subwrd(ctime,3)
+hh=subwrd(ctime,4)
+mb=subwrd(ctime,5)
+nd=subwrd(ctime,6)
+resol=subwrd(ctime,7)
+*say 'mb='mb
+*say 'nd='nd
+*
+rec=read(fileinput.resol)
+filei=sublin(rec,2)
+rec=read(fileinput.resol)
+fnmanl=sublin(rec,2)
+call=0
+while (call < 1)
+call=2
+if (filei = unavl)
+say ' Analysis: 'filei': 'fnmanl
+break
+else
+say ' Analysis: 'filei': 'fnmanl
+endif
+*
+*   Create ctls
+'!doctl.ksh 'yy''mm''dd''hh' ${PREFX} 'nd
+*
+say 'dayinty.'resol'.ksh 'yy' 'mm' 'dd' 'hh' T${TRC}L${LV} GPOS${PREFX} ${BANGU}/GPOS/${YYYY}/${MM}/${DD}/ /gfs/home3/modoper/tempo/global/oens/SKILL/CLIMA/'
+'!dayinty.'resol'.ksh 'yy' 'mm' 'dd' 'hh' T${TRC}L${LV} GPOS${PREFX} ${BANGU}/GPOS/${YYYY}/${MM}/${DD}/ /gfs/home3/modoper/tempo/global/oens/SKILL/CLIMA/'
+*
+*   Open ctls
+'run openctl.'resol'.gs'
+*
+'q files'
+say result
+
+'set t 1'
+'query dims'
+time=sublin(result,5)
+tim=subwrd(time,6)
+*
+'!rm -f skillt.'tim'.'resol'.pr'
+'!rm -f skills.'tim'.'resol'.pr sksfc.'tim'.'resol'.pr'
+'!rm -f skillh.'tim'.'resol'.pr skh2o.'tim'.'resol'.pr'
+'!rm -f skillp.'tim'.'resol'.pr skpst.'tim'.'resol'.pr'
+'!rm -f spreadg.'tim'.'resol'.pr spreadg.'tim'.'resol'.pr'
+'!rm -f spreadw.'tim'.'resol'.pr spreadw.'tim'.'resol'.pr'
+*
+ttl=' Skill of Ensemble Operational CPTEC/COLA T126L28 Spectral Global Model'
+ttm='   using as Control Initial Condition NMC T126L28 Spectral Analysis'
+ttn=' perturbation method: EOF based perturbation (Zhang and Krishnamurti) '
+*say ' '
+*say ttl
+*say ttm
+filenamet='skillt.'tim'.'resol'.pr'
+rec=write(filenamet,ttl,append)
+rec=write(filenamet,ttm,append)
+rec=close(filenamet)
+*
+tp=' Sea Level Pressure and Tv Anomalies, Bias and RMSE for Total Field'
+tv=' ------------------------------------------------------------------'
+tc=' Analysis Date: 'tim
+*say ' '
+*say tp
+*say ' '
+*say tc
+filenames='skills.'tim'.'resol'.pr'
+rec=write(filenames,' ',append)
+rec=write(filenames,tp,append)
+rec=write(filenames,tv,append)
+rec=write(filenames,' ',append)
+rec=write(filenames,tc,append)
+rec=close(filenames)
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 1000'
+'run sksfc.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 1000'
+'run sksfc.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 1000'
+'run sksfc.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 1000'
+'run sksfc.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 1000'
+'run sksfc.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 1000'
+'run sksfc.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 1000'
+'run sksfc.'resol'.gs'
+*
+th=' Precip Water and Spec Hum Anomalies, Bias and RMSE for Total Field'
+tx=' ------------------------------------------------------------------'
+td=' Analysis Date: 'tim
+*say ' '
+*say th
+*say ' '
+*say td
+filenameh='skillh.'tim'.'resol'.pr'
+rec=write(filenameh,' ',append)
+rec=write(filenameh,th,append)
+rec=write(filenameh,tx,append)
+rec=write(filenameh,' ',append)
+rec=write(filenameh,td,append)
+rec=close(filenameh)
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 925'
+*AAF'run skh2o.'resol'.gs'
+*
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 925'
+*AAF'run skh2o.'resol'.gs'
+*
+'set lon 0 360'
+'set lat -20 20'
+'set lev 925'
+*AAF'run skh2o.'resol'.gs'
+*
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 925'
+*AAF 'run skh2o.'resol'.gs'
+*
+'!rm -f skgwu.'tim'.'resol'.pr'
+filenameu='skgwu.'tim'.'resol'.pr'
+rec=write(filenameu,' ',append)
+rec=write(filenameu,' -99.9 means that data are unavailable',append)
+rec=close(filenameu)
+*
+ty='       Geop Height Spread - (In relation to Ensemble Mean)     '
+tx=' ------------------------------------------------------------------'
+te=' Analysis Date: 'tim
+*say ' '
+*say th
+*say ' '
+*say te
+filenamey='spreadg.'tim'.'resol'.pr'
+rec=write(filenamey,' ',append)
+rec=write(filenamey,ty,append)
+rec=write(filenamey,tx,append)
+rec=write(filenamey,' ',append)
+rec=write(filenamey,te,append)
+rec=close(filenamey)
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 500'
+'run spreadg.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 500'
+'run spreadg.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 500'
+'run spreadg.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 500'
+'run spreadg.'resol'.gs'
+'set lon 0 360'
+'set lat 20 80'
+'set lev 850'
+'run spreadg.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 850'
+'run spreadg.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 850'
+'run spreadg.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 850'
+'run spreadg.'resol'.gs'
+*
+ty=' Zonal and Meridional Wind Spread (In relation to Ensemble Mean)'
+tx=' ------------------------------------------------------------------'
+te=' Analysis Date: 'tim
+*say ' '
+*say th
+*say ' '
+*say te
+filenamey='spreadw.'tim'.'resol'.pr'
+rec=write(filenamey,' ',append)
+rec=write(filenamey,ty,append)
+rec=write(filenamey,tx,append)
+rec=write(filenamey,' ',append)
+rec=write(filenamey,te,append)
+rec=close(filenamey)
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 850'
+'run spreadw.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 850'
+'run spreadw.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 850'
+'run spreadw.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 850'
+'run spreadw.'resol'.gs'
+*
+dirskl='${ROPERM}/skill'
+'!rm -f skills.'tim'.ens.m02'
+'!cat skillt.'tim'.'resol'.pr skills.'tim'.'resol'.pr sksfc.'tim'.'resol'.pr skgwu.'tim'.'resol'.pr > skills.'tim'.ens.m02'
+'!mv skills.'tim'.ens.m02 'dirskl''
+'!rm -f skillh.'tim'.ens.m02'
+'!cat skillt.'tim'.'resol'.pr skillh.'tim'.'resol'.pr skh2o.'tim'.'resol'.pr skgwu.'tim'.'resol'.pr > skillh.'tim'.ens.m02'
+'!mv skillh.'tim'.ens.m02 'dirskl''
+'!rm -f spreadg.'tim'.ens.m02'
+'!cat skillt.'tim'.'resol'.pr spreadg.'tim'.'resol'.pr skgwu.'tim'.'resol'.pr > spreadg.'tim'.ens.m02'
+'!mv spreadg.'tim'.ens.m02 'dirskl''
+'!rm -f spreadw.'tim'.ens.m02'
+'!cat skillt.'tim'.'resol'.pr spreadw.'tim'.'resol'.pr skgwu.'tim'.'resol'.pr > spreadw.'tim'.ens.m02'
+'!mv spreadw.'tim'.ens.m02 'dirskl''
+'!rm -f skillt.'tim'.'resol'.pr'
+'!rm -f skills.'tim'.'resol'.pr sksfc.'tim'.'resol'.pr'
+'!rm -f skillh.'tim'.'resol'.pr skh2o.'tim'.'resol'.pr'
+'!rm -f spreadg.'tim'.'resol'.pr spreadw.'tim'.'resol'.pr skgwu.'tim'.'resol'.pr'
+*
+endwhile
+*
+'!rm -f lterp.in lterp.out'
+*
+EOF1
+#
+#
+#
+# FIM DA CRIACAO DO SCRIPT GS PARA O SKILL1
+#
+#
+#
+
+
+#
+#
+#
+# CRIA SCRIPT GS PARA O BRIERSCORE
+#
+#
+#
+cat <<EOF1> runbrierscore.${RESOL}.gs
+say 'entre com yy mm dd hh mb nd'
+pull ctime
+yy=subwrd(ctime,1)
+mm=subwrd(ctime,2)
+dd=subwrd(ctime,3)
+hh=subwrd(ctime,4)
+mb=subwrd(ctime,5)
+nd=subwrd(ctime,6)
+resol=subwrd(ctime,7)
+*
+*climatologia
+'!rm -f clima.gau.'resol'.ctl'
+'!rm -f clima.gau.'resol''
+say 'dayinty_gau.'resol'.ksh 'yy' 'mm' 'dd' 'hh
+'!dayinty_gau.'resol'.ksh 'yy' 'mm' 'dd' 'hh' /gfs/home3/modoper/tempo/global/oens/SKILL/CLIMA/'
+*
+rec=read (fileinput.resol)
+filei=sublin(rec,2)
+rec=read (fileinput.resol)
+fnmanl=sublin(rec,2)
+'!rm -f fileinput.'resol''
+if (filei = unavl)
+say ' Analysis: 'filei': 'fnmanl
+'quit'
+else
+say ' Analysis: 'filei': 'fnmanl
+endif
+*
+*   Create ctls
+'!doctl.ksh 'yy''mm''dd''hh' AVN 'nd
+*
+*   Open ctls
+'open clima.gau.T126.ctl'
+'run openctl.'resol'.gs'
+*
+'q files'
+say result
+*'quit'
+'set t 1'
+'query dims'
+time=sublin(result,5)
+tim=subwrd(time,6)
+*
+'!rm -f brierscoreg.'tim'.'resol'.pr'
+*
+ttl='Brier Score of Ensemble Operational CPTEC/COLA T126L28 Spectral Global Model '
+ttm='   using as Control Initial Condition NMC T126L28 Spectral Analysis'
+tg='       Geopotential Height Anomalies (above +50 m or below -50 m)'
+tr=' -------------------------------------------------------------------'
+ta=' Analysis Date: 'tim
+*
+filenameg='brierscoreg.'tim'.'resol'.pr'
+rec=write(filenameg,ttl)
+rec=write(filenameg,ttm,append)
+rec=write(filenameg,' ',append)
+rec=write(filenameg,tg,append)
+rec=write(filenameg,tr,append)
+rec=write(filenameg,' ',append)
+rec=write(filenameg,ta,append)
+rec=write(filenameg,' ',append)
+rec=close(filenameg)
+*
+'set lon 0 360'
+'set lat 20 80'
+'set lev 500'
+'run brierscore.'resol'.gs'
+'set lon 0 360'
+'set lat -80 -20'
+'set lev 500'
+'run brierscore.'resol'.gs'
+'set lon 0 360'
+'set lat -20 20'
+'set lev 500'
+'run brierscore.'resol'.gs'
+'set lon -101.25 -11.25'
+'set lat -60 15'
+'set lev 500'
+'run brierscore.'resol'.gs'
+*
+aa=' -99.99 means that data are unavailable'
+rec=write(filenameg,' ',append)
+rec=write(filenameg,aa,append)
+rec=close(filenameg)
+*
+dirskl='${ROPERM}/skill'
+'!mv  brierscoreg.'tim'.'resol'.pr 'dirskl'/brierscoreg.'tim'.ens.m02'
+*
+EOF1
+
+#
+#
+#
+# FIM DA CRIACAO DO SCRIPT GS PARA O SKILL1
+#
+#
+#
+
+cat <<EOT1> nmembers.${RESOL}.n
+${NMEMBR}
+EOT1
+cat <<EOT1> nmdays.${RESOL}.n
+${NMDAYS}
+EOT1
+cat <<EOB > filec.${RESOL}.n
+\${DIRSKL}/clmreannmc.${RESOL}.ctl
+EOB
+#
+#  expand memory
+#
+#ulimit -d 10485760
+#ulimit -s 1048576
+#ulimit -v 1013088
+#
+echo '/usr/local/grads/bin/gradsc -blc "run skill1.${RESOL}.gs"' \${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS} ${RESOL}
+
+ulimit
+unlimit
+
+\${GRADSB}/gradsc -bl << EOTG
+run skill1.${RESOL}.gs
+\${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS} ${RESOL}
+${NMEMBR} ${NMDAYS}
+yes
+quit
+EOTG
+
+echo '/usr/local/grads-1.9b3/bin/grads -blc "run skill2.${RESOL}.gs"' \${yi} \${mi} \${di} \${hi}
+\${GRADSB}/gradsc -bl << EOTG
+run skill2.${RESOL}.gs
+\${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS} ${RESOL}
+${NMEMBR} ${NMDAYS}
+yes
+quit
+EOTG
+#
+fi
+
+#
+# Run Brier Score
+#
+rm -f limiar.${RESOL}.n
+rm -f filec.${RESOL}.n
+#
+cat <<EOB > ${OPERM}/SKILL/scripts/limiar.${RESOL}.n
+50.0
+EOB
+#
+cat <<EOB > ${OPERM}/SKILL/scripts/filec.${RESOL}.n
+\${DIRSKL}/clima.gau.${RESOL}.ctl
+EOB
+#
+echo 'grads -lbc "run runbrierscore.${RESOL}.gs"' \${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS}
+\${GRADSB}/gradsc -lb << EOTG
+run runbrierscore.${RESOL}.gs
+\${yi} \${mi} \${di} \${hi} ${NMEMBR} ${NMDAYS} ${RESOL}
+${NMEMBR} ${NMDAYS}
+quit
+EOTG
+#
+set +x
+cd ${OPERM}/SKILL/scripts/
+
+rm -f setskillens.${RESOL}.scr
+rm -f clmreannmc.${RESOL}
+rm -f clmreannmc.${RESOL}.ctl
+rm -f clima.gau.${RESOL}
+rm -f clima.gau.${RESOL}.ctl
+rm -f nmembers.${RESOL}.n
+rm -f nmdays.${RESOL}.n
+rm -f limiar.${RESOL}.n
+rm -f filec.${RESOL}.n
+rm -f file*.${RESOL}
+rm -f file*.${RESOL}
+rm -f ${OPERM}/SKILL/scripts/ctl/GPOSAVN*
+n=1
+while [ \${n} -le ${NMEMBR} ]
+do
+if [ \${n} -lt 10 ]
+then
+n='0'\${n}
+fi
+rm -f filefct\${n}P.${RESOL}
+rm -f filefct\${n}N.${RESOL}
+rm -f ${OPERM}/SKILL/scripts/ctl/GPOS\${n}P*
+rm -f ${OPERM}/SKILL/scripts/ctl/GPOS\${n}N*
+let n=n+1
+done
+chmod 755 -R \${DIROUT}
+
+
+#
+# Set final current date
+#
+export datef=\`date\`
+echo "  Date Final = \${datef}"
+#
+EOT
+#
+#   End of script generation
+#
+chmod 700 setskillens.${RESOL}.scr
+#
+#   Submit setskillens.${RESOL}.scr to at queue
+#
+
+#submit ./setskillens.${RESOL}.scr $QUEUETX7
+./setskillens.${RESOL}.scr
+set +x
+cd ${OPERM}/SKILL/scripts/
+
+rm -f setskillens.${RESOL}.scr
+rm -f clmreannmc.${RESOL}
+rm -f clmreannmc.${RESOL}.ctl
+rm -f clima.gau.${RESOL}
+rm -f clima.gau.${RESOL}.ctl
+rm -f nmembers.${RESOL}.n
+rm -f nmdays.${RESOL}.n
+rm -f limiar.${RESOL}.n
+rm -f filec.${RESOL}.n
+rm -f file*.${RESOL}
+rm -f file*.${RESOL}
+rm -f ${OPERM}/SKILL/scripts/ctl/GPOSAVN*
+rm -f *.pr
+rm -f *.m02
+n=1
+while [ ${n} -le ${NMEMBR} ]
+do
+if [ ${n} -lt 10 ]
+then
+n='0'${n}
+fi
+rm -f filefct${n}P.${RESOL}
+rm -f filefct${n}N.${RESOL}
+rm -f ${OPERM}/SKILL/scripts/ctl/GPOS${n}P*
+rm -f ${OPERM}/SKILL/scripts/ctl/GPOS${n}N*
+let n=n+1
+done
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exit 0

@@ -1,0 +1,32 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  w3fs21.f
+       !        File                  :  w3fs21.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    1.       
+    1.       subroutine w3fs21( idate, nmin )
+   53.       $iyear_S1 = 0[loc( idate ),0]
+   53.       iyear = $iyear_S1
+   55.       if ( $iyear_S1 <= 99 ) then
+   56.          $iyear_S2 = $iyear_S1 + cvmg( 1900, 2000, $iyear_S1 >= 78 )
+   56.          iyear = $iyear_S2
+   56.       endif
+   65.       $LCS_idate_0 = loc( idate )
+   65.       $ijdn_S0 = iw3jdn( iyear, 1[$LCS_idate_0,0], 2[$LCS_idate_0,0] )
+   74.       $LCS_idate_1 = loc( idate )
+   74.       0[loc( nmin ),0] = 60 * 3[$LCS_idate_1,0] + 4[$LCS_idate_1,0] + 776312896 + 1440 * $ijdn_S0
+   77.       return
+   77.       end
+   77.       

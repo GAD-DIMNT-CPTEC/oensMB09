@@ -1,0 +1,289 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  PblDriver.f90
+       !        File                  :  PblDriver.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   47.       
+   47.       subroutine initpbldriver( kmax, sl, del_in, si )
+   38.       t$1 = kmax
+   41.       t$9 = _zla( 0, kmax )
+   38.       t$2 = ( 1 + kmax )
+   43.       t$10 = _zla( 0, ( 1 + kmax ) )
+   45.       call initplanboundlayer( kmax, sl(1), del_in(1), si(1) )
+   47.       return
+   47.       end
+   47.       
+   93.       
+   93.       subroutine pbl_driver( gu, gv, gt, gq, delsig, ncols, kmax, delt, colrad, tmtx, qmtx, umtx, gl0, pbl, latco )
+   52.       t$3 = ncols
+   52.       t$4 = kmax
+   61.       t$11 = _zla( 0, ncols )
+   52.       t$12 = _zla( 0, ncols )
+   61.       t$13 = _zla( 0, kmax )
+   52.       t$14 = _zla( 0, ncols ) * _zla( 0, kmax )
+   52.       t$15 = _zla( 0, ncols ) * _zla( 0, kmax )
+   52.       t$16 = 3 * _zla( 0, ncols ) * _zla( 0, kmax )
+   52.       t$17 = 4 * _zla( 0, ncols ) * _zla( 0, kmax )
+   73.       call ympbl0( gu(1, 1), gv(1, 1), gt(1, 1), gq(1, 1), delsig(1), ncols, kmax, delt, colrad(1), tmtx(1, 1, 1), qmtx(1, 1, 1), umtx(1, 1, 1), gl0(1), pbl )
+   78.       if ( pbl /= 1 ) then
+   82.          if ( startstordiag /= .false. ) then
+   83.             call pbldiagnstorage( latco, ncols, kmax, tmtx(1, 1, 1), qmtx(1, 1, 1), umtx(1, 1, 1) )
+   83.          endif
+   88.          $t_S0 = isgridhistoryon
+   88.          if ( $t_S0 /= .false. ) then
+   89.             call pblgridhistorystorage( latco, ncols, kmax, tmtx(1, 1, 1), qmtx(1, 1, 1), umtx(1, 1, 1) )
+   89.          endif
+   89.       endif
+   93.       return
+   93.       end
+   93.       
+  109.       
+  109.       subroutine pblgridhistorystorage( latco, ncols, kmax, tmtx, qmtx, umtx )
+   95.       t$5 = ncols
+   95.       t$6 = kmax
+  100.       t$18 = _zla( 0, ncols )
+   95.       t$19 = _zla( 0, ncols )
+  100.       t$20 = _zla( 0, kmax )
+   95.       t$21 = _zla( 0, ncols ) * _zla( 0, kmax )
+   95.       t$22 = 3 * _zla( 0, ncols ) * _zla( 0, kmax )
+   95.       t$23 = 4 * _zla( 0, ncols ) * _zla( 0, kmax )
+  104.       if ( (dogrh%base_addr)(67, latco, 0) /= .false. ) then
+  104. !dir$ suppress tmtx(1, 1, 3)
+  104.          t$31 = $_StaticDV_P0
+  104.          t$31%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( tmtx(1, 1, 3) ) )
+  104.          t$31%header%el_len = 64
+  104.          t$31%header%assoc = 1
+  104.          t$31%header%ptr_alloc = 0
+  104.          t$31%header%p_or_a = 0
+  104.          t$31%header%a_contig = 1
+  104.          t$31%header%n_dim = 2
+  104.          t$31%header%orig_base = 0
+  104.          t$31%header%orig_size = 0
+  104.          t$31%header%n_codim = 0
+  104.          t$31%header%dv_versn = 2
+  104.          t$31%header%dv_smunit = 64
+  104.          t$31%header%d_type = 0
+  104.          t$31%header%n_params = 0
+  104.          t$31%header%d_type_idx = 13
+  104.          t$31%dim_1%LB = 1
+  104.          t$31%dim_1%EX = ( max( 0, ncols ) )
+  104.          t$31%dim_1%SM = 1
+  104.          t$31%dim_2%LB = 1
+  104.          t$31%dim_2%EX = ( max( 0, kmax ) )
+  104.          t$31%dim_2%SM = _zla( 0, ncols )
+  104.          call store2d( t$31, 67, latco, 0 )
+  104.       endif
+  105.       if ( (dogrh%base_addr)(72, latco, 0) /= .false. ) then
+  105. !dir$ suppress umtx(1, 1, 3)
+  105.          t$32 = $_StaticDV_P1
+  105.          t$32%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( umtx(1, 1, 3) ) )
+  105.          t$32%header%el_len = 64
+  105.          t$32%header%assoc = 1
+  105.          t$32%header%ptr_alloc = 0
+  105.          t$32%header%p_or_a = 0
+  105.          t$32%header%a_contig = 1
+  105.          t$32%header%n_dim = 2
+  105.          t$32%header%orig_base = 0
+  105.          t$32%header%orig_size = 0
+  105.          t$32%header%n_codim = 0
+  105.          t$32%header%dv_versn = 2
+  105.          t$32%header%dv_smunit = 64
+  105.          t$32%header%d_type = 0
+  105.          t$32%header%n_params = 0
+  105.          t$32%header%d_type_idx = 13
+  105.          t$32%dim_1%LB = 1
+  105.          t$32%dim_1%EX = ( max( 0, ncols ) )
+  105.          t$32%dim_1%SM = 1
+  105.          t$32%dim_2%LB = 1
+  105.          t$32%dim_2%EX = ( max( 0, kmax ) )
+  105.          t$32%dim_2%SM = _zla( 0, ncols )
+  105.          call store2d( t$32, 72, latco, 0 )
+  105.       endif
+  106.       if ( (dogrh%base_addr)(73, latco, 0) /= .false. ) then
+  106. !dir$ suppress umtx(1, 1, 4)
+  106.          t$33 = $_StaticDV_P2
+  106.          t$33%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( umtx(1, 1, 4) ) )
+  106.          t$33%header%el_len = 64
+  106.          t$33%header%assoc = 1
+  106.          t$33%header%ptr_alloc = 0
+  106.          t$33%header%p_or_a = 0
+  106.          t$33%header%a_contig = 1
+  106.          t$33%header%n_dim = 2
+  106.          t$33%header%orig_base = 0
+  106.          t$33%header%orig_size = 0
+  106.          t$33%header%n_codim = 0
+  106.          t$33%header%dv_versn = 2
+  106.          t$33%header%dv_smunit = 64
+  106.          t$33%header%d_type = 0
+  106.          t$33%header%n_params = 0
+  106.          t$33%header%d_type_idx = 13
+  106.          t$33%dim_1%LB = 1
+  106.          t$33%dim_1%EX = ( max( 0, ncols ) )
+  106.          t$33%dim_1%SM = 1
+  106.          t$33%dim_2%LB = 1
+  106.          t$33%dim_2%EX = ( max( 0, kmax ) )
+  106.          t$33%dim_2%SM = _zla( 0, ncols )
+  106.          call store2d( t$33, 73, latco, 0 )
+  106.       endif
+  107.       if ( (dogrh%base_addr)(71, latco, 0) /= .false. ) then
+  107. !dir$ suppress qmtx(1, 1, 3)
+  107.          t$34 = $_StaticDV_P3
+  107.          t$34%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( qmtx(1, 1, 3) ) )
+  107.          t$34%header%el_len = 64
+  107.          t$34%header%assoc = 1
+  107.          t$34%header%ptr_alloc = 0
+  107.          t$34%header%p_or_a = 0
+  107.          t$34%header%a_contig = 1
+  107.          t$34%header%n_dim = 2
+  107.          t$34%header%orig_base = 0
+  107.          t$34%header%orig_size = 0
+  107.          t$34%header%n_codim = 0
+  107.          t$34%header%dv_versn = 2
+  107.          t$34%header%dv_smunit = 64
+  107.          t$34%header%d_type = 0
+  107.          t$34%header%n_params = 0
+  107.          t$34%header%d_type_idx = 13
+  107.          t$34%dim_1%LB = 1
+  107.          t$34%dim_1%EX = ( max( 0, ncols ) )
+  107.          t$34%dim_1%SM = 1
+  107.          t$34%dim_2%LB = 1
+  107.          t$34%dim_2%EX = ( max( 0, kmax ) )
+  107.          t$34%dim_2%SM = _zla( 0, ncols )
+  107.          call store2d( t$34, 71, latco, 0 )
+  107.       endif
+  109.       return
+  109.       end
+  109.       
+  126.       
+  126.       subroutine pbldiagnstorage( latco, ncols, kmax, tmtx, qmtx, umtx )
+  112.       t$7 = ncols
+  112.       t$8 = kmax
+  117.       t$24 = _zla( 0, ncols )
+  112.       t$25 = _zla( 0, ncols )
+  117.       t$26 = _zla( 0, kmax )
+  112.       t$27 = _zla( 0, ncols ) * _zla( 0, kmax )
+  112.       t$28 = 3 * _zla( 0, ncols ) * _zla( 0, kmax )
+  112.       t$29 = 4 * _zla( 0, ncols ) * _zla( 0, kmax )
+  121.       if ( (dodia%base_addr)(39, 0) /= .false. ) then
+  121. !dir$ suppress tmtx(1, 1, 3)
+  121.          t$35 = $_StaticDV_P0
+  121.          t$35%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( tmtx(1, 1, 3) ) )
+  121.          t$35%header%el_len = 64
+  121.          t$35%header%assoc = 1
+  121.          t$35%header%ptr_alloc = 0
+  121.          t$35%header%p_or_a = 0
+  121.          t$35%header%a_contig = 0
+  121.          t$35%header%n_dim = 2
+  121.          t$35%header%orig_base = 0
+  121.          t$35%header%orig_size = 0
+  121.          t$35%header%n_codim = 0
+  121.          t$35%header%dv_versn = 2
+  121.          t$35%header%dv_smunit = 64
+  121.          t$35%header%d_type = 0
+  121.          t$35%header%n_params = 0
+  121.          t$35%header%d_type_idx = 13
+  121.          t$35%dim_1%LB = 1
+  121.          t$35%dim_1%EX = ( max( 0, ncols ) )
+  121.          t$35%dim_1%SM = 1
+  121.          t$35%dim_2%LB = 1
+  121.          t$35%dim_2%EX = ( max( 0, kmax ) )
+  121.          t$35%dim_2%SM = _zla( 0, ncols )
+  121.          call updia2d( t$35, 39, latco )
+  121.       endif
+  122.       if ( (dodia%base_addr)(41, 0) /= .false. ) then
+  122. !dir$ suppress umtx(1, 1, 3)
+  122.          t$36 = $_StaticDV_P1
+  122.          t$36%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( umtx(1, 1, 3) ) )
+  122.          t$36%header%el_len = 64
+  122.          t$36%header%assoc = 1
+  122.          t$36%header%ptr_alloc = 0
+  122.          t$36%header%p_or_a = 0
+  122.          t$36%header%a_contig = 0
+  122.          t$36%header%n_dim = 2
+  122.          t$36%header%orig_base = 0
+  122.          t$36%header%orig_size = 0
+  122.          t$36%header%n_codim = 0
+  122.          t$36%header%dv_versn = 2
+  122.          t$36%header%dv_smunit = 64
+  122.          t$36%header%d_type = 0
+  122.          t$36%header%n_params = 0
+  122.          t$36%header%d_type_idx = 13
+  122.          t$36%dim_1%LB = 1
+  122.          t$36%dim_1%EX = ( max( 0, ncols ) )
+  122.          t$36%dim_1%SM = 1
+  122.          t$36%dim_2%LB = 1
+  122.          t$36%dim_2%EX = ( max( 0, kmax ) )
+  122.          t$36%dim_2%SM = _zla( 0, ncols )
+  122.          call updia2d( t$36, 41, latco )
+  122.       endif
+  123.       if ( (dodia%base_addr)(42, 0) /= .false. ) then
+  123. !dir$ suppress umtx(1, 1, 4)
+  123.          t$37 = $_StaticDV_P2
+  123.          t$37%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( umtx(1, 1, 4) ) )
+  123.          t$37%header%el_len = 64
+  123.          t$37%header%assoc = 1
+  123.          t$37%header%ptr_alloc = 0
+  123.          t$37%header%p_or_a = 0
+  123.          t$37%header%a_contig = 0
+  123.          t$37%header%n_dim = 2
+  123.          t$37%header%orig_base = 0
+  123.          t$37%header%orig_size = 0
+  123.          t$37%header%n_codim = 0
+  123.          t$37%header%dv_versn = 2
+  123.          t$37%header%dv_smunit = 64
+  123.          t$37%header%d_type = 0
+  123.          t$37%header%n_params = 0
+  123.          t$37%header%d_type_idx = 13
+  123.          t$37%dim_1%LB = 1
+  123.          t$37%dim_1%EX = ( max( 0, ncols ) )
+  123.          t$37%dim_1%SM = 1
+  123.          t$37%dim_2%LB = 1
+  123.          t$37%dim_2%EX = ( max( 0, kmax ) )
+  123.          t$37%dim_2%SM = _zla( 0, ncols )
+  123.          call updia2d( t$37, 42, latco )
+  123.       endif
+  124.       if ( (dodia%base_addr)(40, 0) /= .false. ) then
+  124. !dir$ suppress qmtx(1, 1, 3)
+  124.          t$38 = $_StaticDV_P3
+  124.          t$38%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( qmtx(1, 1, 3) ) )
+  124.          t$38%header%el_len = 64
+  124.          t$38%header%assoc = 1
+  124.          t$38%header%ptr_alloc = 0
+  124.          t$38%header%p_or_a = 0
+  124.          t$38%header%a_contig = 0
+  124.          t$38%header%n_dim = 2
+  124.          t$38%header%orig_base = 0
+  124.          t$38%header%orig_size = 0
+  124.          t$38%header%n_codim = 0
+  124.          t$38%header%dv_versn = 2
+  124.          t$38%header%dv_smunit = 64
+  124.          t$38%header%d_type = 0
+  124.          t$38%header%n_params = 0
+  124.          t$38%header%d_type_idx = 13
+  124.          t$38%dim_1%LB = 1
+  124.          t$38%dim_1%EX = ( max( 0, ncols ) )
+  124.          t$38%dim_1%SM = 1
+  124.          t$38%dim_2%LB = 1
+  124.          t$38%dim_2%EX = ( max( 0, kmax ) )
+  124.          t$38%dim_2%SM = _zla( 0, ncols )
+  124.          call updia2d( t$38, 40, latco )
+  124.       endif
+  126.       return
+  126.       end
+  126.       
+    6.       
+    6.       module pbldriver
+    6.       end
+    6.       

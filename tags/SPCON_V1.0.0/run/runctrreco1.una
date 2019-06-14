@@ -1,0 +1,192 @@
+#!/bin/bash -x
+#help#
+#*******************************************************************#
+#                                                                   #
+#     Name:           runctrreco1.una                               #
+#                                                                   #
+#     Function:       This script submits the                       #
+#                     recomposition scripts                         #
+#                     of control forecast.                          #
+#                     It runs in Korn Shell.                        #
+#                                                                   #
+#      Date:           May    27th, 2003.                           #
+#      Last change:    May    27th, 2003.                           #
+#                                                                   #
+#     Valid Arguments for runctrreco.sx6                            #
+#                                                                   #
+#     First  : COMPILE: help, make, clean or run                    #
+#     Second :     TRC: three-digit triangular truncation           #
+#     Third  :      LV: two-digit number of vertical sigma-layers   #
+#     Fouth  :  LABELI: initial forecasting label                   #
+#                                                                   #
+#              LABELx: yyyymmddhh                                   #
+#                      yyyy = two digit year                        #
+#                        mm = two digit month                       #
+#                        dd = two digit day                         #
+#                        hh = two digit UTC hour                    #
+#                                                                   #
+#*******************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < $0 | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [  -z "${2}" ]
+then
+echo "Second argument is not set: TRC"
+exit
+else
+export TRC=`echo $2 | awk '{print $1/1}'`
+fi
+
+if [ -z "${3}" ]
+then
+echo "Second argument is not set (LV)"
+exit 
+fi
+if [ -z "${4}" ]
+then
+echo "Third argument is not set (LABELI: yyyymmddhh)"
+exit 
+fi
+if [ -z "${5}" ]
+then
+echo "Third argument is not set (PREFIC)"
+exit 
+fi
+#
+#   Set truncation and layers
+#
+TRC=`echo ${2} | awk '{print $1/1}'`   
+LV=`echo ${3} | awk '{print $1/1}'`    
+export RESOL=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+export NIVEL=`echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' `
+
+PREFIC=${5}
+#
+#   Set machine, Run time and Extention
+#
+COMPILE=${1}
+HSTMAQ=`hostname`
+MACHINE=una
+QUEUE=global.q
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+EXT=out
+echo ${MACHINE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   IOPERM is the directory for the input files.
+#
+#
+# SETTING THE APPROPRIATED ENVIRONMENT
+#
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesMCGA -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE} ${PREFIC}
+cd ${HOME_suite}/run
+
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${IOPERM}
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setctrreco.1.${RESOL}${NIVEL}.${MACHINE}
+#!/bin/bash -x
+#
+#************************************************************#
+#                                                            #
+#     Name:        setctrreco${RESOL}${NIVEL}.${MACHINE}     #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  recomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o crow:${HOME_suite}/run/setout/setctrreco.1.${RESOL}${NIVEL}.${MACHINE}.${RUNTM}.${EXT}
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N CTRRECO{NUM}
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y'``date +'%m'``date +'%d'`
+HOUR=`date +'%H:%M'`
+echo 'Date: '\$DATE
+echo 'Hour: '\$HOUR
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+LABELI=${4}
+echo \${LABELI}
+export LABELI
+#
+cd ${ROPERM}/model/dataout/${RESOL}${NIVEL}/\${LABELI}
+rm -f GFCTCTR\${LABELI}\${LABELI}*
+rm -f GFCTCTR\${LABELI}*.dir.${RESOL}${NIVEL}
+rm -f GFCTCTR\${LABELI}*.dir.${RESOL}${NIVEL}.files
+#mv GFCTCTR\${LABELI}*F.fct.${RESOL}${NIVEL} ${ROPERM}/model/datain
+
+#AAF for i in `ls GFCTCTR\${LABELI}*F.fct.${RESOL}${NIVEL}`
+#AAF do
+#AAF       echo "ln -sf $i ${ROPERM}/model/datain/"
+#AAF       ln -sf $i ${ROPERM}/model/datain/
+#AAF done
+
+#
+#cd  ${IOPERM}/
+rm -f lst.GFCTCTR\${LABELI}.dr
+ls -l GFCTCTR\${LABELI}* > lst.GFCTCTR\${LABELI}.dr
+awk '{ print \$8 }' lst.GFCTCTR\${LABELI}.dr  >  lst.GFCTCTR\${LABELI}
+xx=\`awk '{ print substr(\$1,18,10) }' lst.GFCTCTR\${LABELI}\`
+echo ${xx}
+cd ${OPERM}/run
+for i in \${xx} 
+do
+echo runrecfct1.${MACHINE} ${COMPILE} ${TRC} ${LV} FCTCTR \${LABELI} \${i} ${PREFIC}
+runrecfct1.${MACHINE} ${COMPILE} ${TRC} ${LV} FCTCTR \${LABELI} \${i} ${PREFIC}
+done
+EOT0
+chmod 744 setctrreco.1.${RESOL}${NIVEL}.${MACHINE}
+
+echo "${OPERM}/run/setctrreco.1.${RESOL}${NIVEL}.${MACHINE}"
+. ${OPERM}/run/setctrreco.1.${RESOL}${NIVEL}.${MACHINE} 
+
+#submit ${OPERM}/run/setctrreco.1.${RESOL}${NIVEL}.${MACHINE} ${QUEUE} Info

@@ -1,0 +1,524 @@
+#!/bin/bash -x
+#help#
+#*******************************************************************#
+#                                                                   #
+#     Name:           runrdpt1.sx6                                  #
+#                                                                   #
+#     Function:       This script submits the                       #
+#                     random perturbation                           #
+#                     It runs in Korn Shell.                        #
+#                                                                   #
+#     Date:           May    26th, 2003.                            #
+#     Last change:    May    26th, 2003.                            #
+#                                                                   #
+#     Valid Arguments for runrdpt.sx6                               #
+#                                                                   #
+#     First  : COMPILE: help, make, clean or run                    #
+#     Second : NUMPERT: number of perturbations                     #
+#     Third  :     TRC: three-digit triangular truncation           #
+#     Fourth :      LV: two-digit number of vertical sigma-layers   #
+#     Fifth  :  LABELI: input field label                           #
+#     Sixth  :  HUMID: YES or NO (humidity will be perturbed)       #
+#     Seventh:  PERT: NMC, AVN CTR 01N                              #
+#                                                                   #
+#              LABELx : yyyymmddhh                                  #
+#                       yyyy = four digit year                      #
+#                       mm = two digit month                        #
+#                       dd = two digit day                          #
+#                       hh = two digit hour                         #
+#                                                                   #
+#*******************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+cat < $0 | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Test of Valid Arguments
+#
+if [ "${1}" != "run" ]
+then
+if [ "${1}" != "make" ]
+then
+if [ "${1}" != "clean" ]
+then
+echo "First argument: ${1}, is wrong. Must be: make, clean or run"
+exit
+fi
+fi
+fi
+if [ -z "${2}" ]
+then
+echo "Second argument is not set: NUMPERT"
+exit
+fi
+if [ -z "${3}" ]
+then
+echo "Third argument is not set: TRC"
+exit
+fi
+if [ -z "${4}" ]
+then
+echo "Fourth argument is not set: LV"
+exit
+fi
+if [ "${1}" = "run" ]
+then
+if [ -z "${5}" ]
+then
+echo "Fifth argument is not set (LABELI: yyyymmddhh)"
+exit
+fi
+if [ -z "${6}" ]
+then
+echo "Sixth argument is not set (HUMID)"
+exit
+else
+HUMID=${6}
+fi
+if [ -z "${7}" ]
+then
+echo "PERT: NMC, AVN CTR 01N  "
+exit
+else
+PREFIC=${7}
+fi
+fi
+#
+#   Set machine, Run time and Extention
+#
+HSTMAQ=`hostname`
+MAQUI=sx6 
+QUEUE=Inter
+RUNTM=`date +'%Y'``date +'%m'``date +'%d'``date +'%H:%M'`
+EXT=out
+echo ${MAQUI}
+echo ${QUEUE}
+echo ${RUNTM}
+echo ${EXT}
+#
+#   Set directories
+#
+#   OPERM  is the directory for sources, scripts and printouts.
+#   SOPERM is the directory for input and output files.
+#   ROPERM is the directory for big selected output files.
+#   IOPERM is the directory for the input files.
+#
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesMCGA -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE} ${PREFIC}
+cd ${HOME_suite}/run
+echo ${OPERM}
+echo ${SOPERM}
+echo ${ROPERM}
+echo ${IOPERM}
+#
+#   Set truncation and layers
+#
+TRC=`echo ${3} |awk '{ printf("%3.3d\n",$1)  }' `
+LV=`echo ${4} |awk '{ printf("%2.2d\n",$1)  }' `
+export RESOL=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+export NIVEL=`echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' `
+
+#TRC=${3}
+#LV=${4}
+#RESOL=T${TRC}
+#NIVEL=L${LV}
+export RESOL NIVEL
+#
+case ${TRC} in
+021) MR=21 ; IR=64 ; JR=32 ; 
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+030) MR=30 ; IR=96 ; JR=48 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+042) MR=42 ; IR=128 ; JR=64 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=11 ;;
+     28) KR=28 ; LR=11 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+047) MR=47 ; IR=144 ; JR=72 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+062) MR=62 ; IR=192 ; JR=96 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+079) MR=79 ; IR=240 ; JR=120 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+095) MR=95 ; IR=288 ; JR=144 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+106) MR=106 ; IR=320 ; JR=160 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+126) MR=126 ; IR=384 ; JR=192 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+159) MR=159 ; IR=480 ; JR=240 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+170) MR=170 ; IR=512 ; JR=256 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+213) MR=213 ; IR=640 ; JR=320 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+319) MR=319 ; IR=960 ; JR=480 ;
+     case ${LV} in
+     09) KR=09 ; LR=11 ;;
+     18) KR=18 ; LR=13 ;;
+     28) KR=28 ; LR=17 ;;
+     42) KR=42 ; LR=18 ;;
+     *) echo "Wrong request for vertical resolution: ${LV}" ; exit 1 ;;
+     esac
+;;
+*) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
+esac
+#
+#
+cd ${OPERM}/run
+#
+cat <<EOT0 > setrdpt.1.${RESOL}${NIVEL}.${MAQUI}
+#!/bin/bash -x
+#
+#************************************************************#
+#                                                            #
+#     Name:        setrdpt${RESOL}${NIVEL}.${MAQUI}          #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  ranDOm perturbation script.               #
+#                                                            #
+#************************************************************#
+#
+#PBS -o crow:${HOME_suite}/run/setout/setrdpt.1.${RESOL}${NIVEL}.${MAQUI}.${RUNTM}.${EXT}
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N $RES
+#
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=`date +'%Y'``date +'%m'``date +'%d'`
+HOUR=`date +'%H:%M'`
+echo 'Date: '\${DATE}
+echo 'Hour: '\${HOUR}
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file label
+#
+NUMPERT=${2}
+LABELI=${5}
+#
+echo \${LABELI} \${NUMPERT}
+export LABELI NUMPERT
+#
+#   Prefix names for the FORTRAN files
+#
+#   NAMER - Recomposed input file prefix
+#   NAMEP - Recomposed perturbed file prefix
+#
+#
+NAMER=GANL${PREFIC}
+export NAMER 
+#
+#   Suffix names for the FORTRAN files
+#
+#   EXTR  - Recomposed input file extension
+#
+EXTR=R.unf
+export EXTR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   IOPERMOD is the directory for input file.
+#
+OPERMOD=${OPERM}
+SOPERMOD=${SOPERM}
+ROPERMOD=${ROPERM}
+IOPERMOD=${IOPERM}
+export OPERMOD SOPERMOD ROPERMOD IOPERMOD
+echo \${OPERMOD}
+echo \${SOPERMOD}
+echo \${ROPERMOD}
+echo \${IOPERMOD}
+#
+echo "cp  ${ROPERM}/recanl/dataout/${RESOL}${NIVEL}/\${NAMER}\${LABELI}\${EXTR}.${RESOL}${NIVEL} $IOPERM"
+cp  ${ROPERM}/recanl/dataout/${RESOL}${NIVEL}/\${NAMER}\${LABELI}\${EXTR}.${RESOL}${NIVEL} ${IOPERM}
+#
+cd \${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=${NIVEL}
+TRUNC=${RESOL}
+export TRUNC LEV
+#
+#   Set machine
+MACH=${MAQUI}
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+echo ${1}
+COMPILE=${1}
+echo \${COMPILE}
+export COMPILE
+#
+#   Set FORTRAN compilation flags
+#
+#   -integer_size 64 sets the integer basic numeric size to 8 bytes
+#   -real_size 64    sets the real basic numeric size to 8 bytes
+#
+#
+#FTNFLAG='-Wf" -pvctl noaltcode -O nodiv nomove "'
+FTNFLAG='  -h byteswapio -s real64 -s integer64  '
+
+export FTNFLAG
+#
+#   Set C pre-processing flags
+#
+INC=\${OPERMOD}/include/\${TRUNC}\${LEV}
+CPP=" -I\${INC}"
+export INC CPP
+#
+#   Set FORTRAN compiler name
+#
+F77="ftn  "
+export F77
+#
+#   Set FORTRAN environment file name
+#
+#   $FFFn is associated with FORTRAN file unit = n
+#
+#FFF=FORT
+#export FFF
+#
+#   Set environmental variables to binary conversion
+#
+#FORT_CONVERT10=BIG_enDIAN
+#FORT_CONVERT20=BIG_ENDIAN
+#export FORT_CONVERT10 FORT_CONVERT20
+#
+F_UFMTIEEE=10,20
+#AMM F_UFMTADJUST=TYPE2
+#AMM export F_UFMTIEEE F_UFMTADJUST
+export F_UFMTIEEE
+#
+#  Now, build the necessary INCLUDE for the choosen truncation and 
+#       vertical resolution.. 
+#
+  if [ "\${COMPILE}" != "run" ]
+  then
+#
+cd \${INC}
+#
+cat <<EOT1 > rdpert.n
+      INTEGER IMAX,JMAX,MEND,KMAX,IDM
+      PARAMETER (IMAX=${IR},JMAX=${JR},MEND=${MR},KMAX=${KR},IDM=\${NUMPERT})
+EOT1
+if (diff rdpert.n rdpert.h > /dev/null)
+then
+    echo "rdpert.n and rdpert.h are the same"
+    rm -f rdpert.n
+else
+    echo "rdpert.n and rdpert.h are different"
+    mv rdpert.n rdpert.h
+fi
+#
+#  End of includes
+#
+fi
+#
+#  Now, build the necessary NAMELIST input:
+#
+#  Mariane (1999) stdt=0.6 K, stdu=3 m/s
+#
+cat <<EOT2 > \${SOPERMOD}/rdpert/datain/rdpert.nml
+ &DATAIN
+  FLONW=0
+  FLONE=360.0 
+  GLATN=30.0  
+  GLATS=-45.0
+ &END
+ &STTEMP
+  STDT( 1)=1.50,STDT( 2)=1.50,STDT( 3)=1.50,STDT( 4)=1.50,STDT( 5)=1.50,
+  STDT( 6)=1.50,STDT( 7)=1.50,STDT( 8)=1.50,STDT( 9)=1.50,STDT(10)=1.50,
+  STDT(11)=1.50,STDT(12)=1.50,STDT(13)=1.50,STDT(14)=1.50,STDT(15)=1.50,
+  STDT(16)=1.50,STDT(17)=1.50,STDT(18)=1.50,STDT(19)=1.50,STDT(20)=1.50,
+  STDT(21)=1.50,STDT(22)=1.50,STDT(23)=1.50,STDT(24)=1.50,STDT(25)=1.50,
+  STDT(26)=1.50,STDT(27)=1.50,STDT(28)=1.50
+ &END
+ &STZWIN
+  STDU( 1)=5.00,STDU( 2)=5.00,STDU( 3)=5.00,STDU( 4)=5.00,STDU( 5)=5.00,
+  STDU( 6)=5.00,STDU( 7)=5.00,STDU( 8)=5.00,STDU( 9)=5.00,STDU(10)=5.00,
+  STDU(11)=5.00,STDU(12)=5.00,STDU(13)=5.00,STDU(14)=5.00,STDU(15)=5.00,
+  STDU(16)=5.00,STDU(17)=5.00,STDU(18)=5.00,STDU(19)=5.00,STDU(20)=5.00,
+  STDU(21)=5.00,STDU(22)=5.00,STDU(23)=5.00,STDU(24)=5.00,STDU(25)=5.00,
+  STDU(26)=5.00,STDU(27)=5.00,STDU(28)=5.00
+ &END
+ &STMWIN
+  STDV( 1)=5.00,STDV( 2)=5.00,STDV( 3)=5.00,STDV( 4)=5.00,STDV( 5)=5.00,
+  STDV( 6)=5.00,STDV( 7)=5.00,STDV( 8)=5.00,STDV( 9)=5.00,STDV(10)=5.00,
+  STDV(11)=5.00,STDV(12)=5.00,STDV(13)=5.00,STDV(14)=5.00,STDV(15)=5.00,
+  STDV(16)=5.00,STDV(17)=5.00,STDV(18)=5.00,STDV(19)=5.00,STDV(20)=5.00,
+  STDV(21)=5.00,STDV(22)=5.00,STDV(23)=5.00,STDV(24)=5.00,STDV(25)=5.00,
+  STDV(26)=5.00,STDV(27)=5.00,STDV(28)=5.00
+ &END
+ &STHUMI
+  STDQ( 1)= 1.019,STDQ( 2)= 0.926,STDQ( 3)= 0.872,STDQ( 4)= 0.797,
+  STDQ( 5)= 0.703,STDQ( 6)= 0.641,STDQ( 7)= 0.629,STDQ( 8)= 0.571,
+  STDQ( 9)= 0.595,STDQ(10)= 0.546,STDQ(11)= 0.434,STDQ(12)= 0.345,
+  STDQ(13)= 0.276,STDQ(14)= 0.204,STDQ(15)= 0.142,STDQ(16)= 0.081,
+  STDQ(17)= 0.049,STDQ(18)= 0.024,STDQ(19)= 0.008,STDQ(20)= 0.002,
+  STDQ(21)= 0.001,STDQ(22)= 0.000,STDQ(23)= 0.000,STDQ(24)= 0.000,
+  STDQ(25)= 0.000,STDQ(26)= 0.000,STDQ(27)= 0.000,STDQ(28)= 0.000
+ &END
+ &HUMIDI
+  HUM='${HUMID}'
+ &END
+ &DATNAM
+  DIRO='\${ROPERMOD}/recanl/dataout/\${TRUNC}\${LEV}/ '
+  DIRP='\${ROPERMOD}/rdpert/dataout/\${TRUNC}\${LEV}/ '
+  GNAMEO='\${NAMER}\${LABELI}\${EXTR}.\${TRUNC}\${LEV} '
+EOT2
+mkdir -p \${ROPERMOD}/rdpert/dataout/\${TRUNC}\${LEV}/ 
+i=1
+while [ \${i} -le \${NUMPERT} ]
+do
+if [ \${i}  -le 9 ]
+then
+cat <<EOT3 >> \${SOPERMOD}/rdpert/datain/rdpert.nml
+  GNAMEP(\${i})='GANL0\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}'
+EOT3
+else
+cat <<EOT3 >> \${SOPERMOD}/rdpert/datain/rdpert.nml
+  GNAMEP(\${i})='GANL\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}'
+EOT3
+fi
+let i=\${i}+1
+done
+cat <<EOT4 >> \${SOPERMOD}/rdpert/datain/rdpert.nml
+ &END
+EOT4
+#
+cd \${OPERMOD}/run
+#
+#   Run Random Perturbation
+#
+\${OPERMOD}/rdpert/scripts/rdpert.scr
+#
+EOT0
+#
+#   Change mode to be executable
+#
+chmod 744 setrdpt.1.${RESOL}${NIVEL}.${MAQUI}
+#
+#   Submit Random Perturbation script to NQS $QUEUE
+#
+#AMM echo "qsub -x -s /bin/ksh -q ${QUEUE} ${OPERM}/run/setrdpt${RESOL}${NIVEL}.${MAQUI}"
+#AMM qsub -x -s /bin/ksh -q ${QUEUE} ${OPERM}/run/setrdpt${RESOL}${NIVEL}.${MAQUI}
+echo "${OPERM}/run/setrdpt.1.${RESOL}${NIVEL}.${MAQUI}"
+${OPERM}/run/setrdpt.1.${RESOL}${NIVEL}.${MAQUI}

@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/Out.model.2004041000.1286539006.%s.MPI20.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=20
+#PBS -l mppnppn=4
+#PBS -l mppdepth=ENSMODELNMC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N 126
+#
+cp -f /scratch/p01211/oens-1.0.0/model/exec/ParModel_MPI /scratch/p01211/oens-1.0.0/model/exec_hold/
+cd /scratch/p01211/oens-1.0.0/model/exec_hold
+#mpirun -np 20 -machinefile ${TMPDIR}/machines /scratch/p01211/oens-1.0.0/run/mpisep.bash
+date
+#time aprun -n 20 -N 4 /scratch/p01211/oens-1.0.0/model/exec/ParModel_MPI -i /scratch/p01211/oens-1.0.0/model/exec/MODELIN
+export OMP_NUM_THREADS=ENSMODELNMC
+ulimit -s unlimited
+#time aprun -n  20 -N  4 -d ENSMODELNMC -S 1  -ss /scratch/p01211/oens-1.0.0/model/exec/ParModel_MPI -i /scratch/p01211/oens-1.0.0/model/exec/MODELIN
+time aprun -n  20 -N  4 -d ENSMODELNMC -ss  /scratch/p01211/oens-1.0.0/model/exec/ParModel_MPI -i /scratch/p01211/oens-1.0.0/model/exec/MODELIN
+date
+

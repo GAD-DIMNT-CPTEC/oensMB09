@@ -1,0 +1,135 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  w3reddat.f
+       !        File                  :  w3reddat.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+    1.       
+    1.       subroutine w3reddat( it, rinc, dinc )
+    1.       $CARG_it_I0 = 0[loc( it ),0]
+  106.       !  === Begin Short Vector Loop ===
+  106.       $LCS_rinc_0[0:4:1] = 0[loc( rinc ):4:1]
+  106.       $VRHS_2[0] = floor( $LCS_rinc_0[0] )
+  106.       $VRHS_2[1] = floor( $LCS_rinc_0[1] )
+  106.       $VRHS_2[2] = floor( $LCS_rinc_0[2] )
+  106.       $VRHS_2[3] = floor( $LCS_rinc_0[3] )
+  106.       0[loc( iinc ):4:1] = $VRHS_2[0:4:1]
+  109.       $Dotp_A33 = _rpls( 0[loc( t$5 ):4:1] * ( $LCS_rinc_0[0:4:1] + real( ( -$VRHS_2[0:4:1] ) ) ), 4, 1 )
+  106.       !  === End Short Vector Loop ===
+  109.       $MR_jinc_2 = _rnd( $Dotp_A33 + 4[loc( rinc ),0] )
+  110.       $MR_kinc_3 = modulo( $MR_jinc_2, 1000 )
+  110.       $LCS_kinc_2 = loc( kinc )
+  110.       4[$LCS_kinc_2,0] = $MR_kinc_3
+  112.       $LCS_iinc_3 = loc( iinc )
+  112.       $MR_jinc_5 = 3[$LCS_iinc_3,0] + ( $MR_jinc_2 - $MR_kinc_3 ) / 1000
+  113.       $MR_kinc_6 = modulo( $MR_jinc_5, 60 )
+  113.       3[$LCS_kinc_2,0] = $MR_kinc_6
+  115.       $MR_jinc_8 = 2[$LCS_iinc_3,0] + ( $MR_jinc_5 - $MR_kinc_6 ) / 60
+  116.       $MR_kinc_9 = modulo( $MR_jinc_8, 60 )
+  116.       2[$LCS_kinc_2,0] = $MR_kinc_9
+  118.       $MR_jinc_11 = 1[$LCS_iinc_3,0] + ( $MR_jinc_8 - $MR_kinc_9 ) / 60
+  119.       $MR_kinc_12 = modulo( $MR_jinc_11, 24 )
+  119.       1[$LCS_kinc_2,0] = $MR_kinc_12
+  121.       $MR_kinc_14 = 0[$LCS_iinc_3,0] + ( $MR_jinc_11 - $MR_kinc_12 ) / 24
+  121.       0[$LCS_kinc_2,0] = $MR_kinc_14
+  122.       $Dotp_A35 = 0
+  122.       $I_L122_S2 = 0
+  122.       $LIS_E0 = loc( t$6 )
+  122.       do
+  122.          $Dotp_A35 = $Dotp_A35 + 0[$LIS_E0,$I_L122_S2] * 1[loc( kinc ),$I_L122_S2]
+  122.          $I_L122_S2 = 1 + $I_L122_S2
+  122.          if ( $I_L122_S2 >= 4 ) exit
+  122.       enddo
+  126.       if ( $CARG_it_I0 <= 0 ) then
+  126.          goto 10
+  126.       else if ( $CARG_it_I0 <= 5 ) then
+  129.          $CS_0 = or( 5 - $CARG_it_I0, -1 + $CARG_it_I0 ) >= 0
+  129.          if ( $CS_0 == .false. ) then
+  129.             $LB_Y0 = 1
+  129.             $UB_Y1 = 5
+  129.             $Subscript_Y5 = $CARG_it_I0
+  129.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  129.          endif
+  129.          if ( $CS_0 == .false. ) then
+  129.             $LB_Y0 = 1
+  129.             $UB_Y1 = 5
+  129.             $Subscript_Y5 = $CARG_it_I0
+  129.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  129.          endif
+  129.          if ( $CS_0 == .false. ) then
+  129.             $LB_Y0 = 1
+  129.             $UB_Y1 = 5
+  129.             $Subscript_Y5 = $CARG_it_I0
+  129.             _bounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y43 )
+  129.          endif
+  129.          $CS_itd_1 = loc( itd )
+  129.          $LCS_itm_4 = 15[$CS_itd_1,$CARG_it_I0]
+  129.          $LCS_5 = _lsh( $Dotp_A35, 4 )
+  129.          $LCS_6 = $LCS_5 / $LCS_itm_4
+  129.          $rp_S1 = real( $LCS_5 - $LCS_itm_4 * $LCS_6 ) / real( $LCS_itm_4 ) + real( $LCS_6 )
+  130.          !  === Begin Short Vector Loop ===
+  130.          0[loc( dinc ):4:1] = _bcst( 0.0, 4 )
+  130.          $I_L130_4 = 4
+  130.          !  === End Short Vector Loop ===
+  130.          0[loc( dinc ),$I_L130_4] = 0.0
+  131.          if ( $CS_0 == .false. ) then
+  131.             $LB_Y0 = 1
+  131.             $UB_Y1 = 5
+  131.             $Subscript_Y5 = $CARG_it_I0
+  131.             _bounds_error( $_File_Y40, $Line_Y47, $_Name_Y46, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y48 )
+  131.          endif
+  131.          if ( $CS_0 == .false. ) then
+  131.             $LB_Y0 = 1
+  131.             $UB_Y1 = 5
+  131.             $Subscript_Y5 = $CARG_it_I0
+  131.             _bounds_error( $_File_Y40, $Line_Y47, $_Name_Y49, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y50 )
+  131.          endif
+  131.          -1[loc( dinc ),$CARG_it_I0] = ( 6.25e-2 * $rp_S1 ) + real( -1[$CS_itd_1,$CARG_it_I0] ) * real( $MR_kinc_14 )
+  131.       else
+  131.    10    continue
+  135.          !  === Begin Short Vector Loop ===
+  135.          0[loc( dinc ):4:1] = real( 0[loc( kinc ):4:1] )
+  135.          $I_L135_6 = 4
+  135.          !  === End Short Vector Loop ===
+  135.          $LCS_dinc_7 = loc( dinc )
+  135.          0[$LCS_dinc_7,$I_L135_6] = real( 0[loc( kinc ),$I_L135_6] )
+  136.          if ( $CARG_it_I0 == 0 ) then
+  136.             if ( $MR_kinc_14 < 0 ) then
+  136.                if ( $Dotp_A35 > 0 ) then
+  137.                   $MR_dinc_S3 = 0[$LCS_dinc_7,0]
+  137.                   $MR_dinc_S4 = 1.0 + $MR_dinc_S3
+  137.                   0[$LCS_dinc_7,0] = $MR_dinc_S4
+  138.                   !  === Begin Short Vector Loop ===
+  138.                   $ST_Dotp_1 = -86400000 + $Dotp_A35
+  138.                   $LCS_8[0:4:1] = _bcst( $ST_Dotp_1, 4 )
+  138.                   $LCS_t_9[0:4:1] = 0[loc( t$7 ):4:1]
+  138.                   $VRHS_3[0] = $LCS_8[0] / $LCS_t_9[0] * $LCS_t_9[0]
+  138.                   $VRHS_3[1] = $LCS_8[1] / $LCS_t_9[1] * $LCS_t_9[1]
+  138.                   $VRHS_3[2] = $LCS_8[2] / $LCS_t_9[2] * $LCS_t_9[2]
+  138.                   $VRHS_3[3] = $LCS_8[3] / $LCS_t_9[3] * $LCS_t_9[3]
+  138.                   $VS_4[0:4:1] = -$VRHS_3[0:4:1]
+  138.                   $VS_itm_5[0:4:1] = 17[loc( itd ):4:1]
+  138.                   $VRHS_6[0] = ( $LCS_8[0] + $VS_4[0] ) / $VS_itm_5[0]
+  138.                   $VRHS_6[1] = ( $LCS_8[1] + $VS_4[1] ) / $VS_itm_5[1]
+  138.                   $VRHS_6[2] = ( $LCS_8[2] + $VS_4[2] ) / $VS_itm_5[2]
+  138.                   $VRHS_6[3] = ( $LCS_8[3] + $VS_4[3] ) / $VS_itm_5[3]
+  138.                   1[loc( dinc ):4:1] = real( $VRHS_6[0:4:1] )
+  138.                   !  === End Short Vector Loop ===
+  138.                endif
+  138.             endif
+  138.          endif
+  138.       endif
+  142.       return
+  142.       end
+  142.       

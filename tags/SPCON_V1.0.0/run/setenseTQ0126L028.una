@@ -1,0 +1,81 @@
+#!/bin/ksh
+#
+#************************************************************#
+#                                                            #
+#     Name:        setenseTQ0126L028.una        #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  ensemble scripts.                         #
+#                                                            #
+#************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/setenseTQ0126L028.una.2010101815:09.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N ENSE
+#
+#
+cd /scratch/p01211/oens-1.0.0/run
+/scratch/p01211/oens-1.0.0/run/runPre 126 28  2004032600 NMC 
+echo /scratch/p01211/oens-1.0.0/run/runPre 126 28  2004032600 NMC 
+
+
+echo /scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 NMC 7 sstwkl
+/scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 NMC 7 sstwkl 
+
+echo /scratch/p01211/oens-1.0.0/run/runense1.una run 126 28 2004032600 15 7 NO "NMC"
+/scratch/p01211/oens-1.0.0/run/runense1.una run 126 28 2004032600 15 7 NO "NMC"
+
+echo /scratch/p01211/oens-1.0.0/run/runctrmodgpro.una 8 4 ENSMODCTR 126 28 2004032600 2004032712 CTR hold
+/scratch/p01211/oens-1.0.0/run/runctrmodgpro.una 16 2 ENSMODCTR 126 28 2004032600 2004032712 CTR hold
+
+echo /scratch/p01211/oens-1.0.0/run/runctrreco1.una run 126 28 2004032600  NMC
+/scratch/p01211/oens-1.0.0/run/runctrreco1.una run 126 28 2004032600  NMC
+i=1
+PT=R
+while [ ${i} -le 7 ]
+do
+if [ ${i} -le 9 ]
+then
+#
+# Script runperpntg run the members of the ensemble
+#
+echo " "
+/scratch/p01211/oens-1.0.0/run/runperpntg1.una run 126 28 0${i} ${PT} 2004032600 2004032712 15 NO 7 sstwkl 
+else 
+#
+# Script runperpntg run the members of the ensemble
+#
+echo " "
+/scratch/p01211/oens-1.0.0/run/runperpntg1.una run 126 28 ${i} ${PT} 2004032600 2004032712 15 NO 7 sstwkl
+fi
+echo ${i}
+let i=i+1
+done
+
+
+i=1
+while [ ${i} -le 7 ]
+do
+if [ ${i} -le 9 ];then
+echo /scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 0${i}P 7 sstwkl
+/scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 0${i}P 7 sstwkl
+echo /scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 0${i}N 7 sstwkl
+/scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 0${i}N 7 sstwkl
+else
+echo /scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 ${i}P 7 sstwkl
+/scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 ${i}P 7 sstwkl
+exit
+echo /scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 ${i}N 7 sstwkl
+/scratch/p01211/oens-1.0.0/run/runpntg1.una 126 28 2004032600 15 ${i}N 7 sstwkl
+fi
+echo ${i}
+let i=i+1
+done
+

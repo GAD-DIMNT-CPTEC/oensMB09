@@ -1,0 +1,2787 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  FieldsDynamics.f90
+       !        File                  :  FieldsDynamics.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   98.       
+   98.       subroutine initfields( ibmax, kmax, jbmax, mnmax, mnextmax, kmaxloc, mnmax_si, jbmax_ext, nscalars, sl2lev )
+  111.       qtmpp%header%a_contig = 1
+  111.       qtmpp%dim_1%LB = 1
+  111.       qtmpp%dim_1%EX = _zla( 0, ( 2 * mnmax ) )
+  111.       qtmpp%dim_1%SM = 1
+  111.       qtmpp%dim_2%LB = 1
+  111.       qtmpp%dim_2%EX = _zla( 0, kmaxloc )
+  111.       qtmpp%dim_2%SM = _zla( 0, ( 2 * mnmax ) )
+  111.       $_allo_P0(0) = 0x1000000000001L
+  111.       $_allo_P0(1) = loc( qtmpp )
+  111.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  112.       $F_A33 = _zla( 0, kmaxloc )
+  112.       $F_A34 = _zla( 0, ( 2 * mnmax ) )
+  112.       if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  112.          $I_A2 = 0
+  112.          do
+  112.             $I_A1 = 0
+  112. !dir$ ivdep
+  112.             do
+  112.                (qtmpp%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  112.                $I_A1 = 1 + $I_A1
+  112.                if ( $I_A1 >= $F_A34 ) exit
+  112.             enddo
+  112.             $I_A2 = 1 + $I_A2
+  112.             if ( $I_A2 >= $F_A33 ) exit
+  112.          enddo
+  112.       endif
+  113.       qtmpt%header%a_contig = 1
+  113.       qtmpt%dim_1%LB = 1
+  113.       qtmpt%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  113.       qtmpt%dim_1%SM = 1
+  113.       qtmpt%dim_2%LB = 1
+  113.       qtmpt%dim_2%EX = ( max( 0, kmaxloc ) )
+  113.       qtmpt%dim_2%SM = ( max( 0, 2 * mnmax ) )
+  113.       $_allo_P1(0) = 0x1000000000001L
+  113.       $_allo_P1(1) = loc( qtmpt )
+  113.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  114.       $F_A35 = ( max( 0, kmaxloc ) )
+  114.       $F_A36 = ( max( 0, 2 * mnmax ) )
+  114.       if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+  114.          $I_A2 = 0
+  114.          do
+  114.             $I_A1 = 0
+  114. !dir$ ivdep
+  114.             do
+  114.                (qtmpt%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  114.                $I_A1 = 1 + $I_A1
+  114.                if ( $I_A1 >= $F_A36 ) exit
+  114.             enddo
+  114.             $I_A2 = 1 + $I_A2
+  114.             if ( $I_A2 >= $F_A35 ) exit
+  114.          enddo
+  114.       endif
+  115.       qtmpt_si%header%a_contig = 1
+  115.       qtmpt_si%dim_1%LB = 1
+  115.       qtmpt_si%dim_1%EX = ( max( 0, 2 * mnmax_si ) )
+  115.       qtmpt_si%dim_1%SM = 1
+  115.       qtmpt_si%dim_2%LB = 1
+  115.       qtmpt_si%dim_2%EX = ( max( 0, kmax ) )
+  115.       qtmpt_si%dim_2%SM = ( max( 0, 2 * mnmax_si ) )
+  115.       $_allo_P2(0) = 0x1000000000001L
+  115.       $_allo_P2(1) = loc( qtmpt_si )
+  115.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  116.       $F_A37 = ( max( 0, kmax ) )
+  116.       $F_A38 = ( max( 0, 2 * mnmax_si ) )
+  116.       if ( and( -$F_A38, -$F_A37 ) < 0 ) then
+  116.          $I_A2 = 0
+  116.          do
+  116.             $I_A1 = 0
+  116. !dir$ ivdep
+  116.             do
+  116.                (qtmpt_si%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  116.                $I_A1 = 1 + $I_A1
+  116.                if ( $I_A1 >= $F_A38 ) exit
+  116.             enddo
+  116.             $I_A2 = 1 + $I_A2
+  116.             if ( $I_A2 >= $F_A37 ) exit
+  116.          enddo
+  116.       endif
+  117.       qrotp%header%a_contig = 1
+  117.       qrotp%dim_1%LB = 1
+  117.       qrotp%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  117.       qrotp%dim_1%SM = 1
+  117.       qrotp%dim_2%LB = 1
+  117.       qrotp%dim_2%EX = ( max( 0, kmaxloc ) )
+  117.       qrotp%dim_2%SM = ( max( 0, 2 * mnmax ) )
+  117.       $_allo_P3(0) = 0x1000000000001L
+  117.       $_allo_P3(1) = loc( qrotp )
+  117.       call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+  118.       $F_A39 = ( max( 0, kmaxloc ) )
+  118.       $F_A40 = ( max( 0, 2 * mnmax ) )
+  118.       if ( and( -$F_A40, -$F_A39 ) < 0 ) then
+  118.          $I_A2 = 0
+  118.          do
+  118.             $I_A1 = 0
+  118. !dir$ ivdep
+  118.             do
+  118.                (qrotp%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  118.                $I_A1 = 1 + $I_A1
+  118.                if ( $I_A1 >= $F_A40 ) exit
+  118.             enddo
+  118.             $I_A2 = 1 + $I_A2
+  118.             if ( $I_A2 >= $F_A39 ) exit
+  118.          enddo
+  118.       endif
+  119.       qrott%header%a_contig = 1
+  119.       qrott%dim_1%LB = 1
+  119.       qrott%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  119.       qrott%dim_1%SM = 1
+  119.       qrott%dim_2%LB = 1
+  119.       qrott%dim_2%EX = ( max( 0, kmaxloc ) )
+  119.       qrott%dim_2%SM = ( max( 0, 2 * mnmax ) )
+  119.       $_allo_P4(0) = 0x1000000000001L
+  119.       $_allo_P4(1) = loc( qrott )
+  119.       call __allocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+  120.       $F_A41 = ( max( 0, kmaxloc ) )
+  120.       $F_A42 = ( max( 0, 2 * mnmax ) )
+  120.       if ( and( -$F_A42, -$F_A41 ) < 0 ) then
+  120.          $I_A2 = 0
+  120.          do
+  120.             $I_A1 = 0
+  120. !dir$ ivdep
+  120.             do
+  120.                (qrott%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  120.                $I_A1 = 1 + $I_A1
+  120.                if ( $I_A1 >= $F_A42 ) exit
+  120.             enddo
+  120.             $I_A2 = 1 + $I_A2
+  120.             if ( $I_A2 >= $F_A41 ) exit
+  120.          enddo
+  120.       endif
+  121.       qrott_si%header%a_contig = 1
+  121.       qrott_si%dim_1%LB = 1
+  121.       qrott_si%dim_1%EX = ( max( 0, 2 * mnmax_si ) )
+  121.       qrott_si%dim_1%SM = 1
+  121.       qrott_si%dim_2%LB = 1
+  121.       qrott_si%dim_2%EX = ( max( 0, kmax ) )
+  121.       qrott_si%dim_2%SM = ( max( 0, 2 * mnmax_si ) )
+  121.       $_allo_P5(0) = 0x1000000000001L
+  121.       $_allo_P5(1) = loc( qrott_si )
+  121.       call __allocate( $_allo_P5, 0, 0, _fcd( 0, 0 ) )
+  122.       $F_A43 = ( max( 0, kmax ) )
+  122.       $F_A44 = ( max( 0, 2 * mnmax_si ) )
+  122.       if ( and( -$F_A44, -$F_A43 ) < 0 ) then
+  122.          $I_A2 = 0
+  122.          do
+  122.             $I_A1 = 0
+  122. !dir$ ivdep
+  122.             do
+  122.                (qrott_si%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  122.                $I_A1 = 1 + $I_A1
+  122.                if ( $I_A1 >= $F_A44 ) exit
+  122.             enddo
+  122.             $I_A2 = 1 + $I_A2
+  122.             if ( $I_A2 >= $F_A43 ) exit
+  122.          enddo
+  122.       endif
+  123.       qdivp%header%a_contig = 1
+  123.       qdivp%dim_1%LB = 1
+  123.       qdivp%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  123.       qdivp%dim_1%SM = 1
+  123.       qdivp%dim_2%LB = 1
+  123.       qdivp%dim_2%EX = ( max( 0, kmaxloc ) )
+  123.       qdivp%dim_2%SM = ( max( 0, 2 * mnmax ) )
+  123.       $_allo_P6(0) = 0x1000000000001L
+  123.       $_allo_P6(1) = loc( qdivp )
+  123.       call __allocate( $_allo_P6, 0, 0, _fcd( 0, 0 ) )
+  124.       $F_A45 = ( max( 0, kmaxloc ) )
+  124.       $F_A46 = ( max( 0, 2 * mnmax ) )
+  124.       if ( and( -$F_A46, -$F_A45 ) < 0 ) then
+  124.          $I_A2 = 0
+  124.          do
+  124.             $I_A1 = 0
+  124. !dir$ ivdep
+  124.             do
+  124.                (qdivp%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  124.                $I_A1 = 1 + $I_A1
+  124.                if ( $I_A1 >= $F_A46 ) exit
+  124.             enddo
+  124.             $I_A2 = 1 + $I_A2
+  124.             if ( $I_A2 >= $F_A45 ) exit
+  124.          enddo
+  124.       endif
+  125.       qdivt%header%a_contig = 1
+  125.       qdivt%dim_1%LB = 1
+  125.       qdivt%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  125.       qdivt%dim_1%SM = 1
+  125.       qdivt%dim_2%LB = 1
+  125.       qdivt%dim_2%EX = ( max( 0, kmaxloc ) )
+  125.       qdivt%dim_2%SM = ( max( 0, 2 * mnmax ) )
+  125.       $_allo_P7(0) = 0x1000000000001L
+  125.       $_allo_P7(1) = loc( qdivt )
+  125.       call __allocate( $_allo_P7, 0, 0, _fcd( 0, 0 ) )
+  126.       $F_A47 = ( max( 0, kmaxloc ) )
+  126.       $F_A48 = ( max( 0, 2 * mnmax ) )
+  126.       if ( and( -$F_A48, -$F_A47 ) < 0 ) then
+  126.          $I_A2 = 0
+  126.          do
+  126.             $I_A1 = 0
+  126. !dir$ ivdep
+  126.             do
+  126.                (qdivt%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  126.                $I_A1 = 1 + $I_A1
+  126.                if ( $I_A1 >= $F_A48 ) exit
+  126.             enddo
+  126.             $I_A2 = 1 + $I_A2
+  126.             if ( $I_A2 >= $F_A47 ) exit
+  126.          enddo
+  126.       endif
+  127.       qdivt_si%header%a_contig = 1
+  127.       qdivt_si%dim_1%LB = 1
+  127.       qdivt_si%dim_1%EX = ( max( 0, 2 * mnmax_si ) )
+  127.       qdivt_si%dim_1%SM = 1
+  127.       qdivt_si%dim_2%LB = 1
+  127.       qdivt_si%dim_2%EX = ( max( 0, kmax ) )
+  127.       qdivt_si%dim_2%SM = ( max( 0, 2 * mnmax_si ) )
+  127.       $_allo_P8(0) = 0x1000000000001L
+  127.       $_allo_P8(1) = loc( qdivt_si )
+  127.       call __allocate( $_allo_P8, 0, 0, _fcd( 0, 0 ) )
+  128.       $F_A49 = ( max( 0, kmax ) )
+  128.       $F_A50 = ( max( 0, 2 * mnmax_si ) )
+  128.       if ( and( -$F_A50, -$F_A49 ) < 0 ) then
+  128.          $I_A2 = 0
+  128.          do
+  128.             $I_A1 = 0
+  128. !dir$ ivdep
+  128.             do
+  128.                (qdivt_si%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  128.                $I_A1 = 1 + $I_A1
+  128.                if ( $I_A1 >= $F_A50 ) exit
+  128.             enddo
+  128.             $I_A2 = 1 + $I_A2
+  128.             if ( $I_A2 >= $F_A49 ) exit
+  128.          enddo
+  128.       endif
+  129.       qqp%header%a_contig = 1
+  129.       qqp%dim_1%LB = 1
+  129.       qqp%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  129.       qqp%dim_1%SM = 1
+  129.       qqp%dim_2%LB = 1
+  129.       qqp%dim_2%EX = ( max( 0, kmaxloc ) )
+  129.       qqp%dim_2%SM = ( max( 0, 2 * mnmax ) )
+  129.       $_allo_P9(0) = 0x1000000000001L
+  129.       $_allo_P9(1) = loc( qqp )
+  129.       call __allocate( $_allo_P9, 0, 0, _fcd( 0, 0 ) )
+  130.       $F_A51 = ( max( 0, kmaxloc ) )
+  130.       $F_A52 = ( max( 0, 2 * mnmax ) )
+  130.       if ( and( -$F_A52, -$F_A51 ) < 0 ) then
+  130.          $I_A2 = 0
+  130.          do
+  130.             $I_A1 = 0
+  130. !dir$ ivdep
+  130.             do
+  130.                (qqp%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  130.                $I_A1 = 1 + $I_A1
+  130.                if ( $I_A1 >= $F_A52 ) exit
+  130.             enddo
+  130.             $I_A2 = 1 + $I_A2
+  130.             if ( $I_A2 >= $F_A51 ) exit
+  130.          enddo
+  130.       endif
+  131.       qqt%header%a_contig = 1
+  131.       qqt%dim_1%LB = 1
+  131.       qqt%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  131.       qqt%dim_1%SM = 1
+  131.       qqt%dim_2%LB = 1
+  131.       qqt%dim_2%EX = ( max( 0, kmaxloc ) )
+  131.       qqt%dim_2%SM = ( max( 0, 2 * mnmax ) )
+  131.       $_allo_P10(0) = 0x1000000000001L
+  131.       $_allo_P10(1) = loc( qqt )
+  131.       call __allocate( $_allo_P10, 0, 0, _fcd( 0, 0 ) )
+  132.       $F_A53 = ( max( 0, kmaxloc ) )
+  132.       $F_A54 = ( max( 0, 2 * mnmax ) )
+  132.       if ( and( -$F_A54, -$F_A53 ) < 0 ) then
+  132.          $I_A2 = 0
+  132.          do
+  132.             $I_A1 = 0
+  132. !dir$ ivdep
+  132.             do
+  132.                (qqt%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  132.                $I_A1 = 1 + $I_A1
+  132.                if ( $I_A1 >= $F_A54 ) exit
+  132.             enddo
+  132.             $I_A2 = 1 + $I_A2
+  132.             if ( $I_A2 >= $F_A53 ) exit
+  132.          enddo
+  132.       endif
+  133.       qdiaten%header%a_contig = 1
+  133.       qdiaten%dim_1%LB = 1
+  133.       qdiaten%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  133.       qdiaten%dim_1%SM = 1
+  133.       qdiaten%dim_2%LB = 1
+  133.       qdiaten%dim_2%EX = ( max( 0, kmaxloc ) )
+  133.       qdiaten%dim_2%SM = ( max( 0, 2 * mnmax ) )
+  133.       $_allo_P11(0) = 0x1000000000001L
+  133.       $_allo_P11(1) = loc( qdiaten )
+  133.       call __allocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+  134.       $F_A55 = ( max( 0, kmaxloc ) )
+  134.       $F_A56 = ( max( 0, 2 * mnmax ) )
+  134.       if ( and( -$F_A56, -$F_A55 ) < 0 ) then
+  134.          $I_A2 = 0
+  134.          do
+  134.             $I_A1 = 0
+  134. !dir$ ivdep
+  134.             do
+  134.                (qdiaten%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  134.                $I_A1 = 1 + $I_A1
+  134.                if ( $I_A1 >= $F_A56 ) exit
+  134.             enddo
+  134.             $I_A2 = 1 + $I_A2
+  134.             if ( $I_A2 >= $F_A55 ) exit
+  134.          enddo
+  134.       endif
+  135.       qup%header%a_contig = 1
+  135.       qup%dim_1%LB = 1
+  135.       qup%dim_1%EX = ( max( 0, 2 * mnextmax ) )
+  135.       qup%dim_1%SM = 1
+  135.       qup%dim_2%LB = 1
+  135.       qup%dim_2%EX = ( max( 0, kmaxloc ) )
+  135.       qup%dim_2%SM = ( max( 0, 2 * mnextmax ) )
+  135.       $_allo_P12(0) = 0x1000000000001L
+  135.       $_allo_P12(1) = loc( qup )
+  135.       call __allocate( $_allo_P12, 0, 0, _fcd( 0, 0 ) )
+  136.       $F_A57 = ( max( 0, kmaxloc ) )
+  136.       $F_A58 = ( max( 0, 2 * mnextmax ) )
+  136.       if ( and( -$F_A58, -$F_A57 ) < 0 ) then
+  136.          $I_A2 = 0
+  136.          do
+  136.             $I_A1 = 0
+  136. !dir$ ivdep
+  136.             do
+  136.                (qup%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  136.                $I_A1 = 1 + $I_A1
+  136.                if ( $I_A1 >= $F_A58 ) exit
+  136.             enddo
+  136.             $I_A2 = 1 + $I_A2
+  136.             if ( $I_A2 >= $F_A57 ) exit
+  136.          enddo
+  136.       endif
+  137.       qvp%header%a_contig = 1
+  137.       qvp%dim_1%LB = 1
+  137.       qvp%dim_1%EX = ( max( 0, 2 * mnextmax ) )
+  137.       qvp%dim_1%SM = 1
+  137.       qvp%dim_2%LB = 1
+  137.       qvp%dim_2%EX = ( max( 0, kmaxloc ) )
+  137.       qvp%dim_2%SM = ( max( 0, 2 * mnextmax ) )
+  137.       $_allo_P13(0) = 0x1000000000001L
+  137.       $_allo_P13(1) = loc( qvp )
+  137.       call __allocate( $_allo_P13, 0, 0, _fcd( 0, 0 ) )
+  138.       $F_A59 = ( max( 0, kmaxloc ) )
+  138.       $F_A60 = ( max( 0, 2 * mnextmax ) )
+  138.       if ( and( -$F_A60, -$F_A59 ) < 0 ) then
+  138.          $I_A2 = 0
+  138.          do
+  138.             $I_A1 = 0
+  138. !dir$ ivdep
+  138.             do
+  138.                (qvp%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  138.                $I_A1 = 1 + $I_A1
+  138.                if ( $I_A1 >= $F_A60 ) exit
+  138.             enddo
+  138.             $I_A2 = 1 + $I_A2
+  138.             if ( $I_A2 >= $F_A59 ) exit
+  138.          enddo
+  138.       endif
+  139.       qtphi%header%a_contig = 1
+  139.       qtphi%dim_1%LB = 1
+  139.       qtphi%dim_1%EX = ( max( 0, 2 * mnextmax ) )
+  139.       qtphi%dim_1%SM = 1
+  139.       qtphi%dim_2%LB = 1
+  139.       qtphi%dim_2%EX = ( max( 0, kmaxloc ) )
+  139.       qtphi%dim_2%SM = ( max( 0, 2 * mnextmax ) )
+  139.       $_allo_P14(0) = 0x1000000000001L
+  139.       $_allo_P14(1) = loc( qtphi )
+  139.       call __allocate( $_allo_P14, 0, 0, _fcd( 0, 0 ) )
+  140.       $F_A61 = ( max( 0, kmaxloc ) )
+  140.       $F_A62 = ( max( 0, 2 * mnextmax ) )
+  140.       if ( and( -$F_A62, -$F_A61 ) < 0 ) then
+  140.          $I_A2 = 0
+  140.          do
+  140.             $I_A1 = 0
+  140. !dir$ ivdep
+  140.             do
+  140.                (qtphi%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  140.                $I_A1 = 1 + $I_A1
+  140.                if ( $I_A1 >= $F_A62 ) exit
+  140.             enddo
+  140.             $I_A2 = 1 + $I_A2
+  140.             if ( $I_A2 >= $F_A61 ) exit
+  140.          enddo
+  140.       endif
+  141.       qqphi%header%a_contig = 1
+  141.       qqphi%dim_1%LB = 1
+  141.       qqphi%dim_1%EX = ( max( 0, 2 * mnextmax ) )
+  141.       qqphi%dim_1%SM = 1
+  141.       qqphi%dim_2%LB = 1
+  141.       qqphi%dim_2%EX = ( max( 0, kmaxloc ) )
+  141.       qqphi%dim_2%SM = ( max( 0, 2 * mnextmax ) )
+  141.       $_allo_P15(0) = 0x1000000000001L
+  141.       $_allo_P15(1) = loc( qqphi )
+  141.       call __allocate( $_allo_P15, 0, 0, _fcd( 0, 0 ) )
+  142.       $F_A63 = ( max( 0, kmaxloc ) )
+  142.       $F_A64 = ( max( 0, 2 * mnextmax ) )
+  142.       if ( and( -$F_A64, -$F_A63 ) < 0 ) then
+  142.          $I_A2 = 0
+  142.          do
+  142.             $I_A1 = 0
+  142. !dir$ ivdep
+  142.             do
+  142.                (qqphi%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  142.                $I_A1 = 1 + $I_A1
+  142.                if ( $I_A1 >= $F_A64 ) exit
+  142.             enddo
+  142.             $I_A2 = 1 + $I_A2
+  142.             if ( $I_A2 >= $F_A63 ) exit
+  142.          enddo
+  142.       endif
+  143.       qlnpp%header%a_contig = 1
+  143.       qlnpp%dim_1%LB = 1
+  143.       qlnpp%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  143.       qlnpp%dim_1%SM = 1
+  143.       $_allo_P16(0) = 0x1000000000001L
+  143.       $_allo_P16(1) = loc( qlnpp )
+  143.       call __allocate( $_allo_P16, 0, 0, _fcd( 0, 0 ) )
+  144.       $F_A65 = ( max( 0, 2 * mnmax ) )
+  144.       if ( 2 * mnmax > 0 ) then
+  144.          $I_A1 = 0
+  144. !dir$ ivdep
+  144.          do
+  144.             (qlnpp%base_addr)(1 + $I_A1, 0) = 0.0
+  144.             $I_A1 = 1 + $I_A1
+  144.             if ( $I_A1 >= $F_A65 ) exit
+  144.          enddo
+  144.       endif
+  145.       qlnpl%header%a_contig = 1
+  145.       qlnpl%dim_1%LB = 1
+  145.       qlnpl%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  145.       qlnpl%dim_1%SM = 1
+  145.       $_allo_P17(0) = 0x1000000000001L
+  145.       $_allo_P17(1) = loc( qlnpl )
+  145.       call __allocate( $_allo_P17, 0, 0, _fcd( 0, 0 ) )
+  146.       $F_A66 = ( max( 0, 2 * mnmax ) )
+  146.       if ( 2 * mnmax > 0 ) then
+  146.          $I_A1 = 0
+  146. !dir$ ivdep
+  146.          do
+  146.             (qlnpl%base_addr)(1 + $I_A1, 0) = 0.0
+  146.             $I_A1 = 1 + $I_A1
+  146.             if ( $I_A1 >= $F_A66 ) exit
+  146.          enddo
+  146.       endif
+  147.       qlnpt%header%a_contig = 1
+  147.       qlnpt%dim_1%LB = 1
+  147.       qlnpt%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  147.       qlnpt%dim_1%SM = 1
+  147.       $_allo_P18(0) = 0x1000000000001L
+  147.       $_allo_P18(1) = loc( qlnpt )
+  147.       call __allocate( $_allo_P18, 0, 0, _fcd( 0, 0 ) )
+  148.       $F_A67 = ( max( 0, 2 * mnmax ) )
+  148.       if ( 2 * mnmax > 0 ) then
+  148.          $I_A1 = 0
+  148. !dir$ ivdep
+  148.          do
+  148.             (qlnpt%base_addr)(1 + $I_A1, 0) = 0.0
+  148.             $I_A1 = 1 + $I_A1
+  148.             if ( $I_A1 >= $F_A67 ) exit
+  148.          enddo
+  148.       endif
+  149.       qlnpt_si%header%a_contig = 1
+  149.       qlnpt_si%dim_1%LB = 1
+  149.       qlnpt_si%dim_1%EX = ( max( 0, 2 * mnmax_si ) )
+  149.       qlnpt_si%dim_1%SM = 1
+  149.       $_allo_P19(0) = 0x1000000000001L
+  149.       $_allo_P19(1) = loc( qlnpt_si )
+  149.       call __allocate( $_allo_P19, 0, 0, _fcd( 0, 0 ) )
+  150.       $F_A68 = ( max( 0, 2 * mnmax_si ) )
+  150.       if ( 2 * mnmax_si > 0 ) then
+  150.          $I_A1 = 0
+  150. !dir$ ivdep
+  150.          do
+  150.             (qlnpt_si%base_addr)(1 + $I_A1, 0) = 0.0
+  150.             $I_A1 = 1 + $I_A1
+  150.             if ( $I_A1 >= $F_A68 ) exit
+  150.          enddo
+  150.       endif
+  151.       qgzslap%header%a_contig = 1
+  151.       qgzslap%dim_1%LB = 1
+  151.       qgzslap%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  151.       qgzslap%dim_1%SM = 1
+  151.       $_allo_P20(0) = 0x1000000000001L
+  151.       $_allo_P20(1) = loc( qgzslap )
+  151.       call __allocate( $_allo_P20, 0, 0, _fcd( 0, 0 ) )
+  152.       $F_A69 = ( max( 0, 2 * mnmax ) )
+  152.       if ( 2 * mnmax > 0 ) then
+  152.          $I_A1 = 0
+  152. !dir$ ivdep
+  152.          do
+  152.             (qgzslap%base_addr)(1 + $I_A1, 0) = 0.0
+  152.             $I_A1 = 1 + $I_A1
+  152.             if ( $I_A1 >= $F_A69 ) exit
+  152.          enddo
+  152.       endif
+  153.       qgzs%header%a_contig = 1
+  153.       qgzs%dim_1%LB = 1
+  153.       qgzs%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  153.       qgzs%dim_1%SM = 1
+  153.       $_allo_P21(0) = 0x1000000000001L
+  153.       $_allo_P21(1) = loc( qgzs )
+  153.       call __allocate( $_allo_P21, 0, 0, _fcd( 0, 0 ) )
+  154.       $F_A70 = ( max( 0, 2 * mnmax ) )
+  154.       if ( 2 * mnmax > 0 ) then
+  154.          $I_A1 = 0
+  154. !dir$ ivdep
+  154.          do
+  154.             (qgzs%base_addr)(1 + $I_A1, 0) = 0.0
+  154.             $I_A1 = 1 + $I_A1
+  154.             if ( $I_A1 >= $F_A70 ) exit
+  154.          enddo
+  154.       endif
+  155.       qplam%header%a_contig = 1
+  155.       qplam%dim_1%LB = 1
+  155.       qplam%dim_1%EX = ( max( 0, 2 * mnmax ) )
+  155.       qplam%dim_1%SM = 1
+  155.       $_allo_P22(0) = 0x1000000000001L
+  155.       $_allo_P22(1) = loc( qplam )
+  155.       call __allocate( $_allo_P22, 0, 0, _fcd( 0, 0 ) )
+  156.       $F_A71 = ( max( 0, 2 * mnmax ) )
+  156.       if ( 2 * mnmax > 0 ) then
+  156.          $I_A1 = 0
+  156. !dir$ ivdep
+  156.          do
+  156.             (qplam%base_addr)(1 + $I_A1, 0) = 0.0
+  156.             $I_A1 = 1 + $I_A1
+  156.             if ( $I_A1 >= $F_A71 ) exit
+  156.          enddo
+  156.       endif
+  157.       qpphi%header%a_contig = 1
+  157.       qpphi%dim_1%LB = 1
+  157.       qpphi%dim_1%EX = ( max( 0, 2 * mnextmax ) )
+  157.       qpphi%dim_1%SM = 1
+  157.       $_allo_P23(0) = 0x1000000000001L
+  157.       $_allo_P23(1) = loc( qpphi )
+  157.       call __allocate( $_allo_P23, 0, 0, _fcd( 0, 0 ) )
+  158.       $F_A72 = ( max( 0, 2 * mnextmax ) )
+  158.       if ( 2 * mnextmax > 0 ) then
+  158.          $I_A1 = 0
+  158. !dir$ ivdep
+  158.          do
+  158.             (qpphi%base_addr)(1 + $I_A1, 0) = 0.0
+  158.             $I_A1 = 1 + $I_A1
+  158.             if ( $I_A1 >= $F_A72 ) exit
+  158.          enddo
+  158.       endif
+  159.       qgzsphi%header%a_contig = 1
+  159.       qgzsphi%dim_1%LB = 1
+  159.       qgzsphi%dim_1%EX = ( max( 0, 2 * mnextmax ) )
+  159.       qgzsphi%dim_1%SM = 1
+  159.       $_allo_P24(0) = 0x1000000000001L
+  159.       $_allo_P24(1) = loc( qgzsphi )
+  159.       call __allocate( $_allo_P24, 0, 0, _fcd( 0, 0 ) )
+  160.       $F_A73 = ( max( 0, 2 * mnextmax ) )
+  160.       if ( 2 * mnextmax > 0 ) then
+  160.          $I_A1 = 0
+  160. !dir$ ivdep
+  160.          do
+  160.             (qgzsphi%base_addr)(1 + $I_A1, 0) = 0.0
+  160.             $I_A1 = 1 + $I_A1
+  160.             if ( $I_A1 >= $F_A73 ) exit
+  160.          enddo
+  160.       endif
+  162.       if ( nscalars > 0 ) then
+  163.          fgpass_scalars%header%a_contig = 1
+  163.          fgpass_scalars%dim_1%LB = 1
+  163.          fgpass_scalars%dim_1%EX = ( max( 0, ibmax ) )
+  163.          fgpass_scalars%dim_1%SM = 1
+  163.          fgpass_scalars%dim_2%LB = 1
+  163.          fgpass_scalars%dim_2%EX = ( max( 0, kmax ) )
+  163.          fgpass_scalars%dim_2%SM = ( max( 0, ibmax ) )
+  163.          fgpass_scalars%dim_3%LB = 1
+  163.          fgpass_scalars%dim_3%EX = ( max( 0, jbmax_ext ) )
+  163.          fgpass_scalars%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  163.          fgpass_scalars%dim_4%LB = 1
+  163.          fgpass_scalars%dim_4%EX = ( max( 0, nscalars ) )
+  163.          fgpass_scalars%dim_4%SM = ( max( 0, kmax ) * max( 0, ibmax ) * max( 0, jbmax_ext ) )
+  163.          fgpass_scalars%dim_5%LB = 1
+  163.          fgpass_scalars%dim_5%EX = 3
+  163.          fgpass_scalars%dim_5%SM = ( max( 0, kmax ) * max( 0, ibmax ) * max( 0, jbmax_ext ) * max( 0, nscalars ) )
+  163.          $_allo_P25(0) = 0x1000000000001L
+  163.          $_allo_P25(1) = loc( fgpass_scalars )
+  163.          call __allocate( $_allo_P25, 0, 0, _fcd( 0, 0 ) )
+  164.          $F_A74 = ( max( 0, nscalars ) )
+  164.          $F_A75 = ( max( 0, jbmax_ext ) )
+  164.          $F_A76 = ( max( 0, kmax ) )
+  164.          $F_A77 = ( max( 0, ibmax ) )
+  164.          if ( and( and( and( -$F_A75, -$F_A74 ), -$F_A76 ), -$F_A77 ) < 0 ) then
+  164.             $I_A5 = 0
+  164.             do
+  164.                $I_A4 = 0
+  164.                do
+  164.                   $I_A3 = 0
+  164.                   do
+  164.                      $I_A2 = 0
+  164.                      do
+  164.                         $I_A1 = 0
+  164. !dir$ ivdep
+  164. !dir$ loop_info (automatic) cache_nt( fgpass_scalars )
+  164.                         do
+  164.                            (fgpass_scalars%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 1 + $I_A4, 1 + $I_A5, 0) = 0.0
+  164.                            $I_A1 = 1 + $I_A1
+  164.                            if ( $I_A1 >= $F_A77 ) exit
+  164.                         enddo
+  164.                         $I_A2 = 1 + $I_A2
+  164.                         if ( $I_A2 >= $F_A76 ) exit
+  164.                      enddo
+  164.                      $I_A3 = 1 + $I_A3
+  164.                      if ( $I_A3 >= $F_A75 ) exit
+  164.                   enddo
+  164.                   $I_A4 = 1 + $I_A4
+  164.                   if ( $I_A4 >= $F_A74 ) exit
+  164.                enddo
+  164.                $I_A5 = 1 + $I_A5
+  164.                if ( $I_A5 >= 3 ) exit
+  164.             enddo
+  164.          endif
+  164.       else
+  166.          fgpass_scalars%header%a_contig = 1
+  166.          fgpass_scalars%dim_1%LB = 1
+  166.          fgpass_scalars%dim_1%EX = 1
+  166.          fgpass_scalars%dim_1%SM = 1
+  166.          fgpass_scalars%dim_2%LB = 1
+  166.          fgpass_scalars%dim_2%EX = 1
+  166.          fgpass_scalars%dim_2%SM = 1
+  166.          fgpass_scalars%dim_3%LB = 1
+  166.          fgpass_scalars%dim_3%EX = 1
+  166.          fgpass_scalars%dim_3%SM = 1
+  166.          fgpass_scalars%dim_4%LB = 1
+  166.          fgpass_scalars%dim_4%EX = 1
+  166.          fgpass_scalars%dim_4%SM = 1
+  166.          fgpass_scalars%dim_5%LB = 1
+  166.          fgpass_scalars%dim_5%EX = 3
+  166.          fgpass_scalars%dim_5%SM = 1
+  166.          $_allo_P26(0) = 0x1000000000001L
+  166.          $_allo_P26(1) = loc( fgpass_scalars )
+  166.          call __allocate( $_allo_P26, 0, 0, _fcd( 0, 0 ) )
+  167.          $I_A5 = 0
+  167. !dir$ ivdep
+  167.          do
+  167.             (fgpass_scalars%base_addr)(1, 1, 1, 1, 1 + $I_A5, 0) = 0.0
+  167.             $I_A5 = 1 + $I_A5
+  167.             if ( $I_A5 >= 3 ) exit
+  167.          enddo
+  167.       endif
+  170.       fgyu%header%a_contig = 1
+  170.       fgyu%dim_1%LB = 1
+  170.       fgyu%dim_1%EX = ( max( 0, ibmax ) )
+  170.       fgyu%dim_1%SM = 1
+  170.       fgyu%dim_2%LB = 1
+  170.       fgyu%dim_2%EX = ( max( 0, kmax ) )
+  170.       fgyu%dim_2%SM = ( max( 0, ibmax ) )
+  170.       fgyu%dim_3%LB = 1
+  170.       fgyu%dim_3%EX = ( max( 0, jbmax ) )
+  170.       fgyu%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  170.       $_allo_P27(0) = 0x1000000000001L
+  170.       $_allo_P27(1) = loc( fgyu )
+  170.       call __allocate( $_allo_P27, 0, 0, _fcd( 0, 0 ) )
+  171.       $F_A78 = ( max( 0, jbmax ) )
+  171.       $F_A79 = ( max( 0, kmax ) )
+  171.       $F_A80 = ( max( 0, ibmax ) )
+  171.       if ( and( and( -$F_A79, -$F_A78 ), -$F_A80 ) < 0 ) then
+  171.          $I_A3 = 0
+  171.          do
+  171.             $I_A2 = 0
+  171.             do
+  171.                $I_A1 = 0
+  171. !dir$ ivdep
+  171.                do
+  171.                   (fgyu%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  171.                   $I_A1 = 1 + $I_A1
+  171.                   if ( $I_A1 >= $F_A80 ) exit
+  171.                enddo
+  171.                $I_A2 = 1 + $I_A2
+  171.                if ( $I_A2 >= $F_A79 ) exit
+  171.             enddo
+  171.             $I_A3 = 1 + $I_A3
+  171.             if ( $I_A3 >= $F_A78 ) exit
+  171.          enddo
+  171.       endif
+  172.       fgyv%header%a_contig = 1
+  172.       fgyv%dim_1%LB = 1
+  172.       fgyv%dim_1%EX = ( max( 0, ibmax ) )
+  172.       fgyv%dim_1%SM = 1
+  172.       fgyv%dim_2%LB = 1
+  172.       fgyv%dim_2%EX = ( max( 0, kmax ) )
+  172.       fgyv%dim_2%SM = ( max( 0, ibmax ) )
+  172.       fgyv%dim_3%LB = 1
+  172.       fgyv%dim_3%EX = ( max( 0, jbmax ) )
+  172.       fgyv%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  172.       $_allo_P28(0) = 0x1000000000001L
+  172.       $_allo_P28(1) = loc( fgyv )
+  172.       call __allocate( $_allo_P28, 0, 0, _fcd( 0, 0 ) )
+  173.       $F_A81 = ( max( 0, jbmax ) )
+  173.       $F_A82 = ( max( 0, kmax ) )
+  173.       $F_A83 = ( max( 0, ibmax ) )
+  173.       if ( and( and( -$F_A82, -$F_A81 ), -$F_A83 ) < 0 ) then
+  173.          $I_A3 = 0
+  173.          do
+  173.             $I_A2 = 0
+  173.             do
+  173.                $I_A1 = 0
+  173. !dir$ ivdep
+  173.                do
+  173.                   (fgyv%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  173.                   $I_A1 = 1 + $I_A1
+  173.                   if ( $I_A1 >= $F_A83 ) exit
+  173.                enddo
+  173.                $I_A2 = 1 + $I_A2
+  173.                if ( $I_A2 >= $F_A82 ) exit
+  173.             enddo
+  173.             $I_A3 = 1 + $I_A3
+  173.             if ( $I_A3 >= $F_A81 ) exit
+  173.          enddo
+  173.       endif
+  174.       fgtd%header%a_contig = 1
+  174.       fgtd%dim_1%LB = 1
+  174.       fgtd%dim_1%EX = ( max( 0, ibmax ) )
+  174.       fgtd%dim_1%SM = 1
+  174.       fgtd%dim_2%LB = 1
+  174.       fgtd%dim_2%EX = ( max( 0, kmax ) )
+  174.       fgtd%dim_2%SM = ( max( 0, ibmax ) )
+  174.       fgtd%dim_3%LB = 1
+  174.       fgtd%dim_3%EX = ( max( 0, jbmax ) )
+  174.       fgtd%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  174.       $_allo_P29(0) = 0x1000000000001L
+  174.       $_allo_P29(1) = loc( fgtd )
+  174.       call __allocate( $_allo_P29, 0, 0, _fcd( 0, 0 ) )
+  175.       $F_A84 = ( max( 0, jbmax ) )
+  175.       $F_A85 = ( max( 0, kmax ) )
+  175.       $F_A86 = ( max( 0, ibmax ) )
+  175.       if ( and( and( -$F_A85, -$F_A84 ), -$F_A86 ) < 0 ) then
+  175.          $I_A3 = 0
+  175.          do
+  175.             $I_A2 = 0
+  175.             do
+  175.                $I_A1 = 0
+  175. !dir$ ivdep
+  175.                do
+  175.                   (fgtd%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  175.                   $I_A1 = 1 + $I_A1
+  175.                   if ( $I_A1 >= $F_A86 ) exit
+  175.                enddo
+  175.                $I_A2 = 1 + $I_A2
+  175.                if ( $I_A2 >= $F_A85 ) exit
+  175.             enddo
+  175.             $I_A3 = 1 + $I_A3
+  175.             if ( $I_A3 >= $F_A84 ) exit
+  175.          enddo
+  175.       endif
+  176.       fgqd%header%a_contig = 1
+  176.       fgqd%dim_1%LB = 1
+  176.       fgqd%dim_1%EX = ( max( 0, ibmax ) )
+  176.       fgqd%dim_1%SM = 1
+  176.       fgqd%dim_2%LB = 1
+  176.       fgqd%dim_2%EX = ( max( 0, kmax ) )
+  176.       fgqd%dim_2%SM = ( max( 0, ibmax ) )
+  176.       fgqd%dim_3%LB = 1
+  176.       fgqd%dim_3%EX = ( max( 0, jbmax ) )
+  176.       fgqd%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  176.       $_allo_P30(0) = 0x1000000000001L
+  176.       $_allo_P30(1) = loc( fgqd )
+  176.       call __allocate( $_allo_P30, 0, 0, _fcd( 0, 0 ) )
+  177.       $F_A87 = ( max( 0, jbmax ) )
+  177.       $F_A88 = ( max( 0, kmax ) )
+  177.       $F_A89 = ( max( 0, ibmax ) )
+  177.       if ( and( and( -$F_A88, -$F_A87 ), -$F_A89 ) < 0 ) then
+  177.          $I_A3 = 0
+  177.          do
+  177.             $I_A2 = 0
+  177.             do
+  177.                $I_A1 = 0
+  177. !dir$ ivdep
+  177.                do
+  177.                   (fgqd%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  177.                   $I_A1 = 1 + $I_A1
+  177.                   if ( $I_A1 >= $F_A89 ) exit
+  177.                enddo
+  177.                $I_A2 = 1 + $I_A2
+  177.                if ( $I_A2 >= $F_A88 ) exit
+  177.             enddo
+  177.             $I_A3 = 1 + $I_A3
+  177.             if ( $I_A3 >= $F_A87 ) exit
+  177.          enddo
+  177.       endif
+  178.       fgdiv%header%a_contig = 1
+  178.       fgdiv%dim_1%LB = 1
+  178.       fgdiv%dim_1%EX = ( max( 0, ibmax ) )
+  178.       fgdiv%dim_1%SM = 1
+  178.       fgdiv%dim_2%LB = 1
+  178.       fgdiv%dim_2%EX = ( max( 0, kmax ) )
+  178.       fgdiv%dim_2%SM = ( max( 0, ibmax ) )
+  178.       fgdiv%dim_3%LB = 1
+  178.       fgdiv%dim_3%EX = ( max( 0, jbmax ) )
+  178.       fgdiv%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  178.       $_allo_P31(0) = 0x1000000000001L
+  178.       $_allo_P31(1) = loc( fgdiv )
+  178.       call __allocate( $_allo_P31, 0, 0, _fcd( 0, 0 ) )
+  179.       $F_A90 = ( max( 0, jbmax ) )
+  179.       $F_A91 = ( max( 0, kmax ) )
+  179.       $F_A92 = ( max( 0, ibmax ) )
+  179.       if ( and( and( -$F_A91, -$F_A90 ), -$F_A92 ) < 0 ) then
+  179.          $I_A3 = 0
+  179.          do
+  179.             $I_A2 = 0
+  179.             do
+  179.                $I_A1 = 0
+  179. !dir$ ivdep
+  179.                do
+  179.                   (fgdiv%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  179.                   $I_A1 = 1 + $I_A1
+  179.                   if ( $I_A1 >= $F_A92 ) exit
+  179.                enddo
+  179.                $I_A2 = 1 + $I_A2
+  179.                if ( $I_A2 >= $F_A91 ) exit
+  179.             enddo
+  179.             $I_A3 = 1 + $I_A3
+  179.             if ( $I_A3 >= $F_A90 ) exit
+  179.          enddo
+  179.       endif
+  180.       fgrot%header%a_contig = 1
+  180.       fgrot%dim_1%LB = 1
+  180.       fgrot%dim_1%EX = ( max( 0, ibmax ) )
+  180.       fgrot%dim_1%SM = 1
+  180.       fgrot%dim_2%LB = 1
+  180.       fgrot%dim_2%EX = ( max( 0, kmax ) )
+  180.       fgrot%dim_2%SM = ( max( 0, ibmax ) )
+  180.       fgrot%dim_3%LB = 1
+  180.       fgrot%dim_3%EX = ( max( 0, jbmax ) )
+  180.       fgrot%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  180.       $_allo_P32(0) = 0x1000000000001L
+  180.       $_allo_P32(1) = loc( fgrot )
+  180.       call __allocate( $_allo_P32, 0, 0, _fcd( 0, 0 ) )
+  181.       $F_A93 = ( max( 0, jbmax ) )
+  181.       $F_A94 = ( max( 0, kmax ) )
+  181.       $F_A95 = ( max( 0, ibmax ) )
+  181.       if ( and( and( -$F_A94, -$F_A93 ), -$F_A95 ) < 0 ) then
+  181.          $I_A3 = 0
+  181.          do
+  181.             $I_A2 = 0
+  181.             do
+  181.                $I_A1 = 0
+  181. !dir$ ivdep
+  181.                do
+  181.                   (fgrot%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  181.                   $I_A1 = 1 + $I_A1
+  181.                   if ( $I_A1 >= $F_A95 ) exit
+  181.                enddo
+  181.                $I_A2 = 1 + $I_A2
+  181.                if ( $I_A2 >= $F_A94 ) exit
+  181.             enddo
+  181.             $I_A3 = 1 + $I_A3
+  181.             if ( $I_A3 >= $F_A93 ) exit
+  181.          enddo
+  181.       endif
+  182.       fgq%header%a_contig = 1
+  182.       fgq%dim_1%LB = 1
+  182.       fgq%dim_1%EX = ( max( 0, ibmax ) )
+  182.       fgq%dim_1%SM = 1
+  182.       fgq%dim_2%LB = 1
+  182.       fgq%dim_2%EX = ( max( 0, kmax ) )
+  182.       fgq%dim_2%SM = ( max( 0, ibmax ) )
+  182.       fgq%dim_3%LB = 1
+  182.       fgq%dim_3%EX = ( max( 0, jbmax ) )
+  182.       fgq%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  182.       $_allo_P33(0) = 0x1000000000001L
+  182.       $_allo_P33(1) = loc( fgq )
+  182.       call __allocate( $_allo_P33, 0, 0, _fcd( 0, 0 ) )
+  183.       $F_A96 = ( max( 0, jbmax ) )
+  183.       $F_A97 = ( max( 0, kmax ) )
+  183.       $F_A98 = ( max( 0, ibmax ) )
+  183.       if ( and( and( -$F_A97, -$F_A96 ), -$F_A98 ) < 0 ) then
+  183.          $I_A3 = 0
+  183.          do
+  183.             $I_A2 = 0
+  183.             do
+  183.                $I_A1 = 0
+  183. !dir$ ivdep
+  183.                do
+  183.                   (fgq%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  183.                   $I_A1 = 1 + $I_A1
+  183.                   if ( $I_A1 >= $F_A98 ) exit
+  183.                enddo
+  183.                $I_A2 = 1 + $I_A2
+  183.                if ( $I_A2 >= $F_A97 ) exit
+  183.             enddo
+  183.             $I_A3 = 1 + $I_A3
+  183.             if ( $I_A3 >= $F_A96 ) exit
+  183.          enddo
+  183.       endif
+  184.       fgtmp%header%a_contig = 1
+  184.       fgtmp%dim_1%LB = 1
+  184.       fgtmp%dim_1%EX = ( max( 0, ibmax ) )
+  184.       fgtmp%dim_1%SM = 1
+  184.       fgtmp%dim_2%LB = 1
+  184.       fgtmp%dim_2%EX = ( max( 0, kmax ) )
+  184.       fgtmp%dim_2%SM = ( max( 0, ibmax ) )
+  184.       fgtmp%dim_3%LB = 1
+  184.       fgtmp%dim_3%EX = ( max( 0, jbmax ) )
+  184.       fgtmp%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  184.       $_allo_P34(0) = 0x1000000000001L
+  184.       $_allo_P34(1) = loc( fgtmp )
+  184.       call __allocate( $_allo_P34, 0, 0, _fcd( 0, 0 ) )
+  185.       $F_A99 = ( max( 0, jbmax ) )
+  185.       $F_A100 = ( max( 0, kmax ) )
+  185.       $F_A101 = ( max( 0, ibmax ) )
+  185.       if ( and( and( -$F_A100, -$F_A99 ), -$F_A101 ) < 0 ) then
+  185.          $I_A3 = 0
+  185.          do
+  185.             $I_A2 = 0
+  185.             do
+  185.                $I_A1 = 0
+  185. !dir$ ivdep
+  185.                do
+  185.                   (fgtmp%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  185.                   $I_A1 = 1 + $I_A1
+  185.                   if ( $I_A1 >= $F_A101 ) exit
+  185.                enddo
+  185.                $I_A2 = 1 + $I_A2
+  185.                if ( $I_A2 >= $F_A100 ) exit
+  185.             enddo
+  185.             $I_A3 = 1 + $I_A3
+  185.             if ( $I_A3 >= $F_A99 ) exit
+  185.          enddo
+  185.       endif
+  186.       if ( sl2lev /= .false. ) then
+  187.          fgu%header%a_contig = 1
+  187.          fgu%dim_1%LB = 1
+  187.          fgu%dim_1%EX = ( max( 0, ibmax ) )
+  187.          fgu%dim_1%SM = 1
+  187.          fgu%dim_2%LB = 1
+  187.          fgu%dim_2%EX = ( max( 0, kmax ) )
+  187.          fgu%dim_2%SM = ( max( 0, ibmax ) )
+  187.          fgu%dim_3%LB = 1
+  187.          fgu%dim_3%EX = ( max( 0, jbmax ) )
+  187.          fgu%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  187.          $_allo_P35(0) = 0x1000000000001L
+  187.          $_allo_P35(1) = loc( fgu )
+  187.          call __allocate( $_allo_P35, 0, 0, _fcd( 0, 0 ) )
+  188.          $F_A102 = ( max( 0, jbmax ) )
+  188.          $F_A103 = ( max( 0, kmax ) )
+  188.          $F_A104 = ( max( 0, ibmax ) )
+  188.          if ( and( and( -$F_A103, -$F_A102 ), -$F_A104 ) < 0 ) then
+  188.             $I_A3 = 0
+  188.             do
+  188.                $I_A2 = 0
+  188.                do
+  188.                   $I_A1 = 0
+  188. !dir$ ivdep
+  188.                   do
+  188.                      (fgu%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  188.                      $I_A1 = 1 + $I_A1
+  188.                      if ( $I_A1 >= $F_A104 ) exit
+  188.                   enddo
+  188.                   $I_A2 = 1 + $I_A2
+  188.                   if ( $I_A2 >= $F_A103 ) exit
+  188.                enddo
+  188.                $I_A3 = 1 + $I_A3
+  188.                if ( $I_A3 >= $F_A102 ) exit
+  188.             enddo
+  188.          endif
+  189.          fgv%header%a_contig = 1
+  189.          fgv%dim_1%LB = 1
+  189.          fgv%dim_1%EX = ( max( 0, ibmax ) )
+  189.          fgv%dim_1%SM = 1
+  189.          fgv%dim_2%LB = 1
+  189.          fgv%dim_2%EX = ( max( 0, kmax ) )
+  189.          fgv%dim_2%SM = ( max( 0, ibmax ) )
+  189.          fgv%dim_3%LB = 1
+  189.          fgv%dim_3%EX = ( max( 0, jbmax ) )
+  189.          fgv%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  189.          $_allo_P36(0) = 0x1000000000001L
+  189.          $_allo_P36(1) = loc( fgv )
+  189.          call __allocate( $_allo_P36, 0, 0, _fcd( 0, 0 ) )
+  190.          $F_A105 = ( max( 0, jbmax ) )
+  190.          $F_A106 = ( max( 0, kmax ) )
+  190.          $F_A107 = ( max( 0, ibmax ) )
+  190.          if ( and( and( -$F_A106, -$F_A105 ), -$F_A107 ) < 0 ) then
+  190.             $I_A3 = 0
+  190.             do
+  190.                $I_A2 = 0
+  190.                do
+  190.                   $I_A1 = 0
+  190. !dir$ ivdep
+  190.                   do
+  190.                      (fgv%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  190.                      $I_A1 = 1 + $I_A1
+  190.                      if ( $I_A1 >= $F_A107 ) exit
+  190.                   enddo
+  190.                   $I_A2 = 1 + $I_A2
+  190.                   if ( $I_A2 >= $F_A106 ) exit
+  190.                enddo
+  190.                $I_A3 = 1 + $I_A3
+  190.                if ( $I_A3 >= $F_A105 ) exit
+  190.             enddo
+  190.          endif
+  191.          fgw%header%a_contig = 1
+  191.          fgw%dim_1%LB = 1
+  191.          fgw%dim_1%EX = ( max( 0, ibmax ) )
+  191.          fgw%dim_1%SM = 1
+  191.          fgw%dim_2%LB = 1
+  191.          fgw%dim_2%EX = ( max( 0, kmax ) )
+  191.          fgw%dim_2%SM = ( max( 0, ibmax ) )
+  191.          fgw%dim_3%LB = 1
+  191.          fgw%dim_3%EX = ( max( 0, jbmax ) )
+  191.          fgw%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  191.          $_allo_P37(0) = 0x1000000000001L
+  191.          $_allo_P37(1) = loc( fgw )
+  191.          call __allocate( $_allo_P37, 0, 0, _fcd( 0, 0 ) )
+  192.          $F_A108 = ( max( 0, jbmax ) )
+  192.          $F_A109 = ( max( 0, kmax ) )
+  192.          $F_A110 = ( max( 0, ibmax ) )
+  192.          if ( and( and( -$F_A109, -$F_A108 ), -$F_A110 ) < 0 ) then
+  192.             $I_A3 = 0
+  192.             do
+  192.                $I_A2 = 0
+  192.                do
+  192.                   $I_A1 = 0
+  192. !dir$ ivdep
+  192.                   do
+  192.                      (fgw%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  192.                      $I_A1 = 1 + $I_A1
+  192.                      if ( $I_A1 >= $F_A110 ) exit
+  192.                   enddo
+  192.                   $I_A2 = 1 + $I_A2
+  192.                   if ( $I_A2 >= $F_A109 ) exit
+  192.                enddo
+  192.                $I_A3 = 1 + $I_A3
+  192.                if ( $I_A3 >= $F_A108 ) exit
+  192.             enddo
+  192.          endif
+  193.          fgum%header%a_contig = 1
+  193.          fgum%dim_1%LB = 1
+  193.          fgum%dim_1%EX = ( max( 0, ibmax ) )
+  193.          fgum%dim_1%SM = 1
+  193.          fgum%dim_2%LB = 1
+  193.          fgum%dim_2%EX = ( max( 0, kmax ) )
+  193.          fgum%dim_2%SM = ( max( 0, ibmax ) )
+  193.          fgum%dim_3%LB = 1
+  193.          fgum%dim_3%EX = ( max( 0, jbmax_ext ) )
+  193.          fgum%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  193.          $_allo_P38(0) = 0x1000000000001L
+  193.          $_allo_P38(1) = loc( fgum )
+  193.          call __allocate( $_allo_P38, 0, 0, _fcd( 0, 0 ) )
+  194.          $F_A111 = ( max( 0, jbmax_ext ) )
+  194.          $F_A112 = ( max( 0, kmax ) )
+  194.          $F_A113 = ( max( 0, ibmax ) )
+  194.          if ( and( and( -$F_A112, -$F_A111 ), -$F_A113 ) < 0 ) then
+  194.             $I_A3 = 0
+  194.             do
+  194.                $I_A2 = 0
+  194.                do
+  194.                   $I_A1 = 0
+  194. !dir$ ivdep
+  194.                   do
+  194.                      (fgum%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  194.                      $I_A1 = 1 + $I_A1
+  194.                      if ( $I_A1 >= $F_A113 ) exit
+  194.                   enddo
+  194.                   $I_A2 = 1 + $I_A2
+  194.                   if ( $I_A2 >= $F_A112 ) exit
+  194.                enddo
+  194.                $I_A3 = 1 + $I_A3
+  194.                if ( $I_A3 >= $F_A111 ) exit
+  194.             enddo
+  194.          endif
+  195.          fgvm%header%a_contig = 1
+  195.          fgvm%dim_1%LB = 1
+  195.          fgvm%dim_1%EX = ( max( 0, ibmax ) )
+  195.          fgvm%dim_1%SM = 1
+  195.          fgvm%dim_2%LB = 1
+  195.          fgvm%dim_2%EX = ( max( 0, kmax ) )
+  195.          fgvm%dim_2%SM = ( max( 0, ibmax ) )
+  195.          fgvm%dim_3%LB = 1
+  195.          fgvm%dim_3%EX = ( max( 0, jbmax_ext ) )
+  195.          fgvm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  195.          $_allo_P39(0) = 0x1000000000001L
+  195.          $_allo_P39(1) = loc( fgvm )
+  195.          call __allocate( $_allo_P39, 0, 0, _fcd( 0, 0 ) )
+  196.          $F_A114 = ( max( 0, jbmax_ext ) )
+  196.          $F_A115 = ( max( 0, kmax ) )
+  196.          $F_A116 = ( max( 0, ibmax ) )
+  196.          if ( and( and( -$F_A115, -$F_A114 ), -$F_A116 ) < 0 ) then
+  196.             $I_A3 = 0
+  196.             do
+  196.                $I_A2 = 0
+  196.                do
+  196.                   $I_A1 = 0
+  196. !dir$ ivdep
+  196.                   do
+  196.                      (fgvm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  196.                      $I_A1 = 1 + $I_A1
+  196.                      if ( $I_A1 >= $F_A116 ) exit
+  196.                   enddo
+  196.                   $I_A2 = 1 + $I_A2
+  196.                   if ( $I_A2 >= $F_A115 ) exit
+  196.                enddo
+  196.                $I_A3 = 1 + $I_A3
+  196.                if ( $I_A3 >= $F_A114 ) exit
+  196.             enddo
+  196.          endif
+  197.          fgwm%header%a_contig = 1
+  197.          fgwm%dim_1%LB = 1
+  197.          fgwm%dim_1%EX = ( max( 0, ibmax ) )
+  197.          fgwm%dim_1%SM = 1
+  197.          fgwm%dim_2%LB = 1
+  197.          fgwm%dim_2%EX = ( max( 0, kmax ) )
+  197.          fgwm%dim_2%SM = ( max( 0, ibmax ) )
+  197.          fgwm%dim_3%LB = 1
+  197.          fgwm%dim_3%EX = ( max( 0, jbmax_ext ) )
+  197.          fgwm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  197.          $_allo_P40(0) = 0x1000000000001L
+  197.          $_allo_P40(1) = loc( fgwm )
+  197.          call __allocate( $_allo_P40, 0, 0, _fcd( 0, 0 ) )
+  198.          $F_A117 = ( max( 0, jbmax_ext ) )
+  198.          $F_A118 = ( max( 0, kmax ) )
+  198.          $F_A119 = ( max( 0, ibmax ) )
+  198.          if ( and( and( -$F_A118, -$F_A117 ), -$F_A119 ) < 0 ) then
+  198.             $I_A3 = 0
+  198.             do
+  198.                $I_A2 = 0
+  198.                do
+  198.                   $I_A1 = 0
+  198. !dir$ ivdep
+  198.                   do
+  198.                      (fgwm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  198.                      $I_A1 = 1 + $I_A1
+  198.                      if ( $I_A1 >= $F_A119 ) exit
+  198.                   enddo
+  198.                   $I_A2 = 1 + $I_A2
+  198.                   if ( $I_A2 >= $F_A118 ) exit
+  198.                enddo
+  198.                $I_A3 = 1 + $I_A3
+  198.                if ( $I_A3 >= $F_A117 ) exit
+  198.             enddo
+  198.          endif
+  199.          fgtmpp%header%a_contig = 1
+  199.          fgtmpp%dim_1%LB = 1
+  199.          fgtmpp%dim_1%EX = ( max( 0, ibmax ) )
+  199.          fgtmpp%dim_1%SM = 1
+  199.          fgtmpp%dim_2%LB = 1
+  199.          fgtmpp%dim_2%EX = ( max( 0, kmax ) )
+  199.          fgtmpp%dim_2%SM = ( max( 0, ibmax ) )
+  199.          fgtmpp%dim_3%LB = 1
+  199.          fgtmpp%dim_3%EX = ( max( 0, jbmax_ext ) )
+  199.          fgtmpp%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  199.          $_allo_P41(0) = 0x1000000000001L
+  199.          $_allo_P41(1) = loc( fgtmpp )
+  199.          call __allocate( $_allo_P41, 0, 0, _fcd( 0, 0 ) )
+  200.          $F_A120 = ( max( 0, jbmax_ext ) )
+  200.          $F_A121 = ( max( 0, kmax ) )
+  200.          $F_A122 = ( max( 0, ibmax ) )
+  200.          if ( and( and( -$F_A121, -$F_A120 ), -$F_A122 ) < 0 ) then
+  200.             $I_A3 = 0
+  200.             do
+  200.                $I_A2 = 0
+  200.                do
+  200.                   $I_A1 = 0
+  200. !dir$ ivdep
+  200.                   do
+  200.                      (fgtmpp%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  200.                      $I_A1 = 1 + $I_A1
+  200.                      if ( $I_A1 >= $F_A122 ) exit
+  200.                   enddo
+  200.                   $I_A2 = 1 + $I_A2
+  200.                   if ( $I_A2 >= $F_A121 ) exit
+  200.                enddo
+  200.                $I_A3 = 1 + $I_A3
+  200.                if ( $I_A3 >= $F_A120 ) exit
+  200.             enddo
+  200.          endif
+  201.          fgqp%header%a_contig = 1
+  201.          fgqp%dim_1%LB = 1
+  201.          fgqp%dim_1%EX = ( max( 0, ibmax ) )
+  201.          fgqp%dim_1%SM = 1
+  201.          fgqp%dim_2%LB = 1
+  201.          fgqp%dim_2%EX = ( max( 0, kmax ) )
+  201.          fgqp%dim_2%SM = ( max( 0, ibmax ) )
+  201.          fgqp%dim_3%LB = 1
+  201.          fgqp%dim_3%EX = ( max( 0, jbmax_ext ) )
+  201.          fgqp%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  201.          $_allo_P42(0) = 0x1000000000001L
+  201.          $_allo_P42(1) = loc( fgqp )
+  201.          call __allocate( $_allo_P42, 0, 0, _fcd( 0, 0 ) )
+  202.          $F_A123 = ( max( 0, jbmax_ext ) )
+  202.          $F_A124 = ( max( 0, kmax ) )
+  202.          $F_A125 = ( max( 0, ibmax ) )
+  202.          if ( and( and( -$F_A124, -$F_A123 ), -$F_A125 ) < 0 ) then
+  202.             $I_A3 = 0
+  202.             do
+  202.                $I_A2 = 0
+  202.                do
+  202.                   $I_A1 = 0
+  202. !dir$ ivdep
+  202.                   do
+  202.                      (fgqp%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  202.                      $I_A1 = 1 + $I_A1
+  202.                      if ( $I_A1 >= $F_A125 ) exit
+  202.                   enddo
+  202.                   $I_A2 = 1 + $I_A2
+  202.                   if ( $I_A2 >= $F_A124 ) exit
+  202.                enddo
+  202.                $I_A3 = 1 + $I_A3
+  202.                if ( $I_A3 >= $F_A123 ) exit
+  202.             enddo
+  202.          endif
+  203.          fgyum%header%a_contig = 1
+  203.          fgyum%dim_1%LB = 1
+  203.          fgyum%dim_1%EX = ( max( 0, ibmax ) )
+  203.          fgyum%dim_1%SM = 1
+  203.          fgyum%dim_2%LB = 1
+  203.          fgyum%dim_2%EX = ( max( 0, kmax ) )
+  203.          fgyum%dim_2%SM = ( max( 0, ibmax ) )
+  203.          fgyum%dim_3%LB = 1
+  203.          fgyum%dim_3%EX = ( max( 0, jbmax ) )
+  203.          fgyum%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  203.          $_allo_P43(0) = 0x1000000000001L
+  203.          $_allo_P43(1) = loc( fgyum )
+  203.          call __allocate( $_allo_P43, 0, 0, _fcd( 0, 0 ) )
+  204.          $F_A126 = ( max( 0, jbmax ) )
+  204.          $F_A127 = ( max( 0, kmax ) )
+  204.          $F_A128 = ( max( 0, ibmax ) )
+  204.          if ( and( and( -$F_A127, -$F_A126 ), -$F_A128 ) < 0 ) then
+  204.             $I_A3 = 0
+  204.             do
+  204.                $I_A2 = 0
+  204.                do
+  204.                   $I_A1 = 0
+  204. !dir$ ivdep
+  204.                   do
+  204.                      (fgyum%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  204.                      $I_A1 = 1 + $I_A1
+  204.                      if ( $I_A1 >= $F_A128 ) exit
+  204.                   enddo
+  204.                   $I_A2 = 1 + $I_A2
+  204.                   if ( $I_A2 >= $F_A127 ) exit
+  204.                enddo
+  204.                $I_A3 = 1 + $I_A3
+  204.                if ( $I_A3 >= $F_A126 ) exit
+  204.             enddo
+  204.          endif
+  205.          fgyvm%header%a_contig = 1
+  205.          fgyvm%dim_1%LB = 1
+  205.          fgyvm%dim_1%EX = ( max( 0, ibmax ) )
+  205.          fgyvm%dim_1%SM = 1
+  205.          fgyvm%dim_2%LB = 1
+  205.          fgyvm%dim_2%EX = ( max( 0, kmax ) )
+  205.          fgyvm%dim_2%SM = ( max( 0, ibmax ) )
+  205.          fgyvm%dim_3%LB = 1
+  205.          fgyvm%dim_3%EX = ( max( 0, jbmax ) )
+  205.          fgyvm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  205.          $_allo_P44(0) = 0x1000000000001L
+  205.          $_allo_P44(1) = loc( fgyvm )
+  205.          call __allocate( $_allo_P44, 0, 0, _fcd( 0, 0 ) )
+  206.          $F_A129 = ( max( 0, jbmax ) )
+  206.          $F_A130 = ( max( 0, kmax ) )
+  206.          $F_A131 = ( max( 0, ibmax ) )
+  206.          if ( and( and( -$F_A130, -$F_A129 ), -$F_A131 ) < 0 ) then
+  206.             $I_A3 = 0
+  206.             do
+  206.                $I_A2 = 0
+  206.                do
+  206.                   $I_A1 = 0
+  206. !dir$ ivdep
+  206.                   do
+  206.                      (fgyvm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  206.                      $I_A1 = 1 + $I_A1
+  206.                      if ( $I_A1 >= $F_A131 ) exit
+  206.                   enddo
+  206.                   $I_A2 = 1 + $I_A2
+  206.                   if ( $I_A2 >= $F_A130 ) exit
+  206.                enddo
+  206.                $I_A3 = 1 + $I_A3
+  206.                if ( $I_A3 >= $F_A129 ) exit
+  206.             enddo
+  206.          endif
+  207.          fgtdm%header%a_contig = 1
+  207.          fgtdm%dim_1%LB = 1
+  207.          fgtdm%dim_1%EX = ( max( 0, ibmax ) )
+  207.          fgtdm%dim_1%SM = 1
+  207.          fgtdm%dim_2%LB = 1
+  207.          fgtdm%dim_2%EX = ( max( 0, kmax ) )
+  207.          fgtdm%dim_2%SM = ( max( 0, ibmax ) )
+  207.          fgtdm%dim_3%LB = 1
+  207.          fgtdm%dim_3%EX = ( max( 0, jbmax ) )
+  207.          fgtdm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  207.          $_allo_P45(0) = 0x1000000000001L
+  207.          $_allo_P45(1) = loc( fgtdm )
+  207.          call __allocate( $_allo_P45, 0, 0, _fcd( 0, 0 ) )
+  208.          $F_A132 = ( max( 0, jbmax ) )
+  208.          $F_A133 = ( max( 0, kmax ) )
+  208.          $F_A134 = ( max( 0, ibmax ) )
+  208.          if ( and( and( -$F_A133, -$F_A132 ), -$F_A134 ) < 0 ) then
+  208.             $I_A3 = 0
+  208.             do
+  208.                $I_A2 = 0
+  208.                do
+  208.                   $I_A1 = 0
+  208. !dir$ ivdep
+  208.                   do
+  208.                      (fgtdm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  208.                      $I_A1 = 1 + $I_A1
+  208.                      if ( $I_A1 >= $F_A134 ) exit
+  208.                   enddo
+  208.                   $I_A2 = 1 + $I_A2
+  208.                   if ( $I_A2 >= $F_A133 ) exit
+  208.                enddo
+  208.                $I_A3 = 1 + $I_A3
+  208.                if ( $I_A3 >= $F_A132 ) exit
+  208.             enddo
+  208.          endif
+  209.          fgqdm%header%a_contig = 1
+  209.          fgqdm%dim_1%LB = 1
+  209.          fgqdm%dim_1%EX = ( max( 0, ibmax ) )
+  209.          fgqdm%dim_1%SM = 1
+  209.          fgqdm%dim_2%LB = 1
+  209.          fgqdm%dim_2%EX = ( max( 0, kmax ) )
+  209.          fgqdm%dim_2%SM = ( max( 0, ibmax ) )
+  209.          fgqdm%dim_3%LB = 1
+  209.          fgqdm%dim_3%EX = ( max( 0, jbmax ) )
+  209.          fgqdm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  209.          $_allo_P46(0) = 0x1000000000001L
+  209.          $_allo_P46(1) = loc( fgqdm )
+  209.          call __allocate( $_allo_P46, 0, 0, _fcd( 0, 0 ) )
+  210.          $F_A135 = ( max( 0, jbmax ) )
+  210.          $F_A136 = ( max( 0, kmax ) )
+  210.          $F_A137 = ( max( 0, ibmax ) )
+  210.          if ( and( and( -$F_A136, -$F_A135 ), -$F_A137 ) < 0 ) then
+  210.             $I_A3 = 0
+  210.             do
+  210.                $I_A2 = 0
+  210.                do
+  210.                   $I_A1 = 0
+  210. !dir$ ivdep
+  210.                   do
+  210.                      (fgqdm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  210.                      $I_A1 = 1 + $I_A1
+  210.                      if ( $I_A1 >= $F_A137 ) exit
+  210.                   enddo
+  210.                   $I_A2 = 1 + $I_A2
+  210.                   if ( $I_A2 >= $F_A136 ) exit
+  210.                enddo
+  210.                $I_A3 = 1 + $I_A3
+  210.                if ( $I_A3 >= $F_A135 ) exit
+  210.             enddo
+  210.          endif
+  210.       else
+  212.          fgu%header%a_contig = 1
+  212.          fgu%dim_1%LB = 1
+  212.          fgu%dim_1%EX = ( max( 0, ibmax ) )
+  212.          fgu%dim_1%SM = 1
+  212.          fgu%dim_2%LB = 1
+  212.          fgu%dim_2%EX = ( max( 0, kmax ) )
+  212.          fgu%dim_2%SM = ( max( 0, ibmax ) )
+  212.          fgu%dim_3%LB = 1
+  212.          fgu%dim_3%EX = ( max( 0, jbmax_ext ) )
+  212.          fgu%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  212.          $_allo_P47(0) = 0x1000000000001L
+  212.          $_allo_P47(1) = loc( fgu )
+  212.          call __allocate( $_allo_P47, 0, 0, _fcd( 0, 0 ) )
+  213.          $F_A138 = ( max( 0, jbmax_ext ) )
+  213.          $F_A139 = ( max( 0, kmax ) )
+  213.          $F_A140 = ( max( 0, ibmax ) )
+  213.          if ( and( and( -$F_A139, -$F_A138 ), -$F_A140 ) < 0 ) then
+  213.             $I_A3 = 0
+  213.             do
+  213.                $I_A2 = 0
+  213.                do
+  213.                   $I_A1 = 0
+  213. !dir$ ivdep
+  213.                   do
+  213.                      (fgu%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  213.                      $I_A1 = 1 + $I_A1
+  213.                      if ( $I_A1 >= $F_A140 ) exit
+  213.                   enddo
+  213.                   $I_A2 = 1 + $I_A2
+  213.                   if ( $I_A2 >= $F_A139 ) exit
+  213.                enddo
+  213.                $I_A3 = 1 + $I_A3
+  213.                if ( $I_A3 >= $F_A138 ) exit
+  213.             enddo
+  213.          endif
+  214.          fgv%header%a_contig = 1
+  214.          fgv%dim_1%LB = 1
+  214.          fgv%dim_1%EX = ( max( 0, ibmax ) )
+  214.          fgv%dim_1%SM = 1
+  214.          fgv%dim_2%LB = 1
+  214.          fgv%dim_2%EX = ( max( 0, kmax ) )
+  214.          fgv%dim_2%SM = ( max( 0, ibmax ) )
+  214.          fgv%dim_3%LB = 1
+  214.          fgv%dim_3%EX = ( max( 0, jbmax_ext ) )
+  214.          fgv%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  214.          $_allo_P48(0) = 0x1000000000001L
+  214.          $_allo_P48(1) = loc( fgv )
+  214.          call __allocate( $_allo_P48, 0, 0, _fcd( 0, 0 ) )
+  215.          $F_A141 = ( max( 0, jbmax_ext ) )
+  215.          $F_A142 = ( max( 0, kmax ) )
+  215.          $F_A143 = ( max( 0, ibmax ) )
+  215.          if ( and( and( -$F_A142, -$F_A141 ), -$F_A143 ) < 0 ) then
+  215.             $I_A3 = 0
+  215.             do
+  215.                $I_A2 = 0
+  215.                do
+  215.                   $I_A1 = 0
+  215. !dir$ ivdep
+  215.                   do
+  215.                      (fgv%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  215.                      $I_A1 = 1 + $I_A1
+  215.                      if ( $I_A1 >= $F_A143 ) exit
+  215.                   enddo
+  215.                   $I_A2 = 1 + $I_A2
+  215.                   if ( $I_A2 >= $F_A142 ) exit
+  215.                enddo
+  215.                $I_A3 = 1 + $I_A3
+  215.                if ( $I_A3 >= $F_A141 ) exit
+  215.             enddo
+  215.          endif
+  216.          fgw%header%a_contig = 1
+  216.          fgw%dim_1%LB = 1
+  216.          fgw%dim_1%EX = ( max( 0, ibmax ) )
+  216.          fgw%dim_1%SM = 1
+  216.          fgw%dim_2%LB = 1
+  216.          fgw%dim_2%EX = ( max( 0, kmax ) )
+  216.          fgw%dim_2%SM = ( max( 0, ibmax ) )
+  216.          fgw%dim_3%LB = 1
+  216.          fgw%dim_3%EX = ( max( 0, jbmax_ext ) )
+  216.          fgw%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  216.          $_allo_P49(0) = 0x1000000000001L
+  216.          $_allo_P49(1) = loc( fgw )
+  216.          call __allocate( $_allo_P49, 0, 0, _fcd( 0, 0 ) )
+  217.          $F_A144 = ( max( 0, jbmax_ext ) )
+  217.          $F_A145 = ( max( 0, kmax ) )
+  217.          $F_A146 = ( max( 0, ibmax ) )
+  217.          if ( and( and( -$F_A145, -$F_A144 ), -$F_A146 ) < 0 ) then
+  217.             $I_A3 = 0
+  217.             do
+  217.                $I_A2 = 0
+  217.                do
+  217.                   $I_A1 = 0
+  217. !dir$ ivdep
+  217.                   do
+  217.                      (fgw%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  217.                      $I_A1 = 1 + $I_A1
+  217.                      if ( $I_A1 >= $F_A146 ) exit
+  217.                   enddo
+  217.                   $I_A2 = 1 + $I_A2
+  217.                   if ( $I_A2 >= $F_A145 ) exit
+  217.                enddo
+  217.                $I_A3 = 1 + $I_A3
+  217.                if ( $I_A3 >= $F_A144 ) exit
+  217.             enddo
+  217.          endif
+  218.          fgum%header%a_contig = 1
+  218.          fgum%dim_1%LB = 1
+  218.          fgum%dim_1%EX = ( max( 0, ibmax ) )
+  218.          fgum%dim_1%SM = 1
+  218.          fgum%dim_2%LB = 1
+  218.          fgum%dim_2%EX = ( max( 0, kmax ) )
+  218.          fgum%dim_2%SM = ( max( 0, ibmax ) )
+  218.          fgum%dim_3%LB = 1
+  218.          fgum%dim_3%EX = ( max( 0, jbmax ) )
+  218.          fgum%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  218.          $_allo_P50(0) = 0x1000000000001L
+  218.          $_allo_P50(1) = loc( fgum )
+  218.          call __allocate( $_allo_P50, 0, 0, _fcd( 0, 0 ) )
+  219.          $F_A147 = ( max( 0, jbmax ) )
+  219.          $F_A148 = ( max( 0, kmax ) )
+  219.          $F_A149 = ( max( 0, ibmax ) )
+  219.          if ( and( and( -$F_A148, -$F_A147 ), -$F_A149 ) < 0 ) then
+  219.             $I_A3 = 0
+  219.             do
+  219.                $I_A2 = 0
+  219.                do
+  219.                   $I_A1 = 0
+  219. !dir$ ivdep
+  219.                   do
+  219.                      (fgum%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  219.                      $I_A1 = 1 + $I_A1
+  219.                      if ( $I_A1 >= $F_A149 ) exit
+  219.                   enddo
+  219.                   $I_A2 = 1 + $I_A2
+  219.                   if ( $I_A2 >= $F_A148 ) exit
+  219.                enddo
+  219.                $I_A3 = 1 + $I_A3
+  219.                if ( $I_A3 >= $F_A147 ) exit
+  219.             enddo
+  219.          endif
+  220.          fgvm%header%a_contig = 1
+  220.          fgvm%dim_1%LB = 1
+  220.          fgvm%dim_1%EX = ( max( 0, ibmax ) )
+  220.          fgvm%dim_1%SM = 1
+  220.          fgvm%dim_2%LB = 1
+  220.          fgvm%dim_2%EX = ( max( 0, kmax ) )
+  220.          fgvm%dim_2%SM = ( max( 0, ibmax ) )
+  220.          fgvm%dim_3%LB = 1
+  220.          fgvm%dim_3%EX = ( max( 0, jbmax ) )
+  220.          fgvm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  220.          $_allo_P51(0) = 0x1000000000001L
+  220.          $_allo_P51(1) = loc( fgvm )
+  220.          call __allocate( $_allo_P51, 0, 0, _fcd( 0, 0 ) )
+  221.          $F_A150 = ( max( 0, jbmax ) )
+  221.          $F_A151 = ( max( 0, kmax ) )
+  221.          $F_A152 = ( max( 0, ibmax ) )
+  221.          if ( and( and( -$F_A151, -$F_A150 ), -$F_A152 ) < 0 ) then
+  221.             $I_A3 = 0
+  221.             do
+  221.                $I_A2 = 0
+  221.                do
+  221.                   $I_A1 = 0
+  221. !dir$ ivdep
+  221.                   do
+  221.                      (fgvm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  221.                      $I_A1 = 1 + $I_A1
+  221.                      if ( $I_A1 >= $F_A152 ) exit
+  221.                   enddo
+  221.                   $I_A2 = 1 + $I_A2
+  221.                   if ( $I_A2 >= $F_A151 ) exit
+  221.                enddo
+  221.                $I_A3 = 1 + $I_A3
+  221.                if ( $I_A3 >= $F_A150 ) exit
+  221.             enddo
+  221.          endif
+  222.          fgtmpp%header%a_contig = 1
+  222.          fgtmpp%dim_1%LB = 1
+  222.          fgtmpp%dim_1%EX = ( max( 0, ibmax ) )
+  222.          fgtmpp%dim_1%SM = 1
+  222.          fgtmpp%dim_2%LB = 1
+  222.          fgtmpp%dim_2%EX = ( max( 0, kmax ) )
+  222.          fgtmpp%dim_2%SM = ( max( 0, ibmax ) )
+  222.          fgtmpp%dim_3%LB = 1
+  222.          fgtmpp%dim_3%EX = ( max( 0, jbmax ) )
+  222.          fgtmpp%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  222.          $_allo_P52(0) = 0x1000000000001L
+  222.          $_allo_P52(1) = loc( fgtmpp )
+  222.          call __allocate( $_allo_P52, 0, 0, _fcd( 0, 0 ) )
+  223.          $F_A153 = ( max( 0, jbmax ) )
+  223.          $F_A154 = ( max( 0, kmax ) )
+  223.          $F_A155 = ( max( 0, ibmax ) )
+  223.          if ( and( and( -$F_A154, -$F_A153 ), -$F_A155 ) < 0 ) then
+  223.             $I_A3 = 0
+  223.             do
+  223.                $I_A2 = 0
+  223.                do
+  223.                   $I_A1 = 0
+  223. !dir$ ivdep
+  223.                   do
+  223.                      (fgtmpp%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  223.                      $I_A1 = 1 + $I_A1
+  223.                      if ( $I_A1 >= $F_A155 ) exit
+  223.                   enddo
+  223.                   $I_A2 = 1 + $I_A2
+  223.                   if ( $I_A2 >= $F_A154 ) exit
+  223.                enddo
+  223.                $I_A3 = 1 + $I_A3
+  223.                if ( $I_A3 >= $F_A153 ) exit
+  223.             enddo
+  223.          endif
+  224.          fgqp%header%a_contig = 1
+  224.          fgqp%dim_1%LB = 1
+  224.          fgqp%dim_1%EX = ( max( 0, ibmax ) )
+  224.          fgqp%dim_1%SM = 1
+  224.          fgqp%dim_2%LB = 1
+  224.          fgqp%dim_2%EX = ( max( 0, kmax ) )
+  224.          fgqp%dim_2%SM = ( max( 0, ibmax ) )
+  224.          fgqp%dim_3%LB = 1
+  224.          fgqp%dim_3%EX = ( max( 0, jbmax ) )
+  224.          fgqp%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  224.          $_allo_P53(0) = 0x1000000000001L
+  224.          $_allo_P53(1) = loc( fgqp )
+  224.          call __allocate( $_allo_P53, 0, 0, _fcd( 0, 0 ) )
+  225.          $F_A156 = ( max( 0, jbmax ) )
+  225.          $F_A157 = ( max( 0, kmax ) )
+  225.          $F_A158 = ( max( 0, ibmax ) )
+  225.          if ( and( and( -$F_A157, -$F_A156 ), -$F_A158 ) < 0 ) then
+  225.             $I_A3 = 0
+  225.             do
+  225.                $I_A2 = 0
+  225.                do
+  225.                   $I_A1 = 0
+  225. !dir$ ivdep
+  225.                   do
+  225.                      (fgqp%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  225.                      $I_A1 = 1 + $I_A1
+  225.                      if ( $I_A1 >= $F_A158 ) exit
+  225.                   enddo
+  225.                   $I_A2 = 1 + $I_A2
+  225.                   if ( $I_A2 >= $F_A157 ) exit
+  225.                enddo
+  225.                $I_A3 = 1 + $I_A3
+  225.                if ( $I_A3 >= $F_A156 ) exit
+  225.             enddo
+  225.          endif
+  226.          fgyum%header%a_contig = 1
+  226.          fgyum%dim_1%LB = 1
+  226.          fgyum%dim_1%EX = ( max( 0, ibmax ) )
+  226.          fgyum%dim_1%SM = 1
+  226.          fgyum%dim_2%LB = 1
+  226.          fgyum%dim_2%EX = ( max( 0, kmax ) )
+  226.          fgyum%dim_2%SM = ( max( 0, ibmax ) )
+  226.          fgyum%dim_3%LB = 1
+  226.          fgyum%dim_3%EX = ( max( 0, jbmax_ext ) )
+  226.          fgyum%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  226.          $_allo_P54(0) = 0x1000000000001L
+  226.          $_allo_P54(1) = loc( fgyum )
+  226.          call __allocate( $_allo_P54, 0, 0, _fcd( 0, 0 ) )
+  227.          $F_A159 = ( max( 0, jbmax_ext ) )
+  227.          $F_A160 = ( max( 0, kmax ) )
+  227.          $F_A161 = ( max( 0, ibmax ) )
+  227.          if ( and( and( -$F_A160, -$F_A159 ), -$F_A161 ) < 0 ) then
+  227.             $I_A3 = 0
+  227.             do
+  227.                $I_A2 = 0
+  227.                do
+  227.                   $I_A1 = 0
+  227. !dir$ ivdep
+  227.                   do
+  227.                      (fgyum%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  227.                      $I_A1 = 1 + $I_A1
+  227.                      if ( $I_A1 >= $F_A161 ) exit
+  227.                   enddo
+  227.                   $I_A2 = 1 + $I_A2
+  227.                   if ( $I_A2 >= $F_A160 ) exit
+  227.                enddo
+  227.                $I_A3 = 1 + $I_A3
+  227.                if ( $I_A3 >= $F_A159 ) exit
+  227.             enddo
+  227.          endif
+  228.          fgyvm%header%a_contig = 1
+  228.          fgyvm%dim_1%LB = 1
+  228.          fgyvm%dim_1%EX = ( max( 0, ibmax ) )
+  228.          fgyvm%dim_1%SM = 1
+  228.          fgyvm%dim_2%LB = 1
+  228.          fgyvm%dim_2%EX = ( max( 0, kmax ) )
+  228.          fgyvm%dim_2%SM = ( max( 0, ibmax ) )
+  228.          fgyvm%dim_3%LB = 1
+  228.          fgyvm%dim_3%EX = ( max( 0, jbmax_ext ) )
+  228.          fgyvm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  228.          $_allo_P55(0) = 0x1000000000001L
+  228.          $_allo_P55(1) = loc( fgyvm )
+  228.          call __allocate( $_allo_P55, 0, 0, _fcd( 0, 0 ) )
+  229.          $F_A162 = ( max( 0, jbmax_ext ) )
+  229.          $F_A163 = ( max( 0, kmax ) )
+  229.          $F_A164 = ( max( 0, ibmax ) )
+  229.          if ( and( and( -$F_A163, -$F_A162 ), -$F_A164 ) < 0 ) then
+  229.             $I_A3 = 0
+  229.             do
+  229.                $I_A2 = 0
+  229.                do
+  229.                   $I_A1 = 0
+  229. !dir$ ivdep
+  229.                   do
+  229.                      (fgyvm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  229.                      $I_A1 = 1 + $I_A1
+  229.                      if ( $I_A1 >= $F_A164 ) exit
+  229.                   enddo
+  229.                   $I_A2 = 1 + $I_A2
+  229.                   if ( $I_A2 >= $F_A163 ) exit
+  229.                enddo
+  229.                $I_A3 = 1 + $I_A3
+  229.                if ( $I_A3 >= $F_A162 ) exit
+  229.             enddo
+  229.          endif
+  230.          fgtdm%header%a_contig = 1
+  230.          fgtdm%dim_1%LB = 1
+  230.          fgtdm%dim_1%EX = ( max( 0, ibmax ) )
+  230.          fgtdm%dim_1%SM = 1
+  230.          fgtdm%dim_2%LB = 1
+  230.          fgtdm%dim_2%EX = ( max( 0, kmax ) )
+  230.          fgtdm%dim_2%SM = ( max( 0, ibmax ) )
+  230.          fgtdm%dim_3%LB = 1
+  230.          fgtdm%dim_3%EX = ( max( 0, jbmax_ext ) )
+  230.          fgtdm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  230.          $_allo_P56(0) = 0x1000000000001L
+  230.          $_allo_P56(1) = loc( fgtdm )
+  230.          call __allocate( $_allo_P56, 0, 0, _fcd( 0, 0 ) )
+  231.          $F_A165 = ( max( 0, jbmax_ext ) )
+  231.          $F_A166 = ( max( 0, kmax ) )
+  231.          $F_A167 = ( max( 0, ibmax ) )
+  231.          if ( and( and( -$F_A166, -$F_A165 ), -$F_A167 ) < 0 ) then
+  231.             $I_A3 = 0
+  231.             do
+  231.                $I_A2 = 0
+  231.                do
+  231.                   $I_A1 = 0
+  231. !dir$ ivdep
+  231.                   do
+  231.                      (fgtdm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  231.                      $I_A1 = 1 + $I_A1
+  231.                      if ( $I_A1 >= $F_A167 ) exit
+  231.                   enddo
+  231.                   $I_A2 = 1 + $I_A2
+  231.                   if ( $I_A2 >= $F_A166 ) exit
+  231.                enddo
+  231.                $I_A3 = 1 + $I_A3
+  231.                if ( $I_A3 >= $F_A165 ) exit
+  231.             enddo
+  231.          endif
+  232.          fgqdm%header%a_contig = 1
+  232.          fgqdm%dim_1%LB = 1
+  232.          fgqdm%dim_1%EX = ( max( 0, ibmax ) )
+  232.          fgqdm%dim_1%SM = 1
+  232.          fgqdm%dim_2%LB = 1
+  232.          fgqdm%dim_2%EX = ( max( 0, kmax ) )
+  232.          fgqdm%dim_2%SM = ( max( 0, ibmax ) )
+  232.          fgqdm%dim_3%LB = 1
+  232.          fgqdm%dim_3%EX = ( max( 0, jbmax_ext ) )
+  232.          fgqdm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  232.          $_allo_P57(0) = 0x1000000000001L
+  232.          $_allo_P57(1) = loc( fgqdm )
+  232.          call __allocate( $_allo_P57, 0, 0, _fcd( 0, 0 ) )
+  233.          $F_A168 = ( max( 0, jbmax_ext ) )
+  233.          $F_A169 = ( max( 0, kmax ) )
+  233.          $F_A170 = ( max( 0, ibmax ) )
+  233.          if ( and( and( -$F_A169, -$F_A168 ), -$F_A170 ) < 0 ) then
+  233.             $I_A3 = 0
+  233.             do
+  233.                $I_A2 = 0
+  233.                do
+  233.                   $I_A1 = 0
+  233. !dir$ ivdep
+  233.                   do
+  233.                      (fgqdm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  233.                      $I_A1 = 1 + $I_A1
+  233.                      if ( $I_A1 >= $F_A170 ) exit
+  233.                   enddo
+  233.                   $I_A2 = 1 + $I_A2
+  233.                   if ( $I_A2 >= $F_A169 ) exit
+  233.                enddo
+  233.                $I_A3 = 1 + $I_A3
+  233.                if ( $I_A3 >= $F_A168 ) exit
+  233.             enddo
+  233.          endif
+  233.       endif
+  235.       fgqmm%header%a_contig = 1
+  235.       fgqmm%dim_1%LB = 1
+  235.       fgqmm%dim_1%EX = ( max( 0, ibmax ) )
+  235.       fgqmm%dim_1%SM = 1
+  235.       fgqmm%dim_2%LB = 1
+  235.       fgqmm%dim_2%EX = ( max( 0, kmax ) )
+  235.       fgqmm%dim_2%SM = ( max( 0, ibmax ) )
+  235.       fgqmm%dim_3%LB = 1
+  235.       fgqmm%dim_3%EX = ( max( 0, jbmax ) )
+  235.       fgqmm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  235.       $_allo_P58(0) = 0x1000000000001L
+  235.       $_allo_P58(1) = loc( fgqmm )
+  235.       call __allocate( $_allo_P58, 0, 0, _fcd( 0, 0 ) )
+  236.       $F_A171 = ( max( 0, jbmax ) )
+  236.       $F_A172 = ( max( 0, kmax ) )
+  236.       $F_A173 = ( max( 0, ibmax ) )
+  236.       if ( and( and( -$F_A172, -$F_A171 ), -$F_A173 ) < 0 ) then
+  236.          $I_A3 = 0
+  236.          do
+  236.             $I_A2 = 0
+  236.             do
+  236.                $I_A1 = 0
+  236. !dir$ ivdep
+  236.                do
+  236.                   (fgqmm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  236.                   $I_A1 = 1 + $I_A1
+  236.                   if ( $I_A1 >= $F_A173 ) exit
+  236.                enddo
+  236.                $I_A2 = 1 + $I_A2
+  236.                if ( $I_A2 >= $F_A172 ) exit
+  236.             enddo
+  236.             $I_A3 = 1 + $I_A3
+  236.             if ( $I_A3 >= $F_A171 ) exit
+  236.          enddo
+  236.       endif
+  237.       fgqm%header%a_contig = 1
+  237.       fgqm%dim_1%LB = 1
+  237.       fgqm%dim_1%EX = ( max( 0, ibmax ) )
+  237.       fgqm%dim_1%SM = 1
+  237.       fgqm%dim_2%LB = 1
+  237.       fgqm%dim_2%EX = ( max( 0, kmax ) )
+  237.       fgqm%dim_2%SM = ( max( 0, ibmax ) )
+  237.       fgqm%dim_3%LB = 1
+  237.       fgqm%dim_3%EX = ( max( 0, jbmax ) )
+  237.       fgqm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  237.       $_allo_P59(0) = 0x1000000000001L
+  237.       $_allo_P59(1) = loc( fgqm )
+  237.       call __allocate( $_allo_P59, 0, 0, _fcd( 0, 0 ) )
+  238.       $F_A174 = ( max( 0, jbmax ) )
+  238.       $F_A175 = ( max( 0, kmax ) )
+  238.       $F_A176 = ( max( 0, ibmax ) )
+  238.       if ( and( and( -$F_A175, -$F_A174 ), -$F_A176 ) < 0 ) then
+  238.          $I_A3 = 0
+  238.          do
+  238.             $I_A2 = 0
+  238.             do
+  238.                $I_A1 = 0
+  238. !dir$ ivdep
+  238.                do
+  238.                   (fgqm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  238.                   $I_A1 = 1 + $I_A1
+  238.                   if ( $I_A1 >= $F_A176 ) exit
+  238.                enddo
+  238.                $I_A2 = 1 + $I_A2
+  238.                if ( $I_A2 >= $F_A175 ) exit
+  238.             enddo
+  238.             $I_A3 = 1 + $I_A3
+  238.             if ( $I_A3 >= $F_A174 ) exit
+  238.          enddo
+  238.       endif
+  239.       omg%header%a_contig = 1
+  239.       omg%dim_1%LB = 1
+  239.       omg%dim_1%EX = ( max( 0, ibmax ) )
+  239.       omg%dim_1%SM = 1
+  239.       omg%dim_2%LB = 1
+  239.       omg%dim_2%EX = ( max( 0, kmax ) )
+  239.       omg%dim_2%SM = ( max( 0, ibmax ) )
+  239.       omg%dim_3%LB = 1
+  239.       omg%dim_3%EX = ( max( 0, jbmax ) )
+  239.       omg%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  239.       $_allo_P60(0) = 0x1000000000001L
+  239.       $_allo_P60(1) = loc( omg )
+  239.       call __allocate( $_allo_P60, 0, 0, _fcd( 0, 0 ) )
+  240.       $F_A177 = ( max( 0, jbmax ) )
+  240.       $F_A178 = ( max( 0, kmax ) )
+  240.       $F_A179 = ( max( 0, ibmax ) )
+  240.       if ( and( and( -$F_A178, -$F_A177 ), -$F_A179 ) < 0 ) then
+  240.          $I_A3 = 0
+  240.          do
+  240.             $I_A2 = 0
+  240.             do
+  240.                $I_A1 = 0
+  240. !dir$ ivdep
+  240.                do
+  240.                   (omg%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  240.                   $I_A1 = 1 + $I_A1
+  240.                   if ( $I_A1 >= $F_A179 ) exit
+  240.                enddo
+  240.                $I_A2 = 1 + $I_A2
+  240.                if ( $I_A2 >= $F_A178 ) exit
+  240.             enddo
+  240.             $I_A3 = 1 + $I_A3
+  240.             if ( $I_A3 >= $F_A177 ) exit
+  240.          enddo
+  240.       endif
+  241.       fgtmpm%header%a_contig = 1
+  241.       fgtmpm%dim_1%LB = 1
+  241.       fgtmpm%dim_1%EX = ( max( 0, ibmax ) )
+  241.       fgtmpm%dim_1%SM = 1
+  241.       fgtmpm%dim_2%LB = 1
+  241.       fgtmpm%dim_2%EX = ( max( 0, kmax ) )
+  241.       fgtmpm%dim_2%SM = ( max( 0, ibmax ) )
+  241.       fgtmpm%dim_3%LB = 1
+  241.       fgtmpm%dim_3%EX = ( max( 0, jbmax ) )
+  241.       fgtmpm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  241.       $_allo_P61(0) = 0x1000000000001L
+  241.       $_allo_P61(1) = loc( fgtmpm )
+  241.       call __allocate( $_allo_P61, 0, 0, _fcd( 0, 0 ) )
+  242.       $F_A180 = ( max( 0, jbmax ) )
+  242.       $F_A181 = ( max( 0, kmax ) )
+  242.       $F_A182 = ( max( 0, ibmax ) )
+  242.       if ( and( and( -$F_A181, -$F_A180 ), -$F_A182 ) < 0 ) then
+  242.          $I_A3 = 0
+  242.          do
+  242.             $I_A2 = 0
+  242.             do
+  242.                $I_A1 = 0
+  242. !dir$ ivdep
+  242.                do
+  242.                   (fgtmpm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  242.                   $I_A1 = 1 + $I_A1
+  242.                   if ( $I_A1 >= $F_A182 ) exit
+  242.                enddo
+  242.                $I_A2 = 1 + $I_A2
+  242.                if ( $I_A2 >= $F_A181 ) exit
+  242.             enddo
+  242.             $I_A3 = 1 + $I_A3
+  242.             if ( $I_A3 >= $F_A180 ) exit
+  242.          enddo
+  242.       endif
+  243.       fgdivm%header%a_contig = 1
+  243.       fgdivm%dim_1%LB = 1
+  243.       fgdivm%dim_1%EX = ( max( 0, ibmax ) )
+  243.       fgdivm%dim_1%SM = 1
+  243.       fgdivm%dim_2%LB = 1
+  243.       fgdivm%dim_2%EX = ( max( 0, kmax ) )
+  243.       fgdivm%dim_2%SM = ( max( 0, ibmax ) )
+  243.       fgdivm%dim_3%LB = 1
+  243.       fgdivm%dim_3%EX = ( max( 0, jbmax ) )
+  243.       fgdivm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  243.       $_allo_P62(0) = 0x1000000000001L
+  243.       $_allo_P62(1) = loc( fgdivm )
+  243.       call __allocate( $_allo_P62, 0, 0, _fcd( 0, 0 ) )
+  244.       $F_A183 = ( max( 0, jbmax ) )
+  244.       $F_A184 = ( max( 0, kmax ) )
+  244.       $F_A185 = ( max( 0, ibmax ) )
+  244.       if ( and( and( -$F_A184, -$F_A183 ), -$F_A185 ) < 0 ) then
+  244.          $I_A3 = 0
+  244.          do
+  244.             $I_A2 = 0
+  244.             do
+  244.                $I_A1 = 0
+  244. !dir$ ivdep
+  244.                do
+  244.                   (fgdivm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  244.                   $I_A1 = 1 + $I_A1
+  244.                   if ( $I_A1 >= $F_A185 ) exit
+  244.                enddo
+  244.                $I_A2 = 1 + $I_A2
+  244.                if ( $I_A2 >= $F_A184 ) exit
+  244.             enddo
+  244.             $I_A3 = 1 + $I_A3
+  244.             if ( $I_A3 >= $F_A183 ) exit
+  244.          enddo
+  244.       endif
+  245.       fgtphi%header%a_contig = 1
+  245.       fgtphi%dim_1%LB = 1
+  245.       fgtphi%dim_1%EX = ( max( 0, ibmax ) )
+  245.       fgtphi%dim_1%SM = 1
+  245.       fgtphi%dim_2%LB = 1
+  245.       fgtphi%dim_2%EX = ( max( 0, kmax ) )
+  245.       fgtphi%dim_2%SM = ( max( 0, ibmax ) )
+  245.       fgtphi%dim_3%LB = 1
+  245.       fgtphi%dim_3%EX = ( max( 0, jbmax ) )
+  245.       fgtphi%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  245.       $_allo_P63(0) = 0x1000000000001L
+  245.       $_allo_P63(1) = loc( fgtphi )
+  245.       call __allocate( $_allo_P63, 0, 0, _fcd( 0, 0 ) )
+  246.       $F_A186 = ( max( 0, jbmax ) )
+  246.       $F_A187 = ( max( 0, kmax ) )
+  246.       $F_A188 = ( max( 0, ibmax ) )
+  246.       if ( and( and( -$F_A187, -$F_A186 ), -$F_A188 ) < 0 ) then
+  246.          $I_A3 = 0
+  246.          do
+  246.             $I_A2 = 0
+  246.             do
+  246.                $I_A1 = 0
+  246. !dir$ ivdep
+  246.                do
+  246.                   (fgtphi%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  246.                   $I_A1 = 1 + $I_A1
+  246.                   if ( $I_A1 >= $F_A188 ) exit
+  246.                enddo
+  246.                $I_A2 = 1 + $I_A2
+  246.                if ( $I_A2 >= $F_A187 ) exit
+  246.             enddo
+  246.             $I_A3 = 1 + $I_A3
+  246.             if ( $I_A3 >= $F_A186 ) exit
+  246.          enddo
+  246.       endif
+  247.       fgqphi%header%a_contig = 1
+  247.       fgqphi%dim_1%LB = 1
+  247.       fgqphi%dim_1%EX = ( max( 0, ibmax ) )
+  247.       fgqphi%dim_1%SM = 1
+  247.       fgqphi%dim_2%LB = 1
+  247.       fgqphi%dim_2%EX = ( max( 0, kmax ) )
+  247.       fgqphi%dim_2%SM = ( max( 0, ibmax ) )
+  247.       fgqphi%dim_3%LB = 1
+  247.       fgqphi%dim_3%EX = ( max( 0, jbmax ) )
+  247.       fgqphi%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  247.       $_allo_P64(0) = 0x1000000000001L
+  247.       $_allo_P64(1) = loc( fgqphi )
+  247.       call __allocate( $_allo_P64, 0, 0, _fcd( 0, 0 ) )
+  248.       $F_A189 = ( max( 0, jbmax ) )
+  248.       $F_A190 = ( max( 0, kmax ) )
+  248.       $F_A191 = ( max( 0, ibmax ) )
+  248.       if ( and( and( -$F_A190, -$F_A189 ), -$F_A191 ) < 0 ) then
+  248.          $I_A3 = 0
+  248.          do
+  248.             $I_A2 = 0
+  248.             do
+  248.                $I_A1 = 0
+  248. !dir$ ivdep
+  248.                do
+  248.                   (fgqphi%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  248.                   $I_A1 = 1 + $I_A1
+  248.                   if ( $I_A1 >= $F_A191 ) exit
+  248.                enddo
+  248.                $I_A2 = 1 + $I_A2
+  248.                if ( $I_A2 >= $F_A190 ) exit
+  248.             enddo
+  248.             $I_A3 = 1 + $I_A3
+  248.             if ( $I_A3 >= $F_A189 ) exit
+  248.          enddo
+  248.       endif
+  249.       fguphi%header%a_contig = 1
+  249.       fguphi%dim_1%LB = 1
+  249.       fguphi%dim_1%EX = ( max( 0, ibmax ) )
+  249.       fguphi%dim_1%SM = 1
+  249.       fguphi%dim_2%LB = 1
+  249.       fguphi%dim_2%EX = ( max( 0, kmax ) )
+  249.       fguphi%dim_2%SM = ( max( 0, ibmax ) )
+  249.       fguphi%dim_3%LB = 1
+  249.       fguphi%dim_3%EX = ( max( 0, jbmax ) )
+  249.       fguphi%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  249.       $_allo_P65(0) = 0x1000000000001L
+  249.       $_allo_P65(1) = loc( fguphi )
+  249.       call __allocate( $_allo_P65, 0, 0, _fcd( 0, 0 ) )
+  250.       $F_A192 = ( max( 0, jbmax ) )
+  250.       $F_A193 = ( max( 0, kmax ) )
+  250.       $F_A194 = ( max( 0, ibmax ) )
+  250.       if ( and( and( -$F_A193, -$F_A192 ), -$F_A194 ) < 0 ) then
+  250.          $I_A3 = 0
+  250.          do
+  250.             $I_A2 = 0
+  250.             do
+  250.                $I_A1 = 0
+  250. !dir$ ivdep
+  250.                do
+  250.                   (fguphi%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  250.                   $I_A1 = 1 + $I_A1
+  250.                   if ( $I_A1 >= $F_A194 ) exit
+  250.                enddo
+  250.                $I_A2 = 1 + $I_A2
+  250.                if ( $I_A2 >= $F_A193 ) exit
+  250.             enddo
+  250.             $I_A3 = 1 + $I_A3
+  250.             if ( $I_A3 >= $F_A192 ) exit
+  250.          enddo
+  250.       endif
+  251.       fgvphi%header%a_contig = 1
+  251.       fgvphi%dim_1%LB = 1
+  251.       fgvphi%dim_1%EX = ( max( 0, ibmax ) )
+  251.       fgvphi%dim_1%SM = 1
+  251.       fgvphi%dim_2%LB = 1
+  251.       fgvphi%dim_2%EX = ( max( 0, kmax ) )
+  251.       fgvphi%dim_2%SM = ( max( 0, ibmax ) )
+  251.       fgvphi%dim_3%LB = 1
+  251.       fgvphi%dim_3%EX = ( max( 0, jbmax ) )
+  251.       fgvphi%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  251.       $_allo_P66(0) = 0x1000000000001L
+  251.       $_allo_P66(1) = loc( fgvphi )
+  251.       call __allocate( $_allo_P66, 0, 0, _fcd( 0, 0 ) )
+  252.       $F_A195 = ( max( 0, jbmax ) )
+  252.       $F_A196 = ( max( 0, kmax ) )
+  252.       $F_A197 = ( max( 0, ibmax ) )
+  252.       if ( and( and( -$F_A196, -$F_A195 ), -$F_A197 ) < 0 ) then
+  252.          $I_A3 = 0
+  252.          do
+  252.             $I_A2 = 0
+  252.             do
+  252.                $I_A1 = 0
+  252. !dir$ ivdep
+  252.                do
+  252.                   (fgvphi%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  252.                   $I_A1 = 1 + $I_A1
+  252.                   if ( $I_A1 >= $F_A197 ) exit
+  252.                enddo
+  252.                $I_A2 = 1 + $I_A2
+  252.                if ( $I_A2 >= $F_A196 ) exit
+  252.             enddo
+  252.             $I_A3 = 1 + $I_A3
+  252.             if ( $I_A3 >= $F_A195 ) exit
+  252.          enddo
+  252.       endif
+  253.       fgtphim%header%a_contig = 1
+  253.       fgtphim%dim_1%LB = 1
+  253.       fgtphim%dim_1%EX = ( max( 0, ibmax ) )
+  253.       fgtphim%dim_1%SM = 1
+  253.       fgtphim%dim_2%LB = 1
+  253.       fgtphim%dim_2%EX = ( max( 0, kmax ) )
+  253.       fgtphim%dim_2%SM = ( max( 0, ibmax ) )
+  253.       fgtphim%dim_3%LB = 1
+  253.       fgtphim%dim_3%EX = ( max( 0, jbmax ) )
+  253.       fgtphim%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  253.       $_allo_P67(0) = 0x1000000000001L
+  253.       $_allo_P67(1) = loc( fgtphim )
+  253.       call __allocate( $_allo_P67, 0, 0, _fcd( 0, 0 ) )
+  254.       $F_A198 = ( max( 0, jbmax ) )
+  254.       $F_A199 = ( max( 0, kmax ) )
+  254.       $F_A200 = ( max( 0, ibmax ) )
+  254.       if ( and( and( -$F_A199, -$F_A198 ), -$F_A200 ) < 0 ) then
+  254.          $I_A3 = 0
+  254.          do
+  254.             $I_A2 = 0
+  254.             do
+  254.                $I_A1 = 0
+  254. !dir$ ivdep
+  254.                do
+  254.                   (fgtphim%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  254.                   $I_A1 = 1 + $I_A1
+  254.                   if ( $I_A1 >= $F_A200 ) exit
+  254.                enddo
+  254.                $I_A2 = 1 + $I_A2
+  254.                if ( $I_A2 >= $F_A199 ) exit
+  254.             enddo
+  254.             $I_A3 = 1 + $I_A3
+  254.             if ( $I_A3 >= $F_A198 ) exit
+  254.          enddo
+  254.       endif
+  255.       fgtlam%header%a_contig = 1
+  255.       fgtlam%dim_1%LB = 1
+  255.       fgtlam%dim_1%EX = ( max( 0, ibmax ) )
+  255.       fgtlam%dim_1%SM = 1
+  255.       fgtlam%dim_2%LB = 1
+  255.       fgtlam%dim_2%EX = ( max( 0, kmax ) )
+  255.       fgtlam%dim_2%SM = ( max( 0, ibmax ) )
+  255.       fgtlam%dim_3%LB = 1
+  255.       fgtlam%dim_3%EX = ( max( 0, jbmax ) )
+  255.       fgtlam%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  255.       $_allo_P68(0) = 0x1000000000001L
+  255.       $_allo_P68(1) = loc( fgtlam )
+  255.       call __allocate( $_allo_P68, 0, 0, _fcd( 0, 0 ) )
+  256.       $F_A201 = ( max( 0, jbmax ) )
+  256.       $F_A202 = ( max( 0, kmax ) )
+  256.       $F_A203 = ( max( 0, ibmax ) )
+  256.       if ( and( and( -$F_A202, -$F_A201 ), -$F_A203 ) < 0 ) then
+  256.          $I_A3 = 0
+  256.          do
+  256.             $I_A2 = 0
+  256.             do
+  256.                $I_A1 = 0
+  256. !dir$ ivdep
+  256.                do
+  256.                   (fgtlam%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  256.                   $I_A1 = 1 + $I_A1
+  256.                   if ( $I_A1 >= $F_A203 ) exit
+  256.                enddo
+  256.                $I_A2 = 1 + $I_A2
+  256.                if ( $I_A2 >= $F_A202 ) exit
+  256.             enddo
+  256.             $I_A3 = 1 + $I_A3
+  256.             if ( $I_A3 >= $F_A201 ) exit
+  256.          enddo
+  256.       endif
+  257.       fgqlam%header%a_contig = 1
+  257.       fgqlam%dim_1%LB = 1
+  257.       fgqlam%dim_1%EX = ( max( 0, ibmax ) )
+  257.       fgqlam%dim_1%SM = 1
+  257.       fgqlam%dim_2%LB = 1
+  257.       fgqlam%dim_2%EX = ( max( 0, kmax ) )
+  257.       fgqlam%dim_2%SM = ( max( 0, ibmax ) )
+  257.       fgqlam%dim_3%LB = 1
+  257.       fgqlam%dim_3%EX = ( max( 0, jbmax ) )
+  257.       fgqlam%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  257.       $_allo_P69(0) = 0x1000000000001L
+  257.       $_allo_P69(1) = loc( fgqlam )
+  257.       call __allocate( $_allo_P69, 0, 0, _fcd( 0, 0 ) )
+  258.       $F_A204 = ( max( 0, jbmax ) )
+  258.       $F_A205 = ( max( 0, kmax ) )
+  258.       $F_A206 = ( max( 0, ibmax ) )
+  258.       if ( and( and( -$F_A205, -$F_A204 ), -$F_A206 ) < 0 ) then
+  258.          $I_A3 = 0
+  258.          do
+  258.             $I_A2 = 0
+  258.             do
+  258.                $I_A1 = 0
+  258. !dir$ ivdep
+  258.                do
+  258.                   (fgqlam%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  258.                   $I_A1 = 1 + $I_A1
+  258.                   if ( $I_A1 >= $F_A206 ) exit
+  258.                enddo
+  258.                $I_A2 = 1 + $I_A2
+  258.                if ( $I_A2 >= $F_A205 ) exit
+  258.             enddo
+  258.             $I_A3 = 1 + $I_A3
+  258.             if ( $I_A3 >= $F_A204 ) exit
+  258.          enddo
+  258.       endif
+  259.       fgulam%header%a_contig = 1
+  259.       fgulam%dim_1%LB = 1
+  259.       fgulam%dim_1%EX = ( max( 0, ibmax ) )
+  259.       fgulam%dim_1%SM = 1
+  259.       fgulam%dim_2%LB = 1
+  259.       fgulam%dim_2%EX = ( max( 0, kmax ) )
+  259.       fgulam%dim_2%SM = ( max( 0, ibmax ) )
+  259.       fgulam%dim_3%LB = 1
+  259.       fgulam%dim_3%EX = ( max( 0, jbmax ) )
+  259.       fgulam%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  259.       $_allo_P70(0) = 0x1000000000001L
+  259.       $_allo_P70(1) = loc( fgulam )
+  259.       call __allocate( $_allo_P70, 0, 0, _fcd( 0, 0 ) )
+  260.       $F_A207 = ( max( 0, jbmax ) )
+  260.       $F_A208 = ( max( 0, kmax ) )
+  260.       $F_A209 = ( max( 0, ibmax ) )
+  260.       if ( and( and( -$F_A208, -$F_A207 ), -$F_A209 ) < 0 ) then
+  260.          $I_A3 = 0
+  260.          do
+  260.             $I_A2 = 0
+  260.             do
+  260.                $I_A1 = 0
+  260. !dir$ ivdep
+  260.                do
+  260.                   (fgulam%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  260.                   $I_A1 = 1 + $I_A1
+  260.                   if ( $I_A1 >= $F_A209 ) exit
+  260.                enddo
+  260.                $I_A2 = 1 + $I_A2
+  260.                if ( $I_A2 >= $F_A208 ) exit
+  260.             enddo
+  260.             $I_A3 = 1 + $I_A3
+  260.             if ( $I_A3 >= $F_A207 ) exit
+  260.          enddo
+  260.       endif
+  261.       fgvlam%header%a_contig = 1
+  261.       fgvlam%dim_1%LB = 1
+  261.       fgvlam%dim_1%EX = ( max( 0, ibmax ) )
+  261.       fgvlam%dim_1%SM = 1
+  261.       fgvlam%dim_2%LB = 1
+  261.       fgvlam%dim_2%EX = ( max( 0, kmax ) )
+  261.       fgvlam%dim_2%SM = ( max( 0, ibmax ) )
+  261.       fgvlam%dim_3%LB = 1
+  261.       fgvlam%dim_3%EX = ( max( 0, jbmax ) )
+  261.       fgvlam%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  261.       $_allo_P71(0) = 0x1000000000001L
+  261.       $_allo_P71(1) = loc( fgvlam )
+  261.       call __allocate( $_allo_P71, 0, 0, _fcd( 0, 0 ) )
+  262.       $F_A210 = ( max( 0, jbmax ) )
+  262.       $F_A211 = ( max( 0, kmax ) )
+  262.       $F_A212 = ( max( 0, ibmax ) )
+  262.       if ( and( and( -$F_A211, -$F_A210 ), -$F_A212 ) < 0 ) then
+  262.          $I_A3 = 0
+  262.          do
+  262.             $I_A2 = 0
+  262.             do
+  262.                $I_A1 = 0
+  262. !dir$ ivdep
+  262.                do
+  262.                   (fgvlam%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  262.                   $I_A1 = 1 + $I_A1
+  262.                   if ( $I_A1 >= $F_A212 ) exit
+  262.                enddo
+  262.                $I_A2 = 1 + $I_A2
+  262.                if ( $I_A2 >= $F_A211 ) exit
+  262.             enddo
+  262.             $I_A3 = 1 + $I_A3
+  262.             if ( $I_A3 >= $F_A210 ) exit
+  262.          enddo
+  262.       endif
+  263.       fgtlamm%header%a_contig = 1
+  263.       fgtlamm%dim_1%LB = 1
+  263.       fgtlamm%dim_1%EX = ( max( 0, ibmax ) )
+  263.       fgtlamm%dim_1%SM = 1
+  263.       fgtlamm%dim_2%LB = 1
+  263.       fgtlamm%dim_2%EX = ( max( 0, kmax ) )
+  263.       fgtlamm%dim_2%SM = ( max( 0, ibmax ) )
+  263.       fgtlamm%dim_3%LB = 1
+  263.       fgtlamm%dim_3%EX = ( max( 0, jbmax ) )
+  263.       fgtlamm%dim_3%SM = ( max( 0, kmax ) * max( 0, ibmax ) )
+  263.       $_allo_P72(0) = 0x1000000000001L
+  263.       $_allo_P72(1) = loc( fgtlamm )
+  263.       call __allocate( $_allo_P72, 0, 0, _fcd( 0, 0 ) )
+  264.       $F_A213 = ( max( 0, jbmax ) )
+  264.       $F_A214 = ( max( 0, kmax ) )
+  264.       $F_A215 = ( max( 0, ibmax ) )
+  264.       if ( and( and( -$F_A214, -$F_A213 ), -$F_A215 ) < 0 ) then
+  264.          $I_A3 = 0
+  264.          do
+  264.             $I_A2 = 0
+  264.             do
+  264.                $I_A1 = 0
+  264. !dir$ ivdep
+  264.                do
+  264.                   (fgtlamm%base_addr)(1 + $I_A1, 1 + $I_A2, 1 + $I_A3, 0) = 0.0
+  264.                   $I_A1 = 1 + $I_A1
+  264.                   if ( $I_A1 >= $F_A215 ) exit
+  264.                enddo
+  264.                $I_A2 = 1 + $I_A2
+  264.                if ( $I_A2 >= $F_A214 ) exit
+  264.             enddo
+  264.             $I_A3 = 1 + $I_A3
+  264.             if ( $I_A3 >= $F_A213 ) exit
+  264.          enddo
+  264.       endif
+  265.       if ( sl2lev /= .false. ) then
+  266.          fgumean%header%a_contig = 1
+  266.          fgumean%dim_1%LB = 1
+  266.          fgumean%dim_1%EX = ( max( 0, ibmax ) )
+  266.          fgumean%dim_1%SM = 1
+  266.          fgumean%dim_2%LB = 1
+  266.          fgumean%dim_2%EX = ( max( 0, jbmax ) )
+  266.          fgumean%dim_2%SM = ( max( 0, ibmax ) )
+  266.          $_allo_P73(0) = 0x1000000000001L
+  266.          $_allo_P73(1) = loc( fgumean )
+  266.          call __allocate( $_allo_P73, 0, 0, _fcd( 0, 0 ) )
+  267.          $F_A216 = ( max( 0, jbmax ) )
+  267.          $F_A217 = ( max( 0, ibmax ) )
+  267.          if ( and( -$F_A217, -$F_A216 ) < 0 ) then
+  267.             $I_A2 = 0
+  267.             do
+  267.                $I_A1 = 0
+  267. !dir$ ivdep
+  267.                do
+  267.                   (fgumean%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  267.                   $I_A1 = 1 + $I_A1
+  267.                   if ( $I_A1 >= $F_A217 ) exit
+  267.                enddo
+  267.                $I_A2 = 1 + $I_A2
+  267.                if ( $I_A2 >= $F_A216 ) exit
+  267.             enddo
+  267.          endif
+  268.          fgvmean%header%a_contig = 1
+  268.          fgvmean%dim_1%LB = 1
+  268.          fgvmean%dim_1%EX = ( max( 0, ibmax ) )
+  268.          fgvmean%dim_1%SM = 1
+  268.          fgvmean%dim_2%LB = 1
+  268.          fgvmean%dim_2%EX = ( max( 0, jbmax ) )
+  268.          fgvmean%dim_2%SM = ( max( 0, ibmax ) )
+  268.          $_allo_P74(0) = 0x1000000000001L
+  268.          $_allo_P74(1) = loc( fgvmean )
+  268.          call __allocate( $_allo_P74, 0, 0, _fcd( 0, 0 ) )
+  269.          $F_A218 = ( max( 0, jbmax ) )
+  269.          $F_A219 = ( max( 0, ibmax ) )
+  269.          if ( and( -$F_A219, -$F_A218 ) < 0 ) then
+  269.             $I_A2 = 0
+  269.             do
+  269.                $I_A1 = 0
+  269. !dir$ ivdep
+  269.                do
+  269.                   (fgvmean%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  269.                   $I_A1 = 1 + $I_A1
+  269.                   if ( $I_A1 >= $F_A219 ) exit
+  269.                enddo
+  269.                $I_A2 = 1 + $I_A2
+  269.                if ( $I_A2 >= $F_A218 ) exit
+  269.             enddo
+  269.          endif
+  270.          fgpsp%header%a_contig = 1
+  270.          fgpsp%dim_1%LB = 1
+  270.          fgpsp%dim_1%EX = ( max( 0, ibmax ) )
+  270.          fgpsp%dim_1%SM = 1
+  270.          fgpsp%dim_2%LB = 1
+  270.          fgpsp%dim_2%EX = ( max( 0, jbmax_ext ) )
+  270.          fgpsp%dim_2%SM = ( max( 0, ibmax ) )
+  270.          $_allo_P75(0) = 0x1000000000001L
+  270.          $_allo_P75(1) = loc( fgpsp )
+  270.          call __allocate( $_allo_P75, 0, 0, _fcd( 0, 0 ) )
+  271.          $F_A220 = ( max( 0, jbmax_ext ) )
+  271.          $F_A221 = ( max( 0, ibmax ) )
+  271.          if ( and( -$F_A221, -$F_A220 ) < 0 ) then
+  271.             $I_A2 = 0
+  271.             do
+  271.                $I_A1 = 0
+  271. !dir$ ivdep
+  271.                do
+  271.                   (fgpsp%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  271.                   $I_A1 = 1 + $I_A1
+  271.                   if ( $I_A1 >= $F_A221 ) exit
+  271.                enddo
+  271.                $I_A2 = 1 + $I_A2
+  271.                if ( $I_A2 >= $F_A220 ) exit
+  271.             enddo
+  271.          endif
+  272.          fgvdlnpm%header%a_contig = 1
+  272.          fgvdlnpm%dim_1%LB = 1
+  272.          fgvdlnpm%dim_1%EX = ( max( 0, ibmax ) )
+  272.          fgvdlnpm%dim_1%SM = 1
+  272.          fgvdlnpm%dim_2%LB = 1
+  272.          fgvdlnpm%dim_2%EX = ( max( 0, jbmax ) )
+  272.          fgvdlnpm%dim_2%SM = ( max( 0, ibmax ) )
+  272.          $_allo_P76(0) = 0x1000000000001L
+  272.          $_allo_P76(1) = loc( fgvdlnpm )
+  272.          call __allocate( $_allo_P76, 0, 0, _fcd( 0, 0 ) )
+  273.          $F_A222 = ( max( 0, jbmax ) )
+  273.          $F_A223 = ( max( 0, ibmax ) )
+  273.          if ( and( -$F_A223, -$F_A222 ) < 0 ) then
+  273.             $I_A2 = 0
+  273.             do
+  273.                $I_A1 = 0
+  273. !dir$ ivdep
+  273.                do
+  273.                   (fgvdlnpm%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  273.                   $I_A1 = 1 + $I_A1
+  273.                   if ( $I_A1 >= $F_A223 ) exit
+  273.                enddo
+  273.                $I_A2 = 1 + $I_A2
+  273.                if ( $I_A2 >= $F_A222 ) exit
+  273.             enddo
+  273.          endif
+  273.       else
+  275.          fgumean%header%a_contig = 1
+  275.          fgumean%dim_1%LB = 1
+  275.          fgumean%dim_1%EX = ( max( 0, ibmax ) )
+  275.          fgumean%dim_1%SM = 1
+  275.          fgumean%dim_2%LB = 1
+  275.          fgumean%dim_2%EX = ( max( 0, jbmax_ext ) )
+  275.          fgumean%dim_2%SM = ( max( 0, ibmax ) )
+  275.          $_allo_P77(0) = 0x1000000000001L
+  275.          $_allo_P77(1) = loc( fgumean )
+  275.          call __allocate( $_allo_P77, 0, 0, _fcd( 0, 0 ) )
+  276.          $F_A224 = ( max( 0, jbmax_ext ) )
+  276.          $F_A225 = ( max( 0, ibmax ) )
+  276.          if ( and( -$F_A225, -$F_A224 ) < 0 ) then
+  276.             $I_A2 = 0
+  276.             do
+  276.                $I_A1 = 0
+  276. !dir$ ivdep
+  276.                do
+  276.                   (fgumean%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  276.                   $I_A1 = 1 + $I_A1
+  276.                   if ( $I_A1 >= $F_A225 ) exit
+  276.                enddo
+  276.                $I_A2 = 1 + $I_A2
+  276.                if ( $I_A2 >= $F_A224 ) exit
+  276.             enddo
+  276.          endif
+  277.          fgvmean%header%a_contig = 1
+  277.          fgvmean%dim_1%LB = 1
+  277.          fgvmean%dim_1%EX = ( max( 0, ibmax ) )
+  277.          fgvmean%dim_1%SM = 1
+  277.          fgvmean%dim_2%LB = 1
+  277.          fgvmean%dim_2%EX = ( max( 0, jbmax_ext ) )
+  277.          fgvmean%dim_2%SM = ( max( 0, ibmax ) )
+  277.          $_allo_P78(0) = 0x1000000000001L
+  277.          $_allo_P78(1) = loc( fgvmean )
+  277.          call __allocate( $_allo_P78, 0, 0, _fcd( 0, 0 ) )
+  278.          $F_A226 = ( max( 0, jbmax_ext ) )
+  278.          $F_A227 = ( max( 0, ibmax ) )
+  278.          if ( and( -$F_A227, -$F_A226 ) < 0 ) then
+  278.             $I_A2 = 0
+  278.             do
+  278.                $I_A1 = 0
+  278. !dir$ ivdep
+  278.                do
+  278.                   (fgvmean%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  278.                   $I_A1 = 1 + $I_A1
+  278.                   if ( $I_A1 >= $F_A227 ) exit
+  278.                enddo
+  278.                $I_A2 = 1 + $I_A2
+  278.                if ( $I_A2 >= $F_A226 ) exit
+  278.             enddo
+  278.          endif
+  279.          fgpsp%header%a_contig = 1
+  279.          fgpsp%dim_1%LB = 1
+  279.          fgpsp%dim_1%EX = ( max( 0, ibmax ) )
+  279.          fgpsp%dim_1%SM = 1
+  279.          fgpsp%dim_2%LB = 1
+  279.          fgpsp%dim_2%EX = ( max( 0, jbmax ) )
+  279.          fgpsp%dim_2%SM = ( max( 0, ibmax ) )
+  279.          $_allo_P79(0) = 0x1000000000001L
+  279.          $_allo_P79(1) = loc( fgpsp )
+  279.          call __allocate( $_allo_P79, 0, 0, _fcd( 0, 0 ) )
+  280.          $F_A228 = ( max( 0, jbmax ) )
+  280.          $F_A229 = ( max( 0, ibmax ) )
+  280.          if ( and( -$F_A229, -$F_A228 ) < 0 ) then
+  280.             $I_A2 = 0
+  280.             do
+  280.                $I_A1 = 0
+  280. !dir$ ivdep
+  280.                do
+  280.                   (fgpsp%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  280.                   $I_A1 = 1 + $I_A1
+  280.                   if ( $I_A1 >= $F_A229 ) exit
+  280.                enddo
+  280.                $I_A2 = 1 + $I_A2
+  280.                if ( $I_A2 >= $F_A228 ) exit
+  280.             enddo
+  280.          endif
+  281.          fgvdlnpm%header%a_contig = 1
+  281.          fgvdlnpm%dim_1%LB = 1
+  281.          fgvdlnpm%dim_1%EX = ( max( 0, ibmax ) )
+  281.          fgvdlnpm%dim_1%SM = 1
+  281.          fgvdlnpm%dim_2%LB = 1
+  281.          fgvdlnpm%dim_2%EX = ( max( 0, jbmax_ext ) )
+  281.          fgvdlnpm%dim_2%SM = ( max( 0, ibmax ) )
+  281.          $_allo_P80(0) = 0x1000000000001L
+  281.          $_allo_P80(1) = loc( fgvdlnpm )
+  281.          call __allocate( $_allo_P80, 0, 0, _fcd( 0, 0 ) )
+  282.          $F_A230 = ( max( 0, jbmax_ext ) )
+  282.          $F_A231 = ( max( 0, ibmax ) )
+  282.          if ( and( -$F_A231, -$F_A230 ) < 0 ) then
+  282.             $I_A2 = 0
+  282.             do
+  282.                $I_A1 = 0
+  282. !dir$ ivdep
+  282.                do
+  282.                   (fgvdlnpm%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  282.                   $I_A1 = 1 + $I_A1
+  282.                   if ( $I_A1 >= $F_A231 ) exit
+  282.                enddo
+  282.                $I_A2 = 1 + $I_A2
+  282.                if ( $I_A2 >= $F_A230 ) exit
+  282.             enddo
+  282.          endif
+  282.       endif
+  284.       fgvdlnp%header%a_contig = 1
+  284.       fgvdlnp%dim_1%LB = 1
+  284.       fgvdlnp%dim_1%EX = ( max( 0, ibmax ) )
+  284.       fgvdlnp%dim_1%SM = 1
+  284.       fgvdlnp%dim_2%LB = 1
+  284.       fgvdlnp%dim_2%EX = ( max( 0, jbmax ) )
+  284.       fgvdlnp%dim_2%SM = ( max( 0, ibmax ) )
+  284.       $_allo_P81(0) = 0x1000000000001L
+  284.       $_allo_P81(1) = loc( fgvdlnp )
+  284.       call __allocate( $_allo_P81, 0, 0, _fcd( 0, 0 ) )
+  285.       $F_A232 = ( max( 0, jbmax ) )
+  285.       $F_A233 = ( max( 0, ibmax ) )
+  285.       if ( and( -$F_A233, -$F_A232 ) < 0 ) then
+  285.          $I_A2 = 0
+  285.          do
+  285.             $I_A1 = 0
+  285. !dir$ ivdep
+  285.             do
+  285.                (fgvdlnp%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  285.                $I_A1 = 1 + $I_A1
+  285.                if ( $I_A1 >= $F_A233 ) exit
+  285.             enddo
+  285.             $I_A2 = 1 + $I_A2
+  285.             if ( $I_A2 >= $F_A232 ) exit
+  285.          enddo
+  285.       endif
+  286.       fglnps%header%a_contig = 1
+  286.       fglnps%dim_1%LB = 1
+  286.       fglnps%dim_1%EX = ( max( 0, ibmax ) )
+  286.       fglnps%dim_1%SM = 1
+  286.       fglnps%dim_2%LB = 1
+  286.       fglnps%dim_2%EX = ( max( 0, jbmax ) )
+  286.       fglnps%dim_2%SM = ( max( 0, ibmax ) )
+  286.       $_allo_P82(0) = 0x1000000000001L
+  286.       $_allo_P82(1) = loc( fglnps )
+  286.       call __allocate( $_allo_P82, 0, 0, _fcd( 0, 0 ) )
+  287.       $F_A234 = ( max( 0, jbmax ) )
+  287.       $F_A235 = ( max( 0, ibmax ) )
+  287.       if ( and( -$F_A235, -$F_A234 ) < 0 ) then
+  287.          $I_A2 = 0
+  287.          do
+  287.             $I_A1 = 0
+  287. !dir$ ivdep
+  287.             do
+  287.                (fglnps%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  287.                $I_A1 = 1 + $I_A1
+  287.                if ( $I_A1 >= $F_A235 ) exit
+  287.             enddo
+  287.             $I_A2 = 1 + $I_A2
+  287.             if ( $I_A2 >= $F_A234 ) exit
+  287.          enddo
+  287.       endif
+  288.       fgps%header%a_contig = 1
+  288.       fgps%dim_1%LB = 1
+  288.       fgps%dim_1%EX = ( max( 0, ibmax ) )
+  288.       fgps%dim_1%SM = 1
+  288.       fgps%dim_2%LB = 1
+  288.       fgps%dim_2%EX = ( max( 0, jbmax ) )
+  288.       fgps%dim_2%SM = ( max( 0, ibmax ) )
+  288.       $_allo_P83(0) = 0x1000000000001L
+  288.       $_allo_P83(1) = loc( fgps )
+  288.       call __allocate( $_allo_P83, 0, 0, _fcd( 0, 0 ) )
+  289.       $F_A236 = ( max( 0, jbmax ) )
+  289.       $F_A237 = ( max( 0, ibmax ) )
+  289.       if ( and( -$F_A237, -$F_A236 ) < 0 ) then
+  289.          $I_A2 = 0
+  289.          do
+  289.             $I_A1 = 0
+  289. !dir$ ivdep
+  289.             do
+  289.                (fgps%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  289.                $I_A1 = 1 + $I_A1
+  289.                if ( $I_A1 >= $F_A237 ) exit
+  289.             enddo
+  289.             $I_A2 = 1 + $I_A2
+  289.             if ( $I_A2 >= $F_A236 ) exit
+  289.          enddo
+  289.       endif
+  290.       fglnpm%header%a_contig = 1
+  290.       fglnpm%dim_1%LB = 1
+  290.       fglnpm%dim_1%EX = ( max( 0, ibmax ) )
+  290.       fglnpm%dim_1%SM = 1
+  290.       fglnpm%dim_2%LB = 1
+  290.       fglnpm%dim_2%EX = ( max( 0, jbmax ) )
+  290.       fglnpm%dim_2%SM = ( max( 0, ibmax ) )
+  290.       $_allo_P84(0) = 0x1000000000001L
+  290.       $_allo_P84(1) = loc( fglnpm )
+  290.       call __allocate( $_allo_P84, 0, 0, _fcd( 0, 0 ) )
+  291.       $F_A238 = ( max( 0, jbmax ) )
+  291.       $F_A239 = ( max( 0, ibmax ) )
+  291.       if ( and( -$F_A239, -$F_A238 ) < 0 ) then
+  291.          $I_A2 = 0
+  291.          do
+  291.             $I_A1 = 0
+  291. !dir$ ivdep
+  291.             do
+  291.                (fglnpm%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  291.                $I_A1 = 1 + $I_A1
+  291.                if ( $I_A1 >= $F_A239 ) exit
+  291.             enddo
+  291.             $I_A2 = 1 + $I_A2
+  291.             if ( $I_A2 >= $F_A238 ) exit
+  291.          enddo
+  291.       endif
+  292.       fgpphi%header%a_contig = 1
+  292.       fgpphi%dim_1%LB = 1
+  292.       fgpphi%dim_1%EX = ( max( 0, ibmax ) )
+  292.       fgpphi%dim_1%SM = 1
+  292.       fgpphi%dim_2%LB = 1
+  292.       fgpphi%dim_2%EX = ( max( 0, jbmax ) )
+  292.       fgpphi%dim_2%SM = ( max( 0, ibmax ) )
+  292.       $_allo_P85(0) = 0x1000000000001L
+  292.       $_allo_P85(1) = loc( fgpphi )
+  292.       call __allocate( $_allo_P85, 0, 0, _fcd( 0, 0 ) )
+  293.       $F_A240 = ( max( 0, jbmax ) )
+  293.       $F_A241 = ( max( 0, ibmax ) )
+  293.       if ( and( -$F_A241, -$F_A240 ) < 0 ) then
+  293.          $I_A2 = 0
+  293.          do
+  293.             $I_A1 = 0
+  293. !dir$ ivdep
+  293.             do
+  293.                (fgpphi%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  293.                $I_A1 = 1 + $I_A1
+  293.                if ( $I_A1 >= $F_A241 ) exit
+  293.             enddo
+  293.             $I_A2 = 1 + $I_A2
+  293.             if ( $I_A2 >= $F_A240 ) exit
+  293.          enddo
+  293.       endif
+  294.       fgplam%header%a_contig = 1
+  294.       fgplam%dim_1%LB = 1
+  294.       fgplam%dim_1%EX = ( max( 0, ibmax ) )
+  294.       fgplam%dim_1%SM = 1
+  294.       fgplam%dim_2%LB = 1
+  294.       fgplam%dim_2%EX = ( max( 0, jbmax ) )
+  294.       fgplam%dim_2%SM = ( max( 0, ibmax ) )
+  294.       $_allo_P86(0) = 0x1000000000001L
+  294.       $_allo_P86(1) = loc( fgplam )
+  294.       call __allocate( $_allo_P86, 0, 0, _fcd( 0, 0 ) )
+  295.       $F_A242 = ( max( 0, jbmax ) )
+  295.       $F_A243 = ( max( 0, ibmax ) )
+  295.       if ( and( -$F_A243, -$F_A242 ) < 0 ) then
+  295.          $I_A2 = 0
+  295.          do
+  295.             $I_A1 = 0
+  295. !dir$ ivdep
+  295.             do
+  295.                (fgplam%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  295.                $I_A1 = 1 + $I_A1
+  295.                if ( $I_A1 >= $F_A243 ) exit
+  295.             enddo
+  295.             $I_A2 = 1 + $I_A2
+  295.             if ( $I_A2 >= $F_A242 ) exit
+  295.          enddo
+  295.       endif
+  296.       fgplamm%header%a_contig = 1
+  296.       fgplamm%dim_1%LB = 1
+  296.       fgplamm%dim_1%EX = ( max( 0, ibmax ) )
+  296.       fgplamm%dim_1%SM = 1
+  296.       fgplamm%dim_2%LB = 1
+  296.       fgplamm%dim_2%EX = ( max( 0, jbmax ) )
+  296.       fgplamm%dim_2%SM = ( max( 0, ibmax ) )
+  296.       $_allo_P87(0) = 0x1000000000001L
+  296.       $_allo_P87(1) = loc( fgplamm )
+  296.       call __allocate( $_allo_P87, 0, 0, _fcd( 0, 0 ) )
+  297.       $F_A244 = ( max( 0, jbmax ) )
+  297.       $F_A245 = ( max( 0, ibmax ) )
+  297.       if ( and( -$F_A245, -$F_A244 ) < 0 ) then
+  297.          $I_A2 = 0
+  297.          do
+  297.             $I_A1 = 0
+  297. !dir$ ivdep
+  297.             do
+  297.                (fgplamm%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  297.                $I_A1 = 1 + $I_A1
+  297.                if ( $I_A1 >= $F_A245 ) exit
+  297.             enddo
+  297.             $I_A2 = 1 + $I_A2
+  297.             if ( $I_A2 >= $F_A244 ) exit
+  297.          enddo
+  297.       endif
+  298.       fgpphim%header%a_contig = 1
+  298.       fgpphim%dim_1%LB = 1
+  298.       fgpphim%dim_1%EX = ( max( 0, ibmax ) )
+  298.       fgpphim%dim_1%SM = 1
+  298.       fgpphim%dim_2%LB = 1
+  298.       fgpphim%dim_2%EX = ( max( 0, jbmax ) )
+  298.       fgpphim%dim_2%SM = ( max( 0, ibmax ) )
+  298.       $_allo_P88(0) = 0x1000000000001L
+  298.       $_allo_P88(1) = loc( fgpphim )
+  298.       call __allocate( $_allo_P88, 0, 0, _fcd( 0, 0 ) )
+  299.       $F_A246 = ( max( 0, jbmax ) )
+  299.       $F_A247 = ( max( 0, ibmax ) )
+  299.       if ( and( -$F_A247, -$F_A246 ) < 0 ) then
+  299.          $I_A2 = 0
+  299.          do
+  299.             $I_A1 = 0
+  299. !dir$ ivdep
+  299.             do
+  299.                (fgpphim%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  299.                $I_A1 = 1 + $I_A1
+  299.                if ( $I_A1 >= $F_A247 ) exit
+  299.             enddo
+  299.             $I_A2 = 1 + $I_A2
+  299.             if ( $I_A2 >= $F_A246 ) exit
+  299.          enddo
+  299.       endif
+  300.       fgzs%header%a_contig = 1
+  300.       fgzs%dim_1%LB = 1
+  300.       fgzs%dim_1%EX = ( max( 0, ibmax ) )
+  300.       fgzs%dim_1%SM = 1
+  300.       fgzs%dim_2%LB = 1
+  300.       fgzs%dim_2%EX = ( max( 0, jbmax ) )
+  300.       fgzs%dim_2%SM = ( max( 0, ibmax ) )
+  300.       $_allo_P89(0) = 0x1000000000001L
+  300.       $_allo_P89(1) = loc( fgzs )
+  300.       call __allocate( $_allo_P89, 0, 0, _fcd( 0, 0 ) )
+  301.       $F_A248 = ( max( 0, jbmax ) )
+  301.       $F_A249 = ( max( 0, ibmax ) )
+  301.       if ( and( -$F_A249, -$F_A248 ) < 0 ) then
+  301.          $I_A2 = 0
+  301.          do
+  301.             $I_A1 = 0
+  301. !dir$ ivdep
+  301.             do
+  301.                (fgzs%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  301.                $I_A1 = 1 + $I_A1
+  301.                if ( $I_A1 >= $F_A249 ) exit
+  301.             enddo
+  301.             $I_A2 = 1 + $I_A2
+  301.             if ( $I_A2 >= $F_A248 ) exit
+  301.          enddo
+  301.       endif
+  302.       fgzslam%header%a_contig = 1
+  302.       fgzslam%dim_1%LB = 1
+  302.       fgzslam%dim_1%EX = ( max( 0, ibmax ) )
+  302.       fgzslam%dim_1%SM = 1
+  302.       fgzslam%dim_2%LB = 1
+  302.       fgzslam%dim_2%EX = ( max( 0, jbmax ) )
+  302.       fgzslam%dim_2%SM = ( max( 0, ibmax ) )
+  302.       $_allo_P90(0) = 0x1000000000001L
+  302.       $_allo_P90(1) = loc( fgzslam )
+  302.       call __allocate( $_allo_P90, 0, 0, _fcd( 0, 0 ) )
+  303.       $F_A250 = ( max( 0, jbmax ) )
+  303.       $F_A251 = ( max( 0, ibmax ) )
+  303.       if ( and( -$F_A251, -$F_A250 ) < 0 ) then
+  303.          $I_A2 = 0
+  303.          do
+  303.             $I_A1 = 0
+  303. !dir$ ivdep
+  303.             do
+  303.                (fgzslam%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  303.                $I_A1 = 1 + $I_A1
+  303.                if ( $I_A1 >= $F_A251 ) exit
+  303.             enddo
+  303.             $I_A2 = 1 + $I_A2
+  303.             if ( $I_A2 >= $F_A250 ) exit
+  303.          enddo
+  303.       endif
+  304.       fgzsphi%header%a_contig = 1
+  304.       fgzsphi%dim_1%LB = 1
+  304.       fgzsphi%dim_1%EX = ( max( 0, ibmax ) )
+  304.       fgzsphi%dim_1%SM = 1
+  304.       fgzsphi%dim_2%LB = 1
+  304.       fgzsphi%dim_2%EX = ( max( 0, jbmax ) )
+  304.       fgzsphi%dim_2%SM = ( max( 0, ibmax ) )
+  304.       $_allo_P91(0) = 0x1000000000001L
+  304.       $_allo_P91(1) = loc( fgzsphi )
+  304.       call __allocate( $_allo_P91, 0, 0, _fcd( 0, 0 ) )
+  305.       $F_A252 = ( max( 0, jbmax ) )
+  305.       $F_A253 = ( max( 0, ibmax ) )
+  305.       if ( and( -$F_A253, -$F_A252 ) < 0 ) then
+  305.          $I_A2 = 0
+  305.          do
+  305.             $I_A1 = 0
+  305. !dir$ ivdep
+  305.             do
+  305.                (fgzsphi%base_addr)(1 + $I_A1, 1 + $I_A2, 0) = 0.0
+  305.                $I_A1 = 1 + $I_A1
+  305.                if ( $I_A1 >= $F_A253 ) exit
+  305.             enddo
+  305.             $I_A2 = 1 + $I_A2
+  305.             if ( $I_A2 >= $F_A252 ) exit
+  305.          enddo
+  305.       endif
+  306.       return
+  306.       end
+  306.       
+   55.       
+   55.       module fieldsdynamics
+   55.       end
+   55.       

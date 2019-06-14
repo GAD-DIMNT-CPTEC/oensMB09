@@ -1,0 +1,1663 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Convection.f90
+       !        File                  :  Convection.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+  105.       
+  105.       subroutine initconvection( si, del, sl, cl, kmax )
+   93.       t$1 = ( 1 + kmax )
+   95.       t$13 = _zla( 0, ( 1 + kmax ) )
+   93.       t$2 = kmax
+   96.       t$14 = _zla( 0, kmax )
+  100.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'ARA' ) then
+  100.          call initarakawa
+  100.       endif
+  101.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'KUO' ) then
+  101.          call initcu_kuolcl
+  101.       endif
+  102.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+  102.          call initgrellens
+  102.       endif
+  103.       if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'TIED' ) then
+  103.          call initshall_tied( si(1), del(1), sl(1), cl(1), kmax )
+  103.       endif
+  104.       if (  _substr(ilcon,1,_ltrim(  _substr(ilcon,1,3) )) == 'YES' ) then
+  104.          call initlrgscl
+  104.       endif
+  105.       return
+  105.       end
+  105.       
+  577.       
+  577.       subroutine cumulus_driver( imax, kmax, ta, tb, tc, qa, qb, qc, ub, vb, omgb, psb, psb2, del, sl, si, zs, sens, evap, mask, latco, fac2x, convc, convt, convb, prcp1, prcp2, prcp3, prcpt, toplv, botlv, convts, convcs, convbs, fac2, fac, geshem, ppli, ppci, prct, prcc, snowfl )
+  106.       t$3 = imax
+  106.       t$4 = kmax
+  227.       t$15 = _zla( 0, imax )
+  106.       t$16 = _zla( 0, imax )
+  227.       t$17 = _zla( 0, kmax )
+  106.       t$18 = _zla( 0, imax ) * _zla( 0, kmax )
+  106.       t$5 = ( 1 + kmax )
+  203.       t$19 = _zla( 0, ( 1 + kmax ) )
+  266.       t$22 = 8 * _zla( 0, kmax )
+  277.       t$23 = 8 * ( 7 + 8 * _zla( 0, kmax ) ) / 8
+  277.       t$25 = t$23 + 8 * _zla( 0, imax )
+  302.       t$26 = 8 * ( 7 + t$23 + 8 * _zla( 0, imax ) ) / 8
+  302.       t$28 = t$26 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  303.       t$29 = 8 * ( 7 + t$26 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  303.       t$31 = t$29 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  268.       t$32 = 8 * ( 7 + t$29 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  268.       t$34 = t$32 + 8 * _zla( 0, imax )
+  258.       t$35 = 8 * ( 7 + t$32 + 8 * _zla( 0, imax ) ) / 8
+  258.       t$37 = t$35 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  259.       t$38 = 8 * ( 7 + t$35 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  259.       t$40 = t$38 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  295.       t$41 = 8 * ( 7 + t$38 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  295.       t$43 = t$41 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  262.       t$44 = 8 * ( 7 + t$41 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  262.       t$46 = t$44 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  275.       t$47 = 8 * ( 7 + t$44 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  275.       t$49 = t$47 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  293.       t$51 = t$47 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 4 * _zla( 0, imax )
+  294.       t$53 = t$47 + 8 * _zla( 0, imax ) + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  279.       t$55 = t$47 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 12 * _zla( 0, imax )
+  278.       t$57 = t$47 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 16 * _zla( 0, imax )
+  289.       t$59 = t$47 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 20 * _zla( 0, imax )
+  291.       t$61 = t$47 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 24 * _zla( 0, imax )
+  290.       t$63 = t$47 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 28 * _zla( 0, imax )
+  304.       t$64 = 8 * ( 7 + t$47 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 28 * _zla( 0, imax ) ) / 8
+  304.       t$66 = t$64 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  305.       t$67 = 8 * ( 7 + t$64 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  305.       t$69 = t$67 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  238.       t$71 = t$67 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 4 * _zla( 0, imax )
+  280.       t$73 = t$67 + 8 * _zla( 0, imax ) + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  292.       t$74 = 8 * ( 7 + t$67 + 8 * _zla( 0, imax ) + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  292.       t$76 = t$74 + 8 * _zla( 0, imax )
+  239.       t$77 = 8 * ( 7 + t$74 + 8 * _zla( 0, imax ) ) / 8
+  239.       t$79 = t$77 + 8 * _zla( 0, imax )
+  240.       t$80 = 8 * ( 7 + t$77 + 8 * _zla( 0, imax ) ) / 8
+  240.       t$82 = t$80 + 8 * _zla( 0, imax )
+  241.       t$83 = 8 * ( 7 + t$80 + 8 * _zla( 0, imax ) ) / 8
+  241.       t$85 = t$83 + 8 * _zla( 0, imax )
+  245.       t$86 = 8 * ( 7 + t$83 + 8 * _zla( 0, imax ) ) / 8
+  245.       t$88 = t$86 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  246.       t$89 = 8 * ( 7 + t$86 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  246.       t$91 = t$89 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  254.       t$92 = 8 * ( 7 + t$89 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  254.       t$94 = t$92 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  247.       t$95 = 8 * ( 7 + t$92 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  247.       t$97 = t$95 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  243.       t$98 = 8 * ( 7 + t$95 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  243.       t$100 = t$98 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  256.       t$101 = 8 * ( 7 + t$98 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  256.       t$103 = t$101 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  276.       t$104 = 8 * ( 7 + t$101 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  276.       t$106 = t$104 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  284.       t$107 = 8 * ( 7 + t$104 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  284.       t$109 = t$107 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  267.       t$110 = 8 * ( 7 + t$107 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  267.       t$112 = t$110 + 8 * _zla( 0, imax )
+  300.       t$113 = 8 * ( 7 + t$110 + 8 * _zla( 0, imax ) ) / 8
+  300.       t$115 = t$113 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  301.       t$116 = 8 * ( 7 + t$113 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  301.       t$118 = t$116 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  299.       t$119 = 8 * ( 7 + t$116 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  299.       t$121 = t$119 + 8 * _zla( 0, imax )
+  248.       t$122 = 8 * ( 7 + t$119 + 8 * _zla( 0, imax ) ) / 8
+  248.       t$124 = t$122 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  249.       t$125 = 8 * ( 7 + t$122 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  249.       t$127 = t$125 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  255.       t$128 = 8 * ( 7 + t$125 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  255.       t$130 = t$128 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  250.       t$131 = 8 * ( 7 + t$128 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  250.       t$133 = t$131 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  244.       t$134 = 8 * ( 7 + t$131 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  244.       t$136 = t$134 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  257.       t$137 = 8 * ( 7 + t$134 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  257.       t$139 = t$137 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  242.       t$140 = 8 * ( 7 + t$137 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  242.       t$142 = t$140 + 8 * _zla( 0, imax )
+  285.       t$143 = 8 * ( 7 + t$140 + 8 * _zla( 0, imax ) ) / 8
+  285.       t$145 = t$143 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  251.       t$146 = 8 * ( 7 + t$143 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  251.       t$148 = t$146 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  252.       t$149 = 8 * ( 7 + t$146 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  252.       t$151 = t$149 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  253.       t$152 = 8 * ( 7 + t$149 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  253.       t$154 = t$152 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  260.       t$155 = 8 * ( 7 + t$152 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  260.       t$157 = t$155 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  261.       t$158 = 8 * ( 7 + t$155 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ) / 8
+  261.       t$160 = t$158 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  106.       t$20 = int( _alloc( t$158 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) ), 8 )
+  266.       t$21 = t$20
+  277.       t$24 = t$23 + t$20
+  302.       t$27 = t$26 + t$20
+  303.       t$30 = t$29 + t$20
+  268.       t$33 = t$32 + t$20
+  258.       t$36 = t$35 + t$20
+  259.       t$39 = t$38 + t$20
+  295.       t$42 = t$41 + t$20
+  262.       t$45 = t$44 + t$20
+  275.       t$48 = t$47 + t$20
+  293.       t$50 = t$47 + t$20 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  294.       t$52 = t$47 + t$20 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 4 * _zla( 0, imax )
+  279.       t$54 = t$47 + t$20 + 8 * _zla( 0, imax ) + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  278.       t$56 = t$47 + t$20 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 12 * _zla( 0, imax )
+  289.       t$58 = t$47 + t$20 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 16 * _zla( 0, imax )
+  291.       t$60 = t$47 + t$20 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 20 * _zla( 0, imax )
+  290.       t$62 = t$47 + t$20 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 24 * _zla( 0, imax )
+  304.       t$65 = t$64 + t$20
+  305.       t$68 = t$67 + t$20
+  238.       t$70 = t$67 + t$20 + 8 * _zla( 0, imax ) * _zla( 0, kmax )
+  280.       t$72 = t$67 + t$20 + 8 * _zla( 0, imax ) * _zla( 0, kmax ) + 4 * _zla( 0, imax )
+  292.       t$75 = t$74 + t$20
+  239.       t$78 = t$77 + t$20
+  240.       t$81 = t$80 + t$20
+  241.       t$84 = t$83 + t$20
+  245.       t$87 = t$86 + t$20
+  246.       t$90 = t$89 + t$20
+  254.       t$93 = t$92 + t$20
+  247.       t$96 = t$95 + t$20
+  243.       t$99 = t$98 + t$20
+  256.       t$102 = t$101 + t$20
+  276.       t$105 = t$104 + t$20
+  284.       t$108 = t$107 + t$20
+  267.       t$111 = t$110 + t$20
+  300.       t$114 = t$113 + t$20
+  301.       t$117 = t$116 + t$20
+  299.       t$120 = t$119 + t$20
+  248.       t$123 = t$122 + t$20
+  249.       t$126 = t$125 + t$20
+  255.       t$129 = t$128 + t$20
+  250.       t$132 = t$131 + t$20
+  244.       t$135 = t$134 + t$20
+  257.       t$138 = t$137 + t$20
+  242.       t$141 = t$140 + t$20
+  285.       t$144 = t$143 + t$20
+  251.       t$147 = t$146 + t$20
+  252.       t$150 = t$149 + t$20
+  253.       t$153 = t$152 + t$20
+  260.       t$156 = t$155 + t$20
+  261.       t$159 = t$158 + t$20
+  306.       rdt = 1.0/dt
+  307.       $F_A33 = imax
+  307.       if ( imax > 0 ) then
+  307.          $I_L307_362 = 0
+  307. !dir$ ivdep
+  307.          do
+  307.             raincv(1 + $I_L307_362) = 0.0
+  307.             $I_L307_362 = 1 + $I_L307_362
+  307.             if ( $I_L307_362 >= $F_A33 ) exit
+  307.          enddo
+  307.       endif
+  308.       $F_A34 = imax
+  308.       if ( imax > 0 ) then
+  308.          $I_L308_364 = 0
+  308. !dir$ ivdep
+  308.          do
+  308.             cuml_rain(1 + $I_L308_364) = 0.0
+  308.             $I_L308_364 = 1 + $I_L308_364
+  308.             if ( $I_L308_364 >= $F_A34 ) exit
+  308.          enddo
+  308.       endif
+  309.       $ghl_local_S52 = isgridhistoryon
+  312.       $t_S8 = 1.0/dt
+  312.       t$11 = imax
+  312.       t$12 = kmax
+  312.       t$177 = max( 0, imax )
+  312.       t$178 = max( 0, imax )
+  312.       t$179 = max( 0, kmax )
+  312.       t$180 = max( 0, imax ) * max( 0, kmax )
+  312.       t$183 = 8 * max( 0, kmax )
+  312.       t$181 = int( _alloc( 8 * max( 0, kmax ) ), 8 )
+  312.       t$182 = t$181
+  312.       if ( -1 + kmax > 0 ) then
+  312.          $I_L312_306 = 0
+  312. !dir$ ivdep
+  312.          do
+  312.             dfact(2 + $I_L312_306) = ( del(2 + $I_L312_306) * 1.0/del(1 + $I_L312_306) )
+  312.             $I_L312_306 = 1 + $I_L312_306
+  312.             if ( $I_L312_306 >= -1 + kmax ) exit
+  312.          enddo
+  312.          if ( imax > 0 ) then
+  312.             $SI_L312_372_G1 = 0
+  312.             do
+  312.                $SI_L312_308_G4 = 0
+  312.                do
+  312.                   $I_L312_415 = 0
+  312. !dir$ shortloop16
+  312. !dir$ blocking_size( 2, 2 )
+  312.                   do
+  312.                      $SCA_dfact_I0 = dfact(kmax + -$I_L312_415 + -2 * $SI_L312_372_G1)
+  312.                      $I_L312_406 = 0
+  312. !dir$ ivdep
+  312. !dir$ blocking_size( 256, 256 )
+  312.                      do
+  312.                         $fdqn_WR0_R0 = qa(1 + $I_L312_406 + 256 * $SI_L312_308_G4, kmax + -$I_L312_415 + -2 * $SI_L312_372_G1)
+  312.                         if ( $fdqn_WR0_R0 < 0.0 ) then
+  312.                            qa(1 + $I_L312_406 + 256 * $SI_L312_308_G4, kmax + -$I_L312_415 + -2 * $SI_L312_372_G1) = 9.9999999999999998e-13
+  312.                         endif
+  312.                         $LD_SPLT_P0 = qa(1 + $I_L312_406 + 256 * $SI_L312_308_G4, -1 + kmax + -$I_L312_415 + -2 * $SI_L312_372_G1)
+  312.                         $fdqn_WR0_R0 = qa(1 + $I_L312_406 + 256 * $SI_L312_308_G4, kmax + -$I_L312_415 + -2 * $SI_L312_372_G1) + -$fdqn_WR0_R0
+  312.                         fdqn(1 + $I_L312_406 + 256 * $SI_L312_308_G4, kmax + -$I_L312_415 + -2 * $SI_L312_372_G1) = $fdqn_WR0_R0
+  312.                         qa(1 + $I_L312_406 + 256 * $SI_L312_308_G4, -1 + kmax + -$I_L312_415 + -2 * $SI_L312_372_G1) = $LD_SPLT_P0 + -( $SCA_dfact_I0 * $fdqn_WR0_R0 )
+  312.                         $I_L312_406 = 1 + $I_L312_406
+  312.                         if ( $I_L312_406 >= min( imax, 256 + 256 * $SI_L312_308_G4 ) + -256 * $SI_L312_308_G4 ) exit
+  312.                      enddo
+  312.                      $I_L312_415 = 1 + $I_L312_415
+  312.                      if ( $I_L312_415 >= min( -1 + kmax, 2 + 2 * $SI_L312_372_G1 ) + -2 * $SI_L312_372_G1 ) exit
+  312.                   enddo
+  312.                   $SI_L312_308_G4 = 1 + $SI_L312_308_G4
+  312.                   if ( $SI_L312_308_G4 >= _rsh( 255 + imax, 8 ) ) exit
+  312.                enddo
+  312.                $SI_L312_372_G1 = 1 + $SI_L312_372_G1
+  312.                if ( $SI_L312_372_G1 >= _rsh( kmax, 1 ) ) exit
+  312.             enddo
+  312.          endif
+  312.       endif
+  312.       if ( imax > 0 ) then
+  312.          $I_L312_310 = 0
+  312. !dir$ ivdep
+  312.          do
+  312.             $fdqn_WR0_R1 = qa(1 + $I_L312_310, 1)
+  312.             if ( $fdqn_WR0_R1 < 0.0 ) then
+  312.                qa(1 + $I_L312_310, 1) = 9.9999999999999998e-13
+  312.             endif
+  312.             $fdqn_WR0_R1 = qa(1 + $I_L312_310, 1) + -$fdqn_WR0_R1
+  312.             fdqn(1 + $I_L312_310, 1) = $fdqn_WR0_R1
+  312.             $I_L312_310 = 1 + $I_L312_310
+  312.             if ( $I_L312_310 >= imax ) exit
+  312.          enddo
+  312.       endif
+  312.       if ( kmax > 0 ) then
+  312.          if ( imax > 0 ) then
+  312.             $I_L312_374 = 0
+  312.             do
+  312.                $I_L312_312 = 0
+  312. !dir$ ivdep
+  312.                do
+  312.                   ta(1 + $I_L312_312, 1 + $I_L312_374) = ( ta(1 + $I_L312_312, 1 + $I_L312_374) * 1.0/( 1.0 + 6.0799999999999998e-1 * qa(1 + $I_L312_312, 1 + $I_L312_374) ) )
+  312.                   $I_L312_312 = 1 + $I_L312_312
+  312.                   if ( $I_L312_312 >= imax ) exit
+  312.                enddo
+  312.                $I_L312_374 = 1 + $I_L312_374
+  312.                if ( $I_L312_374 >= kmax ) exit
+  312.             enddo
+  312.          endif
+  312.       endif
+  312.       if ( (dodia%base_addr)(70, 0) /= .false. ) then
+  312.          if ( kmax > 0 ) then
+  312.             if ( imax > 0 ) then
+  312.                $I_L312_376 = 0
+  312.                do
+  312.                   $I_L312_314 = 0
+  312. !dir$ ivdep
+  312.                   do
+  312.                      fdqn(1 + $I_L312_314, 1 + $I_L312_376) = $t_S8 * fdqn(1 + $I_L312_314, 1 + $I_L312_376)
+  312.                      $I_L312_314 = 1 + $I_L312_314
+  312.                      if ( $I_L312_314 >= imax ) exit
+  312.                   enddo
+  312.                   $I_L312_376 = 1 + $I_L312_376
+  312.                   if ( $I_L312_376 >= kmax ) exit
+  312.                enddo
+  312.             endif
+  312.          endif
+  312.       endif
+  312.       _free( t$181 )
+  313.       $t_S17 = 1.0/dt
+  313.       t$11 = imax
+  313.       t$12 = kmax
+  313.       t$177 = max( 0, imax )
+  313.       t$178 = max( 0, imax )
+  313.       t$179 = max( 0, kmax )
+  313.       t$180 = max( 0, imax ) * max( 0, kmax )
+  313.       t$183 = 8 * max( 0, kmax )
+  313.       t$181 = int( _alloc( 8 * max( 0, kmax ) ), 8 )
+  313.       t$182 = t$181
+  313.       if ( -1 + kmax > 0 ) then
+  313.          $I_L313_316 = 0
+  313. !dir$ ivdep
+  313.          do
+  313.             dfact(2 + $I_L313_316) = ( del(2 + $I_L313_316) * 1.0/del(1 + $I_L313_316) )
+  313.             $I_L313_316 = 1 + $I_L313_316
+  313.             if ( $I_L313_316 >= -1 + kmax ) exit
+  313.          enddo
+  313.          if ( imax > 0 ) then
+  313.             $SI_L313_378_G7 = 0
+  313.             do
+  313.                $SI_L313_318_G10 = 0
+  313.                do
+  313.                   $I_L313_418 = 0
+  313. !dir$ shortloop16
+  313. !dir$ blocking_size( 2, 2 )
+  313.                   do
+  313.                      $SCA_dfact_I1 = dfact(kmax + -$I_L313_418 + -2 * $SI_L313_378_G7)
+  313.                      $I_L313_409 = 0
+  313. !dir$ ivdep
+  313. !dir$ blocking_size( 256, 256 )
+  313.                      do
+  313.                         $fdqn_WR0_R2 = qb(1 + $I_L313_409 + 256 * $SI_L313_318_G10, kmax + -$I_L313_418 + -2 * $SI_L313_378_G7)
+  313.                         if ( $fdqn_WR0_R2 < 0.0 ) then
+  313.                            qb(1 + $I_L313_409 + 256 * $SI_L313_318_G10, kmax + -$I_L313_418 + -2 * $SI_L313_378_G7) = 9.9999999999999998e-13
+  313.                         endif
+  313.                         $LD_SPLT_P2 = qb(1 + $I_L313_409 + 256 * $SI_L313_318_G10, -1 + kmax + -$I_L313_418 + -2 * $SI_L313_378_G7)
+  313.                         $fdqn_WR0_R2 = qb(1 + $I_L313_409 + 256 * $SI_L313_318_G10, kmax + -$I_L313_418 + -2 * $SI_L313_378_G7) + -$fdqn_WR0_R2
+  313.                         fdqn(1 + $I_L313_409 + 256 * $SI_L313_318_G10, kmax + -$I_L313_418 + -2 * $SI_L313_378_G7) = $fdqn_WR0_R2
+  313.                         qb(1 + $I_L313_409 + 256 * $SI_L313_318_G10, -1 + kmax + -$I_L313_418 + -2 * $SI_L313_378_G7) = $LD_SPLT_P2 + -( $SCA_dfact_I1 * $fdqn_WR0_R2 )
+  313.                         $I_L313_409 = 1 + $I_L313_409
+  313.                         if ( $I_L313_409 >= min( imax, 256 + 256 * $SI_L313_318_G10 ) + -256 * $SI_L313_318_G10 ) exit
+  313.                      enddo
+  313.                      $I_L313_418 = 1 + $I_L313_418
+  313.                      if ( $I_L313_418 >= min( -1 + kmax, 2 + 2 * $SI_L313_378_G7 ) + -2 * $SI_L313_378_G7 ) exit
+  313.                   enddo
+  313.                   $SI_L313_318_G10 = 1 + $SI_L313_318_G10
+  313.                   if ( $SI_L313_318_G10 >= _rsh( 255 + imax, 8 ) ) exit
+  313.                enddo
+  313.                $SI_L313_378_G7 = 1 + $SI_L313_378_G7
+  313.                if ( $SI_L313_378_G7 >= _rsh( kmax, 1 ) ) exit
+  313.             enddo
+  313.          endif
+  313.       endif
+  313.       if ( imax > 0 ) then
+  313.          $I_L313_320 = 0
+  313. !dir$ ivdep
+  313.          do
+  313.             $fdqn_WR0_R3 = qb(1 + $I_L313_320, 1)
+  313.             if ( $fdqn_WR0_R3 < 0.0 ) then
+  313.                qb(1 + $I_L313_320, 1) = 9.9999999999999998e-13
+  313.             endif
+  313.             $fdqn_WR0_R3 = qb(1 + $I_L313_320, 1) + -$fdqn_WR0_R3
+  313.             fdqn(1 + $I_L313_320, 1) = $fdqn_WR0_R3
+  313.             $I_L313_320 = 1 + $I_L313_320
+  313.             if ( $I_L313_320 >= imax ) exit
+  313.          enddo
+  313.       endif
+  313.       if ( kmax > 0 ) then
+  313.          if ( imax > 0 ) then
+  313.             $I_L313_380 = 0
+  313.             do
+  313.                $I_L313_322 = 0
+  313. !dir$ ivdep
+  313.                do
+  313.                   tb(1 + $I_L313_322, 1 + $I_L313_380) = ( tb(1 + $I_L313_322, 1 + $I_L313_380) * 1.0/( 1.0 + 6.0799999999999998e-1 * qb(1 + $I_L313_322, 1 + $I_L313_380) ) )
+  313.                   $I_L313_322 = 1 + $I_L313_322
+  313.                   if ( $I_L313_322 >= imax ) exit
+  313.                enddo
+  313.                $I_L313_380 = 1 + $I_L313_380
+  313.                if ( $I_L313_380 >= kmax ) exit
+  313.             enddo
+  313.          endif
+  313.       endif
+  313.       if ( (dodia%base_addr)(70, 0) /= .false. ) then
+  313.          if ( kmax > 0 ) then
+  313.             if ( imax > 0 ) then
+  313.                $I_L313_382 = 0
+  313.                do
+  313.                   $I_L313_324 = 0
+  313. !dir$ ivdep
+  313.                   do
+  313.                      fdqn(1 + $I_L313_324, 1 + $I_L313_382) = $t_S17 * fdqn(1 + $I_L313_324, 1 + $I_L313_382)
+  313.                      $I_L313_324 = 1 + $I_L313_324
+  313.                      if ( $I_L313_324 >= imax ) exit
+  313.                   enddo
+  313.                   $I_L313_382 = 1 + $I_L313_382
+  313.                   if ( $I_L313_382 >= kmax ) exit
+  313.                enddo
+  313.             endif
+  313.          endif
+  313.       endif
+  313.       _free( t$181 )
+  314.       $t_S26 = 1.0/dt
+  314.       t$11 = imax
+  314.       t$12 = kmax
+  314.       t$177 = max( 0, imax )
+  314.       t$178 = max( 0, imax )
+  314.       t$179 = max( 0, kmax )
+  314.       t$180 = max( 0, imax ) * max( 0, kmax )
+  314.       t$183 = 8 * max( 0, kmax )
+  314.       t$181 = int( _alloc( 8 * max( 0, kmax ) ), 8 )
+  314.       t$182 = t$181
+  314.       if ( -1 + kmax > 0 ) then
+  314.          $I_L314_326 = 0
+  314. !dir$ ivdep
+  314.          do
+  314.             dfact(2 + $I_L314_326) = ( del(2 + $I_L314_326) * 1.0/del(1 + $I_L314_326) )
+  314.             $I_L314_326 = 1 + $I_L314_326
+  314.             if ( $I_L314_326 >= -1 + kmax ) exit
+  314.          enddo
+  314.          if ( imax > 0 ) then
+  314.             $SI_L314_384_G13 = 0
+  314.             do
+  314.                $SI_L314_328_G16 = 0
+  314.                do
+  314.                   $I_L314_421 = 0
+  314. !dir$ shortloop16
+  314. !dir$ blocking_size( 2, 2 )
+  314.                   do
+  314.                      $SCA_dfact_I2 = dfact(kmax + -$I_L314_421 + -2 * $SI_L314_384_G13)
+  314.                      $I_L314_412 = 0
+  314. !dir$ ivdep
+  314. !dir$ blocking_size( 256, 256 )
+  314.                      do
+  314.                         $fdqn_WR0_R4 = qc(1 + $I_L314_412 + 256 * $SI_L314_328_G16, kmax + -$I_L314_421 + -2 * $SI_L314_384_G13)
+  314.                         if ( $fdqn_WR0_R4 < 0.0 ) then
+  314.                            qc(1 + $I_L314_412 + 256 * $SI_L314_328_G16, kmax + -$I_L314_421 + -2 * $SI_L314_384_G13) = 9.9999999999999998e-13
+  314.                         endif
+  314.                         $LD_SPLT_P4 = qc(1 + $I_L314_412 + 256 * $SI_L314_328_G16, -1 + kmax + -$I_L314_421 + -2 * $SI_L314_384_G13)
+  314.                         $fdqn_WR0_R4 = qc(1 + $I_L314_412 + 256 * $SI_L314_328_G16, kmax + -$I_L314_421 + -2 * $SI_L314_384_G13) + -$fdqn_WR0_R4
+  314.                         fdqn(1 + $I_L314_412 + 256 * $SI_L314_328_G16, kmax + -$I_L314_421 + -2 * $SI_L314_384_G13) = $fdqn_WR0_R4
+  314.                         qc(1 + $I_L314_412 + 256 * $SI_L314_328_G16, -1 + kmax + -$I_L314_421 + -2 * $SI_L314_384_G13) = $LD_SPLT_P4 + -( $SCA_dfact_I2 * $fdqn_WR0_R4 )
+  314.                         $I_L314_412 = 1 + $I_L314_412
+  314.                         if ( $I_L314_412 >= min( imax, 256 + 256 * $SI_L314_328_G16 ) + -256 * $SI_L314_328_G16 ) exit
+  314.                      enddo
+  314.                      $I_L314_421 = 1 + $I_L314_421
+  314.                      if ( $I_L314_421 >= min( -1 + kmax, 2 + 2 * $SI_L314_384_G13 ) + -2 * $SI_L314_384_G13 ) exit
+  314.                   enddo
+  314.                   $SI_L314_328_G16 = 1 + $SI_L314_328_G16
+  314.                   if ( $SI_L314_328_G16 >= _rsh( 255 + imax, 8 ) ) exit
+  314.                enddo
+  314.                $SI_L314_384_G13 = 1 + $SI_L314_384_G13
+  314.                if ( $SI_L314_384_G13 >= _rsh( kmax, 1 ) ) exit
+  314.             enddo
+  314.          endif
+  314.       endif
+  314.       if ( imax > 0 ) then
+  314.          $I_L314_330 = 0
+  314. !dir$ ivdep
+  314.          do
+  314.             $fdqn_WR0_R5 = qc(1 + $I_L314_330, 1)
+  314.             if ( $fdqn_WR0_R5 < 0.0 ) then
+  314.                qc(1 + $I_L314_330, 1) = 9.9999999999999998e-13
+  314.             endif
+  314.             $fdqn_WR0_R5 = qc(1 + $I_L314_330, 1) + -$fdqn_WR0_R5
+  314.             fdqn(1 + $I_L314_330, 1) = $fdqn_WR0_R5
+  314.             $I_L314_330 = 1 + $I_L314_330
+  314.             if ( $I_L314_330 >= imax ) exit
+  314.          enddo
+  314.       endif
+  314.       if ( kmax > 0 ) then
+  314.          if ( imax > 0 ) then
+  314.             $I_L314_386 = 0
+  314.             do
+  314.                $I_L314_332 = 0
+  314. !dir$ ivdep
+  314.                do
+  314.                   tc(1 + $I_L314_332, 1 + $I_L314_386) = ( tc(1 + $I_L314_332, 1 + $I_L314_386) * 1.0/( 1.0 + 6.0799999999999998e-1 * qc(1 + $I_L314_332, 1 + $I_L314_386) ) )
+  314.                   $I_L314_332 = 1 + $I_L314_332
+  314.                   if ( $I_L314_332 >= imax ) exit
+  314.                enddo
+  314.                $I_L314_386 = 1 + $I_L314_386
+  314.                if ( $I_L314_386 >= kmax ) exit
+  314.             enddo
+  314.          endif
+  314.       endif
+  314.       if ( (dodia%base_addr)(70, 0) /= .false. ) then
+  314.          if ( kmax > 0 ) then
+  314.             if ( imax > 0 ) then
+  314.                $I_L314_388 = 0
+  314.                do
+  314.                   $I_L314_334 = 0
+  314. !dir$ ivdep
+  314.                   do
+  314.                      fdqn(1 + $I_L314_334, 1 + $I_L314_388) = $t_S26 * fdqn(1 + $I_L314_334, 1 + $I_L314_388)
+  314.                      $I_L314_334 = 1 + $I_L314_334
+  314.                      if ( $I_L314_334 >= imax ) exit
+  314.                   enddo
+  314.                   $I_L314_388 = 1 + $I_L314_388
+  314.                   if ( $I_L314_388 >= kmax ) exit
+  314.                enddo
+  314.             endif
+  314.          endif
+  314.       endif
+  314.       _free( t$181 )
+  324.       if ( imax > 0 ) then
+  324.          $I_L324_336 = 0
+  324. !dir$ ivdep
+  324.          do
+  329.             ps2(1 + $I_L324_336) = psb(1 + $I_L324_336)
+  330.             ps_work(1 + $I_L324_336) = psb(1 + $I_L324_336)
+  331.             terr(1 + $I_L324_336) = max( 0.0, zs(1 + $I_L324_336) )
+  332.             ktop(1 + $I_L324_336) = -1000
+  333.             ktops(1 + $I_L324_336) = -1000
+  334.             kuo(1 + $I_L324_336) = -1000
+  335.             plcl(1 + $I_L324_336) = -1000.0
+  338.             mask2(1 + $I_L324_336) = mask(1 + $I_L324_336) <= 0
+  336.             $I_L324_336 = 1 + $I_L324_336
+  324.             if ( $I_L324_336 >= imax ) exit
+  324.          enddo
+  345.          if ( kmax > 0 ) then
+  345.             $I_L345_390 = 0
+  345.             do
+  344.                $I_L344_338 = 0
+  344. !dir$ ivdep
+  344.                do
+  346.                   work_temp(1 + $I_L344_338, 1 + $I_L345_390) = tc(1 + $I_L344_338, 1 + $I_L345_390)
+  347.                   work_umes(1 + $I_L344_338, 1 + $I_L345_390) = qc(1 + $I_L344_338, 1 + $I_L345_390)
+  348.                   q1(1 + $I_L344_338, 1 + $I_L345_390) = qa(1 + $I_L344_338, 1 + $I_L345_390)
+  349.                   q2(1 + $I_L344_338, 1 + $I_L345_390) = qb(1 + $I_L344_338, 1 + $I_L345_390)
+  350.                   q3(1 + $I_L344_338, 1 + $I_L345_390) = qc(1 + $I_L344_338, 1 + $I_L345_390)
+  352.                   u2(1 + $I_L344_338, 1 + $I_L345_390) = ub(1 + $I_L344_338, 1 + $I_L345_390)
+  353.                   v2(1 + $I_L344_338, 1 + $I_L345_390) = vb(1 + $I_L344_338, 1 + $I_L345_390)
+  354.                   w2(1 + $I_L344_338, 1 + $I_L345_390) = 1000.0 * omgb(1 + $I_L344_338, 1 + $I_L345_390)
+  357.                   t2(1 + $I_L344_338, 1 + $I_L345_390) = tb(1 + $I_L344_338, 1 + $I_L345_390)
+  358.                   t3(1 + $I_L344_338, 1 + $I_L345_390) = tc(1 + $I_L344_338, 1 + $I_L345_390)
+  376.                   $I_L344_338 = 1 + $I_L344_338
+  345.                   if ( $I_L344_338 >= imax ) exit
+  345.                enddo
+  375.                $I_L345_390 = 1 + $I_L345_390
+  375.                if ( $I_L345_390 >= kmax ) exit
+  375.             enddo
+  375.          endif
+  375.       endif
+  383.       msta = 0
+  384.       nkuo = 0
+  388.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'ARA' ) then
+  392.          t$207 = 1 + kmax
+  392.          t$208 = -1 + kmax
+  389.          call arprep( tc(1, 1), qc(1, 1), sl(1), si(1), ps2(1), ktop(1), kbot(1), raincv(1), hrem(1, 1), qrem(1, 1), dt, t3(1, 1), q3(1, 1), del(1), kuo(1), cldm(1), cflric, t$207, t$208, imax, kmax, nls )
+  393.          call shllcl( dt, ps2(1), sl(1), si(1), q3(1, 1), t3(1, 1), msta, kuo(1), plcl(1), ktops(1), kbots(1), imax, kmax )
+  393.       endif
+  398.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'KUO' ) then
+  399.          call kuolcl( dt, nkuo, ps2(1), del(1), sl(1), si(1), q1(1, 1), q3(1, 1), t3(1, 1), dq(1, 1), raincv(1), kuo(1), plcl(1), ktop(1), kbot(1), imax, kmax )
+  399.       endif
+  406.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+  407.          call grellens( ps2(1), sl(1), u2(1, 1), v2(1, 1), w2(1, 1), t2(1, 1), t3(1, 1), q2(1, 1), q3(1, 1), terr(1), mask2(1), dt, raincv(1), kuo(1), ktop(1), kbot(1), plcl(1), imax, kmax )
+  407.       endif
+  414.       if ( kmax > 0 ) then
+  415.          if ( imax > 0 ) then
+  414.             $I_L414_392 = 0
+  414.             do
+  415.                $I_L415_340 = 0
+  415. !dir$ ivdep
+  415.                do
+  416.                   q33(1 + $I_L415_340, 1 + $I_L414_392) = q3(1 + $I_L415_340, 1 + $I_L414_392)
+  417.                   t33(1 + $I_L415_340, 1 + $I_L414_392) = t3(1 + $I_L415_340, 1 + $I_L414_392)
+  418.                   $I_L415_340 = 1 + $I_L415_340
+  415.                   if ( $I_L415_340 >= imax ) exit
+  415.                enddo
+  419.                $I_L414_392 = 1 + $I_L414_392
+  418.                if ( $I_L414_392 >= kmax ) exit
+  418.             enddo
+  418.          endif
+  418.       endif
+  421.       if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'TIED' ) then
+  422.          if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'KUO' ) then
+  422.             goto 10
+  422.          else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+  422.    10       continue
+  423.             newr = .false.
+  425.             t$207 = 1 + kmax
+  424.             call shalv2( si(1), sl(1), t3(1, 1), q3(1, 1), ps_work(1), dt, ktop(1), plcl(1), kuo(1), t$207, kctop1(1), kcbot1(1), noshal(1), newr, imax, kmax )
+  424.          endif
+  429.          if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'ARA' ) then
+  430.             newr = .true.
+  432.             t$208 = 1 + kmax
+  431.             call shalv2( si(1), sl(1), t3(1, 1), q3(1, 1), ps_work(1), dt, ktops(1), plcl(1), kuo(1), t$208, kctop1(1), kcbot1(1), noshal(1), newr, imax, kmax )
+  431.          endif
+  431.       endif
+  437.       if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'SOUZ' ) then
+  438.          _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'it is not available yet. Problem in the water balance'', 0x800600000000L ) ) )
+  439.           _substr(t$215,1,5) = 'ERROR'
+  439.          call _stop(  _substr(t$215,1,5) )
+  439.       else
+  447.          $F_A35 = imax
+  447.          if ( imax > 0 ) then
+  447.             $I_L447_366 = 0
+  447. !dir$ ivdep
+  447.             do
+  447.                cuml_rain(1 + $I_L447_366) = raincv(1 + $I_L447_366)
+  447.                $I_L447_366 = 1 + $I_L447_366
+  447.                if ( $I_L447_366 >= $F_A35 ) exit
+  447.             enddo
+  447.          endif
+  448.          if ( kmax > 0 ) then
+  449.             if ( imax > 0 ) then
+  448.                $I_L448_394 = 0
+  448.                do
+  449.                   $I_L449_342 = 0
+  449. !dir$ ivdep
+  449.                   do
+  450.                      cu_temp(1 + $I_L449_342, 1 + $I_L448_394) = t3(1 + $I_L449_342, 1 + $I_L448_394)
+  451.                      cu_umes(1 + $I_L449_342, 1 + $I_L448_394) = q3(1 + $I_L449_342, 1 + $I_L448_394)
+  452.                      $I_L449_342 = 1 + $I_L449_342
+  449.                      if ( $I_L449_342 >= imax ) exit
+  449.                   enddo
+  453.                   $I_L448_394 = 1 + $I_L448_394
+  452.                   if ( $I_L448_394 >= kmax ) exit
+  452.                enddo
+  452.             endif
+  452.          endif
+  455.          if (  _substr(ilcon,1,_ltrim(  _substr(ilcon,1,3) )) == 'YES' ) then
+  456.             call lrgscl( cuml_rain(1), cu_temp(1, 1), dq(1, 1), cu_umes(1, 1), ps2(1), del(1), sl(1), dt, mlrg, latco, imax, kmax )
+  456.          endif
+  465.          if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'ARA' ) then
+  459.             goto 20
+  465.          else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'KUO' ) then
+  465.             goto 20
+  465.          else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+  465.    20       continue
+  466.             call cloud_cover( kt, ktp, imax, kbot(1), ktop(1), noshal(1), kctop1(1), kcbot1(1), raincv(1), fac2x, rccmbl,  _substr(iccon,1,3), convc(1), convt(1), convb(1), prcp1(1), prcp2(1), prcp3(1), prcpt(1), toplv(1), botlv(1), convts(1), convcs(1), convbs(1) )
+  466.          endif
+  476.          if ( imax > 0 ) then
+  477.             if ( kmax > 0 ) then
+  477.                $I_L477_396 = 0
+  477.                do
+  476.                   $I_L476_344 = 0
+  476. !dir$ ivdep
+  476.                   do
+  478.                      qb(1 + $I_L476_344, 1 + $I_L477_396) = q33(1 + $I_L476_344, 1 + $I_L477_396)
+  479.                      tb(1 + $I_L476_344, 1 + $I_L477_396) = t33(1 + $I_L476_344, 1 + $I_L477_396)
+  480.                      qc(1 + $I_L476_344, 1 + $I_L477_396) = q3(1 + $I_L476_344, 1 + $I_L477_396)
+  481.                      tc(1 + $I_L476_344, 1 + $I_L477_396) = t3(1 + $I_L476_344, 1 + $I_L477_396)
+  483.                      $I_L476_344 = 1 + $I_L476_344
+  477.                      if ( $I_L476_344 >= imax ) exit
+  477.                   enddo
+  482.                   $I_L477_396 = 1 + $I_L477_396
+  482.                   if ( $I_L477_396 >= kmax ) exit
+  482.                enddo
+  482.             endif
+  482.          endif
+  485.          $F_A36 = imax
+  485.          if ( imax > 0 ) then
+  485.             $I_L485_368 = 0
+  485. !dir$ ivdep
+  485.             do
+  485.                snowflg(1 + $I_L485_368) = 0.0
+  485.                $I_L485_368 = 1 + $I_L485_368
+  485.                if ( $I_L485_368 >= $F_A36 ) exit
+  485.             enddo
+  485.          endif
+  486.          $F_A37 = imax
+  486.          if ( imax > 0 ) then
+  486.             $I_L486_370 = 0
+  486. !dir$ ivdep
+  486.             do
+  486.                snowfl(1 + $I_L486_370) = 0.0
+  486.                $I_L486_370 = 1 + $I_L486_370
+  486.                if ( $I_L486_370 >= $F_A37 ) exit
+  486.             enddo
+  486.          endif
+  487.          if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'ARA' ) then
+  485.             goto 30
+  487.          else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'KUO' ) then
+  487.             goto 30
+  487.          else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+  487.    30       continue
+  488.             if ( imax > 0 ) then
+  488.                $I_L488_346 = 0
+  488. !dir$ ivdep
+  488.                do
+  489.                   ppci(1 + $I_L488_346) = 2000.0 * raincv(1 + $I_L488_346)
+  490.                   $I_L488_346 = 1 + $I_L488_346
+  488.                   if ( $I_L488_346 >= imax ) exit
+  488.                enddo
+  488.             endif
+  494.             if ( kmax > 0 ) then
+  495.                if ( imax > 0 ) then
+  494.                   $I_L494_398 = 0
+  494.                   do
+  495.                      $I_L495_348 = 0
+  495. !dir$ ivdep
+  495.                      do
+  496.                         clheat(1 + $I_L495_348, 1 + $I_L494_398) = rdt * fac * ( t33(1 + $I_L495_348, 1 + $I_L494_398) + -work_temp(1 + $I_L495_348, 1 + $I_L494_398) )
+  502.                         cmchan(1 + $I_L495_348, 1 + $I_L494_398) = rdt * fac * ( cu_umes(1 + $I_L495_348, 1 + $I_L494_398) + -work_umes(1 + $I_L495_348, 1 + $I_L494_398) )
+  497.                         $I_L495_348 = 1 + $I_L495_348
+  495.                         if ( $I_L495_348 >= imax ) exit
+  495.                      enddo
+  498.                      $I_L494_398 = 1 + $I_L494_398
+  497.                      if ( $I_L494_398 >= kmax ) exit
+  497.                   enddo
+  497.                endif
+  497.             endif
+  508.             if ( doprec /= .false. ) then
+  509.                if ( imax > 0 ) then
+  509.                   $I_L509_350 = 0
+  509. !dir$ ivdep
+  509.                   do
+  510.                      prcc(1 + $I_L509_350) = 1000.0 * rdt * fac2 * raincv(1 + $I_L509_350)
+  511.                      $I_L509_350 = 1 + $I_L509_350
+  509.                      if ( $I_L509_350 >= imax ) exit
+  509.                   enddo
+  509.                endif
+  509.             endif
+  509.          endif
+  515.          if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'TIED' ) then
+  513.             goto 40
+  515.          else if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'SOUZ' ) then
+  515.    40       continue
+  519.             if ( kmax > 0 ) then
+  520.                if ( imax > 0 ) then
+  519.                   $I_L519_400 = 0
+  519.                   do
+  520.                      $I_L520_352 = 0
+  520. !dir$ ivdep
+  520.                      do
+  521.                         sclhea(1 + $I_L520_352, 1 + $I_L519_400) = rdt * fac * ( tc(1 + $I_L520_352, 1 + $I_L519_400) + -t33(1 + $I_L520_352, 1 + $I_L519_400) )
+  522.                         scmcha(1 + $I_L520_352, 1 + $I_L519_400) = rdt * fac * ( qc(1 + $I_L520_352, 1 + $I_L519_400) + -q33(1 + $I_L520_352, 1 + $I_L519_400) )
+  523.                         $I_L520_352 = 1 + $I_L520_352
+  520.                         if ( $I_L520_352 >= imax ) exit
+  520.                      enddo
+  524.                      $I_L519_400 = 1 + $I_L519_400
+  523.                      if ( $I_L519_400 >= kmax ) exit
+  523.                   enddo
+  523.                endif
+  523.             endif
+  523.          endif
+  527.          if (  _substr(ilcon,1,_ltrim(  _substr(ilcon,1,3) )) == 'YES' ) then
+  528.             if ( imax > 0 ) then
+  528.                $I_L528_354 = 0
+  528. !dir$ ivdep
+  528.                do
+  529.                   if ( 3.4999999999999998e-1 * cu_temp(1 + $I_L528_354, 1) + 6.5000000000000002e-1 * cu_temp(1 + $I_L528_354, 2) <= 273.19999999999999 ) then
+  530.                      snowflg(1 + $I_L528_354) = cuml_rain(1 + $I_L528_354)
+  531.                      snowfl(1 + $I_L528_354) = 1000.0 * rdt * fac2 * cuml_rain(1 + $I_L528_354)
+  531.                   endif
+  533.                   ppli(1 + $I_L528_354) = -ppci(1 + $I_L528_354) + 2000.0 * cuml_rain(1 + $I_L528_354)
+  534.                   geshem(1 + $I_L528_354) = geshem(1 + $I_L528_354) + fac2x * cuml_rain(1 + $I_L528_354)
+  535.                   $I_L528_354 = 1 + $I_L528_354
+  532.                   if ( $I_L528_354 >= imax ) exit
+  532.                enddo
+  532.             endif
+  536.             if ( kmax > 0 ) then
+  537.                if ( imax > 0 ) then
+  536.                   $I_L536_402 = 0
+  536.                   do
+  537.                      $I_L537_356 = 0
+  537. !dir$ ivdep
+  537.                      do
+  538.                         lslhea(1 + $I_L537_356, 1 + $I_L536_402) = rdt * fac * ( cu_temp(1 + $I_L537_356, 1 + $I_L536_402) + -tc(1 + $I_L537_356, 1 + $I_L536_402) )
+  539.                         lsmcha(1 + $I_L537_356, 1 + $I_L536_402) = rdt * fac * ( cu_umes(1 + $I_L537_356, 1 + $I_L536_402) + -qc(1 + $I_L537_356, 1 + $I_L536_402) )
+  540.                         $I_L537_356 = 1 + $I_L537_356
+  537.                         if ( $I_L537_356 >= imax ) exit
+  537.                      enddo
+  541.                      $I_L536_402 = 1 + $I_L536_402
+  540.                      if ( $I_L536_402 >= kmax ) exit
+  540.                   enddo
+  540.                endif
+  540.             endif
+  543.             if ( doprec /= .false. ) then
+  544.                if ( imax > 0 ) then
+  544.                   $I_L544_358 = 0
+  544. !dir$ ivdep
+  544.                   do
+  545.                      prct(1 + $I_L544_358) = 1000.0 * rdt * fac2 * cuml_rain(1 + $I_L544_358)
+  546.                      $I_L544_358 = 1 + $I_L544_358
+  544.                      if ( $I_L544_358 >= imax ) exit
+  544.                   enddo
+  544.                endif
+  544.             endif
+  544.          endif
+  553.          if ( startstordiag /= .false. ) then
+  554.             call convecdiagnstorage( imax, kmax, latco, rdt, fac2, fdqn(1, 1), raincv(1), cuml_rain(1), snowfl(1), sclhea(1, 1), scmcha(1, 1), clheat(1, 1), cmchan(1, 1), lslhea(1, 1), lsmcha(1, 1) )
+  554.          endif
+  562.          if ( $ghl_local_S52 /= .false. ) then
+  563.             call convecgridhiststorage( imax, kmax, latco, rdt, fac2, raincv(1), cuml_rain(1), snowflg(1), sclhea(1, 1), scmcha(1, 1), clheat(1, 1), cmchan(1, 1), lslhea(1, 1), lsmcha(1, 1) )
+  563.          endif
+  570.          if ( kmax > 0 ) then
+  571.             if ( imax > 0 ) then
+  570.                $I_L570_404 = 0
+  570.                do
+  571.                   $I_L571_360 = 0
+  571. !dir$ ivdep
+  571.                   do
+  572.                      qc(1 + $I_L571_360, 1 + $I_L570_404) = cu_umes(1 + $I_L571_360, 1 + $I_L570_404)
+  573.                      tc(1 + $I_L571_360, 1 + $I_L570_404) = cu_temp(1 + $I_L571_360, 1 + $I_L570_404) * ( 1.0 + 6.0799999999999998e-1 * cu_umes(1 + $I_L571_360, 1 + $I_L570_404) )
+  574.                      $I_L571_360 = 1 + $I_L571_360
+  571.                      if ( $I_L571_360 >= imax ) exit
+  571.                   enddo
+  575.                   $I_L570_404 = 1 + $I_L570_404
+  574.                   if ( $I_L570_404 >= kmax ) exit
+  574.                enddo
+  574.             endif
+  574.          endif
+  106.          _free( t$20 )
+  106.       endif
+  577.       return
+  577.       end
+  577.       
+  581.       
+  581.       subroutine cloud_cover( kt, ktp, ncols, kbot, ktop, noshal1, kctop1, kcbot1, rrr, fac2x, rccmbl, iccon, convc, convt, convb, prcp1, prcp2, prcp3, prcpt, toplv, botlv, convts, convcs, convbs )
+  581.       t$6 = ncols
+  590.       t$161 = _zla( 0, ncols )
+  581.       t$162 = _len( iccon )
+  634.       if ( ktp + -kt /= 0 ) then
+  635.          if ( ncols > 0 ) then
+  635.             $I_L635_72 = 0
+  635. !dir$ ivdep
+  635.             do
+  636.                convc(1 + $I_L635_72) = 0.0
+  637.                convt(1 + $I_L635_72) = 0.0
+  638.                convb(1 + $I_L635_72) = 0.0
+  642.                prcpt(1 + $I_L635_72) = prcp3(1 + $I_L635_72) + prcpt(1 + $I_L635_72) + -prcp1(1 + $I_L635_72)
+  639.                $I_L635_72 = 1 + $I_L635_72
+  635.                if ( $I_L635_72 >= ncols ) exit
+  635.             enddo
+  635.          endif
+  645.          if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,_len( iccon )) )) == 'ARA' ) then
+  646.             if ( ncols > 0 ) then
+  646.                $I_L646_76 = 0
+  646. !dir$ ivdep
+  646.                do
+  647.                   if ( prcpt(1 + $I_L646_76) > 0.0 ) then
+  648.                      $convc_WR0_R0 = 2.0000000000000001e-1 + 874.0 * prcpt(1 + $I_L646_76)
+  650.                      $convc_WR0_R0 = min( 8.0000000000000004e-1, max( 0.0, $convc_WR0_R0 ) )
+  650.                      convc(1 + $I_L646_76) = $convc_WR0_R0
+  650.                   endif
+  652.                   $I_L646_76 = 1 + $I_L646_76
+  651.                   if ( $I_L646_76 >= ncols ) exit
+  651.                enddo
+  651.             endif
+  653.          else if ( ncols > 0 ) then
+  654.             $I_L654_74 = 0
+  654. !dir$ ivdep
+  654.             do
+  655.                if ( prcpt(1 + $I_L654_74) > 0.0 ) then
+  656.                   $convc_WR0_R1 = 2.457e-1 + 1.2529999999999999e-1 * log( 8000.0 * prcpt(1 + $I_L654_74) )
+  658.                   $convc_WR0_R1 = min( 8.0000000000000004e-1, max( 0.0, $convc_WR0_R1 ) )
+  658.                   convc(1 + $I_L654_74) = $convc_WR0_R1
+  658.                endif
+  660.                $I_L654_74 = 1 + $I_L654_74
+  659.                if ( $I_L654_74 >= ncols ) exit
+  659.             enddo
+  659.          endif
+  663.          if ( ncols > 0 ) then
+  663.             $I_L663_78 = 0
+  663. !dir$ ivdep
+  663.             do
+  664.                if ( prcp3(1 + $I_L663_78) > 0.0 ) then
+  665.                   convt(1 + $I_L663_78) = ( toplv(1 + $I_L663_78) * 1.0/prcp3(1 + $I_L663_78) )
+  666.                   convb(1 + $I_L663_78) = ( botlv(1 + $I_L663_78) * 1.0/prcp3(1 + $I_L663_78) )
+  666.                endif
+  668.                $I_L663_78 = 1 + $I_L663_78
+  667.                if ( $I_L663_78 >= ncols ) exit
+  667.             enddo
+  669.             $I_L669_80 = 0
+  669. !dir$ ivdep
+  669.             do
+  676.                prcp1(1 + $I_L669_80) = prcp2(1 + $I_L669_80)
+  677.                prcp2(1 + $I_L669_80) = prcp3(1 + $I_L669_80)
+  680.                prcp3(1 + $I_L669_80) = 0.0
+  681.                toplv(1 + $I_L669_80) = 0.0
+  682.                botlv(1 + $I_L669_80) = 0.0
+  671.                convb(1 + $I_L669_80) = min( convt(1 + $I_L669_80), max( rccmbl, convb(1 + $I_L669_80) ) )
+  673.                $I_L669_80 = 1 + $I_L669_80
+  669.                if ( $I_L669_80 >= ncols ) exit
+  669.             enddo
+  669.          endif
+  669.       endif
+  686.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,_len( iccon )) )) == 'ARA' ) then
+  687.          if ( ncols > 0 ) then
+  687.             $I_L687_84 = 0
+  687. !dir$ ivdep
+  687.             do
+  688.                if ( rrr(1 + $I_L687_84) > 0.0 ) then
+  692.                   botlv(1 + $I_L687_84) = botlv(1 + $I_L687_84) + fac2x * rrr(1 + $I_L687_84) * kbot(1 + $I_L687_84)
+  690.                   toplv(1 + $I_L687_84) = toplv(1 + $I_L687_84) + fac2x * rrr(1 + $I_L687_84) * ktop(1 + $I_L687_84)
+  689.                   prcp3(1 + $I_L687_84) = prcp3(1 + $I_L687_84) + fac2x * rrr(1 + $I_L687_84)
+  689.                endif
+  695.                $I_L687_84 = 1 + $I_L687_84
+  694.                if ( $I_L687_84 >= ncols ) exit
+  694.             enddo
+  694.          endif
+  696.       else if ( ncols > 0 ) then
+  697.          $I_L697_82 = 0
+  697. !dir$ ivdep
+  697.          do
+  698.             if ( rrr(1 + $I_L697_82) > 0.0 ) then
+  702.                botlv(1 + $I_L697_82) = botlv(1 + $I_L697_82) + fac2x * rrr(1 + $I_L697_82) * kbot(1 + $I_L697_82)
+  700.                toplv(1 + $I_L697_82) = toplv(1 + $I_L697_82) + fac2x * rrr(1 + $I_L697_82) * ktop(1 + $I_L697_82)
+  699.                prcp3(1 + $I_L697_82) = prcp3(1 + $I_L697_82) + fac2x * rrr(1 + $I_L697_82)
+  699.             endif
+  705.             $I_L697_82 = 1 + $I_L697_82
+  704.             if ( $I_L697_82 >= ncols ) exit
+  704.          enddo
+  704.       endif
+  708.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,_len( iccon )) )) == 'ARA' ) then
+  709.          if ( ncols > 0 ) then
+  709.             $I_L709_86 = 0
+  709. !dir$ ivdep
+  709.             do
+  710.                convts(1 + $I_L709_86) = 0.0
+  711.                convbs(1 + $I_L709_86) = 0.0
+  712.                convcs(1 + $I_L709_86) = 0.0
+  713.                $I_L709_86 = 1 + $I_L709_86
+  709.                if ( $I_L709_86 >= ncols ) exit
+  709.             enddo
+  715.             $I_L715_88 = 0
+  715. !dir$ ivdep
+  715.             do
+  716.                if ( noshal1(1 + $I_L715_88) == 0 ) then
+  717.                   convts(1 + $I_L715_88) = real( kctop1(1 + $I_L715_88), 8 )
+  718.                   convbs(1 + $I_L715_88) = real( kcbot1(1 + $I_L715_88), 8 )
+  722.                   convcs(1 + $I_L715_88) = 2.9999999999999999e-1
+  722.                endif
+  724.                $I_L715_88 = 1 + $I_L715_88
+  723.                if ( $I_L715_88 >= ncols ) exit
+  723.             enddo
+  723.          endif
+  723.       endif
+  726.       return
+  726.       end
+  726.       
+  768.       
+  768.       subroutine convecgridhiststorage( ncols, kmax, latco, rdt, fac2, rrr, cuml_rain, snowflg, sclhea, scmcha, clheat, cmchan, lslhea, lsmcha )
+  728.       t$7 = ncols
+  739.       t$163 = _zla( 0, ncols )
+  728.       t$8 = kmax
+  728.       t$164 = _zla( 0, ncols )
+  742.       t$165 = _zla( 0, kmax )
+  728.       t$166 = _zla( 0, ncols ) * _zla( 0, kmax )
+  749.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'ARA' ) then
+  728.          goto 10
+  749.       else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'KUO' ) then
+  749.          goto 10
+  749.       else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+  749.    10    continue
+  750.          if ( (dogrh%base_addr)(18, latco, 0) /= .false. ) then
+  750. !dir$ suppress rrr(1)
+  750.             t$306 = $_StaticDV_P0
+  750.             t$306%base_addr = pointer to array[1] of real (kind=8)( loc( rrr(1) ) )
+  750.             t$306%header%el_len = 64
+  750.             t$306%header%assoc = 1
+  750.             t$306%header%ptr_alloc = 0
+  750.             t$306%header%p_or_a = 0
+  750.             t$306%header%a_contig = 1
+  750.             t$306%header%n_dim = 1
+  750.             t$306%header%orig_base = 0
+  750.             t$306%header%orig_size = 0
+  750.             t$306%header%n_codim = 0
+  750.             t$306%header%dv_versn = 2
+  750.             t$306%header%dv_smunit = 64
+  750.             t$306%header%d_type = 0
+  750.             t$306%header%n_params = 0
+  750.             t$306%header%d_type_idx = 13
+  750.             t$306%dim_1%LB = 1
+  750.             t$306%dim_1%EX = ( max( 0, ncols ) )
+  750.             t$306%dim_1%SM = 1
+  750.             t$307 = 1000.0 * fac2 * rdt
+  750.             call store1d( t$306, 18, latco, t$307 )
+  750.          endif
+  751.          if ( (dogrh%base_addr)(65, latco, 0) /= .false. ) then
+  751. !dir$ suppress clheat(1, 1)
+  751.             t$308 = $_StaticDV_P1
+  751.             t$308%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( clheat(1, 1) ) )
+  751.             t$308%header%el_len = 64
+  751.             t$308%header%assoc = 1
+  751.             t$308%header%ptr_alloc = 0
+  751.             t$308%header%p_or_a = 0
+  751.             t$308%header%a_contig = 0
+  751.             t$308%header%n_dim = 2
+  751.             t$308%header%orig_base = 0
+  751.             t$308%header%orig_size = 0
+  751.             t$308%header%n_codim = 0
+  751.             t$308%header%dv_versn = 2
+  751.             t$308%header%dv_smunit = 64
+  751.             t$308%header%d_type = 0
+  751.             t$308%header%n_params = 0
+  751.             t$308%header%d_type_idx = 13
+  751.             t$308%dim_1%LB = 1
+  751.             t$308%dim_1%EX = ( max( 0, ncols ) )
+  751.             t$308%dim_1%SM = 1
+  751.             t$308%dim_2%LB = 1
+  751.             t$308%dim_2%EX = ( max( 0, kmax ) )
+  751.             t$308%dim_2%SM = _zla( 0, ncols )
+  751.             call store2d( t$308, 65, latco, 0 )
+  751.          endif
+  752.          if ( (dogrh%base_addr)(69, latco, 0) /= .false. ) then
+  752. !dir$ suppress cmchan(1, 1)
+  752.             t$309 = $_StaticDV_P2
+  752.             t$309%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( cmchan(1, 1) ) )
+  752.             t$309%header%el_len = 64
+  752.             t$309%header%assoc = 1
+  752.             t$309%header%ptr_alloc = 0
+  752.             t$309%header%p_or_a = 0
+  752.             t$309%header%a_contig = 0
+  752.             t$309%header%n_dim = 2
+  752.             t$309%header%orig_base = 0
+  752.             t$309%header%orig_size = 0
+  752.             t$309%header%n_codim = 0
+  752.             t$309%header%dv_versn = 2
+  752.             t$309%header%dv_smunit = 64
+  752.             t$309%header%d_type = 0
+  752.             t$309%header%n_params = 0
+  752.             t$309%header%d_type_idx = 13
+  752.             t$309%dim_1%LB = 1
+  752.             t$309%dim_1%EX = ( max( 0, ncols ) )
+  752.             t$309%dim_1%SM = 1
+  752.             t$309%dim_2%LB = 1
+  752.             t$309%dim_2%EX = ( max( 0, kmax ) )
+  752.             t$309%dim_2%SM = _zla( 0, ncols )
+  752.             call store2d( t$309, 69, latco, 0 )
+  752.          endif
+  752.       endif
+  755.       if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'TIED' ) then
+  753.          goto 20
+  755.       else if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'SOUZ' ) then
+  755.    20    continue
+  756.          if ( (dogrh%base_addr)(66, latco, 0) /= .false. ) then
+  756. !dir$ suppress sclhea(1, 1)
+  756.             t$310 = $_StaticDV_P3
+  756.             t$310%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( sclhea(1, 1) ) )
+  756.             t$310%header%el_len = 64
+  756.             t$310%header%assoc = 1
+  756.             t$310%header%ptr_alloc = 0
+  756.             t$310%header%p_or_a = 0
+  756.             t$310%header%a_contig = 1
+  756.             t$310%header%n_dim = 2
+  756.             t$310%header%orig_base = 0
+  756.             t$310%header%orig_size = 0
+  756.             t$310%header%n_codim = 0
+  756.             t$310%header%dv_versn = 2
+  756.             t$310%header%dv_smunit = 64
+  756.             t$310%header%d_type = 0
+  756.             t$310%header%n_params = 0
+  756.             t$310%header%d_type_idx = 13
+  756.             t$310%dim_1%LB = 1
+  756.             t$310%dim_1%EX = _zla( 0, ncols )
+  756.             t$310%dim_1%SM = 1
+  756.             t$310%dim_2%LB = 1
+  756.             t$310%dim_2%EX = _zla( 0, kmax )
+  756.             t$310%dim_2%SM = _zla( 0, ncols )
+  756.             call store2d( t$310, 66, latco, 0 )
+  756.          endif
+  757.          if ( (dogrh%base_addr)(70, latco, 0) /= .false. ) then
+  757. !dir$ suppress scmcha(1, 1)
+  757.             t$311 = $_StaticDV_P4
+  757.             t$311%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( scmcha(1, 1) ) )
+  757.             t$311%header%el_len = 64
+  757.             t$311%header%assoc = 1
+  757.             t$311%header%ptr_alloc = 0
+  757.             t$311%header%p_or_a = 0
+  757.             t$311%header%a_contig = 1
+  757.             t$311%header%n_dim = 2
+  757.             t$311%header%orig_base = 0
+  757.             t$311%header%orig_size = 0
+  757.             t$311%header%n_codim = 0
+  757.             t$311%header%dv_versn = 2
+  757.             t$311%header%dv_smunit = 64
+  757.             t$311%header%d_type = 0
+  757.             t$311%header%n_params = 0
+  757.             t$311%header%d_type_idx = 13
+  757.             t$311%dim_1%LB = 1
+  757.             t$311%dim_1%EX = _zla( 0, ncols )
+  757.             t$311%dim_1%SM = 1
+  757.             t$311%dim_2%LB = 1
+  757.             t$311%dim_2%EX = _zla( 0, kmax )
+  757.             t$311%dim_2%SM = _zla( 0, ncols )
+  757.             call store2d( t$311, 70, latco, 0 )
+  757.          endif
+  757.       endif
+  762.       if (  _substr(ilcon,1,_ltrim(  _substr(ilcon,1,3) )) == 'YES' ) then
+  763.          if ( (dogrh%base_addr)(17, latco, 0) /= .false. ) then
+  763. !dir$ suppress cuml_rain(1)
+  763.             t$312 = $_StaticDV_P5
+  763.             t$312%base_addr = pointer to array[1] of real (kind=8)( loc( cuml_rain(1) ) )
+  763.             t$312%header%el_len = 64
+  763.             t$312%header%assoc = 1
+  763.             t$312%header%ptr_alloc = 0
+  763.             t$312%header%p_or_a = 0
+  763.             t$312%header%a_contig = 1
+  763.             t$312%header%n_dim = 1
+  763.             t$312%header%orig_base = 0
+  763.             t$312%header%orig_size = 0
+  763.             t$312%header%n_codim = 0
+  763.             t$312%header%dv_versn = 2
+  763.             t$312%header%dv_smunit = 64
+  763.             t$312%header%d_type = 0
+  763.             t$312%header%n_params = 0
+  763.             t$312%header%d_type_idx = 13
+  763.             t$312%dim_1%LB = 1
+  763.             t$312%dim_1%EX = _zla( 0, ncols )
+  763.             t$312%dim_1%SM = 1
+  763.             t$307 = 1000.0 * fac2 * rdt
+  763.             call store1d( t$312, 17, latco, t$307 )
+  763.          endif
+  764.          if ( (dogrh%base_addr)(11, latco, 0) /= .false. ) then
+  764. !dir$ suppress snowflg(1)
+  764.             t$313 = $_StaticDV_P6
+  764.             t$313%base_addr = pointer to array[1] of real (kind=8)( loc( snowflg(1) ) )
+  764.             t$313%header%el_len = 64
+  764.             t$313%header%assoc = 1
+  764.             t$313%header%ptr_alloc = 0
+  764.             t$313%header%p_or_a = 0
+  764.             t$313%header%a_contig = 1
+  764.             t$313%header%n_dim = 1
+  764.             t$313%header%orig_base = 0
+  764.             t$313%header%orig_size = 0
+  764.             t$313%header%n_codim = 0
+  764.             t$313%header%dv_versn = 2
+  764.             t$313%header%dv_smunit = 64
+  764.             t$313%header%d_type = 0
+  764.             t$313%header%n_params = 0
+  764.             t$313%header%d_type_idx = 13
+  764.             t$313%dim_1%LB = 1
+  764.             t$313%dim_1%EX = _zla( 0, ncols )
+  764.             t$313%dim_1%SM = 1
+  764.             t$307 = 1000.0 * fac2 * rdt
+  764.             call store1d( t$313, 11, latco, t$307 )
+  764.          endif
+  765.          if ( (dogrh%base_addr)(64, latco, 0) /= .false. ) then
+  765. !dir$ suppress lslhea(1, 1)
+  765.             t$314 = $_StaticDV_P7
+  765.             t$314%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( lslhea(1, 1) ) )
+  765.             t$314%header%el_len = 64
+  765.             t$314%header%assoc = 1
+  765.             t$314%header%ptr_alloc = 0
+  765.             t$314%header%p_or_a = 0
+  765.             t$314%header%a_contig = 1
+  765.             t$314%header%n_dim = 2
+  765.             t$314%header%orig_base = 0
+  765.             t$314%header%orig_size = 0
+  765.             t$314%header%n_codim = 0
+  765.             t$314%header%dv_versn = 2
+  765.             t$314%header%dv_smunit = 64
+  765.             t$314%header%d_type = 0
+  765.             t$314%header%n_params = 0
+  765.             t$314%header%d_type_idx = 13
+  765.             t$314%dim_1%LB = 1
+  765.             t$314%dim_1%EX = _zla( 0, ncols )
+  765.             t$314%dim_1%SM = 1
+  765.             t$314%dim_2%LB = 1
+  765.             t$314%dim_2%EX = _zla( 0, kmax )
+  765.             t$314%dim_2%SM = _zla( 0, ncols )
+  765.             call store2d( t$314, 64, latco, 0 )
+  765.          endif
+  766.          if ( (dogrh%base_addr)(68, latco, 0) /= .false. ) then
+  766. !dir$ suppress lsmcha(1, 1)
+  766.             t$315 = $_StaticDV_P8
+  766.             t$315%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( lsmcha(1, 1) ) )
+  766.             t$315%header%el_len = 64
+  766.             t$315%header%assoc = 1
+  766.             t$315%header%ptr_alloc = 0
+  766.             t$315%header%p_or_a = 0
+  766.             t$315%header%a_contig = 1
+  766.             t$315%header%n_dim = 2
+  766.             t$315%header%orig_base = 0
+  766.             t$315%header%orig_size = 0
+  766.             t$315%header%n_codim = 0
+  766.             t$315%header%dv_versn = 2
+  766.             t$315%header%dv_smunit = 64
+  766.             t$315%header%d_type = 0
+  766.             t$315%header%n_params = 0
+  766.             t$315%header%d_type_idx = 13
+  766.             t$315%dim_1%LB = 1
+  766.             t$315%dim_1%EX = _zla( 0, ncols )
+  766.             t$315%dim_1%SM = 1
+  766.             t$315%dim_2%LB = 1
+  766.             t$315%dim_2%EX = _zla( 0, kmax )
+  766.             t$315%dim_2%SM = _zla( 0, ncols )
+  766.             call store2d( t$315, 68, latco, 0 )
+  766.          endif
+  766.       endif
+  768.       return
+  768.       end
+  768.       
+  833.       
+  833.       subroutine convecdiagnstorage( ncols, kmax, latco, rdt, fac2, fdqn, rrr, cuml_rain, snowfl, sclhea, scmcha, clheat, cmchan, lslhea, lsmcha )
+  770.       t$9 = ncols
+  770.       t$10 = kmax
+  781.       t$167 = _zla( 0, ncols )
+  770.       t$168 = _zla( 0, ncols )
+  781.       t$169 = _zla( 0, kmax )
+  770.       t$170 = _zla( 0, ncols ) * _zla( 0, kmax )
+  792.       t$173 = 8 * _zla( 0, ncols )
+  793.       t$174 = 8 * ( 7 + 8 * _zla( 0, ncols ) ) / 8
+  793.       t$176 = t$174 + 8 * _zla( 0, ncols )
+  770.       t$171 = int( _alloc( t$174 + 8 * _zla( 0, ncols ) ), 8 )
+  792.       t$172 = t$171
+  793.       t$175 = t$174 + t$171
+  796.       if ( (dodia%base_addr)(70, 0) /= .false. ) then
+  796. !dir$ suppress fdqn(1, 1)
+  796.          t$316 = $_StaticDV_P0
+  796.          t$316%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( fdqn(1, 1) ) )
+  796.          t$316%header%el_len = 64
+  796.          t$316%header%assoc = 1
+  796.          t$316%header%ptr_alloc = 0
+  796.          t$316%header%p_or_a = 0
+  796.          t$316%header%a_contig = 1
+  796.          t$316%header%n_dim = 2
+  796.          t$316%header%orig_base = 0
+  796.          t$316%header%orig_size = 0
+  796.          t$316%header%n_codim = 0
+  796.          t$316%header%dv_versn = 2
+  796.          t$316%header%dv_smunit = 64
+  796.          t$316%header%d_type = 0
+  796.          t$316%header%n_params = 0
+  796.          t$316%header%d_type_idx = 13
+  796.          t$316%dim_1%LB = 1
+  796.          t$316%dim_1%EX = _zla( 0, ncols )
+  796.          t$316%dim_1%SM = 1
+  796.          t$316%dim_2%LB = 1
+  796.          t$316%dim_2%EX = _zla( 0, kmax )
+  796.          t$316%dim_2%SM = _zla( 0, ncols )
+  796.          call updia2d( t$316, 70, latco )
+  796.       endif
+  798.       if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'ARA' ) then
+  796.          goto 10
+  798.       else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'KUO' ) then
+  798.          goto 10
+  798.       else if (  _substr(iccon,1,_ltrim(  _substr(iccon,1,3) )) == 'GRE' ) then
+  798.    10    continue
+  799.          if ( (dodia%base_addr)(10, 0) /= .false. ) then
+  800.             if ( ncols > 0 ) then
+  800.                $I_L800_20 = 0
+  800. !dir$ ivdep
+  800.                do
+  801.                   bfr1(1 + $I_L800_20) = 1000.0 * fac2 * rdt * rrr(1 + $I_L800_20)
+  802.                   $I_L800_20 = 1 + $I_L800_20
+  800.                   if ( $I_L800_20 >= ncols ) exit
+  800.                enddo
+  800.             endif
+  803. !dir$ suppress bfr1(1)
+  803.             t$320 = $_StaticDV_P1
+  803.             t$320%base_addr = pointer to array[1] of real (kind=8)( loc( bfr1(1) ) )
+  803.             t$320%header%el_len = 64
+  803.             t$320%header%assoc = 1
+  803.             t$320%header%ptr_alloc = 0
+  803.             t$320%header%p_or_a = 0
+  803.             t$320%header%a_contig = 1
+  803.             t$320%header%n_dim = 1
+  803.             t$320%header%orig_base = 0
+  803.             t$320%header%orig_size = 0
+  803.             t$320%header%n_codim = 0
+  803.             t$320%header%dv_versn = 2
+  803.             t$320%header%dv_smunit = 64
+  803.             t$320%header%d_type = 0
+  803.             t$320%header%n_params = 0
+  803.             t$320%header%d_type_idx = 13
+  803.             t$320%dim_1%LB = 1
+  803.             t$320%dim_1%EX = _zla( 0, ncols )
+  803.             t$320%dim_1%SM = 1
+  803.             call updia1d( t$320, 10, latco )
+  803.          endif
+  805.          if ( (dodia%base_addr)(33, 0) /= .false. ) then
+  805. !dir$ suppress clheat(1, 1)
+  805.             t$321 = $_StaticDV_P2
+  805.             t$321%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( clheat(1, 1) ) )
+  805.             t$321%header%el_len = 64
+  805.             t$321%header%assoc = 1
+  805.             t$321%header%ptr_alloc = 0
+  805.             t$321%header%p_or_a = 0
+  805.             t$321%header%a_contig = 1
+  805.             t$321%header%n_dim = 2
+  805.             t$321%header%orig_base = 0
+  805.             t$321%header%orig_size = 0
+  805.             t$321%header%n_codim = 0
+  805.             t$321%header%dv_versn = 2
+  805.             t$321%header%dv_smunit = 64
+  805.             t$321%header%d_type = 0
+  805.             t$321%header%n_params = 0
+  805.             t$321%header%d_type_idx = 13
+  805.             t$321%dim_1%LB = 1
+  805.             t$321%dim_1%EX = _zla( 0, ncols )
+  805.             t$321%dim_1%SM = 1
+  805.             t$321%dim_2%LB = 1
+  805.             t$321%dim_2%EX = _zla( 0, kmax )
+  805.             t$321%dim_2%SM = _zla( 0, ncols )
+  805.             call updia2d( t$321, 33, latco )
+  805.          endif
+  806.          if ( (dodia%base_addr)(34, 0) /= .false. ) then
+  806. !dir$ suppress cmchan(1, 1)
+  806.             t$322 = $_StaticDV_P3
+  806.             t$322%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( cmchan(1, 1) ) )
+  806.             t$322%header%el_len = 64
+  806.             t$322%header%assoc = 1
+  806.             t$322%header%ptr_alloc = 0
+  806.             t$322%header%p_or_a = 0
+  806.             t$322%header%a_contig = 1
+  806.             t$322%header%n_dim = 2
+  806.             t$322%header%orig_base = 0
+  806.             t$322%header%orig_size = 0
+  806.             t$322%header%n_codim = 0
+  806.             t$322%header%dv_versn = 2
+  806.             t$322%header%dv_smunit = 64
+  806.             t$322%header%d_type = 0
+  806.             t$322%header%n_params = 0
+  806.             t$322%header%d_type_idx = 13
+  806.             t$322%dim_1%LB = 1
+  806.             t$322%dim_1%EX = _zla( 0, ncols )
+  806.             t$322%dim_1%SM = 1
+  806.             t$322%dim_2%LB = 1
+  806.             t$322%dim_2%EX = _zla( 0, kmax )
+  806.             t$322%dim_2%SM = _zla( 0, ncols )
+  806.             call updia2d( t$322, 34, latco )
+  806.          endif
+  806.       endif
+  809.       if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'TIED' ) then
+  807.          goto 20
+  809.       else if (  _substr(iscon,1,_ltrim(  _substr(iscon,1,4) )) == 'SOUZ' ) then
+  809.    20    continue
+  810.          if ( (dodia%base_addr)(37, 0) /= .false. ) then
+  810. !dir$ suppress sclhea(1, 1)
+  810.             t$323 = $_StaticDV_P4
+  810.             t$323%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( sclhea(1, 1) ) )
+  810.             t$323%header%el_len = 64
+  810.             t$323%header%assoc = 1
+  810.             t$323%header%ptr_alloc = 0
+  810.             t$323%header%p_or_a = 0
+  810.             t$323%header%a_contig = 1
+  810.             t$323%header%n_dim = 2
+  810.             t$323%header%orig_base = 0
+  810.             t$323%header%orig_size = 0
+  810.             t$323%header%n_codim = 0
+  810.             t$323%header%dv_versn = 2
+  810.             t$323%header%dv_smunit = 64
+  810.             t$323%header%d_type = 0
+  810.             t$323%header%n_params = 0
+  810.             t$323%header%d_type_idx = 13
+  810.             t$323%dim_1%LB = 1
+  810.             t$323%dim_1%EX = _zla( 0, ncols )
+  810.             t$323%dim_1%SM = 1
+  810.             t$323%dim_2%LB = 1
+  810.             t$323%dim_2%EX = _zla( 0, kmax )
+  810.             t$323%dim_2%SM = _zla( 0, ncols )
+  810.             call updia2d( t$323, 37, latco )
+  810.          endif
+  811.          if ( (dodia%base_addr)(38, 0) /= .false. ) then
+  811. !dir$ suppress scmcha(1, 1)
+  811.             t$324 = $_StaticDV_P5
+  811.             t$324%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( scmcha(1, 1) ) )
+  811.             t$324%header%el_len = 64
+  811.             t$324%header%assoc = 1
+  811.             t$324%header%ptr_alloc = 0
+  811.             t$324%header%p_or_a = 0
+  811.             t$324%header%a_contig = 1
+  811.             t$324%header%n_dim = 2
+  811.             t$324%header%orig_base = 0
+  811.             t$324%header%orig_size = 0
+  811.             t$324%header%n_codim = 0
+  811.             t$324%header%dv_versn = 2
+  811.             t$324%header%dv_smunit = 64
+  811.             t$324%header%d_type = 0
+  811.             t$324%header%n_params = 0
+  811.             t$324%header%d_type_idx = 13
+  811.             t$324%dim_1%LB = 1
+  811.             t$324%dim_1%EX = _zla( 0, ncols )
+  811.             t$324%dim_1%SM = 1
+  811.             t$324%dim_2%LB = 1
+  811.             t$324%dim_2%EX = _zla( 0, kmax )
+  811.             t$324%dim_2%SM = _zla( 0, ncols )
+  811.             call updia2d( t$324, 38, latco )
+  811.          endif
+  811.       endif
+  816.       if (  _substr(ilcon,1,_ltrim(  _substr(ilcon,1,3) )) == 'YES' ) then
+  817.          if ( ncols > 0 ) then
+  820.             $SC_dodia_I3 = (dodia%base_addr)(11, 0)
+  818.             $SC_dodia_I2 = (dodia%base_addr)(9, 0)
+  818.             if ( $SC_dodia_I2 /= .false. ) then
+  820.                if ( $SC_dodia_I3 /= .false. ) then
+  817.                   $I_L817_22 = 0
+  817. !dir$ ivdep
+  817.                   do
+  818.                      bfr1(1 + $I_L817_22) = 1000.0 * fac2 * rdt * cuml_rain(1 + $I_L817_22)
+  820.                      bfr3(1 + $I_L817_22) = 1000.0 * fac2 * rdt * ( cuml_rain(1 + $I_L817_22) + -rrr(1 + $I_L817_22) )
+  821.                      $I_L817_22 = 1 + $I_L817_22
+  820.                      if ( $I_L817_22 >= ncols ) exit
+  820.                   enddo
+  820.                else
+  817.                   $I_L817_26 = 0
+  817. !dir$ ivdep
+  817.                   do
+  818.                      bfr1(1 + $I_L817_26) = 1000.0 * fac2 * rdt * cuml_rain(1 + $I_L817_26)
+  821.                      $I_L817_26 = 1 + $I_L817_26
+  820.                      if ( $I_L817_26 >= ncols ) exit
+  820.                   enddo
+  820.                endif
+  820.             else if ( $SC_dodia_I3 /= .false. ) then
+  817.                $I_L817_24 = 0
+  817. !dir$ ivdep
+  817.                do
+  820.                   bfr3(1 + $I_L817_24) = 1000.0 * fac2 * rdt * ( cuml_rain(1 + $I_L817_24) + -rrr(1 + $I_L817_24) )
+  821.                   $I_L817_24 = 1 + $I_L817_24
+  820.                   if ( $I_L817_24 >= ncols ) exit
+  820.                enddo
+  820.             endif
+  820.          endif
+  823.          if ( (dodia%base_addr)(9, 0) /= .false. ) then
+  823. !dir$ suppress bfr1(1)
+  823.             t$328 = $_StaticDV_P6
+  823.             t$328%base_addr = pointer to array[1] of real (kind=8)( loc( bfr1(1) ) )
+  823.             t$328%header%el_len = 64
+  823.             t$328%header%assoc = 1
+  823.             t$328%header%ptr_alloc = 0
+  823.             t$328%header%p_or_a = 0
+  823.             t$328%header%a_contig = 1
+  823.             t$328%header%n_dim = 1
+  823.             t$328%header%orig_base = 0
+  823.             t$328%header%orig_size = 0
+  823.             t$328%header%n_codim = 0
+  823.             t$328%header%dv_versn = 2
+  823.             t$328%header%dv_smunit = 64
+  823.             t$328%header%d_type = 0
+  823.             t$328%header%n_params = 0
+  823.             t$328%header%d_type_idx = 13
+  823.             t$328%dim_1%LB = 1
+  823.             t$328%dim_1%EX = _zla( 0, ncols )
+  823.             t$328%dim_1%SM = 1
+  823.             call updia1d( t$328, 9, latco )
+  823.          endif
+  825.          if ( (dodia%base_addr)(12, 0) /= .false. ) then
+  825. !dir$ suppress snowfl(1)
+  825.             t$329 = $_StaticDV_P7
+  825.             t$329%base_addr = pointer to array[1] of real (kind=8)( loc( snowfl(1) ) )
+  825.             t$329%header%el_len = 64
+  825.             t$329%header%assoc = 1
+  825.             t$329%header%ptr_alloc = 0
+  825.             t$329%header%p_or_a = 0
+  825.             t$329%header%a_contig = 1
+  825.             t$329%header%n_dim = 1
+  825.             t$329%header%orig_base = 0
+  825.             t$329%header%orig_size = 0
+  825.             t$329%header%n_codim = 0
+  825.             t$329%header%dv_versn = 2
+  825.             t$329%header%dv_smunit = 64
+  825.             t$329%header%d_type = 0
+  825.             t$329%header%n_params = 0
+  825.             t$329%header%d_type_idx = 13
+  825.             t$329%dim_1%LB = 1
+  825.             t$329%dim_1%EX = _zla( 0, ncols )
+  825.             t$329%dim_1%SM = 1
+  825.             call updia1d( t$329, 12, latco )
+  825.          endif
+  827.          if ( (dodia%base_addr)(11, 0) /= .false. ) then
+  827. !dir$ suppress bfr3(1)
+  827.             t$330 = $_StaticDV_P8
+  827.             t$330%base_addr = pointer to array[1] of real (kind=8)( loc( bfr3(1) ) )
+  827.             t$330%header%el_len = 64
+  827.             t$330%header%assoc = 1
+  827.             t$330%header%ptr_alloc = 0
+  827.             t$330%header%p_or_a = 0
+  827.             t$330%header%a_contig = 1
+  827.             t$330%header%n_dim = 1
+  827.             t$330%header%orig_base = 0
+  827.             t$330%header%orig_size = 0
+  827.             t$330%header%n_codim = 0
+  827.             t$330%header%dv_versn = 2
+  827.             t$330%header%dv_smunit = 64
+  827.             t$330%header%d_type = 0
+  827.             t$330%header%n_params = 0
+  827.             t$330%header%d_type_idx = 13
+  827.             t$330%dim_1%LB = 1
+  827.             t$330%dim_1%EX = _zla( 0, ncols )
+  827.             t$330%dim_1%SM = 1
+  827.             call updia1d( t$330, 11, latco )
+  827.          endif
+  829.          if ( (dodia%base_addr)(35, 0) /= .false. ) then
+  829. !dir$ suppress lslhea(1, 1)
+  829.             t$331 = $_StaticDV_P9
+  829.             t$331%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( lslhea(1, 1) ) )
+  829.             t$331%header%el_len = 64
+  829.             t$331%header%assoc = 1
+  829.             t$331%header%ptr_alloc = 0
+  829.             t$331%header%p_or_a = 0
+  829.             t$331%header%a_contig = 1
+  829.             t$331%header%n_dim = 2
+  829.             t$331%header%orig_base = 0
+  829.             t$331%header%orig_size = 0
+  829.             t$331%header%n_codim = 0
+  829.             t$331%header%dv_versn = 2
+  829.             t$331%header%dv_smunit = 64
+  829.             t$331%header%d_type = 0
+  829.             t$331%header%n_params = 0
+  829.             t$331%header%d_type_idx = 13
+  829.             t$331%dim_1%LB = 1
+  829.             t$331%dim_1%EX = _zla( 0, ncols )
+  829.             t$331%dim_1%SM = 1
+  829.             t$331%dim_2%LB = 1
+  829.             t$331%dim_2%EX = _zla( 0, kmax )
+  829.             t$331%dim_2%SM = _zla( 0, ncols )
+  829.             call updia2d( t$331, 35, latco )
+  829.          endif
+  831.          if ( (dodia%base_addr)(36, 0) /= .false. ) then
+  831. !dir$ suppress lsmcha(1, 1)
+  831.             t$332 = $_StaticDV_P10
+  831.             t$332%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( lsmcha(1, 1) ) )
+  831.             t$332%header%el_len = 64
+  831.             t$332%header%assoc = 1
+  831.             t$332%header%ptr_alloc = 0
+  831.             t$332%header%p_or_a = 0
+  831.             t$332%header%a_contig = 1
+  831.             t$332%header%n_dim = 2
+  831.             t$332%header%orig_base = 0
+  831.             t$332%header%orig_size = 0
+  831.             t$332%header%n_codim = 0
+  831.             t$332%header%dv_versn = 2
+  831.             t$332%header%dv_smunit = 64
+  831.             t$332%header%d_type = 0
+  831.             t$332%header%n_params = 0
+  831.             t$332%header%d_type_idx = 13
+  831.             t$332%dim_1%LB = 1
+  831.             t$332%dim_1%EX = _zla( 0, ncols )
+  831.             t$332%dim_1%SM = 1
+  831.             t$332%dim_2%LB = 1
+  831.             t$332%dim_2%EX = _zla( 0, kmax )
+  831.             t$332%dim_2%SM = _zla( 0, ncols )
+  831.             call updia2d( t$332, 36, latco )
+  831.          endif
+  831.       endif
+  770.       _free( t$171 )
+  833.       return
+  833.       end
+  833.       
+  841.       
+  841.       subroutine qnegat( fq, fdq, fft, rdt, del, imax, kmax )
+  841.       t$11 = imax
+  841.       t$12 = kmax
+  867.       t$177 = _zla( 0, imax )
+  841.       t$178 = _zla( 0, imax )
+  867.       t$179 = _zla( 0, kmax )
+  841.       t$180 = _zla( 0, imax ) * _zla( 0, kmax )
+  872.       t$183 = 8 * _zla( 0, kmax )
+  841.       t$181 = int( _alloc( 8 * _zla( 0, kmax ) ), 8 )
+  872.       t$182 = t$181
+  879.       if ( -1 + kmax > 0 ) then
+  879.          $I_L879_52 = 0
+  879. !dir$ ivdep
+  879.          do
+  880.             dfact(2 + $I_L879_52) = ( del(2 + $I_L879_52) * 1.0/del(1 + $I_L879_52) )
+  881.             $I_L879_52 = 1 + $I_L879_52
+  879.             if ( $I_L879_52 >= -1 + kmax ) exit
+  879.          enddo
+  890.          if ( imax > 0 ) then
+  887.             $SI_L887_62_G1 = 0
+  887.             do
+  890.                $SI_L890_54_G4 = 0
+  890.                do
+  887.                   $I_L887_71 = 0
+  887. !dir$ shortloop16
+  887. !dir$ blocking_size( 2, 2 )
+  887.                   do
+  890.                      $SCA_dfact_I0 = dfact(kmax + -$I_L887_71 + -2 * $SI_L887_62_G1)
+  890.                      $I_L890_68 = 0
+  890. !dir$ ivdep
+  890. !dir$ blocking_size( 256, 256 )
+  890.                      do
+  891.                         $fdq_WR0_R0 = fq(1 + $I_L890_68 + 256 * $SI_L890_54_G4, kmax + -$I_L887_71 + -2 * $SI_L887_62_G1)
+  892.                         if ( $fdq_WR0_R0 < 0.0 ) then
+  892.                            fq(1 + $I_L890_68 + 256 * $SI_L890_54_G4, kmax + -$I_L887_71 + -2 * $SI_L887_62_G1) = 9.9999999999999998e-13
+  892.                         endif
+  894.                         $LD_SPLT_P0 = fq(1 + $I_L890_68 + 256 * $SI_L890_54_G4, -1 + kmax + -$I_L887_71 + -2 * $SI_L887_62_G1)
+  893.                         $fdq_WR0_R0 = fq(1 + $I_L890_68 + 256 * $SI_L890_54_G4, kmax + -$I_L887_71 + -2 * $SI_L887_62_G1) + -$fdq_WR0_R0
+  893.                         fdq(1 + $I_L890_68 + 256 * $SI_L890_54_G4, kmax + -$I_L887_71 + -2 * $SI_L887_62_G1) = $fdq_WR0_R0
+  894.                         fq(1 + $I_L890_68 + 256 * $SI_L890_54_G4, -1 + kmax + -$I_L887_71 + -2 * $SI_L887_62_G1) = $LD_SPLT_P0 + -( $SCA_dfact_I0 * $fdq_WR0_R0 )
+  890.                         $I_L890_68 = 1 + $I_L890_68
+  892.                         if ( $I_L890_68 >= min( imax, 256 + 256 * $SI_L890_54_G4 ) + -256 * $SI_L890_54_G4 ) exit
+  892.                      enddo
+  887.                      $I_L887_71 = 1 + $I_L887_71
+  887.                      if ( $I_L887_71 >= min( -1 + kmax, 2 + 2 * $SI_L887_62_G1 ) + -2 * $SI_L887_62_G1 ) exit
+  887.                   enddo
+  890.                   $SI_L890_54_G4 = 1 + $SI_L890_54_G4
+  895.                   if ( $SI_L890_54_G4 >= _rsh( 255 + imax, 8 ) ) exit
+  895.                enddo
+  887.                $SI_L887_62_G1 = 1 + $SI_L887_62_G1
+  887.                if ( $SI_L887_62_G1 >= _rsh( kmax, 1 ) ) exit
+  887.             enddo
+  887.          endif
+  887.       endif
+  898.       if ( imax > 0 ) then
+  898.          $I_L898_56 = 0
+  898. !dir$ ivdep
+  898.          do
+  899.             $fdq_WR0_R1 = fq(1 + $I_L898_56, 1)
+  900.             if ( $fdq_WR0_R1 < 0.0 ) then
+  900.                fq(1 + $I_L898_56, 1) = 9.9999999999999998e-13
+  900.             endif
+  901.             $fdq_WR0_R1 = fq(1 + $I_L898_56, 1) + -$fdq_WR0_R1
+  901.             fdq(1 + $I_L898_56, 1) = $fdq_WR0_R1
+  902.             $I_L898_56 = 1 + $I_L898_56
+  900.             if ( $I_L898_56 >= imax ) exit
+  900.          enddo
+  900.       endif
+  904.       if ( kmax > 0 ) then
+  905.          if ( imax > 0 ) then
+  904.             $I_L904_64 = 0
+  904.             do
+  905.                $I_L905_58 = 0
+  905. !dir$ ivdep
+  905.                do
+  906.                   fft(1 + $I_L905_58, 1 + $I_L904_64) = ( fft(1 + $I_L905_58, 1 + $I_L904_64) * 1.0/( 1.0 + 6.0799999999999998e-1 * fq(1 + $I_L905_58, 1 + $I_L904_64) ) )
+  907.                   $I_L905_58 = 1 + $I_L905_58
+  905.                   if ( $I_L905_58 >= imax ) exit
+  905.                enddo
+  908.                $I_L904_64 = 1 + $I_L904_64
+  907.                if ( $I_L904_64 >= kmax ) exit
+  907.             enddo
+  907.          endif
+  907.       endif
+  910.       if ( (dodia%base_addr)(70, 0) /= .false. ) then
+  911.          if ( kmax > 0 ) then
+  912.             if ( imax > 0 ) then
+  911.                $I_L911_66 = 0
+  911.                do
+  912.                   $I_L912_60 = 0
+  912. !dir$ ivdep
+  912.                   do
+  913.                      fdq(1 + $I_L912_60, 1 + $I_L911_66) = rdt * fdq(1 + $I_L912_60, 1 + $I_L911_66)
+  914.                      $I_L912_60 = 1 + $I_L912_60
+  912.                      if ( $I_L912_60 >= imax ) exit
+  912.                   enddo
+  915.                   $I_L911_66 = 1 + $I_L911_66
+  914.                   if ( $I_L911_66 >= kmax ) exit
+  914.                enddo
+  914.             endif
+  914.          endif
+  914.       endif
+  841.       _free( t$181 )
+  918.       return
+  918.       end
+  918.       
+    6.       
+    6.       module convection
+    6.       end
+    6.       

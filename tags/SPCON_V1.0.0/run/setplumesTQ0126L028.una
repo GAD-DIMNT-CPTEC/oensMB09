@@ -1,0 +1,172 @@
+#!/bin/bash -x
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/setplumesTQ0126L028.una.2010101511:40:43.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -l mppdepth=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N PLUMES
+#*****************************************************************#
+#                                                                 #
+#       Name:           setplumesTQ0126L028.una        #
+#                                                                 #
+#       Function:       This script file is used to set the       #
+#                       environmental variables and start         #
+#                       the global model scripts.                 #
+#                                                                 #
+#*****************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#
+#   Set date (day,month,year) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn:ss
+#
+DATE=20101015
+HOUR=11:40:43
+export DATE HOUR
+#
+#   Set directories
+#
+#   OPERMOD  is the directory for sources, scripts and
+#            printouts files.
+#   SOPERMOD is the directory for input and output data
+#            and bin files.
+#   ROPERMOD is the directory for big selected output files.
+#   AOPERMOD is the directory for alternative initial conditions.
+#
+OPERMOD=/scratch/p01211/oens-1.0.0
+SOPERMOD=/scratch/p01211/oens-1.0.0
+ROPERMOD=/scratch/p01211/oens-1.0.0
+AOPERMOD=/scratch/p01211/oens-1.0.0
+export OPERMOD SOPERMOD ROPERMOD AOPERMOD 
+echo ${OPERMOD}
+echo ${SOPERMOD}
+echo ${ROPERMOD}
+echo ${AOPERMOD}
+#
+cd ${OPERMOD}/run
+#
+#   Set Horizontal Truncation and Vertical Layers
+#
+LEV=L028
+TRUNC=TQ0126
+export TRUNC LEV
+#
+#   Set machine
+MACH=una
+export MACH
+#
+#   Set option for compiling or not the source codes.
+#
+#   If COMPILE=make then only the modified sources will be compiled.
+#   If COMPILE=clean then the touch files will be removed and 
+#              all sources will be compiled.
+#             =run for run with no compilation
+#
+#   If COMPILE is make or clean then the script generates the binary file 
+#              and exits;
+#              if it is run then the script runs the existent binary file.
+#
+echo ${COMPILE}
+#
+# Define variables to generate variable data file names:
+#
+OUT=out
+export OUT
+#
+EXTS=S.unf
+export EXTS 
+#
+#   Set SX6 FORTRAN variables for output time diagnostics
+#
+#   F_PROGINF gives the elapsed, user, system and vector instruction
+#             execution time, and execution count of all instructions
+#             and number of vector instruction executions.
+#   F_FILEINF gives informations about I/O operations.
+#
+F_PROGINF=DETAIL
+export F_PROGINF
+#
+#   Set FORTRAN compilation flags
+#
+#   -float0 floating-point data format IEEE is enabled
+#   -ew     sets the basic numeric size to 8 bytes
+#
+#   Set FORTRAN environment file name
+#
+#   FFFn is associated with FORTRAN file unit = n
+#
+FFF=F_FF
+export FFF
+#
+#   Set environmental variables to binary conversion
+#
+F_SETBUF=2048
+export F_SETBUF
+echo " F_SETBUF = ${F_SETBUF}"
+#
+#   Set number of processors to use on the execution of the script
+#
+OMP_NUM_THREADS=1
+export OMP_NUM_THREADS
+#
+#  Now, verify if compile or run
+#
+if [ "${COMPILE}" != "run" ]
+then
+cd ${OPERMOD}/plumes/source
+make -f Makefile clean
+make -f Makefile
+#
+else
+#
+#
+#   Run plumes
+#
+#Parameter to be read by plumes : namelist file
+#UNDEF     : ( REAL    ) undef value set up according to original grib files
+#IMAX      : ( INTEGER ) number of points in zonal direction
+#JMAX      : ( INTEGER ) number of points in merdional direction
+#NMEMBERS  : ( INTEGER ) number of members of the ensemble
+#NFCTDY    : ( INTEGER ) number of forecast days of model integration
+#NFCTHOURS : ( INTEGER ) number of hours of model integration
+#FREQCALC  : ( INTEGER ) interval in hours of output ensemble forecast
+#DIRINP    : ( CHAR    ) input directory (ensemble members)
+#DIROUT    : ( CHAR    ) output directory (probability outputs)
+#RESOL     : ( CHAR    ) horizontal and vertical model resolution
+#PREFX     : ( CHAR    ) preffix for input and output files 
+mkdir -p ${ROPERMOD}/plumes/dataout/${TRUNC}${LEV}/2004032600
+cat <<EOT > ${OPERMOD}/plumes/bin/plmsetup.2004032600.nml
+UNDEF     :   -2.56E33
+IMAX      :   384
+JMAX      :   192
+NMEMBERS  :   15
+NFCTDY    :   15
+NFCTHOURS :   360
+FREQCALC  :   6
+DIRINP    :   ${ROPERMOD}/pos/dataout/${TRUNC}${LEV}/2004032600/
+DIROUT    :   ${ROPERMOD}/plumes/dataout/${TRUNC}${LEV}/2004032600/
+RESOL     :   ${TRUNC}${LEV}
+PREFX     :   NMC
+EOT
+
+cd ${OPERMOD}/plumes/bin
+
+#time plumes.exe 2004032600
+time aprun -n 1 -N  1 ${OPERMOD}/plumes/bin/plumes.exe 2004032600
+#
+#   Transfer files of probability plumes to DEC
+#
+
+cd ${OPERMOD}/run
+#echo "runtransfer.plumes.una 126 28 2004032600"   
+#AMM runtransfer.plumes.una 126 28 2004032600   
+
+fi
+

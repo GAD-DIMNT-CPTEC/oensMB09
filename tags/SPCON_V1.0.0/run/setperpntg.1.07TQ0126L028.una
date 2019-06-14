@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+#*********************************************************#
+#                                                         #
+#      Name:     setperpntg07TQ0126L028.una#
+#                                                         #
+#      Function: This script runs the spectral            #
+#                global numerical weather                 #
+#                forecasting at una.                 #
+#                                                         #
+#*********************************************************#
+#
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/setperpntg.1.07TQ0126L028.una.2010101819:29:25.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N ENSANL07
+#
+#
+#
+#   Change directory to run
+#
+cd /scratch/p01211/oens-1.0.0/run
+#
+#   Set current sst file name for model run
+#
+SSTNM=sstwkl
+#echo "+++ cp -rpf /scratch/p01211/oens-1.0.0/model/dataout/T126L28/GFCT07R2004032600*fct* /scratch/p01211/oens-1.0.0/model/datain"
+#
+#  Run scripts of recomposition         
+#
+echo "runperreco1.una 126 28 07 2004032600 15 NO 7 "
+runperreco1.una run 126 28 07 2004032600 15 NO 7
+#
+#  grib files
+#
+#echo "rungpgrib.sx6 2004032600 "
+#rungpgrib.sx6 2004032600 
+#
+### F I M ###
+
+exit 0

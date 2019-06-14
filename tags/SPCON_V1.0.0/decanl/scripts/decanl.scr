@@ -1,0 +1,53 @@
+#!/bin/ksh -x
+#
+#********************************************************#
+#                                                        #
+#     Name:     decanl.scr                               #
+#                                                        #
+#     Function: This script file is used to performs     #
+#               the decomposition of a global model      #
+#               initial conditions.                      #
+#                                                        #
+#     Date:        February 11th, 1998.                  #
+#     Last change: August   14th, 2000.                  #
+#                                                        #
+#********************************************************#
+#
+echo 'Decomposition  -x-  RUNNING ...'
+#
+#    Set directories:
+#
+source=${OPERMOD}/decanl/source
+bin=${SOPERMOD}/decanl/bin/${TRUNC}${LEV}; mkdir -p ${bin}
+input=${SOPERMOD}/decanl/datain; mkdir -p ${input}
+out=${OPERMOD}/decanl/output; mkdir -p ${out}
+#
+#   Check if the makefile will compile:
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "make" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f decanl.mk
+exit
+  fi
+#
+echo ${COMPILE}
+  if [ "${COMPILE}" = "clean" ]
+  then
+#
+#  Compile the sources:
+#
+cd ${source}
+make -f decanl.mk clean
+make -f decanl.mk
+exit
+  fi
+#
+cd ${bin}
+#
+./decanl.${TRUNC}${LEV} < ${input}/decanl${NUM}.nml > ${out}/decanl.${LABELI}.${HOUR}.${TRUNC}${LEV}
+#

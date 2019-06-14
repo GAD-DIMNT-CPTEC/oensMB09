@@ -1,0 +1,535 @@
+#!/bin/bash -x
+#help#
+#*******************************************************************#
+#                                                                   #
+#      Name:           makedir1.scr                                  #
+#                                                                   #
+#      Function:       This script make the directories             #
+#                      of output datas.                             #
+#                                                                   #
+#      Date:           April 03th, 2000.                            #
+#      Last change:    Abril 03th, 2000.                            #
+#                                                                   #
+#      Valid Arguments for makedir.scr                              #
+#                                                                   #
+#      First : TRC    : three-digit triangular truncation           #
+#     Second : LV     : two-digit number of vertical sigma-layers   #
+#      third : LABELI : initial forecasting label                   #
+#                                                                   #
+#              LABLEx : yyyymmddhh                                  #
+#                       yyyy = two digit year                       #
+#                       mm   = two digit month                      #
+#                       dd   = two digit day                        #
+#                       hh   = two digit hour                       #
+#                                                                   #
+#*******************************************************************#
+#help#
+#
+#       Help:
+#
+if [ "$1" = "help" -o -z "$1" ]
+then
+cat < $0 | sed -n '/^#help#/,/^#help#/p'
+exit 0
+fi
+#
+#       Test of Valid Arguments
+#
+if [ -z "$1" ]
+then
+echo "TRC is not set (xxx)"
+exit 
+else
+TRC=$1
+fi
+if [ -z "$2" ]
+then
+echo "LV is not set (xx)"
+exit 
+else
+LV=$2
+fi
+if [ -z "$3" ]
+then
+echo "LABELI is not set yyyymmddhh"
+exit 
+fi
+#
+#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
+#
+RESOL=`echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' `
+NIVEL=`echo ${LV}  |awk '{ printf("L%3.3d\n",$1)   }' `
+CASE=`echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }' `
+CASELW=`echo ${TRC} ${LV} |awk '{ printf("tq%4.4dl%3.3d\n",$1,$2)  }' `
+#
+#  Create setmakedir.scr
+#
+PATHA=`pwd`
+export FILEENV=`find ${PATHA} -name EnvironmentalVariablesMCGA -print`
+export PATHENV=`dirname ${FILEENV}`
+export PATHBASE=`cd ${PATHENV};cd ../;pwd`
+. ${FILEENV} ${CASE} CTR
+cd ${HOME_suite}/run
+
+cd ${OPERM}/run
+rm -f setmakedir.$CASE
+
+
+cat <<EOT > setmakedir.$CASE
+#!/bin/bash -x
+#
+# Set labels
+#
+LABELI=$3
+#
+#
+# Set directories
+#
+yydir=\`awk 'BEGIN {print substr("'\$LABELI'",1,4)}'\`
+mmdir=\`awk 'BEGIN {print substr("'\$LABELI'",5,2)}'\`
+dddir=\`awk 'BEGIN {print substr("'\$LABELI'",7,2)}'\`
+
+export DIRNMC=${BANGU}
+export DIRANL=\${DIRNMC}/${RESOL}${NIVEL}/ANL
+export DIRGFCT=\${DIRNMC}/${RESOL}${NIVEL}/GFCT
+export DIRGPOS=\${DIRNMC}/${RESOL}${NIVEL}/GPOS
+export DIRGFGH=\${DIRNMC}/${RESOL}${NIVEL}/GFGH
+export DIRGPRG=\${DIRNMC}/${RESOL}${NIVEL}/GPRG
+export DIRGDHN=\${DIRNMC}/${RESOL}${NIVEL}/GDHN
+export DIRPLUM=\${DIRNMC}/${RESOL}${NIVEL}/PLUMES
+export DIRENME=\${DIRNMC}/${RESOL}${NIVEL}/ENSMED
+export DIRRECP=\${DIRNMC}/${RESOL}${NIVEL}/RECPRD
+#
+# Make DIRANL files
+#
+######################################################################################
+
+echo "\${DIRNMC} "
+echo  "\${DIRANL}"
+echo  "\${DIRGFCT}" 
+echo  "\${DIRGPOS}" 
+echo  "\${DIRGFGH}" 
+echo  "\${DIRGPRG}" 
+echo  "\${DIRGDHN}" 
+echo  "\${DIRPLUM}" 
+echo  "\${DIRENME}" 
+echo  "\${DIRRECP} "
+
+#####################################################################################################
+echo "  "
+if [ -d "\${DIRANL}/\${yydir}" ]
+then
+   echo "\${DIRANL}/\${yydir} has alread been created"
+
+else
+   echo "rm -f \${DIRANL}/\${yydir}"
+   rm -f \${DIRANL}/\${yydir}
+   echo "mkdir -p \${DIRANL}/\${yydir}"
+   mkdir -p \${DIRANL}/\${yydir}
+  
+fi
+
+
+if [ -d "\${DIRANL}/\${yydir}/\${mmdir}" ]
+then
+   echo "\${DIRANL}/\${yydir}/\${mmdir} has alread been created" 
+
+else
+   echo "rm -f \${DIRANL}/\${yydir}/\${mmdir}"
+   rm -f \${DIRANL}/\${yydir}/\${mmdir}
+   echo "mkdir -p \${DIRANL}/\${yydir}/\${mmdir}"
+   mkdir -p \${DIRANL}/\${yydir}/\${mmdir}
+fi
+
+
+if [ -d "\${DIRANL}/\${yydir}/\${mmdir}/\${dddir}" ]
+then
+   echo "\${DIRANL}/\${yydir}/\${mmdir}/\${dddir} has alread been created" 
+
+else
+   echo "rm -f \${DIRANL}/\${yydir}/\${mmdir}/\${dddir}"
+   rm -f \${DIRANL}/\${yydir}/\${mmdir}/\${dddir}
+   echo "mkdir -p \${DIRANL}/\${yydir}/\${mmdir}/\${dddir}"
+   mkdir -p \${DIRANL}/\${yydir}/\${mmdir}/\${dddir}
+fi
+
+
+#
+# Make DIRGFCT files
+#
+echo "  "
+if [ -d "\${DIRGFCT}/\${yydir}" ]
+then
+   echo "\${DIRGFCT}/\${yydir} has alread been created"
+
+else
+   echo "rm -f \${DIRGFCT}/\${yydir}"
+   rm -f \${DIRGFCT}/\${yydir}
+   echo "mkdir -p \${DIRGFCT}/\${yydir}"
+   mkdir -p \${DIRGFCT}/\${yydir}
+fi
+
+if [ -d "\${DIRGFCT}/\${yydir}/\${mmdir}" ]
+then
+   echo "\${DIRGFCT}/\${yydir}/\${mmdir} has alread been created"
+
+else
+   echo "rm -f \${DIRGFCT}/\${yydir}/\${mmdir}"
+   rm -f \${DIRGFCT}/\${yydir}/\${mmdir}
+   echo "mkdir -p \${DIRGFCT}/\${yydir}/\${mmdir}"
+   mkdir -p \${DIRGFCT}/\${yydir}/\${mmdir}
+fi
+
+
+if [ -d "\${DIRGFCT}/\${yydir}/\${mmdir}/\${dddir}" ]
+then
+   echo "\${DIRGFCT}/\${yydir}/\${mmdir}/\${dddir} has alread been created" 
+
+else
+   echo "rm -f \${DIRGFCT}/\${yydir}/\${mmdir}/\${dddir}"
+   rm -f \${DIRGFCT}/\${yydir}/\${mmdir}/\${dddir}
+   echo "mkdir -p \${DIRGFCT}/\${yydir}/\${mmdir}/\${dddir}"
+   mkdir -p \${DIRGFCT}/\${yydir}/\${mmdir}/\${dddir}
+fi
+
+#
+# Make DIRGPOS files
+#
+echo "  "
+if [ -d "\${DIRGPOS}/\${yydir}" ]
+then
+   echo "\${DIRGPOS}/\${yydir} has alread been created"
+
+else
+   echo "rm -f \${DIRGPOS}/\${yydir}"
+   rm -f \${DIRGPOS}/\${yydir}
+   echo "mkdir -p  \${DIRGPOS}/\${yydir}"
+   mkdir -p \${DIRGPOS}/\${yydir}
+fi
+
+
+if [ -d "\${DIRGPOS}/\${yydir}/\${mmdir}" ]
+then
+   echo "\${DIRGPOS}/\${yydir}/\${mmdir} has alread been created" 
+
+else
+   echo "rm -f \${DIRGPOS}/\${yydir}/\${mmdir}"
+   rm -f \${DIRGPOS}/\${yydir}/\${mmdir}
+   echo "mkdir -p \${DIRGPOS}/\${yydir}/\${mmdir}"
+   mkdir -p \${DIRGPOS}/\${yydir}/\${mmdir}
+fi
+
+
+if [ -d "\${DIRGPOS}/\${yydir}/\${mmdir}/\${dddir}" ]
+then
+   echo "\${DIRGPOS}/\${yydir}/\${mmdir}/\${dddir} has alread been created" 
+
+else
+   echo "rm -f \${DIRGPOS}/\${yydir}/\${mmdir}/\${dddir}"
+   rm -f \${DIRGPOS}/\${yydir}/\${mmdir}/\${dddir}
+   echo "mkdir -p \${DIRGPOS}/\${yydir}/\${mmdir}/\${dddir}"
+   mkdir -p \${DIRGPOS}/\${yydir}/\${mmdir}/\${dddir}
+fi
+#
+# Make DIRGFGH files
+#
+echo "  "
+if [ -d "\${DIRGFGH}/\${yydir}" ]
+then
+   echo "\${DIRGFGH}/\${yydir} has alread been created"
+
+else
+   echo "rm -f \${DIRGFGH}/\${yydir}"
+   rm -f \${DIRGFGH}/\${yydir}
+   echo "mkdir -p \${DIRGFGH}/\${yydir}"
+   mkdir -p \${DIRGFGH}/\${yydir}
+fi
+
+if [ -d "\${DIRGFGH}/\${yydir}/\${mmdir}" ]
+then
+   echo "\${DIRGFGH}/\${yydir}/\${mmdir} has alread been created" 
+
+else
+   echo "rm -f \${DIRGFGH}/\${yydir}/\${mmdir}"
+   rm -f \${DIRGFGH}/\${yydir}/\${mmdir}
+   echo "mkdir -p \${DIRGFGH}/\${yydir}/\${mmdir}"
+   mkdir -p \${DIRGFGH}/\${yydir}/\${mmdir}
+fi
+
+if [ -d "\${DIRGFGH}/\${yydir}/\${mmdir}/\${dddir}" ]
+then
+   echo "\${DIRGFGH}/\${yydir}/\${mmdir}/\${dddir} has alread been created" 
+   
+else
+   echo "rm -f \${DIRGFGH}/\${yydir}/\${mmdir}/\${dddir}"
+   rm -f \${DIRGFGH}/\${yydir}/\${mmdir}/\${dddir}
+   echo "mkdir -p \${DIRGFGH}/\${yydir}/\${mmdir}/\${dddir}"
+   mkdir -p \${DIRGFGH}/\${yydir}/\${mmdir}/\${dddir}
+fi
+
+#
+# Make DIRPLUM files
+#
+echo "  "
+if [ -d "\${DIRPLUM}/\${yydir}" ]
+then
+   echo "\${DIRPLUM}/\${yydir} has alread been created"
+   
+else
+   echo "rm -f \${DIRPLUM}/\${yydir}"
+   rm -f \${DIRPLUM}/\${yydir}
+   echo "mkdir -p \${DIRPLUM}/\${yydir}"
+   mkdir -p \${DIRPLUM}/\${yydir}
+fi
+
+if [ -d "\${DIRPLUM}/\${yydir}/\${mmdir}" ]
+then
+   echo "\${DIRPLUM}/\${yydir}/\${mmdir} has alread been created" 
+   
+else
+   echo "rm -f \${DIRPLUM}/\${yydir}/\${mmdir}"
+   rm -f \${DIRPLUM}/\${yydir}/\${mmdir}
+   echo "mkdir -p \${DIRPLUM}/\${yydir}/\${mmdir}"
+   mkdir -p \${DIRPLUM}/\${yydir}/\${mmdir}
+fi
+
+if [ -d "\${DIRPLUM}/\${yydir}/\${mmdir}/\${dddir}" ]
+then
+   echo "\${DIRPLUM}/\${yydir}/\${mmdir}/\${dddir} has alread been created" 
+   
+else
+   echo "rm -f \${DIRPLUM}/\${yydir}/\${mmdir}/\${dddir}"
+   rm -f \${DIRPLUM}/\${yydir}/\${mmdir}/\${dddir}
+   echo "mkdir -p \${DIRPLUM}/\${yydir}/\${mmdir}/\${dddir}"
+   mkdir -p \${DIRPLUM}/\${yydir}/\${mmdir}/\${dddir}
+fi
+
+#
+# Make DIRENME files
+#
+echo "  "
+if [ -d "\${DIRENME}/\${yydir}" ]
+then
+   echo "\${DIRENME}/\${yydir} has alread been created"
+   
+else
+   echo "rm -f \${DIRENME}/\${yydir}"
+   rm -f \${DIRENME}/\${yydir}
+   echo "mkdir -p \${DIRENME}/\${yydir}"
+   mkdir -p \${DIRENME}/\${yydir}
+fi
+
+if [ -d "\${DIRENME}/\${yydir}/\${mmdir}" ]
+then
+   echo "\${DIRENME}/\${yydir}/\${mmdir} has alread been created" 
+   
+else
+   echo "rm -f \${DIRENME}/\${yydir}/\${mmdir}"
+   rm -f \${DIRENME}/\${yydir}/\${mmdir}
+   echo "mkdir -p \${DIRENME}/\${yydir}/\${mmdir}"
+   mkdir -p \${DIRENME}/\${yydir}/\${mmdir}
+fi
+
+if [ -d "\${DIRENME}/\${yydir}/\${mmdir}/\${dddir}" ]
+then
+   echo "\${DIRENME}/\${yydir}/\${mmdir}/\${dddir} has alread been created" 
+   
+else
+   echo "rm -f \${DIRENME}/\${yydir}/\${mmdir}/\${dddir}"
+   rm -f \${DIRENME}/\${yydir}/\${mmdir}/\${dddir}
+   echo "mkdir -p \${DIRENME}/\${yydir}/\${mmdir}/\${dddir}"
+   mkdir -p \${DIRENME}/\${yydir}/\${mmdir}/\${dddir}
+fi
+
+#
+# Make DIRRECP/GESFAM surface files
+#
+echo "  "
+if [ -d "\${DIRRECP}/GESFAM/\${yydir}" ]
+then
+   echo "\${DIRRECP}/GESFAM/\${yydir} has alread been created"
+   
+else
+   echo "rm -f \${DIRRECP}/GESFAM/\${yydir}"
+   rm -f \${DIRRECP}/GESFAM/\${yydir}
+   echo "mkdir -p \${DIRRECP}/GESFAM/\${yydir}"
+   mkdir -p \${DIRRECP}/GESFAM/\${yydir}
+fi
+
+if [ -d "\${DIRRECP}/GESFAM/\${yydir}/\${mmdir}" ]
+then
+   echo "\${DIRRECP}/GESFAM/\${yydir}/\${mmdir} has alread been created" 
+   
+else
+   echo "rm -f \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}"
+   rm -f \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}
+   echo "mkdir -p \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}"
+   mkdir -p \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}
+fi
+
+if [ -d "\${DIRRECP}/GESFAM/\${yydir}/\${mmdir}/\${dddir}" ]
+then
+   echo "\${DIRRECP}/GESFAM/\${yydir}/\${mmdir}/\${dddir} has alread been created" 
+
+else
+   echo "rm -f \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}/\${dddir}"
+   rm -f \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}/\${dddir}
+   echo "mkdir -p \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}/\${dddir}"
+   mkdir -p \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}/\${dddir}
+fi
+
+#
+# Make DIRRECP/GHPREC - grid history precipation
+#
+echo "  "
+if [ -d "\${DIRRECP}/GHPREC/\${yydir}" ]
+then
+   echo "\${DIRRECP}/GHPREC/\${yydir} has alread been created"
+   
+else
+   echo "rm -f \${DIRRECP}/GHPREC/\${yydir}"
+   rm -f \${DIRRECP}/GHPREC/\${yydir}
+   echo "mkdir -p \${DIRRECP}/GHPREC/\${yydir}"
+   mkdir -p \${DIRRECP}/GHPREC/\${yydir}
+fi
+if [ -d "\${DIRRECP}/GHPREC/\${yydir}/\${mmdir}" ]
+then
+   echo "\${DIRRECP}/GHPREC/\${yydir}/\${mmdir} has alread been created" 
+   
+else
+   echo "rm -f \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}"
+   rm -f \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}
+   echo "mkdir -p \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}"
+   mkdir -p \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}
+fi
+
+if [ -d "\${DIRRECP}/GHPREC/\${yydir}/\${mmdir}/\${dddir}" ]
+then
+   echo "\${DIRRECP}/GHPREC/\${yydir}/\${mmdir}/\${dddir} has alread been created" 
+   
+else
+   echo "rm -f \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}/\${dddir}"
+   rm -f \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}/\${dddir}
+   echo "mkdir -p \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}/\${dddir}"
+   mkdir -p \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}/\${dddir}
+fi
+
+chmod 755 \${DIRRECP}/GHPREC/\${yydir}/\${mmdir}/\${dddir}
+chmod 755 \${DIRRECP}/GESFAM/\${yydir}/\${mmdir}/\${dddir}
+chmod 755 \${DIRENME}/\${yydir}/\${mmdir}/\${dddir}
+chmod 755 \${DIRPLUM}/\${yydir}/\${mmdir}/\${dddir}
+chmod 755 \${DIRGFGH}/\${yydir}/\${mmdir}/\${dddir}
+chmod 755 \${DIRGPOS}/\${yydir}/\${mmdir}/\${dddir}
+chmod 755 \${DIRGFCT}/\${yydir}/\${mmdir}/\${dddir}
+chmod 755 \${DIRANL}/\${yydir}/\${mmdir}/\${dddir}
+
+
+
+# DIRETORIOS DO DISCO DE SAIDA
+
+if [ -d ${ROPERM}/Chopping ]
+then
+      echo "${ROPERM}/Chopping has alread been created"
+else
+      mkdir -p ${ROPERM}/Chopping/bin
+      mkdir -p ${ROPERM}/Chopping/datain
+      mkdir -p ${ROPERM}/Chopping/dataout
+      mkdir -p ${ROPERM}/Chopping/output
+fi
+if [ -d ${ROPERM}/ensmed ]
+then
+      echo "${ROPERM}/ensmed has alread been created"
+else
+      mkdir -p ${ROPERM}/ensmed/dataout/${CASE}
+fi
+if [ -d ${ROPERM}/eof ]
+then
+      echo "${ROPERM}/eof has alread been created"
+else
+      mkdir -p ${ROPERM}/eof/dataout/${CASE}
+fi
+if [ -d ${ROPERM}/model ]
+then
+      echo "${ROPERM}/model has alread been created"
+else
+      mkdir -p ${ROPERM}/model/dataout/${CASE}
+      mkdir -p ${ROPERM}/model/datain
+      mkdir -p ${ROPERM}/model/output
+fi
+if [ -d ${ROPERM}/pos ]
+then
+      echo "${ROPERM}/pos has alread been created"
+else
+      mkdir -p ${ROPERM}/pos/dataout/${CASE}
+      mkdir -p ${ROPERM}/pos/output
+fi
+if [ -d ${ROPERM}/prcmed ]
+then
+      echo "${ROPERM}/prcmed has alread been created"
+else
+      mkdir -p ${ROPERM}/prcmed/dataout/${CASE}/grib
+      mkdir -p ${ROPERM}/prcmed/grib
+      ln -sf ${ROPERM}/prcmed/dataout/${CASE} ${ROPERM}/prcmed/dataout/${CASELW}
+fi
+if [ -d ${ROPERM}/rdpert ]
+then
+      echo "${ROPERM}/rdpert has alread been created"
+else
+      mkdir -p ${ROPERM}/rdpert/dataout/${CASE}
+fi
+if [ -d ${ROPERM}/recanl ]
+then
+      echo "${ROPERM}/recanl has alread been created"
+else
+      mkdir -p ${ROPERM}/recanl/dataout/${CASE}
+fi
+if [ -d ${ROPERM}/recfct ]
+then
+      echo "${ROPERM}/recfct has alread been created"
+else
+      mkdir -p ${ROPERM}/recfct/dataout/${CASE}
+fi
+
+exit
+#
+EOT
+#
+#   End script. Then change permission to executable
+#
+chmod 700 setmakedir.$CASE
+#
+time setmakedir.$CASE
+
+
+return
+exit 0
+-- produtos
+|   |-- CHIEVOL
+|   |   `-- gif
+|   |-- PROBABILITY
+|   |   |-- binctl
+|   |   `-- gif
+|   |-- SPAGUETTI
+|   |   `-- gif
+|   |-- SPREAD
+|   |   `-- binctl
+|   |-- cluster
+|   |   `-- gif
+|   |-- gif
+|   |-- grh
+|   |   |-- datain
+|   |   `-- dataout
+|   |       `-- T126L28
+|   |-- grib
+|   |-- prcmed
+|   |   `-- climatologia
+|   |-- probability
+|   |   |-- dataout
+|   |   |   `-- T126L28
+|   |   |-- gif
+|   |   `-- scripts
+|   |       `-- gif
+|   `-- skill
+|       |-- binctl
+|       |   `-- 2005
+|       `-- clima

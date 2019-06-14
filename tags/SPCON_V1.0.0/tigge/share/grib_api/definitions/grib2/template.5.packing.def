@@ -1,0 +1,18 @@
+
+#  Reference value (R)
+# The copy_ok means that the value is copied when changing the representation
+# e.g. from jpeg to simple packing.
+ieeefloat   referenceValue  : read_only, copy_ok;
+
+#  Binary scale factor (E)
+signed[2]   binaryScaleFactor : read_only, copy_ok;
+
+#  Decimal scale factor (D)
+signed[2]   decimalScaleFactor: optional ;
+
+
+#  Number of bits used for each packed value for simple packing, or for each group reference value for complex packing or spatial differencing
+unsigned[1] numberOfBitsContainingEachPackedValue;
+alias numberOfBits = numberOfBitsContainingEachPackedValue;
+alias bitsPerValue = numberOfBitsContainingEachPackedValue;
+

@@ -1,0 +1,3547 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  SpecDynamics.f90
+       !        File                  :  SpecDynamics.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+  287.       
+  287.       subroutine initdztouv
+  293.       mnir_dz%header%a_contig = 1
+  293.       mnir_dz%dim_1%LB = 1
+  293.       mnir_dz%dim_1%EX = _zla( 0, ( 2 * mymnextmax ) )
+  293.       mnir_dz%dim_1%SM = 1
+  293.       $_allo_P0(0) = 0x1000000000001L
+  293.       $_allo_P0(1) = loc( mnir_dz )
+  293.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  295.       if ( mymmax > 0 ) then
+  294.          $snt_T0 = _parallel( 1, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  299.          $SC_mymnmap_I7 = mymnmap%dim_1%EX
+  299.          $SC_mymnmap_I8 = mymnmap%dim_1%LB
+  299.          $SC_mymnmap_I10 = mymnmap%dim_2%SM
+  299.          $SC_mymnmap_I9 = mymnmap%dim_2%EX
+  299.          $SC_mymnmap_I11 = mymnmap%dim_2%LB
+  298.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  298.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  298.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  298.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  298.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  296.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  296.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  295.          $I_L295_228 = 0
+  295. !$omp do schedule(static)
+  295.          do
+  296.             $$_mglob = (lm2m%base_addr)(1 + $I_L295_228, 0)
+  297.             if ( nmax + -$$_mglob >= 0 ) then
+  297.                $I_L297_206 = 0
+  297. !dir$ unroll 4
+  297.                do
+  298.                   $mn_S2 = (mymnextmap%base_addr)(1 + $I_L295_228, $$_mglob + $I_L297_206, 0)
+  299.                   $$_indir = (mymnmap%base_addr)(1 + $I_L295_228, $$_mglob + $I_L297_206, 0)
+  300.                   (mnir_dz%base_addr)(-1 + 2 * $mn_S2, 0) = 2 * $$_indir
+  301.                   (mnir_dz%base_addr)(2 * $mn_S2, 0) = -1 + 2 * $$_indir
+  302.                   $I_L297_206 = 1 + $I_L297_206
+  297.                   if ( $I_L297_206 >= 1 + nmax + -$$_mglob ) exit
+  297.                enddo
+  297.             endif
+  303.             $$_mn = (mymnextmap%base_addr)(1 + $I_L295_228, nextmax, 0)
+  304.             (mnir_dz%base_addr)(-1 + 2 * $$_mn, 0) = 1
+  305.             (mnir_dz%base_addr)(2 * $$_mn, 0) = 1
+  306.             $I_L295_228 = 1 + $I_L295_228
+  302.             if ( $I_L295_228 >= mymmax ) exit
+  302.          enddo
+  307.          $snt_T0 = _endparallel( 1, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T0 )
+  307.       endif
+  311.       mnm1_dz%header%a_contig = 1
+  311.       mnm1_dz%dim_1%LB = 1
+  311.       mnm1_dz%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+  311.       mnm1_dz%dim_1%SM = 1
+  311.       $_allo_P1(0) = 0x1000000000001L
+  311.       $_allo_P1(1) = loc( mnm1_dz )
+  311.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  313.       if ( mymmax > 0 ) then
+  312.          $snt_T2 = _parallel( 3, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  321.          $SC_mymnmap_I7 = mymnmap%dim_1%EX
+  321.          $SC_mymnmap_I8 = mymnmap%dim_1%LB
+  321.          $SC_mymnmap_I10 = mymnmap%dim_2%SM
+  321.          $SC_mymnmap_I9 = mymnmap%dim_2%EX
+  321.          $SC_mymnmap_I11 = mymnmap%dim_2%LB
+  315.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  315.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  315.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  315.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  315.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  314.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  314.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  313.          $I_L313_230 = 0
+  313. !$omp do schedule(static)
+  313.          do
+  314.             $$_mglob = (lm2m%base_addr)(1 + $I_L313_230, 0)
+  315.             $$_mn = (mymnextmap%base_addr)(1 + $I_L313_230, $$_mglob, 0)
+  317.             (mnm1_dz%base_addr)(-1 + 2 * $$_mn, 0) = 1
+  318.             (mnm1_dz%base_addr)(2 * $$_mn, 0) = 1
+  319.             if ( nextmax + -$$_mglob > 0 ) then
+  319.                $I_L319_208 = 0
+  319. !dir$ unroll 4
+  319.                do
+  320.                   $$_mn = (mymnextmap%base_addr)(1 + $I_L313_230, 1 + $$_mglob + $I_L319_208, 0)
+  321.                   $$_indnm1 = (mymnmap%base_addr)(1 + $I_L313_230, $$_mglob + $I_L319_208, 0)
+  322.                   (mnm1_dz%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_indnm1
+  323.                   (mnm1_dz%base_addr)(2 * $$_mn, 0) = 2 * $$_indnm1
+  324.                   $I_L319_208 = 1 + $I_L319_208
+  319.                   if ( $I_L319_208 >= ( nextmax + -$$_mglob ) ) exit
+  319.                enddo
+  319.             endif
+  325.             $I_L313_230 = 1 + $I_L313_230
+  324.             if ( $I_L313_230 >= mymmax ) exit
+  324.          enddo
+  326.          $snt_T2 = _endparallel( 3, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T2 )
+  326.       endif
+  330.       mnp1_dz%header%a_contig = 1
+  330.       mnp1_dz%dim_1%LB = 1
+  330.       mnp1_dz%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+  330.       mnp1_dz%dim_1%SM = 1
+  330.       $_allo_P2(0) = 0x1000000000001L
+  330.       $_allo_P2(1) = loc( mnp1_dz )
+  330.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  331.       $F_A33 = ( max( 0, 2 * mymnextmax ) )
+  331.       if ( 2 * mymnextmax > 0 ) then
+  331.          $I_L331_226 = 0
+  331. !dir$ ivdep
+  331.          do
+  331.             (mnp1_dz%base_addr)(1 + $I_L331_226, 0) = 0
+  331.             $I_L331_226 = 1 + $I_L331_226
+  331.             if ( $I_L331_226 >= $F_A33 ) exit
+  331.          enddo
+  331.       endif
+  333.       if ( mymmax > 0 ) then
+  332.          $snt_T4 = _parallel( 5, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  337.          $SC_mymnmap_I7 = mymnmap%dim_1%EX
+  337.          $SC_mymnmap_I8 = mymnmap%dim_1%LB
+  337.          $SC_mymnmap_I10 = mymnmap%dim_2%SM
+  337.          $SC_mymnmap_I9 = mymnmap%dim_2%EX
+  337.          $SC_mymnmap_I11 = mymnmap%dim_2%LB
+  336.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  336.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  336.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  336.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  336.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  334.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  334.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  341.          if ( nextmax + -nmax >= 0 ) then
+  333.             $I_L333_232 = 0
+  333. !$omp do schedule(static)
+  333.             do
+  334.                $$_mglob = (lm2m%base_addr)(1 + $I_L333_232, 0)
+  335.                if ( nmax + -$$_mglob > 0 ) then
+  335.                   $I_L335_210 = 0
+  335. !dir$ unroll 4
+  335.                   do
+  336.                      $$_mn = (mymnextmap%base_addr)(1 + $I_L333_232, $$_mglob + $I_L335_210, 0)
+  337.                      $$_indnp1 = (mymnmap%base_addr)(1 + $I_L333_232, 1 + $$_mglob + $I_L335_210, 0)
+  338.                      (mnp1_dz%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_indnp1
+  339.                      (mnp1_dz%base_addr)(2 * $$_mn, 0) = 2 * $$_indnp1
+  340.                      $I_L335_210 = 1 + $I_L335_210
+  335.                      if ( $I_L335_210 >= ( nmax + -$$_mglob ) ) exit
+  335.                   enddo
+  335.                endif
+  341.                $I_L341_212 = 0
+  341. !dir$ unroll 4
+  341.                do
+  342.                   $$_mn = (mymnextmap%base_addr)(1 + $I_L333_232, nmax + $I_L341_212, 0)
+  343.                   (mnp1_dz%base_addr)(-1 + 2 * $$_mn, 0) = 1
+  344.                   (mnp1_dz%base_addr)(2 * $$_mn, 0) = 1
+  345.                   $I_L341_212 = 1 + $I_L341_212
+  341.                   if ( $I_L341_212 >= 1 + nextmax + -nmax ) exit
+  341.                enddo
+  346.                $I_L333_232 = 1 + $I_L333_232
+  345.                if ( $I_L333_232 >= mymmax ) exit
+  345.             enddo
+  345.          else
+  333.             $I_L333_240 = 0
+  333. !$omp do schedule(static)
+  333.             do
+  334.                $$_mglob = (lm2m%base_addr)(1 + $I_L333_240, 0)
+  335.                if ( nmax + -$$_mglob > 0 ) then
+  335.                   $I_L335_222 = 0
+  335. !dir$ unroll 4
+  335.                   do
+  336.                      $$_mn = (mymnextmap%base_addr)(1 + $I_L333_240, $$_mglob + $I_L335_222, 0)
+  337.                      $$_indnp1 = (mymnmap%base_addr)(1 + $I_L333_240, 1 + $$_mglob + $I_L335_222, 0)
+  338.                      (mnp1_dz%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_indnp1
+  339.                      (mnp1_dz%base_addr)(2 * $$_mn, 0) = 2 * $$_indnp1
+  340.                      $I_L335_222 = 1 + $I_L335_222
+  335.                      if ( $I_L335_222 >= ( nmax + -$$_mglob ) ) exit
+  335.                   enddo
+  335.                endif
+  346.                $I_L333_240 = 1 + $I_L333_240
+  345.                if ( $I_L333_240 >= mymmax ) exit
+  345.             enddo
+  345.          endif
+  347.          $snt_T4 = _endparallel( 5, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T4 )
+  347.       endif
+  351.       beta_dz%header%a_contig = 1
+  351.       beta_dz%dim_1%LB = 1
+  351.       beta_dz%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+  351.       beta_dz%dim_1%SM = 1
+  351.       $_allo_P3(0) = 0x1000000000001L
+  351.       $_allo_P3(1) = loc( beta_dz )
+  351.       call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+  353.       if ( mymmax > 0 ) then
+  352.          $snt_T6 = _parallel( 7, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  356.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  356.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  356.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  356.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  356.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  354.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  354.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  353.          $I_L353_234 = 0
+  353. !$omp do schedule(static)
+  353.          do
+  354.             $$_mglob = (lm2m%base_addr)(1 + $I_L353_234, 0)
+  356.             $mn_S9 = (mymnextmap%base_addr)(1 + $I_L353_234, $$_mglob, 0)
+  357.             (beta_dz%base_addr)(-1 + 2 * $mn_S9, 0) = ( 6370000.0 * 1.0/( real( $$_mglob, 8 ) ) )
+  358.             (beta_dz%base_addr)(2 * $mn_S9, 0) = -( 6370000.0 * 1.0/( real( $$_mglob, 8 ) ) )
+  359.             if ( nmax + -$$_mglob > 0 ) then
+  359.                $I_L359_214 = 0
+  359.                do
+  361.                   $mn_S11 = (mymnextmap%base_addr)(1 + $I_L353_234, 1 + $$_mglob + $I_L359_214, 0)
+  362.                   (beta_dz%base_addr)(-1 + 2 * $mn_S11, 0) = ( 6370000.0 * real( -1 + $$_mglob, 8 ) * 1.0/( real( -1 + -$$_mglob + -$I_L359_214 + ( 1 + $$_mglob + $I_L359_214 ) * ( 1 + $$_mglob + $I_L359_214 ), 8 ) ) )
+  363.                   (beta_dz%base_addr)(2 * $mn_S11, 0) = -( 6370000.0 * real( -1 + $$_mglob, 8 ) * 1.0/( real( -1 + -$$_mglob + -$I_L359_214 + ( 1 + $$_mglob + $I_L359_214 ) * ( 1 + $$_mglob + $I_L359_214 ), 8 ) ) )
+  364.                   $I_L359_214 = 1 + $I_L359_214
+  359.                   if ( $I_L359_214 >= ( nmax + -$$_mglob ) ) exit
+  359.                enddo
+  359.             endif
+  365.             $$_mn = (mymnextmap%base_addr)(1 + $I_L353_234, nextmax, 0)
+  366.             (beta_dz%base_addr)(-1 + 2 * $$_mn, 0) = 0.0
+  367.             (beta_dz%base_addr)(2 * $$_mn, 0) = 0.0
+  368.             $I_L353_234 = 1 + $I_L353_234
+  364.             if ( $I_L353_234 >= mymmax ) exit
+  364.          enddo
+  369.          $snt_T6 = _endparallel( 7, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T6 )
+  369.       endif
+  373.       alfa_dz%header%a_contig = 1
+  373.       alfa_dz%dim_1%LB = 1
+  373.       alfa_dz%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+  373.       alfa_dz%dim_1%SM = 1
+  373.       $_allo_P4(0) = 0x1000000000001L
+  373.       $_allo_P4(1) = loc( alfa_dz )
+  373.       call __allocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+  375.       if ( mymmax > 0 ) then
+  374.          $snt_T8 = _parallel( 9, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  382.          $SC_epslon_I12 = epslon%dim_1%EX
+  382.          $SC_epslon_I13 = epslon%dim_1%LB
+  377.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  377.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  377.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  377.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  377.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  376.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  376.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  375.          $I_L375_236 = 0
+  375. !$omp do schedule(static)
+  375.          do
+  376.             $$_mglob = (lm2m%base_addr)(1 + $I_L375_236, 0)
+  377.             $$_mn = (mymnextmap%base_addr)(1 + $I_L375_236, $$_mglob, 0)
+  378.             (alfa_dz%base_addr)(-1 + 2 * $$_mn, 0) = 0.0
+  379.             (alfa_dz%base_addr)(2 * $$_mn, 0) = 0.0
+  380.             if ( nextmax + -$$_mglob > 0 ) then
+  380.                $I_L380_216 = 0
+  380. !dir$ unroll 4
+  380.                do
+  381.                   $$_mn = (mymnextmap%base_addr)(1 + $I_L375_236, 1 + $$_mglob + $I_L380_216, 0)
+  382.                   $$_aux = ( 6370000.0 * (epslon%base_addr)($$_mn, 0) * 1.0/( real( $$_mglob + $I_L380_216, 8 ) ) )
+  383.                   (alfa_dz%base_addr)(-1 + 2 * $$_mn, 0) = $$_aux
+  384.                   (alfa_dz%base_addr)(2 * $$_mn, 0) = $$_aux
+  385.                   $I_L380_216 = 1 + $I_L380_216
+  380.                   if ( $I_L380_216 >= ( nextmax + -$$_mglob ) ) exit
+  380.                enddo
+  380.             endif
+  386.             $I_L375_236 = 1 + $I_L375_236
+  385.             if ( $I_L375_236 >= mymmax ) exit
+  385.          enddo
+  387.          $snt_T8 = _endparallel( 9, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T8 )
+  387.       endif
+  391.       alfa_dznp1%header%a_contig = 1
+  391.       alfa_dznp1%dim_1%LB = 1
+  391.       alfa_dznp1%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+  391.       alfa_dznp1%dim_1%SM = 1
+  391.       $_allo_P5(0) = 0x1000000000001L
+  391.       $_allo_P5(1) = loc( alfa_dznp1 )
+  391.       call __allocate( $_allo_P5, 0, 0, _fcd( 0, 0 ) )
+  393.       if ( mymmax > 0 ) then
+  392.          $snt_T10 = _parallel( 11, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  398.          $SC_epslon_I12 = epslon%dim_1%EX
+  398.          $SC_epslon_I13 = epslon%dim_1%LB
+  396.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  396.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  396.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  396.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  396.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  394.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  394.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  402.          if ( nextmax + -nmax >= 0 ) then
+  393.             $I_L393_238 = 0
+  393. !$omp do schedule(static)
+  393.             do
+  394.                $$_mglob = (lm2m%base_addr)(1 + $I_L393_238, 0)
+  395.                if ( nmax + -$$_mglob > 0 ) then
+  395.                   $I_L395_218 = 0
+  395. !dir$ unroll 4
+  395.                   do
+  396.                      $$_mn = (mymnextmap%base_addr)(1 + $I_L393_238, $$_mglob + $I_L395_218, 0)
+  397.                      $$_mn2 = (mymnextmap%base_addr)(1 + $I_L393_238, 1 + $$_mglob + $I_L395_218, 0)
+  398.                      $$_aux = ( 6370000.0 * (epslon%base_addr)($$_mn2, 0) * 1.0/( real( $$_mglob + $I_L395_218, 8 ) ) )
+  399.                      (alfa_dznp1%base_addr)(-1 + 2 * $$_mn, 0) = $$_aux
+  400.                      (alfa_dznp1%base_addr)(2 * $$_mn, 0) = $$_aux
+  401.                      $I_L395_218 = 1 + $I_L395_218
+  395.                      if ( $I_L395_218 >= ( nmax + -$$_mglob ) ) exit
+  395.                   enddo
+  395.                endif
+  402.                $I_L402_220 = 0
+  402. !dir$ unroll 4
+  402.                do
+  403.                   $$_mn = (mymnextmap%base_addr)(1 + $I_L393_238, nmax + $I_L402_220, 0)
+  404.                   (alfa_dznp1%base_addr)(-1 + 2 * $$_mn, 0) = 0.0
+  405.                   (alfa_dznp1%base_addr)(2 * $$_mn, 0) = 0.0
+  406.                   $I_L402_220 = 1 + $I_L402_220
+  402.                   if ( $I_L402_220 >= 1 + nextmax + -nmax ) exit
+  402.                enddo
+  407.                $I_L393_238 = 1 + $I_L393_238
+  406.                if ( $I_L393_238 >= mymmax ) exit
+  406.             enddo
+  406.          else
+  393.             $I_L393_242 = 0
+  393. !$omp do schedule(static)
+  393.             do
+  394.                $$_mglob = (lm2m%base_addr)(1 + $I_L393_242, 0)
+  395.                if ( nmax + -$$_mglob > 0 ) then
+  395.                   $I_L395_224 = 0
+  395. !dir$ unroll 4
+  395.                   do
+  396.                      $$_mn = (mymnextmap%base_addr)(1 + $I_L393_242, $$_mglob + $I_L395_224, 0)
+  397.                      $$_mn2 = (mymnextmap%base_addr)(1 + $I_L393_242, 1 + $$_mglob + $I_L395_224, 0)
+  398.                      $$_aux = ( 6370000.0 * (epslon%base_addr)($$_mn2, 0) * 1.0/( real( $$_mglob + $I_L395_224, 8 ) ) )
+  399.                      (alfa_dznp1%base_addr)(-1 + 2 * $$_mn, 0) = $$_aux
+  400.                      (alfa_dznp1%base_addr)(2 * $$_mn, 0) = $$_aux
+  401.                      $I_L395_224 = 1 + $I_L395_224
+  395.                      if ( $I_L395_224 >= ( nmax + -$$_mglob ) ) exit
+  395.                   enddo
+  395.                endif
+  407.                $I_L393_242 = 1 + $I_L393_242
+  406.                if ( $I_L393_242 >= mymmax ) exit
+  406.             enddo
+  406.          endif
+  408.          $snt_T10 = _endparallel( 11, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T10 )
+  408.       endif
+  410.       return
+  410.       end
+  410.       
+  433.       
+  433.       subroutine dztouv( qdivp, qrotp, qup, qvp, mnriextfirst, mnriextlast )
+  433.       t$1 = ( 2 * mymnmax )
+  433.       t$2 = kmaxloc
+  434.       t$25 = _zla( 0, ( 2 * mymnmax ) )
+  433.       t$26 = _zla( 0, ( 2 * mymnmax ) )
+  434.       t$27 = _zla( 0, kmaxloc )
+  433.       t$28 = _zla( 0, ( 2 * mymnmax ) ) * _zla( 0, kmaxloc )
+  433.       t$3 = ( 2 * mymnextmax )
+  436.       t$29 = _zla( 0, ( 2 * mymnextmax ) )
+  433.       t$30 = _zla( 0, ( 2 * mymnextmax ) )
+  433.       t$31 = _zla( 0, kmaxloc ) * _zla( 0, ( 2 * mymnextmax ) )
+  442.       if ( kmaxloc > 0 ) then
+  444.          $SC_mnir_dz_I4 = mnir_dz%dim_1%EX
+  444.          $SC_mnir_dz_I5 = mnir_dz%dim_1%LB
+  444.          $SC_beta_dz_I6 = beta_dz%dim_1%EX
+  444.          $SC_beta_dz_I7 = beta_dz%dim_1%LB
+  444.          $SC_mnp1_dz_I0 = mnp1_dz%dim_1%EX
+  444.          $SC_mnp1_dz_I1 = mnp1_dz%dim_1%LB
+  444.          $SC_alfa_dznp1_I2 = alfa_dznp1%dim_1%EX
+  444.          $SC_alfa_dznp1_I3 = alfa_dznp1%dim_1%LB
+  444.          $SC_mnm1_dz_I8 = mnm1_dz%dim_1%EX
+  444.          $SC_mnm1_dz_I9 = mnm1_dz%dim_1%LB
+  444.          $SC_alfa_dz_I10 = alfa_dz%dim_1%EX
+  444.          $SC_alfa_dz_I11 = alfa_dz%dim_1%LB
+  443.          if ( mnriextlast + -mnriextfirst >= 0 ) then
+  442.             $I_L442_10 = 0
+  442. !dir$ blocking_size( 1, 1 )
+  442.             do
+  443.                $I_L443_8 = 0
+  443. !dir$ ivdep
+  443. !dir$ blocking_size( 256, 256 )
+  443.                do
+  444.                   qup(mnriextfirst + $I_L443_8, 1 + $I_L442_10) = -( (alfa_dz%base_addr)(mnriextfirst + $I_L443_8, 0) * qrotp((mnm1_dz%base_addr)(mnriextfirst + $I_L443_8, 0), 1 + $I_L442_10) ) + (beta_dz%base_addr)(mnriextfirst + $I_L443_8, 0) * qdivp((mnir_dz%base_addr)(mnriextfirst + $I_L443_8, 0), 1 + $I_L442_10) + (alfa_dznp1%base_addr)(mnriextfirst + $I_L443_8, 0) * qrotp((mnp1_dz%base_addr)(mnriextfirst + $I_L443_8, 0), 1 + $I_L442_10)
+  448.                   qvp(mnriextfirst + $I_L443_8, 1 + $I_L442_10) = -( (alfa_dznp1%base_addr)(mnriextfirst + $I_L443_8, 0) * qdivp((mnp1_dz%base_addr)(mnriextfirst + $I_L443_8, 0), 1 + $I_L442_10) ) + (beta_dz%base_addr)(mnriextfirst + $I_L443_8, 0) * qrotp((mnir_dz%base_addr)(mnriextfirst + $I_L443_8, 0), 1 + $I_L442_10) + (alfa_dz%base_addr)(mnriextfirst + $I_L443_8, 0) * qdivp((mnm1_dz%base_addr)(mnriextfirst + $I_L443_8, 0), 1 + $I_L442_10)
+  452.                   $I_L443_8 = 1 + $I_L443_8
+  443.                   if ( $I_L443_8 >= 1 + mnriextlast + -mnriextfirst ) exit
+  443.                enddo
+  453.                $I_L442_10 = 1 + $I_L442_10
+  452.                if ( $I_L442_10 >= kmaxloc ) exit
+  452.             enddo
+  452.          endif
+  452.       endif
+  454.       return
+  454.       end
+  454.       
+  460.       
+  460.       subroutine initfiltdiss
+  462.       ncrit%header%a_contig = 1
+  462.       ncrit%dim_1%LB = 1
+  462.       ncrit%dim_1%EX = _zla( 0, kmax )
+  462.       ncrit%dim_1%SM = 1
+  462.       $_allo_P0(0) = 0x1000000000001L
+  462.       $_allo_P0(1) = loc( ncrit )
+  462.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  463.       alphaglob = 1.5698587127158556e-7 * alpha
+  464.       betaglob = 64145.199999999997 * vcrit
+  465.       return
+  465.       end
+  465.       
+  472.       
+  472.       subroutine filtdiss( dt, vmax, kfirst, klast, mnrifirst, mnrilast )
+  472.       t$4 = kmaxloc
+  474.       t$32 = _zla( 0, kmaxloc )
+  489.       alpha0 = alphaglob * dt
+  490.       beta = ( betaglob * 1.0/dt )
+  492.       if ( klast + -kfirst >= 0 ) then
+  494.          $SC_ncrit_I0 = ncrit%dim_1%EX
+  494.          $SC_ncrit_I1 = ncrit%dim_1%LB
+  492.          $I_L492_34 = 0
+  492. !dir$ ivdep
+  492.          do
+  493.             if ( vmax(kfirst + $I_L492_34) == 0.0 ) then
+  494.                (ncrit%base_addr)(kfirst + $I_L492_34, 0) = nmax
+  494.             else
+  496.                (ncrit%base_addr)(kfirst + $I_L492_34, 0) = int( ( beta * 1.0/vmax(kfirst + $I_L492_34) ) )
+  496.             endif
+  498.             $I_L492_34 = 1 + $I_L492_34
+  497.             if ( $I_L492_34 >= 1 + klast + -kfirst ) exit
+  497.          enddo
+  497.       endif
+  499.       _mt_barrier( 1, _mt_rw_list(...) )
+  502.       if ( kmaxloc > 0 ) then
+  513.          $SC_qqp_I8 = qqp%dim_1%EX
+  513.          $SC_qqp_I9 = qqp%dim_1%LB
+  513.          $SC_qqp_I11 = qqp%dim_2%SM
+  513.          $SC_qqp_I10 = qqp%dim_2%EX
+  513.          $SC_qqp_I12 = qqp%dim_2%LB
+  512.          $SC_qrotp_I13 = qrotp%dim_1%EX
+  512.          $SC_qrotp_I14 = qrotp%dim_1%LB
+  512.          $SC_qrotp_I16 = qrotp%dim_2%SM
+  512.          $SC_qrotp_I15 = qrotp%dim_2%EX
+  512.          $SC_qrotp_I17 = qrotp%dim_2%LB
+  511.          $SC_qtmpp_I18 = qtmpp%dim_1%EX
+  511.          $SC_qtmpp_I19 = qtmpp%dim_1%LB
+  511.          $SC_qtmpp_I21 = qtmpp%dim_2%SM
+  511.          $SC_qtmpp_I20 = qtmpp%dim_2%EX
+  511.          $SC_qtmpp_I22 = qtmpp%dim_2%LB
+  510.          $SC_qdivp_I23 = qdivp%dim_1%EX
+  510.          $SC_qdivp_I24 = qdivp%dim_1%LB
+  510.          $SC_qdivp_I26 = qdivp%dim_2%SM
+  510.          $SC_qdivp_I25 = qdivp%dim_2%EX
+  510.          $SC_qdivp_I27 = qdivp%dim_2%LB
+  507.          $SC_lm2m_I6 = lm2m%dim_1%EX
+  507.          $SC_lm2m_I7 = lm2m%dim_1%LB
+  506.          $SC_mymmap_I4 = mymmap%dim_1%EX
+  506.          $SC_mymmap_I5 = mymmap%dim_1%LB
+  505.          $SC_mynmap_I2 = mynmap%dim_1%EX
+  505.          $SC_mynmap_I3 = mynmap%dim_1%LB
+  508.          $SC_ncrit_I0 = ncrit%dim_1%EX
+  508.          $SC_ncrit_I1 = ncrit%dim_1%LB
+  504.          if ( mnrilast + -mnrifirst >= 0 ) then
+  502.             $I_L502_38 = 0
+  502. !dir$ blocking_size( 1, 1 )
+  502.             do
+  504.                $SCA_ncrit_I28 = (ncrit%base_addr)(1 + $I_L502_38, 0)
+  504.                $I_L504_36 = 0
+  504. !dir$ ivdep
+  504. !dir$ blocking_size( 256, 256 )
+  504.                do
+  505.                   n = (mynmap%base_addr)(( 1 + mnrifirst + $I_L504_36 ) / 2, 0)
+  506.                   m = (mymmap%base_addr)(( 1 + mnrifirst + $I_L504_36 ) / 2, 0)
+  507.                   mglob = (lm2m%base_addr)(m, 0)
+  508.                   if ( n >= 2 + $SCA_ncrit_I28 ) then
+  508.                      if ( mglob <= n ) then
+  509.                         dumpfactor = 1.0/( 1.0 + alpha0 * vmax(1 + $I_L502_38) * ( -1 + n + -$SCA_ncrit_I28 ) )
+  513.                         (qqp%base_addr)(mnrifirst + $I_L504_36, 1 + $I_L502_38, 0) = dumpfactor * (qqp%base_addr)(mnrifirst + $I_L504_36, 1 + $I_L502_38, 0)
+  512.                         (qrotp%base_addr)(mnrifirst + $I_L504_36, 1 + $I_L502_38, 0) = dumpfactor * (qrotp%base_addr)(mnrifirst + $I_L504_36, 1 + $I_L502_38, 0)
+  511.                         (qtmpp%base_addr)(mnrifirst + $I_L504_36, 1 + $I_L502_38, 0) = dumpfactor * (qtmpp%base_addr)(mnrifirst + $I_L504_36, 1 + $I_L502_38, 0)
+  510.                         (qdivp%base_addr)(mnrifirst + $I_L504_36, 1 + $I_L502_38, 0) = dumpfactor * (qdivp%base_addr)(mnrifirst + $I_L504_36, 1 + $I_L502_38, 0)
+  510.                      endif
+  510.                   endif
+  515.                   $I_L504_36 = 1 + $I_L504_36
+  514.                   if ( $I_L504_36 >= 1 + mnrilast + -mnrifirst ) exit
+  514.                enddo
+  516.                $I_L502_38 = 1 + $I_L502_38
+  515.                if ( $I_L502_38 >= kmaxloc ) exit
+  515.             enddo
+  515.          endif
+  515.       endif
+  517.       _mt_barrier( 2, _mt_rw_list(...) )
+  518.       return
+  518.       end
+  518.       
+  525.       
+  525.       subroutine initgozrim
+  530.       mnm1_gz%header%a_contig = 1
+  530.       mnm1_gz%dim_1%LB = 1
+  530.       mnm1_gz%dim_1%EX = _zla( 0, ( 2 * mymnextmax ) )
+  530.       mnm1_gz%dim_1%SM = 1
+  530.       $_allo_P0(0) = 0x1000000000001L
+  530.       $_allo_P0(1) = loc( mnm1_gz )
+  530.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  532.       if ( mymmax > 0 ) then
+  531.          $snt_T0 = _parallel( 1, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  540.          $SC_mymnmap_I7 = mymnmap%dim_1%EX
+  540.          $SC_mymnmap_I8 = mymnmap%dim_1%LB
+  540.          $SC_mymnmap_I10 = mymnmap%dim_2%SM
+  540.          $SC_mymnmap_I9 = mymnmap%dim_2%EX
+  540.          $SC_mymnmap_I11 = mymnmap%dim_2%LB
+  534.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  534.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  534.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  534.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  534.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  533.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  533.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  532.          $I_L532_168 = 0
+  532. !$omp do schedule(static)
+  532.          do
+  533.             $$_mglob = (lm2m%base_addr)(1 + $I_L532_168, 0)
+  534.             $$_mn = (mymnextmap%base_addr)(1 + $I_L532_168, $$_mglob, 0)
+  536.             (mnm1_gz%base_addr)(-1 + 2 * $$_mn, 0) = 1
+  537.             (mnm1_gz%base_addr)(2 * $$_mn, 0) = 1
+  538.             if ( nextmax + -$$_mglob > 0 ) then
+  538.                $I_L538_152 = 0
+  538. !dir$ unroll 4
+  538.                do
+  539.                   $$_mn = (mymnextmap%base_addr)(1 + $I_L532_168, 1 + $$_mglob + $I_L538_152, 0)
+  540.                   $$_indnm1 = (mymnmap%base_addr)(1 + $I_L532_168, $$_mglob + $I_L538_152, 0)
+  541.                   (mnm1_gz%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_indnm1
+  542.                   (mnm1_gz%base_addr)(2 * $$_mn, 0) = 2 * $$_indnm1
+  543.                   $I_L538_152 = 1 + $I_L538_152
+  538.                   if ( $I_L538_152 >= ( nextmax + -$$_mglob ) ) exit
+  538.                enddo
+  538.             endif
+  544.             $I_L532_168 = 1 + $I_L532_168
+  543.             if ( $I_L532_168 >= mymmax ) exit
+  543.          enddo
+  545.          $snt_T0 = _endparallel( 1, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T0 )
+  545.       endif
+  549.       mnp1_gz%header%a_contig = 1
+  549.       mnp1_gz%dim_1%LB = 1
+  549.       mnp1_gz%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+  549.       mnp1_gz%dim_1%SM = 1
+  549.       $_allo_P1(0) = 0x1000000000001L
+  549.       $_allo_P1(1) = loc( mnp1_gz )
+  549.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  551.       if ( mymmax > 0 ) then
+  550.          $snt_T2 = _parallel( 3, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  555.          $SC_mymnmap_I7 = mymnmap%dim_1%EX
+  555.          $SC_mymnmap_I8 = mymnmap%dim_1%LB
+  555.          $SC_mymnmap_I10 = mymnmap%dim_2%SM
+  555.          $SC_mymnmap_I9 = mymnmap%dim_2%EX
+  555.          $SC_mymnmap_I11 = mymnmap%dim_2%LB
+  554.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  554.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  554.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  554.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  554.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  552.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  552.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  559.          if ( nextmax + -nmax >= 0 ) then
+  551.             $I_L551_170 = 0
+  551. !$omp do schedule(static)
+  551.             do
+  552.                $$_mglob = (lm2m%base_addr)(1 + $I_L551_170, 0)
+  553.                if ( nmax + -$$_mglob > 0 ) then
+  553.                   $I_L553_154 = 0
+  553. !dir$ unroll 4
+  553.                   do
+  554.                      $$_mn = (mymnextmap%base_addr)(1 + $I_L551_170, $$_mglob + $I_L553_154, 0)
+  555.                      $$_indnp1 = (mymnmap%base_addr)(1 + $I_L551_170, 1 + $$_mglob + $I_L553_154, 0)
+  556.                      (mnp1_gz%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_indnp1
+  557.                      (mnp1_gz%base_addr)(2 * $$_mn, 0) = 2 * $$_indnp1
+  558.                      $I_L553_154 = 1 + $I_L553_154
+  553.                      if ( $I_L553_154 >= ( nmax + -$$_mglob ) ) exit
+  553.                   enddo
+  553.                endif
+  559.                $I_L559_156 = 0
+  559. !dir$ unroll 4
+  559.                do
+  560.                   $$_mn = (mymnextmap%base_addr)(1 + $I_L551_170, nmax + $I_L559_156, 0)
+  561.                   (mnp1_gz%base_addr)(-1 + 2 * $$_mn, 0) = 1
+  562.                   (mnp1_gz%base_addr)(2 * $$_mn, 0) = 1
+  563.                   $I_L559_156 = 1 + $I_L559_156
+  559.                   if ( $I_L559_156 >= 1 + nextmax + -nmax ) exit
+  559.                enddo
+  564.                $I_L551_170 = 1 + $I_L551_170
+  563.                if ( $I_L551_170 >= mymmax ) exit
+  563.             enddo
+  563.          else
+  551.             $I_L551_176 = 0
+  551. !$omp do schedule(static)
+  551.             do
+  552.                $$_mglob = (lm2m%base_addr)(1 + $I_L551_176, 0)
+  553.                if ( nmax + -$$_mglob > 0 ) then
+  553.                   $I_L553_164 = 0
+  553. !dir$ unroll 4
+  553.                   do
+  554.                      $$_mn = (mymnextmap%base_addr)(1 + $I_L551_176, $$_mglob + $I_L553_164, 0)
+  555.                      $$_indnp1 = (mymnmap%base_addr)(1 + $I_L551_176, 1 + $$_mglob + $I_L553_164, 0)
+  556.                      (mnp1_gz%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_indnp1
+  557.                      (mnp1_gz%base_addr)(2 * $$_mn, 0) = 2 * $$_indnp1
+  558.                      $I_L553_164 = 1 + $I_L553_164
+  553.                      if ( $I_L553_164 >= ( nmax + -$$_mglob ) ) exit
+  553.                   enddo
+  553.                endif
+  564.                $I_L551_176 = 1 + $I_L551_176
+  563.                if ( $I_L551_176 >= mymmax ) exit
+  563.             enddo
+  563.          endif
+  565.          $snt_T2 = _endparallel( 3, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T2 )
+  565.       endif
+  569.       alfa_gz%header%a_contig = 1
+  569.       alfa_gz%dim_1%LB = 1
+  569.       alfa_gz%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+  569.       alfa_gz%dim_1%SM = 1
+  569.       $_allo_P2(0) = 0x1000000000001L
+  569.       $_allo_P2(1) = loc( alfa_gz )
+  569.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  571.       if ( mymmax > 0 ) then
+  570.          $snt_T4 = _parallel( 5, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  578.          $SC_epslon_I12 = epslon%dim_1%EX
+  578.          $SC_epslon_I13 = epslon%dim_1%LB
+  573.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  573.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  573.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  573.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  573.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  572.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  572.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  571.          $I_L571_172 = 0
+  571. !$omp do schedule(static)
+  571.          do
+  572.             $$_mglob = (lm2m%base_addr)(1 + $I_L571_172, 0)
+  573.             $$_mn = (mymnextmap%base_addr)(1 + $I_L571_172, $$_mglob, 0)
+  574.             (alfa_gz%base_addr)(-1 + 2 * $$_mn, 0) = 0.0
+  575.             (alfa_gz%base_addr)(2 * $$_mn, 0) = 0.0
+  576.             if ( nextmax + -$$_mglob > 0 ) then
+  576.                $I_L576_158 = 0
+  576. !dir$ unroll 4
+  576.                do
+  577.                   $$_mn = (mymnextmap%base_addr)(1 + $I_L571_172, 1 + $$_mglob + $I_L576_158, 0)
+  578.                   (alfa_gz%base_addr)(-1 + 2 * $$_mn, 0) = -( (epslon%base_addr)($$_mn, 0) * real( -1 + $$_mglob + $I_L576_158, 8 ) )
+  579.                   (alfa_gz%base_addr)(2 * $$_mn, 0) = -( (epslon%base_addr)($$_mn, 0) * real( -1 + $$_mglob + $I_L576_158, 8 ) )
+  580.                   $I_L576_158 = 1 + $I_L576_158
+  576.                   if ( $I_L576_158 >= ( nextmax + -$$_mglob ) ) exit
+  576.                enddo
+  576.             endif
+  581.             $I_L571_172 = 1 + $I_L571_172
+  580.             if ( $I_L571_172 >= mymmax ) exit
+  580.          enddo
+  582.          $snt_T4 = _endparallel( 5, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T4 )
+  582.       endif
+  586.       beta_gz%header%a_contig = 1
+  586.       beta_gz%dim_1%LB = 1
+  586.       beta_gz%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+  586.       beta_gz%dim_1%SM = 1
+  586.       $_allo_P3(0) = 0x1000000000001L
+  586.       $_allo_P3(1) = loc( beta_gz )
+  586.       call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+  588.       if ( mymmax > 0 ) then
+  587.          $snt_T6 = _parallel( 7, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  593.          $SC_epslon_I12 = epslon%dim_1%EX
+  593.          $SC_epslon_I13 = epslon%dim_1%LB
+  591.          $SC_mymnextmap_I2 = mymnextmap%dim_1%EX
+  591.          $SC_mymnextmap_I3 = mymnextmap%dim_1%LB
+  591.          $SC_mymnextmap_I5 = mymnextmap%dim_2%SM
+  591.          $SC_mymnextmap_I4 = mymnextmap%dim_2%EX
+  591.          $SC_mymnextmap_I6 = mymnextmap%dim_2%LB
+  589.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  589.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  596.          if ( nextmax + -nmax >= 0 ) then
+  588.             $I_L588_174 = 0
+  588. !$omp do schedule(static)
+  588.             do
+  589.                $$_mglob = (lm2m%base_addr)(1 + $I_L588_174, 0)
+  590.                if ( nmax + -$$_mglob > 0 ) then
+  590.                   $I_L590_160 = 0
+  590. !dir$ unroll 4
+  590.                   do
+  591.                      $$_mn = (mymnextmap%base_addr)(1 + $I_L588_174, $$_mglob + $I_L590_160, 0)
+  592.                      $$_mn2 = (mymnextmap%base_addr)(1 + $I_L588_174, 1 + $$_mglob + $I_L590_160, 0)
+  593.                      (beta_gz%base_addr)(-1 + 2 * $$_mn, 0) = (epslon%base_addr)($$_mn2, 0) * real( 1 + $$_mglob + $I_L590_160, 8 )
+  594.                      (beta_gz%base_addr)(2 * $$_mn, 0) = (epslon%base_addr)($$_mn2, 0) * real( 1 + $$_mglob + $I_L590_160, 8 )
+  595.                      $I_L590_160 = 1 + $I_L590_160
+  590.                      if ( $I_L590_160 >= ( nmax + -$$_mglob ) ) exit
+  590.                   enddo
+  590.                endif
+  596.                $I_L596_162 = 0
+  596. !dir$ unroll 4
+  596.                do
+  597.                   $$_mn = (mymnextmap%base_addr)(1 + $I_L588_174, nmax + $I_L596_162, 0)
+  598.                   (beta_gz%base_addr)(-1 + 2 * $$_mn, 0) = 0.0
+  599.                   (beta_gz%base_addr)(2 * $$_mn, 0) = 0.0
+  600.                   $I_L596_162 = 1 + $I_L596_162
+  596.                   if ( $I_L596_162 >= 1 + nextmax + -nmax ) exit
+  596.                enddo
+  601.                $I_L588_174 = 1 + $I_L588_174
+  600.                if ( $I_L588_174 >= mymmax ) exit
+  600.             enddo
+  600.          else
+  588.             $I_L588_178 = 0
+  588. !$omp do schedule(static)
+  588.             do
+  589.                $$_mglob = (lm2m%base_addr)(1 + $I_L588_178, 0)
+  590.                if ( nmax + -$$_mglob > 0 ) then
+  590.                   $I_L590_166 = 0
+  590. !dir$ unroll 4
+  590.                   do
+  591.                      $$_mn = (mymnextmap%base_addr)(1 + $I_L588_178, $$_mglob + $I_L590_166, 0)
+  592.                      $$_mn2 = (mymnextmap%base_addr)(1 + $I_L588_178, 1 + $$_mglob + $I_L590_166, 0)
+  593.                      (beta_gz%base_addr)(-1 + 2 * $$_mn, 0) = (epslon%base_addr)($$_mn2, 0) * real( 1 + $$_mglob + $I_L590_166, 8 )
+  594.                      (beta_gz%base_addr)(2 * $$_mn, 0) = (epslon%base_addr)($$_mn2, 0) * real( 1 + $$_mglob + $I_L590_166, 8 )
+  595.                      $I_L590_166 = 1 + $I_L590_166
+  590.                      if ( $I_L590_166 >= ( nmax + -$$_mglob ) ) exit
+  590.                   enddo
+  590.                endif
+  601.                $I_L588_178 = 1 + $I_L588_178
+  600.                if ( $I_L588_178 >= mymmax ) exit
+  600.             enddo
+  600.          endif
+  602.          $snt_T6 = _endparallel( 7, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T6 )
+  602.       endif
+  604.       return
+  604.       end
+  604.       
+  626.       
+  626.       subroutine gozrim1d( q, qder, mnriextfirst, mnriextlast )
+  626.       t$5 = ( 2 * mymnmax )
+  627.       t$33 = _zla( 0, ( 2 * mymnmax ) )
+  626.       t$6 = ( 2 * mymnextmax )
+  628.       t$34 = _zla( 0, ( 2 * mymnextmax ) )
+  633.       if ( mnriextlast + -mnriextfirst >= 0 ) then
+  634.          $SC_mnm1_gz_I2 = mnm1_gz%dim_1%EX
+  634.          $SC_mnm1_gz_I3 = mnm1_gz%dim_1%LB
+  634.          $SC_alfa_gz_I0 = alfa_gz%dim_1%EX
+  634.          $SC_alfa_gz_I1 = alfa_gz%dim_1%LB
+  634.          $SC_mnp1_gz_I6 = mnp1_gz%dim_1%EX
+  634.          $SC_mnp1_gz_I7 = mnp1_gz%dim_1%LB
+  634.          $SC_beta_gz_I4 = beta_gz%dim_1%EX
+  634.          $SC_beta_gz_I5 = beta_gz%dim_1%LB
+  633.          $I_L633_6 = 0
+  633. !dir$ ivdep
+  633.          do
+  634.             $qder_WR0_R0 = q((mnp1_gz%base_addr)(mnriextfirst + $I_L633_6, 0)) * (beta_gz%base_addr)(mnriextfirst + $I_L633_6, 0) + q((mnm1_gz%base_addr)(mnriextfirst + $I_L633_6, 0)) * (alfa_gz%base_addr)(mnriextfirst + $I_L633_6, 0)
+  637.             $qder_WR0_R0 = 1.5698587127158556e-7 * $qder_WR0_R0
+  637.             qder(mnriextfirst + $I_L633_6) = $qder_WR0_R0
+  638.             $I_L633_6 = 1 + $I_L633_6
+  633.             if ( $I_L633_6 >= 1 + mnriextlast + -mnriextfirst ) exit
+  633.          enddo
+  633.       endif
+  639.       return
+  639.       end
+  639.       
+  645.       
+  645.       subroutine gozrim2d( q, qder, mnriextfirst, mnriextlast )
+  645.       t$7 = ( 2 * mymnmax )
+  645.       t$8 = kmaxloc
+  646.       t$35 = _zla( 0, ( 2 * mymnmax ) )
+  645.       t$36 = _zla( 0, ( 2 * mymnmax ) )
+  646.       t$37 = _zla( 0, kmaxloc )
+  645.       t$38 = _zla( 0, ( 2 * mymnmax ) ) * _zla( 0, kmaxloc )
+  645.       t$9 = ( 2 * mymnextmax )
+  647.       t$39 = _zla( 0, ( 2 * mymnextmax ) )
+  645.       t$40 = _zla( 0, ( 2 * mymnextmax ) )
+  645.       t$41 = _zla( 0, kmaxloc ) * _zla( 0, ( 2 * mymnextmax ) )
+  652.       if ( kmaxloc > 0 ) then
+  654.          $SC_mnm1_gz_I4 = mnm1_gz%dim_1%EX
+  654.          $SC_mnm1_gz_I5 = mnm1_gz%dim_1%LB
+  654.          $SC_alfa_gz_I6 = alfa_gz%dim_1%EX
+  654.          $SC_alfa_gz_I7 = alfa_gz%dim_1%LB
+  654.          $SC_mnp1_gz_I0 = mnp1_gz%dim_1%EX
+  654.          $SC_mnp1_gz_I1 = mnp1_gz%dim_1%LB
+  654.          $SC_beta_gz_I2 = beta_gz%dim_1%EX
+  654.          $SC_beta_gz_I3 = beta_gz%dim_1%LB
+  653.          if ( mnriextlast + -mnriextfirst >= 0 ) then
+  652.             $I_L652_24 = 0
+  652.             do
+  653.                $I_L653_22 = 0
+  653.                do
+  652.                   $I_L652_26 = 0
+  652. !dir$ shortloop16
+  652. !dir$ blocking_size( 2, 2 )
+  652.                   do
+  653.                      $I_L653_16 = 0
+  653. !dir$ ivdep
+  653. !dir$ blocking_size( 256, 256 )
+  653.                      do
+  654.                         $qder_WR0_R0 = (beta_gz%base_addr)(mnriextfirst + $I_L653_16 + 256 * $I_L653_22, 0) * q((mnp1_gz%base_addr)(mnriextfirst + $I_L653_16 + 256 * $I_L653_22, 0), 1 + $I_L652_26 + 2 * $I_L652_24) + (alfa_gz%base_addr)(mnriextfirst + $I_L653_16 + 256 * $I_L653_22, 0) * q((mnm1_gz%base_addr)(mnriextfirst + $I_L653_16 + 256 * $I_L653_22, 0), 1 + $I_L652_26 + 2 * $I_L652_24)
+  657.                         $qder_WR0_R0 = 1.5698587127158556e-7 * $qder_WR0_R0
+  657.                         qder(mnriextfirst + $I_L653_16 + 256 * $I_L653_22, 1 + $I_L652_26 + 2 * $I_L652_24) = $qder_WR0_R0
+  653.                         $I_L653_16 = 1 + $I_L653_16
+  653.                         if ( $I_L653_16 >= min( 1 + mnriextlast + -mnriextfirst, 256 + 256 * $I_L653_22 ) + -256 * $I_L653_22 ) exit
+  653.                      enddo
+  652.                      $I_L652_26 = 1 + $I_L652_26
+  652.                      if ( $I_L652_26 >= min( kmaxloc, 2 + 2 * $I_L652_24 ) + -2 * $I_L652_24 ) exit
+  652.                   enddo
+  653.                   $I_L653_22 = 1 + $I_L653_22
+  658.                   if ( $I_L653_22 >= 1 + max( 0, -1 + _rsh( 256 + mnriextlast + -mnriextfirst, 8 ) ) ) exit
+  658.                enddo
+  652.                $I_L652_24 = 1 + $I_L652_24
+  652.                if ( $I_L652_24 >= 1 + max( 0, -1 + _rsh( 1 + kmaxloc, 1 ) ) ) exit
+  652.             enddo
+  652.          endif
+  652.       endif
+  660.       return
+  660.       end
+  660.       
+  663.       
+  663.       subroutine initimpldifu( ct_in, cq_in, dk_in, tk_in )
+  663.       ct_in%dim_1%LB = 1
+  663.       cq_in%dim_1%LB = 1
+  676.       diffuseq =  _substr(iqdif,1,_ltrim(  _substr(iqdif,1,4) )) == 'YES'
+  681.       ndho = ndord / 2
+  685.       dk = dk_in * 4.05769e13 ** ( ndord / -2 )
+  686.       tk = tk_in * 4.05769e13 ** ( ndord / -2 )
+  687.       if ( nfctrl(2) > 0 ) then
+  688.          $Unit_temp_O0 = nfprt
+  688.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$11,  _substr(t$10,1,24), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' dk_in = ', 0x800600000000L ), _iotype( dk_in, 0x804060300000000L ), _iotype( ' tk_in = ', 0x800600000000L ), _iotype( tk_in, 0x804060300000000L ), _iotype( ' ndord = ', 0x800600000000L ), _iotype( ndord, 0x2000200000000L ) ) )
+  690.          $Unit_temp_O1 = nfprt
+  690.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$13,  _substr(t$12,1,19), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' dk = ', 0x800600000000L ), _iotype( dk, 0x804060300000000L ), _iotype( ' tk = ', 0x800600000000L ), _iotype( tk, 0x804060300000000L ) ) )
+  690.       endif
+  693.       ct%header%a_contig = 1
+  693.       ct%dim_1%LB = 1
+  693.       ct%dim_1%EX = ( max( 0, kmaxloc ) )
+  693.       ct%dim_1%SM = 1
+  693.       $_allo_P0(0) = 0x1000000000001L
+  693.       $_allo_P0(1) = loc( ct )
+  693.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  694.       $F_A33 = ( 1 + mylastlev + -myfirstlev )
+  694.       if ( mylastlev + -myfirstlev >= 0 ) then
+  694.          $SC_ct_in_I16 = ct_in%dim_1%SM
+  694.          $SC_ct_in_I15 = ct_in%dim_1%EX
+  694.          $I_L694_34 = 0
+  694. !dir$ ivdep
+  694.          do
+  694.             (ct%base_addr)(1 + $I_L694_34, 0) = (ct_in%base_addr)(myfirstlev + $I_L694_34, 0)
+  694.             $I_L694_34 = 1 + $I_L694_34
+  694.             if ( $I_L694_34 >= $F_A33 ) exit
+  694.          enddo
+  694.       endif
+  695.       cq%header%a_contig = 1
+  695.       cq%dim_1%LB = 1
+  695.       cq%dim_1%EX = ( max( 0, kmaxloc ) )
+  695.       cq%dim_1%SM = 1
+  695.       $_allo_P1(0) = 0x1000000000001L
+  695.       $_allo_P1(1) = loc( cq )
+  695.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  696.       $F_A34 = ( 1 + mylastlev + -myfirstlev )
+  696.       if ( mylastlev + -myfirstlev >= 0 ) then
+  696.          $SC_cq_in_I18 = cq_in%dim_1%SM
+  696.          $SC_cq_in_I17 = cq_in%dim_1%EX
+  696.          $I_L696_36 = 0
+  696. !dir$ ivdep
+  696.          do
+  696.             (cq%base_addr)(1 + $I_L696_36, 0) = (cq_in%base_addr)(myfirstlev + $I_L696_36, 0)
+  696.             $I_L696_36 = 1 + $I_L696_36
+  696.             if ( $I_L696_36 >= $F_A34 ) exit
+  696.          enddo
+  696.       endif
+  697.       snnp1%header%a_contig = 1
+  697.       snnp1%dim_1%LB = 1
+  697.       snnp1%dim_1%EX = ( max( 0, 2 * mymnmax ) )
+  697.       snnp1%dim_1%SM = 1
+  697.       $_allo_P2(0) = 0x1000000000001L
+  697.       $_allo_P2(1) = loc( snnp1 )
+  697.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  698.       snnp1_si%header%a_contig = 1
+  698.       snnp1_si%dim_1%LB = 1
+  698.       snnp1_si%dim_1%EX = ( max( 0, 2 * mnmax_si ) )
+  698.       snnp1_si%dim_1%SM = 1
+  698.       $_allo_P3(0) = 0x1000000000001L
+  698.       $_allo_P3(1) = loc( snnp1_si )
+  698.       call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+  699.       if ( mymmax > 0 ) then
+  702.          $SC_mymnmap_I2 = mymnmap%dim_1%EX
+  702.          $SC_mymnmap_I3 = mymnmap%dim_1%LB
+  702.          $SC_mymnmap_I5 = mymnmap%dim_2%SM
+  702.          $SC_mymnmap_I4 = mymnmap%dim_2%EX
+  702.          $SC_mymnmap_I6 = mymnmap%dim_2%LB
+  700.          $SC_lm2m_I0 = lm2m%dim_1%EX
+  700.          $SC_lm2m_I1 = lm2m%dim_1%LB
+  699.          $I_L699_38 = 0
+  699.          do
+  700.             $mglob_S1 = (lm2m%base_addr)(1 + $I_L699_38, 0)
+  701.             if ( nmax + -$mglob_S1 >= 0 ) then
+  701.                $I_L701_28 = 0
+  701. !dir$ unroll 4
+  701.                do
+  702.                   $mn_S3 = (mymnmap%base_addr)(1 + $I_L699_38, $mglob_S1 + $I_L701_28, 0)
+  703.                   (snnp1%base_addr)(-1 + 2 * $mn_S3, 0) = -$mglob_S1 + -$I_L701_28 + ( $mglob_S1 + $I_L701_28 ) * ( $mglob_S1 + $I_L701_28 )
+  704.                   (snnp1%base_addr)(2 * $mn_S3, 0) = -$mglob_S1 + -$I_L701_28 + ( $mglob_S1 + $I_L701_28 ) * ( $mglob_S1 + $I_L701_28 )
+  705.                   $I_L701_28 = 1 + $I_L701_28
+  701.                   if ( $I_L701_28 >= 1 + nmax + -$mglob_S1 ) exit
+  701.                enddo
+  701.             endif
+  706.             $I_L699_38 = 1 + $I_L699_38
+  705.             if ( $I_L699_38 >= mymmax ) exit
+  705.          enddo
+  705.       endif
+  707.       if ( mnmax_si > 0 ) then
+  709.          $SC_nmap_I9 = nmap%dim_1%EX
+  709.          $SC_nmap_I10 = nmap%dim_1%LB
+  708.          $SC_mymnmap_si_I7 = mymnmap_si%dim_1%EX
+  708.          $SC_mymnmap_si_I8 = mymnmap_si%dim_1%LB
+  707.          $I_L707_30 = 0
+  707. !dir$ ivdep
+  707.          do
+  708.             $mng_S5 = (mymnmap_si%base_addr)(1 + $I_L707_30, 0)
+  709.             $n_S6 = (nmap%base_addr)($mng_S5, 0)
+  710.             (snnp1_si%base_addr)(2 + 2 * $I_L707_30, 0) = ( -$n_S6 + $n_S6 * $n_S6 )
+  711.             (snnp1_si%base_addr)(1 + 2 * $I_L707_30, 0) = ( -$n_S6 + $n_S6 * $n_S6 )
+  712.             $I_L707_30 = 1 + $I_L707_30
+  707.             if ( $I_L707_30 >= mnmax_si ) exit
+  707.          enddo
+  707.       endif
+  716.       workimpldifu%header%a_contig = 1
+  716.       workimpldifu%dim_1%LB = 1
+  716.       workimpldifu%dim_1%EX = ( max( 0, 2 * mymnmax ) )
+  716.       workimpldifu%dim_1%SM = 1
+  716.       $_allo_P4(0) = 0x1000000000001L
+  716.       $_allo_P4(1) = loc( workimpldifu )
+  716.       call __allocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+  717.       if ( 2 * mymnmax > 0 ) then
+  717.          $I_L717_32 = 0
+  717. !dir$ ivdep
+  717.          do
+  718.             (workimpldifu%base_addr)(1 + $I_L717_32, 0) = 2.0 * (snnp1%base_addr)(1 + $I_L717_32, 0) ** ( ndord / 2 )
+  719.             $I_L717_32 = 1 + $I_L717_32
+  717.             if ( $I_L717_32 >= ( 2 * mymnmax ) ) exit
+  717.          enddo
+  717.       endif
+  720.       return
+  720.       end
+  720.       
+  810.       
+  810.       subroutine impldifu( dt, mnrifirst, mnrilast )
+  733.       hold = $_StaticDV_P0
+  733.       hold%base_addr = pointer to array[1] of array[1] of real (kind=8)( 0 )
+  733.       hold%header%el_len = 64
+  733.       hold%header%assoc = 0
+  733.       hold%header%ptr_alloc = 0
+  733.       hold%header%p_or_a = 2
+  733.       hold%header%a_contig = 1
+  733.       hold%header%n_dim = 2
+  733.       hold%header%orig_base = 0
+  733.       hold%header%orig_size = 0
+  733.       hold%header%n_codim = 0
+  733.       hold%header%dv_versn = 2
+  733.       hold%header%dv_smunit = 64
+  733.       hold%header%d_type = 0
+  733.       hold%header%n_params = 0
+  733.       hold%header%d_type_idx = 13
+  733.       hold%dim_1%LB = 1
+  733.       hold%dim_1%EX = 0
+  733.       hold%dim_1%SM = 1
+  733.       hold%dim_2%LB = 1
+  733.       hold%dim_2%EX = 0
+  733.       hold%dim_2%SM = 1
+  733.       holda = $_StaticDV_P1
+  733.       holda%base_addr = pointer to array[1] of array[1] of real (kind=8)( 0 )
+  733.       holda%header%el_len = 64
+  733.       holda%header%assoc = 0
+  733.       holda%header%ptr_alloc = 0
+  733.       holda%header%p_or_a = 2
+  733.       holda%header%a_contig = 1
+  733.       holda%header%n_dim = 2
+  733.       holda%header%orig_base = 0
+  733.       holda%header%orig_size = 0
+  733.       holda%header%n_codim = 0
+  733.       holda%header%dv_versn = 2
+  733.       holda%header%dv_smunit = 64
+  733.       holda%header%d_type = 0
+  733.       holda%header%n_params = 0
+  733.       holda%header%d_type_idx = 13
+  733.       holda%dim_1%LB = 1
+  733.       holda%dim_1%EX = 0
+  733.       holda%dim_1%SM = 1
+  733.       holda%dim_2%LB = 1
+  733.       holda%dim_2%EX = 0
+  733.       holda%dim_2%SM = 1
+  733.       holdb = $_StaticDV_P2
+  733.       holdb%base_addr = pointer to array[1] of array[1] of real (kind=8)( 0 )
+  733.       holdb%header%el_len = 64
+  733.       holdb%header%assoc = 0
+  733.       holdb%header%ptr_alloc = 0
+  733.       holdb%header%p_or_a = 2
+  733.       holdb%header%a_contig = 1
+  733.       holdb%header%n_dim = 2
+  733.       holdb%header%orig_base = 0
+  733.       holdb%header%orig_size = 0
+  733.       holdb%header%n_codim = 0
+  733.       holdb%header%dv_versn = 2
+  733.       holdb%header%dv_smunit = 64
+  733.       holdb%header%d_type = 0
+  733.       holdb%header%n_params = 0
+  733.       holdb%header%d_type_idx = 13
+  733.       holdb%dim_1%LB = 1
+  733.       holdb%dim_1%EX = 0
+  733.       holdb%dim_1%SM = 1
+  733.       holdb%dim_2%LB = 1
+  733.       holdb%dim_2%EX = 0
+  733.       holdb%dim_2%SM = 1
+  727.       holdc = $_StaticDV_P3
+  727.       holdc%base_addr = pointer to array[1] of array[1] of real (kind=8)( 0 )
+  727.       holdc%header%el_len = 64
+  727.       holdc%header%assoc = 0
+  727.       holdc%header%ptr_alloc = 0
+  727.       holdc%header%p_or_a = 2
+  727.       holdc%header%a_contig = 1
+  727.       holdc%header%n_dim = 2
+  727.       holdc%header%orig_base = 0
+  727.       holdc%header%orig_size = 0
+  727.       holdc%header%n_codim = 0
+  727.       holdc%header%dv_versn = 2
+  727.       holdc%header%dv_smunit = 64
+  727.       holdc%header%d_type = 0
+  727.       holdc%header%n_params = 0
+  727.       holdc%header%d_type_idx = 13
+  727.       holdc%dim_1%LB = 1
+  727.       holdc%dim_1%EX = 0
+  727.       holdc%dim_1%SM = 1
+  727.       holdc%dim_2%LB = 1
+  727.       holdc%dim_2%EX = 0
+  727.       holdc%dim_2%SM = 1
+  727.       t$14 = mnrifirst
+  727.       t$15 = mnrilast
+  727.       t$42 = 1 + mnrilast + -mnrifirst
+  732.       t$43 = _zla( 0, 1 + mnrilast + -mnrifirst )
+  732.       t$46 = 8 * _zla( 0, 1 + mnrilast + -mnrifirst )
+  727.       t$44 = int( _alloc( 8 * _zla( 0, 1 + mnrilast + -mnrifirst ) ), 8 )
+  732.       t$45 = t$44
+  737.       if ( (dodia%base_addr)(49, 0) ) then
+  727.          goto 10
+  737.       else if ( (dodia%base_addr)(47, 0) ) then
+  737.          goto 10
+  737.       else if ( (dodia%base_addr)(50, 0) ) then
+  737.          goto 10
+  737.       else if ( (dodia%base_addr)(48, 0) /= .false. ) then
+  737.    10    continue
+  739.          hold%header%a_contig = 1
+  739.          hold%dim_1%LB = mnrifirst
+  739.          hold%dim_1%EX = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  739.          hold%dim_1%SM = 1
+  739.          hold%dim_2%LB = 1
+  739.          hold%dim_2%EX = ( max( 0, kmaxloc ) )
+  739.          hold%dim_2%SM = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  739.          $_allo_P4(0) = 0x1000000000001L
+  739.          $_allo_P4(1) = loc( hold )
+  739.          call __allocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+  740.          if ( (dodia%base_addr)(49, 0) /= .false. ) then
+  741.             holda%header%a_contig = 1
+  741.             holda%dim_1%LB = mnrifirst
+  741.             holda%dim_1%EX = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  741.             holda%dim_1%SM = 1
+  741.             holda%dim_2%LB = 1
+  741.             holda%dim_2%EX = ( max( 0, kmaxloc ) )
+  741.             holda%dim_2%SM = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  741.             $_allo_P5(0) = 0x1000000000001L
+  741.             $_allo_P5(1) = loc( holda )
+  741.             call __allocate( $_allo_P5, 0, 0, _fcd( 0, 0 ) )
+  742.             $F_A33 = ( max( 0, kmaxloc ) )
+  742.             $F_A34 = ( 1 + mnrilast + -mnrifirst )
+  742.             if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  742.                $SC_qdivp_I99 = qdivp%dim_1%EX
+  742.                $SC_qdivp_I100 = qdivp%dim_1%LB
+  742.                $SC_qdivp_I101 = qdivp%dim_2%SM
+  742.                $SC_qdivp_I102 = qdivp%dim_2%LB
+  742.                $I_L742_141 = 0
+  742.                do
+  742.                   $I_L742_121 = 0
+  742. !dir$ ivdep
+  742.                   do
+  742.                      (holda%base_addr)(mnrifirst + $I_L742_121, 1 + $I_L742_141, 0) = (qdivp%base_addr)(mnrifirst + $I_L742_121, $SC_qdivp_I102 + $I_L742_141, 0)
+  742.                      $I_L742_121 = 1 + $I_L742_121
+  742.                      if ( $I_L742_121 >= $F_A34 ) exit
+  742.                   enddo
+  742.                   $I_L742_141 = 1 + $I_L742_141
+  742.                   if ( $I_L742_141 >= $F_A33 ) exit
+  742.                enddo
+  742.             endif
+  742.          endif
+  742.       endif
+  745.       if ( kmaxloc > 0 ) then
+  747.          $SC_workimpldifu_I0 = workimpldifu%dim_1%EX
+  747.          $SC_workimpldifu_I1 = workimpldifu%dim_1%LB
+  747.          $SC_qdivp_I2 = qdivp%dim_1%EX
+  747.          $SC_qdivp_I3 = qdivp%dim_1%LB
+  747.          $SC_qdivp_I5 = qdivp%dim_2%SM
+  747.          $SC_qdivp_I4 = qdivp%dim_2%EX
+  747.          $SC_qdivp_I6 = qdivp%dim_2%LB
+  746.          if ( mnrilast + -mnrifirst >= 0 ) then
+  745.             $I_L745_162 = 0
+  745.             do
+  746.                $I_L746_160 = 0
+  746.                do
+  745.                   $I_L745_167 = 0
+  745. !dir$ shortloop16
+  745. !dir$ blocking_size( 2, 2 )
+  745.                   do
+  746.                      $I_L746_112 = 0
+  746. !dir$ ivdep
+  746. !dir$ blocking_size( 256, 256 )
+  746.                      do
+  747.                         (qdivp%base_addr)(mnrifirst + $I_L746_112 + 256 * $I_L746_160, 1 + $I_L745_167 + 2 * $I_L745_162, 0) = ( (qdivp%base_addr)(mnrifirst + $I_L746_112 + 256 * $I_L746_160, 1 + $I_L745_167 + 2 * $I_L745_162, 0) * 1.0/( 1.0 + dt * dk * (workimpldifu%base_addr)(mnrifirst + $I_L746_112 + 256 * $I_L746_160, 0) ) )
+  746.                         $I_L746_112 = 1 + $I_L746_112
+  746.                         if ( $I_L746_112 >= min( 1 + mnrilast + -mnrifirst, 256 + 256 * $I_L746_160 ) + -256 * $I_L746_160 ) exit
+  746.                      enddo
+  745.                      $I_L745_167 = 1 + $I_L745_167
+  745.                      if ( $I_L745_167 >= min( kmaxloc, 2 + 2 * $I_L745_162 ) + -2 * $I_L745_162 ) exit
+  745.                   enddo
+  746.                   $I_L746_160 = 1 + $I_L746_160
+  748.                   if ( $I_L746_160 >= 1 + max( 0, -1 + _rsh( 256 + mnrilast + -mnrifirst, 8 ) ) ) exit
+  748.                enddo
+  745.                $I_L745_162 = 1 + $I_L745_162
+  745.                if ( $I_L745_162 >= 1 + max( 0, -1 + _rsh( 1 + kmaxloc, 1 ) ) ) exit
+  745.             enddo
+  745.          endif
+  745.       endif
+  750.       if ( (dodia%base_addr)(49, 0) /= .false. ) then
+  751.          $F_A35 = hold%dim_2%EX
+  751.          $F_A36 = ( 1 + mnrilast + -mnrifirst )
+  751.          if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+  751.             $SC_qdivp_I99 = qdivp%dim_1%EX
+  751.             $SC_qdivp_I100 = qdivp%dim_1%LB
+  751.             $SC_qdivp_I101 = qdivp%dim_2%SM
+  751.             $SC_qdivp_I102 = qdivp%dim_2%LB
+  751.             $SC_holda_I106 = holda%dim_2%SM
+  751.             $SC_holda_I107 = holda%dim_2%LB
+  751.             $SC_holda_I103 = holda%dim_1%EX
+  751.             $SC_holda_I104 = holda%dim_1%LB
+  751.             $SC_hold_I110 = hold%dim_2%SM
+  751.             $SC_hold_I105 = hold%dim_2%EX
+  751.             $SC_hold_I111 = hold%dim_2%LB
+  751.             $SC_hold_I108 = hold%dim_1%EX
+  751.             $SC_hold_I109 = hold%dim_1%LB
+  751.             $I_L751_143 = 0
+  751.             do
+  751.                $I_L751_123 = 0
+  751. !dir$ ivdep
+  751.                do
+  751.                   (hold%base_addr)($SC_hold_I109 + $I_L751_123, $SC_hold_I111 + $I_L751_143, 0) = (qdivp%base_addr)(mnrifirst + $I_L751_123, $SC_qdivp_I102 + $I_L751_143, 0) + -(holda%base_addr)($SC_holda_I104 + $I_L751_123, $SC_holda_I107 + $I_L751_143, 0)
+  751.                   $I_L751_123 = 1 + $I_L751_123
+  751.                   if ( $I_L751_123 >= $F_A36 ) exit
+  751.                enddo
+  751.                $I_L751_143 = 1 + $I_L751_143
+  751.                if ( $I_L751_143 >= $F_A35 ) exit
+  751.             enddo
+  751.          endif
+  752.          call upspec( (hold%base_addr)(hold%dim_1%LB, hold%dim_2%LB, 0), mnrifirst, mnrilast, 49 )
+  753.          $_allo_P6(0) = 0x1000000000001L
+  753.          $_allo_P6(1) = loc( holda )
+  753.          call __deallocate( $_allo_P6, 0, 0, _fcd( 0, 0 ) )
+  753.          holda%header%assoc = 0
+  753.       endif
+  758.       if ( mnrilast + -mnrifirst >= 0 ) then
+  759.          $SC_workimpldifu_I0 = workimpldifu%dim_1%EX
+  759.          $SC_workimpldifu_I1 = workimpldifu%dim_1%LB
+  758.          $I_L758_115 = 0
+  758. !dir$ ivdep
+  758.          do
+  759.             work(mnrifirst + $I_L758_115) = dt * tk * (workimpldifu%base_addr)(mnrifirst + $I_L758_115, 0)
+  760.             $I_L758_115 = 1 + $I_L758_115
+  758.             if ( $I_L758_115 >= 1 + mnrilast + -mnrifirst ) exit
+  758.          enddo
+  758.       endif
+  764.       if ( (dodia%base_addr)(47, 0) /= .false. ) then
+  765.          holda%header%a_contig = 1
+  765.          holda%dim_1%LB = mnrifirst
+  765.          holda%dim_1%EX = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  765.          holda%dim_1%SM = 1
+  765.          holda%dim_2%LB = 1
+  765.          holda%dim_2%EX = ( max( 0, kmaxloc ) )
+  765.          holda%dim_2%SM = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  765.          $_allo_P7(0) = 0x1000000000001L
+  765.          $_allo_P7(1) = loc( holda )
+  765.          call __allocate( $_allo_P7, 0, 0, _fcd( 0, 0 ) )
+  766.          $F_A37 = ( max( 0, kmaxloc ) )
+  766.          $F_A38 = ( 1 + mnrilast + -mnrifirst )
+  766.          if ( and( -$F_A38, -$F_A37 ) < 0 ) then
+  766.             $SC_qtmpp_I112 = qtmpp%dim_1%EX
+  766.             $SC_qtmpp_I113 = qtmpp%dim_1%LB
+  766.             $SC_qtmpp_I114 = qtmpp%dim_2%SM
+  766.             $SC_qtmpp_I115 = qtmpp%dim_2%LB
+  766.             $I_L766_145 = 0
+  766.             do
+  766.                $I_L766_125 = 0
+  766. !dir$ ivdep
+  766.                do
+  766.                   (holda%base_addr)(mnrifirst + $I_L766_125, 1 + $I_L766_145, 0) = (qtmpp%base_addr)(mnrifirst + $I_L766_125, $SC_qtmpp_I115 + $I_L766_145, 0)
+  766.                   $I_L766_125 = 1 + $I_L766_125
+  766.                   if ( $I_L766_125 >= $F_A38 ) exit
+  766.                enddo
+  766.                $I_L766_145 = 1 + $I_L766_145
+  766.                if ( $I_L766_145 >= $F_A37 ) exit
+  766.             enddo
+  766.          endif
+  766.       endif
+  768.       if ( (dodia%base_addr)(50, 0) /= .false. ) then
+  769.          holdb%header%a_contig = 1
+  769.          holdb%dim_1%LB = mnrifirst
+  769.          holdb%dim_1%EX = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  769.          holdb%dim_1%SM = 1
+  769.          holdb%dim_2%LB = 1
+  769.          holdb%dim_2%EX = ( max( 0, kmaxloc ) )
+  769.          holdb%dim_2%SM = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  769.          $_allo_P8(0) = 0x1000000000001L
+  769.          $_allo_P8(1) = loc( holdb )
+  769.          call __allocate( $_allo_P8, 0, 0, _fcd( 0, 0 ) )
+  770.          $F_A39 = ( max( 0, kmaxloc ) )
+  770.          $F_A40 = ( 1 + mnrilast + -mnrifirst )
+  770.          if ( and( -$F_A40, -$F_A39 ) < 0 ) then
+  770.             $SC_qrotp_I116 = qrotp%dim_1%EX
+  770.             $SC_qrotp_I117 = qrotp%dim_1%LB
+  770.             $SC_qrotp_I118 = qrotp%dim_2%SM
+  770.             $SC_qrotp_I119 = qrotp%dim_2%LB
+  770.             $I_L770_147 = 0
+  770.             do
+  770.                $I_L770_127 = 0
+  770. !dir$ ivdep
+  770.                do
+  770.                   (holdb%base_addr)(mnrifirst + $I_L770_127, 1 + $I_L770_147, 0) = (qrotp%base_addr)(mnrifirst + $I_L770_127, $SC_qrotp_I119 + $I_L770_147, 0)
+  770.                   $I_L770_127 = 1 + $I_L770_127
+  770.                   if ( $I_L770_127 >= $F_A40 ) exit
+  770.                enddo
+  770.                $I_L770_147 = 1 + $I_L770_147
+  770.                if ( $I_L770_147 >= $F_A39 ) exit
+  770.             enddo
+  770.          endif
+  770.       endif
+  772.       if ( (dodia%base_addr)(48, 0) /= .false. ) then
+  773.          holdc%header%a_contig = 1
+  773.          holdc%dim_1%LB = mnrifirst
+  773.          holdc%dim_1%EX = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  773.          holdc%dim_1%SM = 1
+  773.          holdc%dim_2%LB = 1
+  773.          holdc%dim_2%EX = ( max( 0, kmaxloc ) )
+  773.          holdc%dim_2%SM = ( max( 0, 1 + mnrilast + -mnrifirst ) )
+  773.          $_allo_P9(0) = 0x1000000000001L
+  773.          $_allo_P9(1) = loc( holdc )
+  773.          call __allocate( $_allo_P9, 0, 0, _fcd( 0, 0 ) )
+  774.          $F_A41 = ( max( 0, kmaxloc ) )
+  774.          $F_A42 = ( 1 + mnrilast + -mnrifirst )
+  774.          if ( and( -$F_A42, -$F_A41 ) < 0 ) then
+  774.             $SC_qqp_I120 = qqp%dim_1%EX
+  774.             $SC_qqp_I121 = qqp%dim_1%LB
+  774.             $SC_qqp_I122 = qqp%dim_2%SM
+  774.             $SC_qqp_I123 = qqp%dim_2%LB
+  774.             $I_L774_149 = 0
+  774.             do
+  774.                $I_L774_129 = 0
+  774. !dir$ ivdep
+  774.                do
+  774.                   (holdc%base_addr)(mnrifirst + $I_L774_129, 1 + $I_L774_149, 0) = (qqp%base_addr)(mnrifirst + $I_L774_129, $SC_qqp_I123 + $I_L774_149, 0)
+  774.                   $I_L774_129 = 1 + $I_L774_129
+  774.                   if ( $I_L774_129 >= $F_A42 ) exit
+  774.                enddo
+  774.                $I_L774_149 = 1 + $I_L774_149
+  774.                if ( $I_L774_149 >= $F_A41 ) exit
+  774.             enddo
+  774.          endif
+  774.       endif
+  776.       if ( diffuseq /= .false. ) then
+  777.          if ( kmaxloc > 0 ) then
+  781.             $SC_cq_I7 = cq%dim_1%EX
+  781.             $SC_cq_I8 = cq%dim_1%LB
+  781.             $SC_qlnpp_I9 = qlnpp%dim_1%EX
+  781.             $SC_qlnpp_I10 = qlnpp%dim_1%LB
+  779.             $SC_ct_I21 = ct%dim_1%EX
+  779.             $SC_ct_I22 = ct%dim_1%LB
+  781.             $SC_qqp_I11 = qqp%dim_1%EX
+  781.             $SC_qqp_I12 = qqp%dim_1%LB
+  781.             $SC_qqp_I14 = qqp%dim_2%SM
+  781.             $SC_qqp_I13 = qqp%dim_2%EX
+  781.             $SC_qqp_I15 = qqp%dim_2%LB
+  780.             $SC_qrotp_I16 = qrotp%dim_1%EX
+  780.             $SC_qrotp_I17 = qrotp%dim_1%LB
+  780.             $SC_qrotp_I19 = qrotp%dim_2%SM
+  780.             $SC_qrotp_I18 = qrotp%dim_2%EX
+  780.             $SC_qrotp_I20 = qrotp%dim_2%LB
+  779.             $SC_qtmpp_I23 = qtmpp%dim_1%EX
+  779.             $SC_qtmpp_I24 = qtmpp%dim_1%LB
+  779.             $SC_qtmpp_I26 = qtmpp%dim_2%SM
+  779.             $SC_qtmpp_I25 = qtmpp%dim_2%EX
+  779.             $SC_qtmpp_I27 = qtmpp%dim_2%LB
+  778.             if ( mnrilast + -mnrifirst >= 0 ) then
+  777.                $I_L777_139 = 0
+  777. !dir$ blocking_size( 1, 1 )
+  777.                do
+  778.                   $SCA_ct_I57 = (ct%base_addr)(1 + $I_L777_139, 0)
+  778.                   $SCA_cq_I58 = (cq%base_addr)(1 + $I_L777_139, 0)
+  778.                   $I_L778_119 = 0
+  778. !dir$ ivdep
+  778. !dir$ blocking_size( 256, 256 )
+  778.                   do
+  779.                      (qtmpp%base_addr)(mnrifirst + $I_L778_119, 1 + $I_L777_139, 0) = ( 1.0/( 1.0 + work(mnrifirst + $I_L778_119) ) * ( (qtmpp%base_addr)(mnrifirst + $I_L778_119, 1 + $I_L777_139, 0) + work(mnrifirst + $I_L778_119) * $SCA_ct_I57 * (qlnpp%base_addr)(mnrifirst + $I_L778_119, 0) ) )
+  780.                      (qrotp%base_addr)(mnrifirst + $I_L778_119, 1 + $I_L777_139, 0) = ( (qrotp%base_addr)(mnrifirst + $I_L778_119, 1 + $I_L777_139, 0) * 1.0/( 1.0 + work(mnrifirst + $I_L778_119) ) )
+  781.                      (qqp%base_addr)(mnrifirst + $I_L778_119, 1 + $I_L777_139, 0) = ( 1.0/( 1.0 + work(mnrifirst + $I_L778_119) ) * ( (qqp%base_addr)(mnrifirst + $I_L778_119, 1 + $I_L777_139, 0) + work(mnrifirst + $I_L778_119) * $SCA_cq_I58 * (qlnpp%base_addr)(mnrifirst + $I_L778_119, 0) ) )
+  782.                      $I_L778_119 = 1 + $I_L778_119
+  778.                      if ( $I_L778_119 >= 1 + mnrilast + -mnrifirst ) exit
+  778.                   enddo
+  783.                   $I_L777_139 = 1 + $I_L777_139
+  782.                   if ( $I_L777_139 >= kmaxloc ) exit
+  782.                enddo
+  782.             endif
+  782.          endif
+  784.       else if ( kmaxloc > 0 ) then
+  787.          $SC_qlnpp_I9 = qlnpp%dim_1%EX
+  787.          $SC_qlnpp_I10 = qlnpp%dim_1%LB
+  787.          $SC_ct_I21 = ct%dim_1%EX
+  787.          $SC_ct_I22 = ct%dim_1%LB
+  788.          $SC_qrotp_I16 = qrotp%dim_1%EX
+  788.          $SC_qrotp_I17 = qrotp%dim_1%LB
+  788.          $SC_qrotp_I19 = qrotp%dim_2%SM
+  788.          $SC_qrotp_I18 = qrotp%dim_2%EX
+  788.          $SC_qrotp_I20 = qrotp%dim_2%LB
+  787.          $SC_qtmpp_I23 = qtmpp%dim_1%EX
+  787.          $SC_qtmpp_I24 = qtmpp%dim_1%LB
+  787.          $SC_qtmpp_I26 = qtmpp%dim_2%SM
+  787.          $SC_qtmpp_I25 = qtmpp%dim_2%EX
+  787.          $SC_qtmpp_I27 = qtmpp%dim_2%LB
+  786.          if ( mnrilast + -mnrifirst >= 0 ) then
+  785.             $I_L785_137 = 0
+  785.             if ( kmaxloc >= 4 ) then
+  785.                $I_L785_169 = 0
+  785. !dir$ blocking_size( 1, 1 )
+  785.                do
+  786.                   $SCA_ct#1_U0 = (ct%base_addr)(1 + 4 * $I_L785_169, 0)
+  786.                   $SCA_ct#2_U1 = (ct%base_addr)(2 + 4 * $I_L785_169, 0)
+  786.                   $SCA_ct#3_U2 = (ct%base_addr)(3 + 4 * $I_L785_169, 0)
+  786.                   $SCA_ct#4_U3 = (ct%base_addr)(4 + 4 * $I_L785_169, 0)
+  786.                   $I_L786_117 = 0
+  786. !dir$ ivdep
+  786. !dir$ blocking_size( 256, 256 )
+  786.                   do
+  787.                      (qtmpp%base_addr)(mnrifirst + $I_L786_117, 1 + 4 * $I_L785_169, 0) = ( 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) * ( (qtmpp%base_addr)(mnrifirst + $I_L786_117, 1 + 4 * $I_L785_169, 0) + work(mnrifirst + $I_L786_117) * (qlnpp%base_addr)(mnrifirst + $I_L786_117, 0) * $SCA_ct#1_U0 ) )
+  787.                      (qtmpp%base_addr)(mnrifirst + $I_L786_117, 2 + 4 * $I_L785_169, 0) = ( 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) * ( (qtmpp%base_addr)(mnrifirst + $I_L786_117, 2 + 4 * $I_L785_169, 0) + work(mnrifirst + $I_L786_117) * (qlnpp%base_addr)(mnrifirst + $I_L786_117, 0) * $SCA_ct#2_U1 ) )
+  787.                      (qtmpp%base_addr)(mnrifirst + $I_L786_117, 3 + 4 * $I_L785_169, 0) = ( 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) * ( (qtmpp%base_addr)(mnrifirst + $I_L786_117, 3 + 4 * $I_L785_169, 0) + work(mnrifirst + $I_L786_117) * (qlnpp%base_addr)(mnrifirst + $I_L786_117, 0) * $SCA_ct#3_U2 ) )
+  787.                      (qtmpp%base_addr)(mnrifirst + $I_L786_117, 4 + 4 * $I_L785_169, 0) = ( 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) * ( (qtmpp%base_addr)(mnrifirst + $I_L786_117, 4 + 4 * $I_L785_169, 0) + work(mnrifirst + $I_L786_117) * (qlnpp%base_addr)(mnrifirst + $I_L786_117, 0) * $SCA_ct#4_U3 ) )
+  788.                      (qrotp%base_addr)(mnrifirst + $I_L786_117, 1 + 4 * $I_L785_169, 0) = ( (qrotp%base_addr)(mnrifirst + $I_L786_117, 1 + 4 * $I_L785_169, 0) * 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) )
+  788.                      (qrotp%base_addr)(mnrifirst + $I_L786_117, 2 + 4 * $I_L785_169, 0) = ( (qrotp%base_addr)(mnrifirst + $I_L786_117, 2 + 4 * $I_L785_169, 0) * 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) )
+  788.                      (qrotp%base_addr)(mnrifirst + $I_L786_117, 3 + 4 * $I_L785_169, 0) = ( (qrotp%base_addr)(mnrifirst + $I_L786_117, 3 + 4 * $I_L785_169, 0) * 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) )
+  788.                      (qrotp%base_addr)(mnrifirst + $I_L786_117, 4 + 4 * $I_L785_169, 0) = ( (qrotp%base_addr)(mnrifirst + $I_L786_117, 4 + 4 * $I_L785_169, 0) * 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) )
+  789.                      $I_L786_117 = 1 + $I_L786_117
+  786.                      if ( $I_L786_117 >= 1 + mnrilast + -mnrifirst ) exit
+  786.                   enddo
+  790.                   $I_L785_169 = 1 + $I_L785_169
+  789.                   if ( $I_L785_169 >= _rsh( kmaxloc, 2 ) ) exit
+  789.                enddo
+  790.                $I_L785_137 = and( 0xfffffffffffffffcUL, kmaxloc )
+  790.             endif
+  785.             if ( $I_L785_137 < kmaxloc ) then
+  785.                $I_L785_164 = 0
+  785. !dir$ blocking_size( 1, 1 )
+  785.                do
+  786.                   $SCA_ct_I59 = (ct%base_addr)(1 + $I_L785_137 + $I_L785_164, 0)
+  786.                   $I_L786_117 = 0
+  786. !dir$ ivdep
+  786. !dir$ blocking_size( 256, 256 )
+  786.                   do
+  787.                      (qtmpp%base_addr)(mnrifirst + $I_L786_117, 1 + $I_L785_137 + $I_L785_164, 0) = ( 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) * ( (qtmpp%base_addr)(mnrifirst + $I_L786_117, 1 + $I_L785_137 + $I_L785_164, 0) + work(mnrifirst + $I_L786_117) * $SCA_ct_I59 * (qlnpp%base_addr)(mnrifirst + $I_L786_117, 0) ) )
+  788.                      (qrotp%base_addr)(mnrifirst + $I_L786_117, 1 + $I_L785_137 + $I_L785_164, 0) = ( (qrotp%base_addr)(mnrifirst + $I_L786_117, 1 + $I_L785_137 + $I_L785_164, 0) * 1.0/( 1.0 + work(mnrifirst + $I_L786_117) ) )
+  789.                      $I_L786_117 = 1 + $I_L786_117
+  786.                      if ( $I_L786_117 >= 1 + mnrilast + -mnrifirst ) exit
+  786.                   enddo
+  790.                   $I_L785_164 = 1 + $I_L785_164
+  789.                   if ( $I_L785_164 >= kmaxloc + -$I_L785_137 ) exit
+  789.                enddo
+  789.             endif
+  789.          endif
+  789.       endif
+  792.       if ( (dodia%base_addr)(47, 0) /= .false. ) then
+  793.          $F_A43 = hold%dim_2%EX
+  793.          $F_A44 = ( 1 + mnrilast + -mnrifirst )
+  793.          if ( and( -$F_A44, -$F_A43 ) < 0 ) then
+  793.             $SC_qtmpp_I112 = qtmpp%dim_1%EX
+  793.             $SC_qtmpp_I113 = qtmpp%dim_1%LB
+  793.             $SC_qtmpp_I114 = qtmpp%dim_2%SM
+  793.             $SC_qtmpp_I115 = qtmpp%dim_2%LB
+  793.             $SC_holda_I106 = holda%dim_2%SM
+  793.             $SC_holda_I107 = holda%dim_2%LB
+  793.             $SC_holda_I103 = holda%dim_1%EX
+  793.             $SC_holda_I104 = holda%dim_1%LB
+  793.             $SC_hold_I110 = hold%dim_2%SM
+  793.             $SC_hold_I105 = hold%dim_2%EX
+  793.             $SC_hold_I111 = hold%dim_2%LB
+  793.             $SC_hold_I108 = hold%dim_1%EX
+  793.             $SC_hold_I109 = hold%dim_1%LB
+  793.             $I_L793_151 = 0
+  793.             do
+  793.                $I_L793_131 = 0
+  793. !dir$ ivdep
+  793.                do
+  793.                   (hold%base_addr)($SC_hold_I109 + $I_L793_131, $SC_hold_I111 + $I_L793_151, 0) = (qtmpp%base_addr)(mnrifirst + $I_L793_131, $SC_qtmpp_I115 + $I_L793_151, 0) + -(holda%base_addr)($SC_holda_I104 + $I_L793_131, $SC_holda_I107 + $I_L793_151, 0)
+  793.                   $I_L793_131 = 1 + $I_L793_131
+  793.                   if ( $I_L793_131 >= $F_A44 ) exit
+  793.                enddo
+  793.                $I_L793_151 = 1 + $I_L793_151
+  793.                if ( $I_L793_151 >= $F_A43 ) exit
+  793.             enddo
+  793.          endif
+  794.          call upspec( (hold%base_addr)(hold%dim_1%LB, hold%dim_2%LB, 0), mnrifirst, mnrilast, 47 )
+  795.          $_allo_P10(0) = 0x1000000000001L
+  795.          $_allo_P10(1) = loc( holda )
+  795.          call __deallocate( $_allo_P10, 0, 0, _fcd( 0, 0 ) )
+  795.          holda%header%assoc = 0
+  795.       endif
+  797.       if ( (dodia%base_addr)(50, 0) /= .false. ) then
+  798.          $F_A45 = hold%dim_2%EX
+  798.          $F_A46 = ( 1 + mnrilast + -mnrifirst )
+  798.          if ( and( -$F_A46, -$F_A45 ) < 0 ) then
+  798.             $SC_qrotp_I116 = qrotp%dim_1%EX
+  798.             $SC_qrotp_I117 = qrotp%dim_1%LB
+  798.             $SC_qrotp_I118 = qrotp%dim_2%SM
+  798.             $SC_qrotp_I119 = qrotp%dim_2%LB
+  798.             $SC_holdb_I126 = holdb%dim_2%SM
+  798.             $SC_holdb_I127 = holdb%dim_2%LB
+  798.             $SC_holdb_I124 = holdb%dim_1%EX
+  798.             $SC_holdb_I125 = holdb%dim_1%LB
+  798.             $SC_hold_I110 = hold%dim_2%SM
+  798.             $SC_hold_I105 = hold%dim_2%EX
+  798.             $SC_hold_I111 = hold%dim_2%LB
+  798.             $SC_hold_I108 = hold%dim_1%EX
+  798.             $SC_hold_I109 = hold%dim_1%LB
+  798.             $I_L798_153 = 0
+  798.             do
+  798.                $I_L798_133 = 0
+  798. !dir$ ivdep
+  798.                do
+  798.                   (hold%base_addr)($SC_hold_I109 + $I_L798_133, $SC_hold_I111 + $I_L798_153, 0) = (qrotp%base_addr)(mnrifirst + $I_L798_133, $SC_qrotp_I119 + $I_L798_153, 0) + -(holdb%base_addr)($SC_holdb_I125 + $I_L798_133, $SC_holdb_I127 + $I_L798_153, 0)
+  798.                   $I_L798_133 = 1 + $I_L798_133
+  798.                   if ( $I_L798_133 >= $F_A46 ) exit
+  798.                enddo
+  798.                $I_L798_153 = 1 + $I_L798_153
+  798.                if ( $I_L798_153 >= $F_A45 ) exit
+  798.             enddo
+  798.          endif
+  799.          call upspec( (hold%base_addr)(hold%dim_1%LB, hold%dim_2%LB, 0), mnrifirst, mnrilast, 50 )
+  800.          $_allo_P11(0) = 0x1000000000001L
+  800.          $_allo_P11(1) = loc( holdb )
+  800.          call __deallocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+  800.          holdb%header%assoc = 0
+  800.       endif
+  802.       if ( (dodia%base_addr)(48, 0) /= .false. ) then
+  803.          $F_A47 = hold%dim_2%EX
+  803.          $F_A48 = ( 1 + mnrilast + -mnrifirst )
+  803.          if ( and( -$F_A48, -$F_A47 ) < 0 ) then
+  803.             $SC_qqp_I120 = qqp%dim_1%EX
+  803.             $SC_qqp_I121 = qqp%dim_1%LB
+  803.             $SC_qqp_I122 = qqp%dim_2%SM
+  803.             $SC_qqp_I123 = qqp%dim_2%LB
+  803.             $SC_holdc_I130 = holdc%dim_2%SM
+  803.             $SC_holdc_I131 = holdc%dim_2%LB
+  803.             $SC_holdc_I128 = holdc%dim_1%EX
+  803.             $SC_holdc_I129 = holdc%dim_1%LB
+  803.             $SC_hold_I110 = hold%dim_2%SM
+  803.             $SC_hold_I105 = hold%dim_2%EX
+  803.             $SC_hold_I111 = hold%dim_2%LB
+  803.             $SC_hold_I108 = hold%dim_1%EX
+  803.             $SC_hold_I109 = hold%dim_1%LB
+  803.             $I_L803_155 = 0
+  803.             do
+  803.                $I_L803_135 = 0
+  803. !dir$ ivdep
+  803.                do
+  803.                   (hold%base_addr)($SC_hold_I109 + $I_L803_135, $SC_hold_I111 + $I_L803_155, 0) = (qqp%base_addr)(mnrifirst + $I_L803_135, $SC_qqp_I123 + $I_L803_155, 0) + -(holdc%base_addr)($SC_holdc_I129 + $I_L803_135, $SC_holdc_I131 + $I_L803_155, 0)
+  803.                   $I_L803_135 = 1 + $I_L803_135
+  803.                   if ( $I_L803_135 >= $F_A48 ) exit
+  803.                enddo
+  803.                $I_L803_155 = 1 + $I_L803_155
+  803.                if ( $I_L803_155 >= $F_A47 ) exit
+  803.             enddo
+  803.          endif
+  804.          call upspec( (hold%base_addr)(hold%dim_1%LB, hold%dim_2%LB, 0), mnrifirst, mnrilast, 48 )
+  805.          $_allo_P12(0) = 0x1000000000001L
+  805.          $_allo_P12(1) = loc( holdc )
+  805.          call __deallocate( $_allo_P12, 0, 0, _fcd( 0, 0 ) )
+  805.          holdc%header%assoc = 0
+  805.       endif
+  807.       if ( hold%header%assoc == 1 ) then
+  808.          $_allo_P13(0) = 0x1000000000001L
+  808.          $_allo_P13(1) = loc( hold )
+  808.          call __deallocate( $_allo_P13, 0, 0, _fcd( 0, 0 ) )
+  808.          hold%header%assoc = 0
+  808.       endif
+  733.       $_allo_P14(0) = 0x4000000000001L
+  733.       $_allo_P14(1) = loc( holdc )
+  733.       $_allo_P14(2) = loc( holdb )
+  733.       $_allo_P14(3) = loc( holda )
+  733.       $_allo_P14(4) = loc( hold )
+  733.       call _dealloc( $_allo_P14, 0, 0, _fcd( 0, 0 ) )
+  727.       _free( t$44 )
+  810.       return
+  810.       end
+  810.       
+  911.       
+  911.       subroutine initsemiimpl
+  819.       ini = $_StaticDV_P0
+  819.       ini%base_addr = pointer to array[1] of integer( 0 )
+  819.       ini%header%el_len = 32
+  819.       ini%header%assoc = 0
+  819.       ini%header%ptr_alloc = 0
+  819.       ini%header%p_or_a = 2
+  819.       ini%header%a_contig = 1
+  819.       ini%header%n_dim = 1
+  819.       ini%header%orig_base = 0
+  819.       ini%header%orig_size = 0
+  819.       ini%header%n_codim = 0
+  819.       ini%header%dv_versn = 2
+  819.       ini%header%dv_smunit = 32
+  819.       ini%header%d_type = 0
+  819.       ini%header%n_params = 0
+  819.       ini%header%d_type_idx = 10
+  819.       ini%dim_1%LB = 1
+  819.       ini%dim_1%EX = 0
+  819.       ini%dim_1%SM = 1
+  819.       t$16 = kmax
+  822.       t$47 = _zla( 0, kmax )
+  822.       t$50 = 4 * _zla( 0, kmax )
+  823.       t$52 = 8 * _zla( 0, kmax )
+  822.       recs = $_StaticDV_P1
+  822.       recs%base_addr = pointer to array[1] of integer( 0 )
+  822.       recs%header%el_len = 32
+  822.       recs%header%assoc = 0
+  822.       recs%header%ptr_alloc = 0
+  822.       recs%header%p_or_a = 2
+  822.       recs%header%a_contig = 1
+  822.       recs%header%n_dim = 1
+  822.       recs%header%orig_base = 0
+  822.       recs%header%orig_size = 0
+  822.       recs%header%n_codim = 0
+  822.       recs%header%dv_versn = 2
+  822.       recs%header%dv_smunit = 32
+  822.       recs%header%d_type = 0
+  822.       recs%header%n_params = 0
+  822.       recs%header%d_type_idx = 10
+  822.       recs%dim_1%LB = 1
+  822.       recs%dim_1%EX = 0
+  822.       recs%dim_1%SM = 1
+  819.       t$48 = int( _alloc( 8 * _zla( 0, kmax ) ), 8 )
+  822.       t$49 = t$48
+  822.       t$51 = t$48 + 4 * _zla( 0, kmax )
+  826.       sv%header%a_contig = 1
+  826.       sv%dim_1%LB = 1
+  826.       sv%dim_1%EX = _zla( 0, kmax )
+  826.       sv%dim_1%SM = 1
+  826.       $_allo_P2(0) = 0x1000000000001L
+  826.       $_allo_P2(1) = loc( sv )
+  826.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  827.       p1%header%a_contig = 1
+  827.       p1%dim_1%LB = 1
+  827.       p1%dim_1%EX = _zla( 0, kmax )
+  827.       p1%dim_1%SM = 1
+  827.       $_allo_P3(0) = 0x1000000000001L
+  827.       $_allo_P3(1) = loc( p1 )
+  827.       call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+  828.       p2%header%a_contig = 1
+  828.       p2%dim_1%LB = 1
+  828.       p2%dim_1%EX = _zla( 0, kmax )
+  828.       p2%dim_1%SM = 1
+  828.       $_allo_P4(0) = 0x1000000000001L
+  828.       $_allo_P4(1) = loc( p2 )
+  828.       call __allocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+  829.       h1%header%a_contig = 1
+  829.       h1%dim_1%LB = 1
+  829.       h1%dim_1%EX = _zla( 0, kmax )
+  829.       h1%dim_1%SM = 1
+  829.       $_allo_P5(0) = 0x1000000000001L
+  829.       $_allo_P5(1) = loc( h1 )
+  829.       call __allocate( $_allo_P5, 0, 0, _fcd( 0, 0 ) )
+  830.       h2%header%a_contig = 1
+  830.       h2%dim_1%LB = 1
+  830.       h2%dim_1%EX = _zla( 0, kmax )
+  830.       h2%dim_1%SM = 1
+  830.       $_allo_P6(0) = 0x1000000000001L
+  830.       $_allo_P6(1) = loc( h2 )
+  830.       call __allocate( $_allo_P6, 0, 0, _fcd( 0, 0 ) )
+  831.       am%header%a_contig = 1
+  831.       am%dim_1%LB = 1
+  831.       am%dim_1%EX = _zla( 0, kmax )
+  831.       am%dim_1%SM = 1
+  831.       am%dim_2%LB = 1
+  831.       am%dim_2%EX = _zla( 0, kmax )
+  831.       am%dim_2%SM = _zla( 0, kmax )
+  831.       $_allo_P7(0) = 0x1000000000001L
+  831.       $_allo_P7(1) = loc( am )
+  831.       call __allocate( $_allo_P7, 0, 0, _fcd( 0, 0 ) )
+  832.       bm%header%a_contig = 1
+  832.       bm%dim_1%LB = 1
+  832.       bm%dim_1%EX = _zla( 0, kmax )
+  832.       bm%dim_1%SM = 1
+  832.       bm%dim_2%LB = 1
+  832.       bm%dim_2%EX = _zla( 0, kmax )
+  832.       bm%dim_2%SM = _zla( 0, kmax )
+  832.       $_allo_P8(0) = 0x1000000000001L
+  832.       $_allo_P8(1) = loc( bm )
+  832.       call __allocate( $_allo_P8, 0, 0, _fcd( 0, 0 ) )
+  833.       cm%header%a_contig = 1
+  833.       cm%dim_1%LB = 1
+  833.       cm%dim_1%EX = _zla( 0, kmax )
+  833.       cm%dim_1%SM = 1
+  833.       cm%dim_2%LB = 1
+  833.       cm%dim_2%EX = _zla( 0, kmax )
+  833.       cm%dim_2%SM = _zla( 0, kmax )
+  833.       $_allo_P9(0) = 0x1000000000001L
+  833.       $_allo_P9(1) = loc( cm )
+  833.       call __allocate( $_allo_P9, 0, 0, _fcd( 0, 0 ) )
+  834.       hm%header%a_contig = 1
+  834.       hm%dim_1%LB = 1
+  834.       hm%dim_1%EX = _zla( 0, kmax )
+  834.       hm%dim_1%SM = 1
+  834.       hm%dim_2%LB = 1
+  834.       hm%dim_2%EX = _zla( 0, kmax )
+  834.       hm%dim_2%SM = _zla( 0, kmax )
+  834.       $_allo_P10(0) = 0x1000000000001L
+  834.       $_allo_P10(1) = loc( hm )
+  834.       call __allocate( $_allo_P10, 0, 0, _fcd( 0, 0 ) )
+  835.       hmt%header%a_contig = 1
+  835.       hmt%dim_1%LB = 1
+  835.       hmt%dim_1%EX = _zla( 0, kmax )
+  835.       hmt%dim_1%SM = 1
+  835.       hmt%dim_2%LB = 1
+  835.       hmt%dim_2%EX = _zla( 0, kmax )
+  835.       hmt%dim_2%SM = _zla( 0, kmax )
+  835.       $_allo_P11(0) = 0x1000000000001L
+  835.       $_allo_P11(1) = loc( hmt )
+  835.       call __allocate( $_allo_P11, 0, 0, _fcd( 0, 0 ) )
+  836.       tm%header%a_contig = 1
+  836.       tm%dim_1%LB = 1
+  836.       tm%dim_1%EX = _zla( 0, kmax )
+  836.       tm%dim_1%SM = 1
+  836.       tm%dim_2%LB = 1
+  836.       tm%dim_2%EX = _zla( 0, kmax )
+  836.       tm%dim_2%SM = _zla( 0, kmax )
+  836.       $_allo_P12(0) = 0x1000000000001L
+  836.       $_allo_P12(1) = loc( tm )
+  836.       call __allocate( $_allo_P12, 0, 0, _fcd( 0, 0 ) )
+  838.       $F_A33 = _zla( 0, kmax )
+  838.       $F_A34 = _zla( 0, kmax )
+  838.       if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  838.          $I_L838_160 = 0
+  838.          do
+  838.             $I_L838_140 = 0
+  838. !dir$ ivdep
+  838.             do
+  838.                (hm%base_addr)(1 + $I_L838_140, 1 + $I_L838_160, 0) = 0.0
+  838.                $I_L838_140 = 1 + $I_L838_140
+  838.                if ( $I_L838_140 >= $F_A34 ) exit
+  838.             enddo
+  838.             $I_L838_160 = 1 + $I_L838_160
+  838.             if ( $I_L838_160 >= $F_A33 ) exit
+  838.          enddo
+  838.       endif
+  839.       $F_A35 = _zla( 0, kmax )
+  839.       $F_A36 = _zla( 0, kmax )
+  839.       if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+  839.          $I_L839_162 = 0
+  839.          do
+  839.             $I_L839_142 = 0
+  839. !dir$ ivdep
+  839.             do
+  839.                (tm%base_addr)(1 + $I_L839_142, 1 + $I_L839_162, 0) = 0.0
+  839.                $I_L839_142 = 1 + $I_L839_142
+  839.                if ( $I_L839_142 >= $F_A36 ) exit
+  839.             enddo
+  839.             $I_L839_162 = 1 + $I_L839_162
+  839.             if ( $I_L839_162 >= $F_A35 ) exit
+  839.          enddo
+  839.       endif
+  841.       if ( -1 + kmax > 0 ) then
+  843.          $SC_rpi_I0 = rpi%dim_1%EX
+  843.          $SC_rpi_I1 = rpi%dim_1%LB
+  841.          $I_L841_128 = 0
+  841. !dir$ ivdep
+  841.          do
+  842.             (hm%base_addr)(1 + $I_L841_128, 1 + $I_L841_128, 0) = 1.0
+  843.             (tm%base_addr)(1 + $I_L841_128, 1 + $I_L841_128, 0) = 502.30000000000001 * ( -1.0 + (rpi%base_addr)(1 + $I_L841_128, 0) )
+  844.             $I_L841_128 = 1 + $I_L841_128
+  841.             if ( $I_L841_128 >= -1 + kmax ) exit
+  841.          enddo
+  847.          $SC_rpi_I0 = rpi%dim_1%EX
+  847.          $SC_rpi_I1 = rpi%dim_1%LB
+  845.          $I_L845_130 = 0
+  845. !dir$ ivdep
+  845.          do
+  846.             (hm%base_addr)(1 + $I_L845_130, 2 + $I_L845_130, 0) = -1.0
+  847.             (tm%base_addr)(1 + $I_L845_130, 2 + $I_L845_130, 0) = 502.30000000000001 * ( 1.0 + -( 1.0/(rpi%base_addr)(1 + $I_L845_130, 0) ) )
+  848.             $I_L845_130 = 1 + $I_L845_130
+  845.             if ( $I_L845_130 >= -1 + kmax ) exit
+  845.          enddo
+  845.       endif
+  849.       if ( kmax > 0 ) then
+  850.          $SC_del_I2 = del%dim_1%EX
+  850.          $SC_del_I3 = del%dim_1%LB
+  849.          $I_L849_132 = 0
+  849. !dir$ ivdep
+  849.          do
+  850.             (hm%base_addr)(kmax, 1 + $I_L849_132, 0) = (del%base_addr)(1 + $I_L849_132, 0)
+  851.             (tm%base_addr)(kmax, 1 + $I_L849_132, 0) = 287.05000000000001 * (del%base_addr)(1 + $I_L849_132, 0)
+  852.             $I_L849_132 = 1 + $I_L849_132
+  849.             if ( $I_L849_132 >= kmax ) exit
+  849.          enddo
+  849.       endif
+  853.       call iminv( (hm%base_addr)(1, 1, 0), kmax, det, lll(1), mmm(1) )
+  854.       if ( kmax > 0 ) then
+  858.          $SC_tm_I17 = tm%dim_2%SM
+  858.          $SC_tm_I16 = tm%dim_2%EX
+  858.          $SC_tm_I18 = tm%dim_2%LB
+  858.          $SC_tm_I14 = tm%dim_1%EX
+  858.          $SC_tm_I15 = tm%dim_1%LB
+  858.          $SC_hm_I12 = hm%dim_2%SM
+  858.          $SC_hm_I11 = hm%dim_2%EX
+  858.          $SC_hm_I13 = hm%dim_2%LB
+  858.          $SC_hm_I9 = hm%dim_1%EX
+  858.          $SC_hm_I10 = hm%dim_1%LB
+  856.          $SC_am_I7 = am%dim_2%SM
+  856.          $SC_am_I6 = am%dim_2%EX
+  856.          $SC_am_I8 = am%dim_2%LB
+  856.          $SC_am_I4 = am%dim_1%EX
+  856.          $SC_am_I5 = am%dim_1%LB
+  854.          $I_L854_184 = 0
+  854.          do
+  855.             $I_L855_182 = 0
+  855.             do
+  854.                $I_L854_179 = 0
+  854. !dir$ ivdep
+  854. !dir$ blocking_size( 32, 32 )
+  854.                do
+  855.                   $I_L855_174 = 0
+  855.                   if ( min( kmax, 32 + 32 * $I_L855_182 ) + -32 * $I_L855_182 >= 4 ) then
+  855.                      $I_L855_189 = 0
+  855. !dir$ blocking_size( 32, 32 )
+  855.                      do
+  856.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + 32 * $I_L855_182 + 4 * $I_L855_189, 0) = 0.0
+  858.                         $SC_am#1_U0 = 0.0
+  856.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 2 + 32 * $I_L855_182 + 4 * $I_L855_189, 0) = 0.0
+  858.                         $SC_am#2_U1 = 0.0
+  856.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 3 + 32 * $I_L855_182 + 4 * $I_L855_189, 0) = 0.0
+  858.                         $SC_am#3_U2 = 0.0
+  856.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 4 + 32 * $I_L855_182 + 4 * $I_L855_189, 0) = 0.0
+  858.                         $SC_am#4_U3 = 0.0
+  857.                         $I_L857_156 = 0
+  857.                         do
+  858.                            $SC_am#4_U3 = $SC_am#4_U3 + (hm%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + $I_L857_156, 0) * (tm%base_addr)(1 + $I_L857_156, 4 + 32 * $I_L855_182 + 4 * $I_L855_189, 0)
+  858.                            $SC_am#3_U2 = $SC_am#3_U2 + (hm%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + $I_L857_156, 0) * (tm%base_addr)(1 + $I_L857_156, 3 + 32 * $I_L855_182 + 4 * $I_L855_189, 0)
+  858.                            $SC_am#2_U1 = $SC_am#2_U1 + (hm%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + $I_L857_156, 0) * (tm%base_addr)(1 + $I_L857_156, 2 + 32 * $I_L855_182 + 4 * $I_L855_189, 0)
+  858.                            $SC_am#1_U0 = $SC_am#1_U0 + (hm%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + $I_L857_156, 0) * (tm%base_addr)(1 + $I_L857_156, 1 + 32 * $I_L855_182 + 4 * $I_L855_189, 0)
+  859.                            $I_L857_156 = 1 + $I_L857_156
+  857.                            if ( $I_L857_156 >= kmax ) exit
+  857.                         enddo
+  858.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + 32 * $I_L855_182 + 4 * $I_L855_189, 0) = $SC_am#1_U0
+  858.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 2 + 32 * $I_L855_182 + 4 * $I_L855_189, 0) = $SC_am#2_U1
+  858.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 3 + 32 * $I_L855_182 + 4 * $I_L855_189, 0) = $SC_am#3_U2
+  858.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 4 + 32 * $I_L855_182 + 4 * $I_L855_189, 0) = $SC_am#4_U3
+  855.                         $I_L855_189 = 1 + $I_L855_189
+  859.                         if ( $I_L855_189 >= _rsh( min( kmax, 32 + 32 * $I_L855_182 ) + -32 * $I_L855_182, 2 ) ) exit
+  859.                      enddo
+  855.                      $I_L855_174 = and( 0xfffffffffffffffcUL, min( kmax, 32 + 32 * $I_L855_182 ) + -32 * $I_L855_182 )
+  855.                   endif
+  855.                   if ( $I_L855_174 < min( kmax, 32 + 32 * $I_L855_182 ) + -32 * $I_L855_182 ) then
+  855.                      $I_L855_186 = 0
+  855. !dir$ blocking_size( 32, 32 )
+  855.                      do
+  856.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + $I_L855_174 + $I_L855_186 + 32 * $I_L855_182, 0) = 0.0
+  858.                         $SC_am_I62 = 0.0
+  857.                         $I_L857_156 = 0
+  857.                         do
+  858.                            $SC_am_I62 = $SC_am_I62 + (hm%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + $I_L857_156, 0) * (tm%base_addr)(1 + $I_L857_156, 1 + $I_L855_174 + $I_L855_186 + 32 * $I_L855_182, 0)
+  859.                            $I_L857_156 = 1 + $I_L857_156
+  857.                            if ( $I_L857_156 >= kmax ) exit
+  857.                         enddo
+  858.                         (am%base_addr)(1 + $I_L854_179 + 32 * $I_L854_184, 1 + $I_L855_174 + $I_L855_186 + 32 * $I_L855_182, 0) = $SC_am_I62
+  855.                         $I_L855_186 = 1 + $I_L855_186
+  859.                         if ( $I_L855_186 >= min( kmax, 32 + 32 * $I_L855_182 ) + -$I_L855_174 + -32 * $I_L855_182 ) exit
+  859.                      enddo
+  859.                   endif
+  854.                   $I_L854_179 = 1 + $I_L854_179
+  854.                   if ( $I_L854_179 >= min( kmax, 32 + 32 * $I_L854_184 ) + -32 * $I_L854_184 ) exit
+  854.                enddo
+  855.                $I_L855_182 = 1 + $I_L855_182
+  860.                if ( $I_L855_182 >= 1 + max( 0, -1 + _rsh( 31 + kmax, 5 ) ) ) exit
+  860.             enddo
+  854.             $I_L854_184 = 1 + $I_L854_184
+  854.             if ( $I_L854_184 >= 1 + max( 0, -1 + _rsh( 31 + kmax, 5 ) ) ) exit
+  854.          enddo
+  854.       endif
+  863.       $F_A37 = tm%dim_2%EX
+  863.       $F_A38 = tm%dim_1%EX
+  863.       if ( and( -$F_A38, -$F_A37 ) < 0 ) then
+  863.          $SC_tm_I69 = tm%dim_2%SM
+  863.          $SC_tm_I65 = tm%dim_2%EX
+  863.          $SC_tm_I70 = tm%dim_2%LB
+  863.          $SC_tm_I63 = tm%dim_1%EX
+  863.          $SC_tm_I68 = tm%dim_1%LB
+  863.          $SC_am_I66 = am%dim_2%SM
+  863.          $SC_am_I67 = am%dim_2%LB
+  863.          $SC_am_I64 = am%dim_1%LB
+  863.          $I_L863_164 = 0
+  863.          do
+  863.             $I_L863_144 = 0
+  863. !dir$ ivdep
+  863.             do
+  863.                (tm%base_addr)($SC_tm_I68 + $I_L863_144, $SC_tm_I70 + $I_L863_164, 0) = (am%base_addr)($SC_am_I64 + $I_L863_144, $SC_am_I67 + $I_L863_164, 0)
+  863.                $I_L863_144 = 1 + $I_L863_144
+  863.                if ( $I_L863_144 >= $F_A38 ) exit
+  863.             enddo
+  863.             $I_L863_164 = 1 + $I_L863_164
+  863.             if ( $I_L863_164 >= $F_A37 ) exit
+  863.          enddo
+  863.       endif
+  864.       $F_A39 = hm%dim_2%EX
+  864.       $F_A40 = hm%dim_1%EX
+  864.       if ( and( -$F_A40, -$F_A39 ) < 0 ) then
+  864.          $SC_hm_I74 = hm%dim_2%SM
+  864.          $SC_hm_I72 = hm%dim_2%EX
+  864.          $SC_hm_I75 = hm%dim_2%LB
+  864.          $SC_hm_I71 = hm%dim_1%EX
+  864.          $SC_hm_I73 = hm%dim_1%LB
+  864.          $SC_am_I66 = am%dim_2%SM
+  864.          $SC_am_I67 = am%dim_2%LB
+  864.          $SC_am_I64 = am%dim_1%LB
+  864.          $I_L864_166 = 0
+  864.          do
+  864.             $I_L864_146 = 0
+  864. !dir$ ivdep
+  864.             do
+  864.                (hm%base_addr)($SC_hm_I73 + $I_L864_146, $SC_hm_I75 + $I_L864_166, 0) = (am%base_addr)($SC_am_I64 + $I_L864_146, $SC_am_I67 + $I_L864_166, 0)
+  864.                $I_L864_146 = 1 + $I_L864_146
+  864.                if ( $I_L864_146 >= $F_A40 ) exit
+  864.             enddo
+  864.             $I_L864_166 = 1 + $I_L864_166
+  864.             if ( $I_L864_166 >= $F_A39 ) exit
+  864.          enddo
+  864.       endif
+  865.       $F_A41 = hmt%dim_2%EX
+  865.       $F_A42 = hmt%dim_1%EX
+  865.       if ( and( -$F_A42, -$F_A41 ) < 0 ) then
+  865.          $SC_hmt_I79 = hmt%dim_2%SM
+  865.          $SC_hmt_I78 = hmt%dim_2%EX
+  865.          $SC_hmt_I80 = hmt%dim_2%LB
+  865.          $SC_hmt_I76 = hmt%dim_1%EX
+  865.          $SC_hmt_I77 = hmt%dim_1%LB
+  865.          $SC_hm_I74 = hm%dim_2%SM
+  865.          $SC_hm_I72 = hm%dim_2%EX
+  865.          $SC_hm_I75 = hm%dim_2%LB
+  865.          $SC_hm_I71 = hm%dim_1%EX
+  865.          $SC_hm_I73 = hm%dim_1%LB
+  865.          $I_L865_168 = 0
+  865.          do
+  865.             $I_L865_148 = 0
+  865. !dir$ ivdep
+  865.             do
+  865.                (hmt%base_addr)($SC_hmt_I77 + $I_L865_148, $SC_hmt_I80 + $I_L865_168, 0) = (hm%base_addr)($SC_hm_I73 + $I_L865_168, $SC_hm_I75 + $I_L865_148, 0)
+  865.                $I_L865_148 = 1 + $I_L865_148
+  865.                if ( $I_L865_148 >= $F_A42 ) exit
+  865.             enddo
+  865.             $I_L865_168 = 1 + $I_L865_168
+  865.             if ( $I_L865_168 >= $F_A41 ) exit
+  865.          enddo
+  865.       endif
+  866.       $F_A43 = am%dim_2%EX
+  866.       $F_A44 = am%dim_1%EX
+  866.       if ( and( -$F_A44, -$F_A43 ) < 0 ) then
+  866.          $SC_am_I66 = am%dim_2%SM
+  866.          $SC_am_I82 = am%dim_2%EX
+  866.          $SC_am_I67 = am%dim_2%LB
+  866.          $SC_am_I81 = am%dim_1%EX
+  866.          $SC_am_I64 = am%dim_1%LB
+  866.          $I_L866_170 = 0
+  866.          do
+  866.             $I_L866_150 = 0
+  866. !dir$ ivdep
+  866.             do
+  866.                (am%base_addr)($SC_am_I64 + $I_L866_150, $SC_am_I67 + $I_L866_170, 0) = 2.4644563778898831e-14 * (am%base_addr)($SC_am_I64 + $I_L866_150, $SC_am_I67 + $I_L866_170, 0)
+  866.                $I_L866_150 = 1 + $I_L866_150
+  866.                if ( $I_L866_150 >= $F_A44 ) exit
+  866.             enddo
+  866.             $I_L866_170 = 1 + $I_L866_170
+  866.             if ( $I_L866_170 >= $F_A43 ) exit
+  866.          enddo
+  866.       endif
+  867.       call iminv( (tm%base_addr)(tm%dim_1%LB, tm%dim_2%LB, 0), kmax, det, lll(1), mmm(1) )
+  870.       if ( kmax > 0 ) then
+  871.          $SC_del_I2 = del%dim_1%EX
+  871.          $SC_del_I3 = del%dim_1%LB
+  871.          $SC_sv_I19 = sv%dim_1%EX
+  871.          $SC_sv_I20 = sv%dim_1%LB
+  870.          $I_L870_134 = 0
+  870. !dir$ ivdep
+  870.          do
+  871.             (sv%base_addr)(1 + $I_L870_134, 0) = -(del%base_addr)(1 + $I_L870_134, 0)
+  872.             $I_L870_134 = 1 + $I_L870_134
+  870.             if ( $I_L870_134 >= kmax ) exit
+  870.          enddo
+  870.       endif
+  873.       if ( -1 + kmax > 0 ) then
+  874.          $SC_rpi_I0 = rpi%dim_1%EX
+  874.          $SC_rpi_I1 = rpi%dim_1%LB
+  875.          $SC_p2_I23 = p2%dim_1%EX
+  875.          $SC_p2_I24 = p2%dim_1%LB
+  874.          $SC_p1_I21 = p1%dim_1%EX
+  874.          $SC_p1_I22 = p1%dim_1%LB
+  873.          $I_L873_136 = 0
+  873. !dir$ ivdep
+  873.          do
+  874.             (p1%base_addr)(1 + $I_L873_136, 0) = 1.0/(rpi%base_addr)(1 + $I_L873_136, 0)
+  875.             (p2%base_addr)(2 + $I_L873_136, 0) = (rpi%base_addr)(1 + $I_L873_136, 0)
+  876.             $I_L873_136 = 1 + $I_L873_136
+  873.             if ( $I_L873_136 >= -1 + kmax ) exit
+  873.          enddo
+  873.       endif
+  877.       (p1%base_addr)(kmax, 0) = 0.0
+  878.       (p2%base_addr)(1, 0) = 0.0
+  880.       dm%header%a_contig = 1
+  880.       dm%dim_1%LB = 1
+  880.       dm%dim_1%EX = ( max( 0, kmax ) )
+  880.       dm%dim_1%SM = 1
+  880.       dm%dim_2%LB = 1
+  880.       dm%dim_2%EX = ( max( 0, kmax ) )
+  880.       dm%dim_2%SM = ( max( 0, kmax ) )
+  880.       dm%dim_3%LB = 1
+  880.       dm%dim_3%EX = ( max( 0, nmax ) )
+  880.       dm%dim_3%SM = ( max( 0, kmax ) * max( 0, kmax ) )
+  880.       $_allo_P13(0) = 0x1000000000001L
+  880.       $_allo_P13(1) = loc( dm )
+  880.       call __allocate( $_allo_P13, 0, 0, _fcd( 0, 0 ) )
+  881.       $F_A45 = ( max( 0, nmax ) )
+  881.       $F_A46 = ( max( 0, kmax ) )
+  881.       $F_A47 = ( max( 0, kmax ) )
+  881.       if ( and( and( -$F_A46, -$F_A45 ), -$F_A47 ) < 0 ) then
+  881.          $I_L881_177 = 0
+  881.          do
+  881.             $I_L881_172 = 0
+  881.             do
+  881.                $I_L881_152 = 0
+  881. !dir$ ivdep
+  881.                do
+  881.                   (dm%base_addr)(1 + $I_L881_152, 1 + $I_L881_172, 1 + $I_L881_177, 0) = 0.0
+  881.                   $I_L881_152 = 1 + $I_L881_152
+  881.                   if ( $I_L881_152 >= $F_A47 ) exit
+  881.                enddo
+  881.                $I_L881_172 = 1 + $I_L881_172
+  881.                if ( $I_L881_172 >= $F_A46 ) exit
+  881.             enddo
+  881.             $I_L881_177 = 1 + $I_L881_177
+  881.             if ( $I_L881_177 >= $F_A45 ) exit
+  881.          enddo
+  881.       endif
+  883.       ini%header%a_contig = 1
+  883.       ini%dim_1%LB = 0
+  883.       ini%dim_1%EX = ( max( 0, 1 + maxnodes ) )
+  883.       ini%dim_1%SM = 1
+  883.       $_allo_P14(0) = 0x1000000000001L
+  883.       $_allo_P14(1) = loc( ini )
+  883.       call __allocate( $_allo_P14, 0, 0, _fcd( 0, 0 ) )
+  884.       recs%header%a_contig = 1
+  884.       recs%dim_1%LB = 0
+  884.       recs%dim_1%EX = ( max( 0, 1 + maxnodes ) )
+  884.       recs%dim_1%SM = 1
+  884.       $_allo_P15(0) = 0x1000000000001L
+  884.       $_allo_P15(1) = loc( recs )
+  884.       call __allocate( $_allo_P15, 0, 0, _fcd( 0, 0 ) )
+  886.       call exchange_si( (inibs_si%base_addr)(inibs_si%dim_1%LB, 0), (ini%base_addr)(0, 0), nsends_si, (mysends_si%base_addr)(mysends_si%dim_1%LB, 0) )
+  888.       nrecs_si = 0
+  889.       $F_A48 = mapr_si%dim_1%EX
+  889.       if ( mapr_si%dim_1%EX > 0 ) then
+  889.          $SC_mapr_si_I83 = mapr_si%dim_1%EX
+  889.          $SC_mapr_si_I84 = mapr_si%dim_1%LB
+  889.          $I_L889_154 = 0
+  889. !dir$ ivdep
+  889.          do
+  889.             (mapr_si%base_addr)($SC_mapr_si_I84 + $I_L889_154, 0) = -1
+  889.             $I_L889_154 = 1 + $I_L889_154
+  889.             if ( $I_L889_154 >= $F_A48 ) exit
+  889.          enddo
+  889.       endif
+  890.       if ( maxnodes > 0 ) then
+  895.          $SC_mapr_si_I27 = mapr_si%dim_1%EX
+  895.          $SC_mapr_si_I28 = mapr_si%dim_1%LB
+  894.          $SC_recs_I26 = recs%dim_1%EX
+  891.          $SC_ini_I25 = ini%dim_1%EX
+  890.          $I_L890_138 = 0
+  890. !dir$ ivdep
+  890.          do
+  891.             if ( (ini%base_addr)($I_L890_138, 0) /= 0 ) then
+  892.                (ini%base_addr)(nrecs_si, 0) = (ini%base_addr)($I_L890_138, 0)
+  893.                nrecs_si = 1 + nrecs_si
+  894.                (recs%base_addr)(nrecs_si, 0) = $I_L890_138
+  895.                (mapr_si%base_addr)($I_L890_138, 0) = nrecs_si
+  895.             endif
+  897.             $I_L890_138 = 1 + $I_L890_138
+  896.             if ( $I_L890_138 >= maxnodes ) exit
+  896.          enddo
+  896.       endif
+  899.       myrecs_si%header%a_contig = 1
+  899.       myrecs_si%dim_1%LB = 1
+  899.       myrecs_si%dim_1%EX = ( max( 0, nrecs_si ) )
+  899.       myrecs_si%dim_1%SM = 1
+  899.       $_allo_P16(0) = 0x1000000000001L
+  899.       $_allo_P16(1) = loc( myrecs_si )
+  899.       call __allocate( $_allo_P16, 0, 0, _fcd( 0, 0 ) )
+  900.       inibr_si%header%a_contig = 1
+  900.       inibr_si%dim_1%LB = 1
+  900.       inibr_si%dim_1%EX = ( max( 0, 1 + nrecs_si ) )
+  900.       inibr_si%dim_1%SM = 1
+  900.       $_allo_P17(0) = 0x1000000000001L
+  900.       $_allo_P17(1) = loc( inibr_si )
+  900.       call __allocate( $_allo_P17, 0, 0, _fcd( 0, 0 ) )
+  902.       (inibr_si%base_addr)(1, 0) = 1
+  903.       if ( nrecs_si > 0 ) then
+  905.          $SC_recs_I26 = recs%dim_1%EX
+  904.          $SC_ini_I25 = ini%dim_1%EX
+  903.          $inibr_si_WR0_R0 = 1
+  903.          $I_L903_158 = 0
+  903. !dir$ unroll 4
+  903.          do
+  904.             $inibr_si_WR0_R0 = $inibr_si_WR0_R0 + (ini%base_addr)($I_L903_158, 0)
+  904.             (inibr_si%base_addr)(2 + $I_L903_158, 0) = $inibr_si_WR0_R0
+  905.             (myrecs_si%base_addr)(1 + $I_L903_158, 0) = (recs%base_addr)(1 + $I_L903_158, 0)
+  906.             $I_L903_158 = 1 + $I_L903_158
+  903.             if ( $I_L903_158 >= nrecs_si ) exit
+  903.          enddo
+  903.       endif
+  908.       $_allo_P18(0) = 0x1000000000001L
+  908.       $_allo_P18(1) = loc( ini )
+  908.       call __deallocate( $_allo_P18, 0, 0, _fcd( 0, 0 ) )
+  908.       ini%header%assoc = 0
+  909.       $_allo_P19(0) = 0x1000000000001L
+  909.       $_allo_P19(1) = loc( recs )
+  909.       call __deallocate( $_allo_P19, 0, 0, _fcd( 0, 0 ) )
+  909.       recs%header%assoc = 0
+  823.       $_allo_P20(0) = 0x2000000000001L
+  823.       $_allo_P20(1) = loc( recs )
+  823.       $_allo_P20(2) = loc( ini )
+  823.       call _dealloc( $_allo_P20, 0, 0, _fcd( 0, 0 ) )
+  819.       _free( t$48 )
+  911.       return
+  911.       end
+  911.       
+  986.       
+  986.       subroutine bmcm( dt, slagr )
+  986.       seatp_dt = loc( dt )
+  914.       t$17 = kmax
+  921.       t$53 = _zla( 0, kmax )
+  921.       t$56 = 4 * _zla( 0, kmax )
+  921.       t$58 = 8 * _zla( 0, kmax )
+  914.       t$59 = _zla( 0, kmax )
+  914.       t$60 = _zla( 0, kmax ) * _zla( 0, kmax )
+  923.       t$61 = 8 * ( 7 + 8 * _zla( 0, kmax ) ) / 8
+  923.       t$63 = t$61 + 8 * _zla( 0, kmax ) * _zla( 0, kmax )
+  920.       t$64 = 8 * ( 7 + t$61 + 8 * _zla( 0, kmax ) * _zla( 0, kmax ) ) / 8
+  920.       t$66 = t$64 + 8 * _zla( 0, kmax )
+  920.       t$67 = 8 * ( 7 + t$64 + 8 * _zla( 0, kmax ) ) / 8
+  920.       t$69 = t$67 + 8 * _zla( 0, kmax )
+  914.       t$54 = int( _alloc( t$67 + 8 * _zla( 0, kmax ) ), 8 )
+  921.       t$55 = t$54
+  921.       t$57 = t$54 + 4 * _zla( 0, kmax )
+  923.       t$62 = t$61 + t$54
+  920.       t$65 = t$64 + t$54
+  920.       t$68 = t$67 + t$54
+  925.       if ( slagr == .false. ) then
+  926.          if ( -1 + kmax > 0 ) then
+  927.             $SC_tov_I0 = tov%dim_1%EX
+  927.             $SC_tov_I1 = tov%dim_1%LB
+  927.             $SC_p1_I2 = p1%dim_1%EX
+  927.             $SC_p1_I3 = p1%dim_1%LB
+  927.             $SC_h1_I4 = h1%dim_1%EX
+  927.             $SC_h1_I5 = h1%dim_1%LB
+  926.             $I_L926_290 = 0
+  926. !dir$ ivdep
+  926.             do
+  927.                (h1%base_addr)(1 + $I_L926_290, 0) = -(tov%base_addr)(1 + $I_L926_290, 0) + (tov%base_addr)(2 + $I_L926_290, 0) * (p1%base_addr)(1 + $I_L926_290, 0)
+  928.                $I_L926_290 = 1 + $I_L926_290
+  926.                if ( $I_L926_290 >= -1 + kmax ) exit
+  926.             enddo
+  926.          endif
+  929.          (h1%base_addr)(kmax, 0) = 0.0
+  930.          (h2%base_addr)(1, 0) = 0.0
+  931.          if ( -2 + kmax >= 0 ) then
+  932.             $SC_p2_I6 = p2%dim_1%EX
+  932.             $SC_p2_I7 = p2%dim_1%LB
+  932.             $SC_h2_I8 = h2%dim_1%EX
+  932.             $SC_h2_I9 = h2%dim_1%LB
+  932.             $SC_tov_I0 = tov%dim_1%EX
+  932.             $SC_tov_I1 = tov%dim_1%LB
+  931.             $I_L931_292 = 0
+  931. !dir$ ivdep
+  931.             do
+  932.                (h2%base_addr)(2 + $I_L931_292, 0) = (tov%base_addr)(2 + $I_L931_292, 0) + -( (tov%base_addr)(1 + $I_L931_292, 0) * (p2%base_addr)(2 + $I_L931_292, 0) )
+  933.                $I_L931_292 = 1 + $I_L931_292
+  931.                if ( $I_L931_292 >= -1 + kmax ) exit
+  931.             enddo
+  931.          endif
+  931.       else
+  935.          if ( -1 + kmax > 0 ) then
+  936.             $SC_tov_I0 = tov%dim_1%EX
+  936.             $SC_tov_I1 = tov%dim_1%LB
+  936.             $SC_p1_I2 = p1%dim_1%EX
+  936.             $SC_p1_I3 = p1%dim_1%LB
+  936.             $SC_h1_I4 = h1%dim_1%EX
+  936.             $SC_h1_I5 = h1%dim_1%LB
+  935.             $I_L935_294 = 0
+  935. !dir$ ivdep
+  935.             do
+  936.                (h1%base_addr)(1 + $I_L935_294, 0) = (tov%base_addr)(2 + $I_L935_294, 0) * ( -1.0 + (p1%base_addr)(1 + $I_L935_294, 0) )
+  937.                $I_L935_294 = 1 + $I_L935_294
+  935.                if ( $I_L935_294 >= -1 + kmax ) exit
+  935.             enddo
+  935.          endif
+  938.          (h1%base_addr)(kmax, 0) = 0.0
+  939.          (h2%base_addr)(1, 0) = 0.0
+  940.          if ( -2 + kmax >= 0 ) then
+  941.             $SC_p2_I6 = p2%dim_1%EX
+  941.             $SC_p2_I7 = p2%dim_1%LB
+  941.             $SC_h2_I8 = h2%dim_1%EX
+  941.             $SC_h2_I9 = h2%dim_1%LB
+  941.             $SC_tov_I0 = tov%dim_1%EX
+  941.             $SC_tov_I1 = tov%dim_1%LB
+  940.             $I_L940_296 = 0
+  940. !dir$ ivdep
+  940.             do
+  941.                (h2%base_addr)(2 + $I_L940_296, 0) = (tov%base_addr)(1 + $I_L940_296, 0) * ( 1.0 + -(p2%base_addr)(2 + $I_L940_296, 0) )
+  942.                $I_L940_296 = 1 + $I_L940_296
+  940.                if ( $I_L940_296 >= -1 + kmax ) exit
+  940.             enddo
+  940.          endif
+  940.       endif
+  944.       if ( kmax > 0 ) then
+  945.          $SC_del_I12 = del%dim_1%EX
+  945.          $SC_del_I13 = del%dim_1%LB
+  945.          $SC_ci_I10 = ci%dim_1%EX
+  945.          $SC_ci_I11 = ci%dim_1%LB
+  945.          $SC_h2_I8 = h2%dim_1%EX
+  945.          $SC_h2_I9 = h2%dim_1%LB
+  945.          $SC_tov_I0 = tov%dim_1%EX
+  945.          $SC_tov_I1 = tov%dim_1%LB
+  945.          $SC_h1_I4 = h1%dim_1%EX
+  945.          $SC_h1_I5 = h1%dim_1%LB
+  944.          $I_L944_298 = 0
+  944. !dir$ ivdep
+  944.          do
+  945.             x1(1 + $I_L944_298) = ( 5.0e-1 * ( (ci%base_addr)(1 + $I_L944_298, 0) * (h2%base_addr)(1 + $I_L944_298, 0) + (ci%base_addr)(2 + $I_L944_298, 0) * (h1%base_addr)(1 + $I_L944_298, 0) ) * 1.0/(del%base_addr)(1 + $I_L944_298, 0) ) + 2.8573561616563808e-1 * (tov%base_addr)(1 + $I_L944_298, 0)
+  946.             x2(1 + $I_L944_298) = ( 5.0e-1 * 1.0/(del%base_addr)(1 + $I_L944_298, 0) * ( (h2%base_addr)(1 + $I_L944_298, 0) + (h1%base_addr)(1 + $I_L944_298, 0) ) )
+  947.             $I_L944_298 = 1 + $I_L944_298
+  944.             if ( $I_L944_298 >= kmax ) exit
+  944.          enddo
+  950.          $SC_bm_I14 = bm%dim_1%EX
+  950.          $SC_bm_I15 = bm%dim_1%LB
+  950.          $SC_bm_I17 = bm%dim_2%SM
+  950.          $SC_bm_I16 = bm%dim_2%EX
+  950.          $SC_bm_I18 = bm%dim_2%LB
+  950.          $SC_del_I12 = del%dim_1%EX
+  950.          $SC_del_I13 = del%dim_1%LB
+  948.          $I_L948_335 = 0
+  948.          do
+  949.             $I_L949_329 = 0
+  949.             do
+  948.                $I_L948_279 = 0
+  948.                if ( min( kmax, 4 + 4 * $I_L948_335 ) + -4 * $I_L948_335 >= 4 ) then
+  948.                   $I_L948_327 = 0
+  948. !dir$ shortloop16
+  948. !dir$ blocking_size( 4, 4 )
+  948.                   do
+  949.                      $SCA_del#1_U0 = (del%base_addr)(1 + 4 * $I_L948_327 + 4 * $I_L948_335, 0)
+  949.                      $SCA_del#2_U1 = (del%base_addr)(2 + 4 * $I_L948_327 + 4 * $I_L948_335, 0)
+  949.                      $SCA_del#3_U2 = (del%base_addr)(3 + 4 * $I_L948_327 + 4 * $I_L948_335, 0)
+  949.                      $SCA_del#4_U3 = (del%base_addr)(4 + 4 * $I_L948_327 + 4 * $I_L948_335, 0)
+  949.                      $I_L949_314 = 0
+  949. !dir$ ivdep
+  949. !dir$ blocking_size( 256, 256 )
+  949.                      do
+  950.                         (bm%base_addr)(1 + $I_L949_314 + 256 * $I_L949_329, 1 + 4 * $I_L948_327 + 4 * $I_L948_335, 0) = -( $SCA_del#1_U0 * x1(1 + $I_L949_314 + 256 * $I_L949_329) )
+  950.                         (bm%base_addr)(1 + $I_L949_314 + 256 * $I_L949_329, 2 + 4 * $I_L948_327 + 4 * $I_L948_335, 0) = -( $SCA_del#2_U1 * x1(1 + $I_L949_314 + 256 * $I_L949_329) )
+  950.                         (bm%base_addr)(1 + $I_L949_314 + 256 * $I_L949_329, 3 + 4 * $I_L948_327 + 4 * $I_L948_335, 0) = -( $SCA_del#3_U2 * x1(1 + $I_L949_314 + 256 * $I_L949_329) )
+  950.                         (bm%base_addr)(1 + $I_L949_314 + 256 * $I_L949_329, 4 + 4 * $I_L948_327 + 4 * $I_L948_335, 0) = -( $SCA_del#4_U3 * x1(1 + $I_L949_314 + 256 * $I_L949_329) )
+  949.                         $I_L949_314 = 1 + $I_L949_314
+  949.                         if ( $I_L949_314 >= min( kmax, 256 + 256 * $I_L949_329 ) + -256 * $I_L949_329 ) exit
+  949.                      enddo
+  948.                      $I_L948_327 = 1 + $I_L948_327
+  948.                      if ( $I_L948_327 >= _rsh( min( kmax, 4 + 4 * $I_L948_335 ) + -4 * $I_L948_335, 2 ) ) exit
+  948.                   enddo
+  948.                   $I_L948_279 = and( 0xfffffffffffffffcUL, min( kmax, 4 + 4 * $I_L948_335 ) + -4 * $I_L948_335 )
+  948.                endif
+  948.                if ( $I_L948_279 < min( kmax, 4 + 4 * $I_L948_335 ) + -4 * $I_L948_335 ) then
+  948.                   $I_L948_324 = 0
+  948. !dir$ shortloop16
+  948. !dir$ blocking_size( 4, 4 )
+  948.                   do
+  949.                      $SCA_del_I31 = (del%base_addr)(1 + $I_L948_279 + $I_L948_324 + 4 * $I_L948_335, 0)
+  949.                      $I_L949_300 = 0
+  949. !dir$ ivdep
+  949. !dir$ blocking_size( 256, 256 )
+  949.                      do
+  950.                         (bm%base_addr)(1 + $I_L949_300 + 256 * $I_L949_329, 1 + $I_L948_279 + $I_L948_324 + 4 * $I_L948_335, 0) = -( $SCA_del_I31 * x1(1 + $I_L949_300 + 256 * $I_L949_329) )
+  949.                         $I_L949_300 = 1 + $I_L949_300
+  949.                         if ( $I_L949_300 >= min( kmax, 256 + 256 * $I_L949_329 ) + -256 * $I_L949_329 ) exit
+  949.                      enddo
+  948.                      $I_L948_324 = 1 + $I_L948_324
+  948.                      if ( $I_L948_324 >= min( kmax, 4 + 4 * $I_L948_335 ) + -$I_L948_279 + -4 * $I_L948_335 ) exit
+  948.                   enddo
+  948.                endif
+  949.                $I_L949_329 = 1 + $I_L949_329
+  951.                if ( $I_L949_329 >= 1 + max( 0, -1 + _rsh( 255 + kmax, 8 ) ) ) exit
+  951.             enddo
+  948.             $I_L948_335 = 1 + $I_L948_335
+  948.             if ( $I_L948_335 >= 1 + max( 0, -1 + _rsh( 3 + kmax, 2 ) ) ) exit
+  948.          enddo
+  955.          $SC_bm_I14 = bm%dim_1%EX
+  955.          $SC_bm_I15 = bm%dim_1%LB
+  955.          $SC_bm_I17 = bm%dim_2%SM
+  955.          $SC_bm_I16 = bm%dim_2%EX
+  955.          $SC_bm_I18 = bm%dim_2%LB
+  955.          $SC_del_I12 = del%dim_1%EX
+  955.          $SC_del_I13 = del%dim_1%LB
+  953.          $I_L953_316 = 0
+  953.          do
+  954.             $SCA_x2_I32 = x2(1 + $I_L953_316)
+  954.             $I_L954_302 = 0
+  954. !dir$ ivdep
+  954.             do
+  955.                (bm%base_addr)(1 + $I_L953_316, 1 + $I_L954_302, 0) = (bm%base_addr)(1 + $I_L953_316, 1 + $I_L954_302, 0) + $SCA_x2_I32 * (del%base_addr)(1 + $I_L954_302, 0)
+  956.                $I_L954_302 = 1 + $I_L954_302
+  954.                if ( $I_L954_302 >= 1 + $I_L953_316 ) exit
+  954.             enddo
+  957.             $I_L953_316 = 1 + $I_L953_316
+  956.             if ( $I_L953_316 >= kmax ) exit
+  956.          enddo
+  959.          $SC_bm_I14 = bm%dim_1%EX
+  959.          $SC_bm_I15 = bm%dim_1%LB
+  959.          $SC_bm_I17 = bm%dim_2%SM
+  959.          $SC_bm_I16 = bm%dim_2%EX
+  959.          $SC_bm_I18 = bm%dim_2%LB
+  959.          $SC_h2_I8 = h2%dim_1%EX
+  959.          $SC_h2_I9 = h2%dim_1%LB
+  958.          $I_L958_304 = 0
+  958. !dir$ ivdep
+  958.          do
+  959.             (bm%base_addr)(1 + $I_L958_304, 1 + $I_L958_304, 0) = (bm%base_addr)(1 + $I_L958_304, 1 + $I_L958_304, 0) + -5.0e-1 * (h2%base_addr)(1 + $I_L958_304, 0)
+  960.             $I_L958_304 = 1 + $I_L958_304
+  958.             if ( $I_L958_304 >= kmax ) exit
+  958.          enddo
+  958.       endif
+  962.       if ( kmax > 0 ) then
+  961.          $snt_T0 = _parallel( 1, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  968.          $SC_sv_I29 = sv%dim_1%EX
+  968.          $SC_sv_I30 = sv%dim_1%LB
+  966.          $SC_am_I24 = am%dim_1%EX
+  966.          $SC_am_I25 = am%dim_1%LB
+  966.          $SC_am_I27 = am%dim_2%SM
+  966.          $SC_am_I26 = am%dim_2%EX
+  966.          $SC_am_I28 = am%dim_2%LB
+  964.          $SC_cm_I19 = cm%dim_1%EX
+  964.          $SC_cm_I20 = cm%dim_1%LB
+  964.          $SC_cm_I22 = cm%dim_2%SM
+  964.          $SC_cm_I21 = cm%dim_2%EX
+  964.          $SC_cm_I23 = cm%dim_2%LB
+  966.          $SC_bm_I14 = bm%dim_1%EX
+  966.          $SC_bm_I15 = bm%dim_1%LB
+  966.          $SC_bm_I17 = bm%dim_2%SM
+  966.          $SC_bm_I16 = bm%dim_2%EX
+  966.          $SC_bm_I18 = bm%dim_2%LB
+  968.          $SC_tov_I0 = tov%dim_1%EX
+  968.          $SC_tov_I1 = tov%dim_1%LB
+  962.          $I_L962_331 = 0
+  962. !dir$ ivdep
+  962. !$omp do schedule(static)
+  962. !dir$ blocking_size( 1, 1 )
+  962.          do
+  963.             $SCA_tov_I33 = (tov%base_addr)(1 + $I_L962_331, 0)
+  963.             $I_L963_322 = 0
+  963. !dir$ blocking_size( 32, 32 )
+  963.             do
+  964.                (cm%base_addr)(1 + $I_L962_331, 1 + $I_L963_322, 0) = 0.0
+  965.                $I_L965_312 = 0
+  965. !dir$ unroll 4
+  965.                do
+  966.                   (cm%base_addr)(1 + $I_L962_331, 1 + $I_L963_322, 0) = (cm%base_addr)(1 + $I_L962_331, 1 + $I_L963_322, 0) + (bm%base_addr)(1 + $I_L965_312, 1 + $I_L963_322, 0) * (am%base_addr)(1 + $I_L962_331, 1 + $I_L965_312, 0)
+  967.                   $I_L965_312 = 1 + $I_L965_312
+  965.                   if ( $I_L965_312 >= kmax ) exit
+  965.                enddo
+  968.                (cm%base_addr)(1 + $I_L962_331, 1 + $I_L963_322, 0) = seat_dt * seat_dt * ( (cm%base_addr)(1 + $I_L962_331, 1 + $I_L963_322, 0) + 7.0742220327329097e-12 * $SCA_tov_I33 * (sv%base_addr)(1 + $I_L963_322, 0) )
+  969.                $I_L963_322 = 1 + $I_L963_322
+  967.                if ( $I_L963_322 >= kmax ) exit
+  967.             enddo
+  970.             $I_L962_331 = 1 + $I_L962_331
+  969.             if ( $I_L962_331 >= kmax ) exit
+  969.          enddo
+  971.          $snt_T0 = _endparallel( 1, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T0 )
+  971.       endif
+  973.       $F_A33 = kmax
+  973.       $F_A34 = kmax
+  973.       if ( and( -$F_A34, -$F_A33 ) < 0 ) then
+  973.          $I_L973_318 = 0
+  973.          do
+  973.             $I_L973_308 = 0
+  973. !dir$ ivdep
+  973.             do
+  973.                rim(1 + $I_L973_308, 1 + $I_L973_318) = 0.0
+  973.                $I_L973_308 = 1 + $I_L973_308
+  973.                if ( $I_L973_308 >= $F_A34 ) exit
+  973.             enddo
+  973.             $I_L973_318 = 1 + $I_L973_318
+  973.             if ( $I_L973_318 >= $F_A33 ) exit
+  973.          enddo
+  973.       endif
+  974.       if ( kmax > 0 ) then
+  974.          $I_L974_306 = 0
+  974. !dir$ ivdep
+  974.          do
+  975.             rim(1 + $I_L974_306, 1 + $I_L974_306) = 1.0
+  976.             $I_L974_306 = 1 + $I_L974_306
+  974.             if ( $I_L974_306 >= kmax ) exit
+  974.          enddo
+  974.       endif
+  978.       if ( nmax > 0 ) then
+  977.          $snt_T2 = _parallel( 3, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+  977.          $$_mmm_BASE = _alloc( 16 * _rsh( 63 + 32 * _zla( 0, kmax ), 6 ) )
+  977.          $pvt_Abase_seg15_D0 = $$_mmm_BASE
+  977.          $$_lll_BASE = $$_mmm_BASE + 8 * _rsh( 63 + 32 * _zla( 0, kmax ), 6 )
+  977.          $snt_T4 = _mt_start_code( 5, _mt_rw_list(...) )
+  978.          $Trips01_N33 = nmax
+  978.          $I_L978_333 = 0
+  978. !$omp do schedule(static)
+  978.          do
+  981.             $F_A35 = t$17
+  981.             $F_A36 = t$17
+  981.             if ( and( -$F_A36, -$F_A35 ) < 0 ) then
+  981.                $SC_dm_I46 = dm%dim_1%LB
+  981.                $SC_dm_I47 = dm%dim_2%SM
+  981.                $SC_dm_I48 = dm%dim_2%LB
+  981.                $SC_dm_I50 = dm%dim_3%SM
+  981.                $SC_dm_I49 = dm%dim_3%EX
+  981.                $SC_dm_I51 = dm%dim_3%LB
+  981.                $SC_cm_I43 = cm%dim_1%LB
+  981.                $SC_cm_I44 = cm%dim_2%SM
+  981.                $SC_cm_I45 = cm%dim_2%LB
+  981.                $I_L981_320 = 0
+  981.                do
+  981.                   $I_L981_310 = 0
+  981. !dir$ ivdep
+  981.                   do
+  981.                      (dm%base_addr)($SC_dm_I46 + $I_L981_310, $SC_dm_I48 + $I_L981_320, 1 + $I_L978_333, 0) = rim(1 + $I_L981_310, 1 + $I_L981_320) + -( (cm%base_addr)($SC_cm_I43 + $I_L981_310, $SC_cm_I45 + $I_L981_320, 0) * real( $I_L978_333 + $I_L978_333 * $I_L978_333, 8 ) )
+  981.                      $I_L981_310 = 1 + $I_L981_310
+  981.                      if ( $I_L981_310 >= $F_A36 ) exit
+  981.                   enddo
+  981.                   $I_L981_320 = 1 + $I_L981_320
+  981.                   if ( $I_L981_320 >= $F_A35 ) exit
+  981.                enddo
+  981.             endif
+  982.             call iminv( (dm%base_addr)(1, 1, 1 + $I_L978_333, 0), kmax, $$_det, $$_lll(1), $$_mmm(1) )
+  983.             $I_L978_333 = 1 + $I_L978_333
+  983.             if ( $I_L978_333 >= $Trips01_N33 ) exit
+  983.          enddo
+  977.          $snt_T4 = _mt_end_code( 5, _mt_rw_list(...), $snt_T4 )
+  977.          _free( $pvt_Abase_seg15_D0 )
+  984.          $snt_T2 = _endparallel( 3, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T2 )
+  984.       endif
+  914.       _free( t$54 )
+  986.       return
+  986.       end
+  986.       
+ 1111.       
+ 1111.       subroutine semiimpl_si( dt, slagr, mnfirst, mnlast, mnfirst_si, mnlast_si )
+  989.       t$18 = ( 2 * mnmax_si )
+  989.       t$19 = kmax
+ 1003.       t$70 = _zla( 0, ( 2 * mnmax_si ) )
+  989.       t$71 = _zla( 0, ( 2 * mnmax_si ) )
+ 1003.       t$72 = _zla( 0, kmax )
+  989.       t$73 = _zla( 0, ( 2 * mnmax_si ) ) * _zla( 0, kmax )
+ 1003.       t$76 = 8 * _zla( 0, ( 2 * mnmax_si ) ) * _zla( 0, kmax )
+  989.       t$74 = int( _alloc( 8 * _zla( 0, ( 2 * mnmax_si ) ) * _zla( 0, kmax ) ), 8 )
+ 1003.       t$75 = t$74
+ 1008.       _mt_barrier( 1, _mt_rw_list(...) )
+ 1009.       $snt_T0 = _mt_single( 2, _mt_rw_list(...) )
+ 1010.       call spectosi( (inibs_si%base_addr)(inibs_si%dim_1%LB, 0), (inibr_si%base_addr)(inibr_si%dim_1%LB, 0), nsends_si, nrecs_si, (mysends_si%base_addr)(mysends_si%dim_1%LB, 0), (myrecs_si%base_addr)(myrecs_si%dim_1%LB, 0), (maps_si%base_addr)(maps_si%dim_1%LB, 0), (mapr_si%base_addr)(mapr_si%dim_1%LB, 0), kmax, kmaxloc, (nlevperg_four%base_addr)(nlevperg_four%dim_1%LB, 0), (qtmpt%base_addr)(qtmpt%dim_1%LB, qtmpt%dim_2%LB, 0), (qdivt%base_addr)(qdivt%dim_1%LB, qdivt%dim_2%LB, 0), (qtmpt_si%base_addr)(qtmpt_si%dim_1%LB, qtmpt_si%dim_2%LB, 0), (qdivt_si%base_addr)(qdivt_si%dim_1%LB, qdivt_si%dim_2%LB, 0), 0, 0, (qlnpt%base_addr)(qlnpt%dim_1%LB, 0), (qlnpt_si%base_addr)(qlnpt_si%dim_1%LB, 0) )
+ 1013.       $snt_T0 = _mt_endsingle( 2, _mt_rw_list(...), $snt_T0 )
+ 1014.       if ( kmax > 0 ) then
+ 1015.          if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1014.             $I_L1014_396 = 0
+ 1014.             do
+ 1015.                $I_L1015_364 = 0
+ 1015. !dir$ ivdep
+ 1015.                do
+ 1016.                   aux(mnfirst_si + $I_L1015_364, 1 + $I_L1014_396) = 0.0
+ 1017.                   $I_L1015_364 = 1 + $I_L1015_364
+ 1015.                   if ( $I_L1015_364 >= 1 + mnlast_si + -mnfirst_si ) exit
+ 1015.                enddo
+ 1018.                $I_L1014_396 = 1 + $I_L1014_396
+ 1017.                if ( $I_L1014_396 >= kmax ) exit
+ 1017.             enddo
+ 1017.          endif
+ 1023.          $SC_am_I0 = am%dim_1%EX
+ 1023.          $SC_am_I1 = am%dim_1%LB
+ 1023.          $SC_am_I3 = am%dim_2%SM
+ 1023.          $SC_am_I2 = am%dim_2%EX
+ 1023.          $SC_am_I4 = am%dim_2%LB
+ 1023.          $SC_qtmpt_si_I5 = qtmpt_si%dim_1%EX
+ 1023.          $SC_qtmpt_si_I6 = qtmpt_si%dim_1%LB
+ 1023.          $SC_qtmpt_si_I8 = qtmpt_si%dim_2%SM
+ 1023.          $SC_qtmpt_si_I7 = qtmpt_si%dim_2%EX
+ 1023.          $SC_qtmpt_si_I9 = qtmpt_si%dim_2%LB
+ 1022.          if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1019.             $I_L1019_446 = 0
+ 1019.             do
+ 1020.                $I_L1020_440 = 0
+ 1020.                do
+ 1022.                   $I_L1022_432 = 0
+ 1022.                   do
+ 1019.                      $I_L1019_336 = 0
+ 1019.                      if ( min( kmax, 4 + 4 * $I_L1019_446 ) + -4 * $I_L1019_446 >= 4 ) then
+ 1019.                         $I_L1019_428 = 0
+ 1019. !dir$ shortloop16
+ 1019. !dir$ blocking_size( 4, 4 )
+ 1019.                         do
+ 1020.                            $I_L1020_414 = 0
+ 1020. !dir$ shortloop16
+ 1020. !dir$ blocking_size( 8, 8 )
+ 1020.                            do
+ 1022.                               $SCA_am#1_U0 = (am%base_addr)(1 + 4 * $I_L1019_428 + 4 * $I_L1019_446, 1 + $I_L1020_414 + 8 * $I_L1020_440, 0)
+ 1022.                               $SCA_am#2_U1 = (am%base_addr)(2 + 4 * $I_L1019_428 + 4 * $I_L1019_446, 1 + $I_L1020_414 + 8 * $I_L1020_440, 0)
+ 1022.                               $SCA_am#3_U2 = (am%base_addr)(3 + 4 * $I_L1019_428 + 4 * $I_L1019_446, 1 + $I_L1020_414 + 8 * $I_L1020_440, 0)
+ 1022.                               $SCA_am#4_U3 = (am%base_addr)(4 + 4 * $I_L1019_428 + 4 * $I_L1019_446, 1 + $I_L1020_414 + 8 * $I_L1020_440, 0)
+ 1022.                               $I_L1022_392 = 0
+ 1022. !dir$ ivdep
+ 1022. !dir$ blocking_size( 256, 256 )
+ 1022.                               do
+ 1023.                                  aux(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 1 + 4 * $I_L1019_428 + 4 * $I_L1019_446) = aux(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 1 + 4 * $I_L1019_428 + 4 * $I_L1019_446) + $SCA_am#1_U0 * (qtmpt_si%base_addr)(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 1 + $I_L1020_414 + 8 * $I_L1020_440, 0)
+ 1023.                                  aux(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 2 + 4 * $I_L1019_428 + 4 * $I_L1019_446) = aux(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 2 + 4 * $I_L1019_428 + 4 * $I_L1019_446) + $SCA_am#2_U1 * (qtmpt_si%base_addr)(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 1 + $I_L1020_414 + 8 * $I_L1020_440, 0)
+ 1023.                                  aux(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 3 + 4 * $I_L1019_428 + 4 * $I_L1019_446) = aux(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 3 + 4 * $I_L1019_428 + 4 * $I_L1019_446) + $SCA_am#3_U2 * (qtmpt_si%base_addr)(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 1 + $I_L1020_414 + 8 * $I_L1020_440, 0)
+ 1023.                                  aux(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 4 + 4 * $I_L1019_428 + 4 * $I_L1019_446) = aux(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 4 + 4 * $I_L1019_428 + 4 * $I_L1019_446) + $SCA_am#4_U3 * (qtmpt_si%base_addr)(mnfirst_si + $I_L1022_392 + 256 * $I_L1022_432, 1 + $I_L1020_414 + 8 * $I_L1020_440, 0)
+ 1022.                                  $I_L1022_392 = 1 + $I_L1022_392
+ 1022.                                  if ( $I_L1022_392 >= min( 1 + mnlast_si + -mnfirst_si, 256 + 256 * $I_L1022_432 ) + -256 * $I_L1022_432 ) exit
+ 1022.                               enddo
+ 1020.                               $I_L1020_414 = 1 + $I_L1020_414
+ 1020.                               if ( $I_L1020_414 >= min( kmax, 8 + 8 * $I_L1020_440 ) + -8 * $I_L1020_440 ) exit
+ 1020.                            enddo
+ 1019.                            $I_L1019_428 = 1 + $I_L1019_428
+ 1024.                            if ( $I_L1019_428 >= _rsh( min( kmax, 4 + 4 * $I_L1019_446 ) + -4 * $I_L1019_446, 2 ) ) exit
+ 1024.                         enddo
+ 1019.                         $I_L1019_336 = and( 0xfffffffffffffffcUL, min( kmax, 4 + 4 * $I_L1019_446 ) + -4 * $I_L1019_446 )
+ 1019.                      endif
+ 1019.                      if ( $I_L1019_336 < min( kmax, 4 + 4 * $I_L1019_446 ) + -4 * $I_L1019_446 ) then
+ 1019.                         $I_L1019_418 = 0
+ 1019. !dir$ shortloop16
+ 1019. !dir$ blocking_size( 4, 4 )
+ 1019.                         do
+ 1020.                            $I_L1020_406 = 0
+ 1020. !dir$ shortloop16
+ 1020. !dir$ blocking_size( 8, 8 )
+ 1020.                            do
+ 1022.                               $SCA_am_I46 = (am%base_addr)(1 + $I_L1019_336 + $I_L1019_418 + 4 * $I_L1019_446, 1 + $I_L1020_406 + 8 * $I_L1020_440, 0)
+ 1022.                               $I_L1022_366 = 0
+ 1022. !dir$ ivdep
+ 1022. !dir$ blocking_size( 256, 256 )
+ 1022.                               do
+ 1023.                                  aux(mnfirst_si + $I_L1022_366 + 256 * $I_L1022_432, 1 + $I_L1019_336 + $I_L1019_418 + 4 * $I_L1019_446) = aux(mnfirst_si + $I_L1022_366 + 256 * $I_L1022_432, 1 + $I_L1019_336 + $I_L1019_418 + 4 * $I_L1019_446) + $SCA_am_I46 * (qtmpt_si%base_addr)(mnfirst_si + $I_L1022_366 + 256 * $I_L1022_432, 1 + $I_L1020_406 + 8 * $I_L1020_440, 0)
+ 1022.                                  $I_L1022_366 = 1 + $I_L1022_366
+ 1022.                                  if ( $I_L1022_366 >= min( 1 + mnlast_si + -mnfirst_si, 256 + 256 * $I_L1022_432 ) + -256 * $I_L1022_432 ) exit
+ 1022.                               enddo
+ 1020.                               $I_L1020_406 = 1 + $I_L1020_406
+ 1020.                               if ( $I_L1020_406 >= min( kmax, 8 + 8 * $I_L1020_440 ) + -8 * $I_L1020_440 ) exit
+ 1020.                            enddo
+ 1019.                            $I_L1019_418 = 1 + $I_L1019_418
+ 1024.                            if ( $I_L1019_418 >= min( kmax, 4 + 4 * $I_L1019_446 ) + -$I_L1019_336 + -4 * $I_L1019_446 ) exit
+ 1024.                         enddo
+ 1024.                      endif
+ 1022.                      $I_L1022_432 = 1 + $I_L1022_432
+ 1022.                      if ( $I_L1022_432 >= 1 + max( 0, -1 + _rsh( 256 + mnlast_si + -mnfirst_si, 8 ) ) ) exit
+ 1022.                   enddo
+ 1020.                   $I_L1020_440 = 1 + $I_L1020_440
+ 1025.                   if ( $I_L1020_440 >= 1 + max( 0, -1 + _rsh( 7 + kmax, 3 ) ) ) exit
+ 1025.                enddo
+ 1019.                $I_L1019_446 = 1 + $I_L1019_446
+ 1019.                if ( $I_L1019_446 >= 1 + max( 0, -1 + _rsh( 3 + kmax, 2 ) ) ) exit
+ 1019.             enddo
+ 1019.          endif
+ 1031.          $SC_snnp1_si_I14 = snnp1_si%dim_1%EX
+ 1031.          $SC_snnp1_si_I15 = snnp1_si%dim_1%LB
+ 1028.          $SC_tov_I10 = tov%dim_1%EX
+ 1028.          $SC_tov_I11 = tov%dim_1%LB
+ 1031.          $SC_qlnpt_si_I12 = qlnpt_si%dim_1%EX
+ 1031.          $SC_qlnpt_si_I13 = qlnpt_si%dim_1%LB
+ 1029.          if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1027.             $I_L1027_398 = 0
+ 1027.             do
+ 1028.                tor = 7.0742220327329097e-12 * (tov%base_addr)(1 + $I_L1027_398, 0)
+ 1029.                $I_L1029_368 = 0
+ 1029. !dir$ ivdep
+ 1029.                do
+ 1031.                   aux(mnfirst_si + $I_L1029_368, 1 + $I_L1027_398) = dt * (snnp1_si%base_addr)(mnfirst_si + $I_L1029_368, 0) * ( aux(mnfirst_si + $I_L1029_368, 1 + $I_L1027_398) + tor * (qlnpt_si%base_addr)(mnfirst_si + $I_L1029_368, 0) )
+ 1032.                   $I_L1029_368 = 1 + $I_L1029_368
+ 1029.                   if ( $I_L1029_368 >= 1 + mnlast_si + -mnfirst_si ) exit
+ 1029.                enddo
+ 1033.                $I_L1027_398 = 1 + $I_L1027_398
+ 1032.                if ( $I_L1027_398 >= kmax ) exit
+ 1032.             enddo
+ 1032.          endif
+ 1036.          $SC_qdivt_si_I16 = qdivt_si%dim_1%EX
+ 1036.          $SC_qdivt_si_I17 = qdivt_si%dim_1%LB
+ 1036.          $SC_qdivt_si_I19 = qdivt_si%dim_2%SM
+ 1036.          $SC_qdivt_si_I18 = qdivt_si%dim_2%EX
+ 1036.          $SC_qdivt_si_I20 = qdivt_si%dim_2%LB
+ 1035.          if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1034.             $I_L1034_400 = 0
+ 1034.             do
+ 1035.                $I_L1035_370 = 0
+ 1035. !dir$ ivdep
+ 1035.                do
+ 1036.                   aux(mnfirst_si + $I_L1035_370, 1 + $I_L1034_400) = aux(mnfirst_si + $I_L1035_370, 1 + $I_L1034_400) + (qdivt_si%base_addr)(mnfirst_si + $I_L1035_370, 1 + $I_L1034_400, 0)
+ 1037.                   $I_L1035_370 = 1 + $I_L1035_370
+ 1035.                   if ( $I_L1035_370 >= 1 + mnlast_si + -mnfirst_si ) exit
+ 1035.                enddo
+ 1038.                $I_L1034_400 = 1 + $I_L1034_400
+ 1037.                if ( $I_L1034_400 >= kmax ) exit
+ 1037.             enddo
+ 1037.          endif
+ 1037.       endif
+ 1039.       if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1047.          $SC_dm_I23 = dm%dim_1%EX
+ 1047.          $SC_dm_I24 = dm%dim_1%LB
+ 1047.          $SC_dm_I26 = dm%dim_2%SM
+ 1047.          $SC_dm_I25 = dm%dim_2%EX
+ 1047.          $SC_dm_I27 = dm%dim_2%LB
+ 1047.          $SC_dm_I29 = dm%dim_3%SM
+ 1047.          $SC_dm_I28 = dm%dim_3%EX
+ 1047.          $SC_dm_I30 = dm%dim_3%LB
+ 1040.          $SC_mynmap_si_I21 = mynmap_si%dim_1%EX
+ 1040.          $SC_mynmap_si_I22 = mynmap_si%dim_1%LB
+ 1042.          $SC_qdivt_si_I16 = qdivt_si%dim_1%EX
+ 1042.          $SC_qdivt_si_I17 = qdivt_si%dim_1%LB
+ 1042.          $SC_qdivt_si_I19 = qdivt_si%dim_2%SM
+ 1042.          $SC_qdivt_si_I18 = qdivt_si%dim_2%EX
+ 1042.          $SC_qdivt_si_I20 = qdivt_si%dim_2%LB
+ 1041.          if ( kmax > 0 ) then
+ 1039.             $I_L1039_442 = 0
+ 1039. !dir$ ivdep
+ 1039.             do
+ 1040.                n = (mynmap_si%base_addr)(( 1 + mnfirst_si + $I_L1039_442 ) / 2, 0)
+ 1041.                $I_L1041_372 = 0
+ 1041.                do
+ 1042.                   (qdivt_si%base_addr)(mnfirst_si + $I_L1039_442, 1 + $I_L1041_372, 0) = 0.0
+ 1043.                   $I_L1041_372 = 1 + $I_L1041_372
+ 1041.                   if ( $I_L1041_372 >= kmax ) exit
+ 1041.                enddo
+ 1044.                $I_L1044_434 = 0
+ 1044.                do
+ 1046.                   $I_L1046_421 = 0
+ 1046.                   do
+ 1044.                      $I_L1044_408 = 0
+ 1044. !dir$ shortloop16
+ 1044. !dir$ blocking_size( 8, 8 )
+ 1044.                      do
+ 1046.                         $SCA_aux_I47 = aux(mnfirst_si + $I_L1039_442, 1 + $I_L1044_408 + 8 * $I_L1044_434)
+ 1046.                         $I_L1046_374 = 0
+ 1046. !dir$ unroll 4
+ 1046. !dir$ blocking_size( 256, 256 )
+ 1046.                         do
+ 1047.                            (qdivt_si%base_addr)(mnfirst_si + $I_L1039_442, 1 + $I_L1046_374 + 256 * $I_L1046_421, 0) = (qdivt_si%base_addr)(mnfirst_si + $I_L1039_442, 1 + $I_L1046_374 + 256 * $I_L1046_421, 0) + $SCA_aux_I47 * (dm%base_addr)(1 + $I_L1046_374 + 256 * $I_L1046_421, 1 + $I_L1044_408 + 8 * $I_L1044_434, n, 0)
+ 1046.                            $I_L1046_374 = 1 + $I_L1046_374
+ 1046.                            if ( $I_L1046_374 >= min( kmax, 256 + 256 * $I_L1046_421 ) + -256 * $I_L1046_421 ) exit
+ 1046.                         enddo
+ 1044.                         $I_L1044_408 = 1 + $I_L1044_408
+ 1044.                         if ( $I_L1044_408 >= min( kmax, 8 + 8 * $I_L1044_434 ) + -8 * $I_L1044_434 ) exit
+ 1044.                      enddo
+ 1046.                      $I_L1046_421 = 1 + $I_L1046_421
+ 1048.                      if ( $I_L1046_421 >= 1 + max( 0, -1 + _rsh( 255 + kmax, 8 ) ) ) exit
+ 1048.                   enddo
+ 1044.                   $I_L1044_434 = 1 + $I_L1044_434
+ 1044.                   if ( $I_L1044_434 >= 1 + max( 0, -1 + _rsh( 7 + kmax, 3 ) ) ) exit
+ 1044.                enddo
+ 1050.                $I_L1039_442 = 1 + $I_L1039_442
+ 1049.                if ( $I_L1039_442 >= 1 + mnlast_si + -mnfirst_si ) exit
+ 1049.             enddo
+ 1049.          endif
+ 1049.       endif
+ 1052.       if ( kmax > 0 ) then
+ 1053.          if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1052.             $I_L1052_402 = 0
+ 1052.             do
+ 1053.                $I_L1053_376 = 0
+ 1053. !dir$ ivdep
+ 1053.                do
+ 1054.                   aux(mnfirst_si + $I_L1053_376, 1 + $I_L1052_402) = 0.0
+ 1055.                   $I_L1053_376 = 1 + $I_L1053_376
+ 1053.                   if ( $I_L1053_376 >= 1 + mnlast_si + -mnfirst_si ) exit
+ 1053.                enddo
+ 1056.                $I_L1052_402 = 1 + $I_L1052_402
+ 1055.                if ( $I_L1052_402 >= kmax ) exit
+ 1055.             enddo
+ 1055.          endif
+ 1061.          $SC_bm_I31 = bm%dim_1%EX
+ 1061.          $SC_bm_I32 = bm%dim_1%LB
+ 1061.          $SC_bm_I34 = bm%dim_2%SM
+ 1061.          $SC_bm_I33 = bm%dim_2%EX
+ 1061.          $SC_bm_I35 = bm%dim_2%LB
+ 1061.          $SC_qdivt_si_I16 = qdivt_si%dim_1%EX
+ 1061.          $SC_qdivt_si_I17 = qdivt_si%dim_1%LB
+ 1061.          $SC_qdivt_si_I19 = qdivt_si%dim_2%SM
+ 1061.          $SC_qdivt_si_I18 = qdivt_si%dim_2%EX
+ 1061.          $SC_qdivt_si_I20 = qdivt_si%dim_2%LB
+ 1060.          if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1057.             $I_L1057_448 = 0
+ 1057.             do
+ 1058.                $I_L1058_444 = 0
+ 1058.                do
+ 1060.                   $I_L1060_436 = 0
+ 1060.                   do
+ 1057.                      $I_L1057_341 = 0
+ 1057.                      if ( min( kmax, 4 + 4 * $I_L1057_448 ) + -4 * $I_L1057_448 >= 4 ) then
+ 1057.                         $I_L1057_430 = 0
+ 1057. !dir$ shortloop16
+ 1057. !dir$ blocking_size( 4, 4 )
+ 1057.                         do
+ 1058.                            $I_L1058_416 = 0
+ 1058. !dir$ shortloop16
+ 1058. !dir$ blocking_size( 8, 8 )
+ 1058.                            do
+ 1060.                               $SCA_bm#1_U4 = (bm%base_addr)(1 + 4 * $I_L1057_430 + 4 * $I_L1057_448, 1 + $I_L1058_416 + 8 * $I_L1058_444, 0)
+ 1060.                               $SCA_bm#2_U5 = (bm%base_addr)(2 + 4 * $I_L1057_430 + 4 * $I_L1057_448, 1 + $I_L1058_416 + 8 * $I_L1058_444, 0)
+ 1060.                               $SCA_bm#3_U6 = (bm%base_addr)(3 + 4 * $I_L1057_430 + 4 * $I_L1057_448, 1 + $I_L1058_416 + 8 * $I_L1058_444, 0)
+ 1060.                               $SCA_bm#4_U7 = (bm%base_addr)(4 + 4 * $I_L1057_430 + 4 * $I_L1057_448, 1 + $I_L1058_416 + 8 * $I_L1058_444, 0)
+ 1060.                               $I_L1060_394 = 0
+ 1060. !dir$ ivdep
+ 1060. !dir$ blocking_size( 256, 256 )
+ 1060.                               do
+ 1061.                                  aux(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 1 + 4 * $I_L1057_430 + 4 * $I_L1057_448) = aux(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 1 + 4 * $I_L1057_430 + 4 * $I_L1057_448) + $SCA_bm#1_U4 * (qdivt_si%base_addr)(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 1 + $I_L1058_416 + 8 * $I_L1058_444, 0)
+ 1061.                                  aux(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 2 + 4 * $I_L1057_430 + 4 * $I_L1057_448) = aux(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 2 + 4 * $I_L1057_430 + 4 * $I_L1057_448) + $SCA_bm#2_U5 * (qdivt_si%base_addr)(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 1 + $I_L1058_416 + 8 * $I_L1058_444, 0)
+ 1061.                                  aux(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 3 + 4 * $I_L1057_430 + 4 * $I_L1057_448) = aux(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 3 + 4 * $I_L1057_430 + 4 * $I_L1057_448) + $SCA_bm#3_U6 * (qdivt_si%base_addr)(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 1 + $I_L1058_416 + 8 * $I_L1058_444, 0)
+ 1061.                                  aux(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 4 + 4 * $I_L1057_430 + 4 * $I_L1057_448) = aux(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 4 + 4 * $I_L1057_430 + 4 * $I_L1057_448) + $SCA_bm#4_U7 * (qdivt_si%base_addr)(mnfirst_si + $I_L1060_394 + 256 * $I_L1060_436, 1 + $I_L1058_416 + 8 * $I_L1058_444, 0)
+ 1060.                                  $I_L1060_394 = 1 + $I_L1060_394
+ 1060.                                  if ( $I_L1060_394 >= min( 1 + mnlast_si + -mnfirst_si, 256 + 256 * $I_L1060_436 ) + -256 * $I_L1060_436 ) exit
+ 1060.                               enddo
+ 1058.                               $I_L1058_416 = 1 + $I_L1058_416
+ 1058.                               if ( $I_L1058_416 >= min( kmax, 8 + 8 * $I_L1058_444 ) + -8 * $I_L1058_444 ) exit
+ 1058.                            enddo
+ 1057.                            $I_L1057_430 = 1 + $I_L1057_430
+ 1062.                            if ( $I_L1057_430 >= _rsh( min( kmax, 4 + 4 * $I_L1057_448 ) + -4 * $I_L1057_448, 2 ) ) exit
+ 1062.                         enddo
+ 1057.                         $I_L1057_341 = and( 0xfffffffffffffffcUL, min( kmax, 4 + 4 * $I_L1057_448 ) + -4 * $I_L1057_448 )
+ 1057.                      endif
+ 1057.                      if ( $I_L1057_341 < min( kmax, 4 + 4 * $I_L1057_448 ) + -4 * $I_L1057_448 ) then
+ 1057.                         $I_L1057_423 = 0
+ 1057. !dir$ shortloop16
+ 1057. !dir$ blocking_size( 4, 4 )
+ 1057.                         do
+ 1058.                            $I_L1058_410 = 0
+ 1058. !dir$ shortloop16
+ 1058. !dir$ blocking_size( 8, 8 )
+ 1058.                            do
+ 1060.                               $SCA_bm_I48 = (bm%base_addr)(1 + $I_L1057_341 + $I_L1057_423 + 4 * $I_L1057_448, 1 + $I_L1058_410 + 8 * $I_L1058_444, 0)
+ 1060.                               $I_L1060_378 = 0
+ 1060. !dir$ ivdep
+ 1060. !dir$ blocking_size( 256, 256 )
+ 1060.                               do
+ 1061.                                  aux(mnfirst_si + $I_L1060_378 + 256 * $I_L1060_436, 1 + $I_L1057_341 + $I_L1057_423 + 4 * $I_L1057_448) = aux(mnfirst_si + $I_L1060_378 + 256 * $I_L1060_436, 1 + $I_L1057_341 + $I_L1057_423 + 4 * $I_L1057_448) + $SCA_bm_I48 * (qdivt_si%base_addr)(mnfirst_si + $I_L1060_378 + 256 * $I_L1060_436, 1 + $I_L1058_410 + 8 * $I_L1058_444, 0)
+ 1060.                                  $I_L1060_378 = 1 + $I_L1060_378
+ 1060.                                  if ( $I_L1060_378 >= min( 1 + mnlast_si + -mnfirst_si, 256 + 256 * $I_L1060_436 ) + -256 * $I_L1060_436 ) exit
+ 1060.                               enddo
+ 1058.                               $I_L1058_410 = 1 + $I_L1058_410
+ 1058.                               if ( $I_L1058_410 >= min( kmax, 8 + 8 * $I_L1058_444 ) + -8 * $I_L1058_444 ) exit
+ 1058.                            enddo
+ 1057.                            $I_L1057_423 = 1 + $I_L1057_423
+ 1062.                            if ( $I_L1057_423 >= min( kmax, 4 + 4 * $I_L1057_448 ) + -$I_L1057_341 + -4 * $I_L1057_448 ) exit
+ 1062.                         enddo
+ 1062.                      endif
+ 1060.                      $I_L1060_436 = 1 + $I_L1060_436
+ 1060.                      if ( $I_L1060_436 >= 1 + max( 0, -1 + _rsh( 256 + mnlast_si + -mnfirst_si, 8 ) ) ) exit
+ 1060.                   enddo
+ 1058.                   $I_L1058_444 = 1 + $I_L1058_444
+ 1063.                   if ( $I_L1058_444 >= 1 + max( 0, -1 + _rsh( 7 + kmax, 3 ) ) ) exit
+ 1063.                enddo
+ 1057.                $I_L1057_448 = 1 + $I_L1057_448
+ 1057.                if ( $I_L1057_448 >= 1 + max( 0, -1 + _rsh( 3 + kmax, 2 ) ) ) exit
+ 1057.             enddo
+ 1057.          endif
+ 1067.          $SC_qtmpt_si_I5 = qtmpt_si%dim_1%EX
+ 1067.          $SC_qtmpt_si_I6 = qtmpt_si%dim_1%LB
+ 1067.          $SC_qtmpt_si_I8 = qtmpt_si%dim_2%SM
+ 1067.          $SC_qtmpt_si_I7 = qtmpt_si%dim_2%EX
+ 1067.          $SC_qtmpt_si_I9 = qtmpt_si%dim_2%LB
+ 1066.          if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1065.             $I_L1065_404 = 0
+ 1065.             do
+ 1066.                $I_L1066_380 = 0
+ 1066. !dir$ ivdep
+ 1066.                do
+ 1067.                   (qtmpt_si%base_addr)(mnfirst_si + $I_L1066_380, 1 + $I_L1065_404, 0) = (qtmpt_si%base_addr)(mnfirst_si + $I_L1066_380, 1 + $I_L1065_404, 0) + dt * aux(mnfirst_si + $I_L1066_380, 1 + $I_L1065_404)
+ 1068.                   $I_L1066_380 = 1 + $I_L1066_380
+ 1066.                   if ( $I_L1066_380 >= 1 + mnlast_si + -mnfirst_si ) exit
+ 1066.                enddo
+ 1069.                $I_L1065_404 = 1 + $I_L1065_404
+ 1068.                if ( $I_L1065_404 >= kmax ) exit
+ 1068.             enddo
+ 1068.          endif
+ 1068.       endif
+ 1070.       if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1070.          $I_L1070_382 = 0
+ 1070. !dir$ ivdep
+ 1070.          do
+ 1071.             aux(mnfirst_si + $I_L1070_382, 1) = 0.0
+ 1072.             $I_L1070_382 = 1 + $I_L1070_382
+ 1070.             if ( $I_L1070_382 >= 1 + mnlast_si + -mnfirst_si ) exit
+ 1070.          enddo
+ 1070.       endif
+ 1073.       if ( kmax > 0 ) then
+ 1076.          $SC_sv_I36 = sv%dim_1%EX
+ 1076.          $SC_sv_I37 = sv%dim_1%LB
+ 1076.          $SC_qdivt_si_I16 = qdivt_si%dim_1%EX
+ 1076.          $SC_qdivt_si_I17 = qdivt_si%dim_1%LB
+ 1076.          $SC_qdivt_si_I19 = qdivt_si%dim_2%SM
+ 1076.          $SC_qdivt_si_I18 = qdivt_si%dim_2%EX
+ 1076.          $SC_qdivt_si_I20 = qdivt_si%dim_2%LB
+ 1075.          if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1073.             $I_L1073_438 = 0
+ 1073.             do
+ 1075.                $I_L1075_426 = 0
+ 1075.                do
+ 1073.                   $I_L1073_412 = 0
+ 1073. !dir$ shortloop16
+ 1073. !dir$ blocking_size( 4, 4 )
+ 1073.                   do
+ 1075.                      $SCA_sv_I49 = (sv%base_addr)(1 + $I_L1073_412 + 4 * $I_L1073_438, 0)
+ 1075.                      $I_L1075_384 = 0
+ 1075. !dir$ ivdep
+ 1075. !dir$ blocking_size( 256, 256 )
+ 1075.                      do
+ 1076.                         aux(mnfirst_si + $I_L1075_384 + 256 * $I_L1075_426, 1) = aux(mnfirst_si + $I_L1075_384 + 256 * $I_L1075_426, 1) + $SCA_sv_I49 * (qdivt_si%base_addr)(mnfirst_si + $I_L1075_384 + 256 * $I_L1075_426, 1 + $I_L1073_412 + 4 * $I_L1073_438, 0)
+ 1075.                         $I_L1075_384 = 1 + $I_L1075_384
+ 1075.                         if ( $I_L1075_384 >= min( 1 + mnlast_si + -mnfirst_si, 256 + 256 * $I_L1075_426 ) + -256 * $I_L1075_426 ) exit
+ 1075.                      enddo
+ 1073.                      $I_L1073_412 = 1 + $I_L1073_412
+ 1073.                      if ( $I_L1073_412 >= min( kmax, 4 + 4 * $I_L1073_438 ) + -4 * $I_L1073_438 ) exit
+ 1073.                   enddo
+ 1075.                   $I_L1075_426 = 1 + $I_L1075_426
+ 1077.                   if ( $I_L1075_426 >= 1 + max( 0, -1 + _rsh( 256 + mnlast_si + -mnfirst_si, 8 ) ) ) exit
+ 1077.                enddo
+ 1073.                $I_L1073_438 = 1 + $I_L1073_438
+ 1073.                if ( $I_L1073_438 >= 1 + max( 0, -1 + _rsh( 3 + kmax, 2 ) ) ) exit
+ 1073.             enddo
+ 1073.          endif
+ 1073.       endif
+ 1079.       if ( mnlast_si + -mnfirst_si >= 0 ) then
+ 1080.          $SC_qlnpt_si_I12 = qlnpt_si%dim_1%EX
+ 1080.          $SC_qlnpt_si_I13 = qlnpt_si%dim_1%LB
+ 1079.          $I_L1079_386 = 0
+ 1079. !dir$ ivdep
+ 1079.          do
+ 1080.             (qlnpt_si%base_addr)(mnfirst_si + $I_L1079_386, 0) = (qlnpt_si%base_addr)(mnfirst_si + $I_L1079_386, 0) + dt * aux(mnfirst_si + $I_L1079_386, 1)
+ 1081.             $I_L1079_386 = 1 + $I_L1079_386
+ 1079.             if ( $I_L1079_386 >= 1 + mnlast_si + -mnfirst_si ) exit
+ 1079.          enddo
+ 1079.       endif
+ 1086.       _mt_barrier( 3, _mt_rw_list(...) )
+ 1087.       $snt_T1 = _mt_single( 4, _mt_rw_list(...) )
+ 1088.       call sitospec( (inibr_si%base_addr)(inibr_si%dim_1%LB, 0), (inibs_si%base_addr)(inibs_si%dim_1%LB, 0), nrecs_si, nsends_si, (myrecs_si%base_addr)(myrecs_si%dim_1%LB, 0), (mysends_si%base_addr)(mysends_si%dim_1%LB, 0), (mapr_si%base_addr)(mapr_si%dim_1%LB, 0), (maps_si%base_addr)(maps_si%dim_1%LB, 0), kmax, kmaxloc, (nlevperg_four%base_addr)(nlevperg_four%dim_1%LB, 0), .true., (qtmpp%base_addr)(qtmpp%dim_1%LB, qtmpp%dim_2%LB, 0), (qdivp%base_addr)(qdivp%dim_1%LB, qdivp%dim_2%LB, 0), (qtmpt_si%base_addr)(qtmpt_si%dim_1%LB, qtmpt_si%dim_2%LB, 0), (qdivt_si%base_addr)(qdivt_si%dim_1%LB, qdivt_si%dim_2%LB, 0), 0, 0, (qlnpt%base_addr)(qlnpt%dim_1%LB, 0), (qlnpt_si%base_addr)(qlnpt_si%dim_1%LB, 0) )
+ 1091.       $snt_T1 = _mt_endsingle( 4, _mt_rw_list(...), $snt_T1 )
+ 1094.       $startmascon_S24 = 1
+ 1095.       if ( mascon /= .false. ) then
+ 1095.          if ( mascon_ps == .false. ) then
+ 1096.             if ( havem1 /= .false. ) then
+ 1097.                $startmascon_S24 = max( 3, mnfirst )
+ 1097.             endif
+ 1097.          endif
+ 1097.       endif
+ 1100.       if ( slagr /= .false. ) then
+ 1101.          if ( mnlast + -$startmascon_S24 >= 0 ) then
+ 1103.             $SC_qgzs_I42 = qgzs%dim_1%EX
+ 1103.             $SC_qgzs_I43 = qgzs%dim_1%LB
+ 1103.             $SC_qlnpp_I44 = qlnpp%dim_1%EX
+ 1103.             $SC_qlnpp_I45 = qlnpp%dim_1%LB
+ 1102.             $SC_qlnpl_I40 = qlnpl%dim_1%EX
+ 1102.             $SC_qlnpl_I41 = qlnpl%dim_1%LB
+ 1102.             $SC_qlnpt_I38 = qlnpt%dim_1%EX
+ 1102.             $SC_qlnpt_I39 = qlnpt%dim_1%LB
+ 1101.             $I_L1101_388 = 0
+ 1101. !dir$ ivdep
+ 1101.             do
+ 1102.                $qlnpl_WR0_R0 = (qlnpt%base_addr)($startmascon_S24 + $I_L1101_388, 0)
+ 1102.                (qlnpl%base_addr)($startmascon_S24 + $I_L1101_388, 0) = $qlnpl_WR0_R0
+ 1103.                (qlnpp%base_addr)($startmascon_S24 + $I_L1101_388, 0) = $qlnpl_WR0_R0 + -1.161237879579632e-5 * (qgzs%base_addr)($startmascon_S24 + $I_L1101_388, 0)
+ 1104.                $I_L1101_388 = 1 + $I_L1101_388
+ 1101.                if ( $I_L1101_388 >= 1 + mnlast + -$startmascon_S24 ) exit
+ 1101.             enddo
+ 1101.          endif
+ 1105.       else if ( mnlast + -$startmascon_S24 >= 0 ) then
+ 1107.          $SC_qlnpp_I44 = qlnpp%dim_1%EX
+ 1107.          $SC_qlnpp_I45 = qlnpp%dim_1%LB
+ 1107.          $SC_qlnpt_I38 = qlnpt%dim_1%EX
+ 1107.          $SC_qlnpt_I39 = qlnpt%dim_1%LB
+ 1106.          $I_L1106_390 = 0
+ 1106. !dir$ ivdep
+ 1106.          do
+ 1107.             (qlnpp%base_addr)($startmascon_S24 + $I_L1106_390, 0) = (qlnpt%base_addr)($startmascon_S24 + $I_L1106_390, 0)
+ 1108.             $I_L1106_390 = 1 + $I_L1106_390
+ 1106.             if ( $I_L1106_390 >= 1 + mnlast + -$startmascon_S24 ) exit
+ 1106.          enddo
+ 1106.       endif
+  989.       _free( t$74 )
+ 1111.       return
+ 1111.       end
+ 1111.       
+ 1114.       
+ 1114.       subroutine semiimpl( dt, slagr, mnrifirst, mnrilast )
+ 1114.       t$20 = ( 2 * mymnmax )
+ 1114.       t$21 = kmax
+ 1126.       t$77 = _zla( 0, ( 2 * mymnmax ) )
+ 1114.       t$78 = _zla( 0, ( 2 * mymnmax ) )
+ 1126.       t$79 = _zla( 0, kmax )
+ 1114.       t$80 = _zla( 0, ( 2 * mymnmax ) ) * _zla( 0, kmax )
+ 1126.       t$83 = 8 * _zla( 0, ( 2 * mymnmax ) ) * _zla( 0, kmax )
+ 1114.       t$81 = int( _alloc( 8 * _zla( 0, ( 2 * mymnmax ) ) * _zla( 0, kmax ) ), 8 )
+ 1126.       t$82 = t$81
+ 1128.       if ( kmax > 0 ) then
+ 1129.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1128.             $I_L1128_252 = 0
+ 1128.             do
+ 1129.                $I_L1129_222 = 0
+ 1129. !dir$ ivdep
+ 1129.                do
+ 1130.                   aux(mnrifirst + $I_L1129_222, 1 + $I_L1128_252) = 0.0
+ 1131.                   $I_L1129_222 = 1 + $I_L1129_222
+ 1129.                   if ( $I_L1129_222 >= 1 + mnrilast + -mnrifirst ) exit
+ 1129.                enddo
+ 1132.                $I_L1128_252 = 1 + $I_L1128_252
+ 1131.                if ( $I_L1128_252 >= kmax ) exit
+ 1131.             enddo
+ 1131.          endif
+ 1137.          $SC_qtmpt_I5 = qtmpt%dim_1%EX
+ 1137.          $SC_qtmpt_I6 = qtmpt%dim_1%LB
+ 1137.          $SC_qtmpt_I8 = qtmpt%dim_2%SM
+ 1137.          $SC_qtmpt_I7 = qtmpt%dim_2%EX
+ 1137.          $SC_qtmpt_I9 = qtmpt%dim_2%LB
+ 1137.          $SC_am_I0 = am%dim_1%EX
+ 1137.          $SC_am_I1 = am%dim_1%LB
+ 1137.          $SC_am_I3 = am%dim_2%SM
+ 1137.          $SC_am_I2 = am%dim_2%EX
+ 1137.          $SC_am_I4 = am%dim_2%LB
+ 1136.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1133.             $I_L1133_298 = 0
+ 1133.             do
+ 1134.                $I_L1134_292 = 0
+ 1134.                do
+ 1136.                   $I_L1136_284 = 0
+ 1136.                   do
+ 1133.                      $I_L1133_274 = 0
+ 1133.                      if ( min( kmax, 4 + 4 * $I_L1133_298 ) + -4 * $I_L1133_298 >= 4 ) then
+ 1133.                         $I_L1133_308 = 0
+ 1133. !dir$ shortloop16
+ 1133. !dir$ blocking_size( 4, 4 )
+ 1133.                         do
+ 1134.                            $I_L1134_262 = 0
+ 1134. !dir$ shortloop16
+ 1134. !dir$ blocking_size( 8, 8 )
+ 1134.                            do
+ 1136.                               $SCA_am#1_U0 = (am%base_addr)(1 + 4 * $I_L1133_298 + 4 * $I_L1133_308, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0)
+ 1136.                               $SCA_am#2_U1 = (am%base_addr)(2 + 4 * $I_L1133_298 + 4 * $I_L1133_308, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0)
+ 1136.                               $SCA_am#3_U2 = (am%base_addr)(3 + 4 * $I_L1133_298 + 4 * $I_L1133_308, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0)
+ 1136.                               $SCA_am#4_U3 = (am%base_addr)(4 + 4 * $I_L1133_298 + 4 * $I_L1133_308, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0)
+ 1136.                               $I_L1136_224 = 0
+ 1136. !dir$ ivdep
+ 1136. !dir$ blocking_size( 256, 256 )
+ 1136.                               do
+ 1137.                                  aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + 4 * $I_L1133_298 + 4 * $I_L1133_308) = aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + 4 * $I_L1133_298 + 4 * $I_L1133_308) + (qtmpt%base_addr)(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0) * $SCA_am#1_U0
+ 1137.                                  aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 2 + 4 * $I_L1133_298 + 4 * $I_L1133_308) = aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 2 + 4 * $I_L1133_298 + 4 * $I_L1133_308) + (qtmpt%base_addr)(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0) * $SCA_am#2_U1
+ 1137.                                  aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 3 + 4 * $I_L1133_298 + 4 * $I_L1133_308) = aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 3 + 4 * $I_L1133_298 + 4 * $I_L1133_308) + (qtmpt%base_addr)(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0) * $SCA_am#3_U2
+ 1137.                                  aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 4 + 4 * $I_L1133_298 + 4 * $I_L1133_308) = aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 4 + 4 * $I_L1133_298 + 4 * $I_L1133_308) + (qtmpt%base_addr)(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0) * $SCA_am#4_U3
+ 1136.                                  $I_L1136_224 = 1 + $I_L1136_224
+ 1136.                                  if ( $I_L1136_224 >= min( 1 + mnrilast + -mnrifirst, 256 + 256 * $I_L1136_284 ) + -256 * $I_L1136_284 ) exit
+ 1136.                               enddo
+ 1134.                               $I_L1134_262 = 1 + $I_L1134_262
+ 1134.                               if ( $I_L1134_262 >= min( kmax, 8 + 8 * $I_L1134_292 ) + -8 * $I_L1134_292 ) exit
+ 1134.                            enddo
+ 1133.                            $I_L1133_308 = 1 + $I_L1133_308
+ 1138.                            if ( $I_L1133_308 >= _rsh( min( kmax, 4 + 4 * $I_L1133_298 ) + -4 * $I_L1133_298, 2 ) ) exit
+ 1138.                         enddo
+ 1133.                         $I_L1133_274 = and( 0xfffffffffffffffcUL, min( kmax, 4 + 4 * $I_L1133_298 ) + -4 * $I_L1133_298 )
+ 1133.                      endif
+ 1133.                      if ( $I_L1133_274 < min( kmax, 4 + 4 * $I_L1133_298 ) + -4 * $I_L1133_298 ) then
+ 1133.                         $I_L1133_302 = 0
+ 1133. !dir$ shortloop16
+ 1133. !dir$ blocking_size( 4, 4 )
+ 1133.                         do
+ 1134.                            $I_L1134_262 = 0
+ 1134. !dir$ shortloop16
+ 1134. !dir$ blocking_size( 8, 8 )
+ 1134.                            do
+ 1136.                               $SCA_am_I54 = (am%base_addr)(1 + $I_L1133_274 + $I_L1133_302 + 4 * $I_L1133_298, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0)
+ 1136.                               $I_L1136_224 = 0
+ 1136. !dir$ ivdep
+ 1136. !dir$ blocking_size( 256, 256 )
+ 1136.                               do
+ 1137.                                  aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + $I_L1133_274 + $I_L1133_302 + 4 * $I_L1133_298) = aux(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + $I_L1133_274 + $I_L1133_302 + 4 * $I_L1133_298) + $SCA_am_I54 * (qtmpt%base_addr)(mnrifirst + $I_L1136_224 + 256 * $I_L1136_284, 1 + $I_L1134_262 + 8 * $I_L1134_292, 0)
+ 1136.                                  $I_L1136_224 = 1 + $I_L1136_224
+ 1136.                                  if ( $I_L1136_224 >= min( 1 + mnrilast + -mnrifirst, 256 + 256 * $I_L1136_284 ) + -256 * $I_L1136_284 ) exit
+ 1136.                               enddo
+ 1134.                               $I_L1134_262 = 1 + $I_L1134_262
+ 1134.                               if ( $I_L1134_262 >= min( kmax, 8 + 8 * $I_L1134_292 ) + -8 * $I_L1134_292 ) exit
+ 1134.                            enddo
+ 1133.                            $I_L1133_302 = 1 + $I_L1133_302
+ 1138.                            if ( $I_L1133_302 >= min( kmax, 4 + 4 * $I_L1133_298 ) + -$I_L1133_274 + -4 * $I_L1133_298 ) exit
+ 1138.                         enddo
+ 1138.                      endif
+ 1136.                      $I_L1136_284 = 1 + $I_L1136_284
+ 1136.                      if ( $I_L1136_284 >= 1 + max( 0, -1 + _rsh( 256 + mnrilast + -mnrifirst, 8 ) ) ) exit
+ 1136.                   enddo
+ 1134.                   $I_L1134_292 = 1 + $I_L1134_292
+ 1139.                   if ( $I_L1134_292 >= 1 + max( 0, -1 + _rsh( 7 + kmax, 3 ) ) ) exit
+ 1139.                enddo
+ 1133.                $I_L1133_298 = 1 + $I_L1133_298
+ 1133.                if ( $I_L1133_298 >= 1 + max( 0, -1 + _rsh( 3 + kmax, 2 ) ) ) exit
+ 1133.             enddo
+ 1133.          endif
+ 1145.          $SC_snnp1_I14 = snnp1%dim_1%EX
+ 1145.          $SC_snnp1_I15 = snnp1%dim_1%LB
+ 1145.          $SC_qlnpt_I12 = qlnpt%dim_1%EX
+ 1145.          $SC_qlnpt_I13 = qlnpt%dim_1%LB
+ 1142.          $SC_tov_I10 = tov%dim_1%EX
+ 1142.          $SC_tov_I11 = tov%dim_1%LB
+ 1143.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1141.             $I_L1141_254 = 0
+ 1141.             do
+ 1142.                $tor_S7 = 7.0742220327329097e-12 * (tov%base_addr)(1 + $I_L1141_254, 0)
+ 1143.                $I_L1143_227 = 0
+ 1143. !dir$ ivdep
+ 1143.                do
+ 1145.                   aux(mnrifirst + $I_L1143_227, 1 + $I_L1141_254) = dt * (snnp1%base_addr)(mnrifirst + $I_L1143_227, 0) * ( aux(mnrifirst + $I_L1143_227, 1 + $I_L1141_254) + $tor_S7 * (qlnpt%base_addr)(mnrifirst + $I_L1143_227, 0) )
+ 1146.                   $I_L1143_227 = 1 + $I_L1143_227
+ 1143.                   if ( $I_L1143_227 >= 1 + mnrilast + -mnrifirst ) exit
+ 1143.                enddo
+ 1147.                $I_L1141_254 = 1 + $I_L1141_254
+ 1146.                if ( $I_L1141_254 >= kmax ) exit
+ 1146.             enddo
+ 1146.          endif
+ 1150.          $SC_qdivt_I16 = qdivt%dim_1%EX
+ 1150.          $SC_qdivt_I17 = qdivt%dim_1%LB
+ 1150.          $SC_qdivt_I19 = qdivt%dim_2%SM
+ 1150.          $SC_qdivt_I18 = qdivt%dim_2%EX
+ 1150.          $SC_qdivt_I20 = qdivt%dim_2%LB
+ 1149.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1148.             $I_L1148_256 = 0
+ 1148.             do
+ 1149.                $I_L1149_229 = 0
+ 1149. !dir$ ivdep
+ 1149.                do
+ 1150.                   aux(mnrifirst + $I_L1149_229, 1 + $I_L1148_256) = aux(mnrifirst + $I_L1149_229, 1 + $I_L1148_256) + (qdivt%base_addr)(mnrifirst + $I_L1149_229, 1 + $I_L1148_256, 0)
+ 1151.                   $I_L1149_229 = 1 + $I_L1149_229
+ 1149.                   if ( $I_L1149_229 >= 1 + mnrilast + -mnrifirst ) exit
+ 1149.                enddo
+ 1152.                $I_L1148_256 = 1 + $I_L1148_256
+ 1151.                if ( $I_L1148_256 >= kmax ) exit
+ 1151.             enddo
+ 1151.          endif
+ 1151.       endif
+ 1153.       if ( mnrilast + -mnrifirst >= 0 ) then
+ 1161.          $SC_dm_I28 = dm%dim_1%EX
+ 1161.          $SC_dm_I29 = dm%dim_1%LB
+ 1161.          $SC_dm_I31 = dm%dim_2%SM
+ 1161.          $SC_dm_I30 = dm%dim_2%EX
+ 1161.          $SC_dm_I32 = dm%dim_2%LB
+ 1161.          $SC_dm_I34 = dm%dim_3%SM
+ 1161.          $SC_dm_I33 = dm%dim_3%EX
+ 1161.          $SC_dm_I35 = dm%dim_3%LB
+ 1156.          $SC_qdivp_I23 = qdivp%dim_1%EX
+ 1156.          $SC_qdivp_I24 = qdivp%dim_1%LB
+ 1156.          $SC_qdivp_I26 = qdivp%dim_2%SM
+ 1156.          $SC_qdivp_I25 = qdivp%dim_2%EX
+ 1156.          $SC_qdivp_I27 = qdivp%dim_2%LB
+ 1154.          $SC_mynmap_I21 = mynmap%dim_1%EX
+ 1154.          $SC_mynmap_I22 = mynmap%dim_1%LB
+ 1155.          if ( kmax > 0 ) then
+ 1153.             $I_L1153_294 = 0
+ 1153. !dir$ ivdep
+ 1153.             do
+ 1154.                $n_S14 = (mynmap%base_addr)(( 1 + mnrifirst + $I_L1153_294 ) / 2, 0)
+ 1155.                $I_L1155_231 = 0
+ 1155.                do
+ 1156.                   (qdivp%base_addr)(mnrifirst + $I_L1153_294, 1 + $I_L1155_231, 0) = 0.0
+ 1157.                   $I_L1155_231 = 1 + $I_L1155_231
+ 1155.                   if ( $I_L1155_231 >= kmax ) exit
+ 1155.                enddo
+ 1158.                $I_L1158_286 = 0
+ 1158.                do
+ 1160.                   $I_L1160_277 = 0
+ 1160.                   do
+ 1158.                      $I_L1158_265 = 0
+ 1158. !dir$ shortloop16
+ 1158. !dir$ blocking_size( 8, 8 )
+ 1158.                      do
+ 1160.                         $SCA_aux_I55 = aux(mnrifirst + $I_L1153_294, 1 + $I_L1158_265 + 8 * $I_L1158_286)
+ 1160.                         $I_L1160_233 = 0
+ 1160. !dir$ unroll 4
+ 1160. !dir$ blocking_size( 256, 256 )
+ 1160.                         do
+ 1161.                            (qdivp%base_addr)(mnrifirst + $I_L1153_294, 1 + $I_L1160_233 + 256 * $I_L1160_277, 0) = (qdivp%base_addr)(mnrifirst + $I_L1153_294, 1 + $I_L1160_233 + 256 * $I_L1160_277, 0) + $SCA_aux_I55 * (dm%base_addr)(1 + $I_L1160_233 + 256 * $I_L1160_277, 1 + $I_L1158_265 + 8 * $I_L1158_286, $n_S14, 0)
+ 1160.                            $I_L1160_233 = 1 + $I_L1160_233
+ 1160.                            if ( $I_L1160_233 >= min( kmax, 256 + 256 * $I_L1160_277 ) + -256 * $I_L1160_277 ) exit
+ 1160.                         enddo
+ 1158.                         $I_L1158_265 = 1 + $I_L1158_265
+ 1158.                         if ( $I_L1158_265 >= min( kmax, 8 + 8 * $I_L1158_286 ) + -8 * $I_L1158_286 ) exit
+ 1158.                      enddo
+ 1160.                      $I_L1160_277 = 1 + $I_L1160_277
+ 1162.                      if ( $I_L1160_277 >= 1 + max( 0, -1 + _rsh( 255 + kmax, 8 ) ) ) exit
+ 1162.                   enddo
+ 1158.                   $I_L1158_286 = 1 + $I_L1158_286
+ 1158.                   if ( $I_L1158_286 >= 1 + max( 0, -1 + _rsh( 7 + kmax, 3 ) ) ) exit
+ 1158.                enddo
+ 1164.                $I_L1153_294 = 1 + $I_L1153_294
+ 1163.                if ( $I_L1153_294 >= 1 + mnrilast + -mnrifirst ) exit
+ 1163.             enddo
+ 1163.          endif
+ 1163.       endif
+ 1166.       if ( kmax > 0 ) then
+ 1167.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1166.             $I_L1166_258 = 0
+ 1166.             do
+ 1167.                $I_L1167_236 = 0
+ 1167. !dir$ ivdep
+ 1167.                do
+ 1168.                   aux(mnrifirst + $I_L1167_236, 1 + $I_L1166_258) = 0.0
+ 1169.                   $I_L1167_236 = 1 + $I_L1167_236
+ 1167.                   if ( $I_L1167_236 >= 1 + mnrilast + -mnrifirst ) exit
+ 1167.                enddo
+ 1170.                $I_L1166_258 = 1 + $I_L1166_258
+ 1169.                if ( $I_L1166_258 >= kmax ) exit
+ 1169.             enddo
+ 1169.          endif
+ 1175.          $SC_bm_I36 = bm%dim_1%EX
+ 1175.          $SC_bm_I37 = bm%dim_1%LB
+ 1175.          $SC_bm_I39 = bm%dim_2%SM
+ 1175.          $SC_bm_I38 = bm%dim_2%EX
+ 1175.          $SC_bm_I40 = bm%dim_2%LB
+ 1175.          $SC_qdivp_I23 = qdivp%dim_1%EX
+ 1175.          $SC_qdivp_I24 = qdivp%dim_1%LB
+ 1175.          $SC_qdivp_I26 = qdivp%dim_2%SM
+ 1175.          $SC_qdivp_I25 = qdivp%dim_2%EX
+ 1175.          $SC_qdivp_I27 = qdivp%dim_2%LB
+ 1174.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1171.             $I_L1171_300 = 0
+ 1171.             do
+ 1172.                $I_L1172_296 = 0
+ 1172.                do
+ 1174.                   $I_L1174_288 = 0
+ 1174.                   do
+ 1171.                      $I_L1171_279 = 0
+ 1171.                      if ( min( kmax, 4 + 4 * $I_L1171_300 ) + -4 * $I_L1171_300 >= 4 ) then
+ 1171.                         $I_L1171_310 = 0
+ 1171. !dir$ shortloop16
+ 1171. !dir$ blocking_size( 4, 4 )
+ 1171.                         do
+ 1172.                            $I_L1172_268 = 0
+ 1172. !dir$ shortloop16
+ 1172. !dir$ blocking_size( 8, 8 )
+ 1172.                            do
+ 1174.                               $SCA_bm#1_U4 = (bm%base_addr)(1 + 4 * $I_L1171_300 + 4 * $I_L1171_310, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0)
+ 1174.                               $SCA_bm#2_U5 = (bm%base_addr)(2 + 4 * $I_L1171_300 + 4 * $I_L1171_310, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0)
+ 1174.                               $SCA_bm#3_U6 = (bm%base_addr)(3 + 4 * $I_L1171_300 + 4 * $I_L1171_310, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0)
+ 1174.                               $SCA_bm#4_U7 = (bm%base_addr)(4 + 4 * $I_L1171_300 + 4 * $I_L1171_310, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0)
+ 1174.                               $I_L1174_238 = 0
+ 1174. !dir$ ivdep
+ 1174. !dir$ blocking_size( 256, 256 )
+ 1174.                               do
+ 1175.                                  aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + 4 * $I_L1171_300 + 4 * $I_L1171_310) = aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + 4 * $I_L1171_300 + 4 * $I_L1171_310) + (qdivp%base_addr)(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0) * $SCA_bm#1_U4
+ 1175.                                  aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 2 + 4 * $I_L1171_300 + 4 * $I_L1171_310) = aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 2 + 4 * $I_L1171_300 + 4 * $I_L1171_310) + (qdivp%base_addr)(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0) * $SCA_bm#2_U5
+ 1175.                                  aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 3 + 4 * $I_L1171_300 + 4 * $I_L1171_310) = aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 3 + 4 * $I_L1171_300 + 4 * $I_L1171_310) + (qdivp%base_addr)(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0) * $SCA_bm#3_U6
+ 1175.                                  aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 4 + 4 * $I_L1171_300 + 4 * $I_L1171_310) = aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 4 + 4 * $I_L1171_300 + 4 * $I_L1171_310) + (qdivp%base_addr)(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0) * $SCA_bm#4_U7
+ 1174.                                  $I_L1174_238 = 1 + $I_L1174_238
+ 1174.                                  if ( $I_L1174_238 >= min( 1 + mnrilast + -mnrifirst, 256 + 256 * $I_L1174_288 ) + -256 * $I_L1174_288 ) exit
+ 1174.                               enddo
+ 1172.                               $I_L1172_268 = 1 + $I_L1172_268
+ 1172.                               if ( $I_L1172_268 >= min( kmax, 8 + 8 * $I_L1172_296 ) + -8 * $I_L1172_296 ) exit
+ 1172.                            enddo
+ 1171.                            $I_L1171_310 = 1 + $I_L1171_310
+ 1176.                            if ( $I_L1171_310 >= _rsh( min( kmax, 4 + 4 * $I_L1171_300 ) + -4 * $I_L1171_300, 2 ) ) exit
+ 1176.                         enddo
+ 1171.                         $I_L1171_279 = and( 0xfffffffffffffffcUL, min( kmax, 4 + 4 * $I_L1171_300 ) + -4 * $I_L1171_300 )
+ 1171.                      endif
+ 1171.                      if ( $I_L1171_279 < min( kmax, 4 + 4 * $I_L1171_300 ) + -4 * $I_L1171_300 ) then
+ 1171.                         $I_L1171_305 = 0
+ 1171. !dir$ shortloop16
+ 1171. !dir$ blocking_size( 4, 4 )
+ 1171.                         do
+ 1172.                            $I_L1172_268 = 0
+ 1172. !dir$ shortloop16
+ 1172. !dir$ blocking_size( 8, 8 )
+ 1172.                            do
+ 1174.                               $SCA_bm_I56 = (bm%base_addr)(1 + $I_L1171_279 + $I_L1171_305 + 4 * $I_L1171_300, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0)
+ 1174.                               $I_L1174_238 = 0
+ 1174. !dir$ ivdep
+ 1174. !dir$ blocking_size( 256, 256 )
+ 1174.                               do
+ 1175.                                  aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + $I_L1171_279 + $I_L1171_305 + 4 * $I_L1171_300) = aux(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + $I_L1171_279 + $I_L1171_305 + 4 * $I_L1171_300) + $SCA_bm_I56 * (qdivp%base_addr)(mnrifirst + $I_L1174_238 + 256 * $I_L1174_288, 1 + $I_L1172_268 + 8 * $I_L1172_296, 0)
+ 1174.                                  $I_L1174_238 = 1 + $I_L1174_238
+ 1174.                                  if ( $I_L1174_238 >= min( 1 + mnrilast + -mnrifirst, 256 + 256 * $I_L1174_288 ) + -256 * $I_L1174_288 ) exit
+ 1174.                               enddo
+ 1172.                               $I_L1172_268 = 1 + $I_L1172_268
+ 1172.                               if ( $I_L1172_268 >= min( kmax, 8 + 8 * $I_L1172_296 ) + -8 * $I_L1172_296 ) exit
+ 1172.                            enddo
+ 1171.                            $I_L1171_305 = 1 + $I_L1171_305
+ 1176.                            if ( $I_L1171_305 >= min( kmax, 4 + 4 * $I_L1171_300 ) + -$I_L1171_279 + -4 * $I_L1171_300 ) exit
+ 1176.                         enddo
+ 1176.                      endif
+ 1174.                      $I_L1174_288 = 1 + $I_L1174_288
+ 1174.                      if ( $I_L1174_288 >= 1 + max( 0, -1 + _rsh( 256 + mnrilast + -mnrifirst, 8 ) ) ) exit
+ 1174.                   enddo
+ 1172.                   $I_L1172_296 = 1 + $I_L1172_296
+ 1177.                   if ( $I_L1172_296 >= 1 + max( 0, -1 + _rsh( 7 + kmax, 3 ) ) ) exit
+ 1177.                enddo
+ 1171.                $I_L1171_300 = 1 + $I_L1171_300
+ 1171.                if ( $I_L1171_300 >= 1 + max( 0, -1 + _rsh( 3 + kmax, 2 ) ) ) exit
+ 1171.             enddo
+ 1171.          endif
+ 1181.          $SC_qtmpp_I41 = qtmpp%dim_1%EX
+ 1181.          $SC_qtmpp_I42 = qtmpp%dim_1%LB
+ 1181.          $SC_qtmpp_I44 = qtmpp%dim_2%SM
+ 1181.          $SC_qtmpp_I43 = qtmpp%dim_2%EX
+ 1181.          $SC_qtmpp_I45 = qtmpp%dim_2%LB
+ 1181.          $SC_qtmpt_I5 = qtmpt%dim_1%EX
+ 1181.          $SC_qtmpt_I6 = qtmpt%dim_1%LB
+ 1181.          $SC_qtmpt_I8 = qtmpt%dim_2%SM
+ 1181.          $SC_qtmpt_I7 = qtmpt%dim_2%EX
+ 1181.          $SC_qtmpt_I9 = qtmpt%dim_2%LB
+ 1180.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1179.             $I_L1179_260 = 0
+ 1179.             do
+ 1180.                $I_L1180_241 = 0
+ 1180. !dir$ ivdep
+ 1180.                do
+ 1181.                   (qtmpp%base_addr)(mnrifirst + $I_L1180_241, 1 + $I_L1179_260, 0) = (qtmpt%base_addr)(mnrifirst + $I_L1180_241, 1 + $I_L1179_260, 0) + dt * aux(mnrifirst + $I_L1180_241, 1 + $I_L1179_260)
+ 1182.                   $I_L1180_241 = 1 + $I_L1180_241
+ 1180.                   if ( $I_L1180_241 >= 1 + mnrilast + -mnrifirst ) exit
+ 1180.                enddo
+ 1183.                $I_L1179_260 = 1 + $I_L1179_260
+ 1182.                if ( $I_L1179_260 >= kmax ) exit
+ 1182.             enddo
+ 1182.          endif
+ 1182.       endif
+ 1184.       if ( mnrilast + -mnrifirst >= 0 ) then
+ 1184.          $I_L1184_243 = 0
+ 1184. !dir$ ivdep
+ 1184.          do
+ 1185.             aux(mnrifirst + $I_L1184_243, 1) = 0.0
+ 1186.             $I_L1184_243 = 1 + $I_L1184_243
+ 1184.             if ( $I_L1184_243 >= 1 + mnrilast + -mnrifirst ) exit
+ 1184.          enddo
+ 1184.       endif
+ 1187.       if ( kmax > 0 ) then
+ 1190.          $SC_sv_I46 = sv%dim_1%EX
+ 1190.          $SC_sv_I47 = sv%dim_1%LB
+ 1190.          $SC_qdivp_I23 = qdivp%dim_1%EX
+ 1190.          $SC_qdivp_I24 = qdivp%dim_1%LB
+ 1190.          $SC_qdivp_I26 = qdivp%dim_2%SM
+ 1190.          $SC_qdivp_I25 = qdivp%dim_2%EX
+ 1190.          $SC_qdivp_I27 = qdivp%dim_2%LB
+ 1189.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1187.             $I_L1187_290 = 0
+ 1187.             do
+ 1189.                $I_L1189_282 = 0
+ 1189.                do
+ 1187.                   $I_L1187_271 = 0
+ 1187. !dir$ shortloop16
+ 1187. !dir$ blocking_size( 4, 4 )
+ 1187.                   do
+ 1189.                      $SCA_sv_I57 = (sv%base_addr)(1 + $I_L1187_271 + 4 * $I_L1187_290, 0)
+ 1189.                      $I_L1189_245 = 0
+ 1189. !dir$ ivdep
+ 1189. !dir$ blocking_size( 256, 256 )
+ 1189.                      do
+ 1190.                         aux(mnrifirst + $I_L1189_245 + 256 * $I_L1189_282, 1) = aux(mnrifirst + $I_L1189_245 + 256 * $I_L1189_282, 1) + $SCA_sv_I57 * (qdivp%base_addr)(mnrifirst + $I_L1189_245 + 256 * $I_L1189_282, 1 + $I_L1187_271 + 4 * $I_L1187_290, 0)
+ 1189.                         $I_L1189_245 = 1 + $I_L1189_245
+ 1189.                         if ( $I_L1189_245 >= min( 1 + mnrilast + -mnrifirst, 256 + 256 * $I_L1189_282 ) + -256 * $I_L1189_282 ) exit
+ 1189.                      enddo
+ 1187.                      $I_L1187_271 = 1 + $I_L1187_271
+ 1187.                      if ( $I_L1187_271 >= min( kmax, 4 + 4 * $I_L1187_290 ) + -4 * $I_L1187_290 ) exit
+ 1187.                   enddo
+ 1189.                   $I_L1189_282 = 1 + $I_L1189_282
+ 1191.                   if ( $I_L1189_282 >= 1 + max( 0, -1 + _rsh( 256 + mnrilast + -mnrifirst, 8 ) ) ) exit
+ 1191.                enddo
+ 1187.                $I_L1187_290 = 1 + $I_L1187_290
+ 1187.                if ( $I_L1187_290 >= 1 + max( 0, -1 + _rsh( 3 + kmax, 2 ) ) ) exit
+ 1187.             enddo
+ 1187.          endif
+ 1187.       endif
+ 1194.       $startmascon_S25 = mnrifirst
+ 1195.       if ( mascon /= .false. ) then
+ 1195.          if ( mascon_ps == .false. ) then
+ 1196.             if ( mnrifirst == 1 ) then
+ 1196.                if ( havem1 /= .false. ) then
+ 1197.                   $startmascon_S25 = 3
+ 1197.                endif
+ 1197.             endif
+ 1197.          endif
+ 1197.       endif
+ 1200.       if ( slagr /= .false. ) then
+ 1201.          if ( mnrilast + -$startmascon_S25 >= 0 ) then
+ 1203.             $SC_qgzs_I50 = qgzs%dim_1%EX
+ 1203.             $SC_qgzs_I51 = qgzs%dim_1%LB
+ 1203.             $SC_qlnpp_I52 = qlnpp%dim_1%EX
+ 1203.             $SC_qlnpp_I53 = qlnpp%dim_1%LB
+ 1202.             $SC_qlnpl_I48 = qlnpl%dim_1%EX
+ 1202.             $SC_qlnpl_I49 = qlnpl%dim_1%LB
+ 1202.             $SC_qlnpt_I12 = qlnpt%dim_1%EX
+ 1202.             $SC_qlnpt_I13 = qlnpt%dim_1%LB
+ 1201.             $I_L1201_248 = 0
+ 1201. !dir$ ivdep
+ 1201.             do
+ 1202.                $qlnpl_WR0_R0 = (qlnpt%base_addr)($startmascon_S25 + $I_L1201_248, 0) + dt * aux($startmascon_S25 + $I_L1201_248, 1)
+ 1202.                (qlnpl%base_addr)($startmascon_S25 + $I_L1201_248, 0) = $qlnpl_WR0_R0
+ 1203.                (qlnpp%base_addr)($startmascon_S25 + $I_L1201_248, 0) = $qlnpl_WR0_R0 + -1.161237879579632e-5 * (qgzs%base_addr)($startmascon_S25 + $I_L1201_248, 0)
+ 1204.                $I_L1201_248 = 1 + $I_L1201_248
+ 1201.                if ( $I_L1201_248 >= 1 + mnrilast + -$startmascon_S25 ) exit
+ 1201.             enddo
+ 1201.          endif
+ 1205.       else if ( mnrilast + -$startmascon_S25 >= 0 ) then
+ 1207.          $SC_qlnpp_I52 = qlnpp%dim_1%EX
+ 1207.          $SC_qlnpp_I53 = qlnpp%dim_1%LB
+ 1207.          $SC_qlnpt_I12 = qlnpt%dim_1%EX
+ 1207.          $SC_qlnpt_I13 = qlnpt%dim_1%LB
+ 1206.          $I_L1206_250 = 0
+ 1206. !dir$ ivdep
+ 1206.          do
+ 1207.             (qlnpp%base_addr)($startmascon_S25 + $I_L1206_250, 0) = (qlnpt%base_addr)($startmascon_S25 + $I_L1206_250, 0) + dt * aux($startmascon_S25 + $I_L1206_250, 1)
+ 1208.             $I_L1206_250 = 1 + $I_L1206_250
+ 1206.             if ( $I_L1206_250 >= 1 + mnrilast + -$startmascon_S25 ) exit
+ 1206.          enddo
+ 1206.       endif
+ 1114.       _free( t$81 )
+ 1210.       return
+ 1210.       end
+ 1210.       
+ 1215.       
+ 1215.       subroutine inituvtodz
+ 1220.       mnir_uv%header%a_contig = 1
+ 1220.       mnir_uv%dim_1%LB = 1
+ 1220.       mnir_uv%dim_1%EX = _zla( 0, ( 2 * mymnmax ) )
+ 1220.       mnir_uv%dim_1%SM = 1
+ 1220.       $_allo_P0(0) = 0x1000000000001L
+ 1220.       $_allo_P0(1) = loc( mnir_uv )
+ 1220.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+ 1222.       if ( mymmax > 0 ) then
+ 1221.          $snt_T0 = _parallel( 1, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+ 1226.          $SC_mymnextmap_I7 = mymnextmap%dim_1%EX
+ 1226.          $SC_mymnextmap_I8 = mymnextmap%dim_1%LB
+ 1226.          $SC_mymnextmap_I10 = mymnextmap%dim_2%SM
+ 1226.          $SC_mymnextmap_I9 = mymnextmap%dim_2%EX
+ 1226.          $SC_mymnextmap_I11 = mymnextmap%dim_2%LB
+ 1225.          $SC_mymnmap_I2 = mymnmap%dim_1%EX
+ 1225.          $SC_mymnmap_I3 = mymnmap%dim_1%LB
+ 1225.          $SC_mymnmap_I5 = mymnmap%dim_2%SM
+ 1225.          $SC_mymnmap_I4 = mymnmap%dim_2%EX
+ 1225.          $SC_mymnmap_I6 = mymnmap%dim_2%LB
+ 1223.          $SC_lm2m_I0 = lm2m%dim_1%EX
+ 1223.          $SC_lm2m_I1 = lm2m%dim_1%LB
+ 1222.          $I_L1222_168 = 0
+ 1222. !$omp do schedule(static)
+ 1222.          do
+ 1223.             $$_mglob = (lm2m%base_addr)(1 + $I_L1222_168, 0)
+ 1224.             if ( nmax + -$$_mglob >= 0 ) then
+ 1224.                $I_L1224_156 = 0
+ 1224. !dir$ unroll 4
+ 1224.                do
+ 1225.                   $$_mn = (mymnmap%base_addr)(1 + $I_L1222_168, $$_mglob + $I_L1224_156, 0)
+ 1226.                   $$_mnext = (mymnextmap%base_addr)(1 + $I_L1222_168, $$_mglob + $I_L1224_156, 0)
+ 1227.                   (mnir_uv%base_addr)(-1 + 2 * $$_mn, 0) = 2 * $$_mnext
+ 1228.                   (mnir_uv%base_addr)(2 * $$_mn, 0) = -1 + 2 * $$_mnext
+ 1229.                   $I_L1224_156 = 1 + $I_L1224_156
+ 1224.                   if ( $I_L1224_156 >= 1 + nmax + -$$_mglob ) exit
+ 1224.                enddo
+ 1224.             endif
+ 1230.             $I_L1222_168 = 1 + $I_L1222_168
+ 1229.             if ( $I_L1222_168 >= mymmax ) exit
+ 1229.          enddo
+ 1231.          $snt_T0 = _endparallel( 1, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T0 )
+ 1231.       endif
+ 1235.       mnm1_uv%header%a_contig = 1
+ 1235.       mnm1_uv%dim_1%LB = 1
+ 1235.       mnm1_uv%dim_1%EX = ( max( 0, 2 * mymnmax ) )
+ 1235.       mnm1_uv%dim_1%SM = 1
+ 1235.       $_allo_P1(0) = 0x1000000000001L
+ 1235.       $_allo_P1(1) = loc( mnm1_uv )
+ 1235.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+ 1237.       if ( mymmax > 0 ) then
+ 1236.          $snt_T2 = _parallel( 3, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+ 1240.          $SC_mymnextmap_I7 = mymnextmap%dim_1%EX
+ 1240.          $SC_mymnextmap_I8 = mymnextmap%dim_1%LB
+ 1240.          $SC_mymnextmap_I10 = mymnextmap%dim_2%SM
+ 1240.          $SC_mymnextmap_I9 = mymnextmap%dim_2%EX
+ 1240.          $SC_mymnextmap_I11 = mymnextmap%dim_2%LB
+ 1239.          $SC_mymnmap_I2 = mymnmap%dim_1%EX
+ 1239.          $SC_mymnmap_I3 = mymnmap%dim_1%LB
+ 1239.          $SC_mymnmap_I5 = mymnmap%dim_2%SM
+ 1239.          $SC_mymnmap_I4 = mymnmap%dim_2%EX
+ 1239.          $SC_mymnmap_I6 = mymnmap%dim_2%LB
+ 1238.          $SC_lm2m_I0 = lm2m%dim_1%EX
+ 1238.          $SC_lm2m_I1 = lm2m%dim_1%LB
+ 1237.          $I_L1237_170 = 0
+ 1237. !$omp do schedule(static)
+ 1237.          do
+ 1238.             $$_mglob = (lm2m%base_addr)(1 + $I_L1237_170, 0)
+ 1239.             $$_mn = (mymnmap%base_addr)(1 + $I_L1237_170, $$_mglob, 0)
+ 1240.             $$_mnext = (mymnextmap%base_addr)(1 + $I_L1237_170, $$_mglob, 0)
+ 1241.             (mnm1_uv%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_mnext
+ 1242.             (mnm1_uv%base_addr)(2 * $$_mn, 0) = 2 * $$_mnext
+ 1243.             if ( nmax + -$$_mglob > 0 ) then
+ 1243.                $I_L1243_158 = 0
+ 1243. !dir$ unroll 4
+ 1243.                do
+ 1244.                   $$_mn = (mymnmap%base_addr)(1 + $I_L1237_170, 1 + $$_mglob + $I_L1243_158, 0)
+ 1245.                   $$_mnext = (mymnextmap%base_addr)(1 + $I_L1237_170, $$_mglob + $I_L1243_158, 0)
+ 1246.                   (mnm1_uv%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_mnext
+ 1247.                   (mnm1_uv%base_addr)(2 * $$_mn, 0) = 2 * $$_mnext
+ 1248.                   $I_L1243_158 = 1 + $I_L1243_158
+ 1243.                   if ( $I_L1243_158 >= ( nmax + -$$_mglob ) ) exit
+ 1243.                enddo
+ 1243.             endif
+ 1249.             $I_L1237_170 = 1 + $I_L1237_170
+ 1248.             if ( $I_L1237_170 >= mymmax ) exit
+ 1248.          enddo
+ 1250.          $snt_T2 = _endparallel( 3, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T2 )
+ 1250.       endif
+ 1254.       mnp1_uv%header%a_contig = 1
+ 1254.       mnp1_uv%dim_1%LB = 1
+ 1254.       mnp1_uv%dim_1%EX = ( max( 0, 2 * mymnmax ) )
+ 1254.       mnp1_uv%dim_1%SM = 1
+ 1254.       $_allo_P2(0) = 0x1000000000001L
+ 1254.       $_allo_P2(1) = loc( mnp1_uv )
+ 1254.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+ 1256.       if ( mymmax > 0 ) then
+ 1255.          $snt_T4 = _parallel( 5, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+ 1260.          $SC_mymnextmap_I7 = mymnextmap%dim_1%EX
+ 1260.          $SC_mymnextmap_I8 = mymnextmap%dim_1%LB
+ 1260.          $SC_mymnextmap_I10 = mymnextmap%dim_2%SM
+ 1260.          $SC_mymnextmap_I9 = mymnextmap%dim_2%EX
+ 1260.          $SC_mymnextmap_I11 = mymnextmap%dim_2%LB
+ 1259.          $SC_mymnmap_I2 = mymnmap%dim_1%EX
+ 1259.          $SC_mymnmap_I3 = mymnmap%dim_1%LB
+ 1259.          $SC_mymnmap_I5 = mymnmap%dim_2%SM
+ 1259.          $SC_mymnmap_I4 = mymnmap%dim_2%EX
+ 1259.          $SC_mymnmap_I6 = mymnmap%dim_2%LB
+ 1257.          $SC_lm2m_I0 = lm2m%dim_1%EX
+ 1257.          $SC_lm2m_I1 = lm2m%dim_1%LB
+ 1256.          $I_L1256_172 = 0
+ 1256. !$omp do schedule(static)
+ 1256.          do
+ 1257.             $$_mglob = (lm2m%base_addr)(1 + $I_L1256_172, 0)
+ 1258.             if ( nmax + -$$_mglob >= 0 ) then
+ 1258.                $I_L1258_160 = 0
+ 1258. !dir$ unroll 4
+ 1258.                do
+ 1259.                   $$_mn = (mymnmap%base_addr)(1 + $I_L1256_172, $$_mglob + $I_L1258_160, 0)
+ 1260.                   $$_mnext = (mymnextmap%base_addr)(1 + $I_L1256_172, 1 + $$_mglob + $I_L1258_160, 0)
+ 1261.                   (mnp1_uv%base_addr)(-1 + 2 * $$_mn, 0) = -1 + 2 * $$_mnext
+ 1262.                   (mnp1_uv%base_addr)(2 * $$_mn, 0) = 2 * $$_mnext
+ 1263.                   $I_L1258_160 = 1 + $I_L1258_160
+ 1258.                   if ( $I_L1258_160 >= 1 + nmax + -$$_mglob ) exit
+ 1258.                enddo
+ 1258.             endif
+ 1264.             $I_L1256_172 = 1 + $I_L1256_172
+ 1263.             if ( $I_L1256_172 >= mymmax ) exit
+ 1263.          enddo
+ 1265.          $snt_T4 = _endparallel( 5, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T4 )
+ 1265.       endif
+ 1269.       alfa_uv%header%a_contig = 1
+ 1269.       alfa_uv%dim_1%LB = 1
+ 1269.       alfa_uv%dim_1%EX = ( max( 0, 2 * mymnmax ) )
+ 1269.       alfa_uv%dim_1%SM = 1
+ 1269.       $_allo_P3(0) = 0x1000000000001L
+ 1269.       $_allo_P3(1) = loc( alfa_uv )
+ 1269.       call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+ 1271.       if ( mymmax > 0 ) then
+ 1270.          $snt_T6 = _parallel( 7, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+ 1274.          $SC_mymnmap_I2 = mymnmap%dim_1%EX
+ 1274.          $SC_mymnmap_I3 = mymnmap%dim_1%LB
+ 1274.          $SC_mymnmap_I5 = mymnmap%dim_2%SM
+ 1274.          $SC_mymnmap_I4 = mymnmap%dim_2%EX
+ 1274.          $SC_mymnmap_I6 = mymnmap%dim_2%LB
+ 1272.          $SC_lm2m_I0 = lm2m%dim_1%EX
+ 1272.          $SC_lm2m_I1 = lm2m%dim_1%LB
+ 1271.          $I_L1271_174 = 0
+ 1271. !$omp do schedule(static)
+ 1271.          do
+ 1272.             $$_mglob = (lm2m%base_addr)(1 + $I_L1271_174, 0)
+ 1273.             if ( nmax + -$$_mglob >= 0 ) then
+ 1273.                $I_L1273_162 = 0
+ 1273. !dir$ unroll 4
+ 1273.                do
+ 1274.                   $$_mn = (mymnmap%base_addr)(1 + $I_L1271_174, $$_mglob + $I_L1273_162, 0)
+ 1275.                   (alfa_uv%base_addr)(-1 + 2 * $$_mn, 0) = -( real( -1 + $$_mglob, 8 ) )
+ 1276.                   (alfa_uv%base_addr)(2 * $$_mn, 0) = real( -1 + $$_mglob, 8 )
+ 1277.                   $I_L1273_162 = 1 + $I_L1273_162
+ 1273.                   if ( $I_L1273_162 >= 1 + nmax + -$$_mglob ) exit
+ 1273.                enddo
+ 1273.             endif
+ 1278.             $I_L1271_174 = 1 + $I_L1271_174
+ 1277.             if ( $I_L1271_174 >= mymmax ) exit
+ 1277.          enddo
+ 1279.          $snt_T6 = _endparallel( 7, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T6 )
+ 1279.       endif
+ 1283.       beta_uv%header%a_contig = 1
+ 1283.       beta_uv%dim_1%LB = 1
+ 1283.       beta_uv%dim_1%EX = ( max( 0, 2 * mymnmax ) )
+ 1283.       beta_uv%dim_1%SM = 1
+ 1283.       $_allo_P4(0) = 0x1000000000001L
+ 1283.       $_allo_P4(1) = loc( beta_uv )
+ 1283.       call __allocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+ 1285.       if ( mymmax > 0 ) then
+ 1284.          $snt_T8 = _parallel( 9, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+ 1290.          $SC_epslon_I12 = epslon%dim_1%EX
+ 1290.          $SC_epslon_I13 = epslon%dim_1%LB
+ 1289.          $SC_mymnextmap_I7 = mymnextmap%dim_1%EX
+ 1289.          $SC_mymnextmap_I8 = mymnextmap%dim_1%LB
+ 1289.          $SC_mymnextmap_I10 = mymnextmap%dim_2%SM
+ 1289.          $SC_mymnextmap_I9 = mymnextmap%dim_2%EX
+ 1289.          $SC_mymnextmap_I11 = mymnextmap%dim_2%LB
+ 1288.          $SC_mymnmap_I2 = mymnmap%dim_1%EX
+ 1288.          $SC_mymnmap_I3 = mymnmap%dim_1%LB
+ 1288.          $SC_mymnmap_I5 = mymnmap%dim_2%SM
+ 1288.          $SC_mymnmap_I4 = mymnmap%dim_2%EX
+ 1288.          $SC_mymnmap_I6 = mymnmap%dim_2%LB
+ 1286.          $SC_lm2m_I0 = lm2m%dim_1%EX
+ 1286.          $SC_lm2m_I1 = lm2m%dim_1%LB
+ 1285.          $I_L1285_176 = 0
+ 1285. !$omp do schedule(static)
+ 1285.          do
+ 1286.             $$_mglob = (lm2m%base_addr)(1 + $I_L1285_176, 0)
+ 1287.             if ( nmax + -$$_mglob >= 0 ) then
+ 1287.                $I_L1287_164 = 0
+ 1287. !dir$ unroll 4
+ 1287.                do
+ 1288.                   $$_mn = (mymnmap%base_addr)(1 + $I_L1285_176, $$_mglob + $I_L1287_164, 0)
+ 1289.                   $$_mnext = (mymnextmap%base_addr)(1 + $I_L1285_176, 1 + $$_mglob + $I_L1287_164, 0)
+ 1290.                   (beta_uv%base_addr)(-1 + 2 * $$_mn, 0) = (epslon%base_addr)($$_mnext, 0) * real( -1 + $$_mglob + $I_L1287_164, 8 )
+ 1291.                   (beta_uv%base_addr)(2 * $$_mn, 0) = (epslon%base_addr)($$_mnext, 0) * real( -1 + $$_mglob + $I_L1287_164, 8 )
+ 1292.                   $I_L1287_164 = 1 + $I_L1287_164
+ 1287.                   if ( $I_L1287_164 >= 1 + nmax + -$$_mglob ) exit
+ 1287.                enddo
+ 1287.             endif
+ 1293.             $I_L1285_176 = 1 + $I_L1285_176
+ 1292.             if ( $I_L1285_176 >= mymmax ) exit
+ 1292.          enddo
+ 1294.          $snt_T8 = _endparallel( 9, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T8 )
+ 1294.       endif
+ 1298.       gama_uv%header%a_contig = 1
+ 1298.       gama_uv%dim_1%LB = 1
+ 1298.       gama_uv%dim_1%EX = ( max( 0, 2 * mymnextmax ) )
+ 1298.       gama_uv%dim_1%SM = 1
+ 1298.       $_allo_P5(0) = 0x1000000000001L
+ 1298.       $_allo_P5(1) = loc( gama_uv )
+ 1298.       call __allocate( $_allo_P5, 0, 0, _fcd( 0, 0 ) )
+ 1300.       if ( mymmax > 0 ) then
+ 1299.          $snt_T10 = _parallel( 11, _mt_pinfo( _mt_rw_list(...), .true., 0 ), Null_Arg )
+ 1308.          $SC_epslon_I12 = epslon%dim_1%EX
+ 1308.          $SC_epslon_I13 = epslon%dim_1%LB
+ 1307.          $SC_mymnextmap_I7 = mymnextmap%dim_1%EX
+ 1307.          $SC_mymnextmap_I8 = mymnextmap%dim_1%LB
+ 1307.          $SC_mymnextmap_I10 = mymnextmap%dim_2%SM
+ 1307.          $SC_mymnextmap_I9 = mymnextmap%dim_2%EX
+ 1307.          $SC_mymnextmap_I11 = mymnextmap%dim_2%LB
+ 1302.          $SC_mymnmap_I2 = mymnmap%dim_1%EX
+ 1302.          $SC_mymnmap_I3 = mymnmap%dim_1%LB
+ 1302.          $SC_mymnmap_I5 = mymnmap%dim_2%SM
+ 1302.          $SC_mymnmap_I4 = mymnmap%dim_2%EX
+ 1302.          $SC_mymnmap_I6 = mymnmap%dim_2%LB
+ 1301.          $SC_lm2m_I0 = lm2m%dim_1%EX
+ 1301.          $SC_lm2m_I1 = lm2m%dim_1%LB
+ 1300.          $I_L1300_178 = 0
+ 1300. !$omp do schedule(static)
+ 1300.          do
+ 1301.             $$_mglob = (lm2m%base_addr)(1 + $I_L1300_178, 0)
+ 1302.             $$_mn = (mymnmap%base_addr)(1 + $I_L1300_178, $$_mglob, 0)
+ 1303.             (gama_uv%base_addr)(-1 + 2 * $$_mn, 0) = 0.0
+ 1304.             (gama_uv%base_addr)(2 * $$_mn, 0) = 0.0
+ 1305.             if ( nmax + -$$_mglob > 0 ) then
+ 1305.                $I_L1305_166 = 0
+ 1305. !dir$ unroll 4
+ 1305.                do
+ 1306.                   $$_mn = (mymnmap%base_addr)(1 + $I_L1300_178, 1 + $$_mglob + $I_L1305_166, 0)
+ 1307.                   $$_mnext = (mymnextmap%base_addr)(1 + $I_L1300_178, 1 + $$_mglob + $I_L1305_166, 0)
+ 1308.                   (gama_uv%base_addr)(-1 + 2 * $$_mn, 0) = (epslon%base_addr)($$_mnext, 0) * real( 1 + $$_mglob + $I_L1305_166, 8 )
+ 1309.                   (gama_uv%base_addr)(2 * $$_mn, 0) = (epslon%base_addr)($$_mnext, 0) * real( 1 + $$_mglob + $I_L1305_166, 8 )
+ 1310.                   $I_L1305_166 = 1 + $I_L1305_166
+ 1305.                   if ( $I_L1305_166 >= ( nmax + -$$_mglob ) ) exit
+ 1305.                enddo
+ 1305.             endif
+ 1311.             $I_L1300_178 = 1 + $I_L1300_178
+ 1310.             if ( $I_L1300_178 >= mymmax ) exit
+ 1310.          enddo
+ 1312.          $snt_T10 = _endparallel( 11, _mt_pinfo( _mt_rw_list(...), .true., 0 ), $snt_T10 )
+ 1312.       endif
+ 1314.       return
+ 1314.       end
+ 1314.       
+ 1320.       
+ 1320.       subroutine uvtodz( qup, qvp, qdivt, qrott, mnrifirst, mnrilast )
+ 1320.       t$22 = ( 2 * mymnextmax )
+ 1320.       t$23 = kmaxloc
+ 1321.       t$84 = _zla( 0, ( 2 * mymnextmax ) )
+ 1320.       t$85 = _zla( 0, ( 2 * mymnextmax ) )
+ 1321.       t$86 = _zla( 0, kmaxloc )
+ 1320.       t$87 = _zla( 0, ( 2 * mymnextmax ) ) * _zla( 0, kmaxloc )
+ 1320.       t$24 = ( 2 * mymnmax )
+ 1323.       t$88 = _zla( 0, ( 2 * mymnmax ) )
+ 1320.       t$89 = _zla( 0, ( 2 * mymnmax ) )
+ 1320.       t$90 = _zla( 0, kmaxloc ) * _zla( 0, ( 2 * mymnmax ) )
+ 1329.       if ( kmaxloc > 0 ) then
+ 1331.          $SC_mnm1_uv_I8 = mnm1_uv%dim_1%EX
+ 1331.          $SC_mnm1_uv_I9 = mnm1_uv%dim_1%LB
+ 1331.          $SC_gama_uv_I10 = gama_uv%dim_1%EX
+ 1331.          $SC_gama_uv_I11 = gama_uv%dim_1%LB
+ 1331.          $SC_mnp1_uv_I4 = mnp1_uv%dim_1%EX
+ 1331.          $SC_mnp1_uv_I5 = mnp1_uv%dim_1%LB
+ 1331.          $SC_beta_uv_I6 = beta_uv%dim_1%EX
+ 1331.          $SC_beta_uv_I7 = beta_uv%dim_1%LB
+ 1331.          $SC_mnir_uv_I0 = mnir_uv%dim_1%EX
+ 1331.          $SC_mnir_uv_I1 = mnir_uv%dim_1%LB
+ 1331.          $SC_alfa_uv_I2 = alfa_uv%dim_1%EX
+ 1331.          $SC_alfa_uv_I3 = alfa_uv%dim_1%LB
+ 1330.          if ( mnrilast + -mnrifirst >= 0 ) then
+ 1329.             $I_L1329_14 = 0
+ 1329. !dir$ blocking_size( 1, 1 )
+ 1329.             do
+ 1330.                $I_L1330_12 = 0
+ 1330. !dir$ ivdep
+ 1330. !dir$ blocking_size( 256, 256 )
+ 1330.                do
+ 1331.                   $qdivt_WR0_R0 = -( (gama_uv%base_addr)(mnrifirst + $I_L1330_12, 0) * qvp((mnm1_uv%base_addr)(mnrifirst + $I_L1330_12, 0), 1 + $I_L1329_14) ) + (beta_uv%base_addr)(mnrifirst + $I_L1330_12, 0) * qvp((mnp1_uv%base_addr)(mnrifirst + $I_L1330_12, 0), 1 + $I_L1329_14) + (alfa_uv%base_addr)(mnrifirst + $I_L1330_12, 0) * qup((mnir_uv%base_addr)(mnrifirst + $I_L1330_12, 0), 1 + $I_L1329_14)
+ 1336.                   $qrott_WR0_R1 = -( (beta_uv%base_addr)(mnrifirst + $I_L1330_12, 0) * qup((mnp1_uv%base_addr)(mnrifirst + $I_L1330_12, 0), 1 + $I_L1329_14) ) + (gama_uv%base_addr)(mnrifirst + $I_L1330_12, 0) * qup((mnm1_uv%base_addr)(mnrifirst + $I_L1330_12, 0), 1 + $I_L1329_14) + (alfa_uv%base_addr)(mnrifirst + $I_L1330_12, 0) * qvp((mnir_uv%base_addr)(mnrifirst + $I_L1330_12, 0), 1 + $I_L1329_14)
+ 1340.                   $qrott_WR0_R1 = 1.5698587127158556e-7 * $qrott_WR0_R1
+ 1340.                   qrott(mnrifirst + $I_L1330_12, 1 + $I_L1329_14) = $qrott_WR0_R1
+ 1335.                   $qdivt_WR0_R0 = 1.5698587127158556e-7 * $qdivt_WR0_R0
+ 1335.                   qdivt(mnrifirst + $I_L1330_12, 1 + $I_L1329_14) = $qdivt_WR0_R0
+ 1341.                   $I_L1330_12 = 1 + $I_L1330_12
+ 1330.                   if ( $I_L1330_12 >= 1 + mnrilast + -mnrifirst ) exit
+ 1330.                enddo
+ 1342.                $I_L1329_14 = 1 + $I_L1329_14
+ 1341.                if ( $I_L1329_14 >= kmaxloc ) exit
+ 1341.             enddo
+ 1341.          endif
+ 1341.       endif
+ 1343.       return
+ 1343.       end
+ 1343.       
+  158.       
+  158.       module specdynamics
+  158.       end
+  158.       

@@ -1,0 +1,9 @@
+#!/bin/bash
+export F_UFMTENDIAN=10
+export GFORTRAN_CONVERT_UNIT=big_endian:10
+export KMP_STACKSIZE=128m
+ulimit -s unlimited
+export MPID_RSH
+cd /scratch/p01211/oens-1.0.0/ensmed/bin
+time aprun -n  4 -N  1  -ss   /scratch/p01211/oens-1.0.0/ensmed/bin/ensmed.exe 2004032600 >  /scratch/p01211/oens-1.0.0/run/setout/setensmed.TQ0126L028_P.2004032600.out
+####exec /scratch/p01211/oens-1.0.0/ensmed/bin/ensmed.exe 2004032600 >  /scratch/p01211/oens-1.0.0/run/setout/setensmed.TQ0126L028_P.2004032600.out

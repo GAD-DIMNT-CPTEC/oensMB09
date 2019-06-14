@@ -1,0 +1,31 @@
+#!/bin/bash
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/Out.post.2004032600.1287502754.%s.MPI1.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N EnsPos07N
+#
+if [[ Linux == "Linux" || Linux == "linux" ]]; then
+export F_UFMTENDIAN=10,11
+fi
+export KMP_STACKSIZE=128m
+ulimit -s unlimited
+cd /scratch/p01211/oens-1.0.0/pos/exec
+time aprun -n 1 -N 1 /scratch/p01211/oens-1.0.0/pos/exec/PostGrib < /scratch/p01211/oens-1.0.0/pos/exec/POSTIN-GRIB
+
+for TIPO in P.fct P.fgs S.fct
+do
+if [ -e /scratch/p01211/oens-1.0.0/pos/dataout/TQ0126L028/2004032600/GPOS07N20040326002004041000${TIPO}.TQ0126L028.lst  ]; then
+for arq in `cat /scratch/p01211/oens-1.0.0/pos/dataout/TQ0126L028/2004032600/GPOS07N20040326002004041000${TIPO}.TQ0126L028.lst |grep ctl`
+do
+arq1=`basename $arq`
+
+# Mapping the GRIB data
+
+/usr/local/grads/bin/gribmap -i ${dataout}/${arq1}
+done
+fi
+done

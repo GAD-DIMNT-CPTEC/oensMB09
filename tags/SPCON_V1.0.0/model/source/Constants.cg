@@ -1,0 +1,169 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Constants.f90
+       !        File                  :  Constants.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+  121.       
+  121.       subroutine initconstants( kmax )
+  121.       $CARG_kmax_I0 = 0[loc( kmax ),0]
+  127.       $LCS_coriol_0 = loc( coriol )
+  127.       0[$LCS_coriol_0,0].L = 1.1908537313104409e-4
+  128.       1[$LCS_coriol_0,0].L = 1.4142135623730951
+  129.       $LCS_tdampf_1 = loc( tdampf )
+  129.       24[$LCS_tdampf_1,0].L = 1
+  129.       25[$LCS_tdampf_1,0].L = max( 0, $CARG_kmax_I0 )
+  129.       26[$LCS_tdampf_1,0].L = 1
+  129.       0[loc( $_allo_P0 ),0].L = 0x1000000000001L
+  129.       1[loc( $_allo_P0 ),0].L = loc( tov )
+  129.       $MR_tov_S0 = 20[$LCS_tdampf_1,0].L
+  129.       $MR_tov_S1 = or( 16, $MR_tov_S0 )
+  129.       20[$LCS_tdampf_1,0].L = $MR_tov_S1
+  129.       call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  130.       $LCS_CARG_kmax_2 = $CARG_kmax_I0
+  130.       $F_A33 = max( 0, $LCS_CARG_kmax_2 )
+  130.       if ( $CARG_kmax_I0 > 0 ) then !  99.50%
+  130.          $I_S5 = 0
+  130.          if ( $F_A33 > $LCS_CARG_kmax_2 ) then
+  130.             $LB_Y0 = 1
+  130.             $UB_Y1 = $LCS_CARG_kmax_2
+  130.             $Subscript_Y2 = 1
+  130.             $Subscript_Y3 = $F_A33
+  130.             $Subscript_Y4 = 1
+  130.             _rbounds_error( $_File_Y40, $Line_Y42, $_Name_Y41, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y43 )
+  130.          endif
+  130.          $SC_tov_I1 = 18[loc( tdampf ),0].L
+  130.          if ( $F_A33 >= 2 ) then
+  130.             $TC_0 = and( -2, $F_A33 )
+  130.             $LC_S4 = -$TC_0
+  130.             $SI_S3 = 0
+  130.             $LIS_S2[0:2:1].L = _bcst( 300.0, 2 )
+  130.             $LIS_E0 = int( $SC_tov_I1, 8 )
+  130.             do
+  130.                0[$LIS_E0 + $SI_S3:2:1].L = $LIS_S2[0:2:1].L
+  130.                $SI_S3 = 16 + $SI_S3
+  130.                $LC_S4 = 2 + $LC_S4
+  130.                if ( $LC_S4 >= 0 ) exit
+  130.             enddo
+  130.             $I_S5 = $TC_0
+  130.          endif
+  130.          if ( $F_A33 > $I_S5 ) then
+  130.             0[int( $SC_tov_I1, 8 ),$I_S5].L = 300.0
+  130.          endif
+  130.       endif
+  131.       $LCS_tdampf_3 = loc( tdampf )
+  131.       15[$LCS_tdampf_3,0].L = 1
+  131.       $CS_1 = max( 0, $CARG_kmax_I0 )
+  131.       $CS_2 = $CS_1
+  131.       16[$LCS_tdampf_3,0].L = $CS_2
+  131.       17[$LCS_tdampf_3,0].L = 1
+  131.       0[loc( $_allo_P1 ),0].L = 0x1000000000001L
+  131.       1[loc( $_allo_P1 ),0].L = loc( tdampr )
+  131.       $MR_tdampr_S6 = 11[$LCS_tdampf_3,0].L
+  131.       $MR_tdampr_S7 = or( 16, $MR_tdampr_S6 )
+  131.       11[$LCS_tdampf_3,0].L = $MR_tdampr_S7
+  131.       call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  132.       $F_A34 = $CS_2
+  132.       if ( $CARG_kmax_I0 > 0 ) then !  99.50%
+  132.          $I_S11 = 0
+  132.          if ( $F_A34 > $CS_2 ) then
+  132.             $LB_Y0 = 1
+  132.             $UB_Y1 = $CS_2
+  132.             $Subscript_Y2 = 1
+  132.             $Subscript_Y3 = $F_A34
+  132.             $Subscript_Y4 = 1
+  132.             _rbounds_error( $_File_Y40, $Line_Y45, $_Name_Y44, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y46 )
+  132.          endif
+  132.          $SC_tdampr_I2 = 9[loc( tdampf ),0].L
+  132.          if ( $F_A34 >= 2 ) then
+  132.             $TC_3 = and( -2, $F_A34 )
+  132.             $LC_S10 = -$TC_3
+  132.             $SI_S9 = 0
+  132.             $LIS_S8[0:2:1].L = _bcst( 10.0, 2 )
+  132.             $LIS_E2 = int( $SC_tdampr_I2, 8 )
+  132.             do
+  132.                0[$LIS_E2 + $SI_S9:2:1].L = $LIS_S8[0:2:1].L
+  132.                $SI_S9 = 16 + $SI_S9
+  132.                $LC_S10 = 2 + $LC_S10
+  132.                if ( $LC_S10 >= 0 ) exit
+  132.             enddo
+  132.             $I_S11 = $TC_3
+  132.          endif
+  132.          if ( $F_A34 > $I_S11 ) then
+  132.             0[int( $SC_tdampr_I2, 8 ),$I_S11].L = 10.0
+  132.          endif
+  132.       endif
+  133.       $LCS_tdampf_5 = loc( tdampf )
+  133.       6[$LCS_tdampf_5,0].L = 1
+  133.       7[$LCS_tdampf_5,0].L = $CS_2
+  133.       8[$LCS_tdampf_5,0].L = 1
+  133.       0[loc( $_allo_P2 ),0].L = 0x1000000000001L
+  133.       1[loc( $_allo_P2 ),0].L = loc( tdampf )
+  133.       $MR_tdampf_S12 = 2[$LCS_tdampf_5,0].L
+  133.       $MR_tdampf_S13 = or( 16, $MR_tdampf_S12 )
+  133.       2[$LCS_tdampf_5,0].L = $MR_tdampf_S13
+  133.       call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  134.       if ( $CS_1 <= 0 ) then
+  134.          $LB_Y0 = 1
+  134.          $UB_Y1 = $CS_1
+  134.          $Subscript_Y5 = 1
+  134.          _bounds_error( $_File_Y40, $Line_Y48, $_Name_Y47, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y49 )
+  134.       endif
+  134.       $MR_tdampf_15 = 0[loc( tdampf ),0].L
+  134.       0[int( $MR_tdampf_15, 8 ),0].L = 2.0
+  134.       if ( or( 1, -2 + $CS_1 ) < 0 ) then
+  134.          $LB_Y0 = 1
+  134.          $UB_Y1 = $CS_1
+  134.          $Subscript_Y5 = 2
+  134.          _bounds_error( $_File_Y40, $Line_Y48, $_Name_Y47, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y5, $Err_count_Y50 )
+  134.       endif
+  134.       1[int( $MR_tdampf_15, 8 ),0].L = 5.0
+  134.       $LCS_CARGkmax_8 = -2 + $CARG_kmax_I0
+  134.       $F_A35 = $LCS_CARGkmax_8
+  134.       if ( $LCS_CARGkmax_8 > 0 ) then !  99.50%
+  134.          $I_S17 = 0
+  134.          $LCS_F_10 = 2 + $F_A35
+  134.          if ( $LCS_F_10 > $CS_2 ) then
+  134.             $LB_Y0 = 1
+  134.             $UB_Y1 = $CS_2
+  134.             $Subscript_Y2 = 3
+  134.             $Subscript_Y3 = $LCS_F_10
+  134.             $Subscript_Y4 = 1
+  134.             _rbounds_error( $_File_Y40, $Line_Y48, $_Name_Y47, $Dim_Y8, $LB_Y0, $UB_Y1, $Subscript_Y2, $Subscript_Y3, $Subscript_Y4, $Err_count_Y51 )
+  134.          endif
+  134.          if ( $F_A35 >= 2 ) then
+  134.             $TC_6 = and( -2, $F_A35 )
+  134.             $LC_S16 = -$TC_6
+  134.             $SI_S15 = 0
+  134.             $LIS_S14[0:2:1].L = _bcst( 10.0, 2 )
+  134.             $LIS_E4 = int( $MR_tdampf_15, 8 )
+  134.             do
+  134.                2[$LIS_E4 + $SI_S15:2:1].L = $LIS_S14[0:2:1].L
+  134.                $SI_S15 = 16 + $SI_S15
+  134.                $LC_S16 = 2 + $LC_S16
+  134.                if ( $LC_S16 >= 0 ) exit
+  134.             enddo
+  134.             $I_S17 = $TC_6
+  134.          endif
+  134.          if ( $F_A35 > $I_S17 ) then
+  134.             2[int( $MR_tdampf_15, 8 ),$I_S17].L = 10.0
+  134.          endif
+  134.       endif
+  136.       return
+  136.       end
+  136.       
+  116.       
+  116.       module constants
+  116.       end
+  116.       

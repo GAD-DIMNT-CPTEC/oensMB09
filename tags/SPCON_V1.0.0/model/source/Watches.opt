@@ -1,0 +1,410 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Watches.f90
+       !        File                  :  Watches.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+  133.       
+  133.       subroutine createwatch( wt, nw, firstw )
+   36.       if ( t$40 == 0 ) then
+   36.          t$45(1) = 2
+   36.          t$46(1) = 0
+   36.          t$47(1) = 0
+   36.          t$42(1) = int( loc( t$39 ), 8 )
+   36.          t$43(1) = 0
+   36.          t$44(1) = int( loc( t$41 ), 8 )
+   36.          t$40 = __get_dynamic_type( 2, t$42(1), t$45(1), 1, t$43(1), t$44(1), t$46(1), t$47(1) )
+   36.       endif
+   76.       if ( nw <= 0 ) then
+   77.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$2,  _substr(t$1,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( nw, 0x2000200000000L ) ) )
+   78.          _f90_adjustl(  _substr(t$82,1,10),  _substr(c0,1,10) )
+   78.          t$83 = 52 + ( _ltrim(  _substr(t$82,1,10) ) )
+   78.          t$85 = int( _alloc( max( 0, t$83 ) ), 8 )
+   78.           _substr(t$84,1,max( 0, t$83 )) = //( '**(CreateWatch)** number of watches (', //(  _substr(t$82,1,_ltrim(  _substr(t$82,1,10) )), ') should be > 0' ) )
+   78.          call fatalerror(  _substr(t$84,1,max( 0, t$83 )) )
+   78.          _free( t$85 )
+   79.           _substr(t$86,1,4) = '1'
+   79.          call _stop(  _substr(t$86,1,1) )
+   80.       else if ( firstw > nw ) then
+   81.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$4,  _substr(t$3,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( nw, 0x2000200000000L ) ) )
+   82.          _fwrite( _clist( 0, 0, 3,  _substr(c1,1,10), Null_Arg, Null_Arg, t$6,  _substr(t$5,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( firstw, 0x2000200000000L ) ) )
+   83.          _f90_adjustl(  _substr(t$87,1,10),  _substr(c1,1,10) )
+   84.          _f90_adjustl(  _substr(t$88,1,10),  _substr(c0,1,10) )
+   83.          t$89 = 55 + ( _ltrim(  _substr(t$87,1,10) ) ) + ( _ltrim(  _substr(t$88,1,10) ) )
+   84.          t$91 = int( _alloc( max( 0, t$89 ) ), 8 )
+   84.           _substr(t$90,1,max( 0, t$89 )) = //( '**(CreateWatch)** first watch (', //(  _substr(t$87,1,_ltrim(  _substr(t$87,1,10) )), //( ') > number of watches (', //(  _substr(t$88,1,_ltrim(  _substr(t$88,1,10) )), ')' ) ) ) )
+   83.          call fatalerror(  _substr(t$90,1,max( 0, t$89 )) )
+   84.          _free( t$91 )
+   85.           _substr(t$92,1,4) = '1'
+   85.          call _stop(  _substr(t$92,1,1) )
+   85.       else
+   90.          wt%nwatches = nw
+   91.          wt%timecpu%header%a_contig = 1
+   91.          wt%timecpu%dim_1%LB = 0
+   91.          wt%timecpu%dim_1%EX = ( max( 0, 1 + nw ) )
+   91.          wt%timecpu%dim_1%SM = 1
+   91.          $_allo_P1(0) = 0x1000000000001L
+   91.          $_allo_P1(1) = loc( wt%timecpu )
+   91.          call __allocate( $_allo_P1, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+   92.          if ( ierr /= 0 ) then
+   93.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$8,  _substr(t$7,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+   94.             _f90_adjustl(  _substr(t$93,1,10),  _substr(c0,1,10) )
+   94.             t$94 = 50 + ( _ltrim(  _substr(t$93,1,10) ) )
+   94.             t$96 = int( _alloc( max( 0, t$94 ) ), 8 )
+   94.              _substr(t$95,1,max( 0, t$94 )) = //( '**(CreateWatch)** allocate TimeCpu returned error ',  _substr(t$93,1,_ltrim(  _substr(t$93,1,10) )) )
+   94.             call fatalerror(  _substr(t$95,1,max( 0, t$94 )) )
+   94.             _free( t$96 )
+   94.          endif
+   96.          $F_A33 = ( max( 0, 1 + nw ) )
+   96.          $I_A1 = 0
+   96. !dir$ ivdep
+   96.          do
+   96.             (wt%timecpu%base_addr)($I_A1, 0) = 0.0
+   96.             $I_A1 = 1 + $I_A1
+   96.             if ( $I_A1 >= $F_A33 ) exit
+   96.          enddo
+   98.          wt%timewall%header%a_contig = 1
+   98.          wt%timewall%dim_1%LB = 0
+   98.          wt%timewall%dim_1%EX = ( max( 0, 1 + nw ) )
+   98.          wt%timewall%dim_1%SM = 1
+   98.          $_allo_P2(0) = 0x1000000000001L
+   98.          $_allo_P2(1) = loc( wt%timewall )
+   98.          call __allocate( $_allo_P2, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+   99.          if ( ierr /= 0 ) then
+  100.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$10,  _substr(t$9,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  101.             _f90_adjustl(  _substr(t$97,1,10),  _substr(c0,1,10) )
+  101.             t$98 = 51 + ( _ltrim(  _substr(t$97,1,10) ) )
+  101.             t$100 = int( _alloc( max( 0, t$98 ) ), 8 )
+  101.              _substr(t$99,1,max( 0, t$98 )) = //( '**(CreateWatch)** allocate TimeWall returned error ',  _substr(t$97,1,_ltrim(  _substr(t$97,1,10) )) )
+  101.             call fatalerror(  _substr(t$99,1,max( 0, t$98 )) )
+  101.             _free( t$100 )
+  101.          endif
+  103.          $F_A34 = ( max( 0, 1 + nw ) )
+  103.          $I_A1 = 0
+  103. !dir$ ivdep
+  103.          do
+  103.             (wt%timewall%base_addr)($I_A1, 0) = 0.0
+  103.             $I_A1 = 1 + $I_A1
+  103.             if ( $I_A1 >= $F_A34 ) exit
+  103.          enddo
+  105.          wt%name%header%a_contig = 1
+  105.          wt%name%dim_1%LB = 0
+  105.          wt%name%dim_1%EX = ( max( 0, 1 + nw ) )
+  105.          wt%name%dim_1%SM = 16
+  105.          $_allo_P3(0) = 0x1000000000001L
+  105.          $_allo_P3(1) = loc( wt%name )
+  105.          call __allocate( $_allo_P3, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  106.          if ( ierr /= 0 ) then
+  107.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$12,  _substr(t$11,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  108.             _f90_adjustl(  _substr(t$101,1,10),  _substr(c0,1,10) )
+  108.             t$102 = 47 + ( _ltrim(  _substr(t$101,1,10) ) )
+  108.             t$104 = int( _alloc( max( 0, t$102 ) ), 8 )
+  108.              _substr(t$103,1,max( 0, t$102 )) = //( '**(CreateWatch)** allocate Name returned error ',  _substr(t$101,1,_ltrim(  _substr(t$101,1,10) )) )
+  108.             call fatalerror(  _substr(t$103,1,max( 0, t$102 )) )
+  108.             _free( t$104 )
+  108.          endif
+  110.          $F_A35 = ( max( 0, 1 + nw ) )
+  110.          $I_A1 = 0
+  110.          do
+  110.              _substr((wt%name%base_addr)($I_A1, 0),1,16) = '          '
+  110.             $I_A1 = 1 + $I_A1
+  110.             if ( $I_A1 >= $F_A35 ) exit
+  110.          enddo
+  111.           _substr((wt%name%base_addr)(0, 0),1,16) = 'Total '
+  115.          call _cpu_time_4( tc )
+  116.          $t_S0 = irtc_rate_i8
+  116.          $Flat_S1 = _rtc
+  117.          if ( _rsh( $t_S0, 14 ) == 0 ) then
+  118.              _substr(t$106,1,49) = '**(CreateWatch)** no clock at this instalation!!!'
+  118.             call fatalerror(  _substr(t$106,1,49) )
+  118.          endif
+  120.          wt%timeunit = 1.0/( real( _rsh( $t_S0, 14 ) ) )
+  125.          (wt%timecpu%base_addr)(0, 0) = -tc
+  126.          (wt%timewall%base_addr)(0, 0) = -( 1.0/( real( _rsh( $t_S0, 14 ) ) ) * real( and( 0x7fffffff, _rsh( $Flat_S1, 14 ) ) ) )
+  130.          wt%currwatch = firstw
+  131.          (wt%timecpu%base_addr)(firstw, 0) = -tc
+  132.          (wt%timewall%base_addr)(firstw, 0) = -( 1.0/( real( _rsh( $t_S0, 14 ) ) ) * real( and( 0x7fffffff, _rsh( $Flat_S1, 14 ) ) ) )
+  132.       endif
+  133.       return
+  133.       end
+  133.       
+  165.       
+  165.       subroutine destroywatch( wt )
+   36.       if ( t$40 == 0 ) then
+   36.          t$53(1) = 2
+   36.          t$54(1) = 0
+   36.          t$55(1) = 0
+   36.          t$50(1) = int( loc( t$39 ), 8 )
+   36.          t$51(1) = 0
+   36.          t$52(1) = int( loc( t$49 ), 8 )
+   36.          t$40 = __get_dynamic_type( 2, t$50(1), t$53(1), 1, t$51(1), t$52(1), t$54(1), t$55(1) )
+   36.       endif
+  148.       $_allo_P0(0) = 0x1000000000001L
+  148.       $_allo_P0(1) = loc( wt%timecpu )
+  148.       call __deallocate( $_allo_P0, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  148.       wt%timecpu%header%assoc = 0
+  149.       if ( ierr /= 0 ) then
+  150.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$14,  _substr(t$13,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  151.          _f90_adjustl(  _substr(t$107,1,10),  _substr(c0,1,10) )
+  151.          t$108 = 53 + ( _ltrim(  _substr(t$107,1,10) ) )
+  151.          t$110 = int( _alloc( max( 0, t$108 ) ), 8 )
+  151.           _substr(t$109,1,max( 0, t$108 )) = //( '**(DestroyWatch)** deallocate TimeCpu returned error ',  _substr(t$107,1,_ltrim(  _substr(t$107,1,10) )) )
+  151.          call fatalerror(  _substr(t$109,1,max( 0, t$108 )) )
+  151.          _free( t$110 )
+  151.       endif
+  154.       $_allo_P1(0) = 0x1000000000001L
+  154.       $_allo_P1(1) = loc( wt%timewall )
+  154.       call __deallocate( $_allo_P1, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  154.       wt%timewall%header%assoc = 0
+  155.       if ( ierr /= 0 ) then
+  156.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$16,  _substr(t$15,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  157.          _f90_adjustl(  _substr(t$111,1,10),  _substr(c0,1,10) )
+  157.          t$112 = 54 + ( _ltrim(  _substr(t$111,1,10) ) )
+  157.          t$114 = int( _alloc( max( 0, t$112 ) ), 8 )
+  157.           _substr(t$113,1,max( 0, t$112 )) = //( '**(DestroyWatch)** deallocate TimeWall returned error ',  _substr(t$111,1,_ltrim(  _substr(t$111,1,10) )) )
+  157.          call fatalerror(  _substr(t$113,1,max( 0, t$112 )) )
+  157.          _free( t$114 )
+  157.       endif
+  160.       $_allo_P2(0) = 0x1000000000001L
+  160.       $_allo_P2(1) = loc( wt%name )
+  160.       call __deallocate( $_allo_P2, ierr, 0x2000200000000L, _fcd( 0, 0 ) )
+  160.       wt%name%header%assoc = 0
+  161.       if ( ierr /= 0 ) then
+  162.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$18,  _substr(t$17,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ierr, 0x2000200000000L ) ) )
+  163.          _f90_adjustl(  _substr(t$115,1,10),  _substr(c0,1,10) )
+  163.          t$116 = 50 + ( _ltrim(  _substr(t$115,1,10) ) )
+  163.          t$118 = int( _alloc( max( 0, t$116 ) ), 8 )
+  163.           _substr(t$117,1,max( 0, t$116 )) = //( '**(DestroyWatch)** deallocate Name returned error ',  _substr(t$115,1,_ltrim(  _substr(t$115,1,10) )) )
+  163.          call fatalerror(  _substr(t$117,1,max( 0, t$116 )) )
+  163.          _free( t$118 )
+  163.       endif
+  165.       return
+  165.       end
+  165.       
+  173.       
+  173.       subroutine dumpwatch( wt, unit )
+   36.       if ( t$40 == 0 ) then
+   36.          t$61(1) = 2
+   36.          t$62(1) = 0
+   36.          t$63(1) = 0
+   36.          t$58(1) = int( loc( t$39 ), 8 )
+   36.          t$59(1) = 0
+   36.          t$60(1) = int( loc( t$57 ), 8 )
+   36.          t$40 = __get_dynamic_type( 2, t$58(1), t$61(1), 1, t$59(1), t$60(1), t$62(1), t$63(1) )
+   36.       endif
+  183.       call _cpu_time_4( tc )
+  184.       $Flat_S0 = _rtc
+  185.       $tw_S1 = wt%timeunit * real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) )
+  189.       (wt%timecpu%base_addr)(0, 0) = tc + (wt%timecpu%base_addr)(0, 0)
+  190.       (wt%timecpu%base_addr)(wt%currwatch, 0) = tc + (wt%timecpu%base_addr)(wt%currwatch, 0)
+  191.       (wt%timewall%base_addr)(0, 0) = (wt%timewall%base_addr)(0, 0) + ( wt%timeunit * real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) ) )
+  192.       (wt%timewall%base_addr)(wt%currwatch, 0) = (wt%timewall%base_addr)(wt%currwatch, 0) + ( wt%timeunit * real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) ) )
+  196.       if ( loc( unit ) /= 0 ) then
+  197.          $Unit_temp_O0 = unit
+  197.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$20,  _substr(t$19,1,31), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(DumpWatch)**', 0x800600000000L ) ) )
+  198.          if ( wt%nwatches > 0 ) then
+  201.             $SC_wt_I0 = wt%nwatches
+  198.             $I_L198_10 = 0
+  198.             do
+  200.                if ( ( ( 1 + $I_L198_10 ) < wt%name%dim_1%LB .or. ( 1 + $I_L198_10 ) > -1 + wt%name%dim_1%LB + wt%name%dim_1%EX ) /= .false. ) then
+  200.                    _substr(t$123,1,12) = 'Watches.f90'
+  200.                    _substr(t$124,1,5) = 'NAME'
+  200.                   t$125 = wt%name%dim_1%LB
+  200.                   t$126 = -1 + wt%name%dim_1%LB + wt%name%dim_1%EX
+  200.                   t$127 = 1 + $I_L198_10
+  200.                   call _bounds_error(  _substr(t$123,1,12), 200,  _substr(t$124,1,5), 1, t$125, t$126, t$127, t$122 )
+  200.                endif
+  200.                if ( ( ( 1 + $I_L198_10 ) < wt%timecpu%dim_1%LB .or. ( 1 + $I_L198_10 ) > -1 + wt%timecpu%dim_1%LB + wt%timecpu%dim_1%EX ) /= .false. ) then
+  200.                    _substr(t$129,1,12) = 'Watches.f90'
+  200.                    _substr(t$130,1,8) = 'TIMECPU'
+  200.                   t$131 = wt%timecpu%dim_1%LB
+  200.                   t$132 = -1 + wt%timecpu%dim_1%LB + wt%timecpu%dim_1%EX
+  200.                   t$133 = 1 + $I_L198_10
+  200.                   call _bounds_error(  _substr(t$129,1,12), 200,  _substr(t$130,1,8), 1, t$131, t$132, t$133, t$128 )
+  200.                endif
+  200.                if ( ( ( 1 + $I_L198_10 ) < wt%timewall%dim_1%LB .or. ( 1 + $I_L198_10 ) > -1 + wt%timewall%dim_1%LB + wt%timewall%dim_1%EX ) /= .false. ) then
+  200.                    _substr(t$135,1,12) = 'Watches.f90'
+  200.                    _substr(t$136,1,9) = 'TIMEWALL'
+  200.                   t$137 = wt%timewall%dim_1%LB
+  200.                   t$138 = -1 + wt%timewall%dim_1%LB + wt%timewall%dim_1%EX
+  200.                   t$139 = 1 + $I_L198_10
+  200.                   call _bounds_error(  _substr(t$135,1,12), 200,  _substr(t$136,1,9), 1, t$137, t$138, t$139, t$134 )
+  200.                endif
+  199.                $Unit_temp_O1 = unit
+  199.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$22,  _substr(t$21,1,13), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr((wt%name%base_addr)(1 + $I_L198_10, 0),1,16), 0x800600000000L ), _iotype( (wt%timecpu%base_addr)(1 + $I_L198_10, 0), 0x2000300000000L ), _iotype( (wt%timewall%base_addr)(1 + $I_L198_10, 0), 0x2000300000000L ) ) )
+  201.                $I_L198_10 = 1 + $I_L198_10
+  201.                if ( $I_L198_10 >= $SC_wt_I0 ) exit
+  201.             enddo
+  201.          endif
+  203.          if ( ( 0 < wt%name%dim_1%LB .or. 0 > -1 + wt%name%dim_1%LB + wt%name%dim_1%EX ) /= .false. ) then
+  203.              _substr(t$141,1,12) = 'Watches.f90'
+  203.              _substr(t$142,1,5) = 'NAME'
+  203.             t$125 = wt%name%dim_1%LB
+  203.             t$126 = -1 + wt%name%dim_1%LB + wt%name%dim_1%EX
+  203.             call _bounds_error(  _substr(t$141,1,12), 203,  _substr(t$142,1,5), 1, t$125, t$126, 0, t$140 )
+  203.          endif
+  203.          if ( ( 0 < wt%timecpu%dim_1%LB .or. 0 > -1 + wt%timecpu%dim_1%LB + wt%timecpu%dim_1%EX ) /= .false. ) then
+  203.              _substr(t$144,1,12) = 'Watches.f90'
+  203.              _substr(t$145,1,8) = 'TIMECPU'
+  203.             t$127 = wt%timecpu%dim_1%LB
+  203.             t$131 = -1 + wt%timecpu%dim_1%LB + wt%timecpu%dim_1%EX
+  203.             call _bounds_error(  _substr(t$144,1,12), 203,  _substr(t$145,1,8), 1, t$127, t$131, 0, t$143 )
+  203.          endif
+  203.          if ( ( 0 < wt%timewall%dim_1%LB .or. 0 > -1 + wt%timewall%dim_1%LB + wt%timewall%dim_1%EX ) /= .false. ) then
+  203.              _substr(t$147,1,12) = 'Watches.f90'
+  203.              _substr(t$148,1,9) = 'TIMEWALL'
+  203.             t$132 = wt%timewall%dim_1%LB
+  203.             t$133 = -1 + wt%timewall%dim_1%LB + wt%timewall%dim_1%EX
+  203.             call _bounds_error(  _substr(t$147,1,12), 203,  _substr(t$148,1,9), 1, t$132, t$133, 0, t$146 )
+  203.          endif
+  202.          $Unit_temp_O2 = unit
+  202.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, t$24,  _substr(t$23,1,13), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr((wt%name%base_addr)(0, 0),1,16), 0x800600000000L ), _iotype( (wt%timecpu%base_addr)(0, 0), 0x2000300000000L ), _iotype( (wt%timewall%base_addr)(0, 0), 0x2000300000000L ) ) )
+  202.       else
+  205.          _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, t$26,  _substr(t$25,1,34), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '**(DumpWatch)**', 0x800600000000L ) ) )
+  206.          if ( wt%nwatches > 0 ) then
+  209.             $SC_wt_I0 = wt%nwatches
+  206.             $I_L206_8 = 0
+  206.             do
+  208.                if ( ( ( 1 + $I_L206_8 ) < wt%name%dim_1%LB .or. ( 1 + $I_L206_8 ) > -1 + wt%name%dim_1%LB + wt%name%dim_1%EX ) /= .false. ) then
+  208.                    _substr(t$153,1,12) = 'Watches.f90'
+  208.                    _substr(t$154,1,5) = 'NAME'
+  208.                   t$137 = wt%name%dim_1%LB
+  208.                   t$138 = -1 + wt%name%dim_1%LB + wt%name%dim_1%EX
+  208.                   t$139 = 1 + $I_L206_8
+  208.                   call _bounds_error(  _substr(t$153,1,12), 208,  _substr(t$154,1,5), 1, t$137, t$138, t$139, t$152 )
+  208.                endif
+  208.                if ( ( ( 1 + $I_L206_8 ) < wt%timecpu%dim_1%LB .or. ( 1 + $I_L206_8 ) > -1 + wt%timecpu%dim_1%LB + wt%timecpu%dim_1%EX ) /= .false. ) then
+  208.                    _substr(t$156,1,12) = 'Watches.f90'
+  208.                    _substr(t$157,1,8) = 'TIMECPU'
+  208.                   t$125 = wt%timecpu%dim_1%LB
+  208.                   t$126 = -1 + wt%timecpu%dim_1%LB + wt%timecpu%dim_1%EX
+  208.                   t$127 = 1 + $I_L206_8
+  208.                   call _bounds_error(  _substr(t$156,1,12), 208,  _substr(t$157,1,8), 1, t$125, t$126, t$127, t$155 )
+  208.                endif
+  208.                if ( ( ( 1 + $I_L206_8 ) < wt%timewall%dim_1%LB .or. ( 1 + $I_L206_8 ) > -1 + wt%timewall%dim_1%LB + wt%timewall%dim_1%EX ) /= .false. ) then
+  208.                    _substr(t$159,1,12) = 'Watches.f90'
+  208.                    _substr(t$160,1,9) = 'TIMEWALL'
+  208.                   t$131 = wt%timewall%dim_1%LB
+  208.                   t$132 = -1 + wt%timewall%dim_1%LB + wt%timewall%dim_1%EX
+  208.                   t$133 = 1 + $I_L206_8
+  208.                   call _bounds_error(  _substr(t$159,1,12), 208,  _substr(t$160,1,9), 1, t$131, t$132, t$133, t$158 )
+  208.                endif
+  207.                _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, t$28,  _substr(t$27,1,13), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr((wt%name%base_addr)(1 + $I_L206_8, 0),1,16), 0x800600000000L ), _iotype( (wt%timecpu%base_addr)(1 + $I_L206_8, 0), 0x2000300000000L ), _iotype( (wt%timewall%base_addr)(1 + $I_L206_8, 0), 0x2000300000000L ) ) )
+  209.                $I_L206_8 = 1 + $I_L206_8
+  209.                if ( $I_L206_8 >= $SC_wt_I0 ) exit
+  209.             enddo
+  209.          endif
+  211.          if ( ( 0 < wt%name%dim_1%LB .or. 0 > -1 + wt%name%dim_1%LB + wt%name%dim_1%EX ) /= .false. ) then
+  211.              _substr(t$162,1,12) = 'Watches.f90'
+  211.              _substr(t$163,1,5) = 'NAME'
+  211.             t$137 = wt%name%dim_1%LB
+  211.             t$138 = -1 + wt%name%dim_1%LB + wt%name%dim_1%EX
+  211.             call _bounds_error(  _substr(t$162,1,12), 211,  _substr(t$163,1,5), 1, t$137, t$138, 0, t$161 )
+  211.          endif
+  211.          if ( ( 0 < wt%timecpu%dim_1%LB .or. 0 > -1 + wt%timecpu%dim_1%LB + wt%timecpu%dim_1%EX ) /= .false. ) then
+  211.              _substr(t$165,1,12) = 'Watches.f90'
+  211.              _substr(t$166,1,8) = 'TIMECPU'
+  211.             t$139 = wt%timecpu%dim_1%LB
+  211.             t$125 = -1 + wt%timecpu%dim_1%LB + wt%timecpu%dim_1%EX
+  211.             call _bounds_error(  _substr(t$165,1,12), 211,  _substr(t$166,1,8), 1, t$139, t$125, 0, t$164 )
+  211.          endif
+  211.          if ( ( 0 < wt%timewall%dim_1%LB .or. 0 > -1 + wt%timewall%dim_1%LB + wt%timewall%dim_1%EX ) /= .false. ) then
+  211.              _substr(t$168,1,12) = 'Watches.f90'
+  211.              _substr(t$169,1,9) = 'TIMEWALL'
+  211.             t$126 = wt%timewall%dim_1%LB
+  211.             t$127 = -1 + wt%timewall%dim_1%LB + wt%timewall%dim_1%EX
+  211.             call _bounds_error(  _substr(t$168,1,12), 211,  _substr(t$169,1,9), 1, t$126, t$127, 0, t$167 )
+  211.          endif
+  210.          _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, t$30,  _substr(t$29,1,13), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr((wt%name%base_addr)(0, 0),1,16), 0x800600000000L ), _iotype( (wt%timecpu%base_addr)(0, 0), 0x2000300000000L ), _iotype( (wt%timewall%base_addr)(0, 0), 0x2000300000000L ) ) )
+  210.       endif
+  216.       (wt%timecpu%base_addr)(0, 0) = (wt%timecpu%base_addr)(0, 0) + -tc
+  217.       (wt%timecpu%base_addr)(wt%currwatch, 0) = (wt%timecpu%base_addr)(wt%currwatch, 0) + -tc
+  218.       (wt%timewall%base_addr)(0, 0) = (wt%timewall%base_addr)(0, 0) + -$tw_S1
+  219.       (wt%timewall%base_addr)(wt%currwatch, 0) = (wt%timewall%base_addr)(wt%currwatch, 0) + -$tw_S1
+  220.       return
+  220.       end
+  220.       
+  266.       
+  266.       subroutine changewatch( wt, tp )
+   36.       if ( t$40 == 0 ) then
+   36.          t$69(1) = 2
+   36.          t$70(1) = 0
+   36.          t$71(1) = 0
+   36.          t$66(1) = int( loc( t$39 ), 8 )
+   36.          t$67(1) = 0
+   36.          t$68(1) = int( loc( t$65 ), 8 )
+   36.          t$40 = __get_dynamic_type( 2, t$66(1), t$69(1), 1, t$67(1), t$68(1), t$70(1), t$71(1) )
+   36.       endif
+  240.       if ( wt%currwatch + -tp /= 0 ) then
+  242.          if ( tp <= 0 ) then
+  242.             goto 10
+  242.          else if ( tp > wt%nwatches ) then
+  242.    10       continue
+  243.             _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$32,  _substr(t$31,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( tp, 0x2000200000000L ) ) )
+  244.             $IOitem_O0 = wt%nwatches
+  244.             _fwrite( _clist( 0, 0, 3,  _substr(c1,1,10), Null_Arg, Null_Arg, t$34,  _substr(t$33,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O0, 0x2000200000000L ) ) )
+  245.             _f90_adjustl(  _substr(t$170,1,10),  _substr(c0,1,10) )
+  247.             _f90_adjustl(  _substr(t$171,1,10),  _substr(c1,1,10) )
+  245.             t$172 = 73 + ( _ltrim(  _substr(t$170,1,10) ) ) + ( _ltrim(  _substr(t$171,1,10) ) )
+  247.             t$174 = int( _alloc( max( 0, t$172 ) ), 8 )
+  247.              _substr(t$173,1,max( 0, t$172 )) = //( '**(ChangeWatch)** input watch (', //(  _substr(t$170,1,_ltrim(  _substr(t$170,1,10) )), //( ') should be > 0 and < number of watches (', //(  _substr(t$171,1,_ltrim(  _substr(t$171,1,10) )), ')' ) ) ) )
+  245.             call fatalerror(  _substr(t$173,1,max( 0, t$172 )) )
+  247.             _free( t$174 )
+  247.          endif
+  252.          call _cpu_time_4( tc )
+  253.          $Flat_S0 = _rtc
+  258.          (wt%timecpu%base_addr)(wt%currwatch, 0) = tc + (wt%timecpu%base_addr)(wt%currwatch, 0)
+  259.          (wt%timewall%base_addr)(wt%currwatch, 0) = (wt%timewall%base_addr)(wt%currwatch, 0) + ( wt%timeunit * real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) ) )
+  263.          wt%currwatch = tp
+  264.          (wt%timecpu%base_addr)(tp, 0) = (wt%timecpu%base_addr)(tp, 0) + -tc
+  265.          (wt%timewall%base_addr)(tp, 0) = (wt%timewall%base_addr)(tp, 0) + -( wt%timeunit * real( and( 0x7fffffff, _rsh( $Flat_S0, 14 ) ) ) )
+  265.       endif
+  266.       return
+  266.       end
+  266.       
+  290.       
+  290.       subroutine namewatch( wt, tp, namew )
+   36.       if ( t$40 == 0 ) then
+   36.          t$77(1) = 2
+   36.          t$78(1) = 0
+   36.          t$79(1) = 0
+   36.          t$74(1) = int( loc( t$39 ), 8 )
+   36.          t$75(1) = 0
+   36.          t$76(1) = int( loc( t$73 ), 8 )
+   36.          t$40 = __get_dynamic_type( 2, t$74(1), t$77(1), 1, t$75(1), t$76(1), t$78(1), t$79(1) )
+   36.       endif
+  272.       t$81 = _len( namew )
+  282.       if ( tp <= 0 ) then
+   36.          goto 10
+  282.       else if ( tp > wt%nwatches ) then
+  282.    10    continue
+  283.          _fwrite( _clist( 0, 0, 3,  _substr(c0,1,10), Null_Arg, Null_Arg, t$36,  _substr(t$35,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( tp, 0x2000200000000L ) ) )
+  284.          $IOitem_O0 = wt%nwatches
+  284.          _fwrite( _clist( 0, 0, 3,  _substr(c1,1,10), Null_Arg, Null_Arg, t$38,  _substr(t$37,1,5), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( $IOitem_O0, 0x2000200000000L ) ) )
+  285.          _f90_adjustl(  _substr(t$175,1,10),  _substr(c0,1,10) )
+  287.          _f90_adjustl(  _substr(t$176,1,10),  _substr(c1,1,10) )
+  285.          t$177 = 71 + ( _ltrim(  _substr(t$175,1,10) ) ) + ( _ltrim(  _substr(t$176,1,10) ) )
+  287.          t$179 = int( _alloc( max( 0, t$177 ) ), 8 )
+  287.           _substr(t$178,1,max( 0, t$177 )) = //( '**(NameWatch)** input watch (', //(  _substr(t$175,1,_ltrim(  _substr(t$175,1,10) )), //( ') should be > 0 and < number of watches (', //(  _substr(t$176,1,_ltrim(  _substr(t$176,1,10) )), ')' ) ) ) )
+  285.          call fatalerror(  _substr(t$178,1,max( 0, t$177 )) )
+  287.          _free( t$179 )
+  287.       endif
+  289.        _substr((wt%name%base_addr)(tp, 0),1,16) =  _substr(namew,1,_len( namew ))
+  290.       return
+  290.       end
+  290.       
+    1.       
+    1.       module watches
+    1.       end
+    1.       

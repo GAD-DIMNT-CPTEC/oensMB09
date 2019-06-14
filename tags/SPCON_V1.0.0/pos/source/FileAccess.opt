@@ -1,0 +1,761 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  FileAccess.f90
+       !        File                  :  FileAccess.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   32.       
+   32.       subroutine initfiles
+   49.       if ( int(  _substr(req,1,1) ) == 101 ) then
+   50.           _substr(dirctl,1,128) = '/forecast/ETA'
+   51.           _substr(namep,1,7) = 'GPOSETA'
+   51.       else
+   53.           _substr(dirctl,1,128) = //( '/forecast/',  _substr(prefx,1,3) )
+   54.           _substr(namep,1,7) = //( 'GPOS',  _substr(prefx,1,3) )
+   54.       endif
+   57.       if ( int(  _substr(req,1,1) ) == 112 ) then
+   58.           _substr(rfd,1,7) = 'rfd.pnt'
+   59.           _substr(extp,1,5) = 'P.unf'
+   60.           _substr(exdp,1,5) = 'P.ctl'
+   61.       else if ( int(  _substr(req,1,1) ) == 115 ) then
+   62.           _substr(rfd,1,7) = 'rfd.sfc'
+   63.           _substr(extp,1,5) = 'S.unf'
+   64.           _substr(exdp,1,5) = 'S.ctl'
+   64.       else if ( int(  _substr(req,1,1) ) == 99 ) then
+   66.           _substr(rfd,1,7) = 'rfd.clm'
+   67.           _substr(extp,1,5) = 'C.unf'
+   68.           _substr(exdp,1,5) = 'C.ctl'
+   68.       else if ( int(  _substr(req,1,1) ) == 101 ) then
+   70.           _substr(rfd,1,7) = 'rfd.clm'
+   71.           _substr(extp,1,5) = 'E.unf'
+   72.           _substr(exdp,1,5) = 'E.ctl'
+   72.       else
+   74.           _substr(rfd,1,7) = 'rfd    '
+   75.           _substr(extp,1,5) = 'D.unf'
+   76.           _substr(exdp,1,5) = 'D.ctl'
+   76.       endif
+   79.       id = max( 1, _ltrim(  _substr(dirctl,1,128) ) )
+   81.        _substr(moddir,1,33) = //( 'GFCT', //(  _substr(prefx,1,3), //(  _substr(labeli,1,10), //(  _substr(labelf,1,10), 'F.dir.' ) ) ) )
+   82.        _substr(modfls,1,128) = //(  _substr(datain,1,_ltrim(  _substr(datain,1,128) )), //( '/', //(  _substr(moddir,1,33), //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.files' ) ) ) ) )
+   83.       im = max( 1, _ltrim(  _substr(modfls,1,128) ) )
+   85.       t$56(1) = 0x100000000000000L
+   85.       t$56(2) = 0
+   85. !dir$ suppress  _substr(modfls,1,max( 0, im ))
+   85.       t$56(3) = int( loc(  _substr(modfls,1,max( 0, im )) ), 8 )
+   85.       t$56(4) = ( max( 0, im ) )
+   85.       t$56(5) = 0
+   85.       t$56(6) = 0
+   85. !dir$ suppress lex
+   85.       t$56(7) = int( loc( lex ), 8 )
+   85.       t$56(8) = 0
+   85.       t$56(9) = 0
+   85.       t$56(10) = 0
+   85.       t$56(11) = 0
+   85.       t$56(13) = 0
+   85.       t$56(15) = 0
+   85.       t$56(17) = 0
+   85.       t$56(19) = 0
+   85.       t$56(21) = 0
+   85.       t$56(23) = 0
+   85.       t$56(25) = 0
+   85.       t$56(26) = 0
+   85.       t$56(27) = 0
+   85.       t$56(29) = 0
+   85.       t$56(31) = 0
+   85.       t$56(33) = 0
+   85.       t$56(35) = 0
+   85.       t$56(37) = 0
+   85.       t$56(39) = 0
+   85.       t$56(41) = 0
+   85.       t$56(43) = 0
+   85.       t$56(44) = 0x2000500000000L
+   85.       t$56(45) = 0
+   85.       t$56(46) = 0
+   85.       t$56(47) = 0
+   85.       t$56(48) = 0
+   85.       t$56(49) = 0
+   85.       t$56(50) = 0
+   85.       t$56(52) = 0
+   85.       t$56(54) = 0
+   85.       t$56(56) = 0
+   85.       t$56(57) = 0
+   85.       t$56(58) = 0
+   85.       t$56(60) = 0
+   85.       t$56(61) = 0
+   85.       t$56(62) = 0
+   85.       t$56(63) = 0
+   85.       t$56(64) = 0
+   85.       t$56(66) = 0
+   85.       t$56(68) = 0
+   85.       t$56(69) = 0
+   85.       t$56(70) = 0
+   85.       t$55 = _inquire( t$56 )
+   86.       if ( lex == .false. ) then
+   87.          _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, t$2,  _substr(t$1,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( 'ERROR:: InitFiles(): Listing of forecast files does not exist!', 0x800600000000L ) ) )
+   88.          t$57 = 5 + max( 0, im )
+   88.          t$59 = int( _alloc( max( 0, 5 + max( 0, im ) ) ), 8 )
+   88.           _substr(t$58,1,max( 0, 5 + max( 0, im ) )) = //( 'FILE=',  _substr(modfls,1,max( 0, im )) )
+   88.          _fwrite( _clist( 0, 0, 3, Null_Arg, Null_Arg, Null_Arg, t$4,  _substr(t$3,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$58,1,max( 0, 5 + max( 0, im ) )), 0x800600000000L ) ) )
+   88.          _free( t$59 )
+   89.           _substr(t$60,1,4) = ' '
+   89.          call _stop(  _substr(t$60,1,1) )
+   89.       else
+   92.          ios = 0
+   91.          t$62 = nfmdf
+   92.           _substr(t$63,1,4) = 'OLD'
+   91.           _substr(t$64,1,10) = 'SEQUENTIAL'
+   91.           _substr(t$65,1,9) = 'FORMATTED'
+   92.           _substr(t$66,1,4) = 'READ'
+   91.          t$67(1) = 0x100000000000000L
+   91. !dir$ suppress t$62
+   91.          t$67(2) = int( loc( t$62 ), 8 )
+   91. !dir$ suppress ios
+   91.          t$67(3) = int( loc( ios ), 8 )
+   91.          t$67(4) = 0
+   91. !dir$ suppress  _substr(modfls,1,_ltrim(  _substr(modfls,1,max( 0, im )) ))
+   91.          t$67(5) = int( loc(  _substr(modfls,1,_ltrim(  _substr(modfls,1,max( 0, im )) )) ), 8 )
+   91.          t$67(6) = _ltrim(  _substr(modfls,1,max( 0, im )) )
+   91. !dir$ suppress  _substr(t$63,1,3)
+   91.          t$67(7) = int( loc(  _substr(t$63,1,3) ), 8 )
+   91.          t$67(8) = 3
+   91. !dir$ suppress  _substr(t$64,1,10)
+   91.          t$67(9) = int( loc(  _substr(t$64,1,10) ), 8 )
+   91.          t$67(10) = 10
+   91. !dir$ suppress  _substr(t$65,1,9)
+   91.          t$67(11) = int( loc(  _substr(t$65,1,9) ), 8 )
+   91.          t$67(12) = 9
+   91.          t$67(13) = 0
+   91.          t$67(14) = 0
+   91.          t$67(16) = 0
+   91. !dir$ suppress  _substr(t$66,1,4)
+   91.          t$67(18) = int( loc(  _substr(t$66,1,4) ), 8 )
+   91.          t$67(19) = 4
+   91.          t$67(20) = 0
+   91.          t$67(22) = 0
+   91.          t$67(24) = 0x2000200000000L
+   91.          t$67(25) = 0
+   91.          t$67(27) = 0
+   91.          t$67(29) = 0
+   91.          t$67(31) = 0
+   91.          t$67(33) = 0
+   91.          t$67(35) = 0
+   91.          t$61 = _open( t$67 )
+   94.          if ( ios /= 0 ) then
+   95.             $Unit_temp_O0 = nferr
+   95.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$6,  _substr(t$5,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ** (Error) ** Open file ', 0x800600000000L ), _iotype(  _substr(modfls,1,_ltrim(  _substr(modfls,1,128) )), 0x800600000000L ), _iotype( ' returned IOStat = ', 0x800600000000L ), _iotype( ios, 0x2000200000000L ) ) )
+   98.              _substr(t$68,1,14) = ' ** (Error) **'
+   98.             call _stop(  _substr(t$68,1,14) )
+   98.          else
+  111.             if ( 2 * nfbeg + -2 * nffrs > 0 ) then
+  112.                $I_L112_4 = 0
+  112.                do
+  113.                   $Unit_temp_O1 = nfmdf
+  113.                   _fread( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$8,  _substr(t$7,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(skip,1,1), 0x800600000000L ) ) )
+  114.                   $I_L112_4 = 1 + $I_L112_4
+  114.                   if ( $I_L112_4 >= ( 2 * nfbeg + -2 * nffrs ) ) exit
+  114.                enddo
+  114.             endif
+  117.             if ( nfbeg > 0 ) then
+  115.                goto 10
+  117.             else if ( nfend <= 0 ) then
+  118.                 _substr(posctl,1,33) = //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelf,1,10), //(  _substr(exdp,1,2), 'icn.' ) ) ) )
+  118.             else
+  118.    10          continue
+  120.                 _substr(posctl,1,33) = //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelf,1,10), //(  _substr(exdp,1,2), 'fct.' ) ) ) )
+  120.             endif
+  129.             ios = 0
+  127.             t$62 = nfppf
+  127.             t$73 = 5 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(posctl,1,33) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  127.             t$75 = int( _alloc( max( 0, t$73 ) ), 8 )
+  127.              _substr(t$74,1,max( 0, t$73 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(posctl,1,_ltrim(  _substr(posctl,1,33) )), //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.lst' ) ) ) ) )
+  129.              _substr(t$76,1,7) = 'REPLACE'
+  128.              _substr(t$77,1,10) = 'SEQUENTIAL'
+  128.              _substr(t$78,1,9) = 'FORMATTED'
+  128.              _substr(t$79,1,5) = 'WRITE'
+  127.             t$80(1) = 0x100000000000000L
+  127. !dir$ suppress t$62
+  127.             t$80(2) = int( loc( t$62 ), 8 )
+  127. !dir$ suppress ios
+  127.             t$80(3) = int( loc( ios ), 8 )
+  127.             t$80(4) = 0
+  127. !dir$ suppress  _substr(t$74,1,max( 0, t$73 ))
+  127.             t$80(5) = int( loc(  _substr(t$74,1,max( 0, t$73 )) ), 8 )
+  127.             t$80(6) = ( max( 0, t$73 ) )
+  127. !dir$ suppress  _substr(t$76,1,7)
+  127.             t$80(7) = int( loc(  _substr(t$76,1,7) ), 8 )
+  127.             t$80(8) = 7
+  127. !dir$ suppress  _substr(t$77,1,10)
+  127.             t$80(9) = int( loc(  _substr(t$77,1,10) ), 8 )
+  127.             t$80(10) = 10
+  127. !dir$ suppress  _substr(t$78,1,9)
+  127.             t$80(11) = int( loc(  _substr(t$78,1,9) ), 8 )
+  127.             t$80(12) = 9
+  127.             t$80(13) = 0
+  127.             t$80(14) = 0
+  127.             t$80(16) = 0
+  127. !dir$ suppress  _substr(t$79,1,5)
+  127.             t$80(18) = int( loc(  _substr(t$79,1,5) ), 8 )
+  127.             t$80(19) = 5
+  127.             t$80(20) = 0
+  127.             t$80(22) = 0
+  127.             t$80(24) = 0x2000200000000L
+  127.             t$80(25) = 0
+  127.             t$80(27) = 0
+  127.             t$80(29) = 0
+  127.             t$80(31) = 0
+  127.             t$80(33) = 0
+  127.             t$80(35) = 0
+  127.             t$72 = _open( t$80 )
+  127.             _free( t$75 )
+  131.             if ( ios /= 0 ) then
+  132.                t$81 = 38 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  133.                t$83 = int( _alloc( max( 0, t$81 ) ), 8 )
+  133.                 _substr(t$82,1,max( 0, t$81 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(posctl,1,33), //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.lst' ) ) ) ) )
+  132.                $Unit_temp_O2 = nferr
+  132.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, t$10,  _substr(t$9,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ** (Error) ** Open file ', 0x800600000000L ), _iotype(  _substr(t$82,1,max( 0, t$81 )), 0x800600000000L ), _iotype( ' returned IOStat = ', 0x800600000000L ), _iotype( ios, 0x2000200000000L ) ) )
+  133.                _free( t$83 )
+  135.                 _substr(t$84,1,14) = ' ** (Error) **'
+  135.                call _stop(  _substr(t$84,1,14) )
+  135.             else
+  141.                ios = 0
+  140.                t$62 = nfrfd
+  140.                t$86 = 8 + ( _ltrim(  _substr(datalib,1,128) ) )
+  140.                t$88 = int( _alloc( max( 0, t$86 ) ), 8 )
+  140.                 _substr(t$87,1,max( 0, t$86 )) = //(  _substr(datalib,1,_ltrim(  _substr(datalib,1,128) )), //( '/',  _substr(rfd,1,7) ) )
+  141.                 _substr(t$89,1,4) = 'OLD'
+  141.                 _substr(t$90,1,10) = 'SEQUENTIAL'
+  140.                 _substr(t$91,1,9) = 'FORMATTED'
+  141.                 _substr(t$92,1,4) = 'READ'
+  140.                t$93(1) = 0x100000000000000L
+  140. !dir$ suppress t$62
+  140.                t$93(2) = int( loc( t$62 ), 8 )
+  140. !dir$ suppress ios
+  140.                t$93(3) = int( loc( ios ), 8 )
+  140.                t$93(4) = 0
+  140. !dir$ suppress  _substr(t$87,1,max( 0, t$86 ))
+  140.                t$93(5) = int( loc(  _substr(t$87,1,max( 0, t$86 )) ), 8 )
+  140.                t$93(6) = ( max( 0, t$86 ) )
+  140. !dir$ suppress  _substr(t$89,1,3)
+  140.                t$93(7) = int( loc(  _substr(t$89,1,3) ), 8 )
+  140.                t$93(8) = 3
+  140. !dir$ suppress  _substr(t$90,1,10)
+  140.                t$93(9) = int( loc(  _substr(t$90,1,10) ), 8 )
+  140.                t$93(10) = 10
+  140. !dir$ suppress  _substr(t$91,1,9)
+  140.                t$93(11) = int( loc(  _substr(t$91,1,9) ), 8 )
+  140.                t$93(12) = 9
+  140.                t$93(13) = 0
+  140.                t$93(14) = 0
+  140.                t$93(16) = 0
+  140. !dir$ suppress  _substr(t$92,1,4)
+  140.                t$93(18) = int( loc(  _substr(t$92,1,4) ), 8 )
+  140.                t$93(19) = 4
+  140.                t$93(20) = 0
+  140.                t$93(22) = 0
+  140.                t$93(24) = 0x2000200000000L
+  140.                t$93(25) = 0
+  140.                t$93(27) = 0
+  140.                t$93(29) = 0
+  140.                t$93(31) = 0
+  140.                t$93(33) = 0
+  140.                t$93(35) = 0
+  140.                t$85 = _open( t$93 )
+  140.                _free( t$88 )
+  143.                if ( ios /= 0 ) then
+  144.                   t$94 = 8 + ( _ltrim(  _substr(datalib,1,128) ) )
+  145.                   t$96 = int( _alloc( max( 0, t$94 ) ), 8 )
+  145.                    _substr(t$95,1,max( 0, t$94 )) = //(  _substr(datalib,1,_ltrim(  _substr(datalib,1,128) )), //( '/',  _substr(rfd,1,7) ) )
+  144.                   $Unit_temp_O3 = nferr
+  144.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O3, Null_Arg, Null_Arg, t$12,  _substr(t$11,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ** (Error) ** Open file ', 0x800600000000L ), _iotype(  _substr(t$95,1,max( 0, t$94 )), 0x800600000000L ), _iotype( ' returned IOStat = ', 0x800600000000L ), _iotype( ios, 0x2000200000000L ) ) )
+  145.                   _free( t$96 )
+  147.                    _substr(t$97,1,14) = ' ** (Error) **'
+  147.                   call _stop(  _substr(t$97,1,14) )
+  147.                endif
+  147.             endif
+  147.          endif
+  147.       endif
+  152.       return
+  152.       end
+  152.       
+  155.       
+  155.       subroutine opnpos( labelp )
+  180.       $Unit_temp_O0 = nfmdf
+  180.       t$98 = _fread( _clist( 0, 1, 3, $Unit_temp_O0, ierr, Null_Arg, t$14,  _substr(t$13,1,3), Null_Arg, Null_Arg, Null_Arg, 0x402060200000000L, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(namfct1,1,256), 0x800600000000L ) ) )
+  181.       if ( ierr /= 0 ) then
+  182.          $Unit_temp_O1 = nferr
+  182.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(modfls,1,_ltrim(  _substr(modfls,1,128) )), 0x800600000000L ) ) )
+  183.          $Unit_temp_O2 = nferr
+  183.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O2, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( '<- THE FILE LIST WAS FINALIZED ->', 0x800600000000L ) ) )
+  184.           _substr(t$99,1,4) = ' '
+  184.          call _stop(  _substr(t$99,1,1) )
+  184.       else
+  193.          ios = 0
+  192.          t$101 = nfdir
+  193.           _substr(t$102,1,4) = 'OLD'
+  193.           _substr(t$103,1,10) = 'SEQUENTIAL'
+  192.           _substr(t$104,1,9) = 'FORMATTED'
+  193.           _substr(t$105,1,4) = 'READ'
+  192.          t$106(1) = 0x100000000000000L
+  192. !dir$ suppress t$101
+  192.          t$106(2) = int( loc( t$101 ), 8 )
+  192. !dir$ suppress ios
+  192.          t$106(3) = int( loc( ios ), 8 )
+  192.          t$106(4) = 0
+  192. !dir$ suppress  _substr(namfct1,1,_ltrim(  _substr(namfct1,1,256) ))
+  192.          t$106(5) = int( loc(  _substr(namfct1,1,_ltrim(  _substr(namfct1,1,256) )) ), 8 )
+  192.          t$106(6) = _ltrim(  _substr(namfct1,1,256) )
+  192. !dir$ suppress  _substr(t$102,1,3)
+  192.          t$106(7) = int( loc(  _substr(t$102,1,3) ), 8 )
+  192.          t$106(8) = 3
+  192. !dir$ suppress  _substr(t$103,1,10)
+  192.          t$106(9) = int( loc(  _substr(t$103,1,10) ), 8 )
+  192.          t$106(10) = 10
+  192. !dir$ suppress  _substr(t$104,1,9)
+  192.          t$106(11) = int( loc(  _substr(t$104,1,9) ), 8 )
+  192.          t$106(12) = 9
+  192.          t$106(13) = 0
+  192.          t$106(14) = 0
+  192.          t$106(16) = 0
+  192. !dir$ suppress  _substr(t$105,1,4)
+  192.          t$106(18) = int( loc(  _substr(t$105,1,4) ), 8 )
+  192.          t$106(19) = 4
+  192.          t$106(20) = 0
+  192.          t$106(22) = 0
+  192.          t$106(24) = 0x2000200000000L
+  192.          t$106(25) = 0
+  192.          t$106(27) = 0
+  192.          t$106(29) = 0
+  192.          t$106(31) = 0
+  192.          t$106(33) = 0
+  192.          t$106(35) = 0
+  192.          t$100 = _open( t$106 )
+  195.          if ( ios /= 0 ) then
+  196.             $Unit_temp_O3 = nferr
+  196.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O3, Null_Arg, Null_Arg, t$16,  _substr(t$15,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ** (Error) ** Open file ', 0x800600000000L ), _iotype(  _substr(namfct1,1,_ltrim(  _substr(namfct1,1,256) )), 0x800600000000L ), _iotype( ' returned IOStat = ', 0x800600000000L ), _iotype( ios, 0x2000200000000L ) ) )
+  199.              _substr(t$107,1,14) = ' ** (Error) **'
+  199.             call _stop(  _substr(t$107,1,14) )
+  199.          else
+  204.             $Unit_temp_O4 = nfmdf
+  204.             _fread( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, t$18,  _substr(t$17,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(namfct2,1,256), 0x800600000000L ) ) )
+  212.             ios = 0
+  211.             t$101 = nffct
+  212.              _substr(t$109,1,4) = 'OLD'
+  212.              _substr(t$110,1,10) = 'SEQUENTIAL'
+  211.              _substr(t$111,1,11) = 'UNFORMATTED'
+  212.              _substr(t$112,1,4) = 'READ'
+  211.             t$113(1) = 0x100000000000000L
+  211. !dir$ suppress t$101
+  211.             t$113(2) = int( loc( t$101 ), 8 )
+  211. !dir$ suppress ios
+  211.             t$113(3) = int( loc( ios ), 8 )
+  211.             t$113(4) = 0
+  211. !dir$ suppress  _substr(namfct2,1,_ltrim(  _substr(namfct2,1,256) ))
+  211.             t$113(5) = int( loc(  _substr(namfct2,1,_ltrim(  _substr(namfct2,1,256) )) ), 8 )
+  211.             t$113(6) = _ltrim(  _substr(namfct2,1,256) )
+  211. !dir$ suppress  _substr(t$109,1,3)
+  211.             t$113(7) = int( loc(  _substr(t$109,1,3) ), 8 )
+  211.             t$113(8) = 3
+  211. !dir$ suppress  _substr(t$110,1,10)
+  211.             t$113(9) = int( loc(  _substr(t$110,1,10) ), 8 )
+  211.             t$113(10) = 10
+  211. !dir$ suppress  _substr(t$111,1,11)
+  211.             t$113(11) = int( loc(  _substr(t$111,1,11) ), 8 )
+  211.             t$113(12) = 11
+  211.             t$113(13) = 0
+  211.             t$113(14) = 0
+  211.             t$113(16) = 0
+  211. !dir$ suppress  _substr(t$112,1,4)
+  211.             t$113(18) = int( loc(  _substr(t$112,1,4) ), 8 )
+  211.             t$113(19) = 4
+  211.             t$113(20) = 0
+  211.             t$113(22) = 0
+  211.             t$113(24) = 0x2000200000000L
+  211.             t$113(25) = 0
+  211.             t$113(27) = 0
+  211.             t$113(29) = 0
+  211.             t$113(31) = 0
+  211.             t$113(33) = 0
+  211.             t$113(35) = 0
+  211.             t$108 = _open( t$113 )
+  214.             if ( ios /= 0 ) then
+  215.                $Unit_temp_O5 = nferr
+  215.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O5, Null_Arg, Null_Arg, t$20,  _substr(t$19,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ** (Error) ** Open file ', 0x800600000000L ), _iotype(  _substr(namfct2,1,_ltrim(  _substr(namfct2,1,256) )), 0x800600000000L ), _iotype( ' returned IOStat = ', 0x800600000000L ), _iotype( ios, 0x2000200000000L ) ) )
+  218.                 _substr(t$114,1,14) = ' ** (Error) **'
+  218.                call _stop(  _substr(t$114,1,14) )
+  218.             else
+  223.                $in_S0 = max( 1, _ltrim(  _substr(namfct1,1,256) ) )
+  224.                if (  _substr(namfct1,-12 + $in_S0,2) /= 'ir' ) then
+  224.                    _substr(exdp,4,2) =  _substr(namfct1,-12 + $in_S0,2)
+  224.                endif
+  225.                 _substr(extp,3,3) =  _substr(namfct2,-13 + $in_S0,3)
+  226.                 _substr(labelp,1,10) =  _substr(namfct2,-25 + $in_S0,10)
+  228.                if ( binary /= .false. ) then
+  230.                   t$115 = 34 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  231.                   t$117 = int( _alloc( max( 0, t$115 ) ), 8 )
+  231.                    _substr(t$116,1,max( 0, t$115 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )),  _substr(lev,1,_ltrim(  _substr(lev,1,4) )) ) ) ) ) ) ) ) )
+  230.                   $Unit_temp_O6 = nfprt
+  230.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O6, Null_Arg, Null_Arg, t$22,  _substr(t$21,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$116,1,max( 0, t$115 )), 0x800600000000L ) ) )
+  231.                   _free( t$117 )
+  239.                   ios = 0
+  236.                   t$101 = nfpos
+  236.                   t$119 = 34 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  237.                   t$121 = int( _alloc( max( 0, t$119 ) ), 8 )
+  237.                    _substr(t$120,1,max( 0, t$119 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )),  _substr(lev,1,_ltrim(  _substr(lev,1,4) )) ) ) ) ) ) ) ) )
+  239.                    _substr(t$122,1,7) = 'REPLACE'
+  238.                    _substr(t$123,1,10) = 'SEQUENTIAL'
+  238.                    _substr(t$124,1,11) = 'UNFORMATTED'
+  238.                    _substr(t$125,1,5) = 'WRITE'
+  236.                   t$126(1) = 0x100000000000000L
+  236. !dir$ suppress t$101
+  236.                   t$126(2) = int( loc( t$101 ), 8 )
+  236. !dir$ suppress ios
+  236.                   t$126(3) = int( loc( ios ), 8 )
+  236.                   t$126(4) = 0
+  236. !dir$ suppress  _substr(t$120,1,max( 0, t$119 ))
+  236.                   t$126(5) = int( loc(  _substr(t$120,1,max( 0, t$119 )) ), 8 )
+  236.                   t$126(6) = ( max( 0, t$119 ) )
+  236. !dir$ suppress  _substr(t$122,1,7)
+  236.                   t$126(7) = int( loc(  _substr(t$122,1,7) ), 8 )
+  236.                   t$126(8) = 7
+  236. !dir$ suppress  _substr(t$123,1,10)
+  236.                   t$126(9) = int( loc(  _substr(t$123,1,10) ), 8 )
+  236.                   t$126(10) = 10
+  236. !dir$ suppress  _substr(t$124,1,11)
+  236.                   t$126(11) = int( loc(  _substr(t$124,1,11) ), 8 )
+  236.                   t$126(12) = 11
+  236.                   t$126(13) = 0
+  236.                   t$126(14) = 0
+  236.                   t$126(16) = 0
+  236. !dir$ suppress  _substr(t$125,1,5)
+  236.                   t$126(18) = int( loc(  _substr(t$125,1,5) ), 8 )
+  236.                   t$126(19) = 5
+  236.                   t$126(20) = 0
+  236.                   t$126(22) = 0
+  236.                   t$126(24) = 0x2000200000000L
+  236.                   t$126(25) = 0
+  236.                   t$126(27) = 0
+  236.                   t$126(29) = 0
+  236.                   t$126(31) = 0
+  236.                   t$126(33) = 0
+  236.                   t$126(35) = 0
+  236.                   t$118 = _open( t$126 )
+  237.                   _free( t$121 )
+  241.                   if ( ios /= 0 ) then
+  242.                      t$127 = 34 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  244.                      t$129 = int( _alloc( max( 0, t$127 ) ), 8 )
+  244.                       _substr(t$128,1,max( 0, t$127 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )),  _substr(lev,1,_ltrim(  _substr(lev,1,4) )) ) ) ) ) ) ) ) )
+  242.                      $Unit_temp_O7 = nferr
+  242.                      _fwrite( _clist( 0, 0, 3, $Unit_temp_O7, Null_Arg, Null_Arg, t$24,  _substr(t$23,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ** (Error) ** Open file ', 0x800600000000L ), _iotype(  _substr(t$128,1,max( 0, t$127 )), 0x800600000000L ), _iotype( ' returned IOStat = ', 0x800600000000L ), _iotype( ios, 0x2000200000000L ) ) )
+  244.                      _free( t$129 )
+  246.                       _substr(t$130,1,14) = ' ** (Error) **'
+  246.                      call _stop(  _substr(t$130,1,14) )
+  246.                   else
+  249.                      t$131 = 38 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  250.                      t$133 = int( _alloc( max( 0, t$131 ) ), 8 )
+  250.                       _substr(t$132,1,max( 0, t$131 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.ctl' ) ) ) ) ) ) ) ) )
+  249.                      $Unit_temp_O8 = nfprt
+  249.                      _fwrite( _clist( 0, 0, 3, $Unit_temp_O8, Null_Arg, Null_Arg, t$26,  _substr(t$25,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$132,1,max( 0, t$131 )), 0x800600000000L ) ) )
+  250.                      _free( t$133 )
+  258.                      ios = 0
+  255.                      t$101 = nfctl
+  255.                      t$135 = 38 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  256.                      t$137 = int( _alloc( max( 0, t$135 ) ), 8 )
+  256.                       _substr(t$136,1,max( 0, t$135 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.ctl' ) ) ) ) ) ) ) ) )
+  258.                       _substr(t$138,1,7) = 'REPLACE'
+  257.                       _substr(t$139,1,10) = 'SEQUENTIAL'
+  257.                       _substr(t$140,1,9) = 'FORMATTED'
+  257.                       _substr(t$141,1,5) = 'WRITE'
+  255.                      t$142(1) = 0x100000000000000L
+  255. !dir$ suppress t$101
+  255.                      t$142(2) = int( loc( t$101 ), 8 )
+  255. !dir$ suppress ios
+  255.                      t$142(3) = int( loc( ios ), 8 )
+  255.                      t$142(4) = 0
+  255. !dir$ suppress  _substr(t$136,1,max( 0, t$135 ))
+  255.                      t$142(5) = int( loc(  _substr(t$136,1,max( 0, t$135 )) ), 8 )
+  255.                      t$142(6) = ( max( 0, t$135 ) )
+  255. !dir$ suppress  _substr(t$138,1,7)
+  255.                      t$142(7) = int( loc(  _substr(t$138,1,7) ), 8 )
+  255.                      t$142(8) = 7
+  255. !dir$ suppress  _substr(t$139,1,10)
+  255.                      t$142(9) = int( loc(  _substr(t$139,1,10) ), 8 )
+  255.                      t$142(10) = 10
+  255. !dir$ suppress  _substr(t$140,1,9)
+  255.                      t$142(11) = int( loc(  _substr(t$140,1,9) ), 8 )
+  255.                      t$142(12) = 9
+  255.                      t$142(13) = 0
+  255.                      t$142(14) = 0
+  255.                      t$142(16) = 0
+  255. !dir$ suppress  _substr(t$141,1,5)
+  255.                      t$142(18) = int( loc(  _substr(t$141,1,5) ), 8 )
+  255.                      t$142(19) = 5
+  255.                      t$142(20) = 0
+  255.                      t$142(22) = 0
+  255.                      t$142(24) = 0x2000200000000L
+  255.                      t$142(25) = 0
+  255.                      t$142(27) = 0
+  255.                      t$142(29) = 0
+  255.                      t$142(31) = 0
+  255.                      t$142(33) = 0
+  255.                      t$142(35) = 0
+  255.                      t$134 = _open( t$142 )
+  256.                      _free( t$137 )
+  259.                      if ( ios /= 0 ) then
+  260.                         t$143 = 38 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  262.                         t$145 = int( _alloc( max( 0, t$143 ) ), 8 )
+  262.                          _substr(t$144,1,max( 0, t$143 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.ctl' ) ) ) ) ) ) ) ) )
+  260.                         $Unit_temp_O9 = nferr
+  260.                         _fwrite( _clist( 0, 0, 3, $Unit_temp_O9, Null_Arg, Null_Arg, t$28,  _substr(t$27,1,7), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ** (Error) ** Open file ', 0x800600000000L ), _iotype(  _substr(t$144,1,max( 0, t$143 )), 0x800600000000L ), _iotype( ' returned IOStat = ', 0x800600000000L ), _iotype( ios, 0x2000200000000L ) ) )
+  262.                         _free( t$145 )
+  264.                          _substr(t$146,1,14) = ' ** (Error) **'
+  264.                         call _stop(  _substr(t$146,1,14) )
+  264.                      else
+  270.                         t$147 = 38 + ( _ltrim(  _substr(dirctl,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  271.                         t$149 = int( _alloc( max( 0, t$147 ) ), 8 )
+  271.                          _substr(t$148,1,max( 0, t$147 )) = //(  _substr(dirctl,1,_ltrim(  _substr(dirctl,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.ctl' ) ) ) ) ) ) ) ) )
+  270.                         $Unit_temp_O10 = nfppf
+  270.                         _fwrite( _clist( 0, 0, 3, $Unit_temp_O10, Null_Arg, Null_Arg, t$30,  _substr(t$29,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$148,1,max( 0, t$147 )), 0x800600000000L ) ) )
+  271.                         _free( t$149 )
+  272.                         t$150 = 34 + ( _ltrim(  _substr(dirctl,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  273.                         t$152 = int( _alloc( max( 0, t$150 ) ), 8 )
+  273.                          _substr(t$151,1,max( 0, t$150 )) = //(  _substr(dirctl,1,_ltrim(  _substr(dirctl,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )),  _substr(lev,1,_ltrim(  _substr(lev,1,4) )) ) ) ) ) ) ) ) )
+  272.                         $Unit_temp_O11 = nfppf
+  272.                         _fwrite( _clist( 0, 0, 3, $Unit_temp_O11, Null_Arg, Null_Arg, t$32,  _substr(t$31,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$151,1,max( 0, t$150 )), 0x800600000000L ) ) )
+  273.                         _free( t$152 )
+  273.                      endif
+  273.                   endif
+  273.                else
+  279.                   t$153 = 38 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  280.                   t$155 = int( _alloc( max( 0, t$153 ) ), 8 )
+  280.                    _substr(t$154,1,max( 0, t$153 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.ctl' ) ) ) ) ) ) ) ) )
+  279.                   $Unit_temp_O12 = nferr
+  279.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O12, Null_Arg, Null_Arg, t$34,  _substr(t$33,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$154,1,max( 0, t$153 )), 0x800600000000L ) ) )
+  280.                   _free( t$155 )
+  281.                   t$101 = nfctl
+  281.                   t$157 = 38 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  282.                   t$159 = int( _alloc( max( 0, t$157 ) ), 8 )
+  282.                    _substr(t$158,1,max( 0, t$157 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.ctl' ) ) ) ) ) ) ) ) )
+  282.                    _substr(t$160,1,7) = 'REPLACE'
+  281.                   t$161(1) = 0x100000000000000L
+  281. !dir$ suppress t$101
+  281.                   t$161(2) = int( loc( t$101 ), 8 )
+  281.                   t$161(3) = 0
+  281.                   t$161(4) = 0
+  281. !dir$ suppress  _substr(t$158,1,max( 0, t$157 ))
+  281.                   t$161(5) = int( loc(  _substr(t$158,1,max( 0, t$157 )) ), 8 )
+  281.                   t$161(6) = ( max( 0, t$157 ) )
+  281. !dir$ suppress  _substr(t$160,1,7)
+  281.                   t$161(7) = int( loc(  _substr(t$160,1,7) ), 8 )
+  281.                   t$161(8) = 7
+  281.                   t$161(9) = 0
+  281.                   t$161(11) = 0
+  281.                   t$161(13) = 0
+  281.                   t$161(14) = 0
+  281.                   t$161(16) = 0
+  281.                   t$161(18) = 0
+  281.                   t$161(20) = 0
+  281.                   t$161(22) = 0
+  281.                   t$161(24) = 0
+  281.                   t$161(25) = 0
+  281.                   t$161(27) = 0
+  281.                   t$161(29) = 0
+  281.                   t$161(31) = 0
+  281.                   t$161(33) = 0
+  281.                   t$161(35) = 0
+  281.                   t$156 = _open( t$161 )
+  282.                   _free( t$159 )
+  287.                   t$162 = 38 + ( _ltrim(  _substr(dirctl,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  288.                   t$164 = int( _alloc( max( 0, t$162 ) ), 8 )
+  288.                    _substr(t$163,1,max( 0, t$162 )) = //(  _substr(dirctl,1,_ltrim(  _substr(dirctl,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.ctl' ) ) ) ) ) ) ) ) )
+  287.                   $Unit_temp_O13 = nfppf
+  287.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O13, Null_Arg, Null_Arg, t$36,  _substr(t$35,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$163,1,max( 0, t$162 )), 0x800600000000L ) ) )
+  288.                   _free( t$164 )
+  289.                   t$165 = 38 + ( _ltrim(  _substr(dirctl,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  290.                   t$167 = int( _alloc( max( 0, t$165 ) ), 8 )
+  290.                    _substr(t$166,1,max( 0, t$165 )) = //(  _substr(dirctl,1,_ltrim(  _substr(dirctl,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.grb' ) ) ) ) ) ) ) ) )
+  289.                   $Unit_temp_O14 = nfppf
+  289.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O14, Null_Arg, Null_Arg, t$38,  _substr(t$37,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$166,1,max( 0, t$165 )), 0x800600000000L ) ) )
+  290.                   _free( t$167 )
+  295.                   t$168 = 38 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  296.                   t$170 = int( _alloc( max( 0, t$168 ) ), 8 )
+  296.                    _substr(t$169,1,max( 0, t$168 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.grb' ) ) ) ) ) ) ) ) )
+  295.                   $Unit_temp_O15 = nferr
+  295.                   _fwrite( _clist( 0, 0, 3, $Unit_temp_O15, Null_Arg, Null_Arg, t$40,  _substr(t$39,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype(  _substr(t$169,1,max( 0, t$168 )), 0x800600000000L ) ) )
+  296.                   _free( t$170 )
+  298.                   t$171 = 38 + ( _ltrim(  _substr(dataout,1,128) ) ) + ( _ltrim(  _substr(trunc,1,6) ) ) + ( _ltrim(  _substr(lev,1,4) ) )
+  299.                   t$173 = int( _alloc( max( 0, t$171 ) ), 8 )
+  299.                    _substr(t$172,1,max( 0, t$171 )) = //(  _substr(dataout,1,_ltrim(  _substr(dataout,1,128) )), //( '/', //(  _substr(namep,1,7), //(  _substr(labeli,1,10), //(  _substr(labelp,1,10), //(  _substr(extp,1,5), //( '.', //(  _substr(trunc,1,_ltrim(  _substr(trunc,1,6) )), //(  _substr(lev,1,_ltrim(  _substr(lev,1,4) )), '.grb' ) ) ) ) ) ) ) ) )
+  298.                   call baopen( 51,  _substr(t$172,1,max( 0, t$171 )), ierr )
+  299.                   _free( t$173 )
+  301.                   if ( ierr /= 0 ) then
+  302.                       _substr(t$174,1,16) = ' Error in BAOPEN'
+  302.                      call _stop(  _substr(t$174,1,16) )
+  302.                   endif
+  302.                endif
+  302.             endif
+  302.          endif
+  302.       endif
+  312.       return
+  312.       end
+  312.       
+  315.       
+  315.       subroutine readfield( mdim, ldim, bufa )
+  315.       t$41 = mdim
+  315.       t$42 = ldim
+  324.       t$44 = _zla( 0, mdim )
+  315.       t$45 = _zla( 0, mdim )
+  324.       t$46 = _zla( 0, ldim )
+  315.       t$47 = _zla( 0, mdim ) * _zla( 0, ldim )
+  328.       t$50 = 4 * _zla( 0, mdim )
+  315.       t$48 = int( _alloc( 4 * _zla( 0, mdim ) ), 8 )
+  328.       t$49 = t$48
+  330.       if ( ldim > 0 ) then
+  330.          $I_L330_4 = 0
+  330.          do
+  331.             $Unit_temp_O0 = nffct
+  331.             _uread( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (&)bufb(+:( 1, mdim, 1 )), 0x402060300000000L ) ) )
+  332.             $F_A33 = mdim
+  332.             if ( mdim > 0 ) then
+  332.                $I_A1 = 0
+  332. !dir$ ivdep
+  332.                do
+  332.                   bufa(1 + $I_A1, 1 + $I_L330_4) = real( bufb(1 + $I_A1), 8 )
+  332.                   $I_A1 = 1 + $I_A1
+  332.                   if ( $I_A1 >= $F_A33 ) exit
+  332.                enddo
+  332.             endif
+  333.             $I_L330_4 = 1 + $I_L330_4
+  332.             if ( $I_L330_4 >= ldim ) exit
+  332.          enddo
+  332.       endif
+  334.       if ( mnwv2 + -mdim == 0 ) then
+  334.          call transs( ldim, -1, bufa(1, 1) )
+  334.       endif
+  315.       _free( t$48 )
+  336.       return
+  336.       end
+  336.       
+  339.       
+  339.       subroutine readheader( ifday, tod, idate, idatec )
+  353.       $Unit_temp_O0 = nffct
+  353.       _uread( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ifday4, 0x402060200000000L ), _iotype( tod4, 0x402060300000000L ), _iotype( (&)idate4(+:( 1, 4, 1 )), 0x402060200000000L ), _iotype( (&)idatec4(+:( 1, 4, 1 )), 0x402060200000000L ) ) )
+  355.       ifday = ifday4
+  356.       tod = real( tod4, 8 )
+  357.       $I_L357_0 = 0
+  357. !dir$ ivdep
+  357.       do
+  357.          idate(1 + $I_L357_0) = idate4(1 + $I_L357_0)
+  358.          idatec(1 + $I_L357_0) = idatec4(1 + $I_L357_0)
+  357.          $I_L357_0 = 1 + $I_L357_0
+  357.          if ( $I_L357_0 >= 4 ) exit
+  357.       enddo
+  360.       return
+  360.       end
+  360.       
+  362.       
+  362.       subroutine writefield( ndim, bfr )
+  362.       t$43 = ndim
+  367.       t$51 = _zla( 0, ndim )
+  369.       t$54 = 4 * _zla( 0, ndim )
+  362.       t$52 = int( _alloc( 4 * _zla( 0, ndim ) ), 8 )
+  369.       t$53 = t$52
+  371.       $F_A33 = ndim
+  371.       if ( ndim > 0 ) then
+  371.          $I_A1 = 0
+  371. !dir$ ivdep
+  371.          do
+  371.             bfr4(1 + $I_A1) = real( bfr(1 + $I_A1) )
+  371.             $I_A1 = 1 + $I_A1
+  371.             if ( $I_A1 >= $F_A33 ) exit
+  371.          enddo
+  371.       endif
+  372.       $Unit_temp_O0 = nfpos
+  372.       _uwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( (&)bfr4(+:( 1, ndim, 1 )), 0x402060300000000L ) ) )
+  362.       _free( t$52 )
+  374.       return
+  374.       end
+  374.       
+  377.       
+  377.       subroutine skipf( lev )
+  385.       if ( lev > 0 ) then
+  385.          $I_L385_4 = 0
+  385.          do
+  386.             $Unit_temp_O0 = nffct
+  386.             _uread( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), Null_Arg )
+  387.             $I_L385_4 = 1 + $I_L385_4
+  387.             if ( $I_L385_4 >= lev ) exit
+  387.          enddo
+  387.       endif
+  389.       return
+  389.       end
+  389.       
+  392.       
+  392.       subroutine closefiles
+  396.       t$182 = nffct
+  396.       t$183(1) = 0x100000000000000L
+  396. !dir$ suppress t$182
+  396.       t$183(2) = int( loc( t$182 ), 8 )
+  396.       t$183(3) = 0
+  396.       t$183(4) = 0
+  396.       t$183(5) = 0
+  396.       t$183(7) = 0
+  396.       t$183(8) = 0
+  396.       t$181 = _close( t$183 )
+  397.       t$182 = nfpos
+  397.       t$185(1) = 0x100000000000000L
+  397. !dir$ suppress t$182
+  397.       t$185(2) = int( loc( t$182 ), 8 )
+  397.       t$185(3) = 0
+  397.       t$185(4) = 0
+  397.       t$185(5) = 0
+  397.       t$185(7) = 0
+  397.       t$185(8) = 0
+  397.       t$184 = _close( t$185 )
+  398.       t$182 = nfctl
+  398.       t$187(1) = 0x100000000000000L
+  398. !dir$ suppress t$182
+  398.       t$187(2) = int( loc( t$182 ), 8 )
+  398.       t$187(3) = 0
+  398.       t$187(4) = 0
+  398.       t$187(5) = 0
+  398.       t$187(7) = 0
+  398.       t$187(8) = 0
+  398.       t$186 = _close( t$187 )
+  399.       t$182 = nfdir
+  399.       t$189(1) = 0x100000000000000L
+  399. !dir$ suppress t$182
+  399.       t$189(2) = int( loc( t$182 ), 8 )
+  399.       t$189(3) = 0
+  399.       t$189(4) = 0
+  399.       t$189(5) = 0
+  399.       t$189(7) = 0
+  399.       t$189(8) = 0
+  399.       t$188 = _close( t$189 )
+  400.       t$182 = 51
+  400.       t$191(1) = 0x100000000000000L
+  400. !dir$ suppress t$182
+  400.       t$191(2) = int( loc( t$182 ), 8 )
+  400.       t$191(3) = 0
+  400.       t$191(4) = 0
+  400.       t$191(5) = 0
+  400.       t$191(7) = 0
+  400.       t$191(8) = 0
+  400.       t$190 = _close( t$191 )
+  401.       return
+  401.       end
+  401.       
+    6.       
+    6.       module fileaccess
+    6.       end
+    6.       

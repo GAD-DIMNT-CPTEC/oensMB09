@@ -1,0 +1,1571 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  GaussPressure.f90
+       !        File                  :  GaussPressure.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   22.       
+   22.       subroutine getsh( sg, rg, pmand, tg, psmb )
+   22.       t$1 = imax
+   22.       t$2 = jmax
+   22.       t$3 = lmax
+   28.       t$20 = _zla( 0, imax )
+   22.       t$21 = _zla( 0, imax )
+   28.       t$22 = _zla( 0, jmax )
+   22.       t$23 = _zla( 0, imax ) * _zla( 0, jmax )
+   28.       t$24 = _zla( 0, lmax )
+   22.       t$25 = _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax )
+   22.       t$26 = _zla( 0, imax ) * _zla( 0, jmax )
+   39.       t$29 = 4 * _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax )
+   40.       t$31 = 8 * _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax )
+   38.       t$32 = 8 * ( 7 + 8 * _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax ) ) / 8
+   38.       t$34 = t$32 + 8 * _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax )
+   22.       t$27 = int( _alloc( t$32 + 8 * _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax ) ), 8 )
+   39.       t$28 = t$27
+   40.       t$30 = t$27 + 4 * _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax )
+   38.       t$33 = t$32 + t$27
+   44.       if ( lmax > 0 ) then
+   45.          if ( jmax > 0 ) then
+   46.             if ( imax > 0 ) then
+   45.                $I_L45_210 = 0
+   45.                do
+   44.                   $I_L44_204 = 0
+   44.                   do
+   46.                      $I_L46_197 = 0
+   46.                      do
+   45.                         $I_L45_180 = 0
+   45. !dir$ shortloop16
+   45. !dir$ blocking_size( 2, 2 )
+   45.                         do
+   44.                            $I_L44_171 = 0
+   44.                            if ( min( lmax, 4 + 4 * $I_L44_204 ) + -4 * $I_L44_204 >= 4 ) then
+   44.                               $I_L44_223 = 0
+   44. !dir$ shortloop16
+   44. !dir$ blocking_size( 4, 4 )
+   44.                               do
+   46.                                  $SCA_pmand#1_U0 = pmand(1 + 4 * $I_L44_204 + 4 * $I_L44_223)
+   46.                                  $SCA_pmand#2_U1 = pmand(2 + 4 * $I_L44_204 + 4 * $I_L44_223)
+   46.                                  $SCA_pmand#3_U2 = pmand(3 + 4 * $I_L44_204 + 4 * $I_L44_223)
+   46.                                  $SCA_pmand#4_U3 = pmand(4 + 4 * $I_L44_204 + 4 * $I_L44_223)
+   46.                                  $I_L46_146 = 0
+   46. !dir$ ivdep
+   46. !dir$ blocking_size( 256, 256 )
+   46.                                  do
+   47.                                     above(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210, 1 + 4 * $I_L44_204 + 4 * $I_L44_223) = $SCA_pmand#1_U0 <= psmb(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210)
+   47.                                     above(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210, 2 + 4 * $I_L44_204 + 4 * $I_L44_223) = $SCA_pmand#2_U1 <= psmb(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210)
+   47.                                     above(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210, 3 + 4 * $I_L44_204 + 4 * $I_L44_223) = $SCA_pmand#3_U2 <= psmb(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210)
+   47.                                     above(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210, 4 + 4 * $I_L44_204 + 4 * $I_L44_223) = $SCA_pmand#4_U3 <= psmb(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210)
+   46.                                     $I_L46_146 = 1 + $I_L46_146
+   46.                                     if ( $I_L46_146 >= min( imax, 256 + 256 * $I_L46_197 ) + -256 * $I_L46_197 ) exit
+   46.                                  enddo
+   44.                                  $I_L44_223 = 1 + $I_L44_223
+   44.                                  if ( $I_L44_223 >= _rsh( min( lmax, 4 + 4 * $I_L44_204 ) + -4 * $I_L44_204, 2 ) ) exit
+   44.                               enddo
+   44.                               $I_L44_171 = and( 0xfffffffffffffffcUL, min( lmax, 4 + 4 * $I_L44_204 ) + -4 * $I_L44_204 )
+   44.                            endif
+   44.                            if ( $I_L44_171 < min( lmax, 4 + 4 * $I_L44_204 ) + -4 * $I_L44_204 ) then
+   44.                               $I_L44_220 = 0
+   44. !dir$ shortloop16
+   44. !dir$ blocking_size( 4, 4 )
+   44.                               do
+   46.                                  $SCA_pmand_I0 = pmand(1 + $I_L44_171 + $I_L44_220 + 4 * $I_L44_204)
+   46.                                  $I_L46_146 = 0
+   46. !dir$ ivdep
+   46. !dir$ blocking_size( 256, 256 )
+   46.                                  do
+   47.                                     above(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210, 1 + $I_L44_171 + $I_L44_220 + 4 * $I_L44_204) = $SCA_pmand_I0 <= psmb(1 + $I_L46_146 + 256 * $I_L46_197, 1 + $I_L45_180 + 2 * $I_L45_210)
+   46.                                     $I_L46_146 = 1 + $I_L46_146
+   46.                                     if ( $I_L46_146 >= min( imax, 256 + 256 * $I_L46_197 ) + -256 * $I_L46_197 ) exit
+   46.                                  enddo
+   44.                                  $I_L44_220 = 1 + $I_L44_220
+   44.                                  if ( $I_L44_220 >= min( lmax, 4 + 4 * $I_L44_204 ) + -$I_L44_171 + -4 * $I_L44_204 ) exit
+   44.                               enddo
+   44.                            endif
+   45.                            $I_L45_180 = 1 + $I_L45_180
+   48.                            if ( $I_L45_180 >= min( jmax, 2 + 2 * $I_L45_210 ) + -2 * $I_L45_210 ) exit
+   48.                         enddo
+   46.                         $I_L46_197 = 1 + $I_L46_197
+   46.                         if ( $I_L46_197 >= 1 + max( 0, -1 + _rsh( 255 + imax, 8 ) ) ) exit
+   46.                      enddo
+   44.                      $I_L44_204 = 1 + $I_L44_204
+   49.                      if ( $I_L44_204 >= 1 + max( 0, -1 + _rsh( 3 + lmax, 2 ) ) ) exit
+   49.                   enddo
+   45.                   $I_L45_210 = 1 + $I_L45_210
+   45.                   if ( $I_L45_210 >= 1 + max( 0, -1 + _rsh( 1 + jmax, 1 ) ) ) exit
+   45.                enddo
+   55.                $I_L55_212 = 0
+   55.                do
+   56.                   $I_L56_206 = 0
+   56.                   do
+   57.                      $I_L57_199 = 0
+   57.                      do
+   55.                         $I_L55_183 = 0
+   55. !dir$ shortloop16
+   55. !dir$ blocking_size( 2, 2 )
+   55.                         do
+   56.                            $I_L56_174 = 0
+   56. !dir$ shortloop16
+   56. !dir$ blocking_size( 4, 4 )
+   56.                            do
+   57.                               $I_L57_149 = 0
+   57. !dir$ ivdep
+   57. !dir$ loop_info (automatic) cache_nt( tg, sg, rg )
+   57. !dir$ blocking_size( 256, 256 )
+   57.                               do
+   58.                                  if ( above(1 + $I_L57_149 + 256 * $I_L57_199, 1 + $I_L56_174 + 4 * $I_L56_206, 1 + $I_L55_183 + 2 * $I_L55_212) /= .false. ) then
+   60.                                     $es_S6 = eo * _expn( ( a * 1.0/( tg(1 + $I_L57_149 + 256 * $I_L57_199, 1 + $I_L56_174 + 4 * $I_L56_206, 1 + $I_L55_183 + 2 * $I_L55_212) + -b ) * ( tg(1 + $I_L57_149 + 256 * $I_L57_199, 1 + $I_L56_174 + 4 * $I_L56_206, 1 + $I_L55_183 + 2 * $I_L55_212) + -to ) ) )
+   59.                                     $rg_WR0_R0 = min( 1.0, max( 0.0, rg(1 + $I_L57_149 + 256 * $I_L57_199, 1 + $I_L56_174 + 4 * $I_L56_206, 1 + $I_L55_183 + 2 * $I_L55_212) ) )
+   59.                                     rg(1 + $I_L57_149 + 256 * $I_L57_199, 1 + $I_L56_174 + 4 * $I_L56_206, 1 + $I_L55_183 + 2 * $I_L55_212) = $rg_WR0_R0
+   62.                                     sg(1 + $I_L57_149 + 256 * $I_L57_199, 1 + $I_L56_174 + 4 * $I_L56_206, 1 + $I_L55_183 + 2 * $I_L55_212) = ( eps * ( $es_S6 * $rg_WR0_R0 ) * 1.0/( pmand(1 + $I_L55_183 + 2 * $I_L55_212) + -( eps1 * ( $es_S6 * $rg_WR0_R0 ) ) ) )
+   62.                                  endif
+   57.                                  $I_L57_149 = 1 + $I_L57_149
+   63.                                  if ( $I_L57_149 >= min( imax, 256 + 256 * $I_L57_199 ) + -256 * $I_L57_199 ) exit
+   63.                               enddo
+   56.                               $I_L56_174 = 1 + $I_L56_174
+   56.                               if ( $I_L56_174 >= min( jmax, 4 + 4 * $I_L56_206 ) + -4 * $I_L56_206 ) exit
+   56.                            enddo
+   55.                            $I_L55_183 = 1 + $I_L55_183
+   64.                            if ( $I_L55_183 >= min( lmax, 2 + 2 * $I_L55_212 ) + -2 * $I_L55_212 ) exit
+   64.                         enddo
+   57.                         $I_L57_199 = 1 + $I_L57_199
+   57.                         if ( $I_L57_199 >= 1 + max( 0, -1 + _rsh( 255 + imax, 8 ) ) ) exit
+   57.                      enddo
+   56.                      $I_L56_206 = 1 + $I_L56_206
+   65.                      if ( $I_L56_206 >= 1 + max( 0, -1 + _rsh( 3 + jmax, 2 ) ) ) exit
+   65.                   enddo
+   55.                   $I_L55_212 = 1 + $I_L55_212
+   55.                   if ( $I_L55_212 >= 1 + max( 0, -1 + _rsh( 1 + lmax, 1 ) ) ) exit
+   55.                enddo
+   55.             endif
+   55.          endif
+   55.       endif
+   51.       $F_A33 = lmax
+   51.       $F_A34 = jmax
+   51.       $F_A35 = imax
+   51.       if ( and( and( -$F_A34, -$F_A33 ), -$F_A35 ) < 0 ) then
+   51.          $I_L51_193 = 0
+   51.          do
+   51.             $I_L51_167 = 0
+   51.             do
+   51.                $I_L51_159 = 0
+   51. !dir$ ivdep
+   51. !dir$ loop_info (automatic) cache_nt( notdone )
+   51.                do
+   51.                   notdone(1 + $I_L51_159, 1 + $I_L51_167, 1 + $I_L51_193) = above(1 + $I_L51_159, 1 + $I_L51_167, 1 + $I_L51_193) == .false.
+   51.                   $I_L51_159 = 1 + $I_L51_159
+   51.                   if ( $I_L51_159 >= $F_A35 ) exit
+   51.                enddo
+   51.                $I_L51_167 = 1 + $I_L51_167
+   51.                if ( $I_L51_167 >= $F_A34 ) exit
+   51.             enddo
+   51.             $I_L51_193 = 1 + $I_L51_193
+   51.             if ( $I_L51_193 >= $F_A33 ) exit
+   51.          enddo
+   51.       endif
+   71.       $F_A36 = lmax
+   71.       $F_A37 = jmax
+   71.       $F_A38 = imax
+   71.       if ( and( and( -$F_A37, -$F_A36 ), -$F_A38 ) < 0 ) then
+   71.          $I_L71_195 = 0
+   71.          do
+   71.             $I_L71_169 = 0
+   71.             do
+   71.                $I_L71_161 = 0
+   71. !dir$ ivdep
+   71. !dir$ loop_info (automatic) cache_nt( q0 )
+   71.                do
+   71.                   q0(1 + $I_L71_161, 1 + $I_L71_169, 1 + $I_L71_195) = 1.0000000000000001e-1
+   71.                   $I_L71_161 = 1 + $I_L71_161
+   71.                   if ( $I_L71_161 >= $F_A38 ) exit
+   71.                enddo
+   71.                $I_L71_169 = 1 + $I_L71_169
+   71.                if ( $I_L71_169 >= $F_A37 ) exit
+   71.             enddo
+   71.             $I_L71_195 = 1 + $I_L71_195
+   71.             if ( $I_L71_195 >= $F_A36 ) exit
+   71.          enddo
+   71.       endif
+   73.       if ( lmax > 0 ) then
+   74.          if ( jmax > 0 ) then
+   75.             if ( imax > 0 ) then
+   73.                $I_L73_218 = 0
+   73.                do
+   74.                   $I_L74_216 = 0
+   74.                   do
+   72.                      $I_L72_214 = 0
+   72.                      do
+   75.                         $I_L75_208 = 0
+   75.                         do
+   73.                            $I_L73_201 = 0
+   73. !dir$ shortloop16
+   73. !dir$ blocking_size( 2, 2 )
+   73.                            do
+   74.                               $I_L74_186 = 0
+   74. !dir$ shortloop16
+   74. !dir$ blocking_size( 2, 2 )
+   74.                               do
+   72.                                  $I_L72_177 = 0
+   72. !dir$ shortloop16
+   72. !dir$ blocking_size( 8, 8 )
+   72.                                  do
+   75.                                     $I_L75_152 = 0
+   75. !dir$ ivdep
+   75. !dir$ blocking_size( 256, 256 )
+   75.                                     do
+   76.                                        if ( notdone(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) /= .false. ) then
+   77.                                           $ee_S11 = eo * _expn( ( a * ( sg(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) + -( to * ( 1.0 + ctv * q0(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) ) ) ) * 1.0/( sg(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) + -( b * ( 1.0 + ctv * q0(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) ) ) ) ) )
+   80.                                           $ue_S12 = $ee_S11 * rg(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218)
+   81.                                           $pq_S13 = ( pmand(1 + $I_L73_201 + 2 * $I_L73_218) + -( eps1 * $ue_S12 ) )
+   82.                                           $ff_S16 = q0(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) + -( eps * $ue_S12 * 1.0/$pq_S13 )
+   83.                                           $des_S14 = ( b * ctv * 1.0/( ( sg(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) + -( b * ( 1.0 + ctv * q0(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) ) ) ) * ( sg(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) + -( b * ( 1.0 + ctv * q0(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) ) ) ) ) ) + ( ( -( a * to * ctv ) ) * 1.0/( sg(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) + -( b * ( 1.0 + ctv * q0(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) ) ) ) )
+   87.                                           $df_S15 = 1.0 + -( eps * $des_S14 * rg(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) * pmand(1 + $I_L73_201 + 2 * $I_L73_218) * 1.0/( $pq_S13 * $pq_S13 ) )
+   88.                                           q1 = ( $ff_S16 * 1.0/$df_S15 )
+   90.                                           notdone(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) = abs( ( $ff_S16 * 1.0/$df_S15 ) ) > 9.9999999999999995e-8
+   89.                                           q0(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) = q0(1 + $I_L75_152 + 256 * $I_L75_208, 1 + $I_L74_186 + 2 * $I_L74_216, 1 + $I_L73_201 + 2 * $I_L73_218) + -( $ff_S16 * 1.0/$df_S15 )
+   89.                                        endif
+   75.                                        $I_L75_152 = 1 + $I_L75_152
+   91.                                        if ( $I_L75_152 >= min( imax, 256 + 256 * $I_L75_208 ) + -256 * $I_L75_208 ) exit
+   91.                                     enddo
+   72.                                     $I_L72_177 = 1 + $I_L72_177
+   72.                                     if ( $I_L72_177 >= 8 ) exit
+   72.                                  enddo
+   74.                                  $I_L74_186 = 1 + $I_L74_186
+   92.                                  if ( $I_L74_186 >= min( jmax, 2 + 2 * $I_L74_216 ) + -2 * $I_L74_216 ) exit
+   92.                               enddo
+   73.                               $I_L73_201 = 1 + $I_L73_201
+   73.                               if ( $I_L73_201 >= min( lmax, 2 + 2 * $I_L73_218 ) + -2 * $I_L73_218 ) exit
+   73.                            enddo
+   75.                            $I_L75_208 = 1 + $I_L75_208
+   93.                            if ( $I_L75_208 >= 1 + max( 0, -1 + _rsh( 255 + imax, 8 ) ) ) exit
+   93.                         enddo
+   72.                         $I_L72_214 = 1 + $I_L72_214
+   72.                         if ( $I_L72_214 >= 25 ) exit
+   72.                      enddo
+   74.                      $I_L74_216 = 1 + $I_L74_216
+   94.                      if ( $I_L74_216 >= 1 + max( 0, -1 + _rsh( 1 + jmax, 1 ) ) ) exit
+   94.                   enddo
+   73.                   $I_L73_218 = 1 + $I_L73_218
+   73.                   if ( $I_L73_218 >= 1 + max( 0, -1 + _rsh( 1 + lmax, 1 ) ) ) exit
+   73.                enddo
+   73.             endif
+   73.          endif
+   73.       endif
+   97.       if ( lmax <= 0 ) then
+   95.          goto 10
+   95.       else if ( jmax <= 0 ) then
+   95.          goto 10
+   95.       else if ( imax > 0 ) then
+   97.          $I_L97_189 = 0
+   97.          do
+   98.             $I_L98_163 = 0
+   98.             do
+   99.                $I_L99_155 = 0
+   99. !dir$ ivdep
+   99.                do
+  100.                   if ( notdone(1 + $I_L99_155, 1 + $I_L98_163, 1 + $I_L97_189) /= .false. ) then
+  101.                      if ( ( ( 1 + $I_L99_155 ) <= 0 .or. ( 1 + $I_L99_155 ) > imax ) /= .false. ) then
+  101.                          _substr(t$113,1,18) = 'GaussPressure.f90'
+  101.                          _substr(t$114,1,4) = 'Q0'
+  101.                         t$115 = 1 + $I_L99_155
+  101.                         call _bounds_error(  _substr(t$113,1,18), 101,  _substr(t$114,1,3), 1, 1, t$1, t$115, t$112 )
+  101.                      endif
+  101.                      if ( ( ( 1 + $I_L98_163 ) <= 0 .or. ( 1 + $I_L98_163 ) > t$2 ) /= .false. ) then
+  101.                          _substr(t$117,1,18) = 'GaussPressure.f90'
+  101.                          _substr(t$118,1,4) = 'Q0'
+  101.                         t$119 = 1 + $I_L98_163
+  101.                         call _bounds_error(  _substr(t$117,1,18), 101,  _substr(t$118,1,3), 2, 1, t$2, t$119, t$116 )
+  101.                      endif
+  101.                      if ( ( ( 1 + $I_L97_189 ) <= 0 .or. ( 1 + $I_L97_189 ) > t$3 ) /= .false. ) then
+  101.                          _substr(t$121,1,18) = 'GaussPressure.f90'
+  101.                          _substr(t$122,1,4) = 'Q0'
+  101.                         t$123 = 1 + $I_L97_189
+  101.                         call _bounds_error(  _substr(t$121,1,18), 101,  _substr(t$122,1,3), 3, 1, t$3, t$123, t$120 )
+  101.                      endif
+  101.                      $Unit_temp_O0 = nferr
+  101.                      $IOitem_O1 = ( 1 + $I_L99_155 )
+  101.                      $IOitem_O2 = ( 1 + $I_L98_163 )
+  101.                      $IOitem_O3 = ( 1 + $I_L97_189 )
+  101.                      $IOitem_O6 = q0(1 + $I_L99_155, 1 + $I_L98_163, 1 + $I_L97_189)
+  101.                      _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' q0=', 0x800600000000L ), _iotype( $IOitem_O6, 0x804060300000000L ), _iotype( ' q1=', 0x800600000000L ), _iotype( q1, 0x804060300000000L ), _iotype( ' i=', 0x800600000000L ), _iotype( $IOitem_O1, 0x2000200000000L ), _iotype( ' j=', 0x800600000000L ), _iotype( $IOitem_O2, 0x2000200000000L ), _iotype( ' k=', 0x800600000000L ), _iotype( $IOitem_O3, 0x2000200000000L ) ) )
+  102.                      if ( ( ( 1 + $I_L97_189 ) <= 0 .or. ( 1 + $I_L97_189 ) > t$3 ) /= .false. ) then
+  102.                          _substr(t$125,1,18) = 'GaussPressure.f90'
+  102.                          _substr(t$126,1,6) = 'PMAND'
+  102.                         t$115 = 1 + $I_L97_189
+  102.                         call _bounds_error(  _substr(t$125,1,18), 102,  _substr(t$126,1,6), 1, 1, t$3, t$115, t$124 )
+  102.                      endif
+  102.                      if ( ( ( 1 + $I_L99_155 ) <= 0 .or. ( 1 + $I_L99_155 ) > t$1 ) /= .false. ) then
+  102.                          _substr(t$128,1,18) = 'GaussPressure.f90'
+  102.                          _substr(t$129,1,4) = 'SG'
+  102.                         t$119 = 1 + $I_L99_155
+  102.                         call _bounds_error(  _substr(t$128,1,18), 102,  _substr(t$129,1,3), 1, 1, t$1, t$119, t$127 )
+  102.                      endif
+  102.                      if ( ( ( 1 + $I_L98_163 ) <= 0 .or. ( 1 + $I_L98_163 ) > t$2 ) /= .false. ) then
+  102.                          _substr(t$131,1,18) = 'GaussPressure.f90'
+  102.                          _substr(t$132,1,4) = 'SG'
+  102.                         t$123 = 1 + $I_L98_163
+  102.                         call _bounds_error(  _substr(t$131,1,18), 102,  _substr(t$132,1,3), 2, 1, t$2, t$123, t$130 )
+  102.                      endif
+  102.                      if ( ( ( 1 + $I_L97_189 ) <= 0 .or. ( 1 + $I_L97_189 ) > t$3 ) /= .false. ) then
+  102.                          _substr(t$134,1,18) = 'GaussPressure.f90'
+  102.                          _substr(t$135,1,4) = 'SG'
+  102.                         t$136 = 1 + $I_L97_189
+  102.                         call _bounds_error(  _substr(t$134,1,18), 102,  _substr(t$135,1,3), 3, 1, t$3, t$136, t$133 )
+  102.                      endif
+  102.                      if ( ( ( 1 + $I_L99_155 ) <= 0 .or. ( 1 + $I_L99_155 ) > t$1 ) /= .false. ) then
+  102.                          _substr(t$138,1,18) = 'GaussPressure.f90'
+  102.                          _substr(t$139,1,4) = 'RG'
+  102.                         t$140 = 1 + $I_L99_155
+  102.                         call _bounds_error(  _substr(t$138,1,18), 102,  _substr(t$139,1,3), 1, 1, t$1, t$140, t$137 )
+  102.                      endif
+  102.                      if ( ( ( 1 + $I_L98_163 ) <= 0 .or. ( 1 + $I_L98_163 ) > t$2 ) /= .false. ) then
+  102.                          _substr(t$142,1,18) = 'GaussPressure.f90'
+  102.                          _substr(t$143,1,4) = 'RG'
+  102.                         t$144 = 1 + $I_L98_163
+  102.                         call _bounds_error(  _substr(t$142,1,18), 102,  _substr(t$143,1,3), 2, 1, t$2, t$144, t$141 )
+  102.                      endif
+  102.                      if ( ( ( 1 + $I_L97_189 ) <= 0 .or. ( 1 + $I_L97_189 ) > t$3 ) /= .false. ) then
+  102.                          _substr(t$146,1,18) = 'GaussPressure.f90'
+  102.                          _substr(t$147,1,4) = 'RG'
+  102.                         t$148 = 1 + $I_L97_189
+  102.                         call _bounds_error(  _substr(t$146,1,18), 102,  _substr(t$147,1,3), 3, 1, t$3, t$148, t$145 )
+  102.                      endif
+  102.                      $Unit_temp_O4 = nferr
+  102.                      $IOitem_O7 = pmand(1 + $I_L97_189)
+  102.                      $IOitem_O8 = sg(1 + $I_L99_155, 1 + $I_L98_163, 1 + $I_L97_189)
+  102.                      $IOitem_O9 = rg(1 + $I_L99_155, 1 + $I_L98_163, 1 + $I_L97_189)
+  102.                      _fwrite( _clist( 0, 0, 3, $Unit_temp_O4, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' pm=', 0x800600000000L ), _iotype( $IOitem_O7, 0x804060300000000L ), _iotype( ' ts=', 0x800600000000L ), _iotype( $IOitem_O8, 0x804060300000000L ), _iotype( ' rs=', 0x800600000000L ), _iotype( $IOitem_O9, 0x804060300000000L ) ) )
+  103.                      $Unit_temp_O5 = nferr
+  103.                      _fwrite( _clist( 0, 0, 3, $Unit_temp_O5, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' ***   Disaster in getsh   ***', 0x800600000000L ) ) )
+  104.                       _substr(t$149,1,30) = ' ***   Disaster in getsh   ***'
+  104.                      call _stop(  _substr(t$149,1,30) )
+  104.                      goto 20
+  104.                   endif
+  106.                   $I_L99_155 = 1 + $I_L99_155
+  105.                   if ( $I_L99_155 >= imax ) exit
+  105.                enddo
+  107.                $I_L98_163 = 1 + $I_L98_163
+  106.                if ( $I_L98_163 >= jmax ) exit
+  106.             enddo
+  108.             $I_L97_189 = 1 + $I_L97_189
+  107.             if ( $I_L97_189 >= lmax ) exit
+  107.          enddo
+  107.          goto 10
+  107.       else
+  107.    10    continue
+  113.          if ( lmax > 0 ) then
+  114.             if ( jmax > 0 ) then
+  115.                if ( imax > 0 ) then
+  113.                   $I_L113_191 = 0
+  113. !dir$ blocking_size( 1, 1 )
+  113.                   do
+  114.                      $I_L114_165 = 0
+  114. !dir$ blocking_size( 1, 1 )
+  114.                      do
+  115.                         $I_L115_157 = 0
+  115. !dir$ ivdep
+  115. !dir$ loop_info (automatic) cache_nt( q0, above, rg, tg )
+  115. !dir$ blocking_size( 256, 256 )
+  115.                         do
+  116.                            if ( above(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) == .false. ) then
+  117.                               $tg_WR0_R1 = ( sg(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) * 1.0/( 1.0 + ctv * q0(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) ) )
+  117.                               tg(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) = $tg_WR0_R1
+  118.                               sg(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) = q0(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191)
+  119.                               $es_S21 = eo * _expn( ( a * ( $tg_WR0_R1 + -to ) * 1.0/( $tg_WR0_R1 + -b ) ) )
+  120.                               $ee_S22 = ( q0(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) * pmand(1 + $I_L113_191) * 1.0/( eps + eps1 * q0(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) ) )
+  121.                               rg(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) = min( 1.0, max( 0.0, ( $ee_S22 * 1.0/$es_S21 ) ) )
+  121.                            endif
+  123.                            sg(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) = max( shmin, sg(1 + $I_L115_157, 1 + $I_L114_165, 1 + $I_L113_191) )
+  124.                            $I_L115_157 = 1 + $I_L115_157
+  122.                            if ( $I_L115_157 >= imax ) exit
+  122.                         enddo
+  125.                         $I_L114_165 = 1 + $I_L114_165
+  124.                         if ( $I_L114_165 >= jmax ) exit
+  124.                      enddo
+  126.                      $I_L113_191 = 1 + $I_L113_191
+  125.                      if ( $I_L113_191 >= lmax ) exit
+  125.                   enddo
+  125.                endif
+  125.             endif
+  125.          endif
+   22.          _free( t$27 )
+   22.       endif
+   22.    20 continue
+  128.       return
+  128.       end
+  128.       
+  131.       
+  131.       subroutine getslp( slpg, zg, pmand )
+  131.       t$4 = imax
+  131.       t$5 = jmax
+  141.       t$35 = _zla( 0, imax )
+  131.       t$36 = _zla( 0, imax )
+  141.       t$37 = _zla( 0, jmax )
+  131.       t$38 = _zla( 0, imax ) * _zla( 0, jmax )
+  131.       t$6 = lmax
+  131.       t$39 = _zla( 0, imax ) * _zla( 0, jmax )
+  142.       t$40 = _zla( 0, lmax )
+  131.       t$41 = _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax )
+  154.       if ( first /= .false. ) then
+  156.          if ( lmax > 0 ) then
+  156.             $I_L156_16 = 0
+  156. !dir$ ivdep
+  156.             do
+  157.                if ( abs( pmand(1 + $I_L156_16) + -p5 ) < 1.0e-2 ) then
+  158.                   l5 = ( 1 + $I_L156_16 )
+  158.                   goto 10
+  158.                endif
+  161.                $I_L156_16 = 1 + $I_L156_16
+  160.                if ( $I_L156_16 >= lmax ) exit
+  160.             enddo
+  160.          endif
+  160.    10    continue
+  163.          if ( l5 == 0 ) then
+  164.             $Unit_temp_O0 = nferr
+  164.             _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$8,  _substr(t$7,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' Unable to Find 500 Mb Level in Mandatory Pressure Array', 0x800600000000L ) ) )
+  166.              _substr(t$162,1,4) = '20'
+  166.             call _stop(  _substr(t$162,1,2) )
+  166.          else
+  169.             if ( lmax > 0 ) then
+  169.                $I_L169_18 = 0
+  169. !dir$ ivdep
+  169.                do
+  170.                   if ( abs( pmand(1 + $I_L169_18) + -po ) < 1.0e-2 ) then
+  171.                      l10 = ( 1 + $I_L169_18 )
+  171.                      goto 20
+  171.                   endif
+  174.                   $I_L169_18 = 1 + $I_L169_18
+  173.                   if ( $I_L169_18 >= lmax ) exit
+  173.                enddo
+  173.             endif
+  173.    20       continue
+  176.             if ( l10 == 0 ) then
+  177.                $Unit_temp_O1 = nferr
+  177.                _fwrite( _clist( 0, 0, 3, $Unit_temp_O1, Null_Arg, Null_Arg, t$10,  _substr(t$9,1,3), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' Unable to Find 1000 Mb Level in Mandatory Pressure Array', 0x800600000000L ) ) )
+  179.                 _substr(t$166,1,4) = '40'
+  179.                call _stop(  _substr(t$166,1,2) )
+  179.             else
+  182.                first = .false.
+  182.                goto 30
+  182.             endif
+  182.          endif
+  182.       else
+  182.    30    continue
+  185.          if ( jmax > 0 ) then
+  186.             if ( imax > 0 ) then
+  185.                $I_L185_22 = 0
+  185.                do
+  186.                   $I_L186_20 = 0
+  186. !dir$ ivdep
+  186.                   do
+  187.                      slpg(1 + $I_L186_20, 1 + $I_L185_22) = po * ( -1.0 + _expn( ( 6.4838712082726413e-1 * zg(1 + $I_L186_20, 1 + $I_L185_22, l10) * 1.0/( zg(1 + $I_L186_20, 1 + $I_L185_22, l5) + -zg(1 + $I_L186_20, 1 + $I_L185_22, l10) ) ) ) )
+  188.                      $I_L186_20 = 1 + $I_L186_20
+  186.                      if ( $I_L186_20 >= imax ) exit
+  186.                   enddo
+  189.                   $I_L185_22 = 1 + $I_L185_22
+  188.                   if ( $I_L185_22 >= jmax ) exit
+  188.                enddo
+  188.             endif
+  188.          endif
+  188.       endif
+  191.       return
+  191.       end
+  191.       
+  194.       
+  194.       subroutine getth( thg, pmand, tg )
+  194.       t$11 = imax
+  194.       t$12 = jmax
+  194.       t$13 = lmax
+  200.       t$42 = _zla( 0, imax )
+  194.       t$43 = _zla( 0, imax )
+  200.       t$44 = _zla( 0, jmax )
+  194.       t$45 = _zla( 0, imax ) * _zla( 0, jmax )
+  200.       t$46 = _zla( 0, lmax )
+  194.       t$47 = _zla( 0, imax ) * _zla( 0, jmax ) * _zla( 0, lmax )
+  207.       $wtl_S1 = log( po )
+  208.       if ( lmax > 0 ) then
+  211.          if ( jmax > 0 ) then
+  212.             if ( imax > 0 ) then
+  208.                $I_L208_16 = 0
+  208.                do
+  209.                   $exner_S2 = rdbycp * ( $wtl_S1 + -log( pmand(1 + $I_L208_16) ) )
+  210.                   $exner_S5 = _expn( $exner_S2 )
+  211.                   $I_L211_14 = 0
+  211.                   do
+  212.                      $I_L212_12 = 0
+  212. !dir$ ivdep
+  212. !dir$ loop_info (automatic) cache_nt( tg )
+  212.                      do
+  213.                         thg(1 + $I_L212_12, 1 + $I_L211_14, 1 + $I_L208_16) = $exner_S5 * tg(1 + $I_L212_12, 1 + $I_L211_14, 1 + $I_L208_16)
+  214.                         $I_L212_12 = 1 + $I_L212_12
+  212.                         if ( $I_L212_12 >= imax ) exit
+  212.                      enddo
+  215.                      $I_L211_14 = 1 + $I_L211_14
+  214.                      if ( $I_L211_14 >= jmax ) exit
+  214.                   enddo
+  216.                   $I_L208_16 = 1 + $I_L208_16
+  215.                   if ( $I_L208_16 >= lmax ) exit
+  215.                enddo
+  215.             endif
+  215.          endif
+  215.       endif
+  218.       return
+  218.       end
+  218.       
+  221.       
+  221.       subroutine lowtmp( zsv, tsv, pmand )
+  221.       t$14 = imax
+  221.       t$15 = jmax
+  221.       t$16 = lmax
+  251.       t$48 = _zla( 0, imax )
+  221.       t$49 = _zla( 0, imax )
+  251.       t$50 = _zla( 0, jmax )
+  221.       t$51 = _zla( 0, imax ) * _zla( 0, jmax )
+  251.       t$52 = _zla( 0, lmax )
+  272.       t$53 = _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax )
+  273.       t$56 = 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax )
+  256.       t$58 = 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax ) + 4 * _zla( 0, lmax )
+  257.       t$60 = 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax ) + 8 * _zla( 0, lmax )
+  262.       t$61 = 8 * ( 7 + 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax ) + 8 * _zla( 0, lmax ) ) / 8
+  262.       t$63 = t$61 + 8 * _zla( 0, lmax )
+  264.       t$64 = 8 * ( 7 + t$61 + 8 * _zla( 0, lmax ) ) / 8
+  264.       t$66 = t$64 + 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax )
+  260.       t$67 = 8 * ( 7 + t$64 + 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax ) ) / 8
+  260.       t$69 = t$67 + 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax )
+  221.       t$17 = ( 2 * lmax )
+  263.       t$70 = _zla( 0, ( 2 * lmax ) )
+  221.       t$71 = _zla( 0, ( 2 * lmax ) ) * _zla( 0, imax ) * _zla( 0, jmax )
+  263.       t$72 = 8 * ( 7 + t$67 + 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax ) ) / 8
+  263.       t$74 = t$72 + 8 * _zla( 0, ( 2 * lmax ) ) * _zla( 0, imax ) * _zla( 0, jmax )
+  221.       t$54 = int( _alloc( t$72 + 8 * _zla( 0, ( 2 * lmax ) ) * _zla( 0, imax ) * _zla( 0, jmax ) ), 8 )
+  261.       t$55 = t$54
+  256.       t$57 = t$54 + 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax )
+  257.       t$59 = t$54 + 8 * _zla( 0, lmax ) * _zla( 0, imax ) * _zla( 0, jmax ) + 4 * _zla( 0, lmax )
+  262.       t$62 = t$61 + t$54
+  264.       t$65 = t$64 + t$54
+  260.       t$68 = t$67 + t$54
+  263.       t$73 = t$72 + t$54
+  275.       if ( lmax < 3 ) then
+  276.          $Unit_temp_O0 = nferr
+  276.          _fwrite( _clist( 0, 0, 3, $Unit_temp_O0, Null_Arg, Null_Arg, t$19,  _substr(t$18,1,11), Null_Arg, Null_Arg, Null_Arg, Null_Arg, 0, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg, Null_Arg ), _iolist( _iotype( ' Lmax = nmand must be at least 3 to use lowtmp ', 0x800600000000L ), _iotype( ' See NameList for further details', 0x800600000000L ) ) )
+  279.           _substr(t$182,1,43) = ' Lmax = nmand < 3 in lowtmp : see NameList '
+  279.          call _stop(  _substr(t$182,1,43) )
+  279.       else
+  282.          if ( first /= .false. ) then
+  284.             at%header%a_contig = 1
+  284.             at%dim_1%LB = 1
+  284.             at%dim_1%EX = _zla( 0, lmax )
+  284.             at%dim_1%SM = 1
+  284.             at%dim_2%LB = 1
+  284.             at%dim_2%EX = _zla( 0, ( 2 * lmax ) )
+  284.             at%dim_2%SM = _zla( 0, lmax )
+  284.             $_allo_P0(0) = 0x1000000000001L
+  284.             $_allo_P0(1) = loc( at )
+  284.             call __allocate( $_allo_P0, 0, 0, _fcd( 0, 0 ) )
+  285.             ata%header%a_contig = 1
+  285.             ata%dim_1%LB = 1
+  285.             ata%dim_1%EX = _zla( 0, lmax )
+  285.             ata%dim_1%SM = 1
+  285.             ata%dim_2%LB = 1
+  285.             ata%dim_2%EX = _zla( 0, lmax )
+  285.             ata%dim_2%SM = _zla( 0, lmax )
+  285.             $_allo_P1(0) = 0x1000000000001L
+  285.             $_allo_P1(1) = loc( ata )
+  285.             call __allocate( $_allo_P1, 0, 0, _fcd( 0, 0 ) )
+  286.             dlg%header%a_contig = 1
+  286.             dlg%dim_1%LB = 1
+  286.             dlg%dim_1%EX = _zla( 0, lmax )
+  286.             dlg%dim_1%SM = 1
+  286.             $_allo_P2(0) = 0x1000000000001L
+  286.             $_allo_P2(1) = loc( dlg )
+  286.             call __allocate( $_allo_P2, 0, 0, _fcd( 0, 0 ) )
+  287.             ac%header%a_contig = 1
+  287.             ac%dim_1%LB = 1
+  287.             ac%dim_1%EX = _zla( 0, lmax )
+  287.             ac%dim_1%SM = 1
+  287.             $_allo_P3(0) = 0x1000000000001L
+  287.             $_allo_P3(1) = loc( ac )
+  287.             call __allocate( $_allo_P3, 0, 0, _fcd( 0, 0 ) )
+  288.             bc%header%a_contig = 1
+  288.             bc%dim_1%LB = 1
+  288.             bc%dim_1%EX = _zla( 0, lmax )
+  288.             bc%dim_1%SM = 1
+  288.             $_allo_P4(0) = 0x1000000000001L
+  288.             $_allo_P4(1) = loc( bc )
+  288.             call __allocate( $_allo_P4, 0, 0, _fcd( 0, 0 ) )
+  289.             mlvl = lmax
+  290.             $F_A33 = lmax
+  290.             if ( lmax > 0 ) then
+  290.                $I_L290_456 = 0
+  290. !dir$ ivdep
+  290. !dir$ loop_info (automatic) cache_nt( pmand )
+  290.                do
+  290.                   rpl(1 + $I_L290_456) = log( pmand(1 + $I_L290_456) )
+  290.                   $I_L290_456 = 1 + $I_L290_456
+  290.                   if ( $I_L290_456 >= $F_A33 ) exit
+  290.                enddo
+  290.             endif
+  291.             $I_L291_414 = 0
+  291. !dir$ ivdep
+  291. !dir$ loop_info (automatic) cache_nt( dlg )
+  291.             do
+  292.                $dlg_WR0_R0 = rpl(2 + $I_L291_414) + -rpl(1 + $I_L291_414)
+  293.                $dlg_WR0_R0 = 1.0/$dlg_WR0_R0
+  293.                (dlg%base_addr)(2 + $I_L291_414, 0) = $dlg_WR0_R0
+  294.                $I_L291_414 = 1 + $I_L291_414
+  291.                if ( $I_L291_414 >= -1 + lmax ) exit
+  291.             enddo
+  295.             nlvlm = -1 + lmax
+  296.             (ac%base_addr)(1, 0) = 0.0
+  297.             (bc%base_addr)(1, 0) = 0.0
+  298.             (ac%base_addr)(lmax, 0) = 0.0
+  299.             (bc%base_addr)(lmax, 0) = (ac%base_addr)(1, 0)
+  300.             $I_L300_416 = 0
+  300. !dir$ ivdep
+  300. !dir$ loop_info (automatic) cache_nt( bc, ac )
+  300.             do
+  301.                (ac%base_addr)(2 + $I_L300_416, 0) = ( ( rpl(3 + $I_L300_416) + -rpl(2 + $I_L300_416) ) * 1.0/( rpl(3 + $I_L300_416) + -rpl(1 + $I_L300_416) ) )
+  302.                (bc%base_addr)(2 + $I_L300_416, 0) = ( 1.0/( rpl(3 + $I_L300_416) + -rpl(1 + $I_L300_416) ) * ( rpl(2 + $I_L300_416) + -rpl(1 + $I_L300_416) ) )
+  303.                $I_L300_416 = 1 + $I_L300_416
+  300.                if ( $I_L300_416 >= -2 + lmax ) exit
+  300.             enddo
+  304.             nlvlp = -2 + 2 * lmax
+  305.             nlvlpp = -1 + 2 * lmax
+  306.             $F_A34 = _zla( 0, ( 2 * lmax ) )
+  306.             $F_A35 = _zla( 0, lmax )
+  306.             if ( and( -$F_A35, -$F_A34 ) < 0 ) then
+  306.                $I_L306_493 = 0
+  306.                do
+  306.                   $I_L306_458 = 0
+  306. !dir$ ivdep
+  306.                   do
+  306.                      (at%base_addr)(1 + $I_L306_458, 1 + $I_L306_493, 0) = 0.0
+  306.                      $I_L306_458 = 1 + $I_L306_458
+  306.                      if ( $I_L306_458 >= $F_A35 ) exit
+  306.                   enddo
+  306.                   $I_L306_493 = 1 + $I_L306_493
+  306.                   if ( $I_L306_493 >= $F_A34 ) exit
+  306.                enddo
+  306.             endif
+  307.             $I_L307_418 = 0
+  307. !dir$ ivdep
+  307.             do
+  308.                (at%base_addr)(1 + $I_L307_418, 1 + $I_L307_418, 0) = 5.0e-1
+  309.                (at%base_addr)(2 + $I_L307_418, 1 + $I_L307_418, 0) = 5.0e-1
+  310.                $I_L307_418 = 1 + $I_L307_418
+  307.                if ( $I_L307_418 >= -1 + lmax ) exit
+  307.             enddo
+  311.             $I_L311_420 = 0
+  311. !dir$ ivdep
+  311.             do
+  312.                (at%base_addr)(1 + $I_L311_420, lmax + $I_L311_420, 0) = 1.0
+  313.                $I_L311_420 = 1 + $I_L311_420
+  311.                if ( $I_L311_420 >= lmax ) exit
+  311.             enddo
+  317.             if ( -1 + 2 * lmax > 0 ) then
+  314.                $I_L314_554 = 0
+  314. !dir$ ivdep
+  314.                do
+  315.                   $I_L315_466 = 0
+  315.                   do
+  316.                      (ata%base_addr)(1 + $I_L314_554, 1 + $I_L315_466, 0) = 0.0
+  320.                      $I_L315_466 = 1 + $I_L315_466
+  319.                      if ( $I_L315_466 >= lmax ) exit
+  319.                   enddo
+  317.                   $I_L317_542 = 0
+  317.                   do
+  315.                      $I_L315_540 = 0
+  315.                      do
+  317.                         $I_L317_503 = 0
+  317. !dir$ shortloop16
+  317. !dir$ blocking_size( 4, 4 )
+  317.                         do
+  315.                            $SCA_at_I16 = (at%base_addr)(1 + $I_L314_554, 1 + $I_L317_503 + 4 * $I_L317_542, 0)
+  315.                            $I_L315_468 = 0
+  315. !dir$ unroll 4
+  315. !dir$ blocking_size( 256, 256 )
+  315.                            do
+  318.                               (ata%base_addr)(1 + $I_L314_554, 1 + $I_L315_468 + 256 * $I_L315_540, 0) = (ata%base_addr)(1 + $I_L314_554, 1 + $I_L315_468 + 256 * $I_L315_540, 0) + $SCA_at_I16 * (at%base_addr)(1 + $I_L315_468 + 256 * $I_L315_540, 1 + $I_L317_503 + 4 * $I_L317_542, 0)
+  315.                               $I_L315_468 = 1 + $I_L315_468
+  317.                               if ( $I_L315_468 >= min( lmax, 256 + 256 * $I_L315_540 ) + -256 * $I_L315_540 ) exit
+  317.                            enddo
+  317.                            $I_L317_503 = 1 + $I_L317_503
+  317.                            if ( $I_L317_503 >= min( -1 + 2 * lmax, 4 + 4 * $I_L317_542 ) + -4 * $I_L317_542 ) exit
+  317.                         enddo
+  315.                         $I_L315_540 = 1 + $I_L315_540
+  319.                         if ( $I_L315_540 >= 1 + max( 0, -1 + _rsh( 255 + lmax, 8 ) ) ) exit
+  319.                      enddo
+  317.                      $I_L317_542 = 1 + $I_L317_542
+  317.                      if ( $I_L317_542 >= 1 + max( 0, -1 + _rsh( 2 + 2 * lmax, 2 ) ) ) exit
+  317.                   enddo
+  321.                   $I_L314_554 = 1 + $I_L314_554
+  320.                   if ( $I_L314_554 >= lmax ) exit
+  320.                enddo
+  320.             else
+  315.                $I_L315_491 = 0
+  315.                do
+  314.                   $I_L314_454 = 0
+  314. !dir$ ivdep
+  314. !dir$ loop_info (automatic) cache_nt( ata )
+  314.                   do
+  316.                      (ata%base_addr)(1 + $I_L314_454, 1 + $I_L315_491, 0) = 0.0
+  321.                      $I_L314_454 = 1 + $I_L314_454
+  319.                      if ( $I_L314_454 >= lmax ) exit
+  319.                   enddo
+  320.                   $I_L315_491 = 1 + $I_L315_491
+  320.                   if ( $I_L315_491 >= lmax ) exit
+  320.                enddo
+  320.             endif
+  322.             tm$5 = loc( (ata%base_addr)(1, 1, 0) )
+  322.             a = _copyin( (ata%base_addr)(1, 1, 0) )
+  322.             $I_L322_518 = 0
+  322.             do
+  322.                ir(1 + $I_L322_518) = ( 1 + $I_L322_518 )
+  322.                jc(1 + $I_L322_518) = ( 1 + $I_L322_518 )
+  322.                $biga_S11 = a(1 + $I_L322_518 + lmax * $I_L322_518)
+  322.                $I_L322_481 = 0
+  322.                do
+  322.                   $I_L322_422 = 0
+  322. !dir$ unroll 4
+  322.                   do
+  322.                      if ( abs( $biga_S11 ) < abs( a(1 + $I_L322_422 + $I_L322_518 + lmax * $I_L322_481 + lmax * $I_L322_518) ) ) then
+  322.                         $biga_S11 = a(1 + $I_L322_422 + $I_L322_518 + lmax * $I_L322_481 + lmax * $I_L322_518)
+  322.                         ir(1 + $I_L322_518) = ( 1 + $I_L322_422 + $I_L322_518 )
+  322.                         jc(1 + $I_L322_518) = ( 1 + $I_L322_481 + $I_L322_518 )
+  322.                      endif
+  322.                      $I_L322_422 = 1 + $I_L322_422
+  322.                      if ( $I_L322_422 >= lmax + -$I_L322_518 ) exit
+  322.                   enddo
+  322.                   $I_L322_481 = 1 + $I_L322_481
+  322.                   if ( $I_L322_481 >= lmax + -$I_L322_518 ) exit
+  322.                enddo
+  322.                $j_S12 = ir(1 + $I_L322_518)
+  322.                if ( $j_S12 > ( 1 + $I_L322_518 ) ) then
+  322.                   $I_L322_424 = 0
+  322. !dir$ unroll 4
+  322.                   do
+  322.                      $hold_S14 = -a(1 + $I_L322_518 + lmax * $I_L322_424)
+  322.                      a(1 + $I_L322_518 + lmax * $I_L322_424) = a($j_S12 + lmax * $I_L322_424)
+  322.                      a($j_S12 + lmax * $I_L322_424) = $hold_S14
+  322.                      $I_L322_424 = 1 + $I_L322_424
+  322.                      if ( $I_L322_424 >= lmax ) exit
+  322.                   enddo
+  322.                endif
+  322.                $i_S16 = jc(1 + $I_L322_518)
+  322.                if ( $i_S16 > ( 1 + $I_L322_518 ) ) then
+  322.                   $I_L322_426 = 0
+  322. !dir$ ivdep
+  322.                   do
+  322.                      $hold_S18 = -a(1 + $I_L322_426 + lmax * $I_L322_518)
+  322.                      a(1 + $I_L322_426 + lmax * $I_L322_518) = a(1 + $I_L322_426 + -lmax + lmax * $i_S16)
+  322.                      a(1 + $I_L322_426 + -lmax + lmax * $i_S16) = $hold_S18
+  322.                      $I_L322_426 = 1 + $I_L322_426
+  322.                      if ( $I_L322_426 >= lmax ) exit
+  322.                   enddo
+  322.                endif
+  322.                if ( $biga_S11 == 0.0 ) goto 100
+  322.                $I_L322_177 = 0
+  322.                if ( 0 >= $I_L322_518 ) then
+  322.                   goto 10
+  322.                else
+  322.                   $I_L322_428 = 0
+  322. !dir$ ivdep
+  322.                   do
+  322.                      a(1 + $I_L322_428 + lmax * $I_L322_518) = -( a(1 + $I_L322_428 + lmax * $I_L322_518) * 1.0/$biga_S11 )
+  322.                      $I_L322_428 = 1 + $I_L322_428
+  322.                      if ( $I_L322_428 >= min( $I_L322_518, lmax ) ) exit
+  322.                   enddo
+  322.                   $I_L322_177 = min( $I_L322_518, lmax )
+  322.                   if ( $I_L322_518 < lmax ) then
+  322.    10                continue
+  322.                      if ( $I_L322_518 + -$I_L322_177 == 0 ) then
+  322.                         $I_L322_177 = 1 + $I_L322_177
+  322.                         if ( $I_L322_177 < lmax ) then
+  322.                            goto 20
+  322.                         endif
+  322.                      else
+  322.    20                   continue
+  322.                         $I_L322_479 = 0
+  322. !dir$ ivdep
+  322.                         do
+  322.                            a(1 + $I_L322_177 + $I_L322_479 + lmax * $I_L322_518) = -( a(1 + $I_L322_177 + $I_L322_479 + lmax * $I_L322_518) * 1.0/$biga_S11 )
+  322.                            $I_L322_479 = 1 + $I_L322_479
+  322.                            if ( $I_L322_479 >= lmax + -$I_L322_177 ) exit
+  322.                         enddo
+  322.                      endif
+  322.                   endif
+  322.                endif
+  322.                $I_L322_205 = 0
+  322.                if ( 0 >= $I_L322_518 ) then
+  322.                   goto 30
+  322.                else
+  322.                   $I_L322_483 = 0
+  322.                   do
+  322.                      $t_S20 = $I_L322_483
+  322.                      ik = ( 1 + $I_L322_483 + lmax * $I_L322_518 )
+  322.                      $I_L322_430 = 0
+  322. !dir$ unroll 4
+  322.                      do
+  322.                         a(1 + $I_L322_483 + lmax * $I_L322_430) = a(1 + $t_S20 + lmax * $I_L322_430) + a(ik) * a(1 + $I_L322_518 + lmax * $I_L322_430)
+  322.                         $I_L322_430 = 1 + $I_L322_430
+  322.                         if ( $I_L322_430 >= min( $I_L322_518, lmax ) ) exit
+  322.                      enddo
+  322.                      $I_L322_179 = min( $I_L322_518, lmax )
+  322.                      if ( $I_L322_518 < lmax ) then
+  322.                         if ( $I_L322_518 + -min( $I_L322_518, lmax ) == 0 ) then
+  322.                            $I_L322_179 = 1 + min( $I_L322_518, lmax )
+  322.                            if ( 1 + min( $I_L322_518, lmax ) < lmax ) then
+  322.                               goto 70
+  322.                            endif
+  322.                         else
+  322.    70                      continue
+  322.                            $I_L322_473 = 0
+  322. !dir$ unroll 4
+  322.                            do
+  322.                               a(1 + $I_L322_483 + lmax * $I_L322_179 + lmax * $I_L322_473) = a(1 + $t_S20 + lmax * $I_L322_179 + lmax * $I_L322_473) + a(ik) * a(1 + $I_L322_518 + lmax * $I_L322_179 + lmax * $I_L322_473)
+  322.                               $I_L322_473 = 1 + $I_L322_473
+  322.                               if ( $I_L322_473 >= lmax + -$I_L322_179 ) exit
+  322.                            enddo
+  322.                         endif
+  322.                      endif
+  322.                      $I_L322_483 = 1 + $I_L322_483
+  322.                      if ( $I_L322_483 >= min( $I_L322_518, lmax ) ) exit
+  322.                   enddo
+  322.                   $I_L322_205 = min( $I_L322_518, lmax )
+  322.                   if ( $I_L322_518 < lmax ) then
+  322.    30                continue
+  322.                      if ( $I_L322_518 + -$I_L322_205 == 0 ) then
+  322.                         $I_L322_205 = 1 + $I_L322_205
+  322.                         if ( $I_L322_205 < lmax ) then
+  322.                            goto 40
+  322.                         endif
+  322.                      else
+  322.    40                   continue
+  322.                         $I_L322_501 = 0
+  322.                         do
+  322.                            $t_S20 = $I_L322_205 + $I_L322_501
+  322.                            ik = ( 1 + $I_L322_205 + $I_L322_501 + lmax * $I_L322_518 )
+  322.                            $I_L322_179 = 0
+  322.                            if ( 0 >= $I_L322_518 ) then
+  322.                               goto 50
+  322.                            else
+  322.                               $I_L322_477 = 0
+  322. !dir$ unroll 4
+  322.                               do
+  322.                                  a(1 + $I_L322_205 + $I_L322_501 + lmax * $I_L322_477) = a(1 + $t_S20 + lmax * $I_L322_477) + a(ik) * a(1 + $I_L322_518 + lmax * $I_L322_477)
+  322.                                  $I_L322_477 = 1 + $I_L322_477
+  322.                                  if ( $I_L322_477 >= min( $I_L322_518, lmax ) ) exit
+  322.                               enddo
+  322.                               $I_L322_179 = min( $I_L322_518, lmax )
+  322.                               if ( $I_L322_518 < lmax ) then
+  322.    50                            continue
+  322.                                  if ( $I_L322_518 + -$I_L322_179 == 0 ) then
+  322.                                     $I_L322_179 = 1 + $I_L322_179
+  322.                                     if ( $I_L322_179 < lmax ) then
+  322.                                        goto 60
+  322.                                     endif
+  322.                                  else
+  322.    60                               continue
+  322.                                     $I_L322_475 = 0
+  322. !dir$ unroll 4
+  322.                                     do
+  322.                                        a(1 + $I_L322_205 + $I_L322_501 + lmax * $I_L322_179 + lmax * $I_L322_475) = a(1 + $t_S20 + lmax * $I_L322_179 + lmax * $I_L322_475) + a(ik) * a(1 + $I_L322_518 + lmax * $I_L322_179 + lmax * $I_L322_475)
+  322.                                        $I_L322_475 = 1 + $I_L322_475
+  322.                                        if ( $I_L322_475 >= lmax + -$I_L322_179 ) exit
+  322.                                     enddo
+  322.                                  endif
+  322.                               endif
+  322.                            endif
+  322.                            $I_L322_501 = 1 + $I_L322_501
+  322.                            if ( $I_L322_501 >= lmax + -$I_L322_205 ) exit
+  322.                         enddo
+  322.                      endif
+  322.                   endif
+  322.                endif
+  322.                $I_L322_181 = 0
+  322.                if ( 0 >= $I_L322_518 ) then
+  322.                   goto 80
+  322.                else
+  322.                   $I_L322_432 = 0
+  322. !dir$ ivdep
+  322.                   do
+  322.                      a(1 + $I_L322_518 + lmax * $I_L322_432) = ( a(1 + $I_L322_518 + lmax * $I_L322_432) * 1.0/$biga_S11 )
+  322.                      $I_L322_432 = 1 + $I_L322_432
+  322.                      if ( $I_L322_432 >= min( $I_L322_518, lmax ) ) exit
+  322.                   enddo
+  322.                   $I_L322_181 = min( $I_L322_518, lmax )
+  322.                   if ( $I_L322_518 < lmax ) then
+  322.    80                continue
+  322.                      if ( $I_L322_518 + -$I_L322_181 == 0 ) then
+  322.                         $I_L322_181 = 1 + $I_L322_181
+  322.                         if ( $I_L322_181 < lmax ) then
+  322.                            goto 90
+  322.                         endif
+  322.                      else
+  322.    90                   continue
+  322.                         $I_L322_471 = 0
+  322. !dir$ ivdep
+  322.                         do
+  322.                            a(1 + $I_L322_518 + lmax * $I_L322_181 + lmax * $I_L322_471) = ( a(1 + $I_L322_518 + lmax * $I_L322_181 + lmax * $I_L322_471) * 1.0/$biga_S11 )
+  322.                            $I_L322_471 = 1 + $I_L322_471
+  322.                            if ( $I_L322_471 >= lmax + -$I_L322_181 ) exit
+  322.                         enddo
+  322.                      endif
+  322.                   endif
+  322.                endif
+  322.                a(1 + $I_L322_518 + lmax * $I_L322_518) = 1.0/$biga_S11
+  322.                $I_L322_518 = 1 + $I_L322_518
+  322.                if ( $I_L322_518 >= lmax ) exit
+  322.             enddo
+  322.             if ( 1 + -lmax < 0 ) then
+  322.                $I_L322_485 = 0
+  322.                do
+  322.                   $i_S26 = ir(-1 + lmax + -$I_L322_485)
+  322.                   if ( $i_S26 > ( -1 + lmax + -$I_L322_485 ) ) then
+  322.                      $I_L322_434 = 0
+  322. !dir$ ivdep
+  322.                      do
+  322.                         $hold_S28 = a(1 + $I_L322_434 + -( lmax * $I_L322_485 ) + lmax * lmax + -2 * lmax)
+  322.                         a(1 + $I_L322_434 + -( lmax * $I_L322_485 ) + lmax * lmax + -2 * lmax) = -a(1 + $I_L322_434 + -lmax + lmax * $i_S26)
+  322.                         a(1 + $I_L322_434 + -lmax + lmax * $i_S26) = $hold_S28
+  322.                         $I_L322_434 = 1 + $I_L322_434
+  322.                         if ( $I_L322_434 >= lmax ) exit
+  322.                      enddo
+  322.                   endif
+  322.                   $j_S29 = jc(-1 + lmax + -$I_L322_485)
+  322.                   if ( $j_S29 > ( -1 + lmax + -$I_L322_485 ) ) then
+  322.                      if ( ( mod( 1 + $j_S29 + $I_L322_485 + -lmax, lmax ) == 0 .and. abs( ( 1 + $j_S29 + $I_L322_485 + -lmax ) / lmax ) <= -1 + lmax ) /= 0 ) then
+  322.                         $I_L322_582 = 0
+  322.                         do
+  322.                            $hold_S31 = a(-1 + lmax + -$I_L322_485 + lmax * $I_L322_582)
+  322.                            a(-1 + lmax + -$I_L322_485 + lmax * $I_L322_582) = -a($j_S29 + lmax * $I_L322_582)
+  322.                            a($j_S29 + lmax * $I_L322_582) = $hold_S31
+  322.                            $I_L322_582 = 1 + $I_L322_582
+  322.                            if ( $I_L322_582 >= lmax ) exit
+  322.                         enddo
+  322.                      else
+  322.                         $I_L322_580 = 0
+  322. !dir$ ivdep safevl = 2
+  322.                         do
+  322.                            $hold_S31 = a(-1 + lmax + -$I_L322_485 + lmax * $I_L322_580)
+  322.                            a(-1 + lmax + -$I_L322_485 + lmax * $I_L322_580) = -a($j_S29 + lmax * $I_L322_580)
+  322.                            a($j_S29 + lmax * $I_L322_580) = $hold_S31
+  322.                            $I_L322_580 = 1 + $I_L322_580
+  322.                            if ( $I_L322_580 >= lmax ) exit
+  322.                         enddo
+  322.                      endif
+  322.                   endif
+  322.                   $I_L322_485 = 1 + $I_L322_485
+  322.                   if ( $I_L322_485 >= -1 + lmax ) exit
+  322.                enddo
+  322.             endif
+  322.   100       continue
+  322.             (ata%base_addr)(1, 1, 0) = _copyout( a )
+  323.             nlvlpx = -3 + 2 * lmax
+  324.             first = .false.
+  324.          endif
+  329.          if ( -2 + mlvl >= 0 ) then
+  332.             $SC_dlg_I0 = dlg%dim_1%EX
+  332.             $SC_dlg_I1 = dlg%dim_1%LB
+  330.             if ( jmax > 0 ) then
+  331.                if ( imax > 0 ) then
+  329.                   $I_L329_564 = 0
+  329.                   do
+  330.                      $I_L330_556 = 0
+  330.                      do
+  331.                         $I_L331_544 = 0
+  331.                         do
+  329.                            $I_L329_584 = 0
+  329. !dir$ shortloop16
+  329. !dir$ blocking_size( 2, 2 )
+  329.                            do
+  330.                               $I_L330_506 = 0
+  330. !dir$ shortloop16
+  330. !dir$ blocking_size( 2, 2 )
+  330.                               do
+  330.                                  $SCA_dlg_I17 = (dlg%base_addr)(2 + $I_L329_584 + 2 * $I_L329_564, 0)
+  331.                                  $I_L331_438 = 0
+  331. !dir$ ivdep
+  331. !dir$ loop_info (automatic) cache_nt( tbar )
+  331. !dir$ blocking_size( 256, 256 )
+  331.                                  do
+  332.                                     tbar(1 + $I_L331_438 + 256 * $I_L331_544, 1 + $I_L330_506 + 2 * $I_L330_556, 2 + $I_L329_584 + 2 * $I_L329_564) = $SCA_dlg_I17 * ( zsv(1 + $I_L331_438 + 256 * $I_L331_544, 1 + $I_L330_506 + 2 * $I_L330_556, 2 + $I_L329_584 + 2 * $I_L329_564) + -zsv(1 + $I_L331_438 + 256 * $I_L331_544, 1 + $I_L330_506 + 2 * $I_L330_556, 1 + $I_L329_584 + 2 * $I_L329_564) )
+  331.                                     $I_L331_438 = 1 + $I_L331_438
+  331.                                     if ( $I_L331_438 >= min( imax, 256 + 256 * $I_L331_544 ) + -256 * $I_L331_544 ) exit
+  331.                                  enddo
+  330.                                  $I_L330_506 = 1 + $I_L330_506
+  330.                                  if ( $I_L330_506 >= min( jmax, 2 + 2 * $I_L330_556 ) + -2 * $I_L330_556 ) exit
+  330.                               enddo
+  329.                               $I_L329_584 = 1 + $I_L329_584
+  333.                               if ( $I_L329_584 >= min( -1 + mlvl, 2 + 2 * $I_L329_564 ) + -2 * $I_L329_564 ) exit
+  333.                            enddo
+  331.                            $I_L331_544 = 1 + $I_L331_544
+  331.                            if ( $I_L331_544 >= 1 + max( 0, -1 + _rsh( 255 + imax, 8 ) ) ) exit
+  331.                         enddo
+  330.                         $I_L330_556 = 1 + $I_L330_556
+  334.                         if ( $I_L330_556 >= 1 + max( 0, -1 + _rsh( 1 + jmax, 1 ) ) ) exit
+  334.                      enddo
+  329.                      $I_L329_564 = 1 + $I_L329_564
+  329.                      if ( $I_L329_564 >= 1 + max( 0, -1 + _rsh( mlvl, 1 ) ) ) exit
+  329.                   enddo
+  329.                endif
+  329.             endif
+  329.          endif
+  336.          if ( nlvlm > 0 ) then
+  337.             if ( jmax > 0 ) then
+  338.                if ( imax > 0 ) then
+  336.                   $I_L336_523 = 0
+  336.                   do
+  337.                      $I_L337_487 = 0
+  337.                      do
+  338.                         $I_L338_441 = 0
+  338. !dir$ ivdep
+  338. !dir$ loop_info (automatic) cache_nt( unk )
+  338.                         do
+  339.                            unk(1 + $I_L338_441, 1 + $I_L337_487, 1 + $I_L336_523) = tbar(1 + $I_L338_441, 1 + $I_L337_487, 2 + $I_L336_523)
+  340.                            $I_L338_441 = 1 + $I_L338_441
+  338.                            if ( $I_L338_441 >= imax ) exit
+  338.                         enddo
+  341.                         $I_L337_487 = 1 + $I_L337_487
+  340.                         if ( $I_L337_487 >= jmax ) exit
+  340.                      enddo
+  342.                      $I_L336_523 = 1 + $I_L336_523
+  341.                      if ( $I_L336_523 >= nlvlm ) exit
+  341.                   enddo
+  341.                endif
+  341.             endif
+  341.          endif
+  343.          if ( nlvlpx + -mlvl >= 0 ) then
+  346.             $SC_bc_I2 = bc%dim_1%EX
+  346.             $SC_bc_I3 = bc%dim_1%LB
+  346.             $SC_ac_I4 = ac%dim_1%EX
+  346.             $SC_ac_I5 = ac%dim_1%LB
+  344.             if ( jmax > 0 ) then
+  345.                if ( imax > 0 ) then
+  343.                   $I_L343_566 = 0
+  343.                   do
+  344.                      $I_L344_558 = 0
+  344.                      do
+  345.                         $I_L345_546 = 0
+  345.                         do
+  343.                            $I_L343_586 = 0
+  343. !dir$ shortloop16
+  343. !dir$ blocking_size( 2, 2 )
+  343.                            do
+  344.                               $I_L344_509 = 0
+  344. !dir$ shortloop16
+  344. !dir$ blocking_size( 2, 2 )
+  344.                               do
+  344.                                  $SCA_ac_I18 = (ac%base_addr)(2 + $I_L343_586 + 2 * $I_L343_566, 0)
+  344.                                  $SCA_bc_I19 = (bc%base_addr)(2 + $I_L343_586 + 2 * $I_L343_566, 0)
+  345.                                  $I_L345_443 = 0
+  345. !dir$ ivdep
+  345. !dir$ loop_info (automatic) cache_nt( unk )
+  345. !dir$ blocking_size( 256, 256 )
+  345.                                  do
+  346.                                     unk(1 + $I_L345_443 + 256 * $I_L345_546, 1 + $I_L344_509 + 2 * $I_L344_558, 1 + mlvl + $I_L343_586 + 2 * $I_L343_566) = $SCA_bc_I19 * tbar(1 + $I_L345_443 + 256 * $I_L345_546, 1 + $I_L344_509 + 2 * $I_L344_558, 3 + $I_L343_586 + 2 * $I_L343_566) + $SCA_ac_I18 * tbar(1 + $I_L345_443 + 256 * $I_L345_546, 1 + $I_L344_509 + 2 * $I_L344_558, 2 + $I_L343_586 + 2 * $I_L343_566)
+  345.                                     $I_L345_443 = 1 + $I_L345_443
+  345.                                     if ( $I_L345_443 >= min( imax, 256 + 256 * $I_L345_546 ) + -256 * $I_L345_546 ) exit
+  345.                                  enddo
+  344.                                  $I_L344_509 = 1 + $I_L344_509
+  344.                                  if ( $I_L344_509 >= min( jmax, 2 + 2 * $I_L344_558 ) + -2 * $I_L344_558 ) exit
+  344.                               enddo
+  343.                               $I_L343_586 = 1 + $I_L343_586
+  348.                               if ( $I_L343_586 >= min( 1 + nlvlpx + -mlvl, 2 + 2 * $I_L343_566 ) + -2 * $I_L343_566 ) exit
+  348.                            enddo
+  345.                            $I_L345_546 = 1 + $I_L345_546
+  345.                            if ( $I_L345_546 >= 1 + max( 0, -1 + _rsh( 255 + imax, 8 ) ) ) exit
+  345.                         enddo
+  344.                         $I_L344_558 = 1 + $I_L344_558
+  349.                         if ( $I_L344_558 >= 1 + max( 0, -1 + _rsh( 1 + jmax, 1 ) ) ) exit
+  349.                      enddo
+  343.                      $I_L343_566 = 1 + $I_L343_566
+  343.                      if ( $I_L343_566 >= 1 + max( 0, -1 + _rsh( 2 + nlvlpx + -mlvl, 1 ) ) ) exit
+  343.                   enddo
+  343.                endif
+  343.             endif
+  343.          endif
+  351.          if ( jmax > 0 ) then
+  352.             if ( imax > 0 ) then
+  351.                $I_L351_489 = 0
+  351.                do
+  352.                   $I_L352_446 = 0
+  352. !dir$ ivdep
+  352. !dir$ loop_info (automatic) cache_nt( unk )
+  352.                   do
+  353.                      unk(1 + $I_L352_446, 1 + $I_L351_489, mlvl) = -unk(1 + $I_L352_446, 1 + $I_L351_489, 1 + mlvl) + 2.0 * tbar(1 + $I_L352_446, 1 + $I_L351_489, 2)
+  354.                      unk(1 + $I_L352_446, 1 + $I_L351_489, nlvlpp) = -unk(1 + $I_L352_446, 1 + $I_L351_489, nlvlp) + 2.0 * tbar(1 + $I_L352_446, 1 + $I_L351_489, mlvl)
+  355.                      $I_L352_446 = 1 + $I_L352_446
+  352.                      if ( $I_L352_446 >= imax ) exit
+  352.                   enddo
+  356.                   $I_L351_489 = 1 + $I_L351_489
+  355.                   if ( $I_L351_489 >= jmax ) exit
+  355.                enddo
+  355.             endif
+  355.          endif
+  357.          $F_A36 = lmax
+  357.          $F_A37 = jmax
+  357.          $F_A38 = imax
+  357.          if ( and( and( -$F_A37, -$F_A36 ), -$F_A38 ) < 0 ) then
+  357.             $I_L357_534 = 0
+  357.             do
+  357.                $I_L357_495 = 0
+  357.                do
+  357.                   $I_L357_460 = 0
+  357. !dir$ ivdep
+  357. !dir$ loop_info (automatic) cache_nt( aunk )
+  357.                   do
+  357.                      aunk(1 + $I_L357_460, 1 + $I_L357_495, 1 + $I_L357_534) = 0.0
+  357.                      $I_L357_460 = 1 + $I_L357_460
+  357.                      if ( $I_L357_460 >= $F_A38 ) exit
+  357.                   enddo
+  357.                   $I_L357_495 = 1 + $I_L357_495
+  357.                   if ( $I_L357_495 >= $F_A37 ) exit
+  357.                enddo
+  357.                $I_L357_534 = 1 + $I_L357_534
+  357.                if ( $I_L357_534 >= $F_A36 ) exit
+  357.             enddo
+  357.          endif
+  358.          if ( mlvl > 0 ) then
+  362.             $SC_at_I9 = at%dim_2%SM
+  362.             $SC_at_I8 = at%dim_2%EX
+  362.             $SC_at_I10 = at%dim_2%LB
+  362.             $SC_at_I6 = at%dim_1%EX
+  362.             $SC_at_I7 = at%dim_1%LB
+  359.             if ( nlvlpp > 0 ) then
+  360.                if ( jmax > 0 ) then
+  361.                   if ( imax > 0 ) then
+  360.                      $I_L360_576 = 0
+  360.                      do
+  358.                         $I_L358_572 = 0
+  358.                         do
+  359.                            $I_L359_568 = 0
+  359.                            do
+  361.                               $I_L361_560 = 0
+  361.                               do
+  360.                                  $I_L360_548 = 0
+  360. !dir$ shortloop16
+  360. !dir$ blocking_size( 2, 2 )
+  360.                                  do
+  358.                                     $I_L358_588 = 0
+  358. !dir$ shortloop16
+  358. !dir$ blocking_size( 2, 2 )
+  358.                                     do
+  359.                                        $I_L359_512 = 0
+  359. !dir$ shortloop16
+  359. !dir$ blocking_size( 2, 2 )
+  359.                                        do
+  361.                                           $SCA_at_I20 = (at%base_addr)(1 + $I_L358_588 + 2 * $I_L358_572, 1 + $I_L359_512 + 2 * $I_L359_568, 0)
+  361.                                           $I_L361_448 = 0
+  361. !dir$ ivdep
+  361. !dir$ blocking_size( 256, 256 )
+  361.                                           do
+  362.                                              aunk(1 + $I_L361_448 + 256 * $I_L361_560, 1 + $I_L360_548 + 2 * $I_L360_576, 1 + $I_L358_588 + 2 * $I_L358_572) = aunk(1 + $I_L361_448 + 256 * $I_L361_560, 1 + $I_L360_548 + 2 * $I_L360_576, 1 + $I_L358_588 + 2 * $I_L358_572) + $SCA_at_I20 * unk(1 + $I_L361_448 + 256 * $I_L361_560, 1 + $I_L360_548 + 2 * $I_L360_576, 1 + $I_L359_512 + 2 * $I_L359_568)
+  361.                                              $I_L361_448 = 1 + $I_L361_448
+  361.                                              if ( $I_L361_448 >= min( imax, 256 + 256 * $I_L361_560 ) + -256 * $I_L361_560 ) exit
+  361.                                           enddo
+  359.                                           $I_L359_512 = 1 + $I_L359_512
+  359.                                           if ( $I_L359_512 >= min( nlvlpp, 2 + 2 * $I_L359_568 ) + -2 * $I_L359_568 ) exit
+  359.                                        enddo
+  358.                                        $I_L358_588 = 1 + $I_L358_588
+  363.                                        if ( $I_L358_588 >= min( mlvl, 2 + 2 * $I_L358_572 ) + -2 * $I_L358_572 ) exit
+  363.                                     enddo
+  360.                                     $I_L360_548 = 1 + $I_L360_548
+  360.                                     if ( $I_L360_548 >= min( jmax, 2 + 2 * $I_L360_576 ) + -2 * $I_L360_576 ) exit
+  360.                                  enddo
+  361.                                  $I_L361_560 = 1 + $I_L361_560
+  364.                                  if ( $I_L361_560 >= 1 + max( 0, -1 + _rsh( 255 + imax, 8 ) ) ) exit
+  364.                               enddo
+  359.                               $I_L359_568 = 1 + $I_L359_568
+  359.                               if ( $I_L359_568 >= 1 + max( 0, -1 + _rsh( 1 + nlvlpp, 1 ) ) ) exit
+  359.                            enddo
+  358.                            $I_L358_572 = 1 + $I_L358_572
+  365.                            if ( $I_L358_572 >= 1 + max( 0, -1 + _rsh( 1 + mlvl, 1 ) ) ) exit
+  365.                         enddo
+  360.                         $I_L360_576 = 1 + $I_L360_576
+  360.                         if ( $I_L360_576 >= 1 + max( 0, -1 + _rsh( 1 + jmax, 1 ) ) ) exit
+  360.                      enddo
+  360.                   endif
+  360.                endif
+  360.             endif
+  360.          endif
+  367.          $F_A39 = lmax
+  367.          $F_A40 = jmax
+  367.          $F_A41 = imax
+  367.          if ( and( and( -$F_A40, -$F_A39 ), -$F_A41 ) < 0 ) then
+  367.             $I_L367_536 = 0
+  367.             do
+  367.                $I_L367_497 = 0
+  367.                do
+  367.                   $I_L367_462 = 0
+  367. !dir$ ivdep
+  367. !dir$ loop_info (automatic) cache_nt( tsvxix )
+  367.                   do
+  367.                      tsvxix(1 + $I_L367_462, 1 + $I_L367_497, 1 + $I_L367_536) = 0.0
+  367.                      $I_L367_462 = 1 + $I_L367_462
+  367.                      if ( $I_L367_462 >= $F_A41 ) exit
+  367.                   enddo
+  367.                   $I_L367_497 = 1 + $I_L367_497
+  367.                   if ( $I_L367_497 >= $F_A40 ) exit
+  367.                enddo
+  367.                $I_L367_536 = 1 + $I_L367_536
+  367.                if ( $I_L367_536 >= $F_A39 ) exit
+  367.             enddo
+  367.          endif
+  368.          if ( mlvl > 0 ) then
+  372.             $SC_ata_I14 = ata%dim_2%SM
+  372.             $SC_ata_I13 = ata%dim_2%EX
+  372.             $SC_ata_I15 = ata%dim_2%LB
+  372.             $SC_ata_I11 = ata%dim_1%EX
+  372.             $SC_ata_I12 = ata%dim_1%LB
+  370.             if ( jmax > 0 ) then
+  371.                if ( imax > 0 ) then
+  370.                   $I_L370_578 = 0
+  370.                   do
+  368.                      $I_L368_574 = 0
+  368.                      do
+  369.                         $I_L369_570 = 0
+  369.                         do
+  371.                            $I_L371_562 = 0
+  371.                            do
+  370.                               $I_L370_551 = 0
+  370. !dir$ shortloop16
+  370. !dir$ blocking_size( 2, 2 )
+  370.                               do
+  368.                                  $I_L368_590 = 0
+  368. !dir$ shortloop16
+  368. !dir$ blocking_size( 2, 2 )
+  368.                                  do
+  369.                                     $I_L369_515 = 0
+  369. !dir$ shortloop16
+  369. !dir$ blocking_size( 2, 2 )
+  369.                                     do
+  371.                                        $SCA_ata_I21 = (ata%base_addr)(1 + $I_L368_590 + 2 * $I_L368_574, 1 + $I_L369_515 + 2 * $I_L369_570, 0)
+  371.                                        $I_L371_451 = 0
+  371. !dir$ ivdep
+  371. !dir$ blocking_size( 256, 256 )
+  371.                                        do
+  372.                                           tsvxix(1 + $I_L371_451 + 256 * $I_L371_562, 1 + $I_L370_551 + 2 * $I_L370_578, 1 + $I_L368_590 + 2 * $I_L368_574) = tsvxix(1 + $I_L371_451 + 256 * $I_L371_562, 1 + $I_L370_551 + 2 * $I_L370_578, 1 + $I_L368_590 + 2 * $I_L368_574) + $SCA_ata_I21 * aunk(1 + $I_L371_451 + 256 * $I_L371_562, 1 + $I_L370_551 + 2 * $I_L370_578, 1 + $I_L369_515 + 2 * $I_L369_570)
+  371.                                           $I_L371_451 = 1 + $I_L371_451
+  371.                                           if ( $I_L371_451 >= min( imax, 256 + 256 * $I_L371_562 ) + -256 * $I_L371_562 ) exit
+  371.                                        enddo
+  369.                                        $I_L369_515 = 1 + $I_L369_515
+  369.                                        if ( $I_L369_515 >= min( mlvl, 2 + 2 * $I_L369_570 ) + -2 * $I_L369_570 ) exit
+  369.                                     enddo
+  368.                                     $I_L368_590 = 1 + $I_L368_590
+  373.                                     if ( $I_L368_590 >= min( mlvl, 2 + 2 * $I_L368_574 ) + -2 * $I_L368_574 ) exit
+  373.                                  enddo
+  370.                                  $I_L370_551 = 1 + $I_L370_551
+  370.                                  if ( $I_L370_551 >= min( jmax, 2 + 2 * $I_L370_578 ) + -2 * $I_L370_578 ) exit
+  370.                               enddo
+  371.                               $I_L371_562 = 1 + $I_L371_562
+  374.                               if ( $I_L371_562 >= 1 + max( 0, -1 + _rsh( 255 + imax, 8 ) ) ) exit
+  374.                            enddo
+  369.                            $I_L369_570 = 1 + $I_L369_570
+  369.                            if ( $I_L369_570 >= 1 + max( 0, -1 + _rsh( 1 + mlvl, 1 ) ) ) exit
+  369.                         enddo
+  368.                         $I_L368_574 = 1 + $I_L368_574
+  375.                         if ( $I_L368_574 >= 1 + max( 0, -1 + _rsh( 1 + mlvl, 1 ) ) ) exit
+  375.                      enddo
+  370.                      $I_L370_578 = 1 + $I_L370_578
+  370.                      if ( $I_L370_578 >= 1 + max( 0, -1 + _rsh( 1 + jmax, 1 ) ) ) exit
+  370.                   enddo
+  370.                endif
+  370.             endif
+  370.          endif
+  380.          $F_A42 = lmax
+  380.          $F_A43 = jmax
+  380.          $F_A44 = imax
+  380.          if ( and( and( -$F_A43, -$F_A42 ), -$F_A44 ) < 0 ) then
+  380.             $I_L380_538 = 0
+  380.             do
+  380.                $I_L380_499 = 0
+  380.                do
+  380.                   $I_L380_464 = 0
+  380. !dir$ ivdep
+  380. !dir$ loop_info (automatic) cache_nt( tsvxix )
+  380.                   do
+  380.                      tsv(1 + $I_L380_464, 1 + $I_L380_499, 1 + $I_L380_538) = gravbyrd * tsvxix(1 + $I_L380_464, 1 + $I_L380_499, 1 + $I_L380_538)
+  380.                      $I_L380_464 = 1 + $I_L380_464
+  380.                      if ( $I_L380_464 >= $F_A44 ) exit
+  380.                   enddo
+  380.                   $I_L380_499 = 1 + $I_L380_499
+  380.                   if ( $I_L380_499 >= $F_A43 ) exit
+  380.                enddo
+  380.                $I_L380_538 = 1 + $I_L380_538
+  380.                if ( $I_L380_538 >= $F_A42 ) exit
+  380.             enddo
+  380.          endif
+  221.          _free( t$54 )
+  221.       endif
+  382.       return
+  382.       end
+  382.       
+  385.       
+  385.       subroutine iminv( a, n, d, l, m )
+  439.       d = 1.0
+  441.       if ( n > 0 ) then
+  441.          $I_L441_136 = 0
+  441.          do
+  443.             l(1 + $I_L441_136) = ( 1 + $I_L441_136 )
+  444.             m(1 + $I_L441_136) = ( 1 + $I_L441_136 )
+  446.             $biga_S4 = a(1 + $I_L441_136 + n * $I_L441_136)
+  447.             $I_L447_128 = 0
+  447.             do
+  449.                $I_L449_102 = 0
+  449. !dir$ unroll 4
+  449.                do
+  451.                   if ( abs( $biga_S4 ) < abs( a(1 + $I_L449_102 + $I_L441_136 + n * $I_L447_128 + n * $I_L441_136) ) ) then
+  452.                      $biga_S4 = a(1 + $I_L449_102 + $I_L441_136 + n * $I_L447_128 + n * $I_L441_136)
+  453.                      l(1 + $I_L441_136) = ( 1 + $I_L449_102 + $I_L441_136 )
+  454.                      m(1 + $I_L441_136) = ( 1 + $I_L447_128 + $I_L441_136 )
+  454.                   endif
+  456.                   $I_L449_102 = 1 + $I_L449_102
+  455.                   if ( $I_L449_102 >= n + -$I_L441_136 ) exit
+  455.                enddo
+  457.                $I_L447_128 = 1 + $I_L447_128
+  456.                if ( $I_L447_128 >= n + -$I_L441_136 ) exit
+  456.             enddo
+  461.             $j_S5 = l(1 + $I_L441_136)
+  462.             if ( $j_S5 > ( 1 + $I_L441_136 ) ) then
+  464.                $I_L464_104 = 0
+  464. !dir$ unroll 4
+  464.                do
+  466.                   $hold_S7 = -a(1 + $I_L441_136 + n * $I_L464_104)
+  468.                   a(1 + $I_L441_136 + n * $I_L464_104) = a($j_S5 + n * $I_L464_104)
+  469.                   a($j_S5 + n * $I_L464_104) = $hold_S7
+  470.                   $I_L464_104 = 1 + $I_L464_104
+  464.                   if ( $I_L464_104 >= n ) exit
+  464.                enddo
+  464.             endif
+  475.             $i_S9 = m(1 + $I_L441_136)
+  476.             if ( $i_S9 > ( 1 + $I_L441_136 ) ) then
+  478.                $I_L478_106 = 0
+  478. !dir$ ivdep
+  478.                do
+  481.                   $hold_S11 = -a(1 + $I_L478_106 + n * $I_L441_136)
+  482.                   a(1 + $I_L478_106 + n * $I_L441_136) = a(1 + $I_L478_106 + -n + n * $i_S9)
+  483.                   a(1 + $I_L478_106 + -n + n * $i_S9) = $hold_S11
+  484.                   $I_L478_106 = 1 + $I_L478_106
+  478.                   if ( $I_L478_106 >= n ) exit
+  478.                enddo
+  478.             endif
+  489.             if ( $biga_S4 == 0.0 ) then
+  490.                d = 0.0
+  490.                goto 110
+  490.             endif
+  494.             $I_L494_59 = 0
+  499.             if ( 0 >= $I_L441_136 ) then
+  499.                goto 10
+  499.             else
+  494.                $I_L494_108 = 0
+  494. !dir$ ivdep
+  494.                do
+  497.                   a(1 + $I_L494_108 + n * $I_L441_136) = -( a(1 + $I_L494_108 + n * $I_L441_136) * 1.0/$biga_S4 )
+  499.                   $I_L494_108 = 1 + $I_L494_108
+  498.                   if ( $I_L494_108 >= min( $I_L441_136, n ) ) exit
+  498.                enddo
+  499.                $I_L494_59 = min( $I_L441_136, n )
+  499.                if ( $I_L441_136 < n ) then
+  499.    10             continue
+  499.                   if ( $I_L441_136 + -$I_L494_59 == 0 ) then
+  499.                      $I_L494_59 = 1 + $I_L494_59
+  499.                      if ( $I_L494_59 < n ) then
+  499.                         goto 20
+  499.                      endif
+  499.                   else
+  499.    20                continue
+  494.                      $I_L494_126 = 0
+  494. !dir$ ivdep
+  494.                      do
+  497.                         a(1 + $I_L494_59 + $I_L494_126 + n * $I_L441_136) = -( a(1 + $I_L494_59 + $I_L494_126 + n * $I_L441_136) * 1.0/$biga_S4 )
+  499.                         $I_L494_126 = 1 + $I_L494_126
+  498.                         if ( $I_L494_126 >= n + -$I_L494_59 ) exit
+  498.                      enddo
+  498.                   endif
+  498.                endif
+  498.             endif
+  503.             $I_L503_71 = 0
+  513.             if ( 0 >= $I_L441_136 ) then
+  513.                goto 30
+  513.             else
+  503.                $I_L503_130 = 0
+  503.                do
+  506.                   $I_L506_110 = 0
+  506. !dir$ unroll 4
+  506.                   do
+  510.                      a(1 + $I_L503_130 + n * $I_L506_110) = a(1 + $I_L503_130 + n * $I_L506_110) + a(1 + $I_L503_130 + n * $I_L441_136) * a(1 + $I_L441_136 + n * $I_L506_110)
+  512.                      $I_L506_110 = 1 + $I_L506_110
+  511.                      if ( $I_L506_110 >= min( $I_L441_136, n ) ) exit
+  511.                   enddo
+  512.                   $I_L506_61 = min( $I_L441_136, n )
+  512.                   if ( $I_L441_136 < n ) then
+  512.                      if ( $I_L441_136 + -min( $I_L441_136, n ) == 0 ) then
+  512.                         $I_L506_61 = 1 + min( $I_L441_136, n )
+  512.                         if ( 1 + min( $I_L441_136, n ) < n ) then
+  512.                            goto 70
+  512.                         endif
+  512.                      else
+  512.    70                   continue
+  506.                         $I_L506_120 = 0
+  506. !dir$ unroll 4
+  506.                         do
+  510.                            a(1 + $I_L503_130 + n * $I_L506_61 + n * $I_L506_120) = a(1 + $I_L503_130 + n * $I_L506_61 + n * $I_L506_120) + a(1 + $I_L503_130 + n * $I_L441_136) * a(1 + $I_L441_136 + n * $I_L506_61 + n * $I_L506_120)
+  512.                            $I_L506_120 = 1 + $I_L506_120
+  511.                            if ( $I_L506_120 >= n + -$I_L506_61 ) exit
+  511.                         enddo
+  511.                      endif
+  511.                   endif
+  513.                   $I_L503_130 = 1 + $I_L503_130
+  512.                   if ( $I_L503_130 >= min( $I_L441_136, n ) ) exit
+  512.                enddo
+  513.                $I_L503_71 = min( $I_L441_136, n )
+  513.                if ( $I_L441_136 < n ) then
+  513.    30             continue
+  513.                   if ( $I_L441_136 + -$I_L503_71 == 0 ) then
+  513.                      $I_L503_71 = 1 + $I_L503_71
+  513.                      if ( $I_L503_71 < n ) then
+  513.                         goto 40
+  513.                      endif
+  513.                   else
+  513.    40                continue
+  503.                      $I_L503_134 = 0
+  503.                      do
+  506.                         $I_L506_61 = 0
+  512.                         if ( 0 >= $I_L441_136 ) then
+  512.                            goto 50
+  512.                         else
+  506.                            $I_L506_124 = 0
+  506. !dir$ unroll 4
+  506.                            do
+  510.                               a(1 + $I_L503_71 + $I_L503_134 + n * $I_L506_124) = a(1 + $I_L503_71 + $I_L503_134 + n * $I_L506_124) + a(1 + $I_L503_71 + $I_L503_134 + n * $I_L441_136) * a(1 + $I_L441_136 + n * $I_L506_124)
+  512.                               $I_L506_124 = 1 + $I_L506_124
+  511.                               if ( $I_L506_124 >= min( $I_L441_136, n ) ) exit
+  511.                            enddo
+  512.                            $I_L506_61 = min( $I_L441_136, n )
+  512.                            if ( $I_L441_136 < n ) then
+  512.    50                         continue
+  512.                               if ( $I_L441_136 + -$I_L506_61 == 0 ) then
+  512.                                  $I_L506_61 = 1 + $I_L506_61
+  512.                                  if ( $I_L506_61 < n ) then
+  512.                                     goto 60
+  512.                                  endif
+  512.                               else
+  512.    60                            continue
+  506.                                  $I_L506_122 = 0
+  506. !dir$ unroll 4
+  506.                                  do
+  510.                                     a(1 + $I_L503_71 + $I_L503_134 + n * $I_L506_61 + n * $I_L506_122) = a(1 + $I_L503_71 + $I_L503_134 + n * $I_L506_61 + n * $I_L506_122) + a(1 + $I_L503_71 + $I_L503_134 + n * $I_L441_136) * a(1 + $I_L441_136 + n * $I_L506_61 + n * $I_L506_122)
+  512.                                     $I_L506_122 = 1 + $I_L506_122
+  511.                                     if ( $I_L506_122 >= n + -$I_L506_61 ) exit
+  511.                                  enddo
+  511.                               endif
+  511.                            endif
+  511.                         endif
+  513.                         $I_L503_134 = 1 + $I_L503_134
+  512.                         if ( $I_L503_134 >= n + -$I_L503_71 ) exit
+  512.                      enddo
+  512.                   endif
+  512.                endif
+  512.             endif
+  518.             $I_L518_63 = 0
+  523.             if ( 0 >= $I_L441_136 ) then
+  523.                goto 80
+  523.             else
+  518.                $I_L518_112 = 0
+  518. !dir$ ivdep
+  518.                do
+  521.                   a(1 + $I_L441_136 + n * $I_L518_112) = ( a(1 + $I_L441_136 + n * $I_L518_112) * 1.0/$biga_S4 )
+  523.                   $I_L518_112 = 1 + $I_L518_112
+  522.                   if ( $I_L518_112 >= min( $I_L441_136, n ) ) exit
+  522.                enddo
+  523.                $I_L518_63 = min( $I_L441_136, n )
+  523.                if ( $I_L441_136 < n ) then
+  523.    80             continue
+  523.                   if ( $I_L441_136 + -$I_L518_63 == 0 ) then
+  523.                      $I_L518_63 = 1 + $I_L518_63
+  523.                      if ( $I_L518_63 < n ) then
+  523.                         goto 90
+  523.                      endif
+  523.                   else
+  523.    90                continue
+  518.                      $I_L518_118 = 0
+  518. !dir$ ivdep
+  518.                      do
+  521.                         a(1 + $I_L441_136 + n * $I_L518_63 + n * $I_L518_118) = ( a(1 + $I_L441_136 + n * $I_L518_63 + n * $I_L518_118) * 1.0/$biga_S4 )
+  523.                         $I_L518_118 = 1 + $I_L518_118
+  522.                         if ( $I_L518_118 >= n + -$I_L518_63 ) exit
+  522.                      enddo
+  522.                   endif
+  522.                endif
+  522.             endif
+  531.             a(1 + $I_L441_136 + n * $I_L441_136) = 1.0/$biga_S4
+  527.             d = d * $biga_S4
+  532.             $I_L441_136 = 1 + $I_L441_136
+  523.             if ( $I_L441_136 >= n ) exit
+  523.          enddo
+  523.          goto 100
+  523.       else
+  523.   100    continue
+  536.          if ( 1 + -n < 0 ) then
+  541.             if ( n > 0 ) then
+  536.                $I_L536_132 = 0
+  536.                do
+  537.                   $i_S19 = l(-1 + n + -$I_L536_132)
+  538.                   if ( $i_S19 > ( -1 + n + -$I_L536_132 ) ) then
+  541.                      $I_L541_114 = 0
+  541. !dir$ ivdep
+  541.                      do
+  543.                         $hold_S21 = a(1 + $I_L541_114 + -( n * $I_L536_132 ) + n * n + -2 * n)
+  545.                         a(1 + $I_L541_114 + -( n * $I_L536_132 ) + n * n + -2 * n) = -a(1 + $I_L541_114 + -n + n * $i_S19)
+  546.                         a(1 + $I_L541_114 + -n + n * $i_S19) = $hold_S21
+  547.                         $I_L541_114 = 1 + $I_L541_114
+  541.                         if ( $I_L541_114 >= n ) exit
+  541.                      enddo
+  541.                   endif
+  549.                   $j_S22 = m(-1 + n + -$I_L536_132)
+  550.                   if ( $j_S22 > ( -1 + n + -$I_L536_132 ) ) then
+  552.                      $I_L552_116 = 0
+  552.                      if ( ( mod( 1 + $j_S22 + $I_L536_132 + -n, n ) == 0 .and. abs( ( 1 + $j_S22 + $I_L536_132 + -n ) / n ) <= -1 + n ) /= 0 ) then
+  552.                         do
+  554.                            $hold_S24 = a(-1 + n + -$I_L536_132 + n * $I_L552_116)
+  556.                            a(-1 + n + -$I_L536_132 + n * $I_L552_116) = -a($j_S22 + n * $I_L552_116)
+  557.                            a($j_S22 + n * $I_L552_116) = $hold_S24
+  558.                            $I_L552_116 = 1 + $I_L552_116
+  552.                            if ( $I_L552_116 >= n ) exit
+  552.                         enddo
+  552.                      else
+  552. !dir$ ivdep safevl = 2
+  552.                         do
+  554.                            $hold_S24 = a(-1 + n + -$I_L536_132 + n * $I_L552_116)
+  556.                            a(-1 + n + -$I_L536_132 + n * $I_L552_116) = -a($j_S22 + n * $I_L552_116)
+  557.                            a($j_S22 + n * $I_L552_116) = $hold_S24
+  558.                            $I_L552_116 = 1 + $I_L552_116
+  552.                            if ( $I_L552_116 >= n ) exit
+  552.                         enddo
+  552.                      endif
+  552.                   endif
+  560.                   $I_L536_132 = 1 + $I_L536_132
+  559.                   if ( $I_L536_132 >= -1 + n ) exit
+  559.                enddo
+  559.             endif
+  559.          endif
+  559.       endif
+  559.   110 continue
+  562.       return
+  562.       end
+  562.       
+    6.       
+    6.       module gausspressure
+    6.       end
+    6.       

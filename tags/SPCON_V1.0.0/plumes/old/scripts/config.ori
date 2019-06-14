@@ -1,0 +1,41 @@
+NMEMB     : 15
+TRUNCATION: T126
+LEVELS    : 28
+LABELI    : 2003120712
+LABELF    : 2003121912
+NPMX      : 284
+NFSF      : 10
+NKFM      : 0
+IMAX      : 384
+JMAX      : 192
+DATAINDIR : /gfs/dk00/mod_glob/oens/model/dataout/T126L28
+DATAOUTDIR: /gfs/dk00/mod_glob/oens/plumes/dataout/T126L28
+NAMEF_PRE : GPOS
+NAMEH_PRE : GFGH
+NAMEM_PRE : GFGN
+EXTP      : P.icn
+EXTH      : F.unf
+EXDH      : F.dir
+EXTM      : M.unf
+EXTC      : ctl
+UNITFILE  : aunits 
+DELTAT    : 600
+DAYSPREV  : 12
+DIVBYVAR  : 100
+DELTATOUT : 3600
+NUMTHREADS: 4
+
+#####################################################################
+AREA LIVRE PARA COMENTARIOS:
+27= aunits
+28= DATAINDIR//${NAMEH}NMC${LABELI}${LABELF}${EXDH}.${TRUNC}${LEV}
+29= DATAINDIR//${NAMEF}NMC${LABELI}${LABELI}${EXTP}.${TRUNC}${LEV}
+30...= DATAINDIR//${NAMEH}${n}P${LABELI}${LABELF}${EXTH}.${TRUNC}${LEV}
+       onde n=1...(NMEMB-1)/2
+       DATAINDIR//${NAMEH}${n}N${LABELI}${LABELF}${EXTH}.${TRUNC}${LEV}
+       onde n=1...(NMEMB-1)/2
+       DATAINDIR//${NAMEH}NMC${LABELI}${LABELF}${EXTH}.${TRUNC}${LEV}
+       
+
+
+

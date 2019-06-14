@@ -1,0 +1,161 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  GwddDriver.f90
+       !        File                  :  GwddDriver.opt
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   44.       
+   44.       subroutine initgwdddriver( kmax, si )
+   37.       t$1 = ( 1 + kmax )
+   40.       t$7 = _zla( 0, ( 1 + kmax ) )
+   42.       call initgwddschalpert( si(1), kmax )
+   44.       return
+   44.       end
+   44.       
+   86.       
+   86.       subroutine gwdd_driver( ps, gu, gv, gt, chug, chvg, xdrag, ydrag, var, varcut, sigml, sig, delsig, ncols, kmax, latco )
+   49.       t$2 = ncols
+   55.       t$8 = _zla( 0, ncols )
+   49.       t$3 = kmax
+   49.       t$9 = _zla( 0, ncols )
+   56.       t$10 = _zla( 0, kmax )
+   49.       t$11 = _zla( 0, ncols ) * _zla( 0, kmax )
+   49.       t$4 = ( 1 + kmax )
+   65.       t$12 = _zla( 0, ( 1 + kmax ) )
+   69.       call gwddschalpert( ps(1), gu(1, 1), gv(1, 1), gt(1, 1), chug(1, 1), chvg(1, 1), xdrag(1), ydrag(1), var(1), varcut, sigml(1), sig(1), delsig(1), ncols, kmax )
+   76.       if ( startstordiag /= .false. ) then
+   77.          call gwdddiagnstorage( latco, ncols, kmax, xdrag(1), ydrag(1), chug(1, 1), chvg(1, 1) )
+   77.       endif
+   82.       t$17 = isgridhistoryon
+   86.       return
+   86.       end
+   86.       
+   88.       
+   88.       subroutine gwddgridhistorystorage
+   92.       return
+   92.       end
+   92.       
+  111.       
+  111.       subroutine gwdddiagnstorage( latco, ncols, kmax, xdrag, ydrag, chug, chvg )
+   95.       t$5 = ncols
+  101.       t$13 = _zla( 0, ncols )
+   95.       t$6 = kmax
+   95.       t$14 = _zla( 0, ncols )
+  103.       t$15 = _zla( 0, kmax )
+   95.       t$16 = _zla( 0, ncols ) * _zla( 0, kmax )
+  106.       if ( (dodia%base_addr)(43, 0) /= .false. ) then
+  106. !dir$ suppress xdrag(1)
+  106.          t$18 = $_StaticDV_P0
+  106.          t$18%base_addr = pointer to array[1] of real (kind=8)( loc( xdrag(1) ) )
+  106.          t$18%header%el_len = 64
+  106.          t$18%header%assoc = 1
+  106.          t$18%header%ptr_alloc = 0
+  106.          t$18%header%p_or_a = 0
+  106.          t$18%header%a_contig = 1
+  106.          t$18%header%n_dim = 1
+  106.          t$18%header%orig_base = 0
+  106.          t$18%header%orig_size = 0
+  106.          t$18%header%n_codim = 0
+  106.          t$18%header%dv_versn = 2
+  106.          t$18%header%dv_smunit = 64
+  106.          t$18%header%d_type = 0
+  106.          t$18%header%n_params = 0
+  106.          t$18%header%d_type_idx = 13
+  106.          t$18%dim_1%LB = 1
+  106.          t$18%dim_1%EX = _zla( 0, ncols )
+  106.          t$18%dim_1%SM = 1
+  106.          call updia1d( t$18, 43, latco )
+  106.       endif
+  107.       if ( (dodia%base_addr)(44, 0) /= .false. ) then
+  107. !dir$ suppress ydrag(1)
+  107.          t$19 = $_StaticDV_P1
+  107.          t$19%base_addr = pointer to array[1] of real (kind=8)( loc( ydrag(1) ) )
+  107.          t$19%header%el_len = 64
+  107.          t$19%header%assoc = 1
+  107.          t$19%header%ptr_alloc = 0
+  107.          t$19%header%p_or_a = 0
+  107.          t$19%header%a_contig = 1
+  107.          t$19%header%n_dim = 1
+  107.          t$19%header%orig_base = 0
+  107.          t$19%header%orig_size = 0
+  107.          t$19%header%n_codim = 0
+  107.          t$19%header%dv_versn = 2
+  107.          t$19%header%dv_smunit = 64
+  107.          t$19%header%d_type = 0
+  107.          t$19%header%n_params = 0
+  107.          t$19%header%d_type_idx = 13
+  107.          t$19%dim_1%LB = 1
+  107.          t$19%dim_1%EX = _zla( 0, ncols )
+  107.          t$19%dim_1%SM = 1
+  107.          call updia1d( t$19, 44, latco )
+  107.       endif
+  108.       if ( (dodia%base_addr)(45, 0) /= .false. ) then
+  108. !dir$ suppress chug(1, 1)
+  108.          t$20 = $_StaticDV_P2
+  108.          t$20%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( chug(1, 1) ) )
+  108.          t$20%header%el_len = 64
+  108.          t$20%header%assoc = 1
+  108.          t$20%header%ptr_alloc = 0
+  108.          t$20%header%p_or_a = 0
+  108.          t$20%header%a_contig = 1
+  108.          t$20%header%n_dim = 2
+  108.          t$20%header%orig_base = 0
+  108.          t$20%header%orig_size = 0
+  108.          t$20%header%n_codim = 0
+  108.          t$20%header%dv_versn = 2
+  108.          t$20%header%dv_smunit = 64
+  108.          t$20%header%d_type = 0
+  108.          t$20%header%n_params = 0
+  108.          t$20%header%d_type_idx = 13
+  108.          t$20%dim_1%LB = 1
+  108.          t$20%dim_1%EX = _zla( 0, ncols )
+  108.          t$20%dim_1%SM = 1
+  108.          t$20%dim_2%LB = 1
+  108.          t$20%dim_2%EX = _zla( 0, kmax )
+  108.          t$20%dim_2%SM = _zla( 0, ncols )
+  108.          call updia2d( t$20, 45, latco )
+  108.       endif
+  109.       if ( (dodia%base_addr)(46, 0) /= .false. ) then
+  109. !dir$ suppress chvg(1, 1)
+  109.          t$21 = $_StaticDV_P3
+  109.          t$21%base_addr = pointer to array[1] of array[1] of real (kind=8)( loc( chvg(1, 1) ) )
+  109.          t$21%header%el_len = 64
+  109.          t$21%header%assoc = 1
+  109.          t$21%header%ptr_alloc = 0
+  109.          t$21%header%p_or_a = 0
+  109.          t$21%header%a_contig = 1
+  109.          t$21%header%n_dim = 2
+  109.          t$21%header%orig_base = 0
+  109.          t$21%header%orig_size = 0
+  109.          t$21%header%n_codim = 0
+  109.          t$21%header%dv_versn = 2
+  109.          t$21%header%dv_smunit = 64
+  109.          t$21%header%d_type = 0
+  109.          t$21%header%n_params = 0
+  109.          t$21%header%d_type_idx = 13
+  109.          t$21%dim_1%LB = 1
+  109.          t$21%dim_1%EX = _zla( 0, ncols )
+  109.          t$21%dim_1%SM = 1
+  109.          t$21%dim_2%LB = 1
+  109.          t$21%dim_2%EX = _zla( 0, kmax )
+  109.          t$21%dim_2%SM = _zla( 0, ncols )
+  109.          call updia2d( t$21, 46, latco )
+  109.       endif
+  111.       return
+  111.       end
+  111.       
+    6.       
+    6.       module gwdddriver
+    6.       end
+    6.       

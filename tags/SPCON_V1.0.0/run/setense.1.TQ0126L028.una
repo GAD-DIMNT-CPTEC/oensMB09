@@ -1,0 +1,54 @@
+#!/bin/bash -x
+#
+#************************************************************#
+#                                                            #
+#     Name:        setenseTQ0126L028.una        #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  ensemble scripts.                         #
+#                                                            #
+#************************************************************#
+#
+#  At SX6 Both the output (stdout) and the error
+#  messages (stderr) are written to the same file
+#
+#$ -o crow:/scratch/p01211/oens-1.0.0/run/setout/setense.1.TQ0126L028.una.2010101816:36.out
+#$ -j o
+#
+#
+cd /scratch/p01211/oens-1.0.0/run
+#
+#   Copy the initial conditions from deterministic forecast datain to
+#   ensemble forecast datain
+#
+cp /scratch/p01211/oens-1.0.0/model/datain/SSTWeekly20040326.G* /scratch/p01211/oens-1.0.0/model/datain
+#PKUBOTA cp /scratch/p01211/oens-1.0.0/model/datain/TopoVariance.G00064 /scratch/p01211/oens-1.0.0/pre/dataout/TQ0126
+
+
+#cp /scratch/p01211/oens-1.0.0/pre/dataout/TQ0126/orgwav.TQ0126 /scratch/p01211/oens-1.0.0/pre/dataout/TQ0126
+#
+cd /scratch/p01211/oens-1.0.0/run
+# Script de recomposicao da analise 
+echo "\n+++\n+++ runrecanl1.una run 126 28 ANLNMC 2004032600\n+++\n"
+
+/scratch/p01211/oens-1.0.0/run/runrecanl1.una run 126 28 ANLNMC 2004032600 
+
+#
+# Script de geracao das perturbacoes randomicas
+echo "\n+++\n+++ runrdpt1.una run 7 126 28 2004032600 NO NMC\n+++\n"
+/scratch/p01211/oens-1.0.0/run/runrdpt1.una run 7 126 28 2004032600 NO NMC
+#
+# Script de decomposicao das perturbacoes
+echo "\n+++\n+++ rundrpt1.una run 7 126 28 2004032600 NO\n+++\n"
+/scratch/p01211/oens-1.0.0/run/rundrpt1.una run 7 126 28 2004032600 NO NMC
+
+
+
+# 
+# Script runctrpntg roda o modelo (controle)
+# RODAR SEPARADO PARA USAR 4 PROCESSADORES.
+#echo "\n+++\n+++ runctrpntg.una 126 28 2004032600 2004032712 sstwkl\n+++\n"
+#runctrpntg1.una 126 28 2004032600 2004032712 sstwkl
+
+exit 0

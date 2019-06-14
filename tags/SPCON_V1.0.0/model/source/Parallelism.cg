@@ -1,0 +1,256 @@
+       !        
+       !        Cray Inc. Decompilation
+       !        WARNING - This output is provided for information only.
+       !        
+       !        Cray Inc. reserves the right to change the format of this
+       !        information at any time and does not guarantee the
+       !        readability or accuracy of this information.
+       !        
+       !        This information may not be compilable and corresponds to
+       !        the internal representation of the program during the
+       !        optimization phase of the compilation process.
+       !        
+       !        Source                :  Parallelism.f90
+       !        File                  :  Parallelism.cg
+       !        Format                :  Fortran
+       !        Target                :  X86, 64-bit
+       !        
+   57.       
+   57.       subroutine createparallelism
+   70.       call mpi_init( ierror )
+   71.       $ierror_S0 = ierror
+   71.       if ( $ierror_S0 /= 0 ) then
+   72.          $_StackCntrl_O2 = $_StaticCntrl_O1
+   72.          1[loc( $_StackCntrl_O2 ),0].L = loc( substr[caux,0:4] )
+   72.          $_StackIolist_O4 = $_StaticIolist_O3
+   72.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O4 ),0].L ) ), 8 ),0].L = loc( ierror )
+   72.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O4 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+   73.          substr[t$36,0:45] = //( '**(CreateParallelism)** MPI_INIT returns ', substr[caux,0:4] )
+   73.          call fatalerror( substr[t$36,0:45] )
+   73.       endif
+   78.       $Con_P15 = 1140850688
+   78.       call mpi_comm_size( $Con_P15, 0[loc( maxnodes ),0], ierror )
+   79.       $ierror_S1 = ierror
+   79.       if ( $ierror_S1 /= 0 ) then
+   80.          $_StackCntrl_O2 = $_StaticCntrl_O6
+   80.          1[loc( $_StackCntrl_O2 ),0].L = loc( substr[caux,0:4] )
+   80.          $_StackIolist_O8 = $_StaticIolist_O7
+   80.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O8 ),0].L ) ), 8 ),0].L = loc( ierror )
+   80.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O8 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+   81.          substr[t$37,0:50] = //( '**(CreateParallelism)** MPI_COMM_SIZE returns ', substr[caux,0:4] )
+   81.          call fatalerror( substr[t$37,0:50] )
+   81.       endif
+   86.       $Con_P15 = 1140850688
+   86.       call mpi_comm_rank( $Con_P15, 6[loc( maxnodes ),0], ierror )
+   87.       $ierror_S2 = ierror
+   87.       if ( $ierror_S2 /= 0 ) then
+   88.          $_StackCntrl_O2 = $_StaticCntrl_O9
+   88.          1[loc( $_StackCntrl_O2 ),0].L = loc( substr[caux,0:4] )
+   88.          $_StackIolist_O11 = $_StaticIolist_O10
+   88.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O11 ),0].L ) ), 8 ),0].L = loc( ierror )
+   88.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O11 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+   89.          substr[t$38,0:50] = //( '**(CreateParallelism)** MPI_COMM_RANK returns ', substr[caux,0:4] )
+   89.          call fatalerror( substr[t$38,0:50] )
+   89.       endif
+   94.       call mpi_get_processor_name( substr[pname,0:127], compname, ierror )
+   95.       $ierror_S3 = ierror
+   95.       if ( $ierror_S3 /= 0 ) then
+   96.          $_StackCntrl_O2 = $_StaticCntrl_O12
+   96.          1[loc( $_StackCntrl_O2 ),0].L = loc( substr[caux,0:4] )
+   96.          $_StackIolist_O14 = $_StaticIolist_O13
+   96.          0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O14 ),0].L ) ), 8 ),0].L = loc( ierror )
+   96.          _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O14 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+   97.          substr[t$39,0:59] = //( '**(CreateParallelism)** MPI_GET_PROCESSOR_NAME retorna ', substr[caux,0:4] )
+   97.          call fatalerror( substr[t$39,0:59] )
+   97.       endif
+  103.       numthreads = omp_get_max_threads
+  107.       $IOitem_O0 = 0[loc( maxnodes ),0] * numthreads
+  107.       $_StackIolist_O17 = $_StaticIolist_O16
+  107.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O17 ),0].L ) ), 8 ),0].L = loc( $IOitem_O0 )
+  107.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O15 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O17 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  108.       $_StackIolist_O20 = $_StaticIolist_O19
+  108.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O20 ),0].L ) ), 8 ),0].L = loc( 6[loc( maxnodes ),0] )
+  108.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O18 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O20 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  112.       10[loc( maxnodes ),0] = 30
+  116.       substr[namedump,0:14] = //( 'Dump.', //( substr[cthisproc,0:4], //( '.', substr[cnproc,0:4] ) ) )
+  117.       t$42 = 30
+  117.       substr[t$43,0:7] = 'REPLACE'
+  117.       0[loc( t$44 ),0].L = 0x100000000000000L
+  117. !dir$ suppress t$42
+  117.       1[loc( t$44 ),0].L = int( loc( t$42 ), 8 )
+  117.       2[loc( t$44 ),0].L = 0
+  117.       3[loc( t$44 ),0].L = 0
+  117. !dir$ suppress substr[namedump,0:14]
+  117.       4[loc( t$44 ),0].L = int( loc( substr[namedump,0:14] ), 8 )
+  117.       5[loc( t$44 ),0].L = 14
+  117. !dir$ suppress substr[t$43,0:7]
+  117.       6[loc( t$44 ),0].L = int( loc( substr[t$43,0:7] ), 8 )
+  117.       7[loc( t$44 ),0].L = 7
+  117.       8[loc( t$44 ),0].L = 0
+  117.       10[loc( t$44 ),0].L = 0
+  117.       12[loc( t$44 ),0].L = 0
+  117.       13[loc( t$44 ),0].L = 0
+  117.       15[loc( t$44 ),0].L = 0
+  117.       17[loc( t$44 ),0].L = 0
+  117.       19[loc( t$44 ),0].L = 0
+  117.       21[loc( t$44 ),0].L = 0
+  117.       23[loc( t$44 ),0].L = 0
+  117.       24[loc( t$44 ),0].L = 0
+  117.       26[loc( t$44 ),0].L = 0
+  117.       28[loc( t$44 ),0].L = 0
+  117.       30[loc( t$44 ),0].L = 0
+  117.       32[loc( t$44 ),0].L = 0
+  117.       34[loc( t$44 ),0].L = 0
+  117.       t$41 = _open( t$44 )
+  121.       $_StackIolist_O23 = $_StaticIolist_O22
+  121.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O23 ),0].L ) ), 8 ),0].L = loc( 0[loc( maxnodes ),0] )
+  121.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O21 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O23 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  122.       $_StackIolist_O26 = $_StaticIolist_O25
+  122.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O26 ),0].L ) ), 8 ),0].L = loc( 6[loc( maxnodes ),0] )
+  122.       _fwf( pointer to integer (kind=8)( loc( $_StaticCntrl_O24 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O26 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  123.       $_StackCntrl_O2 = $_StaticCntrl_O27
+  123.       1[loc( $_StackCntrl_O2 ),0].L = loc( substr[caux,0:4] )
+  123.       $_StackIolist_O29 = $_StaticIolist_O28
+  123.       0[int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O29 ),0].L ) ), 8 ),0].L = loc( numthreads )
+  123.       _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O29 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  127.       _f90_adjustl( substr[t$45,0:4], substr[cthisproc,0:4] )
+  128.       _f90_adjustl( substr[t$46,0:4], substr[cnproc,0:4] )
+  129.       _f90_adjustl( substr[t$47,0:4], substr[caux,0:4] )
+  127.       substr[t$48,0:23] = '**(CreateParallelism)**'
+  127.       $CS_0 = max( 0, compname )
+  127.       t$49 = ( _ltrim( substr[t$47,0:4] ) ) + 52 + $CS_0 + ( _ltrim( substr[t$45,0:4] ) ) + ( _ltrim( substr[t$46,0:4] ) )
+  129.       t$51 = int( _alloc( max( 0, t$49 ) ), 8 )
+  129.       $LCS_0 = max( 0, t$49 )
+  129.       substr[0,t$51:$LCS_0] = //( ' Process ', //( substr[t$45,0:_ltrim( substr[t$45,0:4] )], //( ' (', //( substr[pname,0:$CS_0], //( ') among ', //( substr[t$46,0:_ltrim( substr[t$46,0:4] )], //( ' processes with ', //( substr[t$47,0:_ltrim( substr[t$47,0:4] )], ' threads is alive' ) ) ) ) ) ) ) )
+  127.       call msgone( substr[t$48,0:23], substr[0,t$51:$LCS_0] )
+  129.       _free( t$51 )
+  131.       _f90_adjustl( substr[t$52,0:4], substr[cthisproc,0:4] )
+  132.       _f90_adjustl( substr[t$53,0:4], substr[cnproc,0:4] )
+  133.       _f90_adjustl( substr[t$54,0:4], substr[caux,0:4] )
+  131.       substr[t$55,0:23] = '**(CreateParallelism)**'
+  131.       t$56 = ( _ltrim( substr[t$54,0:4] ) ) + 52 + $CS_0 + ( _ltrim( substr[t$52,0:4] ) ) + ( _ltrim( substr[t$53,0:4] ) )
+  133.       t$58 = int( _alloc( max( 0, t$56 ) ), 8 )
+  133.       $LCS_1 = max( 0, t$56 )
+  133.       substr[0,t$58:$LCS_1] = //( ' Process ', //( substr[t$52,0:_ltrim( substr[t$52,0:4] )], //( ' (', //( substr[pname,0:$CS_0], //( ') among ', //( substr[t$53,0:_ltrim( substr[t$53,0:4] )], //( ' processes with ', //( substr[t$54,0:_ltrim( substr[t$54,0:4] )], ' threads is alive' ) ) ) ) ) ) ) )
+  131.       call msgdump( substr[t$55,0:23], substr[0,t$58:$LCS_1] )
+  133.       _free( t$58 )
+  135.       return
+  135.       end
+  135.       
+  138.       
+  138.       subroutine createfouriergroup( mygroup_four, myid_four )
+  145.       $Con_P0 = 1140850688
+  145.       call mpi_comm_split( $Con_P0, 0[loc( mygroup_four ),0], 0[loc( myid_four ),0], comm_four, ierror )
+  147.       return
+  147.       end
+  147.       
+  151.       
+  151.       subroutine msg( unit, h, message )
+  151.       t$27 = int( _alloc( max( 0, _len( h ) + _len( message ) ) ), 8 )
+  162.       $thisthread_S0 = omp_get_thread_num
+  163.       if ( $thisthread_S0 == 0 ) then
+  164.          $LCS_0 = max( 0, ( _len( h ) + _len( message ) ) )
+  164.          substr[0,t$27:$LCS_0] = //( substr[h,0:_ltrim( substr[h,0:_len( h )] )], substr[message,0:_ltrim( substr[message,0:_len( message )] )] )
+  165.          fullmsglen = _ltrim( substr[0,t$27:$LCS_0] )
+  166.          $MR_fullmsglen_0 = fullmsglen
+  166.          $LCS_1 = _ash( $MR_fullmsglen_0 + _rsh( _ash( $MR_fullmsglen_0, 6 ), 25 ), 7 )
+  166.          $linecount_S2 = $LCS_1
+  167.          if ( _lsh( $MR_fullmsglen_0 / 128, 7 ) < $MR_fullmsglen_0 ) then
+  168.             $linecount_S2 = 1 + $LCS_1
+  168.          endif
+  170.          if ( $linecount_S2 > 0 ) then
+  170.             $I_L170_S6 = 0
+  173.             $SR_S5 = t$27
+  173.             $SR_S4 = 0
+  173.             $SR_S3 = 128
+  175.             $LIS_E4 = $linecount_S2
+  173.             $LIS_E3 = int( pointer to c_union Pointer_union( loc( 3[loc( $_StackIolist_O4 ),0].L ) ), 8 )
+  173.             do
+  173.                $Unit_temp_O0 = 0[loc( unit ),0]
+  173.                $_StackCntrl_O2 = $_StaticCntrl_O1
+  173.                1[loc( $_StackCntrl_O2 ),0].L = loc( $Unit_temp_O0 )
+  173.                $_StackIolist_O4 = $_StaticIolist_O3
+  173.                0[$LIS_E3,0].L = loc( substr[0,$SR_S5:max( 0, ( $SR_S4 + ( min( $MR_fullmsglen_0, $SR_S3 ) ) ) )] )
+  173.                _fwf( pointer to integer (kind=8)( loc( $_StackCntrl_O2 ) ), pointer to integer (kind=8)( loc( (&)0[loc( $_StackIolist_O4 ),0].L ) ), pointer to integer (kind=8)( loc( $_IO_Lib_Stack_O5 ) ) )
+  174.                call flush( 0[loc( unit ),0], 0 )
+  173.                $SR_S5 = 128 + $SR_S5
+  173.                $SR_S4 = -128 + $SR_S4
+  173.                $SR_S3 = 128 + $SR_S3
+  175.                $I_L170_S6 = 1 + $I_L170_S6
+  175.                if ( $I_L170_S6 >= $LIS_E4 ) exit
+  175.             enddo
+  175.          endif
+  175.       endif
+  151.       _free( t$27 )
+  177.       return
+  177.       end
+  177.       
+  185.       
+  185.       subroutine msgdump( h, message )
+  187.       call msg( unitdump, substr[h,0:_len( h )], substr[message,0:_len( message )] )
+  188.       return
+  188.       end
+  188.       
+  196.       
+  196.       subroutine msgout( h, message )
+  198.       $Con_P0 = 6
+  198.       call msg( $Con_P0, substr[h,0:_len( h )], substr[message,0:_len( message )] )
+  199.       return
+  199.       end
+  199.       
+  207.       
+  207.       subroutine msgone( h, message )
+  209.       if ( myid == 0 ) then
+  210.          $Con_P1 = 6
+  210.          call msg( $Con_P1, substr[h,0:_len( h )], substr[message,0:_len( message )] )
+  210.       endif
+  212.       return
+  212.       end
+  212.       
+  220.       
+  220.       subroutine fatalerror( message )
+  225.       call msgout( substr[h,0:10], substr[message,0:_len( message )] )
+  226.       call msgdump( substr[h,0:10], substr[message,0:_len( message )] )
+  227.       $Con_P0 = 1140850688
+  227.       call mpi_abort( $Con_P0, ierror, ierr )
+  228.       substr[t$63,0:4] = ' '
+  228.       call _stop( substr[t$63,0:1] )
+  229.       return
+  229.       end
+  229.       
+  237.       
+  237.       subroutine destroyparallelism( message )
+  241.       _f90_adjustl( substr[t$64,0:4], substr[cthisproc,0:4] )
+  241.       t$65 = _ltrim( substr[t$64,0:4] ) + 10 + _len( message )
+  241.       t$67 = int( _alloc( max( 0, t$65 ) ), 8 )
+  241.       $LCS_0 = max( 0, t$65 )
+  241.       substr[0,t$67:$LCS_0] = //( ' Process ', //( substr[t$64,0:_ltrim( substr[t$64,0:4] )], //( ' ', substr[message,0:_len( message )] ) ) )
+  241.       call msgone( substr[h,0:24], substr[0,t$67:$LCS_0] )
+  241.       _free( t$67 )
+  242.       _f90_adjustl( substr[t$68,0:4], substr[cthisproc,0:4] )
+  242.       t$69 = _ltrim( substr[t$68,0:4] ) + 10 + _len( message )
+  242.       t$71 = int( _alloc( max( 0, t$69 ) ), 8 )
+  242.       $LCS_1 = max( 0, t$69 )
+  242.       substr[0,t$71:$LCS_1] = //( ' Process ', //( substr[t$68,0:_ltrim( substr[t$68,0:4] )], //( ' ', substr[message,0:_len( message )] ) ) )
+  242.       call msgdump( substr[h,0:24], substr[0,t$71:$LCS_1] )
+  242.       _free( t$71 )
+  243.       t$73 = unitdump
+  243.       0[loc( t$74 ),0].L = 0x100000000000000L
+  243. !dir$ suppress t$73
+  243.       1[loc( t$74 ),0].L = int( loc( t$73 ), 8 )
+  243.       2[loc( t$74 ),0].L = 0
+  243.       3[loc( t$74 ),0].L = 0
+  243.       4[loc( t$74 ),0].L = 0
+  243.       6[loc( t$74 ),0].L = 0
+  243.       7[loc( t$74 ),0].L = 0
+  243.       t$72 = _close( t$74 )
+  244.       $Con_P2 = 1140850688
+  244.       call mpi_barrier( $Con_P2, ierror )
+  245.       call mpi_finalize( ierror )
+  246.       return
+  246.       end
+  246.       
+    1.       
+    1.       module parallelism
+    1.       end
+    1.       

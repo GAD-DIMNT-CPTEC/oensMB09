@@ -1,0 +1,66 @@
+#!/bin/bash -x
+#
+#************************************************************#
+#                                                            #
+#     Name:        setctrrecoTQ0126L028.una     #
+#                                                            #
+#     Function:    This script file is used to set the       #
+#                  environmental variables and start the     #
+#                  recomposition script.                     #
+#                                                            #
+#************************************************************#
+#
+#PBS -o crow:/scratch/p01211/oens-1.0.0/run/setout/setctrreco.1.TQ0126L028.una.2010101816:36.out
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppwidth=1
+#PBS -l mppnppn=1
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N CTRRECO{NUM}
+#
+#   Set date (year,month,day) and hour (hour:minute) 
+#
+#   DATE=yyyymmdd
+#   HOUR=hh:mn
+#
+DATE=20101018
+HOUR=16:36
+echo 'Date: '$DATE
+echo 'Hour: '$HOUR
+export DATE HOUR
+#
+#   Set labels (date, UTC hour, ...)
+#
+#   LABELI = yyyymmddhh
+#   LABELI = input file start label
+#
+LABELI=2004032600
+echo ${LABELI}
+export LABELI
+#
+cd /scratch/p01211/oens-1.0.0/model/dataout/TQ0126L028/${LABELI}
+rm -f GFCTCTR${LABELI}${LABELI}*
+rm -f GFCTCTR${LABELI}*.dir.TQ0126L028
+rm -f GFCTCTR${LABELI}*.dir.TQ0126L028.files
+#mv GFCTCTR${LABELI}*F.fct.TQ0126L028 /scratch/p01211/oens-1.0.0/model/datain
+
+#AAF for i in 
+#AAF do
+#AAF       echo "ln -sf  /scratch/p01211/oens-1.0.0/model/datain/"
+#AAF       ln -sf  /scratch/p01211/oens-1.0.0/model/datain/
+#AAF done
+
+#
+#cd  /scratch/p01211/oens-1.0.0/model/datain/
+rm -f lst.GFCTCTR${LABELI}.dr
+ls -l GFCTCTR${LABELI}* > lst.GFCTCTR${LABELI}.dr
+awk '{ print $8 }' lst.GFCTCTR${LABELI}.dr  >  lst.GFCTCTR${LABELI}
+xx=`awk '{ print substr($1,18,10) }' lst.GFCTCTR${LABELI}`
+echo 
+cd /scratch/p01211/oens-1.0.0/run
+for i in ${xx} 
+do
+echo runrecfct1.una run 126 28 FCTCTR ${LABELI} ${i} NMC
+runrecfct1.una run 126 28 FCTCTR ${LABELI} ${i} NMC
+done
