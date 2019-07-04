@@ -6,10 +6,12 @@ INC = $(SOPERMOD)/eofwind/include
 EXT = $(TRUNC)$(LEV)
 BIN = $(SOPERMOD)/eof/bin/$(EXT)
 
-FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
+#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
+FTNFLAG = -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp 
 CHWFLAG = -hbyteswapio -s default64
 
-CPP = -I\${INC}
+#CPP = -I\${INC}
+CPP = -I\$(INC)
 F_UFMTIEEE = 10,11,20,62,64,68,69,72,74
 
 OBJ = eofwin.$(EXT) \

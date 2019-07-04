@@ -6,8 +6,10 @@ INC = $(SOPERMOD)/fftpln/include
 EXT = $(TRUNC)$(LEV)
 DIR = $(SOPERMOD)/fftpln/lib/$(EXT)
 
-FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
-CPP = -I\${INC}
+#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
+FTNFLAG = -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp 
+#CPP = -I\${INC}
+CPP = -I\$(INC)
 
 OBJ = \
 epslon.$(EXT) fax.$(EXT)    fft991.$(EXT) fft99a.$(EXT) \
