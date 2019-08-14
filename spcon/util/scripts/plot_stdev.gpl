@@ -1,0 +1,27 @@
+#! /stornext/home/carlos.bastarz/.gnuplot-5.0.0/bin/gnuplot
+
+set terminal png font Arial 10 size 1024,768
+set output 'perfis_stdev.png'
+
+set multiplot layout 1, 4 
+
+set ytics 1,1,42
+set xtics auto rotate by 45 right
+
+unset key
+
+set title "T"
+plot "vart_mem01R.txt" using 5:1 with lines lw 2 title "01R",      "vart_mem02R.txt" using 5:1 with lines lw 2 title "02R",      "vart_mem03R.txt" using 5:1 with lines lw 2 title "03R",      "vart_mem04R.txt" using 5:1 with lines lw 2 title "04R",      "vart_mem05R.txt" using 5:1 with lines lw 2 title "05R",      "vart_mem06R.txt" using 5:1 with lines lw 2 title "06R",      "vart_mem07R.txt" using 5:1 with lines lw 2 title "07R"
+     
+set title "U"
+plot "varu_mem01R.txt" using 5:1 with lines lw 2 title "01R",      "varu_mem02R.txt" using 5:1 with lines lw 2 title "02R",      "varu_mem03R.txt" using 5:1 with lines lw 2 title "03R",      "varu_mem04R.txt" using 5:1 with lines lw 2 title "04R",      "varu_mem05R.txt" using 5:1 with lines lw 2 title "05R",      "varu_mem06R.txt" using 5:1 with lines lw 2 title "06R",      "varu_mem07R.txt" using 5:1 with lines lw 2 title "07R"
+     
+set title "V"
+plot "varv_mem01R.txt" using 5:1 with lines lw 2 title "01R",      "varv_mem02R.txt" using 5:1 with lines lw 2 title "02R",      "varv_mem03R.txt" using 5:1 with lines lw 2 title "03R",      "varv_mem04R.txt" using 5:1 with lines lw 2 title "04R",      "varv_mem05R.txt" using 5:1 with lines lw 2 title "05R",      "varv_mem06R.txt" using 5:1 with lines lw 2 title "06R",      "varv_mem07R.txt" using 5:1 with lines lw 2 title "07R"
+
+set key
+
+set title "Q"
+plot "varq_mem01R.txt" using 5:1 with lines lw 2 title "01R",      "varq_mem02R.txt" using 5:1 with lines lw 2 title "02R",      "varq_mem03R.txt" using 5:1 with lines lw 2 title "03R",      "varq_mem04R.txt" using 5:1 with lines lw 2 title "04R",      "varq_mem05R.txt" using 5:1 with lines lw 2 title "05R",      "varq_mem06R.txt" using 5:1 with lines lw 2 title "06R",      "varq_mem07R.txt" using 5:1 with lines lw 2 title "07R"
+
+unset multiplot
