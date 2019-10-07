@@ -31,6 +31,8 @@
 # !REVISION HISTORY:
 #
 # 24 Agosto de 2018 - C. F. Bastarz - Versão inicial.  
+# 19 Agosto de 2019 - C. F. Bastarz - Eliminadas variáveis desnecessários dos ctl's criados;
+#                                     Adicionadas as datas corretas dos arquivos.
 #
 # !REMARKS:
 #
@@ -59,6 +61,30 @@ else
   nmem=${4}
 fi
 
+data_fmt() {
+
+  yyyy=$(echo ${1} | cut -c 1-4)
+  mm=$(echo ${1} | cut -c 5-6)
+  dd=$(echo ${1} | cut -c 7-8)
+  hh=$(echo ${1} | cut -c 9-10)
+
+  if [ ${mm} -eq 01 ]; then nmm="JAN"; fi
+  if [ ${mm} -eq 02 ]; then nmm="FEB"; fi
+  if [ ${mm} -eq 03 ]; then nmm="MAR"; fi
+  if [ ${mm} -eq 04 ]; then nmm="APR"; fi
+  if [ ${mm} -eq 05 ]; then nmm="MAY"; fi
+  if [ ${mm} -eq 06 ]; then nmm="JUN"; fi
+  if [ ${mm} -eq 07 ]; then nmm="JUL"; fi
+  if [ ${mm} -eq 08 ]; then nmm="AUG"; fi
+  if [ ${mm} -eq 09 ]; then nmm="SEP"; fi
+  if [ ${mm} -eq 10 ]; then nmm="OCT"; fi
+  if [ ${mm} -eq 11 ]; then nmm="NOV"; fi
+  if [ ${mm} -eq 12 ]; then nmm="DEC"; fi
+
+  export datafmt=${hh}Z${dd}${nmm}${yyyy}
+
+}
+
 Regioes=(hn tr hs nas sas)
 Membros=$(seq 1 ${nmem})
 Variaveis=(hum prs tem win)
@@ -76,25 +102,31 @@ do
 
       echo "${reg} - ${memf} - ${var}"
 
-      if [ ${var} == "hum" ]
+      if [ ${var} == "prs" ]
       then
-        varlist=" 
-vars 2
-umesp ${nlev} 99 umesp
-umesn ${nlev} 99 umesn
+        varlist="
+vars 1
+prs  1 99 prs
 endvars
         "
-      else
+      elif [ ${var} == "win" ]
+      then
         varlist="
 vars 5
-pslc  1 99 pslc
-temp ${nlev} 99 temp
-umes ${nlev} 99 umes
-uvel ${nlev} 99 uvel
-vvel ${nlev} 99 vvel
+prsc  1 99 Control Surface Pressure
+temc ${nlev} 99 Control Air Temperature
+humc ${nlev} 99 Control Specific Humidity
+uwnp ${nlev} 99 Zonal Wind Perturbation 
+vwnp ${nlev} 99 Meridional Wind Perturbation
+endvars
+       "
+      else
+        varlist="
+vars 1
+${var} ${nlev} 99 ${var}
 endvars
         "
-      fi
+     fi
 
       if [ ${truc} == "126" ]
       then
@@ -202,6 +234,38 @@ zdef    42 levels
         exit 3
       fi
 
+data_fmt ${data}
+
+if [ ${var} == "prs" ]
+then
+cat << EOF > ${var}pe${reg}${memf}1${data}.ctl
+dset ${var}se${reg}${memf}1${data}
+
+options big_endian sequential yrev 
+
+undef -99999
+
+title teste
+${xydef}
+tdef 1 linear ${datafmt} 6hr
+${zdef}
+${varlist}
+EOF
+
+cat << EOF > ${var}pn${reg}${memf}1${data}.ctl
+dset ${var}sn${reg}${memf}1${data}
+
+options big_endian sequential yrev 
+
+undef -99999
+
+title teste
+${xydef}
+tdef 1 linear ${datafmt} 6hr
+${zdef}
+${varlist}
+EOF
+else
 cat << EOF > ${var}pe${reg}${memf}1${data}.ctl
 dset ${var}pe${reg}${memf}1${data}
 
@@ -211,7 +275,7 @@ undef -99999
 
 title teste
 ${xydef}
-tdef 1 linear 00Z01JAN2013 6hr
+tdef 1 linear ${datafmt} 6hr
 ${zdef}
 ${varlist}
 EOF
@@ -225,10 +289,11 @@ undef -99999
 
 title teste
 ${xydef}
-tdef 1 linear 00Z01JAN2013 6hr
+tdef 1 linear ${datafmt} 6hr
 ${zdef}
 ${varlist}
 EOF
+  fi
 
     done
 
