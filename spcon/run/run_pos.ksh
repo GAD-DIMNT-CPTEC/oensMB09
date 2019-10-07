@@ -309,8 +309,8 @@ then
 
 else
 
-  until [ -e  ${HOME_suite}/../run/POS${ANLTYPE}.o${JOBID} ]; do sleep 1s; done 
-  mv -v ${HOME_suite}/../run/POS${ANLTYPE}.o${JOBID} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out
+  until [ -e  ${HOME_suite}/../run/POSENS${ANLTYPE}.o${JOBID} ]; do sleep 1s; done 
+  mv -v ${HOME_suite}/../run/POSENS${ANLTYPE}.o${JOBID} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out
 
 fi
 
