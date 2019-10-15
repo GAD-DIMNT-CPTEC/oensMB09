@@ -33,10 +33,14 @@
 # 24 Agosto de 2018 - C. F. Bastarz - Versão inicial.  
 # 19 Agosto de 2019 - C. F. Bastarz - Eliminadas variáveis desnecessários dos ctl's criados;
 #                                     Adicionadas as datas corretas dos arquivos.
+# 15 Outubro de 2019- C. F. Bastarz - Adicionada a criação de um ctl para ler todos os membros.
 #
 # !REMARKS:
 #
 # Este script deve ser alocado no diretório eof/dataout/${resolução}
+#
+# !TODO:
+#
 # Adicionar a resolução TQ0299L064.
 #
 # !BUGS:
@@ -86,8 +90,15 @@ data_fmt() {
 }
 
 Regioes=(hn tr hs nas sas)
-Membros=$(seq 1 ${nmem})
+Membros=($(seq 1 ${nmem}) ens)
 Variaveis=(hum prs tem win)
+
+data_fmt ${data}
+edef="
+edef ${nmem}
+$(for mem in $(seq 1 ${nmem}); do memf=$(printf %02g ${mem}); echo "${memf} 1 ${datafmt}"; done)
+endedef
+     "
 
 for reg in ${Regioes[@]}
 do
@@ -95,7 +106,12 @@ do
   for mem in ${Membros[@]}
   do
 
-    memf=$(printf %02g ${mem})
+    if [ ${mem} == "ens" ]
+    then 
+      memf=${mem}
+    else
+      memf=$(printf %02g ${mem})
+    fi
 
     for var in ${Variaveis[@]}
     do
@@ -106,7 +122,7 @@ do
       then
         varlist="
 vars 1
-prs  1 99 prs
+prs  1 99 Surface Pressure Perturbation
 endvars
         "
       elif [ ${var} == "win" ]
@@ -234,10 +250,78 @@ zdef    42 levels
         exit 3
       fi
 
-data_fmt ${data}
+      data_fmt ${data}
 
-if [ ${var} == "prs" ]
-then
+      if [ ${mem} == "ens" ]
+      then
+
+        if [ ${var} == "prs" ]
+        then
+cat << EOF > ${var}pe${reg}ens1${data}.ctl
+dset ${var}se${reg}%e1${data}
+
+options big_endian sequential yrev template
+
+undef -99999
+
+title teste
+${xydef}
+tdef 1 linear ${datafmt} 6hr
+${edef}
+${zdef}
+${varlist}
+EOF
+
+cat << EOF > ${var}pn${reg}ens1${data}.ctl
+dset ${var}sn${reg}${memf}1${data}
+
+options big_endian sequential yrev template 
+
+undef -99999
+
+title teste
+${xydef}
+tdef 1 linear ${datafmt} 6hr
+${edef}
+${zdef}
+${varlist}
+EOF
+        else
+cat << EOF > ${var}pe${reg}ens1${data}.ctl
+dset ${var}pe${reg}%e1${data}
+
+options big_endian sequential yrev template
+
+undef -99999
+
+title teste
+${xydef}
+tdef 1 linear ${datafmt} 6hr
+${edef}
+${zdef}
+${varlist}
+EOF
+
+cat << EOF > ${var}pn${reg}ens1${data}.ctl
+dset ${var}pn${reg}%e1${data}
+
+options big_endian sequential yrev template
+
+undef -99999
+
+title teste
+${xydef}
+tdef 1 linear ${datafmt} 6hr
+${edef}
+${zdef}
+${varlist}
+EOF
+        fi
+
+      else # outros membros (diferente de "ens")
+
+        if [ ${var} == "prs" ]
+        then
 cat << EOF > ${var}pe${reg}${memf}1${data}.ctl
 dset ${var}se${reg}${memf}1${data}
 
@@ -265,7 +349,7 @@ tdef 1 linear ${datafmt} 6hr
 ${zdef}
 ${varlist}
 EOF
-else
+        else
 cat << EOF > ${var}pe${reg}${memf}1${data}.ctl
 dset ${var}pe${reg}${memf}1${data}
 
@@ -293,7 +377,9 @@ tdef 1 linear ${datafmt} 6hr
 ${zdef}
 ${varlist}
 EOF
-  fi
+        fi
+
+      fi
 
     done
 
