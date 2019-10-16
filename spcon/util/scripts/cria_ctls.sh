@@ -273,7 +273,7 @@ ${varlist}
 EOF
 
 cat << EOF > ${var}pn${reg}ens1${data}.ctl
-dset ${var}sn${reg}${memf}1${data}
+dset ${var}sn${reg}%e1${data}
 
 options big_endian sequential yrev template 
 
