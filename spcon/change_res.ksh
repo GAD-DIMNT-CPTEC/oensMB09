@@ -15,12 +15,15 @@
 #  Opcoes..: <opcao1> testcase   -> aloca os dados necessário para testar
 #                                   a instalação
 #
-#  Uso/Exemplos: ./change_res.ksh TQ0213L042 
-#                ./change_res.ksh TQ0126L028
+#  Uso/Exemplos: ./change_res.ksh TQ0213L042 pgi
+#                ./change_res.ksh TQ0213L042 cray
+#                ./change_res.ksh TQ0126L028 pgi
+#                ./change_res.ksh TQ0126L028 cray
 # 
 # !REVISION HISTORY:
 #
 # 10 Agosto de 2018   - C. F. Bastarz - Documentação da versõa inicial.  
+# 21 Outubro de 2019  - C. F. Bastarz - Inclusão da escolha do compilador.
 #
 # !REMARKS:
 #
@@ -38,12 +41,14 @@
 # Descomentar para debugar
 #set -o xtrace
 
-if [ $# -ne 1 ]
+if [ $# -ne 2 ]
 then
-  echo "Uso: ./change_res.ksh TQXXXXLXXX"
+  echo "Uso: ./change_res.ksh TQXXXXLXXX comp"
+  echo "./change_res.ksh TQ0126L028 cray"
   exit 1
 else
   res=${1}
+  comp=${2}
 fi
 
 home_spcon=${PWD}
@@ -59,6 +64,7 @@ do
   cd ${dir_proc}
 
   ln -sfn ${spcon_include}/${res} include
+  ln -sfn ${dir_proc}/source/Makefile.${comp} ${dir_proc}/source/Makefile
 
 done
 
