@@ -1,0 +1,27 @@
+Programa para interpolar um campo meteorológico 2d.
+
+Depende dos modulos bilinear_interpolation.f90 e map_utils.f90 do SCAMTEC 
+(originais da biblioteca iplib do NCEP).
+
+Informações sobre os métodos de interpolação disponíveis:
+http://www.nco.ncep.noaa.gov/pmb/docs/libs/iplib/iplib_doc.html
+
+Compilação:
+
+1) Na Tupã:
+   $ source /usr/bin/development_config <6>
+   $ make
+
+Uso:
+
+$ ./interpola_2d.x filein fileout 
+
+Onde filein é o nome do arquivo de entrada (eg., ERA40.DailyTimeSeries.1979-2001.022812.grads) e fileout é o nome do arquivo de saida (eg., mesmo nome do arquivo de entrada, porém em um diretório diferente).
+
+Pode-se usar também o script interpola.qsb, que realiza um loop entre as variáveis disponíveis.
+
+Observação: revisar os parâmetros das grades de entrada/saída nos vetores gridDesci e gridDesco
+
+Agradeço ao João Gerd pela orientação.
+
+Última atualização: carlos.bastarz@inpe.br (06/11/2019)

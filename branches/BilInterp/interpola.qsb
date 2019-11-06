@@ -1,0 +1,41 @@
+#! /bin/bash -x
+#PBS -o /scratchin/grupos/ensemble/home/carlos.bastarz/bilinear_interpolation/interpola_v4.log
+#PBS -joe
+#PBS -V
+#PBS -l select=1:ncpus=1
+#PBS -l walltime=96:00:00
+#PBS -N BILINTERP
+#PBS -A CPTEC
+#PBS -q pesq.q
+
+# Obs.: antes de user este script, execute:
+# module swap tupa2 aux
+
+inctime=${HOME}/bin/inctime
+
+datain=/scratchin/grupos/ensemble/home/carlos.bastarz/ERAinterim1.5
+dataout=/scratchin/grupos/ensemble/home/carlos.bastarz/ERAinterim0.5625
+
+interpola=/scratchin/grupos/ensemble/home/carlos.bastarz/bilinear_interpolation/interpola_2d-tloop.x
+
+#Vars=(z500 psml t850)
+Vars=(z500)
+
+for var in ${Vars[@]}
+do
+
+  for arq in $(find ${datain}/${var} -name "*.grads")
+  do
+
+    mkdir -p ${dataout}/${var}
+
+    filein=${arq}
+    fileout=${dataout}/${var}/$(basename ${arq}) 
+  
+    arqlog=${dataout}/${var}/$(basename ${arq}).log
+
+    ${interpola} ${filein} ${fileout} > ${arqlog} 2>&1
+
+  done
+
+done
