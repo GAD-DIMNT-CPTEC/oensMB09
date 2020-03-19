@@ -1,4 +1,4 @@
-#! /bin/ksh
+#! /bin/bash
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -9,7 +9,7 @@
 # por Conjunto Global (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./config_spcon.ksh <opcao1> <opcao2>
+#      ./config_spcon.sh <opcao1> <opcao2>
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> testcase   -> aloca os dados necessário para testar
@@ -37,18 +37,18 @@
 # https://projetos.cptec.inpe.br/projects/smg/repository/show/trunk/SMG/cptec/bam
 # https://projetos.cptec.inpe.br/projects/smg/repository/show/trunk/SMG/util/inctime
 #
-#  Uso/Exemplos: ./config_spcon.ksh model 
-#                ./config_spcon.ksh model 200 (alternativo)   
-#                ./config_spcon.ksh model opersrc (sources oper, recomendável para resoluções > TQ0126L028)   
-#                ./config_spcon.ksh model operexe (executáveis oper, recomendável para resoluções > TQ0126L028)   
-#                ./config_spcon.ksh inctime
-#                ./config_spcon.ksh inctime 200 (alternativo)
-#                ./config_spcon.ksh configurar
-#                ./config_spcon.ksh configurar TQ0126L028 (alternativo)
-#                ./config_spcon.ksh configurar TQ0213L042 (alternativo)
-#                ./config_spcon.ksh testcase
-#                ./config_spcon.ksh compilar
-#                ./config_spcon.ksh ajuda  
+#  Uso/Exemplos: ./config_spcon.sh model 
+#                ./config_spcon.sh model 200 (alternativo)   
+#                ./config_spcon.sh model opersrc (sources oper, recomendável para resoluções > TQ0126L028)   
+#                ./config_spcon.sh model operexe (executáveis oper, recomendável para resoluções > TQ0126L028)   
+#                ./config_spcon.sh inctime
+#                ./config_spcon.sh inctime 200 (alternativo)
+#                ./config_spcon.sh configurar
+#                ./config_spcon.sh configurar TQ0126L028 (alternativo)
+#                ./config_spcon.sh configurar TQ0213L042 (alternativo)
+#                ./config_spcon.sh testcase
+#                ./config_spcon.sh compilar
+#                ./config_spcon.sh ajuda  
 # 
 # !REVISION HISTORY:
 #
@@ -207,7 +207,7 @@ config_spcon() {
 
     sed -i "s,HOME=.*,HOME=${home_spcon},g" ${spcon_config}/Makefile.conf.pgi
 
-    sed -i "s,model_res=TQ0126L028,model_res=${1},g" ${spcon_run}/run_cycle.ksh
+    sed -i "s,model_res=TQ0126L028,model_res=${1},g" ${spcon_run}/run_cycle.sh
 
     # Cria os links simbólicos dos diretórios do SPCON
     set -A Procs decanl deceof rdpert recanl recfct eof eofhumi eofpres eoftemp eofwind fftpln
@@ -284,7 +284,7 @@ config_spcon() {
   # Cria um arquivo texto com os valores das variáveis da função "vars_export"
   cd ${home_spcon}
 
-  nohup /bin/bash -x ./config_spcon.ksh vars_export > .VARIAVEIS1 2> VARIAVEIS < /dev/null &
+  nohup /bin/bash -x ./config_spcon.sh vars_export > .VARIAVEIS1 2> VARIAVEIS < /dev/null &
   rm .VARIAVEIS1
 
   # Altera os arquivos de configuração do BAM para a instalação corrente
@@ -418,25 +418,25 @@ ajuda() {
 
   echo "> Uso/Exemplos (seguir esta ordem):"
   echo ""
-  echo "  1) ./config_spcon.ksh model"
+  echo "  1) ./config_spcon.sh model"
   echo "     * faz checkout da última revisão do BAM (default)"
-  echo "  OU ./config_spcon.ksh model 200"
+  echo "  OU ./config_spcon.sh model 200"
   echo "     * faz checkout da revisão número 200 do BAM"
-  echo "  OU ./config_spcon.ksh model opersrc"
+  echo "  OU ./config_spcon.sh model opersrc"
   echo "     * copia o source do BAM operacional (20170515)"
-  echo "  OU ./config_spcon.ksh model operexe"
+  echo "  OU ./config_spcon.sh model operexe"
   echo "     * copia os executáveis do BAM operacional compilado com o CRAY (20170515)"
-  echo "  2) ./config_spcon.ksh inctime"
+  echo "  2) ./config_spcon.sh inctime"
   echo "     * faz checkout da última revisão do inctime"
-  echo "  3) ./config_spcon.ksh configurar"
+  echo "  3) ./config_spcon.sh configurar"
   echo "     * cria diretórios e links simbólicos da instalação para a resolução TQ0126L028 (default)"
-  echo "  OU ./config_spcon.ksh configurar TQ0213L042"
+  echo "  OU ./config_spcon.sh configurar TQ0213L042"
   echo "     * cria diretórios e links simbólicos da instalação para a resolução TQ0213L042"
-  echo "  4) ./config_spcon.ksh testcase"
+  echo "  4) ./config_spcon.sh testcase"
   echo "     * aloca os dados necessários para testar a instalação"
-  echo "  5) ./config_spcon.ksh compilar"
+  echo "  5) ./config_spcon.sh compilar"
   echo "     * compila os módulos de perturbação e o modelo BAM"
-  echo "  -> ./config_spcon.ksh ajuda"
+  echo "  -> ./config_spcon.sh ajuda"
   echo "     * mostra este menu de ajuda"
 
   echo ""

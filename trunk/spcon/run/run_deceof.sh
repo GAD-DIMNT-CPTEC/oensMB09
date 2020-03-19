@@ -1,4 +1,4 @@
-#! /bin/ksh
+#! /bin/bash -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -10,7 +10,7 @@
 # Conjunto Global (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./run_deceof.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#      ./run_deceof.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
@@ -112,9 +112,6 @@ MQHN=1; MQTR=1; MQHS=1; MQNAS=1; MQSAS=1
 MUHN=1; MUTR=1; MUHS=1; MUNAS=1; MUSAS=1
 MVHN=1; MVTR=1; MVHS=1; MVNAS=1; MVSAS=1
 
-# Variáveis utilizadas no script de submissão
-export PBS_SERVER=aux20-eth4
-
 cd ${HOME_suite}/../run
 
 RUNTM=$(date +"%s")
@@ -134,6 +131,8 @@ cat <<EOT0 > ${SCRIPTSFILES}
 #PBS -J 1-${NUMPERT}
 #PBS -N  ENSEOF
 #PBS -q ${AUX_QUEUE}
+
+export PBS_SERVER=${pbs_server2}
 
 export NUM=\$(printf %02g \${PBS_ARRAY_INDEX})
 export PREFXI=\${NUM}

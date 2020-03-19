@@ -1,4 +1,4 @@
-#! /bin/ksh 
+#! /bin/bash -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -9,7 +9,7 @@
 # análises do Sistema de Previsão por Conjunto Global (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./run_model.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#      ./run_model.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
 #                      <opcao6> <opcao7> <opcao8> <opcao9> <opcao10>
 #
 # !INPUT PARAMETERS:
@@ -39,21 +39,21 @@
 # 
 #  Membro controle:
 # - previsões a partir da análise controle (prefixo NMC - análises NCEP ou ECMWF): 
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 NMC 2 1
+# ./run_model.sh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 NMC 2 1
 # - previsões a partir da análise controle (prefixo CTR - análises NCEP):
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 CTR 2 1
+# ./run_model.sh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 CTR 2 1
 # - previsões a partir da análise controle (prefixo EIT - análises ECMWF de 1,5 graus): 
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 EIT 2 1
+# ./run_model.sh 48 24 1 TQ0126L028 SMT 2013010100 2013011600 EIT 2 1
 #  - previsoes a partir das analises do ECMWF (prefixo EIH - análises ECMWF de 0,75 graus)
-# ./run_model.ksh 48 24 1 TQ0126L028 EIH 2013010100 2013011600 EIH 2 1
+# ./run_model.sh 48 24 1 TQ0126L028 EIH 2013010100 2013011600 EIH 2 1
 # 
 #  Demais membros:
 #  - previsões a partir das analises perturbadas randomicamente:
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 RDP 2 7
+# ./run_model.sh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 RDP 2 7
 #  - previses a partir das analises perturbadas por EOF (subtraidas):
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 NPT 2 7
+# ./run_model.sh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 NPT 2 7
 #  - previsões a partir das analises perturbadas por EOF (somadas):
-# ./run_model.ksh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 PPT 2 7
+# ./run_model.sh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 PPT 2 7
 #
 # !REVISION HISTORY:
 #
@@ -221,7 +221,7 @@ DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 MAQUI=$(hostname -s)
 
 SCRIPTFILEPATH=${HOME_suite}/../run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}modg.${DIRRESOL}.${LABELI}.${MAQUI}
-NAMELISTFILEPATH=${HOME_suite}/../run
+NAMELISTFILEPATH=${HOME_suite}/run
 
 # As opções abaixo fazem referência à frequência de saída das previsões (DHFCT) e dos arquivos de restart (DHRES)
 # Se ANLTYPE for igual a NMC ou RDP, então as previsões serão referentes à análise controle, com previsões para
@@ -244,9 +244,9 @@ fi
 export NMSST="sstwkl"
 
 export GENRES='.FALSE.'
-export EIGENINIT=".FALSE."
-export MGIVEN=".TRUE."      
-export GAUSSGIVEN=".TRUE."  
+export EIGENINIT=".TRUE."
+export MGIVEN=".FALSE."      
+export GAUSSGIVEN=".FALSE."  
 
 export PATHIN=${DK_suite}/model/datain
 
@@ -348,7 +348,7 @@ ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #PBS -q ${QUEUE}
 
-export PBS_SERVER=eslogin13
+export PBS_SERVER=${pbs_server1}
 export HUGETLB_MORECORE=yes
 export HUGETLB_ELFMAP=W
 export HUGETLB_FORCE_ELFMAP=yes+
@@ -370,7 +370,7 @@ date
 
 mkdir -p \${EXECFILEPATH}/setout
 
-aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/Print.model.${LABELI}.MPI${MPPWIDTH}.log
+aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log
 
 date
 
@@ -382,23 +382,31 @@ chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
-JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | cut -c 1-7)
-
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
 
-  for i in $(seq 1 ${ANLPERT})
+  JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+
+  for mem in $(seq 1 ${ANLPERT})
   do
 
-    until [ -e ${HOME_suite}/../run/BAMENS${ANLTYPE}.o${JOBID}.${i} ]; do sleep 1s; done
-    mv -v ${HOME_suite}/../run/BAMENS${ANLTYPE}.o${JOBID}.${i} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.${i}.out
+    jobidname="BAMENS${ANLTYPE}.o${JOBID}.${mem}"
+    bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
+
+    until [ -e "${HOME_suite}/../run/${jobidname}" ]; do sleep 1s; done
+    mv -v ${HOME_suite}/../run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
   
   done
 
 else
 
-  until [ -e  ${HOME_suite}/../run/BAM${ANLTYPE}.o${JOBID} ]; do sleep 1s; done 
-  mv -v ${HOME_suite}/../run/BAM${ANLTYPE}.o${JOBID} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out
+  JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
+
+  jobidname="BAM${ANLTYPE}.o${JOBID}"
+  bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+
+  until [ -e "${HOME_suite}/../run/${jobidname}" ]; do sleep 1s; done 
+  mv -v ${HOME_suite}/../run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
 
 fi
 

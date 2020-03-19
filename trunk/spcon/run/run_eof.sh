@@ -1,4 +1,4 @@
-# !/bin/ksh
+# !/bin/bash -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -11,7 +11,7 @@
 # Previsão por Conjunto Global (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./run_eof.ksh <opcao1> <opcao2> <opcao3> <opcao4>
+#      ./run_eof.sh <opcao1> <opcao2> <opcao3> <opcao4>
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
@@ -22,7 +22,7 @@
 #                                  perturbar ou não a umidade
 #            <opcao4> data      -> data da análise corrente 
 #            
-#  Uso/Exemplos: ./run_eof.ksh TQ0126L028 7 YES 2012123118
+#  Uso/Exemplos: ./run_eof.sh TQ0126L028 7 YES 2012123118
 #                (calcular as perturbações por EOF a partir de um
 #                conjunto de 7 análises peturbadas randomicamente 
 #                válidas às 2012123118 na resolução TQ0126L028)
@@ -201,7 +201,6 @@ esac
 cd ${HOME_suite}/../run
 
 # Variáveis utilizadas no script de submissão
-export PBS_SERVER=aux20-eth4
 mkdir -p ${DK_suite}/model/exec/setout
 
 export MAQUI=$(hostname -s)
@@ -223,6 +222,8 @@ cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
 #PBS -N EOFPERT
 #PBS -q ${AUX_QUEUE}
 #PBS -J 1-${NMEM}
+
+export PBS_SERVER=${pbs_server2}
 
 export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
 

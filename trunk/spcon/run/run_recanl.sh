@@ -1,4 +1,4 @@
-#! /bin/ksh
+#! /bin/bash -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -10,7 +10,7 @@
 # do CPTEC.
 #
 # !INTERFACE:
-#      ./run_recanl.ksh <opcao1> <opcao2> <opcao3> <opcao4>
+#      ./run_recanl.sh <opcao1> <opcao2> <opcao3> <opcao4>
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
@@ -22,7 +22,7 @@
 # 
 #            <opcao4> data      -> data da análise corrente
 #           
-#  Uso/Exemplos: ./run_recanl.ksh TQ0126L028 SMT ANLSMT 2012123118
+#  Uso/Exemplos: ./run_recanl.sh TQ0126L028 SMT ANLSMT 2012123118
 #                (recompõe os coeficientes espectrais da análise
 #                das 2012123118 na resolução TQ0126L028)
 #
@@ -92,8 +92,6 @@ echo ${AUX_QUEUE}
 echo ${RUNTM}
 echo ${EXT}
 
-export PBS_SERVER=aux20-eth4
-
 cd ${HOME_suite}/../run
 
 mkdir -p ${DK_suite}/../recanl/output
@@ -112,7 +110,7 @@ cat <<EOT0 > ${SCRIPTSFILE}
 #PBS -N RECANL
 #PBS -q ${AUX_QUEUE}
 
-export PBS_SERVER=aux20-eth4
+export PBS_SERVER=${pbs_server2}
 
 cd ${HOME_suite}/../run
 . ${FILEENV} ${1} ${2}

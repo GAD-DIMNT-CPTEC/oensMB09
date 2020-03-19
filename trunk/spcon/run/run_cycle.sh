@@ -1,4 +1,4 @@
-#! /bin/ksh
+#! /bin/bash
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -9,7 +9,7 @@
 # Global (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./run_cycle.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#      ./run_cycle.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
 #                      <opcao6> 
 #
 # !INPUT PARAMETERS:
@@ -28,26 +28,26 @@
 #                                  o pós-processamento das previsoes 
 #                                  ao final da iteração de cada loop
 #
-#  Uso/Exemplos: ./run_cycle.ksh 
+#  Uso/Exemplos: ./run_cycle.sh 
 #                (realiza o testcase padrão)
-#                ./run_cycle.ksh 2013010100 2013010200   
+#                ./run_cycle.sh 2013010100 2013010200   
 #                (realiza o SPCON para as análises 2013010100, 2013010112 
 #                e 2013010200; assume moist_opt=YES, fcth=12, num_pert=7
 #                e run_pos=NO)
-#                ./run_cycle.ksh 2013010100 2013010112 YES
+#                ./run_cycle.sh 2013010100 2013010112 YES
 #                (realiza o SPCON para as análises do intervalo 2013010100
 #                e 2013010112 - inclusive; assume fcth=12, num_pert=7 e 
 #                run_pos=NO)
-#                ./run_cycle.ksh 2013010100 2013010312 YES 12
+#                ./run_cycle.sh 2013010100 2013010312 YES 12
 #                (realiza o SPCON para as análises do intervalo 2013010100
 #                e 2013010312 - inclusive; assume num_pert=7 e run_pos=NO)
-#                ./run_cycle.ksh 2013010100 2013010200 NO 6
+#                ./run_cycle.sh 2013010100 2013010200 NO 6
 #                (realiza o SPCON para as análises do intervalo 2013010100
 #                e 2013010200 - inclusive, com moist_opt=NO e fcth=6; neste
 #                caso, serão integradas as análises 2013010100, 2013010106
 #                2013010112, 2013010118 e 2013010200; assume num_pert=7 e
 #                run_pos=NO)
-#                ./run_cycle.ksh 2013010100 2013010200 NO 6 10 YES
+#                ./run_cycle.sh 2013010100 2013010200 NO 6 10 YES
 #                (realiza o SPCON para as análises do intervalo 2013010100
 #                e 2013010200 - inclusive, mas utiliza 10 perturbações 
 #                e gera um conjunto total de 21 previsões, com o 
@@ -137,7 +137,7 @@ fi
 
 pos_nproc=192
 
-source ${PWD}/../config_spcon.ksh vars_export
+source ${PWD}/../config_spcon.sh vars_export
 
 inctime=${util_inctime}/inctime
 
@@ -265,7 +265,7 @@ verifica_eof_anls() {
 run_deceof() {
 
   echo "* ANL EOF TOSPEC (${data})"
-  nohup ${spcon_run}/run_deceof.ksh ${1} EOF ${2} ${3} ${4} > deceof_${3}.log &
+  nohup ${spcon_run}/run_deceof.sh ${1} EOF ${2} ${3} ${4} > deceof_${3}.log &
   check_status run_deceof
   await
 
@@ -283,7 +283,7 @@ run_pre() {
 run_model_nmc() { # 2 dias, 3h
 
   echo "* MODEL NMC (${2})"
-  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
+  nohup ${spcon_run}/run_model.sh ${model_nproc} 4 6 ${1} SMT ${2} ${3} NMC 2 1 > modelNMC_${2}.log &
   check_status run_model_nmc
   await
 
@@ -292,7 +292,7 @@ run_model_nmc() { # 2 dias, 3h
 run_model_rdp() { # 2 dias, 3h
 
   echo "* MODEL RDP (${2})"
-  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} RDP 2 ${4} > modelRDP_${2}.log &
+  nohup ${spcon_run}/run_model.sh ${model_nproc} 4 6 ${1} SMT ${2} ${3} RDP 2 ${4} > modelRDP_${2}.log &
   check_status run_model_rdp
   await 
 
@@ -301,7 +301,7 @@ run_model_rdp() { # 2 dias, 3h
 run_model_ctr() { # 15 dias, 6h
 
   echo "* MODEL CTR (${2})"
-  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${3} CTR 2 1 > modelCTR_${2}.log &
+  nohup ${spcon_run}/run_model.sh ${model_nproc} 4 6 ${1} SMT ${2} ${3} CTR 2 1 > modelCTR_${2}.log &
 #  check_status run_model_ctr
 #  await
 #  pid_model_ctr=$!
@@ -315,13 +315,13 @@ run_model_ctr() { # 15 dias, 6h
 run_model_eof() { # 15 dias, 6h
 
   echo "* MODEL EOF N (${2})"
-  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${4} NPT 2 ${3} > modelN_${2}.log &
+  nohup ${spcon_run}/run_model.sh ${model_nproc} 4 6 ${1} SMT ${2} ${4} NPT 2 ${3} > modelN_${2}.log &
   check_status run_model_npt
   pid_model_eofn=$!
   echo ${pid_model_eofn}  
 
   echo "* MODEL EOF P (${2})"
-  nohup ${spcon_run}/run_model.ksh ${model_nproc} 4 6 ${1} SMT ${2} ${4} PPT 2 ${3} > modelP_${2}.log &
+  nohup ${spcon_run}/run_model.sh ${model_nproc} 4 6 ${1} SMT ${2} ${4} PPT 2 ${3} > modelP_${2}.log &
   check_status run_model_ppt
   pid_model_eofp=$!
   echo ${pid_model_eofp}
@@ -333,7 +333,7 @@ run_model_eof() { # 15 dias, 6h
 run_recanl() {
 
   echo "* ANL TOGRID CTR (${2})"
-  nohup ${spcon_run}/run_recanl.ksh ${1} SMT ANLSMT ${2} > recanl_${2}.log &
+  nohup ${spcon_run}/run_recanl.sh ${1} SMT ANLSMT ${2} > recanl_${2}.log &
   check_status run_recanl
   await 
 
@@ -342,7 +342,7 @@ run_recanl() {
 run_rdpert() {
 
   echo "* ANL RDP (${3})"
-  nohup ${spcon_run}/run_rdpert.ksh ${1} SMT ${2} ${3} ${4} > rdpert_${3}.log &
+  nohup ${spcon_run}/run_rdpert.sh ${1} SMT ${2} ${3} ${4} > rdpert_${3}.log &
   check_status run_rdpert
   await
 
@@ -351,7 +351,7 @@ run_rdpert() {
 run_decanl() {
 
   echo "* ANL TOSPEC (${3})"
-  nohup ${spcon_run}/run_decanl.ksh ${1} SMT ${2} ${3} ${4} > decanl_${3}.log &
+  nohup ${spcon_run}/run_decanl.sh ${1} SMT ${2} ${3} ${4} > decanl_${3}.log &
   check_status run_decanl
   await
 
@@ -360,7 +360,7 @@ run_decanl() {
 run_recfct_nmc() {
 
   echo "* MODEL TOGRID NMC (${2})"
-  nohup ${spcon_run}/run_recfct.ksh ${1} NMC ${2} > recfctNMC_${2}.log &
+  nohup ${spcon_run}/run_recfct.sh ${1} NMC ${2} > recfctNMC_${2}.log &
   check_status run_recfct_nmc
   await 
 
@@ -369,7 +369,7 @@ run_recfct_nmc() {
 run_recfct_rdp() {
 
   echo "* MODEL TOSPEC RDP (${3})"
-  nohup ${spcon_run}/run_recfct.ksh ${1} ${2} ${3} > recfctRPT_${3}.log &
+  nohup ${spcon_run}/run_recfct.sh ${1} ${2} ${3} > recfctRPT_${3}.log &
   check_status run_recfct_rdp
   await 
 
@@ -378,7 +378,7 @@ run_recfct_rdp() {
 run_eof() {
 
   echo "* ANL EOF (${4})"
-  nohup ${spcon_run}/run_eof.ksh ${1} ${2} ${3} ${4} > eof_${4}.log &
+  nohup ${spcon_run}/run_eof.sh ${1} ${2} ${3} ${4} > eof_${4}.log &
   check_status run_eof
   await
 
@@ -387,16 +387,16 @@ run_eof() {
 run_pos_ctr() {
 
   echo "* POS CTR (${2})"
-  nohup ${spcon_run}/run_pos.ksh ${pos_nproc} 4 6 ${1} ${2} ${3} CTR > posCTR_${2}.log &
+  nohup ${spcon_run}/run_pos.sh ${pos_nproc} 4 6 ${1} ${2} ${3} CTR > posCTR_${2}.log &
 
 }
 
 run_pos_eof() {
 
   echo "* POS EOF N (${2})"
-  nohup ${spcon_run}/run_pos.ksh ${pos_nproc} 4 6 ${1} ${2} ${3} NPT ${4} > posN_${2}.log &
+  nohup ${spcon_run}/run_pos.sh ${pos_nproc} 4 6 ${1} ${2} ${3} NPT ${4} > posN_${2}.log &
   echo "* POS EOF P (${2})"
-  nohup ${spcon_run}/run_pos.ksh ${pos_nproc} 4 6 ${1} ${2} ${3} PPT ${4} > posP_${2}.log &
+  nohup ${spcon_run}/run_pos.sh ${pos_nproc} 4 6 ${1} ${2} ${3} PPT ${4} > posP_${2}.log &
 
 }
 
