@@ -1,4 +1,4 @@
-#! /bin/ksh
+#! /bin/sh -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -10,7 +10,7 @@
 # Conjunto Global (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./run_rdpert.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#      ./run_rdpert.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
@@ -25,7 +25,7 @@
 #
 #            <opcao5> membro    -> tamanho do conjunto 
 #            
-#  Uso/Exemplos: ./run_rdpert.ksh TQ0126L028 NMC YES 2012111200 7
+#  Uso/Exemplos: ./run_rdpert.sh TQ0126L028 NMC YES 2012111200 7
 #                (perturba randomicamente um conjunto inicial de 7
 #                membros a partir de uma análise controle na resolução
 #                TQ0126L028; inclui a perturbação da umidade)
@@ -114,7 +114,6 @@ echo ${AUX_QUEUE}
 echo ${RUNTM}
 echo ${EXT}
 
-export PBS_SERVER=aux20-eth4
 cd ${HOME_suite}/../run
 
 mkdir -p ${DK_suite}/../rdpert/output
@@ -134,7 +133,7 @@ cat <<EOT0 > ${SCRIPTSFILE}
 #PBS -N RDPT${PREFIC}
 #PBS -q ${AUX_QUEUE}
 
-export PBS_SERVER=aux20-eth4
+export PBS_SERVER=${pbs_server2}
 
 cd ${HOME_suite}/../run
 . ${FILEENV} ${1} ${2}

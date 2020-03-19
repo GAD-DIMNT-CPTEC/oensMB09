@@ -1,4 +1,4 @@
-#! /bin/ksh 
+#! /bin/bash -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -10,7 +10,7 @@
 # por Conjunto Global (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./run_pos.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
+#      ./run_pos.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5>
 #                    <opcao6> <opcao7>
 #
 # !INPUT PARAMETERS:
@@ -37,19 +37,19 @@
 # 
 #  Membro controle:
 #  - pós-processamento das previsões a partir das análise do NCEP (prefixo CTR):
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 CTR 
+#  ./run_pos.sh 48 24 1 TQ0126L028 2013010100 2013011600 CTR 
 #  - pós-processamento das previsões a partir das análise do ECMWF (prefixo EIT, resolução de 1,5 graus):
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 EIT 
+#  ./run_pos.sh 48 24 1 TQ0126L028 2013010100 2013011600 EIT 
 #  - pós-processamento das previsões a partir das análise do ECMWF (prefixo EIH, resolução de 0,75 graus):
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 EIH 
+#  ./run_pos.sh 48 24 1 TQ0126L028 2013010100 2013011600 EIH 
 # 
 #  Demais membros:
 #  - pos-processamento das previsoes geradas a partir das analises perturbadas randomicamente:
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 RDP 7
+#  ./run_pos.sh 48 24 1 TQ0126L028 2013010100 2013011600 RDP 7
 #  - pos-processamento das previsoes geradas a partir das analises perturbadas por EOF (subtraidas):
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 NPT 7
+#  ./run_pos.sh 48 24 1 TQ0126L028 2013010100 2013011600 NPT 7
 #  - pos-processamento das previsoes geradas a partir das analises perturbadas por EOF (somadas):
-#  ./run_pos.ksh 48 24 1 TQ0126L028 2013010100 2013011600 PPT 7
+#  ./run_pos.sh 48 24 1 TQ0126L028 2013010100 2013011600 PPT 7
 #
 # !REVISION HISTORY:
 #
@@ -179,7 +179,7 @@ export DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 export MAQUI=$(hostname -s)
 
 export SCRIPTFILEPATH=${HOME_suite}/../run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}posg.${DIRRESOL}.${LABELI}.${MAQUI}
-export NAMELISTFILEPATH=${HOME_suite}/../run
+export NAMELISTFILEPATH=${HOME_suite}/run
 
 export BINARY=".FALSE."
 export REQTB="p"
@@ -213,7 +213,6 @@ else
   do
 
     EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
-#    EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}
     EXECFILEPATHMEM=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
 
     mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}
@@ -246,13 +245,11 @@ then
 else
   export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
   export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#PBS -N POSENS${ANLTYPE}"
+  export PBSDIRECTIVENAME="#PBS -N POS${ANLTYPE}"
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}"
 fi
-
-PBSServer='eslogin'
 
 # Script de submissão
 cat <<EOF0 > ${SCRIPTFILEPATH}
@@ -272,7 +269,7 @@ ${PBSDIRECTIVEARRAY}
 ulimit -s unlimited
 ulimit -c unlimited
 
-export PBS_SERVER=${PBSServer}
+export PBS_SERVER=${pbs_server1}
 export KMP_STACKSIZE=128m
 
 ${PBSMEM}
@@ -280,11 +277,11 @@ ${PBSEXECFILEPATH}
 
 cd \${EXECFILEPATH}
 
-echo \${PBS_JOBID} > ${HOME_suite}/../run/this.pos.job.${ANLTYPE}
+echo \${PBS_JOBID} > ${HOME_suite}/../run/this.pos.job.${LABELI}.${ANLTYPE}
 
 date
 
-aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
+aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
 
 date
 EOF0
@@ -294,33 +291,44 @@ chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
-JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${ANLTYPE} | cut -c 1-7)
-
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
 
-  for i in $(seq 1 ${ANLPERT})
+  JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+
+  for mem in $(seq 1 ${ANLPERT})
   do
 
-    until [ -e ${HOME_suite}/../run/POSENS${ANLTYPE}.o${JOBID}.${i} ]; do sleep 1s; done
-    mv -v ${HOME_suite}/../run/POSENS${ANLTYPE}.o${JOBID}.${i} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.${i}.out
-  
+    jobidname="POSENS${ANLTYPE}.o${JOBID}.${mem}"
+    posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
+
+    until [ -e "${HOME_suite}/../run/${jobidname}" ]; do sleep 1s; done
+    mv -v ${HOME_suite}/../run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
+
+    for arqctl in $(find ${DATAOUT} -name "*.ctl")
+    do
+      ${DIRGRADS}/gribmap -i ${arqctl}
+    done
+
   done
 
 else
 
-  until [ -e  ${HOME_suite}/../run/POSENS${ANLTYPE}.o${JOBID} ]; do sleep 1s; done 
-  mv -v ${HOME_suite}/../run/POSENS${ANLTYPE}.o${JOBID} ${EXECFILEPATH}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out
+  JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
+
+  jobidname="POS${ANLTYPE}.o${JOBID}"
+  posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+
+  until [ -e "${HOME_suite}/../run/${jobidname}" ]; do sleep 1s; done 
+  mv -v ${HOME_suite}/../run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
+
+  for arqctl in $(find ${DATAOUT} -name "*.ctl")
+  do
+    ${DIRGRADS}/gribmap -i ${arqctl}
+  done
 
 fi
 
-for arqctl in $(find ${DATAOUT}/../ -name "*.ctl")
-do
-
-/opt/grads/2.0.a9/bin/gribmap -i ${arqctl}
-
-done
-
-rm ${HOME_suite}/../run/this.pos.job.${ANLTYPE}
+rm ${HOME_suite}/../run/this.pos.job.${LABELI}.${ANLTYPE}
 
 exit 0

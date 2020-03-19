@@ -1,4 +1,4 @@
-#! /bin/ksh
+#! /bin/bash -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -10,7 +10,7 @@
 # do CPTEC.
 #
 # !INTERFACE:
-#      ./run_decanl.ksh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5> 
+#      ./run_decanl.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5> 
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
@@ -26,7 +26,7 @@
 #
 #            <opcao5> membro    -> tamanho do conjunto
 #            
-#  Uso/Exemplos: ./run_decanl.ksh TQ0126L028 NMC YES 2012111200 7
+#  Uso/Exemplos: ./run_decanl.sh TQ0126L028 NMC YES 2012111200 7
 #                (decompõe em coeficientes espectrais as análises
 #                das 2012111200 do conjunto de 7 membros na resolução
 #                TQ0126L028) 
@@ -106,8 +106,6 @@ HSTMAQ=$(hostname)
 RUNTM=$(date +'%Y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
-export PBS_SERVER=aux20-eth4
-
 cd ${HOME_suite}/../run
 
 # Script de submissão
@@ -126,7 +124,7 @@ cat <<EOT0 > ${SCRIPTSFILE}
 #PBS -N DECANLRDP
 #PBS -q ${AUX_QUEUE}
 
-export PBS_SERVER=aux20-eth4
+export PBS_SERVER=${pbs_server2}
 
 cd ${HOME_suite}/../run
 . ${FILEENV} ${1} ${2}

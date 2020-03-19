@@ -1,6 +1,6 @@
 # spectral resolution
-TRUNC=TQ0213
-LEV=L042
+TRUNC=TQ0126
+LEV=L028
 
 # simultaneous parallel jobs & load average limit
 MAXJOBS = 1
@@ -53,12 +53,12 @@ ARFLAGS  = -r
 # add flags for debugging if requested
 ifeq (dbg,$(findstring dbg,$(mode)))
 	CCFLAGS += -DDEBUG -g
-	FFLAGS  += -traceback -g
+	FFLAGS  += -traceback -g -r8 -i8
 	LDFLAGS += -g -traceback
 endif
 
 # add flags for optimization if requested
 ifeq (opt,$(findstring opt,$(mode)))
-	FFLAGS  += -fast -O3 -Mautoinline
+	FFLAGS  += -fast -O3 -Mautoinline -r8 -i8
 	LDFLAGS += 
 endif

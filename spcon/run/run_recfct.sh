@@ -1,4 +1,4 @@
-# !/bin/ksh
+# !/bin/bash -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -10,7 +10,7 @@
 # (SPCON) do CPTEC.
 #
 # !INTERFACE:
-#      ./run_recfct.ksh <opcao1> <opcao2> <opcao3> 
+#      ./run_recfct.sh <opcao1> <opcao2> <opcao3> 
 #
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
@@ -21,11 +21,11 @@
 #            <opcao3> data      -> data da análise corrente (a partir
 #                                  da qual as previsões foram feitas)
 #            
-#  Uso/Exemplos: ./run_recfct.ksh TQ0126L028 CTR 2012123118
+#  Uso/Exemplos: ./run_recfct.sh TQ0126L028 CTR 2012123118
 #                (recompõe os coeficientes espectrais das previsões
 #                feitas a partir da análise controle das 2012123118
 #                na resolução TQ0126L028)
-#                ./run_recfct.ksh TQ0126L028 7 2012123118
+#                ./run_recfct.sh TQ0126L028 7 2012123118
 #                (recompõe os coeficientes espectrais do conjunto de 7
 #                membros das previsões feitas a partir da análise
 #                das 2012123118 na resolução TQ0126L028)
@@ -116,11 +116,10 @@ else
   export ENSTYPE="export TYPES=FCT\${MEM}${PREFIC}"
 fi
 
-export PBS_SERVER=aux20-eth4
 RUNTM=$(date +"%s")
 
 # Script de submissão
-SCRIPTSFILE=setrecfct${TYPES}.${TRCLV}.${LABELI}${LABELF}.${PBS_SERVER}
+SCRIPTSFILE=setrecfct${TYPES}.${TRCLV}.${LABELI}${LABELF}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
 #!/bin/bash -x
@@ -134,6 +133,8 @@ cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
 #PBS -N RECFCT
 #PBS -q ${AUX_QUEUE}
 ${PBSDIRECTIVE}
+
+export PBS_SERVER=${pbs_server2}
 
 ${DEFINEMEM}
 
