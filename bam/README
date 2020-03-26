@@ -1,0 +1,64 @@
+Os códigos do pré-processamento presentes nete diretório são referentes aos executáveis da operação (BAM TQ0666L064) e foram copiados de /lustre_xc50/ioper/models/BAM/ em 23/03/2020.
+
+Observações:
+
+- Não foi possível copiar a biblioteca w3lib, a qual foi substituída pela w3lib que está na versão do BAM_V1.3.0 (disponível em https://projetos.cptec.inpe.br/projects/bam/repository/show/tag/BAM_V1.3.0/pre/sources/w3lib-1.4);
+- Esta versão operacional do código não utiliza as variáveis DirInp e DirOut nos namelist. Ao que tudp indica, elas foram substituídas pela variável DirMain. Entretanto, ao se tentar compilar o código, esta variável não estava sendo declarada na rotina CO2MonthlyDirec/InputParameters.f90 (já foi arescentada);
+
+Compilação:
+
+- Na XC50: "make cray_cray"
+
+Problemas:
+
+- Execução do Chopping_parallel:
+
+...
+  GrADSOnly  =      F
+  GDASOnly   =      F
+  SmoothTopo =      F
+  LinearGrid =      F
+  givenfouriergroups =      F
+  DateLabel  = 2020031300
+  UTC        =
+  NCEPName   = gblav
+  DirInp     = /cray_home/carlos_bastarz/oensMB09/bam/pre/dataout
+  DirOut     = /cray_home/carlos_bastarz/oensMB09/bam/pre/dataout
+ /
+
+ Getting Date Label from GDAS NCEP File
+ idate= 7*-9999
+ nfhour= -9999
+ nfminute= -9999
+ nfsecondn= -9999
+ nfsecondd= -9999
+ version= -9999
+...
+
+A análise não é lida e a execução cai.
+
+- Com outras versões do Chopping_parallel (eg., do BAM_V1.3.0):
+
+...
+  GrADSOnly  =      F
+  GDASOnly   =      F
+  SmoothTopo =      T
+  LinearGrid =      F
+  givenfouriergroups =      F
+  DateLabel  = 2020031300
+  UTC        =
+  NCEPName   = gblav
+  DirMain    = /cray_home/carlos_bastarz/oensMB09/bam/
+  DirHome    = /cray_home/carlos_bastarz/oensMB09/bam/pre/
+  prefix     = NMC
+ /
+
+ Getting Date Label from GDAS NCEP File
+ FAST_BYTESWAP ALGORITHM HAS BEEN USED AND DATA ALIGNMENT IS CORRECT FOR          4  )
+ FAST_BYTESWAP ALGORITHM HAS BEEN USED AND DATA ALIGNMENT IS CORRECT FOR          4  )
+ FAST_BYTESWAP ALGORITHM HAS BEEN USED AND DATA ALIGNMENT IS CORRECT FOR          4  )
+ FAST_BYTESWAP ALGORITHM HAS BEEN USED AND DATA ALIGNMENT IS CORRECT FOR          4  )
+...
+
+Funciona corretamente.
+

@@ -1,0 +1,854 @@
+#-------------------------------------------------------------------------------------------------#
+#                         Brazilian global Atmospheric Model - BAM_V1.3.0                         #
+#-------------------------------------------------------------------------------------------------#
+# Descrição:                                                                                      #
+#     Namelist do pré-processamento do BAM nto do BAM                                             #
+#                                                                                                 #
+# Uso:                                                                                            #
+#     Utilzado no escopo do script runPre                                                         #
+#                                                                                                 #
+# Notas:                                                                                          #
+#     * As três primeiras seções deste namelist, geral, opt e debug, devem ser utilizadas da      #
+#       seguinte forma:                                                                           #
+#       ** geral: processos normalmente selecionados para a execução do pré-processamento;        #
+#       ** opt..: processos selecionados para a execução do pré-processamento dentro do ciclo de  #
+#                 assimilação de dados;                                                           #
+#       ** debug: processos que o usuário pode selecionar para testar um ou mais processos do     #
+#                 pré-processamento                                                               #
+#     * Os processos selecionados na seção geral, consideram o modelo de superície IBIS. Neste    #
+#       caso, os processos VegetationAlbedoSSiB, VegetationMaskSSiB e VegetationMask são também   #
+#       necessários;                                                                              #
+#     * A partir 2015011406, os arquivos de SST e SNOW não estão mais disponíveis. Neste caso,    #
+#       a partir desta data, deve-se desabilitar os processos SNOWWeeklyNCEP e                    #
+#       SoilMoistureWeeklyCPTEC                                                                   #
+#     * Não pode haver espaço ou tab após o início das seções (&nome)                             #
+#                                                                                                 #
+# Revisões:                                                                                       #
+#     * 22-06-2016: Khamis, E. G.  - código inicial                                               #
+#     * 17-02-2020: Bastarz, C. F. - revisão geral para a consolidação da versão e algumas        #
+#                                    melhorias                                                    #
+#     * 10-03-2020: Bastarz, C. F. - inclusão do processo CO2MonthlyDirec                         #
+#                                                                                                 #
+# DMD/CPTEC/INPE, 2019                                                                            #
+#-------------------------------------------------------------------------------------------------#
+
+#
+# Processos normalmente selecionados para a execução do pré-processamento
+# (considera o modelo de superfície IBIS como padrão) 
+#
+&geral
+TopoWaterPercNavy=0
+TopoWaterPercGT30=0 
+NormalModes=0
+LandSeaMask=1
+VarTopo=1
+TopoSpectral=1
+Chopping_serial=0
+Chopping_parallel=1
+VegetationMaskSSiB=1
+VegetationMask=1
+VegetationMaskSiB2Clima=0
+VegetationMaskSiB2=0
+VegetationMaskIBISClima=1
+VegetationMaskIBIS=1
+VegetationAlbedoSSiB=1
+DeepSoilTemperatureClima=1
+DeepSoilTemperature=1
+RoughnessLengthClima=1
+RoughnessLength=1
+SoilMoistureClima=1
+SoilMoisture=1
+AlbedoClima=1
+Albedo=1
+SnowClima=1
+SSTClima=1
+FLUXCO2Clima=1
+#OCMClima=1
+SSTWeeklyNCEP=1
+SSTWeekly=1 
+SNOWWeeklyNCEP=0          # usar até 2015011400
+SoilMoistureWeeklyCPTEC=1
+SNOWWeekly=0              # usar até 2015011400
+SoilMoistureWeekly=1
+CLimaSoilMoistureClima=1
+CLimaSoilMoisture=1
+ClmtClima=1
+Clmt=1
+DeltaTempColdestClima=1
+DeltaTempColdest=1
+NDVIClima=1
+NDVI=1
+PorceClayMaskIBISClima=1
+PorceClayMaskIBIS=1
+PorceClayMaskSiB2Clima=0
+PorceClayMaskSiB2=0
+PorceSandMaskIBISClima=1
+PorceSandMaskIBIS=1
+PorceSandMaskSiB2Clima=0
+PorceSandMaskSiB2=0
+SoilTextureMaskSiB2Clima=0
+SoilTextureMaskSiB2=0
+SSTMonthlyDirec=0
+SSTDailyDirec=0 
+TopographyGradient=1
+#CO2MonthlyDirec=1
+/
+
+#
+# Processos selecionados para a execução do pré-processamento
+# dentro do ciclo de assimilação de dados
+#
+&opt
+TopoWaterPercNavy=0
+TopoWaterPercGT30=0
+NormalModes=0
+LandSeaMask=0
+VarTopo=0
+TopoSpectral=0
+Chopping_serial=0
+Chopping_parallel=0
+VegetationMaskSSiB=0
+VegetationMask=0
+VegetationMaskSiB2Clima=0
+VegetationMaskSiB2=0
+VegetationMaskIBISClima=0
+VegetationMaskIBIS=0
+VegetationAlbedoSSiB=0
+DeepSoilTemperatureClima=0
+DeepSoilTemperature=0
+RoughnessLengthClima=0
+RoughnessLength=0
+SoilMoistureClima=0
+SoilMoisture=0
+AlbedoClima=0
+Albedo=0
+SnowClima=1
+SSTClima=0
+FLUXCO2Clima=1
+OCMClima=1
+SSTWeeklyNCEP=1
+SSTWeekly=1
+SNOWWeeklyNCEP=0
+SoilMoistureWeeklyCPTEC=1
+SNOWWeekly=0
+SoilMoistureWeekly=1
+CLimaSoilMoistureClima=0
+CLimaSoilMoisture=0
+ClmtClima=0
+Clmt=0
+DeltaTempColdestClima=0
+DeltaTempColdest=0
+NDVIClima=0
+NDVI=0
+PorceClayMaskIBISClima=0
+PorceClayMaskIBIS=0
+PorceClayMaskSiB2Clima=0
+PorceClayMaskSiB2=0
+PorceSandMaskIBISClima=0
+PorceSandMaskIBIS=0
+PorceSandMaskSiB2Clima=0
+PorceSandMaskSiB2=0
+SoilTextureMaskSiB2Clima=0
+SoilTextureMaskSiB2=0
+SSTMonthlyDirec=0
+SSTDailyDirec=0
+CO2MonthlyDirec=0
+TopographyGradient=1
+/
+
+#
+# Processos que o usuário pode selecionar para testar
+# um ou mais processos do pré-processamento
+#
+&debug
+TopoWaterPercNavy=0
+TopoWaterPercGT30=0
+NormalModes=0
+LandSeaMask=0
+VarTopo=0
+TopoSpectral=0
+Chopping_serial=0
+Chopping_parallel=0
+VegetationMaskSSiB=0
+VegetationMask=0
+VegetationMaskSiB2Clima=0
+VegetationMaskSiB2=0
+VegetationMaskIBISClima=0
+VegetationMaskIBIS=0
+VegetationAlbedoSSiB=0
+DeepSoilTemperatureClima=0
+DeepSoilTemperature=0
+RoughnessLengthClima=0
+RoughnessLength=0
+SoilMoistureClima=0
+SoilMoisture=0
+AlbedoClima=0
+Albedo=0
+SnowClima=0
+SSTClima=0
+FLUXCO2Clima=0
+OCMClima=0
+SSTWeeklyNCEP=0
+SSTWeekly=0
+SNOWWeeklyNCEP=0
+SoilMoistureWeeklyCPTEC=0
+SNOWWeekly=0
+SoilMoistureWeekly=0
+CLimaSoilMoistureClima=0
+CLimaSoilMoisture=0
+ClmtClima=0
+Clmt=0
+DeltaTempColdestClima=0
+DeltaTempColdest=0
+NDVIClima=0
+NDVI=0
+PorceClayMaskIBISClima=0
+PorceClayMaskIBIS=0
+PorceClayMaskSiB2Clima=0
+PorceClayMaskSiB2=0
+PorceSandMaskIBISClima=0
+PorceSandMaskIBIS=0
+PorceSandMaskSiB2Clima=0
+PorceSandMaskSiB2=0
+SoilTextureMaskSiB2Clima=0
+SoilTextureMaskSiB2=0
+SSTMonthlyDirec=0
+SSTDailyDirec=0
+TopographyGradient=1
+/
+
+#
+# Blocos para gerar o namelist de cada processo
+#
+&TopoWaterPercNavy
+inputaux=InputDim
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main User Data Directory
+/
+
+&NormalModes
+inputaux=NorModNML
+Mend=${RESOUT} ,                        # Spectral Horizontal Resolution of Output Data
+Kmax=${KMOUT},                          # Number of Layers of Output Data
+HnCut=1000.0,                           # Equivalent Depth (m) Lower Cut for Inicialization
+PerCutDays=2.0,                         # Period (days) Lower Cut for Inicialization
+PrtOut=.FALSE.,                         # Flag to Print Out Debug Values
+DirMain='${dirdata}/ '                  # Main User Data Directory
+/
+
+&LandSeaMask
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=2160,                              # Number of Longitudes in Navy Water Percentage Data
+Jdim=1080,                              # Number of Latitudes in Navy Water Percentage Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+VarNameIn='WaterNavy '                  # Input Navy Water Percentage Archive Name (0 to 100)
+VarNameOut='LandSeaMaskNavy '           # Ouput Navy Water Percentage Archive Name
+DirInp='${dirdata}/pre/dataout '        # 
+DirOut='${dirdata}/pre/dataout '        # 
+/
+
+&VarTopo
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=2160,                              # Number of Longitudes in Navy Topography Data
+Jdim=1080,                              # Number of Latitudes in Navy Topography Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.FALSE.,                         # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='TopoNavy ',                    # Input Navy Topography Archive Name
+VarNameG='VarTopoNavy '                 # GrADS Output Navy Topography and Variance Archive Name
+DirInp='${dirdata}/pre/dataout '        # 
+DirOut='${dirdata}/model/datain '        # 
+/
+
+&TopoSpectral
+inputaux=InputDim
+Mend=${RESO},                           # Spectral Resolution Horizontal Truncation
+LinearGrid=.FALSE.,                     #
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirInp='${dirdata}/pre/dataout '        # 
+DirOut='${dirdata}/pre/dataout '        # 
+/
+
+&Chopping_serial
+inputaux=ChopNML
+MendInp=${RESIN},                       # Spectral Horizontal Resolution of Input Data
+KmaxInp=${KMIN},                        # Number of Layers of Input Data
+MendOut=${RESOUT},                      # Spectral Horizontal Resolution of Output Data
+KmaxOut=${KMOUT},                       # Number of Layers of Output Data
+MendMin=127                             # Minimum Spectral Resolution For Doing Topography Smoothing
+MendCut=${RESOUT},                      # Spectral Resolution Cut Off for Topography Smoothing
+Iter=10,                                # Number of Iteractions in Topography Smoothing
+SmthPerCut=0.12,                        # Percentage for Topography Smoothing
+GetOzone=${GetOzone},                   # Flag to Produce Ozone Files
+GetTracers=${GetTracers},               # Flag to Produce Tracers Files
+GrADS=${GrADS},                         # Flag to Produce GrADS Files
+GrADSOnly=${GrADSOnly},                 # Flag to Only Produce GrADS Files (Do Not Produce Inputs for Model)
+GDASOnly=${GDASOnly},                   # Flag to Only Produce Input CPTEC Analysis File
+SmoothTopo=${SmoothTopo},               # Flag to Performe Topography Smoothing
+RmGANL=${RmGANL},                       # Flag to Remove GANL File if Desired
+LinearGrid=${SetLinear},                # Flag to Set Linear or Quadratic Gaussian Grid
+DateLabel='${DATA}',                    # Date Label: yyyymmddhh or DateLabel='          '
+                                        #       If Year (yyyy), Month (mm) and Day (dd) Are Unknown
+UTC='${UTC}',                           # UTC Hour: hh, Must Be Given if Label='          ', else UTC=' '
+NCEPName='${AnlPref} ',                 # NCEP Analysis Preffix for Input File Name
+DirMain='${dirdata}/ '                  # Main User Data Directory
+DirHome='${dirhome}/ '                  # Home User Source Directory
+/
+
+&Chopping_parallel
+inputaux=ChopNML
+MendInp=${RESIN},                       # Spectral Horizontal Resolution of Input Data
+KmaxInp=${KMIN},                        # Number of Layers of Input Data
+MendOut=${RESOUT},                      # Spectral Horizontal Resolution of Output Data
+KmaxOut=${KMOUT},                       # Number of Layers of Output Data
+MendMin=127                             # Minimum Spectral Resolution For Doing Topography Smoothing
+MendCut=${MendCut},                     # Spectral Resolution Cut Off for Topography Smoothing
+Iter=10,                                # Number of Iteractions in Topography Smoothing
+nproc_vert=1,                           # Number of processors to be used in the vertical
+ibdim_size=192,                         # Basic block-size to grid data structure
+tamBlock=512,                           # number of fft's allocated in each fft-block'
+SmthPerCut=${SmthPerCut}                # 0.18,    # Percentage for Topography Smoothing
+GetOzone=${GetOzone},                   # Flag to Produce Ozone Files
+GetTracers=${GetTracers},               # Flag to Produce Tracers Files
+GrADS=${GrADS},                         # Flag to Produce GrADS Files
+GrADSOnly=${GrADSOnly},                 # Flag to Only Produce GrADS Files (Do Not Produce Inputs for Model)
+GDASOnly=${GDASOnly},                   # Flag to Only Produce Input CPTEC Analysis File
+DataGDAS='${DataGDAS}',                 # DataGDAS="Grid" [gblav.ThhZ.atmanl.nemsio.yyyymmdddd] or DataGDAS="Spec" [gdas1.ThhZ.SAnl.yyyymmddhh]
+SmoothTopo=${SmoothTopo},               # Flag to Performe Topography Smoothing
+RmGANL=${RmGANL},                       # Flag to Remove GANL File if Desired
+LinearGrid=${SetLinear},                # Flag to Set Linear or Quadratic Gaussian Grid
+givenfouriergroups=F,                   # True if nproc_vert is to be used. If false data partitioning is done automatically.
+DateLabel='${DATA}',                    # Date Label: yyyymmddhh or DateLabel='          '
+                                        #       If Year (yyyy), Month (mm) and Day (dd) Are Unknown
+UTC='${UTC}',                           # UTC Hour: hh, Must Be Given if Label='          ', else UTC=' '
+NCEPName='${AnlPref} ',                 # NCEP Analysis Preffix for Input File Name
+DirInp='${dirdata}/pre/dataout '        # 
+DirOut='${dirdata}/pre/dataout '        # 
+/
+
+&VegetationMaskSSiB
+inputaux=InputDim
+Idim=360,                               # Number of Longitudes in SSiB Vegetation Mask Data
+Jdim=180,                               # Number of Latitudes in SSiB Vegetation Mask Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&VegetationMask
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=360,                               # Number of Longitudes in Climatological SSiB Vegetation Mask Data
+Jdim=180,                               # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&VegetationMaskSiB2Clima
+inputaux=InputDim
+Idim=360,                               # Number of Longitudes in SSiB Vegetation Mask Data
+Jdim=180,                               # Number of Latitudes in SSiB Vegetation Mask Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&VegetationMaskSiB2
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=360,                               # Number of Longitudes in Climatological SSiB Vegetation Mask Data
+Jdim=180,                               # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&VegetationMaskIBISClima
+inputaux=InputDim
+Idim=720,                               # Number of Longitudes in SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in SSiB Vegetation Mask Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&VegetationMaskIBIS
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=720,                               # Number of Longitudes in Climatological SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&VegetationAlbedoSSiB
+inputaux=InputDim
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&DeepSoilTemperatureClima
+inputaux=InputDim
+Idim=138,                               # Number of Longitudes in Climatological Deep Soil Temperature Data
+Jdim=116,                               # Number of Latitudes in Climatological Deep Soil Temperature Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirBCs='${dirdata}/pre/databcs/ '       # BCs TgDeep Datain Directory
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&DeepSoilTemperature
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=138,                               # Number of Longitudes in Climatological Deep Soil Temperature Data
+Jdim=116,                               # Number of Latitudes in Climatological Deep Soil Temperature Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='DeepSoilTemperatureClima ',    # Output Deep Soil Temperature Archive Name
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&RoughnessLengthClima
+inputaux=InputDim
+Idim=145,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=73,                                # Number of Latitudes in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirBCs='${dirdata}/pre/databcs/ '       # BCs Roughness Length Datain Directory
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&RoughnessLength
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=144,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=73,                                # Number of Latitudes in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='RoughnessLengthClima ',        # Output Roughness Length Archive Name
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SoilMoistureClima
+inputaux=InputDim
+Idim=360,                               # Number of Longitudes in Climatological Soil Moisture Data
+Jdim=181,                               # Number of Latitudes in Climatological Soil Moisture Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirBCs='${dirdata}/pre/databcs/ '       # BCs Soil Moisture Datain Directory
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SoilMoisture
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=360,                               # Number of Longitudes in Climatological Soil Moisture Data
+Jdim=181,                               # Number of Latitudes in Climatological Soil Moisture Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='SoilMoistureClima '            # Output Soil Moisture Archive Name
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&AlbedoClima
+inputaux=InputDim
+Idim=72,                                # Number of Longitudes in Climatological Albedo Data
+Jdim=46,                                # Number of Latitudes in Climatological Albedo Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirBCs='${dirdata}/pre/databcs/ ',      # BCs Albedo Datain Directory
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&Albedo
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=72,                                # Number of Longitudes in Climatological Albedo Data
+Jdim=46,                                # Number of Latitudes in Climatological Albedo Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='AlbedoClima '                  # Output Albedo Archive Name
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SnowClima
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at the Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at the Gaussian Grid
+Date='${DATA}'                          # Date of Initial Conditions (yyyymmddhh)
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ ',                 # Main Datain/dataout Directory
+/
+
+&SSTClima
+inputaux=InputDim
+Mend=${RESO},                           # Spectral Resolution Horizontal Truncation
+Kmax=${KMOUT},                          # Number of Layers of the Initial Condition for the Global Model
+Idim=360,                               # Number of Longitudes For Climatological SST Data
+Jdim=180,                               # Number of Latitudes For Climatological SST Data
+SSTSeaIce=-1.749,                       # SST Value in Celsius Degree Over Sea Ice (-1.749 NCEP, -1.799 CAC)
+Linear=${SetLinear},                    # Flag for Linear (T) or Area Weighted (F) Interpolation
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DateICn='${DATA}',                      # Date of th Initial Condition for the Global Model
+Preffix='GANL${PREFIXO}',               # Preffix of the Initial Condition for the Global Model
+Suffix='S.unf.',                        # Suffix of the Initial Condition for the Global Model
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&FLUXCO2Clima
+inputaux=InputDim
+Mend=${RESO},                           # Spectral Resolution Horizontal Truncation
+Kmax=${KMOUT},                          # Number of Layers of the Initial Condition for the Global Model
+Idim=360,                               # Number of Longitudes For Climatological SST Data
+Jdim=180,                               # Number of Latitudes For Climatological SST Data
+SSTSeaIce=-1.749,                       # SST Value in Celsius Degree Over Sea Ice (-1.749 NCEP, -1.799 CAC)
+Linear=${SetLinear},                    # Flag for Linear (T) or Area Weighted (F) Interpolation
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DateICn='${DATA}',                      # Date of th Initial Condition for the Global Model
+Preffix='GANL${PREFIXO}',               # Preffix of the Initial Condition for the Global Model
+Suffix='S.unf.',                        # Suffix of the Initial Condition for the Global Model
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&OCMClima
+inputaux=InputDim
+Mend=${RESO},                           # Spectral Resolution Horizontal Truncation
+Kmax=${KMOUT},                          # Number of Layers of the Initial Condition for the Global Model
+Idim=360,                               # Number of Longitudes For Climatological SST Data
+Jdim=180,                               # Number of Latitudes For Climatological SST Data
+OCMSeaIce=-1.749,                       # SST Value in Celsius Degree Over Sea Ice (-1.749 NCEP, -1.799 CAC)
+Linear=${SetLinear},                    # Flag for Linear (T) or Area Weighted (F) Interpolation
+LinearGrid=${SetLinearGrid},            # Flag for Linear (T) or Area Weighted (F) Interpolation
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DateICn='${DATA}',                      # Date of th Initial Condition for the Global Model
+Preffix='GANL${PREFIXO}',               # Preffix of the Initial Condition for the Global Model
+Suffix='S.unf.',                        # Suffix of the Initial Condition for the Global Model
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SSTWeeklyNCEP
+inputaux=InputDim
+Idim=360,                               # Number of Longitudes at the NCEP SST Weekly Grid
+Jdim=180,                               # Number of Latitudes at the NCEP SST Weekly Grid
+Date='${DATA}'                          # Date of Initial Conditions (yyyymmddhh)
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SSTWeekly
+inputaux=InputDim
+Mend=${RESO},                           # Spectral Resolution Horizontal Truncation
+Kmax=${KMOUT},                          # Number of Layers of the Initial Condition for the Global Model
+Idim=360,                               # Number of Longitudes For Climatological SST Data
+Jdim=180,                               # Number of Latitudes For Climatological SST Data
+SSTSeaIce=-1.749,                       # SST Value in Celsius Degree Over Sea Ice (-1.749 NCEP, -1.799 CAC)
+LatClimSouth=-50.0,                     # Southern Latitude For Climatological SST Data
+LatClimNorth=60.0,                      # Northern Latitude For Climatological SST Data
+ClimWindow=.FALSE.,                     # Flag to Climatological SST Data Window
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DateICn='${DATA}',                      # Date of th Initial Condition for the Global Model
+Preffix='GANL${PREFIXO}',               # Preffix of the Initial Condition for the Global Model
+Suffix='S.unf.',                        # Suffix of the Initial Condition for the Global Model
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SNOWWeeklyNCEP
+inputaux=InputDim
+Idim=720,                               # Number of Longitudes at the NCEP SNOW Weekly Grid
+Jdim=361,                               # Number of Latitudes at the NCEP SNOW Weekly Grid
+Date='${DATA}'                          # Date of Initial Conditions (yyyymmddhh)
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SoilMoistureWeeklyCPTEC
+inputaux=InputDim
+Idim=1440,                              # Number of Longitudes at the CPTEC SoilMoisture Weekly Grid
+Jdim=720,                               # Number of Latitudes at the CPTEC SoilMoisture Weekly Grid
+Kdim=8  ,                               # Number of soil layer at the CPTEC SoilMoisture Weekly Grid
+Date='${DATA}'                          # Date of Initial Conditions (yyyymmddhh)
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SNOWWeekly
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=720,                               # Number of Longitudes at the NCEP SNOW Weekly Grid
+Jdim=361,                               # Number of Latitudes at the NCEP SNOW Weekly Grid
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='SNOWWeekly',                   # Output Roughness Length Archive Name
+Date='${DATA}'                          # Date of Initial Conditions (yyyymmddhh)
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SoilMoistureWeekly
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=1440,                              # Number of Longitudes at the NCEP SoilMoisture Weekly Grid
+Jdim=720,                               # Number of Latitudes at the NCEP SoilMoisture Weekly Grid
+kdim=8,                                 # Number of Layers at the NCEP SoilMoisture Weekly Grid 
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='SoilMoistureWeekly',           # Output Roughness Length Archive Name
+Date='${DATA}'                          # Date of Initial Conditions (yyyymmddhh)
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&CLimaSoilMoistureClima
+inputaux=InputDim
+Idim=192,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=96,                                # Number of Latitudes in Climatological Roughness Length Data
+Layer=3,                                # Number of Layers in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirBCs='${dirdata}/pre/databcs/ '       # BCs Roughness Length Datain Directory
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&CLimaSoilMoisture
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=192,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=96,                                # Number of Latitudes in Climatological Roughness Length Data
+Layer=3,                                # Number of Layers in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='CLimaSoilMoistureClima ',      # Output Roughness Length Archive Name
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&TemperatureClima
+inputaux=InputDim
+Idim=144,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=73,                                # Number of Latitudes in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirBCs='${dirdata}/pre/databcs/ '       # BCs Roughness Length Datain Directory
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&Temperature
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=144,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=73,                                # Number of Latitudes in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='TemperatureClima ',            # Output Roughness Length Archive Name
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&DeltaTempColdestClima
+inputaux=InputDim
+Idim=720,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=360,                               # Number of Latitudes in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirBCs='${dirdata}/pre/databcs/ ',      # BCs Roughness Length Datain Directory
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&DeltaTempColdest
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=720,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=360,                               # Number of Latitudes in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='DeltaTempColdestClima ',       # Output Roughness Length Archive Name
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&NDVIClima
+inputaux=InputDim
+Idim=360,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=180,                               # Number of Latitudes in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirBCs='${dirdata}/pre/databcs/ '       # BCs Roughness Length Datain Directory
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&NDVI
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=360,                               # Number of Longitudes in Climatological Roughness Length Data
+Jdim=180,                               # Number of Latitudes in Climatological Roughness Length Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+VarName='NDVIClima ',                   # Output Roughness Length Archive Name
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&PorceClayMaskIBISClima
+inputaux=InputDim
+Idim=720,                               # Number of Longitudes in SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in SSiB Vegetation Mask Data
+Layer=6,                                # Number of Latitudes in SSiB Vegetation Mask Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&PorceClayMaskIBIS
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=720,                               # Number of Longitudes in Climatological SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+Layer=6,                                # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&PorceClayMaskSiB2Clima
+inputaux=InputDim
+Idim=720,                               # Number of Longitudes in SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in SSiB Vegetation Mask Data
+Layer=6,                                # Number of Latitudes in SSiB Vegetation Mask Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&PorceClayMaskSiB2
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=720,                               # Number of Longitudes in Climatological SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&PorceSandMaskIBISClima
+inputaux=InputDim
+Idim=720,                               # Number of Longitudes in SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in SSiB Vegetation Mask Data
+Layer=6,                                # Number of Latitudes in SSiB Vegetation Mask Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&PorceSandMaskIBIS
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=720,                               # Number of Longitudes in Climatological SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+Layer=6,                                # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&PorceSandMaskSiB2Clima
+inputaux=InputDim
+Idim=720,                               # Number of Longitudes in SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in SSiB Vegetation Mask Data
+Layer=6,                                # Number of Latitudes in SSiB Vegetation Mask Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&PorceSandMaskSiB2
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=720,                               # Number of Longitudes in Climatological SSiB Vegetation Mask Data
+Jdim=360,                               # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SoilTextureMaskSiB2Clima
+inputaux=InputDim
+Idim=360,                               # Number of Longitudes in SSiB Vegetation Mask Data
+Jdim=180,                               # Number of Latitudes in SSiB Vegetation Mask Data
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SoilTextureMaskSiB2
+inputaux=InputDim
+Imax=${IM},                             # Number of Longitudes at Output Gaussian Grid
+Jmax=${JM},                             # Number of Latitudes at Output Gaussian Grid
+Idim=360,                               # Number of Longitudes in Climatological SSiB Vegetation Mask Data
+Jdim=180,                               # Number of Latitudes in Climatological SSiB Vegetation Mask Data
+GrADS=.TRUE.                            # Flag for GrADS Outputs
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SSTMonthlyDirec
+inputaux=InputDim
+Mend=${RESO},                           # Spectral Resolution Horizontal Truncation
+Kmax=${KMOUT},                          # Number of Layers of the Initial Condition for the Global Model
+Idim=360,                               # Number of Longitudes For Climatological SST Data
+Jdim=180,                               # Number of Latitudes For Climatological SST Data
+SSTSeaIce=-1.749,                       # SST Value in Celsius Degree Over Sea Ice (-1.749 NCEP, -1.799 CAC)
+LatClimSouth=-50.0,                     # Southern Latitude For Climatological SST Data
+LatClimNorth=60.0,                      # Northern Latitude For Climatological SST Data
+ClimWindow=.FALSE.,                     # Flag to Climatological SST Data Window
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+LinearGrid=.FALSE.,                     # Flag to Set Linear (T) or Quadratic Gaussian Grid (T)
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DateICn='${DATA}',                      # Date of th Initial Condition for the Global Model
+Preffix='GANL${PREFIXO}',               # Preffix of the Initial Condition for the Global Model
+Suffix='S.unf.',                        # Suffix of the Initial Condition for the Global Model
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&SSTDailyDirec
+inputaux=InputDim
+Mend=${RESO},                           # Spectral Resolution Horizontal Truncation
+Kmax=${KMOUT},                          # Number of Layers of the Initial Condition for the Global Model
+Idim=360,                               # Number of Longitudes For Climatological SST Data
+Jdim=180,                               # Number of Latitudes For Climatological SST Data
+SSTSeaIce=-1.749,                       # SST Value in Celsius Degree Over Sea Ice (-1.749 NCEP, -1.799 CAC)
+LatClimSouth=-50.0,                     # Southern Latitude For Climatological SST Data
+LatClimNorth=60.0,                      # Northern Latitude For Climatological SST Data
+ClimWindow=.FALSE.,                     # Flag to Climatological SST Data Window
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+LinearGrid=.FALSE.,                     # Flag to Set Linear (T) or Quadratic Gaussian Grid (T)
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DateICn='${DATA}',                      # Date of th Initial Condition for the Global Model
+Preffix='GANL${PREFIXO}',               # Preffix of the Initial Condition for the Global Model
+Suffix='S.unf.',                        # Suffix of the Initial Condition for the Global Model
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&TopographyGradient
+inputaux=TopoGradNML
+Mend=${RESOUT},                         # Spectral Resolution Horizontal Truncation
+Kmax=${KMOUT},                          # Number of Layers of the Initial Condition for the Global Model
+IDATE='${DATA}',                        # Date of the Initial Condition 
+Preffix='${PREFIXO}',                   # Prefix of the Initial Condition file name
+Grid='Q',                               # Grid type of the Initial Condition file
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+&CO2MonthlyDirec
+inputaux=InputDim
+Mend=${RESO},                           # Spectral Resolution Horizontal Truncation
+Kmax=${KMOUT},                          # Number of Layers of the Initial Condition for the Global Model
+Idim=360,                               # Number of Longitudes For Climatological CO2 Data
+Jdim=180,                               # Number of Latitudes For Climatological CO2 Data
+CO2SeaIce=-0.0,                         # CO2 Value in Celsius Degree Over Sea Ice (-0 NCEP, -0 CAC)
+LatClimSouth=-50.0,                     # Southern Latitude For Climatological SST Data
+LatClimNorth=60.0,                      # Northern Latitude For Climatological SST Data
+ClimWindow=.FALSE.,                     # Flag to Climatological SST Data Window
+Linear=.TRUE.,                          # Flag for Linear (T) or Area Weighted (F) Interpolation
+LinearGrid=.FALSE.,                     # Flag to Set Linear (T) or Quadratic Gaussian Grid (T)
+GrADS=.TRUE.,                           # Flag for GrADS Outputs
+DateICn='${DATA}',                      # Date of th Initial Condition for the Global Model
+Preffix='GANL${PREFIXO}',                      # Preffix of the Initial Condition for the Global Model
+Suffix='S.unf.',                        # Suffix of the Initial Condition for the Global Model
+DirMain='${dirdata}/ '                  # Main Datain/dataout Directory
+/
+
+----------------------------------------------------------------------------------------------------
+-------------------------------------------- THE  END ----------------------------------------------
+----------------------------------------------------------------------------------------------------
