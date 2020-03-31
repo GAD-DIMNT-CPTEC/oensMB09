@@ -437,6 +437,8 @@ EOT0
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILES}
 
+export PBS_SERVER=${pbs_server2}
+
 qsub -W block=true ${SCRIPTSFILES}
 
 echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILES}"

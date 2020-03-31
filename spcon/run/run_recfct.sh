@@ -232,6 +232,8 @@ EOT0
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
 
+export PBS_SERVER=${pbs_server2}
+
 qsub -W block=true ${SCRIPTSFILE}
 
 exit 0
