@@ -136,14 +136,22 @@ case ${TRC} in
      HNNI=384    ; HNNJ=75     ;                             # Define o número de pontos da região 
      HNII=1      ; HNIS=384    ; HNJI=1      ; HNJS=75     ; # Define a região da perturbação 
      HNIIPS=1    ; HNISPS=384  ; HNJIPS=1    ; HNJSPS=75   ; # Não usado
-     # Região NAS:
-     NASNI=97    ; NASNJ=42    ;                             # Define o número de pontos da região  
-     NASII=278   ; NASIS=374   ; NASJI=76    ; NASJS=117   ; # Define a região da perturbação  
-     NASIIPS=278 ; NASISPS=374 ; NASJIPS=76  ; NASJSPS=117 ; # Não usado
-     # Região SAS:
-     SASNI=97    ; SASNJ=44    ;                             # Define o número de pontos da região  
-     SASII=267   ; SASIS=363   ; SASJI=118   ; SASJS=161   ; # Define a região da perturbação  
-     SASIIPS=267 ; SASISPS=363 ; SASJIPS=118 ; SASJSPS=161 ; # Não usado
+#     # Região NAS:
+#     NASNI=97    ; NASNJ=42    ;                             # Define o número de pontos da região  
+#     NASII=278   ; NASIS=374   ; NASJI=76    ; NASJS=117   ; # Define a região da perturbação  
+#     NASIIPS=278 ; NASISPS=374 ; NASJIPS=76  ; NASJSPS=117 ; # Não usado
+#     # Região SAS:
+#     SASNI=97    ; SASNJ=44    ;                             # Define o número de pontos da região  
+#     SASII=267   ; SASIS=363   ; SASJI=118   ; SASJS=161   ; # Define a região da perturbação  
+#     SASIIPS=267 ; SASISPS=363 ; SASJIPS=118 ; SASJSPS=161 ; # Não usado
+     # Região NAS (operação):
+     NASNI=97    ; NASNJ=34    ;                             # Define o número de pontos da região  
+     NASII=276   ; NASIS=372   ; NASJI=75    ; NASJS=108   ; # Define a região da perturbação  
+     NASIIPS=276 ; NASISPS=372 ; NASJIPS=75  ; NASJSPS=108 ; # Não usado
+     # Região SAS (operação):
+     SASNI=97    ; SASNJ=53    ;                             # Define o número de pontos da região  
+     SASII=266   ; SASIS=362   ; SASJI=109   ; SASJS=161   ; # Define a região da perturbação  
+     SASIIPS=266 ; SASISPS=362 ; SASJIPS=109 ; SASJSPS=161 ; # Não usado
      ;; 
 
 213) MR=213      ; KR=42       ; LR=11      ;          
@@ -708,6 +716,8 @@ EOT0
 
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
+
+export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${HOME_suite}/../run/${SCRIPTSFILE}
 

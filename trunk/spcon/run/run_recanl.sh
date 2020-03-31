@@ -228,6 +228,8 @@ EOT0
 # Submete o script e aguarda o fim da execução
 chmod +x setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
+export PBS_SERVER=${pbs_server2}
+
 qsub -W block=true setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 exit 0

@@ -276,7 +276,10 @@ cd ${DK_suite}/../rdpert/bin/\${TRUNC}\${LEV}
 ./rdpert.\${TRUNC}\${LEV} < ${DK_suite}/../rdpert/datain/rdpert.nml > ${DK_suite}/../rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
 EOT0
 
+# Submete o script e aguarda o fim da execução
 chmod +x ${SCRIPTSFILE} 
+
+export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${SCRIPTSFILE}
 
