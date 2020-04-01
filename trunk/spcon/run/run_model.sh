@@ -106,9 +106,11 @@ sed -e "s;#TRUNC#;${1};g" \
     -e "s;#MGIVEN#;${18};g" \
     -e "s;#GAUSSGIVEN#;${19};g" \
     -e "s;#INITLZ#;${20};g" \
-    ${21}/MODELIN.template > ${22}/MODELIN
+    -e "s;#NHEXT#;${21};g" \
+    -e "s;#DOGRH#;${22};g" \
+    ${23}/MODELIN.template > ${24}/MODELIN
 
-echo "Namelist criado em: ${22}/MODELIN"
+echo "Namelist criado em: ${24}/MODELIN"
 
 }
 
@@ -231,22 +233,28 @@ NAMELISTFILEPATH=${HOME_suite}/run
 if [ ${ANLTYPE} == RDP -o ${ANLTYPE} == CTR ]
 then
   export DHFCT=3
-  export DHRES=3
+  export DHRES=24
+  export NHEXT=36
+  export DOGRH='.FALSE.'
 elif [ ${ANLTYPE} == NMC -o ${ANLTYPE} == NPT -o ${ANLTYPE} == PPT -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
   export DHFCT=6
-  export DHRES=6
+  export DHRES=24
+  export NHEXT=168
+  export DOGRH='.TRUE.'
 else
   export DHFCT=6
-  export DHRES=6 
+  export DHRES=24
+  export NHEXT=36
+  export DOGRH='.FALSE.'
 fi
 
 export NMSST="sstwkl"
 
 export GENRES='.FALSE.'
-export EIGENINIT=".TRUE."
-export MGIVEN=".FALSE."      
-export GAUSSGIVEN=".FALSE."  
+export EIGENINIT=".FALSE."
+export MGIVEN=".TRUE."      
+export GAUSSGIVEN=".TRUE."  
 
 export PATHIN=${DK_suite}/model/datain
 
@@ -280,7 +288,7 @@ then
   fi
   export PREFIX=${PREFIC}
 
-  cria_namelist ${TRC} ${LV} ${TIMESTEP} ${LABELI} ${LABELW} ${LABELF} ${DHFCT} ${DHRES} ${GENRES} ${PREFIX} ${PREFIY} ${NMSST} ${PATHIN} ${DIRFNAMEOUTPUT} ${RSTIN} ${RSTOU} ${EIGENINIT} ${MGIVEN} ${GAUSSGIVEN} ${INITLZ} ${NAMELISTFILEPATH} ${EXECFILEPATH}
+  cria_namelist ${TRC} ${LV} ${TIMESTEP} ${LABELI} ${LABELW} ${LABELF} ${DHFCT} ${DHRES} ${GENRES} ${PREFIX} ${PREFIY} ${NMSST} ${PATHIN} ${DIRFNAMEOUTPUT} ${RSTIN} ${RSTOU} ${EIGENINIT} ${MGIVEN} ${GAUSSGIVEN} ${INITLZ} ${NHEXT} ${DOGRH} ${NAMELISTFILEPATH} ${EXECFILEPATH}
  
 else
 
@@ -303,7 +311,7 @@ else
     export PREFIY=${MEM}${ANLTYPE:0:1}
     export PREFIX=${MEM}${ANLTYPE:0:1}
 
-    cria_namelist ${TRC} ${LV} ${TIMESTEP} ${LABELI} ${LABELW} ${LABELF} ${DHFCT} ${DHRES} ${GENRES} ${PREFIX} ${PREFIY} ${NMSST} ${PATHIN} ${DIRFNAMEOUTPUT} ${RSTIN} ${RSTOU} ${EIGENINIT} ${MGIVEN} ${GAUSSGIVEN} ${INITLZ} ${NAMELISTFILEPATH} ${EXECFILEPATHMEM}
+    cria_namelist ${TRC} ${LV} ${TIMESTEP} ${LABELI} ${LABELW} ${LABELF} ${DHFCT} ${DHRES} ${GENRES} ${PREFIX} ${PREFIY} ${NMSST} ${PATHIN} ${DIRFNAMEOUTPUT} ${RSTIN} ${RSTOU} ${EIGENINIT} ${MGIVEN} ${GAUSSGIVEN} ${INITLZ} ${NHEXT} ${DOGRH} ${NAMELISTFILEPATH} ${EXECFILEPATHMEM}
 
   done
 
