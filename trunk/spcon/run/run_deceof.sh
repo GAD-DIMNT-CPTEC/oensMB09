@@ -170,7 +170,7 @@ export LABELI=${LABELI}
 #
 
 export NAMEL=GEOFPE\${NUM}
-export GNAME=GANL\${PREFXI}R
+export GNAME=GANLNMC
 export NAMER=GANL\${PREFXI}R
 export NAMES1=GANL\${NUM}P
 export NAMES3=GANL\${NUM}N
