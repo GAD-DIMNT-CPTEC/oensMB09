@@ -127,31 +127,23 @@ case ${TRC} in
      # Região HS:
      HSNI=384    ; HSNJ=75     ;                             # Define o número de pontos da região  
      HSII=1      ; HSIS=384    ; HSJI=118    ; HSJS=192    ; # Define a região da perturbação  
-     HSIIPS=1    ; HSISPS=384  ; HSJIPS=118  ; HSJSPS=192  ; # Não usado
+     HSIIPS=192  ; HSISPS=299  ; HSJIPS=118  ; HSJSPS=153  ; # Não usado
      # Região TR:
      TRNI=384    ; TRNJ=42     ;                             # Define o número de pontos da região  
      TRII=1      ; TRIS=384    ; TRJI=76     ; TRJS=117    ; # Define a região da perturbação  
-     TRIIPS=1    ; TRISPS=384  ; TRJIPS=76   ; TRJSPS=117  ; # Não usado
+     TRIIPS=192  ; TRISPS=299  ; TRJIPS=76   ; TRJSPS=117  ; # Não usado
      # Região HN:
      HNNI=384    ; HNNJ=75     ;                             # Define o número de pontos da região 
      HNII=1      ; HNIS=384    ; HNJI=1      ; HNJS=75     ; # Define a região da perturbação 
-     HNIIPS=1    ; HNISPS=384  ; HNJIPS=1    ; HNJSPS=75   ; # Não usado
-#     # Região NAS:
-#     NASNI=97    ; NASNJ=42    ;                             # Define o número de pontos da região  
-#     NASII=278   ; NASIS=374   ; NASJI=76    ; NASJS=117   ; # Define a região da perturbação  
-#     NASIIPS=278 ; NASISPS=374 ; NASJIPS=76  ; NASJSPS=117 ; # Não usado
-#     # Região SAS:
-#     SASNI=97    ; SASNJ=44    ;                             # Define o número de pontos da região  
-#     SASII=267   ; SASIS=363   ; SASJI=118   ; SASJS=161   ; # Define a região da perturbação  
-#     SASIIPS=267 ; SASISPS=363 ; SASJIPS=118 ; SASJSPS=161 ; # Não usado
-     # Região NAS (operação):
+     HNIIPS=192  ; HNISPS=299  ; HNJIPS=40   ; HNJSPS=75   ; # Não usado
+     # Região NAS:
      NASNI=97    ; NASNJ=34    ;                             # Define o número de pontos da região  
      NASII=276   ; NASIS=372   ; NASJI=75    ; NASJS=108   ; # Define a região da perturbação  
-     NASIIPS=276 ; NASISPS=372 ; NASJIPS=75  ; NASJSPS=108 ; # Não usado
-     # Região SAS (operação):
+     NASIIPS=276 ; NASISPS=316 ; NASJIPS=75  ; NASJSPS=108 ; # Não usado
+     # Região SAS:
      SASNI=97    ; SASNJ=53    ;                             # Define o número de pontos da região  
      SASII=266   ; SASIS=362   ; SASJI=109   ; SASJS=161   ; # Define a região da perturbação  
-     SASIIPS=266 ; SASISPS=362 ; SASJIPS=109 ; SASJSPS=161 ; # Não usado
+     SASIIPS=266 ; SASISPS=316 ; SASJIPS=109 ; SASJSPS=160 ; # Não usado
      ;; 
 
 213) MR=213      ; KR=42       ; LR=11      ;          
@@ -417,10 +409,10 @@ EOT1
 cat <<EOT1 > eofpres\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
-  DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
+  DIRA='\${DK_suite}/../model/datain/ '
   DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${MEM}${LABELI} '
-  ANAME='GANL\${MEM}R${LABELI}\${ext}.${RESOL}${NIVEL} '
+  ANAME='GANLNMC\${LABELI}\${ext}.${RESOL}${NIVEL} '
   PRSOUT='prsout\${REG}\${MEM}${LABELI} '
   PRSSCM='prsscm\${REG}\${MEM}${LABELI} '
  &END
@@ -471,10 +463,10 @@ EOT1
 cat <<EOT1 > eoftem\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
-  DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
+  DIRA='\${DK_suite}/../model/datain/ '
   DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
-  ANAME='GANL\${MEM}R\${LABELI}\${ext}.${RESOL}${NIVEL} '
+  ANAME='GANLNMC\${LABELI}\${ext}.${RESOL}${NIVEL} '
   TEMOUT='temout\${REG}\${MEM}\${LABELI} '
   TEMPCM='tempcm\${REG}\${MEM}\${LABELI} '
  &END
@@ -530,10 +522,10 @@ EOT1
 cat <<EOT1 > eofhum\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
-  DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
+  DIRA='\${DK_suite}/../model/datain/ '
   DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
-  ANAME='GANL\${MEM}R\${LABELI}\${ext}.${RESOL}${NIVEL} '
+  ANAME='GANLNMC\${LABELI}\${ext}.${RESOL}${NIVEL} '
   HUMOUT='humout\${REG}\${MEM}\${LABELI} '
   HUMPCM='humpcm\${REG}\${MEM}\${LABELI} '
  &END
@@ -584,10 +576,10 @@ EOT1
 cat <<EOT1 > eofwin\${REG}\${MEM}.nml
  &DATAIN
   DIRI='\${DK_suite}/../eof/datain/ '
-  DIRA='\${DK_suite}/../rdpert/dataout/${RESOL}${NIVEL}/ '
+  DIRA='\${DK_suite}/../model/datain/ '
   DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
-  ANAME='GANL\${MEM}R\${LABELI}\${ext}.${RESOL}${NIVEL} '
+  ANAME='GANLNMC\${LABELI}\${ext}.${RESOL}${NIVEL} '
   WINOUT='winout\${REG}\${MEM}\${LABELI} '
   WINPCM='winpcm\${REG}\${MEM}\${LABELI} '
  &END
