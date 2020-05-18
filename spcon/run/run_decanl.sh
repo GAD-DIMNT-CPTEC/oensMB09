@@ -57,11 +57,11 @@ fi
 # Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ../ ;pwd)
+export PATHBASE=$(cd ${PATHENV}; cd  ;pwd)
 
 . ${FILEENV} ${1} ${2}
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -106,15 +106,15 @@ HSTMAQ=$(hostname)
 RUNTM=$(date +'%Y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 # Script de submissão
 SCRIPTSFILE=setdrpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTSFILE}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/../decanl/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/../decanl/output/${SCRIPTSFILE}.${RUNTM}.err
+#PBS -o ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.out
+#PBS -e ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -S /bin/bash
 #PBS -l walltime=0:10:00
 #PBS -l select=1:ncpus=1
@@ -126,7 +126,7 @@ cat <<EOT0 > ${SCRIPTSFILE}
 
 export PBS_SERVER=${pbs_server2}
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 . ${FILEENV} ${1} ${2}
 
 #
@@ -203,7 +203,7 @@ echo \${DK_suite}
 echo \${DK_suite}
 echo \${DK_suite}/model/datain
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 #
 #  Set Horizontal Truncation and Vertical Layers
@@ -218,14 +218,14 @@ export TRUNC=${RESOL}
 
 GNAMEL=\${NAMEL}\${LABELI}\${EXTL}.\${TRUNC}\${LEV}
 
-mkdir -p \${DK_suite}/../decanl/datain
+mkdir -p \${DK_suite}/decanl/datain
 
-cat <<EOT2 > \${DK_suite}/../decanl/datain/decanl.nml
+cat <<EOT2 > \${DK_suite}/decanl/datain/decanl.nml
  &DATAIN
   LDIM=1
-  DIRL='\${DK_suite}/../decanl/datain/ '
+  DIRL='\${DK_suite}/decanl/datain/ '
   DIRI='\${DK_suite}/model/datain/ '
-  DIRG='\${DK_suite}/../rdpert/dataout/\${TRUNC}\${LEV}/ '
+  DIRG='\${DK_suite}/rdpert/dataout/\${TRUNC}\${LEV}/ '
   DIRS='\${DK_suite}/model/datain/ '
   GNAMEL='\${GNAMEL} '
  &END
@@ -242,7 +242,7 @@ do
   if [ \${i} -le 9 ]
   then
 
-cat <<EOT3 > \${DK_suite}/../decanl/datain/\${GNAMEL}
+cat <<EOT3 > \${DK_suite}/decanl/datain/\${GNAMEL}
 \${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 GANL0\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}
 GANL0\${i}R\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
@@ -250,7 +250,7 @@ EOT3
 
   else
 
-cat <<EOT3 > \${DK_suite}/../decanl/datain/\${GNAMEL}
+cat <<EOT3 > \${DK_suite}/decanl/datain/\${GNAMEL}
 \${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 GANL\${i}R\${LABELI}\${EXTR}.\${TRUNC}\${LEV}
 GANL\${i}R\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
@@ -262,9 +262,9 @@ EOT3
 #   Run Decomposition
 #
 
-  cd ${HOME_suite}/../decanl/bin/\${TRUNC}\${LEV}
+  cd ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}
 
-  ./decanl.\${TRUNC}\${LEV} < ${DK_suite}/../decanl/datain/decanl.nml > ${DK_suite}/../decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
+  ./decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
 
   echo \${i}
   i=\$((\${i}+1))
@@ -273,12 +273,12 @@ done
 EOT0
 
 # Submete o script e aguarda o fim da execução
-chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
+chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${SCRIPTSFILE}
 
-echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILE}"
+echo "SUBMIT: ${HOME_suite}/run/${SCRIPTSFILE}"
 
 exit 0

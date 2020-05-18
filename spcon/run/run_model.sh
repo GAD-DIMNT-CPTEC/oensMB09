@@ -188,11 +188,11 @@ fi
 # Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
+export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${RES} ${PREFIC}
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -222,7 +222,7 @@ fi
 DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 MAQUI=$(hostname -s)
 
-SCRIPTFILEPATH=${HOME_suite}/../run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}modg.${DIRRESOL}.${LABELI}.${MAQUI}
+SCRIPTFILEPATH=${HOME_suite}/run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}modg.${DIRRESOL}.${LABELI}.${MAQUI}
 NAMELISTFILEPATH=${HOME_suite}/run
 
 # As opções abaixo fazem referência à frequência de saída das previsões (DHFCT) e dos arquivos de restart (DHRES)
@@ -302,6 +302,9 @@ else
    
     ln -sf ${DK_suite}/model/exec/ParModel_MPI ${EXECFILEPATHMEM}
 
+    ln -sf ${DK_suite}/model/datain/OZON${PREFIC}${LABELI}S.grd.G00192L028 ${DK_suite}/model/datain/OZON${MEM}${ANLTYPE:0:1}${LABELI}S.grd.G00192L028
+    ln -sf ${DK_suite}/model/datain/TRAC${PREFIC}${LABELI}S.grd.G00192L028 ${DK_suite}/model/datain/TRAC${MEM}${ANLTYPE:0:1}${LABELI}S.grd.G00192L028
+
     export RSTIN=${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${MEM}${ANLTYPE:0:1}/RST
     export RSTOU=${DK_suite}/model/dataout/${TRCLV}/${LABELW}/${MEM}${ANLTYPE:0:1}/RST
     export DIRFNAMEOUTPUT=${DK_suite}/model/dataout/${DIRRESOL}/${LABELI}/${MEM}${ANLTYPE:0:1}
@@ -372,7 +375,7 @@ export OMP_NUM_THREADS=6
 
 ulimit -s unlimited
 
-echo \${PBS_JOBID} > ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE}
+echo \${PBS_JOBID} > ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
 
 date
 
@@ -393,7 +396,7 @@ qsub -W block=true ${SCRIPTFILEPATH}
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
 
-  JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+  JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
 
   for mem in $(seq 1 ${ANLPERT})
   do
@@ -401,23 +404,23 @@ then
     jobidname="BAMENS${ANLTYPE}.o${JOBID}.${mem}"
     bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
 
-    until [ -e "${HOME_suite}/../run/${jobidname}" ]; do sleep 1s; done
-    mv -v ${HOME_suite}/../run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
+    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
+    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
   
   done
 
 else
 
-  JOBID=$(cat ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
+  JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
 
   jobidname="BAM${ANLTYPE}.o${JOBID}"
   bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.out"
 
-  until [ -e "${HOME_suite}/../run/${jobidname}" ]; do sleep 1s; done 
-  mv -v ${HOME_suite}/../run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
+  until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
+  mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
 
 fi
 
-rm ${HOME_suite}/../run/this.job.${LABELI}.${ANLTYPE}
+rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
 
 exit 0
