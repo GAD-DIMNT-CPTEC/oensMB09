@@ -1,4 +1,4 @@
-#! /bin/bash -x
+##! /bin/bash -x
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -58,11 +58,11 @@ fi
 # Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
+export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${1}
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -103,6 +103,14 @@ else
   NPERT=${5}
 fi
 
+if [ -z "${6}" ]
+then
+  echo "Fifth argument is not set (NPERT)"
+  exit
+else
+  PREF=${6}
+fi
+
 export NUMPERT=${NPERT}
 
 # As variáveis a seguir são utilizadas na composição dos nomes dos arquivos com as perturbações por EOF
@@ -112,7 +120,7 @@ MQHN=1; MQTR=1; MQHS=1; MQNAS=1; MQSAS=1
 MUHN=1; MUTR=1; MUHS=1; MUNAS=1; MUSAS=1
 MVHN=1; MVTR=1; MVHS=1; MVNAS=1; MVSAS=1
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 RUNTM=$(date +"%s")
 
@@ -121,8 +129,8 @@ SCRIPTSFILES=setdec${2}.${RESOL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTSFILES}
 #! /bin/bash -x
-#PBS -o ${DK_suite}/../deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
-#PBS -e ${DK_suite}/../deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
+#PBS -o ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
+#PBS -e ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
 #PBS -l walltime=0:15:00
 #PBS -l mppnppn=1
 #PBS -A CPTEC
@@ -170,7 +178,7 @@ export LABELI=${LABELI}
 #
 
 export NAMEL=GEOFPE\${NUM}
-export GNAME=GANLNMC
+export GNAME=GANL${PREF}
 export NAMER=GANL\${PREFXI}R
 export NAMES1=GANL\${NUM}P
 export NAMES3=GANL\${NUM}N
@@ -220,12 +228,12 @@ export MACH=${MAQUI}
 
 GNAMEL=\${NAMEL}\${LABELI}\${EXTL}.\${TRUNC}\${LEV}
 
-cat <<EOT3 > \${DK_suite}/../deceof/datain/deceof\${NUM}.nml
+cat <<EOT3 > \${DK_suite}/deceof/datain/deceof\${NUM}.nml
  &DATAIN
   GNAMEL='\${GNAMEL} '
-  DIRL='\${DK_suite}/../deceof/datain/ '
+  DIRL='\${DK_suite}/deceof/datain/ '
   DIRI='\${DK_suite}/model/datain/ '
-  DIRG='\${DK_suite}/../eof/dataout/\${TRUNC}\${LEV}/ '
+  DIRG='\${DK_suite}/eof/dataout/\${TRUNC}\${LEV}/ '
   DIRS='\${DK_suite}/model/datain/ '
  &END
  &HUMIDI
@@ -293,9 +301,9 @@ echo "filevhs= "\${filevhs}
 echo "filevnas="\${filevnas} 
 echo "filevsas="\${filevsas} 
 
-rm -f \${DK_suite}/../deceof/datain/\${GNAMEL}
+rm -f \${DK_suite}/deceof/datain/\${GNAMEL}
 
-cat <<EOT2 > \${DK_suite}/../deceof/datain/\${GNAMEL}
+cat <<EOT2 > \${DK_suite}/deceof/datain/\${GNAMEL}
 \${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 \${filephn}
 \${fileptr}
@@ -329,9 +337,9 @@ EOT2
 #  Run Decomposition
 #
 
-cd \${HOME_suite}/../deceof/bin/\${TRUNC}\${LEV}
+cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/../deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/../deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
 filephn=prssnhn\${NUM}${MPHN}\${LABELI}
 fileptr=prssntr\${NUM}${MPTR}\${LABELI}
@@ -393,9 +401,9 @@ echo "filevhs= "\${filevhs}
 echo "filevnas="\${filevnas} 
 echo "filevsas="\${filevsas} 
 
-rm -f \${DK_suite}/../deceof/datain/\${GNAMEL}
+rm -f \${DK_suite}/deceof/datain/\${GNAMEL}
 
-cat <<EOT4 > \${DK_suite}/../deceof/datain/\${GNAMEL}
+cat <<EOT4 > \${DK_suite}/deceof/datain/\${GNAMEL}
 \${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 \${filephn}
 \${fileptr}
@@ -429,18 +437,18 @@ EOT4
 #  Run Decomposition
 #
 
-cd \${HOME_suite}/../deceof/bin/\${TRUNC}\${LEV}
+cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/../deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/../deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 EOT0
 
 # Submete o script e aguarda o fim da execução
-chmod +x ${HOME_suite}/../run/${SCRIPTSFILES}
+chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${SCRIPTSFILES}
 
-echo "SUBMIT: ${HOME_suite}/../run/${SCRIPTSFILES}"
+echo "SUBMIT: ${HOME_suite}/run/${SCRIPTSFILES}"
 
 exit 0

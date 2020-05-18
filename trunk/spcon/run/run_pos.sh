@@ -163,11 +163,11 @@ fi
 # Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
+export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${RES} ${ANLTYPE}
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -178,7 +178,7 @@ export NIVEL=$(echo ${TRCLV} | cut -c 7-11)
 export DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 export MAQUI=$(hostname -s)
 
-export SCRIPTFILEPATH=${HOME_suite}/../run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}posg.${DIRRESOL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH=${HOME_suite}/run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}posg.${DIRRESOL}.${LABELI}.${MAQUI}
 export NAMELISTFILEPATH=${HOME_suite}/run
 
 export BINARY=".FALSE."
@@ -277,7 +277,7 @@ ${PBSEXECFILEPATH}
 
 cd \${EXECFILEPATH}
 
-echo \${PBS_JOBID} > ${HOME_suite}/../run/this.pos.job.${LABELI}.${ANLTYPE}
+echo \${PBS_JOBID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
 
 date
 
@@ -294,7 +294,7 @@ qsub -W block=true ${SCRIPTFILEPATH}
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
 
-  JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+  JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
 
   for mem in $(seq 1 ${ANLPERT})
   do
@@ -302,8 +302,8 @@ then
     jobidname="POSENS${ANLTYPE}.o${JOBID}.${mem}"
     posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
 
-    until [ -e "${HOME_suite}/../run/${jobidname}" ]; do sleep 1s; done
-    mv -v ${HOME_suite}/../run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
+    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
+    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
 
     for arqctl in $(find ${DATAOUT} -name "*.ctl")
     do
@@ -314,13 +314,13 @@ then
 
 else
 
-  JOBID=$(cat ${HOME_suite}/../run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
+  JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
 
   jobidname="POS${ANLTYPE}.o${JOBID}"
   posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
 
-  until [ -e "${HOME_suite}/../run/${jobidname}" ]; do sleep 1s; done 
-  mv -v ${HOME_suite}/../run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
+  until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
+  mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
 
   for arqctl in $(find ${DATAOUT} -name "*.ctl")
   do
@@ -329,6 +329,6 @@ else
 
 fi
 
-rm ${HOME_suite}/../run/this.pos.job.${LABELI}.${ANLTYPE}
+rm ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
 
 exit 0

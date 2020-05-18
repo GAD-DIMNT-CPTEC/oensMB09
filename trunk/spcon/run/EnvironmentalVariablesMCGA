@@ -52,13 +52,13 @@ fi
 #
 
 # Caminho do BAM no HOME
-export PATHBASE=/scratchin/grupos/ensemble/home/carlos.bastarz/oensMB09.r
+export PATHBASE=/cray_home/carlos_bastarz/oensMB09
 
 # Caminho do BAM no scratchin (SUBMIT_HOME)
-export DK=/scratchin/grupos/ensemble/home/carlos.bastarz/oensMB09.r
+export DK=/cray_home/carlos_bastarz/oensMB09
 
 # Caminho do BAM no scratchout (SUBMIT_WORK)
-export DK2=/scratchin/grupos/ensemble/home/carlos.bastarz/oensMB09.r
+export DK2=/cray_home/carlos_bastarz/oensMB09
 
 export HOME_suite=${PATHBASE} ; mkdir -p ${HOME_suite}
 export DK_suite=${DK}         ; mkdir -p ${DK_suite}
@@ -74,18 +74,18 @@ export tmstp=$(date +'%s')
 #
 # Variáveis do PBS
 #
-export PBS_TUPA=eslogin13
-export PBS_AUX=aux20-eth4
+#export PBS_TUPA=eslogin13
+#export PBS_AUX=aux20-eth4
 export HSTMAQ=$(uname -n)
 export MAQUI=$(uname -s)
 export QUOTA=CPTEC
-export pbs_server2=aux20-eth4
-export pbs_server1=eslogin13
+export pbs_server2=sdb
+export pbs_server1=sdb
 export QSUB=/opt/pbs/default/bin/qsub
 export QUEUE=pesq
 export QUEUEM=pesq
 export QUEUEP=pesq
-export AUX_QUEUE=pesq.q
+export AUX_QUEUE=pesq
 export WALLTIME="00:30:00"
 export WALLTIME6="00:30:00"
 export AUX_WALLTIME="00:30:00"
@@ -114,5 +114,5 @@ export AnlPref="gblav"         # gdas1/gblav == Anl. Spec. NCEP; gdas/gblav == A
 #
 # Utilitários
 #
-export DIRGRADS=/opt/grads/2.0.a9/bin
+export DIRGRADS=/cray_home/carlos_bastarz/bin
 export caldate=${HOME_suite}/utils/bin/caldate.3.0.1

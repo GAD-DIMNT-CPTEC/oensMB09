@@ -82,15 +82,22 @@ then
 else
   LABELI=${4}
 fi
+if [ -z "${5}" ]
+then
+  echo "Fifth argument is not set (LABELI: yyyymmddhh)"
+  exit
+else
+  PREF=${5}
+fi
 
 # Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ../; pwd)
+export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${TRCLV} ${NMEM}
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -198,7 +205,7 @@ case ${TRC} in
 
 esac
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 # Variáveis utilizadas no script de submissão
 mkdir -p ${DK_suite}/model/exec/setout
@@ -210,10 +217,10 @@ SCRIPTSFILE=set${NMEM}perpntg.${TRCLV}.${LABELI}.${MAQUI}
 
 RUNTM=$(date +"%s")
 
-cat <<EOT0 > ${HOME_suite}/../run/${SCRIPTSFILE}
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/../eof/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/../eof/output/${SCRIPTSFILE}.${RUNTM}.err
+#PBS -o ${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.out
+#PBS -e ${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=01:00:00
 #PBS -l select=1:ncpus=1
 #PBS -A CPTEC
@@ -231,13 +238,13 @@ export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
 # Create output directory
 #
 
-mkdir -p \${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/
+mkdir -p \${DK_suite}/eof/dataout/${RESOL}${NIVEL}/
 
 #
 # Change directory to run
 #
 
-cd ${HOME_suite}/../run
+cd ${HOME_suite}/run
 
 #
 # Run scripts of recomposition         
@@ -388,31 +395,31 @@ do
   
   export ext=R.fct.${RESOL}${NIVEL}
   
-  cd ${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/
+  cd ${DK_suite}/recfct/dataout/${RESOL}${NIVEL}/${LABELI}/
   
   for LABELF in \$(ls -1 GFCTCTR${LABELI}*fct* | cut -c18-27)
   do
-cat <<EOT1 >> ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
-${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTCTR${LABELI}\${LABELF}\${ext}
-${DK_suite}/../recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCT\${MEM}R${LABELI}\${LABELF}\${ext}
+cat <<EOT1 >> ${DK_suite}/eof/datain/templ\${REG}\${MEM}${LABELI}
+${DK_suite}/recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCTCTR${LABELI}\${LABELF}\${ext}
+${DK_suite}/recfct/dataout/${RESOL}${NIVEL}/${LABELI}/GFCT\${MEM}R${LABELI}\${LABELF}\${ext}
 EOT1
   done
   
-  echo ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI}
+  echo ${DK_suite}/eof/datain/templ\${REG}\${MEM}${LABELI}
   
-  cp ${DK_suite}/../eof/datain/templ\${REG}\${MEM}${LABELI} ${DK_suite}/../eof/datain/templ\${MEM}${LABELI}
+  cp ${DK_suite}/eof/datain/templ\${REG}\${MEM}${LABELI} ${DK_suite}/eof/datain/templ\${MEM}${LABELI}
   
-  cd \${DK_suite}/../eof/datain
+  cd \${DK_suite}/eof/datain
   
   export ext=R.unf
   
 cat <<EOT1 > eofpres\${REG}\${MEM}.nml
  &DATAIN
-  DIRI='\${DK_suite}/../eof/datain/ '
-  DIRA='\${DK_suite}/../model/datain/ '
-  DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
+  DIRI='\${DK_suite}/eof/datain/ '
+  DIRA='\${DK_suite}/model/datain/ '
+  DIRO='\${DK_suite}/eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${MEM}${LABELI} '
-  ANAME='GANLNMC\${LABELI}\${ext}.${RESOL}${NIVEL} '
+  ANAME='GANL${PREF}\${LABELI}\${ext}.${RESOL}${NIVEL} '
   PRSOUT='prsout\${REG}\${MEM}${LABELI} '
   PRSSCM='prsscm\${REG}\${MEM}${LABELI} '
  &END
@@ -452,21 +459,21 @@ cat <<EOT1 > eofpres\${REG}\${MEM}.nml
  &END
 EOT1
 
-  cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
+  cd \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ./eofpres.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  ./eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
-  cd \${DK_suite}/../eof/datain
+  cd \${DK_suite}/eof/datain
   
   export ext=R.unf
   
 cat <<EOT1 > eoftem\${REG}\${MEM}.nml
  &DATAIN
-  DIRI='\${DK_suite}/../eof/datain/ '
-  DIRA='\${DK_suite}/../model/datain/ '
-  DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
+  DIRI='\${DK_suite}/eof/datain/ '
+  DIRA='\${DK_suite}/model/datain/ '
+  DIRO='\${DK_suite}/eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
-  ANAME='GANLNMC\${LABELI}\${ext}.${RESOL}${NIVEL} '
+  ANAME='GANL${PREF}\${LABELI}\${ext}.${RESOL}${NIVEL} '
   TEMOUT='temout\${REG}\${MEM}\${LABELI} '
   TEMPCM='tempcm\${REG}\${MEM}\${LABELI} '
  &END
@@ -496,7 +503,7 @@ cat <<EOT1 > eoftem\${REG}\${MEM}.nml
   TEMPEN1(10)='tempn\${REG}\${MEM}10\${LABELI} ',
   TEMPEN1(11)='tempn\${REG}\${MEM}11\${LABELI} '
  &END
-$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert_eof.nml)
+$(cat ${HOME_suite}/include/${RESOL}${NIVEL}/temppert_eof.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
@@ -504,9 +511,9 @@ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/temppert_eof.nml)
  &END
 EOT1
 
-  cd \${DK_suite}/../eof/bin/\${TRUNC}\${LEV}/
+  cd \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ./eoftem.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  ./eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   if [ ${HUMID} = YES ] 
   then
@@ -515,17 +522,17 @@ EOT1
     # Now, build the necessary NAMELIST input:
     #
   
-    cd \${DK_suite}/../eof/datain
+    cd \${DK_suite}/eof/datain
   
     export ext=R.unf
 
 cat <<EOT1 > eofhum\${REG}\${MEM}.nml
  &DATAIN
-  DIRI='\${DK_suite}/../eof/datain/ '
-  DIRA='\${DK_suite}/../model/datain/ '
-  DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
+  DIRI='\${DK_suite}/eof/datain/ '
+  DIRA='\${DK_suite}/model/datain/ '
+  DIRO='\${DK_suite}/eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
-  ANAME='GANLNMC\${LABELI}\${ext}.${RESOL}${NIVEL} '
+  ANAME='GANL${PREF}\${LABELI}\${ext}.${RESOL}${NIVEL} '
   HUMOUT='humout\${REG}\${MEM}\${LABELI} '
   HUMPCM='humpcm\${REG}\${MEM}\${LABELI} '
  &END
@@ -555,7 +562,7 @@ cat <<EOT1 > eofhum\${REG}\${MEM}.nml
   HUMPEN1(10)='humpn\${REG}\${MEM}10\${LABELI} ',
   HUMPEN1(11)='humpn\${REG}\${MEM}11\${LABELI} '
  &END
-$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert_eof.nml)
+$(cat ${HOME_suite}/include/${RESOL}${NIVEL}/umipert_eof.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
@@ -563,23 +570,23 @@ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/umipert_eof.nml)
  &END
 EOT1
 
-    cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
+    cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-    ./eofhum.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/../eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+    ./eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   fi
   
-  cd \${DK_suite}/../eof/datain
+  cd \${DK_suite}/eof/datain
   
   export ext=R.unf
   
 cat <<EOT1 > eofwin\${REG}\${MEM}.nml
  &DATAIN
-  DIRI='\${DK_suite}/../eof/datain/ '
-  DIRA='\${DK_suite}/../model/datain/ '
-  DIRO='\${DK_suite}/../eof/dataout/${RESOL}${NIVEL}/ '
+  DIRI='\${DK_suite}/eof/datain/ '
+  DIRA='\${DK_suite}/model/datain/ '
+  DIRO='\${DK_suite}/eof/dataout/${RESOL}${NIVEL}/ '
   NAMEL='templ\${REG}\${MEM}\${LABELI} '
-  ANAME='GANLNMC\${LABELI}\${ext}.${RESOL}${NIVEL} '
+  ANAME='GANL${PREF}\${LABELI}\${ext}.${RESOL}${NIVEL} '
   WINOUT='winout\${REG}\${MEM}\${LABELI} '
   WINPCM='winpcm\${REG}\${MEM}\${LABELI} '
  &END
@@ -687,8 +694,8 @@ cat <<EOT1 > eofwin\${REG}\${MEM}.nml
   HUMPEN1(10)='humpn\${REG}\${MEM}10\${LABELI} ',
   HUMPEN1(11)='humpn\${REG}\${MEM}11\${LABELI} '
  &END
-$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/uvelpert_eof.nml)
-$(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert_eof.nml)
+$(cat ${HOME_suite}/include/${RESOL}${NIVEL}/uvelpert_eof.nml)
+$(cat ${HOME_suite}/include/${RESOL}${NIVEL}/vvelpert_eof.nml)
  &HUMIDI
   HUM='${HUMID}'
  &END
@@ -699,18 +706,18 @@ $(cat ${HOME_suite}/../include/${RESOL}${NIVEL}/vvelpert_eof.nml)
  &END
 EOT1
   
-  cd \${HOME_suite}/../eof/bin/\${TRUNC}\${LEV}/
+  cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/../eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/../eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  ./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
 done
 EOT0
 
 # Submete o script e aguarda o fim da execução
-chmod +x ${HOME_suite}/../run/${SCRIPTSFILE}
+chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 export PBS_SERVER=${pbs_server2}
 
-qsub -W block=true ${HOME_suite}/../run/${SCRIPTSFILE}
+qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

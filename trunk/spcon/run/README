@@ -66,18 +66,18 @@ Obs.: monitorar a realização dos membros com o seguinte comando:
 $ qstat -J -t -u $USER @aux20-eth4
 
 9) Realização da análise de EOF para gerar as perturbações ótimas a serem utilizadas na composição final dos membros do conjunto:
-$ ./run_eof.sh TQ0126L028 7 YES 2013010100
+$ ./run_eof.sh TQ0126L028 7 YES 2013010100 SMT
 ou
-$ ./run_eof.sh TQ0213L042 7 YES 2013010100
+$ ./run_eof.sh TQ0213L042 7 YES 2013010100 SMT
 ou
-$ ./run_eof.sh TQ0299L064 7 YES 2013010100
+$ ./run_eof.sh TQ0299L064 7 YES 2013010100 SMT
 
 10) Composição do arquivo de análise a partir das perturbações EOF:
-$ ./run_deceof.sh TQ0126L028 EOF YES 2013010100 7
+$ ./run_deceof.sh TQ0126L028 EOF YES 2013010100 7 SMT
 ou
-$ ./run_deceof.sh TQ0213L042 EOF YES 2013010100 7
+$ ./run_deceof.sh TQ0213L042 EOF YES 2013010100 7 SMT
 ou
-$ ./run_deceof.sh TQ0299L064 EOF YES 2013010100 7
+$ ./run_deceof.sh TQ0299L064 EOF YES 2013010100 7 SMT
 
 11) Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle):
 $ ./run_model.sh 48 4 6 TQ0126L028 SMT 2013010100 2013011600 NMC 2 1
