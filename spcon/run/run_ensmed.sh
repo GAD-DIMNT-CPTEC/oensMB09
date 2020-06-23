@@ -94,7 +94,7 @@ export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
-. ${FILEENV} ${RES} ${PREFIC}
+. ${FILEENV} ${RES} ${PREFX}
 
 cd ${HOME_suite}/run
 
@@ -138,7 +138,7 @@ export PBS_SERVER=${pbs_server1}
 
 export SCRIPTFILEPATH=${DK_suite}/run/setensmed${RESOL}${NIVEL}.${MAQUI}
 
-export MPPWIDTH=24
+export MPPWIDTH=20
 export MPPNPPN=1
 
 cat <<EOT0 > ${SCRIPTFILEPATH}

@@ -94,7 +94,7 @@ export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
-. ${FILEENV} ${RES} ${PREFIC}
+. ${FILEENV} ${RES} ${PREFX}
 
 cd ${HOME_suite}/run
 
