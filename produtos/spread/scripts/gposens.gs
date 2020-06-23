@@ -262,15 +262,18 @@ while (NCT <= NCTLS)
      'draw string 1.5 0.3 * Media do Conjunto de Previsoes'
    
       if (VAR = 'psnm')
-        'printim '_DIRGIF'/'VAR''DATEI''DATEF'.png png x773 y602'
+#        'printim '_DIRGIF'/'VAR''DATEI''DATEF'.png png x773 y602'
+        'printim '_DIRGIF'/'VAR''DATEI''DATEF'.png png x1024 y768'
         '!/usr/bin/convert -trim '_DIRGIF'/'VAR''DATEI''DATEF'.png ' _DIRGIF'/'VAR''DATEI''DATEF'.png '
       endif
       if (VAR = 'temp')
-        'printim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png png x773 y602'
+#        'printim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png png x773 y602'
+        'printim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png png x1024 y768'
         '!/usr/bin/convert -trim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png ' _DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png '
       endif
      if (VAR = 'zgeo')
-        'printim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png png x773 y602'
+#        'printim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png png x773 y602'
+        'printim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png png x1024 y768'
         '!/usr/bin/convert -trim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png ' _DIRGIF'/geop'PLEV''DATEI''DATEF'.png '
       endif
    
