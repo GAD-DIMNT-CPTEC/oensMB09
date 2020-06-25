@@ -59,14 +59,7 @@
   !
 
   CALL GETARG(1,datei)
-!CFB
-  print *, 'datei=', datei
-!CFB
   CALL GETARG(2,dateeta)
-!CFB
-  print *, 'dateeta=', dateeta
-!CFB
-
   WRITE(clustersetup,'(3A)')'clustersetup.',datei,'.nml'
 
   CALL attribute(clustersetup,imax,jmax,nmembers,nfctdy,grpeta,freqcalc, &
@@ -612,13 +605,7 @@
      	CLOSE(50)
 
      	!*******ETAi2
-     !CFB
-     print *, 'dateeta=', dateeta
-     !CFB
      	READ(dateeta,*) labeleta
-     !CFB
-     print *, 'labeleta=', labeleta
-     !CFB
      	READ(fctdate(nbs),*) labelcltarq
      	IF ( labeleta .EQ. labelcltarq ) THEN
      	   nclteta=grpeta
@@ -674,11 +661,11 @@ END PROGRAM cluster
 
   WRITE(*,*)' '
   WRITE(*,*)'FILE100: ',TRIM(clustersetup)
-  OPEN(10,FILE=TRIM(clustersetup),STATUS='OLD',FORM='FORMATTED')
+  OPEN(100,FILE=TRIM(clustersetup),STATUS='OLD',FORM='FORMATTED')
 
   ierro=0      ! To start the loop
   DO 
-      READ(10,'(A14,A)', IOSTAT=ierro) line,line2
+      READ(100,'(A14,A)', IOSTAT=ierro) line,line2
       IF( ierro .NE. 0 ) THEN
    	   EXIT
       ELSE
@@ -718,7 +705,7 @@ END PROGRAM cluster
       END IF
   ENDDO
 
-  CLOSE(10)
+  CLOSE(100)
 
   RETURN
   END SUBROUTINE attribute
@@ -1075,7 +1062,7 @@ END PROGRAM cluster
            WRITE(*,'(A,I2,2A)')'cltarq(',nf,'): ',TRIM(cltarq(nf))
         END IF
   END DO
-        WRITE(cltarqeta,'(6A)')'clusters',anldate(1:10),dateeta(1:10),'.',TRIM(resol),'.eta'
+        WRITE(cltarqeta,'(6A)')'clusters',anldate(1:10),'.',TRIM(resol),'.eta'
         WRITE(*,'(2A)')'cltarqeta: ',TRIM(cltarqeta)
 
   RETURN

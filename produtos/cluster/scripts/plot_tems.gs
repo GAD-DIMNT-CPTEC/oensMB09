@@ -297,7 +297,7 @@ while (NCT <= NCTLS)
         'set cthick 1'
         'set cstyle 2'
         'd VARMED2'CLT'-VARMED1'CLT''
-        'draw title cluster: 'CLT'  n.o de membros: '_NMEMB.NCT.CLT''
+        'draw title cluster: 'CLT'  membros: '_NMEMB.NCT.CLT''
 
          X=X+1
          CLT=CLT+1
@@ -315,7 +315,8 @@ while (NCT <= NCTLS)
       endif
      'draw string 4.0 10.0 Previsao de: '_DATEI.NCT'Z   Valido para: '_DATEF.NCT'Z'
    
-     'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x800 y1000'
+*     'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x800 y1000'
+     'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x1000 y1200'
      '!/usr/bin/convert -trim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png  '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png'
 
 *

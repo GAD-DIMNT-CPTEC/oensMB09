@@ -325,7 +325,7 @@ while (NCT <= NCTLS)
            'set clopts 1 -1 0.100'
            'set clevs 'CONT
            'd smth9(VARMED'CLT'-273.15)'
-           'draw title cluster: 'CLT'  n.o de membros: '_NMEMB.NCT.CLT''
+           'draw title cluster: 'CLT'  membros: '_NMEMB.NCT.CLT''
          endif
          if (VAR = 'zgeo')
            'set gxout contour'
@@ -333,7 +333,7 @@ while (NCT <= NCTLS)
            'set ccols 'COR
            'set cthick 6'
            'd smth9(VARMED'CLT')'
-           'draw title cluster: 'CLT'  n.o de membros: '_NMEMB.NCT.CLT''
+           'draw title cluster: 'CLT'  membros: '_NMEMB.NCT.CLT''
          endif
          X=X+1
          CLT=CLT+1
@@ -351,8 +351,10 @@ while (NCT <= NCTLS)
       endif
      'draw string 4.0 10.4 Previsao de: '_DATEI.NCT'Z   Valido para: '_DATEF.NCT'Z'
    
-     say 'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x800 y1000'
-     'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x800 y1000'
+*     say 'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x800 y1000'
+     say 'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x1000 y1200'
+*     'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x800 y1000'
+     'printim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x1000 y1200'
      '!/usr/bin/convert -trim '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png  '_DIRGIF'/cluster'VAR''PLEV''_DATEI.NCT''_DATEF.NCT'.png'
    
 *
