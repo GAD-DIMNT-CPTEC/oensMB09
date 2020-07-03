@@ -27,7 +27,7 @@
 #  Uso/Exemplos: ./run_ensmed.sh TQ0126L028 2020031300 15 NMC 7
 #                (calcula a média do conjunto das previsões entre
 #                2020031300 e 2020032800 considerando as 7 perturbações 
-#                N e Pmembros na resolução TQ0126L028) 
+#                N e P membros na resolução TQ0126L028) 
 #
 # !REVISION HISTORY:
 #

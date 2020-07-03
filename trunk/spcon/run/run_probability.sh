@@ -1,15 +1,53 @@
-#! /bin/bash -x
+#! /bin/bash 
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
+#
+# !DESCRIPTION:
+# Script para o cálculo da média das probabilidades de precipitação
+# do Sistema de Previsão por Conjunto Global (SPCON) do CPTEC.
+#
+# !INTERFACE:
+#      ./run_probability.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5> 
+#
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
+#
+#            <opcao2> data      -> data da análise corrente (a partir
+#                                  da qual as previsões foram feitas)
+#
+#            <opcao3> dias      -> dias de previsões que serão consideradas
+#                                  a partir da data da análise
+#
+#            <opcao4> prefixo   -> prefixo que identifica o tipo de análise
+#
+#            <opcao5> membro    -> tamanho do conjunto
+#            
+#  Uso/Exemplos: ./run_probability.sh TQ0126L028 2020031300 15 NMC 7
+#                (calcula as probabilidades das previsões de precipitação
+#                para os limiares de 1, 5, 10 e 20mm a partir da data
+#                2020031300 para até 15 dias, considerando as 7 perturbações
+#                N e P membros na resolução TQ0126L028) 
+#
+# !REVISION HISTORY:
+#
+# 03 Julho de 2020 - C. F. Bastarz - Versão inicial.  
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
-#help#
-# Uso:
-# ./run_probability.sh TQ0126L028 2020031300 15 NMC 7
-#help#
-
+# Descomentar para debugar
 #set -o xtrace
 
 if [ "${1}" = "help" -o -z "${1}" ]
 then
-  cat < ${0} | sed -n '/^#help#/,/^#help#/p'
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
