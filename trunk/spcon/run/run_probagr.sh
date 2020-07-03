@@ -203,9 +203,9 @@ EOT0
 
 chmod +x ${SCRIPTFILEPATH}
 
-#qsub -W block=true ${SCRIPTFILEPATH}
-#
-#until [ -e "${OPERM}/probagr/bin/probagr-${LABELI}.ok" ]; do sleep 1s; done
+qsub -W block=true ${SCRIPTFILEPATH}
+
+until [ -e "${OPERM}/probagr/bin/probagr-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
 #
 #  Set directories
