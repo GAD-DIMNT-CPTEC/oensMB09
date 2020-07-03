@@ -144,7 +144,9 @@
               WRITE(*,*)'unit70: ',TRIM(lstingrb(nmb,nbs))
               statfctrd=0
     	      CALL ReadGrib(TRIM(dirinp)//TRIM(lstingrb(nmb,nbs)),imax,jmax,field,statfctrd)
-              IF (statfctrd .NE. 0) STOP 'Main Program: It does not read grib correctly'
+!CFB
+!              IF (statfctrd .NE. 0) STOP 'Main Program: It does not read grib correctly'
+!CFB
            ELSE
 	      WRITE(*,*) 'THE FORECAST FILE DOES NOT EXIST: ',TRIM(lstingrb(nmb,nbs))
 	      STOP
