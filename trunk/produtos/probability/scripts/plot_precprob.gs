@@ -126,7 +126,7 @@ while (nf <= nblst)
   'draw string 5.5 8.3 CPTEC/INPE/MCT - PREVISAO DE TEMPO GLOBAL POR ENSEMBLE - 'resol''
   'draw string 5.5 8.1 Previsao de Probabilidades (%) -  A partir de: 'labeli'Z  Valido para: 'labelf'Z' 
 *  'printim 'dirfig'prec'labeli''labelf'.png png x900 y700'
-  'printim 'dirfig'prec'labeli''labelf'.png png x773 y602'
+  'printim 'dirfig'prec'labeli''labelf'.png png x1200 y1000'
   '!/usr/bin/convert -trim 'dirfig'prec'labeli''labelf'.png 'dirfig'prec'labeli''labelf'.png'
 
    nf=nf+1
