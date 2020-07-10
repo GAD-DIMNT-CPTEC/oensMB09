@@ -23,6 +23,8 @@ hhi=substr(labeli,9,2)
 
 rec=read(dirbct%fileloc)
 auxnloc=sublin(rec,2)
+status=sublin(rec,1)
+say auxnloc' 'status
 nloc=subwrd(auxnloc,1)
 rec=read(dirbct%fileloc)
 
