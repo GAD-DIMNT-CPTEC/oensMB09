@@ -145,9 +145,7 @@
         DO nmb=1,nmembers
 	   statfctrd=0
 	   CALL ReadGrib(TRIM(dirin)//TRIM(lstingrb(nmb,nbs)),imax,jmax,prec,statfctrd)
-!CFB
-!	   IF (statfctrd .NE. 0) STOP 'Main Program: It does not read grib correctly'
-!CFB
+	   IF (statfctrd .NE. 0) STOP 'Main Program: It does not read grib correctly'
            prcwkac(1:imax,1:jmax,nmb) = prcwkac(1:imax,1:jmax,nmb) + (prec(1:imax,1:jmax)/FLOAT(noutpday)) 
         ENDDO
 
