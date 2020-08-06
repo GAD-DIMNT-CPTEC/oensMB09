@@ -461,7 +461,7 @@ EOT1
 
   cd \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ./eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   cd \${DK_suite}/eof/datain
   
@@ -513,7 +513,7 @@ EOT1
 
   cd \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ./eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   if [ ${HUMID} = YES ] 
   then
@@ -572,7 +572,7 @@ EOT1
 
     cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-    ./eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+    aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   fi
   
@@ -708,7 +708,7 @@ EOT1
   
   cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ./eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
 done
 EOT0

@@ -208,7 +208,7 @@ EOT
 
 cd \${OPERMOD}/cluster/bin
 
-time \${OPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF}
+aprun -n 1 -N 1 -d 1 \${OPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF}
 
 echo "" > \${OPERMOD}/cluster/bin/cluster-${LABELI}.ok
 EOT0

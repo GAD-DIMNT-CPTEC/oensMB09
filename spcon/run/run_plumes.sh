@@ -203,7 +203,7 @@ EOT
 
 cd \${OPERMOD}/plumes/bin
 
-time \${OPERMOD}/plumes/bin/plumes.x ${LABELI} 
+aprun -n 1 -N 1 -d 1 \${OPERMOD}/plumes/bin/plumes.x ${LABELI} 
 
 echo "" > \${OPERMOD}/plumes/bin/plumes-${LABELI}.ok
 EOT0
