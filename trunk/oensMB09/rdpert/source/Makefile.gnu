@@ -6,7 +6,10 @@ INC = $(SOPERMOD)/rdpert/include
 EXT = $(TRUNC)$(LEV)
 DIR = $(SOPERMOD)/rdpert/bin/$(EXT)
 
+#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
+#FTNFLAG = -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp 
 FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
+#CPP = -I\${INC}
 CPP = -I\$(INC)
 F_UFMTIEEE = 10,20
 
@@ -33,7 +36,7 @@ clean:
 	-rm $(DIR)/*.o *.$(EXT) #i.*.f
 	-rm $(PROG)
 	-rm *.o
-
+#
 rdpert.$(EXT): $(INC)/rdpert.h 
 fread.$(EXT):  $(INC)/rdpert.h
 fwrite.$(EXT): $(INC)/rdpert.h

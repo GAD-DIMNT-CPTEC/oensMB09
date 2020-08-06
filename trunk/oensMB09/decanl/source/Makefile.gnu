@@ -7,7 +7,10 @@ EXT = $(TRUNC)$(LEV)
 DIR = $(SOPERMOD)/decanl/bin/$(EXT)
 LIB = $(SOPERMOD)/fftpln/lib/$(EXT)
 
+#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
+#FTNFLAG = -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp 
 FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 
+#CPP = -I\${INC}
 CPP = -I\$(INC)
 FFF = FORT
 F_UFMTIEEE = 10,11,20
@@ -37,7 +40,7 @@ clean:
 	-rm $(DIR)/decanl.a
 	-rm $(DIR)/*.o *.$(EXT) i.*.f
 	-rm $(PROG)
-
+#
 decanl.$(EXT): $(INC)/decanl.h 
 dectrg.$(EXT): $(INC)/decanl.h
 fl22s.$(EXT):  $(INC)/decanl.h

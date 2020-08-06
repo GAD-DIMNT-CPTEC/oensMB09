@@ -6,9 +6,11 @@ INC = $(SOPERMOD)/eofwind/include
 EXT = $(TRUNC)$(LEV)
 BIN = $(SOPERMOD)/eof/bin/$(EXT)
 
+#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
 FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
 CHWFLAG = -fconvert=big-endian -fdefault-real-8 
 
+#CPP = -I\${INC}
 CPP = -I\$(INC)
 F_UFMTIEEE = 10,11,20,62,64,68,69,72,74
 
@@ -38,6 +40,6 @@ clean:
 	-rm $(BIN)/*.o $(OBJ)
 	-rm $(PROG)
 	-rm *.o
-
+#
 eofwin.$(EXT): $(INC)/reseofes.inc 
 chwz.$(EXT): $(INC)/nvector.inc

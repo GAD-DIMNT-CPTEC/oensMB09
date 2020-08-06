@@ -230,7 +230,7 @@
            END IF 
 
 
-	   DO nr=1,nrecs
+           DO nr=1,nrecs
               jpds(5)=jpds5(nr)
               jpds(6)=jpds6(nr)
               jpds(7)=jpds7(nr)
@@ -243,7 +243,7 @@
                 DO j=1,jmax
                 DO i=1,imax
                    k=(j-1)*imax+i
-                   var(i,j)=tmp(k)	  
+                   var(i,j)=tmp(k)
                 END DO
                 END DO 
               END IF 
@@ -252,7 +252,7 @@
                 field(1:nxpts,1:nypts,nmb,nr)=var(iwest:ieast,jnort:jsout)
               ELSE
                  ni=0
-                 DO i=iwest,imax		  ! "field" receive the west part of data
+                 DO i=iwest,imax ! "field" receive the west part of data
                     ni=ni+1
                     nj=0
                     DO j=jnort,jsout
@@ -260,12 +260,12 @@
                        field(ni,nj,nmb,nr)=var(i,j)
                     END DO
                  END DO
-                 DO i=1,ieast			  ! "field" receive the east part of data
+                 DO i=1,ieast  ! "field" receive the east part of data
                      ni=ni+1
                      nj=0
                      DO j=jnort,jsout
-                	nj=nj+1
-                	field(ni,nj,nmb,nr)=var(i,j)
+                       nj=nj+1
+                       field(ni,nj,nmb,nr)=var(i,j)
                      END DO
                  END DO
                  WRITE(*,*) 'ni= ',ni
@@ -515,7 +515,10 @@ END SUBROUTINE getpoints
   
   WRITE(95,'(A)')'DSET ^'//TRIM(lstoutgrb)
   WRITE(95,'(A)')'*'
-  WRITE(95,'(A)')'OPTIONS SEQUENTIAL BIG_ENDIAN YREV'
+!CFB
+!  WRITE(95,'(A)')'OPTIONS SEQUENTIAL BIG_ENDIAN YREV'
+  WRITE(95,'(A)')'OPTIONS SEQUENTIAL YREV'
+!CFB
   WRITE(95,'(A)')'*'
   WRITE(95,'(A,1PE10.3)')'UNDEF ',undef 
   WRITE(95,'(A)')'*'
@@ -633,7 +636,10 @@ END SUBROUTINE getpoints
      WRITE(datep,'(I4.4,3I2.2)') iyy,imm,idd,ihh
      fctdate(i)(1:10)=datep(1:10)
 
-     WRITE(*,'(A,I,2A)') 'fctdate(',i,'):',fctdate(i)(1:10)
+!CFB
+!     WRITE(*,'(A,I,2A)') 'fctdate(',i,'):',fctdate(i)(1:10)
+     WRITE(*,'(A,I3,2A)') 'fctdate(',i,'):',fctdate(i)(1:10)
+!CFB
      
   END DO
   
