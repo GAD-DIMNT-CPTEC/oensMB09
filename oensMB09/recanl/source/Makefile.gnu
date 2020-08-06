@@ -7,7 +7,11 @@ EXT = $(TRUNC)$(LEV)
 DIR = $(SOPERMOD)/recanl/bin/$(EXT)
 LIB = $(SOPERMOD)/fftpln/lib/$(EXT)
 
+#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
+#FTNFLAG = -g -fconvert=big-endian -fcheck=all -fbacktrace -Wall -Wextra
+#FTNFLAG = -g -fconvert=big-endian -fbacktrace -Wall -Wextra
 FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 
+#CPP = -I\${INC} 
 CPP = -I\$(INC)
 
 F_UFMTIEEE = 10,20
@@ -36,7 +40,7 @@ clean:
 	-rm $(DIR)/*.o *.$(EXT) i.*.f
 	-rm $(PROG)
 	-rm *.o
-
+#
 recanl.$(EXT): $(INC)/recanl.h
 dztouv.$(EXT): $(INC)/recanl.h
 fwrite.$(EXT): $(INC)/recanl.h
