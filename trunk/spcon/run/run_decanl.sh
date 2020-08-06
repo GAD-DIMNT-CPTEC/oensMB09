@@ -264,7 +264,7 @@ EOT3
 
   cd ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}
 
-  ./decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
+  aprun -n 1 -N 1 -d 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
 
   echo \${i}
   i=\$((\${i}+1))

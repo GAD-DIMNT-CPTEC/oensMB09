@@ -196,7 +196,7 @@ EOT
 
 cd \${OPERMOD}/probability/bin
 
-time \${OPERMOD}/probability/bin/probability.x ${LABELI} 
+aprun -n 1 -N 1 -d 1 \${OPERMOD}/probability/bin/probability.x ${LABELI} 
 
 echo "" > \${OPERMOD}/probability/bin/probability-${LABELI}.ok
 EOT0
@@ -255,10 +255,10 @@ echo "nblst="${nblst}
 
 cd ${ROPERM}/probability/scripts
 
-echo "${DIRGRADS}/grads -lb run plot_precprob.gs ${RES} ${TRC} ${LABELI} ${nblst} ${dirbct} ${dirgif}"
+echo "${DIRGRADS}/grads -lb run plot_precprob.gs ${RES} ${TRC} ${LABELI} ${nblst} ${dirscr} ${dirgif}"
 ${DIRGRADS}/grads -lb << EOT
 run plot_precprob.gs
-${RES} ${TRC} ${LABELI} ${nblst} ${dirbct} ${dirgif}
+${RES} ${TRC} ${LABELI} ${nblst} ${dirscr} ${dirgif}
 EOT
 
 exit 0

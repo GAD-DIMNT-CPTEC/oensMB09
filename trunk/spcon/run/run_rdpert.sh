@@ -273,7 +273,7 @@ cd ${HOME_suite}/run
 
 cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 
-./rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
 EOT0
 
 # Submete o script e aguarda o fim da execução

@@ -137,7 +137,7 @@ cat <<EOT0 > ${SCRIPTSFILES}
 #PBS -V
 #PBS -S /bin/bash
 #PBS -J 1-${NUMPERT}
-#PBS -N  ENSEOF
+#PBS -N  DECEOF
 #PBS -q ${AUX_QUEUE}
 
 export PBS_SERVER=${pbs_server2}
@@ -339,7 +339,7 @@ EOT2
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
 filephn=prssnhn\${NUM}${MPHN}\${LABELI}
 fileptr=prssntr\${NUM}${MPTR}\${LABELI}
@@ -439,7 +439,7 @@ EOT4
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-./deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 EOT0
 
 # Submete o script e aguarda o fim da execução

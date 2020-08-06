@@ -221,8 +221,8 @@ export out=\${recanl_dir}/output; mkdir -p \${out}
 
 cd \${bin}
 
-echo "./recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
-./recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
+echo "aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
+aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
 EOT0
 
 # Submete o script e aguarda o fim da execução

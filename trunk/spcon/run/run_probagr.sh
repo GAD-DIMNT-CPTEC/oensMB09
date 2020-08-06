@@ -196,7 +196,7 @@ EOT
 
 cd \${OPERMOD}/probagr/bin
 
-time \${OPERMOD}/probagr/bin/probagr.x ${LABELI} 
+aprun -n 1 -N 1 -d 1 \${OPERMOD}/probagr/bin/probagr.x ${LABELI} 
 
 echo "" > \${OPERMOD}/probagr/bin/probagr-${LABELI}.ok
 EOT0

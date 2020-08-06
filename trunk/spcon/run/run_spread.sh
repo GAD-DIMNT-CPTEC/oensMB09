@@ -204,7 +204,7 @@ EOT
 
 cd \${ROPERMOD}/spread/bin
 
-time \${ROPERMOD}/spread/bin/spread.x ${LABELI}
+aprun -n 1 -N 1 -d 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI}
 
 echo "" > \${ROPERMOD}/spread/bin/spread-${LABELI}.ok
 EOT0

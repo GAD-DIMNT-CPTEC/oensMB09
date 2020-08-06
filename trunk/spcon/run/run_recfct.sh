@@ -224,7 +224,7 @@ EOT3
   
   cd ${HOME_suite}/recfct/bin/\${TRCLV}
   
-  ./recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
+  aprun -n 1 -N 1 -d 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
   
 done
 EOT0
