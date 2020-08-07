@@ -99,7 +99,6 @@ DIRGIF=${ROPERM}/perturbations/gif
 DIRCTL=${ROPERM}/pos/dataout/${TRC}L${LV}
 #DIRENM=${BANGU}/ENSMED/${YY}/${MM}/${DD}
 DIRENM=${ROPERM}/ensmed/dataout/${TRC}L${LV}
-#CALDATE=/gfs/home3/modoper/bin/caldate.3.1.2
 
 if [ ! -d ${DIRGIF} ]
 then

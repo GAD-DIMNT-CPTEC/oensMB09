@@ -231,7 +231,8 @@ fi
 # Create the list of probagr ctls  
 #
 
-labelf=$(${caldate} ${LABELI} + ${NFCTDY}d 'yyyymmddhh')
+#labelf=$(${caldate} ${LABELI} + ${NFCTDY}d 'yyyymmddhh')
+labelf=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
 
 arqlist=wmaprecprob${LABELI}${labelf}.${RES}.lst
 #ls -l ${ROPERM}/probagr/dataout/${RES}/${LABELI}/prob${LABELI}* | awk '{print $9}' > ${ROPERM}/probagr/dataout/${RES}/${LABELI}/prob${LABELI}${labelf}.${RES}.lst
