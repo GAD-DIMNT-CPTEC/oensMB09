@@ -254,7 +254,8 @@ TIM=0
 
 while [ ${TIM} -le ${NHOURS} ]
 do
-  LABELF=$(${caldate} ${LABELI} + ${TIM}h yyyymmddhh)
+#  LABELF=$(${caldate} ${LABELI} + ${TIM}h yyyymmddhh)
+  LABELF=$(${inctime} ${LABELI} +${TIM}hr %y4%m2%d2%h2)
   echo 'LABELF='${LABELF}
 
   if [ ${TIM} -eq 0 ]; then TYPE='P.icn'; else TYPE='P.fct'; fi

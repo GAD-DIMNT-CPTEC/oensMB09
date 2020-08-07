@@ -104,7 +104,9 @@ export NPROC=1
 #
 #   Set LABELF
 #
-LABELF=$(${caldate} ${LABELI} + ${NFCTDY}d yyyymmddhh)
+
+#LABELF=$(${caldate} ${LABELI} + ${NFCTDY}d yyyymmddhh)
+LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
 
 #
 #   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
@@ -148,7 +150,8 @@ echo "${DIRINP}/${GPOS}${LABELI}${LABELI}P.icn.${CASE}.ctl" >> filefct${LABELI}.
 
 for nd in 5 10 15
 do
-  LABELPF=$(${caldate} ${LABELI} +  ${nd}d yyyymmddhh)
+  #LABELPF=$(${caldate} ${LABELI} +  ${nd}d yyyymmddhh)
+  LABELPF=$(${inctime} ${LABELI} +${nd}dy %y4%m2%d2%h2)
   echo "${DIRINP}/${GPOS}${LABELI}${LABELPF}P.fct.${CASE}.ctl" >> filefct${LABELI}.${RESOL}
 done
 

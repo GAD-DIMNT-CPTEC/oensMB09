@@ -231,7 +231,8 @@ fi
 # Create the list of probability ctls  
 #
 
-labelf=$(${caldate} ${LABELI} + ${NFCTDY}d 'yyyymmddhh')
+#labelf=$(${caldate} ${LABELI} + ${NFCTDY}d 'yyyymmddhh')
+labelf=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
 
 arqlist=prob${LABELI}${labelf}.${RES}.lst
 ls -l ${ROPERM}/probability/dataout/${RES}/${LABELI}/prob${LABELI}* | awk '{print $9}' > ${ROPERM}/probability/dataout/${RES}/${LABELI}/prob${LABELI}${labelf}.${RES}.lst
