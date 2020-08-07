@@ -1,6 +1,6 @@
-#! /bin/bash
+#! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2020  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -105,8 +105,8 @@ vars_export() {
 #
 #  export bam_run=${home_bam}/run
 
-  export bam_pre=${home_bam}/pre
-  export bam_pre_work=${work_bam}/bam/pre
+  export bam_pre=${home_spcon}/pre
+  export bam_pre_work=${work_spcon}/pre
 #  export pre_source=${bam_pre}/sources
   export pre_datain=${bam_pre}/datain
   export pre_dataout=${bam_pre_work}/dataout
@@ -122,7 +122,7 @@ vars_export() {
   export model_exec=${bam_model}/exec
 
   export bam_pos=${home_spcon}/pos
-  export bam_pos_work=${home_spcon}/pos
+  export bam_pos_work=${work_spcon}/pos
 #  export pos_source=${bam_pos}/source
   export pos_datain=${bam_pos}/datain
   export pos_dataout=${bam_pos_work}/dataout
@@ -130,7 +130,7 @@ vars_export() {
 
   export util_spcon=${home_spcon}/util
 
-  export util_inctime=${util_spcon}/inctime
+#  export util_inctime=${util_spcon}/inctime
 
 #  export spcon_testcase=/lustre_xc50/carlos_bastarz/testcase_oensMB09
 
@@ -159,7 +159,7 @@ model_dirs() {
 
   vars_export
 
-  mkdir -p ${bam_run}
+#  mkdir -p ${bam_run}
 
 #  mkdir -p ${pre_source}
 #  mkdir -p ${pre_datain}
@@ -175,14 +175,14 @@ model_dirs() {
   mkdir -p ${model_dataout}
   mkdir -p ${model_exec}
 
-  cd ${bam_model} && ln -s ${model_dataout} . && cd -
+  cd ${bam_model} && ln -sfn ${model_dataout} . && cd -
 
 #  mkdir -p ${pos_source}
   mkdir -p ${pos_datain}
   mkdir -p ${pos_dataout}
   mkdir -p ${pos_exec}
 
-  cd ${bam_pos} && ln -s ${pos_dataout} . && cd -
+  cd ${bam_pos} && ln -sfn ${pos_dataout} . && cd -
 
 }
 
@@ -211,7 +211,7 @@ config_spcon() {
     sed -i "s,model_res=TQ0126L028,model_res=${1},g" ${spcon_run}/run_cycle.sh
 
     # Cria os links simbólicos dos diretórios do SPCON
-    set -A Procs decanl deceof rdpert recanl recfct eof eofhumi eofpres eoftemp eofwind fftpln
+    Procs=(decanl deceof rdpert recanl recfct eof eofhumi eofpres eoftemp eofwind fftpln)
   
     for proc in ${Procs[@]}
     do
@@ -222,8 +222,13 @@ config_spcon() {
 
       ln -sfn ${spcon_include}/${1} include
 
-      mkdir -p ${home_spcon}/${proc}/lib/${1}
-      mkdir -p ${home_spcon}/${proc}/bin/${1}
+      if [ ${proc} == "decanl" -o ${proc} == "deceof" -o ${proc} == "rdpert" -o ${proc} == "recanl" -o ${proc} == "recfct" -o ${proc} == "eof" ]
+      then
+
+#        mkdir -p ${home_spcon}/${proc}/lib/${1}
+        mkdir -p ${home_spcon}/${proc}/bin/${1}
+
+      fi
 
     done
 
@@ -244,7 +249,7 @@ config_spcon() {
 #  fi
 
   # Cria os links simbólicos dos diretórios do SPCON
-  set -A Procs decanl deceof eof rdpert recanl recfct
+  Procs=(decanl deceof eof rdpert recanl recfct)
 
   for proc in ${Procs[@]}
   do
@@ -287,9 +292,9 @@ config_spcon() {
 #  sed -i "s,export SUBTBASE=.*,export SUBTBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
 #  sed -i "s,export WORKBASE=.*,export WORKBASE=${home_bam},g" ${bam_run}/EnvironmentalVariables
 
-  sed -i "s,export PATHBASE=.*,export PATHBASE=${home_bam},g" ${spcon_run}/EnvironmentalVariablesMCGA
-  sed -i "s,export DK=.*,export DK=${home_bam},g" ${spcon_run}/EnvironmentalVariablesMCGA
-  sed -i "s,export DK2=.*,export DK2=${home_bam},g" ${spcon_run}/EnvironmentalVariablesMCGA
+  sed -i "s,export PATHBASE=.*,export PATHBASE=${home_spcon},g" ${spcon_run}/EnvironmentalVariablesMCGA
+  sed -i "s,export DK=.*,export DK=${home_spcon},g" ${spcon_run}/EnvironmentalVariablesMCGA
+  sed -i "s,export DK2=.*,export DK2=${home_spcon},g" ${spcon_run}/EnvironmentalVariablesMCGA
 
   # Cria um arquivo texto com os valores das variáveis da função "vars_export"
   cd ${home_spcon}
@@ -304,7 +309,7 @@ configurar() {
 
   model_dirs
 
-  echo "Configurar"
+#  echo "Configurar"
 
   # Se indicada a resolução a ser utilizada, modifica-se o arquivo Makefile 
   # e os links apontando para o diretório "include"
@@ -327,79 +332,84 @@ configurar() {
 
 }
 
-## Função model (realiza uma retirada de uma revisão do BAM 
-## a partir do SVN do Sistema de Modelagem Global)
-#model() {
-#
-#  vars_export
-#
-#  if [ -z ${1} ]
-#  then
-#
-#    echo "Model"
-#
-#    svn export --force https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
-#
-#  elif [ ${1} == "opersrc" ]
-#  then
-#
-#    model_dirs
-#
-#    tar -zxvf /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPERSRC/source.20170515.tar.gz -C ${bam_model}/
-#
-#    echo "ATENÇÃO: Recomenda-se a compilação do MODEL_oper utilizando o compilador da CRAY"
-#
-#  elif [ ${1} == "operexe" ]
-#  then
-#
-#    model_dirs
-#
-#    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/pre/exec/* ${pre_exec}
-#    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/model/exec/* ${model_exec}
-#    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/pos/exec/* ${pos_exec}
-#
-#    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/run/* ${bam_run} 
-#
-#    echo "ATENÇÃO: Nesta opção o BAM já está pré-compilado"
-#    
-#  else
-#
-#    echo "Model r${1}"
-#
-#    svn export -r${1} --force https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
-#
-#  fi
-#
-#}
-
-# Função inctime (realiza uma retirada de uma revisão do inctime
+# Função model (realiza uma retirada de uma revisão do BAM 
 # a partir do SVN do Sistema de Modelagem Global)
-inctime() {
+model() {
 
   vars_export
-
-  mkdir -p ${util_spcon}
-
-  cd ${util_spcon}
 
   if [ -z ${1} ]
   then
 
-    echo "inctime"
+    echo "Model"
 
-    svn export --force https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
+    svn export --force https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
 
+  elif [ ${1} == "opersrc" ]
+  then
+
+    model_dirs
+
+    tar -zxvf /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPERSRC/source.20170515.tar.gz -C ${bam_model}/
+
+    echo "ATENÇÃO: Recomenda-se a compilação do MODEL_oper utilizando o compilador da CRAY"
+
+  elif [ ${1} == "operexe" ]
+  then
+
+    model_dirs
+
+#    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/pre/exec/* ${pre_exec}
+#    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/model/exec/* ${model_exec}
+#    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/pos/exec/* ${pos_exec}
+
+#    cp -v /stornext/online1/ensemble/CARLOS/SPCON/DEV/OPEREXEC/run/* ${bam_run} 
+
+    ln -sfn /lustre_xc50/ioper/models/BAM/model/exec/ParModel_MPI ${model_exec}/ParModel_MPI
+    ln -sfn /lustre_xc50/ioper/models/BAM/pos/exec/PostGrib ${pos_exec}/PostGrib
+
+    ln -sfn /cray_home/carlos_bastarz/fixPOSDATAIN/datain_tupa_oensMB09/* ${pos_datain}/
+
+    echo "ATENÇÃO: Nesta opção o BAM já está pré-compilado"
+    
   else
 
-    echo "inctime r${1}"
+    echo "Model r${1}"
 
-    svn export -r${1} --force https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
+    svn export -r${1} --force https://svn.cptec.inpe.br/smg/trunk/SMG/cptec/bam 
 
   fi
 
-  cd ${spcon_home}
-
 }
+
+## Função inctime (realiza uma retirada de uma revisão do inctime
+## a partir do SVN do Sistema de Modelagem Global)
+#inctime() {
+#
+#  vars_export
+#
+#  mkdir -p ${util_spcon}
+#
+#  cd ${util_spcon}
+#
+#  if [ -z ${1} ]
+#  then
+#
+#    echo "inctime"
+#
+#    svn export --force https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
+#
+#  else
+#
+#    echo "inctime r${1}"
+#
+#    svn export -r${1} --force https://svn.cptec.inpe.br/smg/trunk/SMG/util/inctime 
+#
+#  fi
+#
+#  cd ${spcon_home}
+#
+#}
 
 # Função ajuda (mostra o menu de ajuda)
 ajuda() {
@@ -425,18 +435,18 @@ ajuda() {
 #  echo "     * faz checkout da revisão número 200 do BAM"
 #  echo "  OU ./config_spcon.sh model opersrc"
 #  echo "     * copia o source do BAM operacional (20170515)"
-  echo "  1) ./config_spcon.sh model operexe"
-  echo "     * copia os executáveis do BAM operacional compilado com o CRAY no XC50"
-  echo "  2) ./config_spcon.sh inctime"
-  echo "     * faz checkout da última revisão do inctime"
-  echo "  3) ./config_spcon.sh configurar"
+  echo "  1) ./config_spcon.sh configurar"
   echo "     * cria diretórios e links simbólicos da instalação para a resolução TQ0126L028 (default)"
+  echo "  2) ./config_spcon.sh model operexe"
+  echo "     * copia os executáveis do BAM operacional compilado com o CRAY no XC50"
+#  echo "  2) ./config_spcon.sh inctime"
+#  echo "     * faz checkout da última revisão do inctime"
 #  echo "  OU ./config_spcon.sh configurar TQ0213L042"
 #  echo "     * cria diretórios e links simbólicos da instalação para a resolução TQ0213L042"
-  echo "  4) ./config_spcon.sh testcase"
+  echo "  3) ./config_spcon.sh testcase"
   echo "     * aloca os dados necessários para testar a instalação"
-  echo "  5) ./config_spcon.sh compilar"
-  echo "     * compila os módulos de perturbação e o modelo BAM"
+  echo "  4) ./config_spcon.sh compilar"
+  echo "     * compila os módulos do método de perturbação"
   echo "  -> ./config_spcon.sh ajuda"
   echo "     * mostra este menu de ajuda"
 
@@ -453,17 +463,17 @@ compilar() {
 
   vars_export
 
-  echo "Compilar"
+#  echo "Compilar"
 
   hostname=$(echo ${HOSTNAME})
 
-  if [ ${hostname} != "eslogin01" -a ${hostname} != "eslogin02" ]
-  then
-
-    echo "Para compilar, é necessário logar na eslogin01 ou eslogin02"
-    exit 3
-
-  else
+#  if [ ${hostname} != "eslogin01" -a ${hostname} != "eslogin02" ]
+#  then
+#
+#    echo "Para compilar, é necessário logar na eslogin01 ou eslogin02"
+#    exit 3
+#
+#  else
 
     # Compilação do inctime
     if [ -d ${util_inctime} ]
@@ -577,7 +587,7 @@ compilar() {
 #
 #    fi
 
-  fi
+#  fi
 
 }
 

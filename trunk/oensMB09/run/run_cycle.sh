@@ -97,7 +97,7 @@
 # TQ0126L028          48        48 
 # TQ0213L042         192       192
 # TQ0299L064         384       384 não testado
-model_res=TQ0213L042
+model_res=TQ0126L028
 
 bam_trunc_tmp=$(echo ${model_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $1}')
 bam_lev_tmp=$(echo ${model_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $2}')
@@ -106,8 +106,8 @@ bam_lev="${bam_lev_tmp//[!1-9]/}"
 
 # Utilize o comando "/stornext/home/carlos./bastarz/bin/rsig gdas1.T00Z.SAnl.2013013000"
 # e verifique o valor das variáveis "jcap" e "lev"                                                       
-ncep_res=TQ0574L064 # NCEP SAnl (até 2017 - para ler o header dos arquivos de análise espectrais)
-#ncep_res=TQ1534L064 # NCEP NEMS (a partir de 2017)
+#ncep_res=TQ0574L064 # NCEP SAnl (até 2017 - para ler o header dos arquivos de análise espectrais)
+ncep_res=TQ1534L064 # NCEP NEMS (a partir de 2017)
 
 anl_trunc_tmp=$(echo ${ncep_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $1}')
 anl_lev_tmp=$(echo ${ncep_res} | awk -F "TQ" '{print $2}' | awk -F "L" '{print $2}')
