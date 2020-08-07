@@ -132,28 +132,28 @@ vars_export() {
 
 #  export util_inctime=${util_spcon}/inctime
 
-#  export spcon_testcase=/lustre_xc50/carlos_bastarz/testcase_oensMB09
+  export spcon_testcase=/lustre_xc50/carlos_bastarz/testcase_oensMB09
 
 }
 
-## Função testcase (copia os dados de teste da instalação do SPCON)
-#testcase() {
-#
-#  vars_export
-#
+# Função testcase (copia os dados de teste da instalação do SPCON)
+testcase() {
+
+  vars_export
+
 #  echo "Testcase"
-#
+
 #  cp -pvfr ${spcon_testcase}/pre/datain ${pre_datain}/
 #  cp -pvfr ${spcon_testcase}/pre/dataout ${pre_dataout}/
 #  cp -pvfr ${spcon_testcase}/pre/datasst ${pre_datasst}/
 #  cp -pvfr ${spcon_testcase}/pre/databcs ${pre_databcs}/
-#
+
 #  sed -i "s,/scratchin/grupos/assim_dados/home/carlos.bastarz/oensMB09_bam/bam/pre/datasst/oiv2monthly/,${bam_pre}/datasst/oiv2monthly/,g" ${bam_pre}/datasst/oiv2monthly/sstmtd.nml
-#
-#  cp -pvfr ${spcon_testcase}/model/* ${bam_model}/
+
+  cp -pvfr ${spcon_testcase}/model/datain/* ${model_datain}/
 #  cp -pvfr ${spcon_testcase}/pos/* ${bam_pos}/
-#
-#}
+
+}
 
 model_dirs() {
 
@@ -368,7 +368,7 @@ model() {
     ln -sfn /lustre_xc50/ioper/models/BAM/model/exec/ParModel_MPI ${model_exec}/ParModel_MPI
     ln -sfn /lustre_xc50/ioper/models/BAM/pos/exec/PostGrib ${pos_exec}/PostGrib
 
-    ln -sfn /cray_home/carlos_bastarz/fixPOSDATAIN/datain_tupa_oensMB09/* ${pos_datain}/
+    ln -sfn ${spcon_testcase}/datain_tupa_oensMB09/* ${pos_datain}/
 
     echo "ATENÇÃO: Nesta opção o BAM já está pré-compilado"
     
