@@ -1,9 +1,24 @@
-As partes do modelo são da versão BAM_V1.3.0 (https://projetos.cptec.inpe.br/projects/bam/repository/show/tag/BAM_V1.3.0)
+As partes do modelo (pre/model/pos) são da versão operacional determinística de alta resolução do BAM no XC50 (equivalente à tag https://projetos.cptec.inpe.br/projects/bam/repository/show/tag/BAM_V1.2.1).
 
-As partes do método de perturbação são do trunk do SPCON (https://projetos.cptec.inpe.br/projects/spconcptec/repository/show/trunk)
+As partes do método de perturbação são do trunk do SPCON (https://projetos.cptec.inpe.br/projects/spconcptec/repository/show/trunk).
 
-- Dados do BAM no XC50: /lustre_xc50/ioper/data/BAM/TQ0666L064/2020031300/datain/pre
-- Saídas do OENSMB09 no XC50: /lustre_xc50/ioper/data/OENSMB09/TQ0126L028/
-- Dados fixos do BAM no XC50: /lustre_xc50/ioper/fix/BAM
+- Dados utilizados:
 
-Última atualização: carlos.bastarz@inpe.br (11/03/2020)
+* Análise atmosférica e tsm: /lustre_xc50/ioper/data/external/YYYYMMDDHH/dataout/NCEP
+* Umidade do solo: /lustre_xc50/ioper/data/external/YYYYMMDDHH/dataout/Umid_Solo
+
+- Observações:
+
+Atualmente na operação, a tsm é sempre a do dia anterior, por exemplo:
+
+rtgssthr_grb_0.083.grib2.20200802 -> /lustre_xc50/ioper/data/external//2020080100/dataout/NCEP/rtgssthr_grb_0.083.grib2.20200801
+
+E a umidade do solo é a de 12 horas antes:
+
+GL_SM.GPNR.2020080200.vfm -> /lustre_xc50/ioper/data/external//2020080112/dataout/Umid_Solo/GL_SM.GPNR.2020080112.vfm
+
+- BAM determinístico de alta resolução:
+
+* /lustre_xc50/ioper/data/BAM/TQ0666L064/YYYYMMDDHH
+
+carlos.bastarz@inpe.br (07/08/2020)
