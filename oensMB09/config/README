@@ -1,7 +1,55 @@
-Os dois arquivos Makefile presentes neste diretório contém as configurações básicas para os compiladores PGI e CRAY.
+Os três arquivos Makefile presentes neste diretório contém as configurações básicas para os compiladores GNU, PGI e CRAY.
 
-A compilação com o CRAY deverá ser utilizada para os testes finais, quando uma configuração dos parâmetros do método de perturbação e do modelo já estiverem devidamente definidos. Esse compilador tem como característica a otimização do código (em termos de performance), o que pode trazer instabilidades para a execução do método de perturbação e do modelo (conforme reportado pelo Alex Fernandes da DIDOP entre Julho e Agosto de 2018).
+Para as simulações pré-operacionais no XC50, está sendo utilizado o compilador GNU, com os seguintes módulos e ajustes:
 
-Obs.: Até 10/08/2018, a compilação com o CRAY ainda não foi testada.
+- Ambiente de compilação GNU no XC50:
 
-Última atualização: carlos.bastarz@inpe.br (10/08/2018)
+* modules/3.2.10.6                                  
+* Base-opts/2.4.123-6.0.5.0_11.2__g6460790.ari
+* alps/6.5.28-6.0.5.0_18.6__g13a91b6.ari            
+* gcc/5.3.0
+* nodestat/2.3.78-6.0.5.0_8.13__gbe57af8.ari        
+* craype-network-aries
+* sdb/3.3.751-6.0.5.0_20.25__gb936019.ari           
+* craype/2.5.13
+* udreg/2.3.2-6.0.5.0_13.12__ga14955a.ari           
+* cray-mpich/7.7.0
+* ugni/6.0.14-6.0.5.0_16.9__g19583bb.ari            
+* pbs/default
+* gni-headers/5.0.12-6.0.5.0_2.15__g2ef1ebc.ari     
+* cray-python/3.6.1.1
+* dmapp/7.1.1-6.0.5.0_49.8__g1125556.ari           
+* cray-libsci/17.12.1
+* xpmem/2.2.4-6.0.5.0_4.8__g35d5e73.ari         
+* pmi/5.0.13
+* llm/21.3.467-6.0.5.0_25.1__g4c6f300.ari           
+* atp/2.1.1
+* nodehealth/5.5.7-6.0.5.0_9.8__g7732908.ari        
+* rca/2.2.16-6.0.5.0_15.34__g5e09e6d.ari
+* system-config/3.5.2545-6.0.5.0_5.1__g8a8b20f.ari  
+* perftools-base/7.0.0
+* sysadm/2.4.125-6.0.5.0_16.13__g98e00a9.ari        
+* PrgEnv-gnu/6.0.4
+
+- Outros ajustes:
+
+* module swap gcc gcc/5.3.0
+* module unload craype-x86-skylake
+
+- Precisão:
+
+* fftpln: FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
+* recanl: FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
+* rdpert: FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
+* decanl: FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
+* recfct: FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
+* eof[prs,tem,hum,win]: FTNFLAG = -g -fconvert=big-endian
+* deceof: FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
+
+Para as EOFs a opção '-fdefault-real-8' causa problemas na escrita dos arquivos (falhas aleatórias, com alguns arquivos ficando vazios); os campos devem ser lidos e escritos como R4 (embora não seja explícito). Para o deceof, é necessário utilizar a opção '-fdefault-real-8'.
+
+- Sobre a opção '-fdefault-real-8':
+
+Set the default real type to an 8 byte wide type. This option also affects the kind of non-double real constants like 1.0. This option promotes the default width of DOUBLE PRECISION and double real constants like 1.d0 to 16 bytes if possible. If -fdefault-double-8 is given along with fdefault-real-8, DOUBLE PRECISION and double real constants are not promoted. Unlike -freal-4-real-8, fdefault-real-8 does not promote variables with explicit kind declarations (Fonte: https://gcc.gnu.org/onlinedocs/gfortran/Fortran-Dialect-Options.html).
+
+Última atualização: carlos.bastarz@inpe.br (07/08/2020)
