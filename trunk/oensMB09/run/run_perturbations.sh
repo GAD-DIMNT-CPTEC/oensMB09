@@ -1,4 +1,4 @@
-#! /bin/bash -x
+#! /bin/bash 
 
 #./run_perturbations.sh 126 28 2020031300 7 NMC
 
