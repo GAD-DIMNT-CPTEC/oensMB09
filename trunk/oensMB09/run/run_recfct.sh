@@ -142,6 +142,8 @@ ${MODELDATAOUT}
 
 ${ENSTYPE}
 
+mkdir -p ${DK_suite}/recfct/datain/
+
 for LABELF in \$(ls G\${TYPES}${LABELI}* | cut -c 18-27)
 do 
 

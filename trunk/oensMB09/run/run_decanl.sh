@@ -279,6 +279,4 @@ export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${SCRIPTSFILE}
 
-echo "SUBMIT: ${HOME_suite}/run/${SCRIPTSFILE}"
-
 exit 0

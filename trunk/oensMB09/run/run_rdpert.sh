@@ -109,10 +109,10 @@ RUNTM=$(date +'%Y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 CASE=${TRCLV}
 
-echo ${MAQUI}
-echo ${AUX_QUEUE}
-echo ${RUNTM}
-echo ${EXT}
+#echo ${MAQUI}
+#echo ${AUX_QUEUE}
+#echo ${RUNTM}
+#echo ${EXT}
 
 cd ${HOME_suite}/run
 
@@ -160,7 +160,7 @@ export NUMPERT=${NPERT}
 export LABELI=${LABELI}
 
 #
-#  Prefix names for the FORTRAN files
+# Prefix names for the FORTRAN files
 #
 # NAMER - Recomposed input file prefix
 # NAMEP - Recomposed perturbed file prefix
@@ -215,6 +215,8 @@ export TRUNC LEV
 # As perturbações randômicas são feitas em toda a grade (veja os valores de FLONW, FLONW e GLATSN, GLATSS).
 # Apenas as perturbações por EOF é que são calculadas nas regiões de interesse.
 #
+
+mkdir -p ${DK_suite}/rdpert/datain
 
 cat <<EOT2 > \${DK_suite}/rdpert/datain/rdpert.nml
  &DATAIN

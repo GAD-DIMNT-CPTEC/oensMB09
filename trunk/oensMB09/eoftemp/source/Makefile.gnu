@@ -10,8 +10,8 @@ BIN = $(SOPERMOD)/eof/bin/$(EXT)
 #FTNFLAG = -g -hbyteswapio -Ktrap=fp -s default64 -h display_opt,noomp,page_align_allocate
 #FTNFLAG = -g -hbyteswapio -Ktrap=fp -s default64 -h display_opt,noomp
 #FTNFLAG=-g -hbyteswapio -O nomodinline,cache0,vector0,ipa0,fusion0,unroll0,nopattern -h cache0 -e0 -Ktrap=fp -s default64  -h display_opt
-FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 
-CHWFLAG = -fconvert=big-endian -fdefault-real-8
+FTNFLAG = -g -fconvert=big-endian #-fdefault-real-8 
+CHWFLAG = -fconvert=big-endian #-fdefault-real-8
 
 #CPP = -I\${INC}
 CPP = -I\$(INC)
