@@ -235,9 +235,10 @@ export PBS_SERVER=${pbs_server2}
 export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
 
 #
-# Create output directory
+# Create input and output directory
 #
 
+mkdir -p \${DK_suite}/eof/datain/
 mkdir -p \${DK_suite}/eof/dataout/${RESOL}${NIVEL}/
 
 #

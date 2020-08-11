@@ -60,7 +60,7 @@ export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
-. ${FILEENV} ${1}
+. ${FILEENV} ${1} ${2}
 
 cd ${HOME_suite}/run
 
@@ -225,6 +225,8 @@ export MACH=${MAQUI}
 #
 #  Now, build the necessary NAMELIST input:
 #
+
+mkdir -p \${DK_suite}/deceof/datain/
 
 GNAMEL=\${NAMEL}\${LABELI}\${EXTL}.\${TRUNC}\${LEV}
 

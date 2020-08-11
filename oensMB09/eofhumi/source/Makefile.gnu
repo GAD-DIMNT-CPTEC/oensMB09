@@ -9,8 +9,8 @@ BIN = $(SOPERMOD)/eof/bin/$(TRUNC)$(LEV)
 #FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
 #FTNFLAG = -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp 
 #CHWFLAG = -hbyteswapio -s default64
-FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
-CHWFLAG = -fconvert=big-endian -fdefault-real-8 
+FTNFLAG = -g -fconvert=big-endian #-fdefault-real-8
+CHWFLAG = -fconvert=big-endian #-fdefault-real-8 
 #CPP = -I\${INC}
 CPP = -I\$(INC)
 

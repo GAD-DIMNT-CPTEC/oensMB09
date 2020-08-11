@@ -1,4 +1,4 @@
-#! /bin/bash 
+#! /bin/bash
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -87,10 +87,10 @@ HSTMAQ=$(hostname)
 RUNTM=$(date +'%y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
-echo ${MAQUI}
-echo ${AUX_QUEUE}
-echo ${RUNTM}
-echo ${EXT}
+#echo ${MAQUI}
+#echo ${AUX_QUEUE}
+#echo ${RUNTM}
+#echo ${EXT}
 
 cd ${HOME_suite}/run
 
@@ -188,6 +188,8 @@ cat <<EOT2 > ${DK_suite}/recanl/datain/\${GNAMEL}
 \${NAMES}${LABELI}\${ERS1}.${RESOL}${NIVEL}
 \${NAMER}${LABELI}\${ERR1}.${RESOL}${NIVEL}
 EOT2
+
+mkdir -p ${DK_suite}/recanl/datain
 
 cat <<EOT3 > ${DK_suite}/recanl/datain/recanl${PERR}.nml
  &DATAIN
