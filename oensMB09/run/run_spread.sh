@@ -136,7 +136,7 @@ cd ${OPERM}/run
 
 #export PBS_SERVER=${pbs_server_2}
 
-export SCRIPTFILEPATH=${DK_suite}/run/setspread${RESOL}${NIVEL}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setspread${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #!/bin/bash -x
@@ -238,15 +238,15 @@ do
     TYPE='P.fct'
   fi
 
-  if [ -s ${ROPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl ]
+  if [ -s ${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl ]
   then
 
 cat <<EOT1 >> filefctENM${LABELI}.${TRC}
-${ROPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl
+${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl
 EOT1
 
   else
-    echo "${ROPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl does not exist"
+    echo "${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl does not exist"
     exit 1
   fi
 
