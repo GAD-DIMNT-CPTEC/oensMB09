@@ -130,16 +130,18 @@ esac
 export RUNTM=$(date +'%Y%m%d%T')
 
 export OPERM=${DK_suite}
-export ROPERM=${DK_suite}/produtos
+export ROPERM=${DK_suite}
 
 cd ${OPERM}/run
 
 export PBS_SERVER=${pbs_server1}
 
-export SCRIPTFILEPATH=${DK_suite}/run/setensmed${RESOL}${NIVEL}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setensmed${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 export MPPWIDTH=20
 export MPPNPPN=1
+
+mkdir -p ${DK_suite}/ensmed/output/
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #!/bin/bash -x
