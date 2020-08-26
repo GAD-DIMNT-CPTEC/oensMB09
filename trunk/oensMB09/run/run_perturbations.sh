@@ -1,104 +1,135 @@
 #! /bin/bash 
-
-#./run_perturbations.sh 126 28 2020031300 7 NMC
-
-#help#
-#**********************************************************#
-#                                                          #
-#     Name:           initpert.scr                         #
-#                                                          #
-#     Function:       This script plots the initial        #
-#                     perturbations for the ensemble.      #
-#                     It runs in K shell.                  #
-#                                                          #
-#     Date:           February   05th, 2002.               #
-#     Last change:    August     15th, 2002.               #
-#                                                          #
-#     Valid Arguments for initpert.scr                     #
-#                                                          #
-#     First :         : help or                            #
-#     First : TRC     : horizontal resolution              #
-#    Second : LV      : vertical resolution                #
-#     Third : LABELI  : initial forecasting label          #
-#    Fourth : NMEMBR  : number of members of the ensemble  #
-#     Fifth : PREFX   : preffix for input and output files #
-#                                                          #
-#             LABELx : yyyymmddhh                          #
-#                      yyyy = four digit year              #
-#                        mm = two digit month              #
-#                        dd = two digit day                #
-#                        hh = two digit hour               #
-#                                                          #
-#**********************************************************#
-#help#
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#--------------------------------------------------------------------#
+#BOP
 #
-#       Help:
+# !DESCRIPTION:
+# Script para plotar os campos de perturbação iniciais do Sistema de Previsão por Conjunto Global (SPCON) 
+# do CPTEC, para a temperatura e o vento nos níveis 250, 500 e 850 hPa.
 #
-#echo "INICIANDO... \(set \-x\)"
-#set -x
+# !INTERFACE:
+#      ./run_perturbations.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5> 
+#
+# !INPUT PARAMETERS:
+#  Opcoes..: <opcao1> resolucao -> resolução espectral do modelo
+#
+#            <opcao2> data      -> data da análise corrente (a partir
+#                                  da qual as previsões foram feitas)
+#
+#            <opcao3> dias      -> dias de previsões que serão consideradas
+#                                  a partir da data da análise
+#
+#            <opcao4> prefixo   -> prefixo que identifica o tipo de análise
+#
+#            <opcao5> membro    -> tamanho do conjunto
+#            
+#  Uso/Exemplos: ./run_perturbations.sh TQ0126L028 2020031300 15 NMC 7
+#                (plota os campos de perturbação para a análise das
+#                2020031300 considerando as 7 perturbações 
+#                N e P membros na resolução TQ0126L028) 
+#
+# !REVISION HISTORY:
+#
+# 26 Agosto de 2020 - C. F. Bastarz - Versão inicial.  
+#
+# !REMARKS:
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
-#. 
+# Descomentar para debugar
+#set -o xtrace
 
-LABELI=${1}
-if [ -s $LABELI ]
+if [ "${1}" = "help" -o -z "${1}" ]
 then
-  echo "ERRO: FALTA PARAMETRO.\nrunmodgmpi.sx6 YYYYMMDDHH"
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
+  exit 0
+fi
+
+if [ -z ${1} ]
+then
+  echo "RES if not set"
   exit 1
 else
-  if [ ${#LABELI} -lt 10 ]
-  then
-    echo "ERRO: PARAMETRO INCORRETO.\nrunmodgmpi.sx6 YYYYMMDDHH"
-    exit 2
-  else
-    YYYY=$(echo ${LABELI} |cut -c 1-4)
-    MM=$(echo ${LABELI} |cut -c 5-6)
-    DD=$(echo ${LABELI} |cut -c 7-8)
-    HH=$(echo ${LABELI} |cut -c 9-10)
-   
-    LABELF=$(date -d "${NFDAYS} day ${YYYY}${MM}${DD}" +"%Y%m%d${HH}")
-    YYYYF=$(echo ${LABELF} |cut -c 1-4)
-    MMF=$(echo ${LABELF} |cut -c 5-6)
-    DDF=$(echo ${LABELF} |cut -c 7-8)
-    HHF=$(echo ${LABELF} |cut -c 9-10)
-  fi
+  export RES=${1}
 fi
 
-PREFX=${2}
-
-if [ -s ${PREFX} ]
+if [ -z ${2} ]
 then
-  echo "ERRO - PARAMETRO PERT\nFORMATO: runrectigge.sx6 yyyymmddhh 01N"
-  exit 2
+  echo "LABELI is not set"
+  exit 1
+else
+  export LABELI=${2}
 fi
 
-NFCTDY=${FSCT}
-NMDAYS=${FSCT}
-#NMEMBR=$(echo "${NPERT}*2+1" | bc -l)
-NMEMBR=$(echo "${NPERT}*2+1" | bc -l) # +1 para ler enmrmv
+if [ -z ${3} ]
+then
+  echo "NFCTDY is not set"
+  exit 1
+else
+  export NFCTDY=${3}
+fi
+
+if [ -z ${4} ]
+then
+  echo "PREFX is not set"
+  exit 1
+else
+  export PREFX=${4}
+fi
+
+if [ -z ${5} ]
+then
+  echo "NRNDP is not set"
+  exit 1
+else
+  export NRNDP=${5}
+fi
+
+export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
+export PATHENV=$(dirname ${FILEENV})
+export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
+
+. ${FILEENV} ${RES} ${PREFX}
+
+export OPERM=${DK_suite}
+export ROPERM=${DK_suite}
+
+cd ${HOME_suite}/run
+
+TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
+LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
+
+export RESOL=${TRCLV:0:6}
+export NIVEL=${TRCLV:6:4}
+
+export NMEMBR=$((2*${NRNDP}+1))
+
+export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+
 OUT=out
 NPROC=1
-RESOL=T${TRC}
-
-RESOL=TQ0${TRC}L0${LV}
-TRC=T${TRC}
+RESOL=${TRCLV}
 
 #
 # Set directories
 #
 
-YY=$(echo ${LABELI} |cut -c 1-4)
-MM=$(echo ${LABELI} |cut -c 5-6)
-DD=$(echo ${LABELI} |cut -c 7-8)
-HH=$(echo ${LABELI} |cut -c 9-10)
+YY=$(echo ${LABELI} | cut -c 1-4)
+MM=$(echo ${LABELI} | cut -c 5-6)
+DD=$(echo ${LABELI} | cut -c 7-8)
+HH=$(echo ${LABELI} | cut -c 9-10)
 
 echo 'LABELI='${LABELI}
                                                                                                  
-DIRSCR=${OPERM}/perturbations/scripts
-DIRGIF=${ROPERM}/perturbations/gif
-#DIRCTL=${BANGU}/GPOS/${YY}/${MM}/${DD}
-DIRCTL=${ROPERM}/pos/dataout/${TRC}L${LV}
-#DIRENM=${BANGU}/ENSMED/${YY}/${MM}/${DD}
-DIRENM=${ROPERM}/ensmed/dataout/${TRC}L${LV}
+DIRSCR=${OPERM}/produtos/perturbations/scripts
+DIRGIF=${ROPERM}/produtos/perturbations/gif
+DIRCTL=${ROPERM}/pos/dataout/${TRCLV}/${LABELI}
+DIRENM=${ROPERM}/ensmed/dataout/${TRCLV}/${LABELI}
 
 if [ ! -d ${DIRGIF} ]
 then
@@ -209,10 +240,10 @@ echo "NCTLS="${NCTLS}
 # Plot the figures
 #
 
-echo "grads -lb \"run initpert.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${EXP}\""
-$GRADSB/grads -lb << EOT
+echo "${DIRGRADS}/grads -lb \"run initpert.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}\""
+${DIRGRADS}/grads -lb << EOT
 run initpert.gs
-${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${EXP}
+${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}
 EOT
 
 exit 0
