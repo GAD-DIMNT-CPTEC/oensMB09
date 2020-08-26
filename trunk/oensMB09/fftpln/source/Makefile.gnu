@@ -6,11 +6,13 @@ INC = $(SOPERMOD)/fftpln/include
 EXT = $(TRUNC)$(LEV)
 DIR = $(SOPERMOD)/fftpln/lib/$(EXT)
 
-#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
 #FTNFLAG = -g -fconvert=big-endian -fcheck=all -fbacktrace -Wall -Wextra 
 #FTNFLAG = -g -fconvert=big-endian -fbacktrace -Wall -Wextra 
-FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 
-#CPP = -I\${INC}
+#FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 
+#FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 -fpic -O -Wall -fcheck=all -fbacktrace
+FTNFLAG = -fconvert=big-endian -fdefault-real-8
+# DEBUG:
+#FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 -fpic -Wall -Wextra -fcheck=all -fbacktrace -O0
 CPP = -I\$(INC)
 
 OBJ = \

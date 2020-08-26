@@ -43,7 +43,7 @@
 #BOC
 
 # Descomentar para debugar
-set -o xtrace
+#set -o xtrace
 
 # Menu de opções/ajuda
 if [ "${1}" = "help" -o -z "${1}" ]

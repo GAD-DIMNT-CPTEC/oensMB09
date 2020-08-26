@@ -53,8 +53,8 @@ C*    read orography
 C*
 C*    CFB: O print a seguir parace consertar um bug na leitura dos records dos arquivos de previsao
 C*    (o maxval e o minval nao fazem nada)
-      PRINT *, 'CFB_DEBUG FROM QREAD MAX(QGZS)', MAXVAL(QGZS)
-      PRINT *, 'CFB_DEBUG FROM QREAD MIN(QGZS)', MINVAL(QGZS)
+C*      PRINT *, 'CFB_DEBUG FROM QREAD MAX(QGZS)', MAXVAL(QGZS)
+C*      PRINT *, 'CFB_DEBUG FROM QREAD MIN(QGZS)', MINVAL(QGZS)
 C*
 C*
 C*    read land sea mask

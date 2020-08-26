@@ -24,7 +24,7 @@ GZIP    = gzip
 INSTALL = install
 
 # dirs
-HOME=/scratchin/grupos/ensemble/home/carlos.bastarz/oensMB09.cray
+HOME=/cray_home/carlos_bastarz/oensMB09.svn
 WORKDIR=$(HOME)
 
 CPTECDIR=$(WORKDIR)
@@ -50,15 +50,15 @@ AR  = ar
 # default flags
 ARFLAGS  = -r
 
-# add flags for debugging if requested
-ifeq (dbg,$(findstring dbg,$(mode)))
-	CCFLAGS += -DDEBUG -g
-	FFLAGS  += -traceback -g -r8 -i8
-	LDFLAGS += -g -traceback
-endif
-
-# add flags for optimization if requested
-ifeq (opt,$(findstring opt,$(mode)))
-	FFLAGS  += -fast -O3 -Mautoinline -r8 -i8
-	LDFLAGS += 
-endif
+## add flags for debugging if requested
+#ifeq (dbg,$(findstring dbg,$(mode)))
+#	CCFLAGS += -DDEBUG -g
+#	FFLAGS  += -traceback -g -r8 -i8
+#	LDFLAGS += -g -traceback
+#endif
+#
+## add flags for optimization if requested
+#ifeq (opt,$(findstring opt,$(mode)))
+#	FFLAGS  += -fast -O3 -Mautoinline -r8 -i8
+#	LDFLAGS += 
+#endif
