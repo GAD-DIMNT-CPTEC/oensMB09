@@ -272,13 +272,13 @@ echo "NCTLS=${NCTLS}"
 # Plot figures
 #
 
-export PATH="/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents":${PATH}
-export GADDIR="/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents/Resources/SupportData"
+#export PATH="/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents":${PATH}
+#export GADDIR="/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents/Resources/SupportData"
 
 mkdir -p ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/
 
 echo "grads -lbc run gposens.gs ${TRC} ${LABELI} ${NCTLS} ${TRCLV} ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/"
-/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents/grads -lb << EOT
+${DIRGRADS}/grads -lb << EOT
 run gposens.gs 
 ${TRC} ${LABELI} ${NCTLS} ${TRCLV} ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/
 EOT
