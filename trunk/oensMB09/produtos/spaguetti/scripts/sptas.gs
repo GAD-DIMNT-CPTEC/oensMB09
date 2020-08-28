@@ -274,12 +274,14 @@ while (NCT <= NCTLS)
      'draw line 4.45 1.1 4.90 1.1'
    
       if (VAR = 'temp')
-        'printim '_DIRFIG'sptas'VAR''PLEV''DATEI''DATEF'.png png x640 y800'
+*        'printim '_DIRFIG'sptas'VAR''PLEV''DATEI''DATEF'.png png x640 y800'
+        'printim '_DIRFIG'sptas'VAR''PLEV''DATEI''DATEF'.png png x768 y1024'
         '!/usr/bin/convert -trim '_DIRFIG'sptas'VAR''PLEV''DATEI''DATEF'.png  '_DIRFIG'sptas'VAR''PLEV''DATEI''DATEF'.png'
         say '!/usr/bin/convert -trim '_DIRFIG'sptas'VAR''PLEV''DATEI''DATEF'.png  '_DIRFIG'sptas'VAR''PLEV''DATEI''DATEF'.png'
       endif
       if (VAR = 'zgeo')
-        'printim '_DIRFIG'sptasgeop'PLEV''DATEI''DATEF'.png png x640 y800'
+*        'printim '_DIRFIG'sptasgeop'PLEV''DATEI''DATEF'.png png x640 y800'
+        'printim '_DIRFIG'sptasgeop'PLEV''DATEI''DATEF'.png png x768 y1024'
         '!/usr/bin/convert -trim '_DIRFIG'sptasgeop'PLEV''DATEI''DATEF'.png  '_DIRFIG'sptasgeop'PLEV''DATEI''DATEF'.png'
         say '!/usr/bin/convert -trim '_DIRFIG'sptasgeop'PLEV''DATEI''DATEF'.png  '_DIRFIG'sptasgeop'PLEV''DATEI''DATEF'.png'
       endif

@@ -347,12 +347,14 @@ while (NCT <= NCTLS)
      'draw line 4.45 0.3 4.90 0.3'
    
       if (VAR = 'temp')
-        'printim '_DIRFIG'sptgl'VAR''PLEV''DATEI''DATEF'.png png x640 y823'
+*        'printim '_DIRFIG'sptgl'VAR''PLEV''DATEI''DATEF'.png png x640 y823'
+        'printim '_DIRFIG'sptgl'VAR''PLEV''DATEI''DATEF'.png png x768 y1024'
         '!/usr/bin/convert -trim '_DIRFIG'/sptgl'VAR''PLEV''DATEI''DATEF'.png '_DIRFIG'/sptgl'VAR''PLEV''DATEI''DATEF'.png'
         say '!/usr/bin/convert -trim '_DIRFIG'/sptgl'VAR''PLEV''DATEI''DATEF'.png '_DIRFIG'/sptgl'VAR''PLEV''DATEI''DATEF'.png'
       endif
       if (VAR = 'zgeo')
-        'printim '_DIRFIG'sptglgeop'PLEV''DATEI''DATEF'.png png x640 y823'
+*        'printim '_DIRFIG'sptglgeop'PLEV''DATEI''DATEF'.png png x640 y823'
+        'printim '_DIRFIG'sptglgeop'PLEV''DATEI''DATEF'.png png x768 y1024'
         '!/usr/bin/convert -trim '_DIRFIG'/sptglgeop'PLEV''DATEI''DATEF'.png '_DIRFIG'/sptglgeop'PLEV''DATEI''DATEF'.png'
         say '!/usr/bin/convert -trim '_DIRFIG'/sptglgeop'PLEV''DATEI''DATEF'.png '_DIRFIG'/sptglgeop'PLEV''DATEI''DATEF'.png'
       endif
