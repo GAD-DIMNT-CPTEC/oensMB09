@@ -305,10 +305,10 @@ then
     until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
     mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
 
-    for arqctl in $(find ${DATAOUT} -name "*.ctl")
-    do
-      ${DIRGRADS}/gribmap -i ${arqctl}
-    done
+#    for arqctl in $(find ${DATAOUT} -name "*.ctl")
+#    do
+#      ${DIRGRADS}/gribmap -i ${arqctl}
+#    done
 
   done
 
@@ -322,10 +322,10 @@ else
   until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
   mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
 
-  for arqctl in $(find ${DATAOUT} -name "*.ctl")
-  do
-    ${DIRGRADS}/gribmap -i ${arqctl}
-  done
+#  for arqctl in $(find ${DATAOUT} -name "*.ctl")
+#  do
+#    ${DIRGRADS}/gribmap -i ${arqctl}
+#  done
 
 fi
 
