@@ -130,12 +130,18 @@ $ ./run_pos.sh 192 4 6 TQ0213L042 2020062000 2020070500 PPT 7
 ou
 $ ./run_pos.sh 192 4 6 TQ0299L064 2020062000 2020070500 PPT 7
 
-17) GridHistory (necessário para o cálculo das plumas), executar para NMC, NPT e PPT (é necessário lincar os arquivos GFGH* para fora do diretório dos membros; pode-se plotar os meteogramas nesta etapa, mas apenas para o membro controle):
+17) GridHistory (necessário para o cálculo das plumas), executar para NMC, NPT e PPT (pode-se plotar os meteogramas nesta etapa, mas apenas para o membro controle):
+$ ./run_grh.sh 4 TQ0126L028 2020060100 2020061600 NMC 1
 $ ./run_grh.sh 4 TQ0126L028 2020060100 2020061600 NPT 7
+$ ./run_grh.sh 4 TQ0126L028 2020060100 2020061600 PPT 7
 ou
+$ ./run_grh.sh 4 TQ0213L042 2020060100 2020061600 NMC 1
 $ ./run_grh.sh 4 TQ0213L042 2020060100 2020061600 NPT 7
+$ ./run_grh.sh 4 TQ0213L042 2020060100 2020061600 PPT 7
 ou
+$ ./run_grh.sh 4 TQ0299L064 2020060100 2020061600 NMC 1
 $ ./run_grh.sh 4 TQ0299L064 2020060100 2020061600 NPT 7
+$ ./run_grh.sh 4 TQ0299L064 2020060100 2020061600 PPT 7
 
 18) Cálculo da média do conjunto (é necessário lincar todos os arquivos dos membros (ctl,grb) para fora dos diretórios dos membros):
 $ ./run_ensmed.sh TQ0126L028 2020062000 15 NMC 7
@@ -150,9 +156,6 @@ ou
 $ ./run_spread.sh TQ0213L042 2020062000 15 NMC 7
 ou
 $ ./run_spread.sh TQ0299L064 2020062000 15 NMC 7
-
-TODO:
-- script para fazer a realização cíclica do ensemble.
 
 Produtos:
 
@@ -177,4 +180,4 @@ $ ./run_perturbations.sh TQ0126L028 2020062000 15 NMC 7
 7) Espaguetes da temperatura absoluta em 1000 e 850hPa e da altura geopotencial em 500hPa, para a América do Sul e hemisférios norte e sul:
 $ ./run_spaguetti.sh TQ0126L028 2020062000 15 NMC 7
 
-carlos.bastarz@inpe.br (27/08/2020)
+carlos.bastarz@inpe.br (09/09/2020)

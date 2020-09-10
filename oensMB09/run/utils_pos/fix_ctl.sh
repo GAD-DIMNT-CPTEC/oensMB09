@@ -1,4 +1,6 @@
-#! /bin/bash
+#! /bin/bash 
+
+gribmap=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents/gribmap
 
 template_ctl_fct() {
 cat << EOF > ${1}
@@ -201,47 +203,37 @@ data_fmt() {
   if [ ${mm} -eq 05 ]; then nmm="MAY"; fi
   if [ ${mm} -eq 06 ]; then nmm="JUN"; fi
   if [ ${mm} -eq 07 ]; then nmm="JUL"; fi
-  if [ ${mm} -eq 08 ]; then nmm="AGO"; fi
+  if [ ${mm} -eq 08 ]; then nmm="AUG"; fi
   if [ ${mm} -eq 09 ]; then nmm="SEP"; fi
   if [ ${mm} -eq 10 ]; then nmm="OCT"; fi
   if [ ${mm} -eq 11 ]; then nmm="NOV"; fi
-  if [ ${mm} -eq 12 ]; then nmm="DEV"; fi
+  if [ ${mm} -eq 12 ]; then nmm="DEC"; fi
 
   export datafmt=${hh}Z${dd}${nmm}${yyyy}
 
 }
 
-for arq in $(find . -maxdepth 2 -type f -name "*.ctl")
+for arq in $(find . -type f -empty -name "*.ctl")
 do 
 
-#  test $(grep -qi dset $arq; echo $?) && echo $arq - ok || echo $arq - nok
+  tarq=$(basename ${arq} | grep fct)
+  pref=$(echo ${tarq} | awk -F "." '{print $2}')
 
-  grep -qi dset ${arq} 
+  echo ${arq} ${tarq} ${pref}
 
-  if [ $? -ne 0 ]
+  datafct=${arq:34:10}
+  data_fmt ${datafct}
+
+  if [ ${pref} == "fct" ]
   then
-
-    tarq=$(basename ${arq} | grep fct)
-    pref=$(echo ${tarq} | awk -F "." '{print $2}')
-
-    echo ${arq} ${tarq} ${pref}
-
-    if test ${tarq}
-    then
-
-#      data_fmt ${tarq:7:10}
-      data_fmt ${tarq:18:10}
-#      template_ctl_fct ${arq} ${tarq:0:43} ${datafmt}
-
-    else
-
-#      data_fmt ${tarq:7:10}
-      data_fmt ${tarq:18:10}
-#      template_ctl_icn ${arq} ${tarq:0:43} ${datafmt}
-
-    fi
-
+    template_ctl_fct ${arq} ${tarq:0:43} ${datafmt}
+    echo ${datafct} ${datafmt} ${pref}
+  else
+    template_ctl_icn ${arq} ${tarq:0:43} ${datafmt}
+    echo ${datafct} ${datafmt} ${pref}
   fi
+
+  ${gribmap} -i ${arq}
 
 done
 
