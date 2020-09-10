@@ -1,11 +1,18 @@
 #! /bin/bash
 
-export resol=TQ0126L028
-export dateanl=2020062000
+if [ $# -eq 0]
+then
+  exit 1
+fi
 
-export bpath=/scratchin/grupos/ensemble/home/carlos.bastarz/oensMB09/produtos/pos/dataout/${resol}/${dateanl}
+export resol=TQ0126L028
+export dateanl=${1}
+
+export bpath=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/${resol}/${dateanl}
 
 exp_links() {
+  cd ${bpath}/ 
+
   ln -sv ${mem}/*fct*ctl .
   ln -sv ${mem}/*fct*idx .
   ln -sv ${mem}/*fct*grb .
