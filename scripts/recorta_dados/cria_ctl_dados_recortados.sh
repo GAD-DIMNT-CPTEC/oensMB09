@@ -1,6 +1,6 @@
-#! /bin/ksh
+#! /bin/bash
 
-#set -o xtrace
+set -o xtrace
 
 # Objetivo:
 # Este script cria os arquivos descritores dos dados "recortados" para os campos abaixo 
@@ -25,6 +25,7 @@
 # 12/11/2015 - Corrigidos alguns bugs e substituido o comando \
 #              find pelo ls (cfbastarz)
 # 05/04/2016 - Comentarios e limpeza (cfbastarz)
+# 10/09/2020 - Melhorias, conversão para o BASH e uso no XC50 (cfbastarz)
 
 inctime=${HOME}/bin/inctime
 
@@ -43,7 +44,8 @@ var=t850
 
 # Diretorios de leitura das saidas do modelo (conjunto) e escrita dos dados recortados
 # Atencao para as variaveis e experimentos
-dataout=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados_oens_MB09_mcga-v4.0-novo_namelist-${var}
+#dataout=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados_oens_MB09_mcga-v4.0-novo_namelist-${var}
+dataout=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/rec/${var}
 
 data=${datai}
 
@@ -56,33 +58,33 @@ do
   cont=0
 
   # Lista todos os arquivos .bin (binarios, com os recortes de interesse)
-  for arquivo in `ls ${dataout}/${data}/*.grads.bin`
+  for arquivo in $(ls ${dataout}/${data}/*.grads.bin)
   do
 
     echo "${arquivo}"
 
-    diretorio=`dirname ${arquivo}`
-    nome=`echo ${arquivo} | awk -F "/" '{print $12}'`
+    diretorio=$(dirname ${arquivo})
+    nome=$(basename ${arquivo})
 
     # Define o nome do arquivo descritor
-    nomectl=`echo ${nome} | awk -F "." '{print $1}'`
+    nomectl=$(echo ${nome} | sed "s,.bin,.ctl,g")
 
     # Se o arquivo descritor ja nao existir, cria
-    if [ ! -e "${diretorio}/${nomectl}.ctl" ]
+    if [ ! -e "${diretorio}/${nomectl}" ]
     then
 
-      dataanl=`echo ${nome} | cut -c 8-17`
-      datafct=`echo ${nome} | cut -c 18-27`
+      dataanl=$(echo ${nome} | cut -c 8-17)
+      datafct=$(echo ${nome} | cut -c 18-27)
 
-      anoanl=`echo ${dataanl} | cut -c 1-4`
-      mesanl=`echo ${dataanl} | cut -c 5-6`
-      diaanl=`echo ${dataanl} | cut -c 7-8`
-      hsnanl=`echo ${dataanl} | cut -c 9-10`
+      anoanl=$(echo ${dataanl} | cut -c 1-4)
+      mesanl=$(echo ${dataanl} | cut -c 5-6)
+      diaanl=$(echo ${dataanl} | cut -c 7-8)
+      hsnanl=$(echo ${dataanl} | cut -c 9-10)
 
-      anofct=`echo ${datafct} | cut -c 1-4`
-      mesfct=`echo ${datafct} | cut -c 5-6`
-      diafct=`echo ${datafct} | cut -c 7-8`
-      hsnfct=`echo ${datafct} | cut -c 9-10`
+      anofct=$(echo ${datafct} | cut -c 1-4)
+      mesfct=$(echo ${datafct} | cut -c 5-6)
+      diafct=$(echo ${datafct} | cut -c 7-8)
+      hsnfct=$(echo ${datafct} | cut -c 9-10)
 
       # Calculo do numero de horas entre dataanl e datafct:
       # (diafct - diaanl) * 24 + (hsnfct - hsnanl)
@@ -111,7 +113,7 @@ do
       datafmt=${hsnanl}Z${diaanl}${mesfmt}${anoanl}
     
       # Ajusta o valor da quantidade de horas de previsao
-      if [ ${horasfctanl} -lt 0 ]; then horasfctanl=`echo ${horasfctanl} | awk -F "-" '{print $2}'`; fi
+      if [ ${horasfctanl} -lt 0 ]; then horasfctanl=$(echo ${horasfctanl} | awk -F "-" '{print $2}'); fi
 
       if [ ${horasfctanl} -eq 0 ]; then horasfctanl=6; fi
     
@@ -126,7 +128,7 @@ do
       fi
 
 # Monta o arquivo descritor (modificar conforme necessario)
-cat << EOF > ${diretorio}/${nomectl}.ctl 
+cat << EOF > ${diretorio}/${nomectl} 
 DSET ^${nome}
 TITLE Previsoes de ${dataanl} para ${datafct} com remocao de vies
 OPTIONS sequential
@@ -174,7 +176,7 @@ EOF
   echo "Total: ${cont}"
 
   # Atualiza a data
-  data=`${inctime} ${data} +12h %y4%m2%d2%h2` 
+  data=$(${inctime} ${data} +12h %y4%m2%d2%h2)
 
   echo ""
 

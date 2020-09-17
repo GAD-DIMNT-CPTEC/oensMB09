@@ -57,10 +57,13 @@
 # 14/08/2015 - modificada a forma como sao atribuidos os nomes dos meses e mais documentacao
 # 06/10/2015 - correcoes nas informacoes contidas no cabecalho do script
 # 05/04/2016 - mellhorada a documentacao, limpeza e mais melhorias
+# 10/09/2020 - mais algumas melhorias e simplificações (uso no XC50)
 #
 # Dependencias:
 # - caldate ou inctime
 # CFB
+
+DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents
 
 case "${#1}" in
 10)
@@ -73,21 +76,24 @@ VARLEV=${4}
 # Prefixo dos arquivos de CRPS a serem criados
 OBSTYPE="CPT"
 # Diretorio com os dados de previsao do experimento de interesse
-DATAINDIR=/stornext/online1/ensemble_g/oens_new/oensMB09
+#DATAINDIR=/stornext/online1/ensemble_g/oens_new/oensMB09
+DATAINDIR=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/TQ0126L028
 
 # Diretorio com os dados recortados para a veriavel do experimento de interesse
 # Para mais informacoes sobre o recorte dos dados veja o script recorta_dados/recorta_dados.ksh
-DATAINDIR2=/stornext/online1/ensemble_g/novos_dados_recortados/psnm-oens_MB09
+#DATAINDIR2=/stornext/online1/ensemble_g/novos_dados_recortados/psnm-oens_MB09
+DATAINDIR2=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/rec/psnm-oens_MB09
 
 # Define o diretorio onde estara a climatologia (ERA Interim, 1.5 graus)
 # Atencao para o nome da variavel de interesse
-dirclm="/stornext/online1/ensemble_g/ERAinterim1.5/psml/",
+#dirclm="/stornext/online1/ensemble_g/ERAinterim1.5/psml/",
+dirclm="/lustre_xc50/carlos_bastarz/ERAinterim1.5/psml/",
 
 # Manipulacao das datas
-yyyytgt=`echo $targetdate | cut -c 1-4`
-mmtgt=`echo $targetdate | cut -c 5-6`
-ddtgt=`echo $targetdate | cut -c 7-8`
-hhtgt=`echo $targetdate | cut -c 9-10`
+yyyytgt=$(echo $targetdate | cut -c 1-4)
+mmtgt=$(echo $targetdate | cut -c 5-6)
+ddtgt=$(echo $targetdate | cut -c 7-8)
+hhtgt=$(echo $targetdate | cut -c 9-10)
 
 # Define do nome do mes de acordo com a data inicial
 if [ ${mmtgt} -eq "01" ]; then MMM="JAN"; fi
@@ -112,7 +118,7 @@ then
     then
       gribmap -i ${DATAINDIR}/${yyyytgt}${mmtgt}/${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl
     fi
-    grads -blc "run fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5_variable.gs ${targetdate} ${DATAINDIR}/${yyyytgt}${mmtgt}/${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl ${VARCRPS} ${VARLEV}"
+    ${DIRGRADS}/grads -blc "run fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5_variable.gs ${targetdate} ${DATAINDIR}/${yyyytgt}${mmtgt}/${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl ${VARCRPS} ${VARLEV}"
   fi
 else
   echo "Analysis file ( ../datain/CPTEC.${VARCRPS}.${targetdate}.grads ) was already withdrawn"
@@ -121,16 +127,16 @@ fi
 rm -f ../datain/epsfilesin.${fctlag}.tmp; touch ../datain/epsfilesin.${fctlag}.tmp;
 
 # Incremento da data (depende do script caldate)
-icdate=`${HOME}/scripts/caldate.3.1.2 ${targetdate} - ${fctlag} "yyyymmddhh"`
+icdate=$(${HOME}/scripts/caldate.3.1.2 ${targetdate} - ${fctlag} "yyyymmddhh")
 
 # Loop sobre os membros do ensemble (incluindo o controle)
 # Aqui sera formada a lista com os nomes dos arquivos a serem abertos pelo GrADS
 for memb in 01N 01P 02N 02P 03N 03P 04N 04P 05N 05P 06N 06P 07N 07P NMC
 do
-  yyyyic=`echo $icdate | cut -c 1-4`
-  mmic=`echo   $icdate | cut -c 5-6`
-  ddic=`echo   $icdate | cut -c 7-8`
-  hhic=`echo   $icdate | cut -c 9-10`
+  yyyyic=$(echo $icdate | cut -c 1-4)
+  mmic=$(echo   $icdate | cut -c 5-6)
+  ddic=$(echo   $icdate | cut -c 7-8)
+  hhic=$(echo   $icdate | cut -c 9-10)
   ls ${DATAINDIR2}/${yyyyic}${mmic}${ddic}${hhic}/GBRM${memb}${yyyyic}${mmic}${ddic}${hhic}${targetdate}.ctl >> ../datain/epsfilesin.${fctlag}.tmp
 done
 
@@ -141,16 +147,17 @@ rm -f ../datain/epsfilesin.${fctlag}.txt
 awk '{print "open " $1}' ../datain/epsfilesin.${fctlag}.tmp > ../datain/epsfilesin.${fctlag}.txt
 
 # Define a variavel vargrads (vargrads = temp850 ou vargrads = psnm)
-if [ ${VARCRPS} = "temp" ]; then
-   vargrads=${VARCRPS:0:1}${VARLEV}
+if [ ${VARCRPS} = "temp" ]
+then
+  vargrads=${VARCRPS:0:1}${VARLEV}
 else
-   vargrads=${VARCRPS}
+  vargrads=${VARCRPS}
 fi
 
 # Executa o GrADS lendo os arquivos da lida gerada e escreve os arquivos 
 # ../datain/CPTECEPS.'fctlag'ForecastFor'datei'.15Members.grads'
 # Estes arquivos contem os campos de interesse de todos os membros interpolados na grade da climatologia (verificar)
-grads -blc "run fwr.ExtractVariablefromEPS.BRM.IEEEOutput.Regrid2_1.5x1.5_variable.gs ${targetdate} ${fctlag} ${vargrads}"
+${DIRGRADS}/grads -blc "run fwr.ExtractVariablefromEPS.BRM.IEEEOutput.Regrid2_1.5x1.5_variable.gs ${targetdate} ${fctlag} ${vargrads}"
 
 # Cria o descritor para o arquivo gerado (atencao ao nome da variavel e nivel)
 cat <<EOFCTL2 > ../datain/CPTECEPS.${fctlag}ForecastFor${targetdate}.15Members.ctl
