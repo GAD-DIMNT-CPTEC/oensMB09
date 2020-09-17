@@ -1,4 +1,4 @@
-#! /bin/ksh 
+#! /bin/bash
 
 #set -o xtrace
 
@@ -22,12 +22,15 @@
 #              alterada a forma como o lats4d e executado (cfbastarz);
 #              apenas T850 e extraida e apenas as previsoes de 00 e 12 sao lidas (cfbastarz).
 # 05/04/2016 - Comentarios adicionais e limpeza (cfbastarz)
+# 10/09/2020 - Conversão para BASH e uso no XC50 (cfbastarz)
 
 inctime=${HOME}/bin/inctime
 
+DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents
+
 if [ $# -ne "2" ]
 then
-  print "Use: ./recorta_dados.ksh YYYYMMDDHH YYYYMMDDHH"
+  echo "Use: ./recorta_dados.ksh YYYYMMDDHH YYYYMMDDHH"
   exit 1
 fi
 
@@ -39,27 +42,28 @@ dataf=${2}
 var=t850
 
 # Diretorios de leitura (das saida do modelo - conjunto) e escrita (dos dados recortados)
-datain=/stornext/online1/ensemble_g/carlos/spcon_mb09_tq126l28_mcgav4.0_namelist_novo/backup_previsoes_pos_eof_oensMB09_mcga-v4.0
-dataout=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados_oens_MB09_mcga-v4.0-novo_namelist-${var}
-
+#datain=/stornext/online1/ensemble_g/carlos/spcon_mb09_tq126l28_mcgav4.0_namelist_novo/backup_previsoes_pos_eof_oensMB09_mcga-v4.0
+datain=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/TQ0126L028
+#dataout=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados_oens_MB09_mcga-v4.0-novo_namelist-${var}
+dataout=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/rec/${var}
 
 data=${datai}
 
 # Array com os nomes dos membros do conjunto (ajustar conforme necessario)
-set -A Membros 01N 01P 02N 02P 03N 03P 04N 04P 05N 05P 06N 06P 07N 07P NMC
-#set -A Membros 01n 01p 02n 02p 03n 03p 04n 04p 05n 05p 06n 06p 07n 07p ctrl
+Membros=(01N 01P 02N 02P 03N 03P 04N 04P 05N 05P 06N 06P 07N 07P NMC)
+#Membros=(01n 01p 02n 02p 03n 03p 04n 04p 05n 05p 06n 06p 07n 07p ctrl)
 
 # Loop sobre as datas
 while [ ${data} -le ${dataf} ]
 do
 
-  print ""
-  print "${data}"
+  echo ""
+  echo "${data}"
 
-  YYYYMM=`echo ${data} | cut -c 1-6`
-  DDHH=`echo ${data} | cut -c 7-10`
+  YYYYMM=$(echo ${data} | cut -c 1-6)
+  DDHH=$(echo ${data} | cut -c 7-10)
 
-  datafct=`${inctime} ${data} +6hr %y4%m2%d2%h2`
+  datafct=$(${inctime} ${data} +6hr %y4%m2%d2%h2)
 
   data_dataout=${dataout}/${data}
 
@@ -78,14 +82,14 @@ do
       then
         membrof="NMC"
       else
-        membrof=`echo ${membro} | tr "n p" "N P"`
+        membrof=$(echo ${membro} | tr "n p" "N P")
       fi
 
 #      membrof=${membro}
 
       # Calcula as datas da analise e previsao
-      dataa=`${inctime} ${data} +6hr %y4%m2%d2%h2`
-      dataff=`${inctime} ${dataf} +360hr %y4%m2%d2%h2`
+      dataa=$(${inctime} ${data} +6hr %y4%m2%d2%h2)
+      dataff=$(${inctime} ${dataf} +360hr %y4%m2%d2%h2)
 
       # Verifica se o arquivo recortado ja nao existe
       if [ ! -e ${data_dataout}/GBRM${membrof}${data}${data}.grads.bin ]
@@ -94,9 +98,9 @@ do
         # Recorta as analises
         if [ ${var} == "t850" ]
         then
-          nohup lats4d.sh -v -i ${datain}/${YYYYMM}${DDHH}/${membro}/GPOS${membrof}${data}${data}P.icn.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${data}.grads -levs 850 -vars temp -format sequential > rec_icn_t850_${membro}${data}.log &
+          nohup ${DIRGRADS}/lats4d.sh -v -i ${datain}/${YYYYMM}${DDHH}/${membro}/GPOS${membrof}${data}${data}P.icn.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${data}.grads -levs 850 -vars temp -format sequential > rec_icn_t850_${membro}${data}.log &
         else
-          nohup lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/pos/${membro}/GPOS${membrof}${data}${data}P.icn.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${data}.grads -vars psnm -format sequential > rec_icn_psnm_${membro}${data}.log &
+          nohup ${DIRGRADS}/lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/pos/${membro}/GPOS${membrof}${data}${data}P.icn.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${data}.grads -vars psnm -format sequential > rec_icn_psnm_${membro}${data}.log &
         fi
 
       fi
@@ -112,15 +116,15 @@ do
           # Recorta as previsoes
           if [ ${var} == "t850" ]
           then
-            nohup lats4d.sh -v -i ${datain}/${YYYYMM}${DDHH}/${membro}/GPOS${membrof}${data}${dataa}P.fct.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${dataa}.grads -levs 850 -vars temp -format sequential > rec_fct_t850_${membro}${data}.log &
+            nohup ${DIRGRADS}/lats4d.sh -v -i ${datain}/${YYYYMM}${DDHH}/${membro}/GPOS${membrof}${data}${dataa}P.fct.TQ0126L028 -o ${data_dataout}/GBRM${membrof}${data}${dataa}.grads -levs 850 -vars temp -format sequential > rec_fct_t850_${membro}${data}.log &
           else
-            nohup lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${dataa}P.fct.TQ0126L028 -o ${data_dataout}/GBRM${membro}${data}${dataa}.grads -vars psnm -format sequential > rec_fct_psnm_${membro}${data}.log &
+            nohup ${DIRGRADS}/lats4d.sh -v -i ${datain}/${YYYYMM}/${DDHH}/${membro}/GPOS${membro}${data}${dataa}P.fct.TQ0126L028 -o ${data_dataout}/GBRM${membro}${data}${dataa}.grads -vars psnm -format sequential > rec_fct_psnm_${membro}${data}.log &
           fi
 
         fi
 
         # Incrementa a data do loop das previsoes
-        dataa=`${inctime} ${dataa} +6hr %y4%m2%d2%h2`
+        dataa=$(${inctime} ${dataa} +6hr %y4%m2%d2%h2)
   
       done
  
@@ -129,7 +133,7 @@ do
   cd ${dataout}
 
   # Incrementa a data do loop principal
-  data=`${inctime} ${data} +12hr %y4%m2%d2%h2`
+  data=$(${inctime} ${data} +12hr %y4%m2%d2%h2)
 
 done
 
