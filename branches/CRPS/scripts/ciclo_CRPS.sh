@@ -1,4 +1,4 @@
-#! /bin/ksh
+#! /bin/bash
 
 #set -o xtrace
 
@@ -20,39 +20,26 @@
 # Caminho para o inctime
 inctime=${HOME}/bin/inctime
 
+bpath=/lustre_xc50/carlos_bastarz/CRPS/scripts
+
 # Datas de inicio e fim do loop
 datai=2020060100
-dataf=2020060200
+dataf=2020060500
 
-# Variavel e nivel
-var=psnm
-lev=1000
-
-# Lags e um array com os lags (de 24 a 360, com intervalos de 24)
-Lags=$(seq 24 24 360)
+# Variavel, nivel e dominio
+var=temp
+lev=850
+dominio=HN
 
 data=${datai}
 
-# Loop sobre as datas
 while [ ${data} -le ${dataf} ]
 do
-  # Loop sobre os lags
-  for lag in ${Lags[@]}
-  do
-    print "${data} - ${lag}"
+  echo "${data}"
 
-    # Execura o CRPS e salva a saida no arquivo saida_crps_${data}_${lag}h.txt
-    ./CRPS.2.1.bash ${data} ${lag}h ${var} ${lev} > saida_crps_${data}_${lag}h.txt
+  ${bpath}/run_crps.sh TQ0126L028 NMC ${data} ${var} ${lev} ${dominio}
+  wait 
 
-    # Pega as ultimas 4 linha do arquivo saida_crps_${data}_${lag}h.txt e salva no arquivo
-    # crps_${data}_${lag}h.txt (importante para diagnostico)
-    tail -4 saida_crps_${data}_${lag}h.txt > crps_${data}_${lag}h.txt
-
-  done
-
-  print ""
-
-  # Incrementa a data
   data=$(${inctime} ${data} +1dy %y4%m2%d2%h2)
 
 done

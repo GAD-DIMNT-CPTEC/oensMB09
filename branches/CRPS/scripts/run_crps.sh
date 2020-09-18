@@ -261,7 +261,7 @@ fi
 #
 if [ "${OBSTYPE}" == "CPT" ]
 then
-cat <<EOFNML2 > ${DIRCRPS}/datain/CRPS.nml
+cat <<EOFNML2 > ${DIRCRPS}/datain/CRPS_\${fctlag}.nml
 &PARAM
 ANLDATE="\${targetdate}",
 Month="\${MMM}",
@@ -284,8 +284,10 @@ fi
 
 cd ${DIRCRPS}/exec/
 
+cp ${DIRCRPS}/exec/CRPS.exe ${DIRCRPS}/exec/CRPS_\${fctlag}.exe
+
 # Executa o CRPS
-aprun -n 1 -N 1 -d 1 ${DIRCRPS}/exec/CRPS.exe < ${DIRCRPS}/datain/CRPS.nml
+aprun -n 1 -N 1 -d 1 ${DIRCRPS}/exec/CRPS_\${fctlag}.exe < ${DIRCRPS}/datain/CRPS_\${fctlag}.nml
 EOT0
 
 # Submete o script e aguarda o fim da execução
