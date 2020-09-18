@@ -209,9 +209,9 @@ Program Main
 
 !CFB - Nesta versao do codigo, apenas uma ou outra chamada devera ser utilizada:
 !CRPS
-!   CALL PROB(SDEPSForecasts,SDAnalise,SDClim,wght,Lenght,IB,NMembers,SCRF,ANLDATE,FCTLAG)
+   CALL PROB(SDEPSForecasts,SDAnalise,SDClim,wght,Lenght,IB,NMembers,SCRF,ANLDATE,FCTLAG)
 !RANK HISTOGRAM
-   CALL DIST(SDEPSForecasts,SDAnalise,SDClim,wght,Lenght,IB,NMembers,ANLDATE,FCTLAG)
+!   CALL DIST(SDEPSForecasts,SDAnalise,SDClim,wght,Lenght,IB,NMembers,ANLDATE,FCTLAG)
 !CFB
 
 End Program Main

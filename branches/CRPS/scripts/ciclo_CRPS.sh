@@ -14,21 +14,22 @@
 # Historico;
 # XX/08/2015 - First crack (cfbastarz)
 # 05/04/2015 - Comentarios e melhorias (cfbastarz)
+# 17/09/2020 - Conversão para Bash e adaptações para o XC50 (cfbastarz)
 # CFB
 
 # Caminho para o inctime
 inctime=${HOME}/bin/inctime
 
 # Datas de inicio e fim do loop
-datai=2014111712
-dataf=2015022812
+datai=2020060100
+dataf=2020060200
 
 # Variavel e nivel
 var=psnm
 lev=1000
 
 # Lags e um array com os lags (de 24 a 360, com intervalos de 24)
-set -A Lags `echo $(seq 24 24 360)` 
+Lags=$(seq 24 24 360)
 
 data=${datai}
 
@@ -52,7 +53,7 @@ do
   print ""
 
   # Incrementa a data
-  data=`${inctime} ${data} +12hr %y4%m2%d2%h2`
+  data=$(${inctime} ${data} +1dy %y4%m2%d2%h2)
 
 done
 
