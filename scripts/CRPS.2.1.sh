@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 
 #
 # Function: to run the process to calculate the CRPS 
@@ -61,9 +61,15 @@
 #
 # Dependencias:
 # - caldate ou inctime
+#
+# Uso: 
+# ./CRPS.2.1.bash 2020051500 24 temp 850
 # CFB
 
-DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents
+export GASCRP=/lustre_xc50/carlos_bastarz/CRPS/scripts/grads_libs
+export caldate=/cray_home/carlos_bastarz/bin/tools/caldate.3.1.2
+
+export DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents
 
 case "${#1}" in
 10)
@@ -72,6 +78,24 @@ targetdate=${1}
 fctlag=${2}
 VARCRPS=${3}
 VARLEV=${4}
+
+# Define a variavel vargrads (vargrads = t850, z500 ou psnm)
+if [ ${VARCRPS} = "temp" ]
+then
+  vargrads=${VARCRPS:0:1}${VARLEV}
+  descvar="ABSOLUTE TEMPERATURE AT 850 hPa [ K ]"
+elif [ ${VARCRPS} = "zgeo" ]
+then
+  vargrads=${VARCRPS:0:1}${VARLEV}
+  descvar="GEOPOTENTIAL HEIGHT AT 500 hPA [ m ]"
+elif [ ${VARCRPS} = "zgeo" ]
+then
+  vargrads=${VARCRPS}
+  descvar="MEAN SEA LEVEL PRESSURE [ hPa ]"
+else
+  vargrads=${VARCRPS}
+  descvar=""
+fi
 
 # Prefixo dos arquivos de CRPS a serem criados
 OBSTYPE="CPT"
@@ -82,12 +106,12 @@ DATAINDIR=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/TQ0126L0
 # Diretorio com os dados recortados para a veriavel do experimento de interesse
 # Para mais informacoes sobre o recorte dos dados veja o script recorta_dados/recorta_dados.ksh
 #DATAINDIR2=/stornext/online1/ensemble_g/novos_dados_recortados/psnm-oens_MB09
-DATAINDIR2=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/rec/psnm-oens_MB09
+DATAINDIR2=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/rec/${vargrads}
 
 # Define o diretorio onde estara a climatologia (ERA Interim, 1.5 graus)
 # Atencao para o nome da variavel de interesse
 #dirclm="/stornext/online1/ensemble_g/ERAinterim1.5/psml/",
-dirclm="/lustre_xc50/carlos_bastarz/ERAinterim1.5/psml/",
+dirclm=/lustre_xc50/carlos_bastarz/ERAinterim1.5/${vargrads}
 
 # Manipulacao das datas
 yyyytgt=$(echo $targetdate | cut -c 1-4)
@@ -118,7 +142,7 @@ then
     then
       gribmap -i ${DATAINDIR}/${yyyytgt}${mmtgt}/${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl
     fi
-    ${DIRGRADS}/grads -blc "run fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5_variable.gs ${targetdate} ${DATAINDIR}/${yyyytgt}${mmtgt}/${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl ${VARCRPS} ${VARLEV}"
+    ${DIRGRADS}/grads -blc "run fwr.ExtractICfromEPS.IEEEOutput.Regrid2_1.5x1.5_variable.gs ${targetdate} ${DATAINDIR}/${yyyytgt}${mmtgt}${ddtgt}${hhtgt}/NMC/GPOSNMC${targetdate}${targetdate}P.icn.TQ0126L028.ctl ${VARCRPS} ${VARLEV}"
   fi
 else
   echo "Analysis file ( ../datain/CPTEC.${VARCRPS}.${targetdate}.grads ) was already withdrawn"
@@ -127,7 +151,7 @@ fi
 rm -f ../datain/epsfilesin.${fctlag}.tmp; touch ../datain/epsfilesin.${fctlag}.tmp;
 
 # Incremento da data (depende do script caldate)
-icdate=$(${HOME}/scripts/caldate.3.1.2 ${targetdate} - ${fctlag} "yyyymmddhh")
+icdate=$(${caldate} ${targetdate} - ${fctlag} "yyyymmddhh")
 
 # Loop sobre os membros do ensemble (incluindo o controle)
 # Aqui sera formada a lista com os nomes dos arquivos a serem abertos pelo GrADS
@@ -146,14 +170,6 @@ rm -f ../datain/epsfilesin.${fctlag}.txt
 # Acrescenta o comando open na frente dos nomes dos arquivos na lista criada
 awk '{print "open " $1}' ../datain/epsfilesin.${fctlag}.tmp > ../datain/epsfilesin.${fctlag}.txt
 
-# Define a variavel vargrads (vargrads = temp850 ou vargrads = psnm)
-if [ ${VARCRPS} = "temp" ]
-then
-  vargrads=${VARCRPS:0:1}${VARLEV}
-else
-  vargrads=${VARCRPS}
-fi
-
 # Executa o GrADS lendo os arquivos da lida gerada e escreve os arquivos 
 # ../datain/CPTECEPS.'fctlag'ForecastFor'datei'.15Members.grads'
 # Estes arquivos contem os campos de interesse de todos os membros interpolados na grade da climatologia (verificar)
@@ -168,21 +184,21 @@ YDEF 121 LINEAR -90.0 1.5
 ZDEF 1 LEVELS 1000
 TDEF 1 LINEAR ${hhtgt}Z${ddtgt}${MMM}${yyyytgt} ${fctlag}r
 VARS 15
-M01N 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M01P 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M02N 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M02P 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M03N 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M03P 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M04N 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M04P 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M05N 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M05P 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M06N 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M06P 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M07N 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-M07P 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
-MAVN 1 99 ABSOLUTE TEMPERATURE AT 850 hPa [ K ]
+M01N 1 99 ${descvar} 
+M01P 1 99 ${descvar} 
+M02N 1 99 ${descvar} 
+M02P 1 99 ${descvar} 
+M03N 1 99 ${descvar} 
+M03P 1 99 ${descvar} 
+M04N 1 99 ${descvar} 
+M04P 1 99 ${descvar} 
+M05N 1 99 ${descvar} 
+M05P 1 99 ${descvar} 
+M06N 1 99 ${descvar} 
+M06P 1 99 ${descvar} 
+M07N 1 99 ${descvar} 
+M07P 1 99 ${descvar} 
+MAVN 1 99 ${descvar} 
 ENDVARS
 EOFCTL2
 
