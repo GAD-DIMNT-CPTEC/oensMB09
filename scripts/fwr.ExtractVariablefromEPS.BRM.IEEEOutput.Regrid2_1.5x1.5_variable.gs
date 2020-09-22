@@ -5,7 +5,7 @@ fctlag=subwrd(args,2)
 varcrps=subwrd(args,3)
 
 'reinit'
-'exec ../datain/epsfilesin.'fctlag'.txt'
+'exec ../datain/epsfilesin.'datei'.'fctlag'.txt'
 rc=countctls()
 
 rc=xsure()
