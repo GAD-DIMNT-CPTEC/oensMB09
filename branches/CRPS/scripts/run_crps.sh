@@ -111,7 +111,7 @@ export DATAINDIR2=${WORKDIR}/${EXPNAME}/pos/dataout/rec/${vargrads}
 export dirclm=${WORKDIR}/ERAinterim1.5/${vargrads}
 
 # Apaga o namelist do CRPS (vai criar um novo)
-rm -f ${DIRCRPS}/datain/CRPS.nml
+rm -f ${DIRCRPS}/datain/CRPS*.nml
 
 cd ${DIRCRPS}/scripts
 
@@ -177,7 +177,7 @@ fi
 # Incremento da data (depende do script caldate)
 export icdate=\$(${caldate} \${targetdate} - \${fctlag}h "yyyymmddhh")
 
-rm -f ${DIRCRPS}/datain/epsfilesin.\${fctlag}.tmp
+rm -f ${DIRCRPS}/datain/epsfilesin.\${targetdate}.\${fctlag}.tmp
 
 # Loop sobre os membros do ensemble (incluindo o controle)
 # Aqui sera formada a lista com os nomes dos arquivos a serem abertos pelo GrADS
@@ -188,14 +188,14 @@ do
   export ddic=\$(echo \${icdate} | cut -c 7-8)
   export hhic=\$(echo \${icdate} | cut -c 9-10)
 
-  ls ${DATAINDIR2}/\${yyyyic}\${mmic}\${ddic}\${hhic}/GBRM\${memb}\${yyyyic}\${mmic}\${ddic}\${hhic}\${targetdate}.ctl >> ${DIRCRPS}/datain/epsfilesin.\${fctlag}.tmp
+  ls ${DATAINDIR2}/\${yyyyic}\${mmic}\${ddic}\${hhic}/GBRM\${memb}\${yyyyic}\${mmic}\${ddic}\${hhic}\${targetdate}.ctl >> ${DIRCRPS}/datain/epsfilesin.\${targetdate}.\${fctlag}.tmp
 done
 
-# Apaga o arquivo ../datain/epsfilesin.${fctlag}.txt (vai criar um novo)
-rm -f ${DIRCRPS}/datain/epsfilesin.\${fctlag}.txt
+# Apaga o arquivo ../datain/epsfilesin.\${targetdate}.\${fctlag}.txt (vai criar um novo)
+rm -f ${DIRCRPS}/datain/epsfilesin.\${targetdate}.\${fctlag}.txt
 
 # Acrescenta o comando open na frente dos nomes dos arquivos na lista criada
-awk '{print "open " \$1}' ${DIRCRPS}/datain/epsfilesin.\${fctlag}.tmp > ${DIRCRPS}/datain/epsfilesin.\${fctlag}.txt
+awk '{print "open " \$1}' ${DIRCRPS}/datain/epsfilesin.\${targetdate}.\${fctlag}.tmp > ${DIRCRPS}/datain/epsfilesin.\${targetdate}.\${fctlag}.txt
 
 # Executa o GrADS lendo os arquivos da lista gerada e escreve os arquivos 
 # ../datain/CPTECEPS.'fctlag'ForecastFor'datei'.15Members.grads'
@@ -261,7 +261,7 @@ fi
 #
 if [ "${OBSTYPE}" == "CPT" ]
 then
-cat <<EOFNML2 > ${DIRCRPS}/datain/CRPS_\${fctlag}.nml
+cat <<EOFNML2 > ${DIRCRPS}/datain/CRPS_\${targetdate}_\${fctlag}.nml
 &PARAM
 ANLDATE="\${targetdate}",
 Month="\${MMM}",
@@ -287,7 +287,7 @@ cd ${DIRCRPS}/exec/
 cp ${DIRCRPS}/exec/CRPS.exe ${DIRCRPS}/exec/CRPS_\${fctlag}.exe
 
 # Executa o CRPS
-aprun -n 1 -N 1 -d 1 ${DIRCRPS}/exec/CRPS_\${fctlag}.exe < ${DIRCRPS}/datain/CRPS_\${fctlag}.nml
+aprun -n 1 -N 1 -d 1 ${DIRCRPS}/exec/CRPS_\${fctlag}.exe < ${DIRCRPS}/datain/CRPS_\${targetdate}_\${fctlag}.nml
 EOT0
 
 # Submete o script e aguarda o fim da execução
