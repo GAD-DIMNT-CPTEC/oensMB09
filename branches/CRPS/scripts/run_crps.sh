@@ -3,7 +3,7 @@
 #BOP
 # Uso: ./run_crps.sh TQ0126L028 NMC 2020051500 temp 850 HN
 #      ./run_crps.sh TQ0126L028 NMC 2020051500 zgeo 500 HN
-#      ./run_crps.sh TQ0126L028 NMC 2020051500 psnm HN
+#      ./run_crps.sh TQ0126L028 NMC 2020051500 psnm 1000 HN
 #EOP
 
 # Descomentar para debugar
@@ -51,16 +51,24 @@ fi
 if [ -z ${5} ]
 then
   echo "Argument is not set: VARLEV"
-  if [ "${VARCRPS}" != 'psnm' ]
-  then
-    exit 1
-  fi
+  exit 1
 else
-  if [ ${VARCRPS} != 'psnm' ]
-  then
-    export VARLEV=${5}
-  fi
+  export VARLEV=${5}
 fi
+
+#if [ -z ${5} ]
+#then
+#  echo "Argument is not set: VARLEV"
+#  if [ "${VARCRPS}" != 'psnm' ]
+#  then
+#    exit 1
+#  fi
+#else
+#  if [ ${VARCRPS} != 'psnm' ]
+#  then
+#    export VARLEV=${5}
+#  fi
+#fi
 
 if [ -z ${6} ]
 then
