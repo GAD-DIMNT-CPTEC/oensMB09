@@ -1,4 +1,4 @@
-#! /bin/bash 
+#! /bin/bash -x 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
 #--------------------------------------------------------------------#
@@ -131,18 +131,18 @@ esac
 export RUNTM=`date +'%Y%m%d%T'`
 
 export OPERM=${DK_suite}
-export ROPERM=${DK_suite}
+export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export PBS_SERVER=aux20-eth4
+#export PBS_SERVER=${pbs_server_2}
 
-export SCRIPTFILEPATH=${DK_suite}/run/setcluster${RESOL}${NIVEL}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setcluster${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/cluster/output/cluster.${RUNTM}.out
-#PBS -e ${DK_suite}/cluster/output/cluster.${RUNTM}.err
+#PBS -o ${ROPERM}/cluster/output/cluster.${RUNTM}.out
+#PBS -e ${ROPERM}/cluster/output/cluster.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
 #PBS -W umask=026
@@ -187,7 +187,7 @@ export EXTS=S.unf
 mkdir -p \${ROPERMOD}/cluster/dataout/\${TRUNC}\${LEV}/\${LABELI}/clusters/
 mkdir -p \${ROPERMOD}/cluster/rmsclim
 
-cat <<EOT > \${OPERMOD}/cluster/bin/clustersetup.${LABELI}.nml
+cat <<EOT > \${ROPERMOD}/cluster/bin/clustersetup.${LABELI}.nml
 IMAX      :   ${IR}
 JMAX      :   ${JR}
 NMEMBERS  :   ${NMEMBR}
@@ -198,31 +198,33 @@ LONW      :   -101.25
 LONE      :    -11.25 
 LATS      :    -60.00
 LATN      :     15.00
-DATALSTDIR:   \${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
-DATARMSDIR:   \${OPERMOD}/cluster/rmsclim/
+DATALSTDIR:   \${OPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
+DATARMSDIR:   \${ROPERMOD}/cluster/rmsclim/
 DATAOUTDIR:   \${ROPERMOD}/cluster/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 DATACLTDIR:   \${ROPERMOD}/cluster/dataout/\${TRUNC}\${LEV}/\${LABELI}/clusters/
 RESOL     :   \${TRUNC}\${LEV}
 PREFX     :   ${PREFX}
 EOT
 
-cd \${OPERMOD}/cluster/bin
+cd \${ROPERMOD}/cluster/bin
 
-aprun -n 1 -N 1 -d 1 \${OPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF}
+aprun -n 1 -N 1 -d 1 \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF}
 
-echo "" > \${OPERMOD}/cluster/bin/cluster-${LABELI}.ok
+echo "" > \${ROPERMOD}/cluster/bin/cluster-${LABELI}.ok
 EOT0
+
+mkdir -p ${ROPERM}/cluster/output
 
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
-until [ -e "${OPERM}/cluster/bin/cluster-${LABELI}.ok" ]; do sleep 1s; done
+until [ -e "${ROPERM}/cluster/bin/cluster-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
-DIRSCR=${OPERM}/cluster/scripts
-DIRGIF=${OPERM}/cluster/gif
-DIRCTL=${DK_suite}/pos/dataout/${RES}/${LABELI}
-DIRCLT=${OPERM}/cluster/dataout/${RES}/${LABELI}/clusters
+DIRSCR=${ROPERM}/cluster/scripts
+DIRGIF=${ROPERM}/cluster/gif
+DIRCTL=${OPERM}/pos/dataout/${RES}/${LABELI}
+DIRCLT=${ROPERM}/cluster/dataout/${RES}/${LABELI}/clusters
 
 if [ ! -d ${DIRGIF} ]; then mkdir -p ${DIRGIF}; fi
 if [ ! -d ${DIRCTL} ]; then mkdir -p ${DIRCTL}; fi
@@ -254,7 +256,6 @@ TIM=0
 
 while [ ${TIM} -le ${NHOURS} ]
 do
-#  LABELF=$(${caldate} ${LABELI} + ${TIM}h yyyymmddhh)
   LABELF=$(${inctime} ${LABELI} +${TIM}hr %y4%m2%d2%h2)
   echo 'LABELF='${LABELF}
 
