@@ -86,7 +86,7 @@ export DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Conten
 
 export HOME_suite=/lustre_xc50/carlos_bastarz/CRPS/scripts/recorta_dados
 export DK_suite=${HOME_suite}
-export DK2=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50
+export DK2=/lustre_xc50/carlos_bastarz/oensMB09.svn
 
 cd ${HOME_suite}/
 
@@ -236,7 +236,7 @@ for arq in \$(find \${EXECFILEPATH} -name *.grb)
 do
 
   arqdirin=\$(dirname \${arq})
-  arqdirout=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/rec
+  arqdirout=/lustre_xc50/carlos_bastarz/oensMB09.svn/pos/dataout/rec
 
   arqin=\$(echo \${arq} | sed "s,.grb,,g")
 

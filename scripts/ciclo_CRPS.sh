@@ -24,7 +24,7 @@ bpath=/lustre_xc50/carlos_bastarz/CRPS/scripts
 
 # Datas de inicio e fim do loop
 datai=2020060100
-dataf=2020060500
+dataf=2020083100
 
 # Variavel, nivel e dominio
 var=temp

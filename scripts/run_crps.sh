@@ -105,7 +105,7 @@ fi
 export OBSTYPE="CPT"
 
 # Nome do experimento
-export EXPNAME=oensMB09_test_preXC50
+export EXPNAME=oensMB09.svn
 
 # Diretorio com os dados de previsao do experimento de interesse
 export DATAINDIR=${WORKDIR}/${EXPNAME}/pos/dataout/${resol}

@@ -43,9 +43,9 @@ var=t850
 
 # Diretorios de leitura (das saida do modelo - conjunto) e escrita (dos dados recortados)
 #datain=/stornext/online1/ensemble_g/carlos/spcon_mb09_tq126l28_mcgav4.0_namelist_novo/backup_previsoes_pos_eof_oensMB09_mcga-v4.0
-datain=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/TQ0126L028
+datain=/lustre_xc50/carlos_bastarz/oensMB09.svn/pos/dataout/TQ0126L028
 #dataout=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados_oens_MB09_mcga-v4.0-novo_namelist-${var}
-dataout=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/rec/${var}
+dataout=/lustre_xc50/carlos_bastarz/oensMB09.svn/pos/dataout/rec/${var}
 
 data=${datai}
 
