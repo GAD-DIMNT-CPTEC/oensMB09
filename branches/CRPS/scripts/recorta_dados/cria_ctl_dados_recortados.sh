@@ -45,7 +45,7 @@ var=t850
 # Diretorios de leitura das saidas do modelo (conjunto) e escrita dos dados recortados
 # Atencao para as variaveis e experimentos
 #dataout=/scratchout/grupos/assim_dados/home/carlos.bastarz/ensemble_g/oens_new/CRPS1.0/dados_recortados_oens_MB09_mcga-v4.0-novo_namelist-${var}
-dataout=/lustre_xc50/carlos_bastarz/oensMB09_test_preXC50/pos/dataout/rec/${var}
+dataout=/lustre_xc50/carlos_bastarz/oensMB09.svn/pos/dataout/rec/${var}
 
 data=${datai}
 
