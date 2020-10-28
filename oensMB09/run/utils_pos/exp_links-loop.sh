@@ -1,10 +1,5 @@
 #! /bin/bash
 
-#if [ $# -eq 0]
-#then
-#  exit 1
-#fi
-
 export inctime=${HOME}/bin/inctime
 
 export datai=2020051500
