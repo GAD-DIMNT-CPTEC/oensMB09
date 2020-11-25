@@ -14,6 +14,7 @@ OBJS = GaussRep.o  spread.o
 F90 = ftn
 AR = ar
 F90_32FLAGS = -fconvert=big-endian -O0
+LOADFLAG = -O0 -fconvert=big-endian 
 LIBS = ../../libs/w3lib-1.4/libw3.a
 CMD = ../bin/spread.x
 LD_LIBRARY_PATH = /rlib/lib2:/rlib/usr/lib2/lib2:/usr/lib2
