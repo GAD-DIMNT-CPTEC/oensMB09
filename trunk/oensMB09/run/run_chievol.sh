@@ -127,11 +127,11 @@ export mmdir=$(awk 'BEGIN {print substr("'${LABELI}'",5,2)}')
 export dddir=$(awk 'BEGIN {print substr("'${LABELI}'",7,2)}')
 
 export OPERM=${DK_suite}
-export ROPERM=${DK_suite}
+export ROPERM=${DK_suite}/produtos
 
-export DIRSCR=${OPERM}/chievol/scripts
+export DIRSCR=${ROPERM}/chievol/scripts
 export DIRGIF=${ROPERM}/chievol/gif
-export DIRINP=${ROPERM}/ensmed/dataout/${TRCLV}/${LABELI}
+export DIRINP=${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}
 
 #
 #   Set prefix of files

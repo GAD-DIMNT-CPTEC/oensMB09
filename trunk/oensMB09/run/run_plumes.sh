@@ -137,18 +137,18 @@ esac
 export RUNTM=$(date +'%Y%m%d%T')
 
 export OPERM=${DK_suite}
-export ROPERM=${DK_suite}
+export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export PBS_SERVER=aux20-eth4
+#export PBS_SERVER=aux20-eth4
 
 export SCRIPTFILEPATH=${DK_suite}/run/setplumes${RESOL}${NIVEL}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/plumes/output/plumes.${RUNTM}.out
-#PBS -e ${DK_suite}/plumes/output/plumes.${RUNTM}.err
+#PBS -o ${ROPERM}/plumes/output/plumes.${RUNTM}.out
+#PBS -e ${ROPERM}/plumes/output/plumes.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
 #PBS -W umask=026
@@ -201,18 +201,18 @@ RESOL     :   \${TRUNC}\${LEV}
 PREFX     :   ${PREFX}
 EOT
 
-cd \${OPERMOD}/plumes/bin
+cd \${ROPERMOD}/plumes/bin
 
-aprun -n 1 -N 1 -d 1 \${OPERMOD}/plumes/bin/plumes.x ${LABELI} 
+aprun -n 1 -N 1 -d 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI} 
 
-echo "" > \${OPERMOD}/plumes/bin/plumes-${LABELI}.ok
+echo "" > \${ROPERMOD}/plumes/bin/plumes-${LABELI}.ok
 EOT0
 
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
-until [ -e "${OPERM}/plumes/bin/plumes-${LABELI}.ok" ]; do sleep 1s; done
+until [ -e "${ROPERM}/plumes/bin/plumes-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
 #
 # Set directories
@@ -234,48 +234,48 @@ mm=$(echo ${LABELI} | cut -c 5-6)
 dd=$(echo ${LABELI} | cut -c 7-8)
 hh=$(echo ${LABELI} | cut -c 9-10)
 
-dirbct=${OPERM}/plumes/dataout/${RES}
+dirbct=${ROPERM}/plumes/dataout/${RES}
 
 #
 # Generate the figures of plumes
 #
-cd ${OPERM}/plumes/scripts/
+cd ${ROPERM}/plumes/scripts/
 
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AC/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AP/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/DF/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MA/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MT/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PE/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RJ/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RR/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SE/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/WW/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AL/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/BA/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/ES/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MG/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PA/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PI/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RN/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RS/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SP/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/ZZ/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AM/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/CE/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/GO/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MS/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PB/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PR/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RO/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SC/
-mkdir -p ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif/TO/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AC/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AP/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/DF/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MA/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MT/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PE/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RJ/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RR/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SE/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/WW/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AL/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/BA/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/ES/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MG/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PA/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PI/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RN/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RS/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SP/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/ZZ/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AM/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/CE/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/GO/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MS/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PB/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PR/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RO/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SC/
+mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/TO/
 
-echo "${LABELI} ${LABELF} ${gname} ${CASE} ${ps} ${NMEMBR} ${fileloc} ${OPERM}/plumes/dataout/${CASE}/${LABELI} ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif 1 360"
+echo "${LABELI} ${LABELF} ${gname} ${CASE} ${ps} ${NMEMBR} ${fileloc} ${ROPERM}/plumes/dataout/${CASE}/${LABELI} ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif 1 360"
 
 ${DIRGRADS}/grads -bp << EOT
 run plumes.gs
-${LABELI} ${LABELF} ${gname} ${CASE} ${ps} ${NMEMBR} ${fileloc} ${OPERM}/plumes/dataout/${CASE}/${LABELI} ${OPERM}/plumes/dataout/${CASE}/${LABELI}/gif 1 360
+${LABELI} ${LABELF} ${gname} ${CASE} ${ps} ${NMEMBR} ${fileloc} ${ROPERM}/plumes/dataout/${CASE}/${LABELI} ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif 1 360
 quit
 EOT
 

@@ -407,7 +407,7 @@ END PROGRAM probagr
      WRITE(datep,'(I4.4,3I2.2)') iyy,imm,idd,ihh
      fctdate(i)(1:10)=datep(1:10)
 
-     WRITE(*,'(A,I,2A)') 'fctdate(',i,'):',fctdate(i)(1:10)
+     WRITE(*,'(A,I3,2A)') 'fctdate(',i,'):',fctdate(i)(1:10)
      
   END DO
   

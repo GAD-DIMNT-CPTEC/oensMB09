@@ -4,10 +4,11 @@ export inctime=${HOME}/bin/inctime
 
 export bpath=/cray_home/carlos_bastarz/oensMB09.svn/run
 
-Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
+#Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
+Procs=(pos15d gribmap)
 
-export datai=2020051500
-export dataf=2020083100
+export datai=2020070700
+export dataf=2020070700
 
 export data=${datai}
 
