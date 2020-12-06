@@ -21,7 +21,6 @@ mmf=substr(datef,5,2)
 ddf=substr(datef,7,2)
 hhf=substr(datef,9,2)
 
-
 *
 *   Obtain Ctl files and final dates
 *
@@ -126,8 +125,10 @@ endwhile
 'draw line 0.5 7.5 8.4 7.5' 
 'draw line 0.5 8.5 8.4 8.5' 
 
-'printim 'dirfig'chi_evol'datei''datef'.png png x600 y950'
-'!/usr/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png  'dirfig'chi_evol'datei''datef'.png'
+*'printim 'dirfig'chi_evol'datei''datef'.png png x600 y950'
+*'!/usr/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png  'dirfig'chi_evol'datei''datef'.png'
+'printim 'dirfig'chi_evol'datei''datef'.png png x768 y1024'
+'!/usr/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png 'dirfig'chi_evol'datei''datef'.png'
 
 *'q pos'
 'quit'

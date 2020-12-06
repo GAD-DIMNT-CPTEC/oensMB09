@@ -125,21 +125,21 @@ case ${TRC} in
   *) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
 esac
 
-export RUNTM=`date +'%Y%m%d%T'`
+export RUNTM=$(date +'%Y%m%d%T')
 
 export OPERM=${DK_suite}
-export ROPERM=${DK_suite}
+export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export PBS_SERVER=aux20-eth4
+#export PBS_SERVER=aux20-eth4
 
-export SCRIPTFILEPATH=${DK_suite}/run/setprobagr${RESOL}${NIVEL}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setprobagr${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/probagr/output/probagr.${RUNTM}.out
-#PBS -e ${DK_suite}/probagr/output/probagr.${RUNTM}.err
+#PBS -o ${ROPERM}/probagr/output/probagr.${RUNTM}.out
+#PBS -e ${ROPERM}/probagr/output/probagr.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
 #PBS -W umask=026
@@ -179,7 +179,7 @@ export EXTS=S.unf
 
 mkdir -p \${ROPERMOD}/probagr/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 
-cat <<EOT > \${OPERMOD}/probagr/bin/probagr.${LABELI}.nml
+cat <<EOT > \${ROPERMOD}/probagr/bin/probagr.${LABELI}.nml
 UNDEF     :   9.999E+20
 IMAX      :   ${IR}
 JMAX      :   ${JR}
@@ -188,24 +188,24 @@ NFCTDY    :   ${NFCTDY}
 FREQCALC  :   6
 NWEEK     :   3
 NDACC     :   5
-DATAINDIR :   \${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
+DATAINDIR :   \${OPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 DATAOUTDIR:   \${ROPERMOD}/probagr/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 PREFX     :   ${PREFX}
 RESOL     :   \${TRUNC}\${LEV}
 EOT
 
-cd \${OPERMOD}/probagr/bin
+cd \${ROPERMOD}/probagr/bin
 
-aprun -n 1 -N 1 -d 1 \${OPERMOD}/probagr/bin/probagr.x ${LABELI} 
+aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} 
 
-echo "" > \${OPERMOD}/probagr/bin/probagr-${LABELI}.ok
+echo "" > \${ROPERMOD}/probagr/bin/probagr-${LABELI}.ok
 EOT0
 
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
-until [ -e "${OPERM}/probagr/bin/probagr-${LABELI}.ok" ]; do sleep 1s; done
+until [ -e "${ROPERM}/probagr/bin/probagr-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
 #
 #  Set directories
@@ -216,7 +216,7 @@ mm=$(echo ${LABELI} | cut -c 5-6)
 dd=$(echo ${LABELI} | cut -c 7-8)
 hh=$(echo ${LABELI} | cut -c 9-10)
 
-dirscr=${OPERM}/probagr/scripts
+dirscr=${ROPERM}/probagr/scripts
 dirgif=${ROPERM}/probagr/gif
 
 dirbct=${ROPERM}/probagr/dataout/${RES}/${LABELI}
@@ -262,5 +262,8 @@ ${DIRGRADS}/grads -lb << EOT
 run plot_precprob_agric.gs
 ${RES} ${TRC} ${LABELI} ${nblst} ${ndacc} ${noutpday} ${dirbct} ${dirgif}
 EOT
+
+mkdir -p ${dirgif}/${LABELI}
+mv ${dirgif}/*png ${dirgif}/${LABELI}/
 
 exit 0

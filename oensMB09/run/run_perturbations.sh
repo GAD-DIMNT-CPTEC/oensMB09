@@ -97,7 +97,7 @@ export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 . ${FILEENV} ${RES} ${PREFX}
 
 export OPERM=${DK_suite}
-export ROPERM=${DK_suite}
+export ROPERM=${DK_suite}/produtos
 
 cd ${HOME_suite}/run
 
@@ -126,10 +126,10 @@ HH=$(echo ${LABELI} | cut -c 9-10)
 
 echo 'LABELI='${LABELI}
                                                                                                  
-DIRSCR=${OPERM}/produtos/perturbations/scripts
-DIRGIF=${ROPERM}/produtos/perturbations/gif
-DIRCTL=${ROPERM}/pos/dataout/${TRCLV}/${LABELI}
-DIRENM=${ROPERM}/ensmed/dataout/${TRCLV}/${LABELI}
+DIRSCR=${ROPERM}/perturbations/scripts
+DIRGIF=${ROPERM}/perturbations/gif
+DIRCTL=${OPERM}/pos/dataout/${TRCLV}/${LABELI}
+DIRENM=${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}
 
 if [ ! -d ${DIRGIF} ]
 then

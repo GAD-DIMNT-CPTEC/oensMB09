@@ -128,21 +128,21 @@ case ${TRC} in
   *) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
 esac
 
-export RUNTM=`date +'%Y%m%d%T'`
+export RUNTM=$(date +'%Y%m%d%T')
 
 export OPERM=${DK_suite}
-export ROPERM=${DK_suite}
+export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export PBS_SERVER=aux20-eth4
+#export PBS_SERVER=aux20-eth4
 
 export SCRIPTFILEPATH=${DK_suite}/run/setprobability${RESOL}${NIVEL}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #!/bin/bash -x
-#PBS -o ${DK_suite}/probability/output/probability.${RUNTM}.out
-#PBS -e ${DK_suite}/probability/output/probability.${RUNTM}.err
+#PBS -o ${ROPERM}/probability/output/probability.${RUNTM}.out
+#PBS -e ${ROPERM}/probability/output/probability.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
 #PBS -W umask=026
@@ -181,31 +181,31 @@ export EXTS=S.unf
 mkdir -p \${ROPERMOD}/probability/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 mkdir -p \${ROPERMOD}/probability/rmsclim
 
-cat <<EOT > \${OPERMOD}/probability/bin/probsetup.${LABELI}.nml
+cat <<EOT > \${ROPERMOD}/probability/bin/probsetup.${LABELI}.nml
 UNDEF     :   9.999E+20
 IMAX      :   ${IR}
 JMAX      :   ${JR}
 NMEMBERS  :   ${NMEMBR}
 NFCTDY    :   ${NFCTDY}
 FREQCALC  :   6
-DIRINP    :   \${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
+DIRINP    :   \${OPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 DIROUT    :   \${ROPERMOD}/probability/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 RESOL     :   \${TRUNC}\${LEV}
 PREFX     :   ${PREFX}
 EOT
 
-cd \${OPERMOD}/probability/bin
+cd \${ROPERMOD}/probability/bin
 
-aprun -n 1 -N 1 -d 1 \${OPERMOD}/probability/bin/probability.x ${LABELI} 
+aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probability/bin/probability.x ${LABELI} 
 
-echo "" > \${OPERMOD}/probability/bin/probability-${LABELI}.ok
+echo "" > \${ROPERMOD}/probability/bin/probability-${LABELI}.ok
 EOT0
 
 chmod +x ${SCRIPTFILEPATH}
 
-#qsub -W block=true ${SCRIPTFILEPATH}
-#
-#until [ -e "${OPERM}/probability/bin/probability-${LABELI}.ok" ]; do sleep 1s; done
+qsub -W block=true ${SCRIPTFILEPATH}
+
+until [ -e "${ROPERM}/probability/bin/probability-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
 #
 #  Set directories
@@ -216,7 +216,7 @@ mm=$(echo ${LABELI} | cut -c 5-6)
 dd=$(echo ${LABELI} | cut -c 7-8)
 hh=$(echo ${LABELI} | cut -c 9-10)
 
-dirscr=${OPERM}/probability/scripts
+dirscr=${ROPERM}/probability/scripts
 dirgif=${ROPERM}/probability/gif
 
 dirbct=${ROPERM}/probability/dataout/${RES}/${LABELI}
