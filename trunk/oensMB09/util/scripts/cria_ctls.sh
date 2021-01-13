@@ -258,7 +258,7 @@ zdef    42 levels
         if [ ${var} == "prs" ]
         then
 cat << EOF > ${var}pe${reg}ens1${data}.ctl
-dset ${var}se${reg}%e1${data}
+dset ^${var}se${reg}%e1${data}
 
 options big_endian sequential yrev template
 
@@ -273,7 +273,7 @@ ${varlist}
 EOF
 
 cat << EOF > ${var}pn${reg}ens1${data}.ctl
-dset ${var}sn${reg}%e1${data}
+dset ^${var}sn${reg}%e1${data}
 
 options big_endian sequential yrev template 
 
@@ -288,7 +288,7 @@ ${varlist}
 EOF
         else
 cat << EOF > ${var}pe${reg}ens1${data}.ctl
-dset ${var}pe${reg}%e1${data}
+dset ^${var}pe${reg}%e1${data}
 
 options big_endian sequential yrev template
 
@@ -303,7 +303,7 @@ ${varlist}
 EOF
 
 cat << EOF > ${var}pn${reg}ens1${data}.ctl
-dset ${var}pn${reg}%e1${data}
+dset ^${var}pn${reg}%e1${data}
 
 options big_endian sequential yrev template
 
@@ -323,7 +323,7 @@ EOF
         if [ ${var} == "prs" ]
         then
 cat << EOF > ${var}pe${reg}${memf}1${data}.ctl
-dset ${var}se${reg}${memf}1${data}
+dset ^${var}se${reg}${memf}1${data}
 
 options big_endian sequential yrev 
 
@@ -337,7 +337,7 @@ ${varlist}
 EOF
 
 cat << EOF > ${var}pn${reg}${memf}1${data}.ctl
-dset ${var}sn${reg}${memf}1${data}
+dset ^${var}sn${reg}${memf}1${data}
 
 options big_endian sequential yrev 
 
@@ -351,7 +351,7 @@ ${varlist}
 EOF
         else
 cat << EOF > ${var}pe${reg}${memf}1${data}.ctl
-dset ${var}pe${reg}${memf}1${data}
+dset ^${var}pe${reg}${memf}1${data}
 
 options big_endian sequential yrev 
 
@@ -365,7 +365,7 @@ ${varlist}
 EOF
 
 cat << EOF > ${var}pn${reg}${memf}1${data}.ctl
-dset ${var}pn${reg}${memf}1${data}
+dset ^${var}pn${reg}${memf}1${data}
 
 options big_endian sequential yrev 
 
