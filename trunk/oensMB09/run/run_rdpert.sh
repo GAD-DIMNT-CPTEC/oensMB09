@@ -225,9 +225,6 @@ cat <<EOT2 > \${DK_suite}/rdpert/datain/rdpert.nml
   GLATN=90.0  
   GLATS=-90.0
  &END
-! &STPRES
-!  STDP=1.00
-! &END
 $(cat ${HOME_suite}/include/${RESOL}${NIVEL}/prespert_rdp.nml)
 $(cat ${HOME_suite}/include/${RESOL}${NIVEL}/temppert_rdp.nml)
 $(cat ${HOME_suite}/include/${RESOL}${NIVEL}/uvelpert_rdp.nml)
