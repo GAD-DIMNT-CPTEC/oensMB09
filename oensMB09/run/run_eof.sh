@@ -450,9 +450,10 @@ cat <<EOT1 > eofpres\${REG}\${MEM}.nml
   PRSSEN1(10)='prssn\${REG}\${MEM}10${LABELI} ',
   PRSSEN1(11)='prssn\${REG}\${MEM}11${LABELI} '
  &END
- &STPRES
-  STDP=1.00
- &END
+! &STPRES
+!  STDP=1.00
+! &END
+$(cat ${HOME_suite}/include/${RESOL}${NIVEL}/prespert_eof.nml)
  &PARMET
   IINF=\${II},ISUP=\${IS},IMAX0=\${NI},
   JINF=\${JI},JSUP=\${JS},JMAX0=\${NJ},
