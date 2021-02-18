@@ -5,9 +5,9 @@ export inctime=${HOME}/bin/inctime
 export bpath=/cray_home/carlos_bastarz/oensMB09.svn/run
 
 #Procs=(grh ensmed spread cluster probability probagr plumes chievol perturbations spaguetti)
-Procs=(cluster probability probagr chievol perturbations spaguetti)
+Procs=(spread)
 
-export datai=2020051500
+export datai=2020070100
 export dataf=2020083100
 
 export data=${datai}
