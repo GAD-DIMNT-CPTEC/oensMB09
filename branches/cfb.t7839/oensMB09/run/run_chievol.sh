@@ -104,8 +104,6 @@ export NPROC=1
 #
 #   Set LABELF
 #
-
-#LABELF=$(${caldate} ${LABELI} + ${NFCTDY}d yyyymmddhh)
 LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
 
 #
@@ -155,8 +153,6 @@ do
   echo "${DIRINP}/${GPOS}${LABELI}${LABELPF}P.fct.${CASE}.ctl" >> filefct${LABELI}.${RESOL}
 done
 
-# End of generation the list of ctl's to be opened ++++++
-
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Produce the graphics
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -165,8 +161,6 @@ done
 NWK=4 
 
 mkdir -p ${ROPERM}/chievol/gif
-
-echo "${LABELI} ${LABELF} ${NWK} ${CASE} ${RESOL} ${DIRGIF}"
 
 ${DIRGRADS}/grads -bpc << EOT
 run plot_chi_evol.gs

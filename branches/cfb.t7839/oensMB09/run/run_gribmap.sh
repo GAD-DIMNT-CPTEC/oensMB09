@@ -106,15 +106,11 @@ RUNTM=$(date +"%s")
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
-#  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-#  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
   export PBSDIRECTIVENAME="#PBS -N GMAPENS${ANLTYPE}"
   export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/\${MEM}${ANLTYPE:0:1}"
 else
-#  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-#  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
   export PBSDIRECTIVENAME="#PBS -N GMAP${ANLTYPE}"
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
@@ -169,8 +165,6 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${SCRIPTSFILES}
-
-echo "SUBMIT: ${HOME_suite}/run/${SCRIPTSFILES}"
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then

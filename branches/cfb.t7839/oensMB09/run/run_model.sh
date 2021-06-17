@@ -122,6 +122,7 @@ then
 else
   export MPPWIDTH=${1}  
 fi
+
 if [ -z "${2}" ]
 then
   echo "MPPNPPN is not set" 
@@ -129,6 +130,7 @@ then
 else
   export MPPNPPN=${2}  
 fi
+
 if [ -z "${3}" ]
 then
   echo "MPPDEPTH is not set" 
@@ -136,6 +138,7 @@ then
 else
   export MPPDEPTH=${3}  
 fi
+
 if [ -z "${4}" ]
 then
   echo "RESOL is not set" 
@@ -143,6 +146,7 @@ then
 else
   export RES=${4}  
 fi
+
 if [ -z "${5}" ]
 then
   echo "PREFIC is not set" 
@@ -150,6 +154,7 @@ then
 else
   export PREFIC=${5}  
 fi
+
 if [ -z "${6}" ]
 then
   echo "LABELI is not set" 
@@ -157,6 +162,7 @@ then
 else
   export LABELI=${6} 
 fi
+
 if [ -z "${7}" ]
 then
   echo "LABELF is not set" 
@@ -164,6 +170,7 @@ then
 else
   export LABELF=${7} 
 fi
+
 if [ -z "${8}" ]
 then
   echo "ANLTYPE is not set" 
@@ -171,6 +178,7 @@ then
 else
   export ANLTYPE=${8}  
 fi
+
 if [ -z "${9}" ]
 then
   echo "INITLZ is not set" 
@@ -178,6 +186,7 @@ then
 else
   export INITLZ=${9}  
 fi
+
 if [ -z "${10}" ]
 then
   echo "ANLPERT is not set" 

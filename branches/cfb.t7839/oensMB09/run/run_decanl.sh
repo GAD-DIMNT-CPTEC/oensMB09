@@ -35,6 +35,7 @@
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 17 Junho de 2021 - C. F. Bastarz - Ajustes no nome do script de submissão.
 #
 # !REMARKS:
 #
@@ -111,7 +112,7 @@ cd ${HOME_suite}/run
 # Script de submissão
 SCRIPTSFILE=setdrpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTSFILE}
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #!/bin/bash -x
 #PBS -o ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.err
@@ -159,7 +160,6 @@ export LABELI=${LABELI}
 #  NAMES - Output spectral file name prefix
 #
 
-#if [ "${PERT}" = "AVN" ]
 if [ ${PREFIC} == AVN ]
 then
   export NAMEL=GANLAVN
@@ -272,11 +272,11 @@ EOT3
 done
 EOT0
 
+export PBS_SERVER=${pbs_server2}
+
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-export PBS_SERVER=${pbs_server2}
-
-qsub -W block=true ${SCRIPTSFILE}
+qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

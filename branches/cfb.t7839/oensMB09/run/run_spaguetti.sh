@@ -273,7 +273,6 @@ done
   
 # South America
   
-echo "${DIRGRADS}/grads -pb \"run sptas.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}\""
 ${DIRGRADS}/grads -pb << EOT
 run sptas.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}
@@ -281,7 +280,6 @@ EOT
 
 # Global
   
-echo "${DIRGRADS}/grads -pb \"run sptgl.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}\""
 ${DIRGRADS}/grads -pb << EOT
 run sptgl.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}

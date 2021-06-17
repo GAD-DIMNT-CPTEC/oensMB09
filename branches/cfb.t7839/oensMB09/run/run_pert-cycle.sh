@@ -7,10 +7,6 @@ export bpath=/cray_home/carlos_bastarz/oensMB09.svn/run
 export anltype=SMT
 
 Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
-#Procs=(rdpert decanl model2d recfct eof deceof model15d)
-#Procs=(model15d)
-#Procs=(pos15d gribmap)
-#Procs=(model15d pos15d gribmap)
 
 export datai=2020062300
 export dataf=2020062300

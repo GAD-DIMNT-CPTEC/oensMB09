@@ -78,6 +78,7 @@ then
 else
   export MPPWIDTH=${1}  
 fi
+
 if [ -z "${2}" ]
 then
   echo "RESOL is not set" 
@@ -85,6 +86,7 @@ then
 else
   export RES=${2}  
 fi
+
 if [ -z "${3}" ]
 then
   echo "LABELI is not set" 
@@ -92,6 +94,7 @@ then
 else
   export LABELI=${3} 
 fi
+
 if [ -z "${4}" ]
 then
   echo "LABELF is not set" 
@@ -99,6 +102,7 @@ then
 else
   export LABELF=${4} 
 fi
+
 if [ -z "${5}" ]
 then
   echo "ANLTYPE is not set" 
@@ -106,6 +110,7 @@ then
 else
   export ANLTYPE=${5}  
 fi
+
 if [ -z "${6}" ]
 then
   echo "ANLPERT is not set" 
@@ -313,8 +318,7 @@ time2=$(date -d "${DATEF} ${HHF}:00" +"%HZ%d%b%Y")
 
 echo "LABELI = ${LABELI}   LABELF = ${LABELF}   LABELR = ${labelr}"
 echo "PARAMETROS GRADS ==> ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}"
-#
-#
+
 cd  ${GRHDATAOUT}
 rm -f ${GRHDATAOUT}/umrs_min??????????.txt
 
@@ -897,22 +901,25 @@ return state
 ***********************************************
 EOF1
 
-DATE=`echo ${LABELI} | cut -c 1-8`
-HH=`echo ${LABELI} | cut -c 9-10`
-DATEF=`echo ${LABELF} | cut -c 1-8`
-HHF=`echo ${LABELF} | cut -c 9-10`
+DATE=$(echo ${LABELI} | cut -c 1-8)
+HH=$(echo ${LABELI} | cut -c 9-10)
+DATEF=$(echo ${LABELF} | cut -c 1-8)
+HHF=$(echo ${LABELF} | cut -c 9-10)
 
-time1=`date -d "$DATE $HH:00" +"%HZ%d%b%Y"`
-time2=`date -d "$DATEF $HHF:00" +"%HZ%d%b%Y"`
+time1=$(date -d "$DATE $HH:00" +"%HZ%d%b%Y")
+time2=$(date -d "$DATEF $HHF:00" +"%HZ%d%b%Y")
 
 echo ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}
 echo ${time1} ${time2}
 
-if [ $GSSTEP = 1 ]; then
+if [ $GSSTEP = 1 ]
+then
+
 ${DIRGRADS}/grads -bp  << EOT
 run ${HOME_suite}/grh/scripts/meteogr.gs
 ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr} ${time1} ${time2}
 EOT
+
 fi
 
 exit 0

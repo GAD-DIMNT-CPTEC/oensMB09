@@ -135,8 +135,6 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-#export PBS_SERVER=${pbs_server_2}
-
 export SCRIPTFILEPATH=${DK_suite}/run/setcluster${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
@@ -214,6 +212,8 @@ echo "" > \${ROPERMOD}/cluster/bin/cluster-${LABELI}.ok
 EOT0
 
 mkdir -p ${ROPERM}/cluster/output
+
+export PBS_SERVER=${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
 
@@ -327,19 +327,16 @@ echo "NCTLS="${NCTLS}
 # Plot the figures
 #
 
-echo "${DIRGRADS}/grads -bp run plot_temp_zgeo.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX}"
 ${DIRGRADS}/grads -bp << EOT
 run plot_temp_zgeo.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}
 EOT
 
-echo "${DIRGRADS}/grads -bp run plot_prec_psnm_wind.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX}"
 ${DIRGRADS}/grads -bp << EOT
 run plot_prec_psnm_wind.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}
 EOT
 
-echo "${DIRGRADS}/grads -bp run plot_tems.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX}"
 ${DIRGRADS}/grads -bp << EOT
 run plot_tems.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}

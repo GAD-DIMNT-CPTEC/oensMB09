@@ -30,6 +30,7 @@
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 17 Junho de 2021 - C. F. Bastarz - Ajustes no nome do script de submissão.
 #
 # !REMARKS:
 #
@@ -87,18 +88,13 @@ HSTMAQ=$(hostname)
 RUNTM=$(date +'%y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
-#echo ${MAQUI}
-#echo ${AUX_QUEUE}
-#echo ${RUNTM}
-#echo ${EXT}
-
 cd ${HOME_suite}/run
 
 mkdir -p ${DK_suite}/recanl/output
 
 SCRIPTSFILE=setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTSFILE}
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #!/bin/bash -x
 #PBS -o ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
@@ -223,15 +219,14 @@ export out=\${recanl_dir}/output; mkdir -p \${out}
 
 cd \${bin}
 
-echo "aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
 aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
 EOT0
 
-# Submete o script e aguarda o fim da execução
-chmod +x setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
-
 export PBS_SERVER=${pbs_server2}
 
-qsub -W block=true setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+# Submete o script e aguarda o fim da execução
+chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
+
+qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

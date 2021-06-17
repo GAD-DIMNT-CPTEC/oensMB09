@@ -36,6 +36,7 @@
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 17 Junho de 2021 - C. F. Bastarz - Ajustes no nome do script de submissão.
 #
 # !REMARKS:
 #
@@ -127,7 +128,7 @@ RUNTM=$(date +"%s")
 # Script de submissão
 SCRIPTSFILES=setdec${2}.${RESOL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTSFILES}
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
 #! /bin/bash -x
 #PBS -o ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
 #PBS -e ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
@@ -444,13 +445,11 @@ cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 EOT0
 
+export PBS_SERVER=${pbs_server2}
+
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
-export PBS_SERVER=${pbs_server2}
-
-qsub -W block=true ${SCRIPTSFILES}
-
-echo "SUBMIT: ${HOME_suite}/run/${SCRIPTSFILES}"
+qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILES}
 
 exit 0

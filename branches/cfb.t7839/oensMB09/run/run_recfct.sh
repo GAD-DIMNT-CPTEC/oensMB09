@@ -35,6 +35,7 @@
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
 # 31 Janeiro de 2018 - C. F. Bastarz - Ajustados os prefixos NMC e CTR
+# 17 Junho de 2021 - C. F. Bastarz - Ajustes no nome do script de submissão.
 #
 # !REMARKS:
 #
@@ -231,11 +232,11 @@ EOT3
 done
 EOT0
 
+export PBS_SERVER=${pbs_server2}
+
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-export PBS_SERVER=${pbs_server2}
-
-qsub -W block=true ${SCRIPTSFILE}
+qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

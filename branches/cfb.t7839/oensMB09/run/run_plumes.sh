@@ -141,8 +141,6 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-#export PBS_SERVER=aux20-eth4
-
 export SCRIPTFILEPATH=${DK_suite}/run/setplumes${RESOL}${NIVEL}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
@@ -208,6 +206,8 @@ aprun -n 1 -N 1 -d 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI}
 echo "" > \${ROPERMOD}/plumes/bin/plumes-${LABELI}.ok
 EOT0
 
+export PBS_SERVER=${pbs_server2}
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
@@ -270,8 +270,6 @@ mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PR/
 mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RO/
 mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SC/
 mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/TO/
-
-echo "${LABELI} ${LABELF} ${gname} ${CASE} ${ps} ${NMEMBR} ${fileloc} ${ROPERM}/plumes/dataout/${CASE}/${LABELI} ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif 1 360"
 
 ${DIRGRADS}/grads -bp << EOT
 run plumes.gs

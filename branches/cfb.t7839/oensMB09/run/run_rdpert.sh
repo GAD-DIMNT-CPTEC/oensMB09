@@ -39,6 +39,7 @@
 #                                       (as perturbações da umidade
 #                                       foram interpoladas a partir dos
 #                                       28 valores originais)
+# 17 Junho de 2021 - C. F. Bastarz - Ajustes no nome do script de submissão.
 #
 # !REMARKS:
 #
@@ -109,11 +110,6 @@ RUNTM=$(date +'%Y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 CASE=${TRCLV}
 
-#echo ${MAQUI}
-#echo ${AUX_QUEUE}
-#echo ${RUNTM}
-#echo ${EXT}
-
 cd ${HOME_suite}/run
 
 mkdir -p ${DK_suite}/rdpert/output
@@ -121,7 +117,7 @@ mkdir -p ${DK_suite}/rdpert/output
 # Script de submissão
 SCRIPTSFILE=setrdpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTSFILE}
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #!/bin/bash -x
 #PBS -o ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
@@ -276,11 +272,11 @@ cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
 EOT0
 
-# Submete o script e aguarda o fim da execução
-chmod +x ${SCRIPTSFILE} 
-
 export PBS_SERVER=${pbs_server2}
 
-qsub -W block=true ${SCRIPTSFILE}
+# Submete o script e aguarda o fim da execução
+chmod +x ${HOME_suite}/run/${SCRIPTSFILE} 
+
+qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

@@ -31,9 +31,9 @@
 #
 # XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
-# XX Outubro de 2017 - C. F. Bastarz - Inclusão limites região TQ0213L042
-# 03 Novembro de 2017 - C. F. Bastarz - Inclusão limites região TQ0299L064
-# 09 Fevereiro de 2018 - C. F. Bastarz - Ajuste dos prefixos NMC (controle 48h) e CTR (controle 120h)
+# XX Outubro de 2017 - C. F. Bastarz - Inclusão limites região TQ0213L042.
+# 03 Novembro de 2017 - C. F. Bastarz - Inclusão limites região TQ0299L064.
+# 09 Fevereiro de 2018 - C. F. Bastarz - Ajuste dos prefixos NMC (controle 48h) e CTR (controle 120h).
 #
 # !REMARKS:
 #
@@ -61,6 +61,7 @@ then
 else
   TRCLV=${1}
 fi
+
 if [ -z "${2}" ]
 then
   echo "PERT: NMC, AVN CTR 01N"
@@ -68,6 +69,7 @@ then
 else
   NMEM=${2}
 fi
+
 if [ -z "${3}" ]
 then
   echo "Argument is not set (H)"
@@ -75,6 +77,7 @@ then
 else
   HUMID=${3}
 fi
+
 if [ -z "${4}" ]
 then
   echo "Fifth argument is not set (LABELI: yyyymmddhh)"
@@ -82,6 +85,7 @@ then
 else
   LABELI=${4}
 fi
+
 if [ -z "${5}" ]
 then
   echo "Fifth argument is not set (LABELI: yyyymmddhh)"
@@ -712,10 +716,10 @@ EOT1
 done
 EOT0
 
+export PBS_SERVER=${pbs_server2}
+
 # Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
-
-export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
 

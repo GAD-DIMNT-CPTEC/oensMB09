@@ -134,8 +134,6 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-#export PBS_SERVER=${pbs_server_2}
-
 export SCRIPTFILEPATH=${DK_suite}/run/setspread${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
@@ -209,6 +207,8 @@ aprun -n 1 -N 1 -d 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI}
 echo "" > \${ROPERMOD}/spread/bin/spread-${LABELI}.ok
 EOT0
 
+export PBS_SERVER=${pbs_server2}
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
@@ -272,12 +272,8 @@ echo "NCTLS=${NCTLS}"
 # Plot figures
 #
 
-#export PATH="/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents":${PATH}
-#export GADDIR="/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents/Resources/SupportData"
-
 mkdir -p ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/
 
-echo "grads -lbc run gposens.gs ${TRC} ${LABELI} ${NCTLS} ${TRCLV} ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/"
 ${DIRGRADS}/grads -lb << EOT
 run gposens.gs 
 ${TRC} ${LABELI} ${NCTLS} ${TRCLV} ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/

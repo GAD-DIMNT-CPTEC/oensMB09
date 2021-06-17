@@ -105,6 +105,7 @@ then
 else
   export MPPWIDTH=${1}  
 fi
+
 if [ -z "${2}" ]
 then
   echo "MPPNPPN is not set" 
@@ -112,6 +113,7 @@ then
 else
   export MPPNPPN=${2}  
 fi
+
 if [ -z "${3}" ]
 then
   echo "MPPDEPTH is not set" 
@@ -119,6 +121,7 @@ then
 else
   export MPPDEPTH=${3}  
 fi
+
 if [ -z "${4}" ]
 then
   echo "RESOL is not set" 
@@ -126,6 +129,7 @@ then
 else
   export RES=${4}  
 fi
+
 if [ -z "${5}" ]
 then
   echo "LABELI is not set" 
@@ -133,6 +137,7 @@ then
 else
   export LABELI=${5} 
 fi
+
 if [ -z "${6}" ]
 then
   echo "LABELF is not set" 
@@ -140,6 +145,7 @@ then
 else
   export LABELF=${6}  
 fi
+
 if [ -z "${7}" ]
 then
   echo "ANLTYPE is not set"
@@ -305,11 +311,6 @@ then
     until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
     mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
 
-#    for arqctl in $(find ${DATAOUT} -name "*.ctl")
-#    do
-#      ${DIRGRADS}/gribmap -i ${arqctl}
-#    done
-
   done
 
 else
@@ -321,11 +322,6 @@ else
 
   until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
   mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
-
-#  for arqctl in $(find ${DATAOUT} -name "*.ctl")
-#  do
-#    ${DIRGRADS}/gribmap -i ${arqctl}
-#  done
 
 fi
 

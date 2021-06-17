@@ -5,8 +5,9 @@
 #BOP
 #
 # !DESCRIPTION:
-# Script para plotar os campos de perturbação iniciais do Sistema de Previsão por Conjunto Global (SPCON) 
-# do CPTEC, para a temperatura e o vento nos níveis 250, 500 e 850 hPa.
+# Script para plotar os campos de perturbação iniciais do Sistema de 
+# Previsão por Conjunto Global (SPCON) do CPTEC, para a temperatura e 
+# o vento nos níveis 250, 500 e 850 hPa.
 #
 # !INTERFACE:
 #      ./run_perturbations.sh <opcao1> <opcao2> <opcao3> <opcao4> <opcao5> 
@@ -240,7 +241,6 @@ echo "NCTLS="${NCTLS}
 # Plot the figures
 #
 
-echo "${DIRGRADS}/grads -lb \"run initpert.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}\""
 ${DIRGRADS}/grads -lb << EOT
 run initpert.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}

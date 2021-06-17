@@ -135,8 +135,6 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-#export PBS_SERVER=aux20-eth4
-
 export SCRIPTFILEPATH=${DK_suite}/run/setprobability${RESOL}${NIVEL}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
@@ -201,6 +199,8 @@ aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probability/bin/probability.x ${LABELI}
 echo "" > \${ROPERMOD}/probability/bin/probability-${LABELI}.ok
 EOT0
 
+export PBS_SERVER=${pbs_server2}
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
@@ -231,7 +231,6 @@ fi
 # Create the list of probability ctls  
 #
 
-#labelf=$(${caldate} ${LABELI} + ${NFCTDY}d 'yyyymmddhh')
 labelf=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
 
 arqlist=prob${LABELI}${labelf}.${RES}.lst
@@ -256,7 +255,6 @@ echo "nblst="${nblst}
 
 cd ${ROPERM}/probability/scripts
 
-echo "${DIRGRADS}/grads -lb run plot_precprob.gs ${RES} ${TRC} ${LABELI} ${nblst} ${dirscr} ${dirgif}"
 ${DIRGRADS}/grads -lb << EOT
 run plot_precprob.gs
 ${RES} ${TRC} ${LABELI} ${nblst} ${dirscr} ${dirgif}

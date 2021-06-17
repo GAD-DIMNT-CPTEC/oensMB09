@@ -132,8 +132,6 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-#export PBS_SERVER=aux20-eth4
-
 export SCRIPTFILEPATH=${DK_suite}/run/setprobagr${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
@@ -201,6 +199,8 @@ aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI}
 echo "" > \${ROPERMOD}/probagr/bin/probagr-${LABELI}.ok
 EOT0
 
+export PBS_SERVER==${pbs_server2}
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
@@ -231,13 +231,10 @@ fi
 # Create the list of probagr ctls  
 #
 
-#labelf=$(${caldate} ${LABELI} + ${NFCTDY}d 'yyyymmddhh')
 labelf=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
 
 arqlist=wmaprecprob${LABELI}${labelf}.${RES}.lst
-#ls -l ${ROPERM}/probagr/dataout/${RES}/${LABELI}/prob${LABELI}* | awk '{print $9}' > ${ROPERM}/probagr/dataout/${RES}/${LABELI}/prob${LABELI}${labelf}.${RES}.lst
 
-#rm -f ${dirscr}/filefct${LABELI}.${resol}
 rm -f ${dirbct}/filefct${LABELI}.${resol}
 for arq in $(cat ${dirbct}/${arqlist} | grep ctl)
 do
@@ -257,7 +254,6 @@ echo "nblst="${nblst}
 
 cd ${ROPERM}/probagr/scripts
 
-echo "${DIRGRADS}/grads -lb plot_precprob_agric.gs ${RES} ${TRC} ${LABELI} ${nblst} ${ndacc} ${noutpday} ${dirbct} ${dirgif}"
 ${DIRGRADS}/grads -lb << EOT
 run plot_precprob_agric.gs
 ${RES} ${TRC} ${LABELI} ${nblst} ${ndacc} ${noutpday} ${dirbct} ${dirgif}
