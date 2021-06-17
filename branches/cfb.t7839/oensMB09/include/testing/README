@@ -1,0 +1,203 @@
+Neste diretório estão contidos os arquivos de configuração necessários aos diversos processos realizados pelo SPCON global. Os diretórios refletem as resoluções em que o SPCON global pode ser testado. Nesta revisão, os arquivos de configuração do TQ0126L028 são utilizados por padrão. Os arquivos de configuração do TQ0213L042 estão em fase de testes e deverão ser validados (portanto, não recomenda-se a sua utilização).
+
+Em cada diretório, estão presentes os seguintes arquivos, responsáveis pela definição das dimensões das grades dos arquivos de análise e previsões e definição das regiões a serem perturbadas (com base nas dimensões de grade):
+
+- rdpert.h     : contém informações sobre as dimensões da grade e número de perturbações randômicas;
+- nvector.inc  : contém informação sobre o tamanho do array com as EOFs utilizadas nas perturbações ótimas;
+- fftpln.h     : contém informações sobre as dimensões da grade;
+- deceof.h     : contém informações sobre as dimensões da grade, o número de EOFs utilizadas, o número de variáveis a serem perturbadas e o número de regiões a serem perturbadas;
+- deceof2.h    : contém informações sobre as posições das regiões a serem perturbadas (atualmente, são 5);
+- decanl.h     : contém informações sobre as dimensões da grade;
+- reseofes.inc : contém informações sobre as dimensões da grade e o número de EOFs utilizadas;
+- recfct.h     : contém informações sobre as dimensões da grade e o número de EOFs utilizadas;
+- recanl.h     : contém informações sobre as dimensões da grade e o número de EOFs utilizadas;
+
+Mais informações sobre as regiões perturbadas por EOF, levando-se em consideração a Tese de Doutorado do Dr. Marcos Mendonça, a partir da qual estabeleceu-se o esquema de perturbações "MB09":
+
+#
+# TQ0126L028 (384 x 192)
+#
+
+# - Regiões Antigas:
+
+# Coordenadas das regiões em "grid" (N/S)
+# Para converter para "world coordinates" (graus),
+# usar o comando "q gr2w Xdim Ydim"
+#    HS         TR         HN         NAS        SAS      
+# ======================================================
+# JN(1)=1  ; JN(2)=76 ; JN(3)=118; JN(4)=75 ; JN(5)=109; 
+# JS(1)=75 ; JS(2)=117; JS(3)=192; JS(4)=108; JS(5)=161; 
+# IW(1)=1  ; IW(2)=1  ; IW(3)=1  ; IW(4)=276; IW(5)=266;  
+# IE(1)=384; IE(2)=384; IE(3)=384; IE(4)=372; IE(5)=362; 
+
+# Coordenadas das regiões em "world coordinates" (graus)
+# Para converter para "grid" (N/S),
+# usar o comando "q w2gr lon lat"
+#         HS                TR                HN                 NAS               SAS          
+# ==============================================================================================
+# lat1(1)= -89.2843; lat1(2)= -19.1688; lat1(3)= 20.1038; lat1(4)=  -20.1038; lat1(5)=  11.6883;
+# lat2(1)= -20.1038; lat2(2)=  19.1688; lat2(3)= 89.2843; lat2(4)=   10.7532; lat2(5)=  60.3114;
+# lon1(1)= 0       ; lon1(2)= 0       ; lon1(3)= 0      ; lon1(4)=  257.812 ; lon1(5)= 248.438 ;
+# lon2(1)= 360     ; lon2(2)= 360     ; lon2(3)= 360    ; lon2(4)=  347.812 ; lon2(5)= 338.438 ;
+
+# Coordenadas das regiões em "page coordinates" (xy) 
+#         HS                TR                HN              NAS               SAS       
+# ========================================================================================
+# xlo(1)=  0.5    ; xlo(2)=  0.5    ; xlo(3)=  0.5    ; xlo(4)=  7.66144; xlo(5)= 7.40106;  
+# ylo(1)=  1.27386; ylo(2)=  3.61104; ylo(3)=  4.92013; ylo(4)=  3.57987; ylo(5)= 4.63961; 
+# xhi(1)= 10.5    ; xhi(2)= 10.5    ; xhi(3)= 10.5    ; xhi(4)= 10.1614 ; xhi(5)= 9.90106;
+# yhi(1)=  3.57987; yhi(2)=  4.88896; yhi(3)=  7.22614; yhi(4)=  4.60844; yhi(5)= 6.26038;
+
+# - Regiões Corrigidas:
+
+# Coordenadas das regiões em "grid" (N/S)
+# Para converter para "world coordinates" (graus),
+# usar o comando "q gr2w Xdim Ydim"
+#    HS         TR         HN         NAS        SAS   
+# ======================================================
+# JN(1)=  1; JN(2)= 76; JN(3)=118; JN(4)= 76; JN(5)= 32;
+# JS(1)= 75; JS(2)=117; JS(3)=192; JS(4)=117; JS(5)= 75;
+# IW(1)=  1; IW(2)=  1; IW(3)=  1; IW(4)=278; IW(5)=268;
+# IE(1)=384; IE(2)=384; IE(3)=384; IE(4)=374; IE(5)=364;
+
+# Coordenadas utilizadas dentro do script run_eof.ksh
+#       HS              TR              HN              NAS            SAS   
+# ===============================================================================
+# JINF,JI,JN=  1; JINF,JI,JN= 76; JINF,JI,JN=118; JINF,JI,JN= 76; JINF,JI,JN= 32;  
+# JSUP,JS,JS= 75; JSUP,JS,JS=117; JSUP,JS,JS=192; JSUP,JS,JS=117; JSUP,JS,JS= 75;
+# IINF,II,IW=  1; IINF,II,IW=  1; IINF,II,IW=  1; IINF,II,IW=278; IINF,II,IW=268;
+# ISUP,IS,IE=384; ISUP,IS,IE=384; ISUP,IS,IE=384; ISUP,IS,IE=374; ISUP,IS,IE=364;
+
+# Coordenadas das regiões em "world coordinates" (graus)
+# Para converter para "grid" (N/S),
+# usar o comando "q w2gr lon lat"
+#         HS                TR                HN                  NAS                SAS       
+# ===============================================================================================
+# lat1(1)= -89.2843; lat1(2)= -19.1688; lat1(3)= 20.1038; lat1(4)=  -19.1688; lat1(5)=  -60.3114;
+# lat2(1)= -20.1038; lat2(2)=  19.1688; lat2(3)= 89.2843; lat2(4)=   19.1688; lat2(5)=  -20.1038;
+# lon1(1)=   0     ; lon1(2)=   0     ; lon1(3)=  0     ; lon1(4)=  259.688 ; lon1(5)=  250.312 ;
+# lon2(1)= 360     ; lon2(2)= 360     ; lon2(3)= 360    ; lon2(4)=  349.688 ; lon2(5)=  340.312 ;
+
+# Coordenadas das regiões em "page coordinates" (xy) 
+#         HS                TR                HN              NAS                SAS       
+# ========================================================================================
+# xlo(1)=  0.5    ; xlo(2)=  0.5    ; xlo(3)=  0.5    ; xlo(4)=  7.71356; xlo(5)= 7.45311;
+# ylo(1)=  1.27386; ylo(2)=  3.61104; ylo(3)=  4.92013; ylo(4)=  3.57987; ylo(5)= 2.23962;
+# xhi(1)= 10.5    ; xhi(2)= 10.5    ; xhi(3)= 10.5    ; xhi(4)= 10.2136 ; xhi(5)= 9.95311;
+# yhi(1)=  3.57987; yhi(2)=  4.88896; yhi(3)=  7.22614; yhi(4)=  4.88896; yhi(5)= 3.57987;
+
+#
+# TQ0213L042 (640 x 320)
+#
+
+# - Regiões Antigas (Obs.: Estas regiões foram calculadas e testadas apenas para verificação.)
+
+# Coordenadas das regiões em "grid" (N/S)
+# Para converter para "world coordinates" (graus),
+# usar o comando "q gr2w Xdim Ydim"
+#    HS         TR         HN         NAS        SAS      
+# ======================================================
+# JN(1)=1  ; JN(2)=126; JN(3)=196; JN(4)=125; JN(5)=181; 
+# JS(1)=125; JS(2)=195; JS(3)=319; JS(4)=180; JS(5)=443; 
+# IW(1)=1  ; IW(2)=1  ; IW(3)=  1; IW(4)=459; IW(5)=267;  
+# IE(1)=640; IE(2)=640; IE(3)=640; IE(4)=619; IE(5)=603; 
+
+# Coordenadas das regiões em "world coordinates" (graus)
+# Para converter para "grid" (N/S),
+# usar o comando "q w2gr lon lat"
+#         HS                TR                HN                 NAS               SAS          
+# ==============================================================================================
+# lat1(1)= -89.2843; lat1(2)= -19.1688; lat1(3)= 20.1038; lat1(4)=  -20.1038; lat1(5)=  11.6883;
+# lat2(1)= -20.1038; lat2(2)=  19.1688; lat2(3)= 89.2843; lat2(4)=   10.7532; lat2(5)=  60.3114;
+# lon1(1)= 0       ; lon1(2)= 0       ; lon1(3)= 0      ; lon1(4)=  257.812 ; lon1(5)= 248.438 ;
+# lon2(1)= 360     ; lon2(2)= 360     ; lon2(3)= 360    ; lon2(4)=  347.812 ; lon2(5)= 338.438 ;
+
+# Coordenadas das regiões em "page coordinates" (xy) 
+#         HS                TR                HN              NAS               SAS       
+# ========================================================================================
+# xlo(1)= 1.27386; xlo(2)= 3.61104; xlo(3)= 4.92013; xlo(4)= 3.57987; xlo(5)= 4.63961;  
+# ylo(1)= 3.57987; ylo(2)= 4.88896; ylo(3)= 7.22614; ylo(4)= 4.60844; ylo(5)= 6.26038; 
+# xhi(1)= 0.5    ; xhi(2)= 0.5    ; xhi(3)= 0.5    ; xhi(4)= 7.66144; xhi(5)= 7.40106;
+# yhi(1)= 10.5   ; yhi(2)= 10.5   ; yhi(3)= 10.5   ; yhi(4)= 10.1614; yhi(5)= 9.90106;
+
+#
+# TQ0213L042 (640 x 320)
+#
+
+# Coordenadas das regiões em "grid" (N/S)
+# Para converter para "world coordinates" (graus),
+# usar o comando "q gr2w Xdim Ydim"
+#    HS         TR         HN         NAS        SAS     
+# ======================================================
+# JN(1)=  1; JN(2)=126; JN(3)=196; JN(4)=126; JN(5)= 53; 
+# JS(1)=125; JS(2)=195; JS(3)=320; JS(4)=195; JS(5)=125; 
+# IW(1)=  1; IW(2)=  1; IW(3)=  1; IW(4)=459; IW(5)=443; 
+# IE(1)=640; IE(2)=640; IE(3)=640; IE(4)=619; IE(5)=603; 
+
+# Coordenadas utilizadas dentro do script run_eof.ksh
+#       HS              TR              HN              NAS            SAS   
+# ===============================================================================
+# JINF,JI,JN=  1; JINF,JI,JN=126; JINF,JI,JN=196; JINF,IS,JN=126; JINF,JI,JN= 53;  
+# JSUP,JS,JS=125; JSUP,JS,JS=195; JSUP,JS,JS=320; JSUP,JS,JS=195; JSUP,JS,JS=125;
+# IINF,II,IW=  1; IINF,II,IW=  1; IINF,II,IW=  1; IINF,II,IW=459; IINF,II,IW=443;
+# ISUP,IS,IE=640; ISUP,IS,IE=640; ISUP,IS,IE=640; ISUP,IS,IE=619; ISUP,IS,IE=603;
+
+# Coordenadas das regiões em "world coordinates" (graus)
+# Para converter para "grid" (N/S),
+# usar o comando "q w2gr lon lat"
+#         HS                TR                HN                NAS              SAS      
+# ============================================================================================
+# lat1(1)= -89.5702; lat1(2)= -19.376; lat1(3)=  19.9376; lat1(4)= -19.376; lat1(5)= -60.3743;
+# lat2(1)= -19.9376; lat2(2)=  19.376; lat2(3)=  89.5702; lat2(4)=  19.376; lat2(5)= -19.9376;
+# lon1(1)=   0     ; lon1(2)=   0    ; lon1(3)=   0     ; lon1(4)= 257.625; lon1(5)= 248.625 ;
+# lon2(1)= 360     ; lon2(2)= 360    ; lon2(3)= 360     ; lon2(4)= 347.625; lon2(5)= 338.625 ;
+
+# Coordenadas das regiões em "page coordinates" (xy) 
+#         HS                TR                HN             NAS                SAS       
+# ========================================================================================
+# xlo(1)=  0.5    ; xlo(2)=  0.5    ; xlo(3)=  0.5    ; xlo(4)=  7.65625; xlo(5)= 7.40625;
+# ylo(1)=  1.26433; ylo(2)=  3.60413; ylo(3)=  4.91459; ylo(4)=  3.60413; ylo(5)= 2.23752;
+# xhi(1)= 10.5    ; xhi(2)= 10.5    ; xhi(3)= 10.5    ; xhi(4)= 10.1562 ; xhi(5)= 9.90625;
+# yhi(1)=  3.58541; yhi(2)=  4.89587; yhi(3)=  7.23567; yhi(4)=  4.89587; yhi(5)= 3.58541;
+
+#
+# TQ0299L064 (900 x 450)
+#
+
+# Coordenadas das regiões em "grid" (N/S)
+# Para converter para "world coordinates" (graus),
+# usar o comando "q gr2w Xdim Ydim"
+#    HS         TR         HN         NAS        SAS     
+# ======================================================
+# JN(1)= 1  ; JN(2)= 177; JN(3)= 275; JN(4)= 177; JN(5)= 74 ; 
+# JS(1)= 176; JS(2)= 274; JS(3)= 450; JS(4)= 274; JS(5)= 176; 
+# IW(1)= 1  ; IW(2)= 1  ; IW(3)= 1  ; IW(4)= 645; IW(5)= 623; 
+# IE(1)= 900; IE(2)= 900; IE(3)= 900; IE(4)= 870; IE(5)= 848; 
+
+# Coordenadas utilizadas dentro do script run_eof.ksh
+#       HS              TR              HN              NAS            SAS   
+# ===============================================================================
+# JINF,JI,JN=  1; JINF,JI,JN=177; JINF,JI,JN=275; JINF,IS,JN=177; JINF,JI,JN= 74;  
+# JSUP,JS,JS=176; JSUP,JS,JS=274; JSUP,JS,JS=450; JSUP,JS,JS=274; JSUP,JS,JS=176;
+# IINF,II,IW=  1; IINF,II,IW=  1; IINF,II,IW=  1; IINF,II,IW=645; IINF,II,IW=623;
+# ISUP,IS,IE=900; ISUP,IS,IE=900; ISUP,IS,IE=900; ISUP,IS,IE=870; ISUP,IS,IE=848;
+
+# Coordenadas das regiões em "world coordinates" (graus)
+# Para converter para "grid" (N/S),
+# usar o comando "q w2gr lon lat"
+#         HS                TR                HN                NAS              SAS      
+# ============================================================================================
+# lat1(1)= -89.6941; lat1(2)= -19.3785; lat1(3)=  19.778 ; lat1(4)= -19.3785; lat1(5)= -60.1331;
+# lat2(1)= -19.778 ; lat2(2)=  19.3785; lat2(3)=  89.6941; lat2(4)=  19.3785; lat2(5)= -19.778 ;
+# lon1(1)=   0     ; lon1(2)=   0     ; lon1(3)=   0     ; lon1(4)= 257.6   ; lon1(5)= 248.8   ;
+# lon2(1)= 360     ; lon2(2)= 360     ; lon2(3)= 360     ; lon2(4)= 347.6   ; lon2(5)= 338.8   ;
+
+# Coordenadas das regiões em "page coordinates" (xy) 
+#         HS                TR                HN             NAS                SAS       
+# ========================================================================================
+# xlo(1)=  1.2602 ; xlo(2)=  3.60405; xlo(3)=  4.90927; xlo(4)=  3.60405; xlo(5)= 2.24556;
+# ylo(1)=  3.59073; ylo(2)=  4.89595; ylo(3)=  7.2398 ; ylo(4)=  4.89595; ylo(5)= 3.59073;
+# xhi(1)=  0.5    ; xhi(2)=  0.5    ; xhi(3)=  0.5    ; xhi(4)=  7.65556; xhi(5)= 7.41111;
+# yhi(1)= 10.5    ; yhi(2)= 10.5    ; yhi(3)= 10.5    ; yhi(4)= 10.1556 ; yhi(5)= 9.91111;
+
+carlos.bastarz@inpe.br (06/11/2017)
