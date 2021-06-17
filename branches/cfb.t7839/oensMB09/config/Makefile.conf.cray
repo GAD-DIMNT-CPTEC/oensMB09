@@ -49,20 +49,3 @@ AR  = ar
 
 # default flags
 ARFLAGS  = -r
-
-## add flags for debugging if requested
-#ifeq (dbg,$(findstring dbg,$(mode)))
-#	CCFLAGS += -DDEBUG -g
-##	FFLAGS  += -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
-##  FFLAGS += -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp -O0 -Ounroll0
-#  FFLAGS += -g -hbyteswapio -hpic -Ktrap=fp,inv,ovf,unf -s default64 -h display_opt,noomp -O0 -Ounroll0
-#	LDFLAGS += -g 
-#endif
-#
-## add flags for optimization if requested
-#ifeq (opt,$(findstring opt,$(mode)))
-##	FFLAGS  +=  -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp
-##  FFLAGS += -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp -O0 -Ounroll0
-#  FFLAGS += -g -hbyteswapio -hpic -Ktrap=fp,inv,ovf,unf -s default64 -h display_opt,noomp -O0 -Ounroll0
-#	LDFLAGS += 
-#endif

@@ -49,18 +49,3 @@ AR  = ar
 
 # default flags
 ARFLAGS  = -r
-
-## add flags for debugging if requested
-#ifeq (dbg,$(findstring dbg,$(mode)))
-#	CCFLAGS += -DDEBUG -g
-##	FFLAGS  += -g -fconvert=big-endian -fdefault-real-8 -O0 
-#  FFLAGS += -g -fconvert=big-endian -fdefault-real-8 -fpic -Wall -Wextra -fcheck=all -fbacktrace -O0
-#	LDFLAGS += -g 
-#endif
-#
-## add flags for optimization if requested
-#ifeq (opt,$(findstring opt,$(mode)))
-##	FFLAGS  +=  -g -fconvert=big-endian -fdefault-real-8 -O0
-#  FFLAGS += -g -fconvert=big-endian -fdefault-real-8 -fpic -Wall -Wextra -fcheck=all -fbacktrace -O0
-#	LDFLAGS += 
-#endif
