@@ -1,6 +1,6 @@
 #! /bin/bash
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -32,14 +32,15 @@
 # 
 # !REVISION HISTORY:
 #
-# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
-# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# XX Julho de 2017    - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017   - C. F. Bastarz - Inclusão comentários.
 # 07 Dezembro de 2017 - C. F. Bastarz - Corrigido no número de 
 #                                       perturbações na vertical
 #                                       (as perturbações da umidade
 #                                       foram interpoladas a partir dos
 #                                       28 valores originais)
-# 17 Junho de 2021 - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 17 Junho de 2021    - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -52,14 +53,16 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -74,47 +77,56 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${2}" ]
 then
-  echo "PERT: NMC, AVN CTR 01N" 
-  exit
+  echo "PREFIC esta faltando" 
+  exit 1
 else
   PREFIC=${2}
 fi
 
 if [ -z "${3}" ]
 then
-  echo "Third argument is not set (HUMID)"
-  exit
+  echo "HUMID esta faltando"
+  exit 1
 else
   HUMID=${3}
 fi
 if [ -z "${4}" ]; then
-  echo "Fourth argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "LABELI esta faltando"
+  exit 1
 else
   LABELI=${4}
 fi
 if [ -z "${5}" ]; then
-  echo "Fifth argument is not set (NPERT)"
-  exit
+  echo "NPERT esta faltando"
+  exit 1
 else
   NPERT=${5}
 fi
 
+#
 # Variáveis utilizadas no script de submissão
+#
+
 HSTMAQ=$(hostname)
 
 RUNTM=$(date +'%Y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 CASE=${TRCLV}
 
+#
+# Script de submissão
+#
+
 cd ${HOME_suite}/run
 
 mkdir -p ${DK_suite}/rdpert/output
 
-# Script de submissão
 SCRIPTSFILE=setrdpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -272,9 +284,12 @@ cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
 EOT0
 
+#
+# Submete o script e aguarda o fim da execução
+#
+
 export PBS_SERVER=${pbs_server2}
 
-# Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE} 
 
 qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}

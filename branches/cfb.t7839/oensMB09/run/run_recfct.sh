@@ -1,6 +1,6 @@
 # !/bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -32,10 +32,11 @@
 # 
 # !REVISION HISTORY:
 #
-# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
-# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# XX Julho de 2017   - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017  - C. F. Bastarz - Inclusão comentários.
 # 31 Janeiro de 2018 - C. F. Bastarz - Ajustados os prefixos NMC e CTR
-# 17 Junho de 2021 - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 17 Junho de 2021   - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 18 Junho de 2021   - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -48,14 +49,16 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -64,18 +67,22 @@ export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 cd ${HOME_suite}/run
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${1}" ]
 then
-  echo "First argument is not set: TRCLV"
-  exit
+  echo "TRCLV está faltando"
+  exit 1
 else
   TRCLV=${1}
 fi
+
 if [ -z "${2}" ]
 then
-  echo "Second argument is not set: PREFIC"
-  exit
+  echo "PREFIC esta faltando"
+  exit 1
 else
   if ! [[ "${2}" =~ ^[0-9]+$ ]]
   then
@@ -87,10 +94,11 @@ else
     TYPES=FCT${PREFIC}PT
   fi
 fi
+
 if [ -z "${3}" ]
 then
-  echo "Third argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "LABELI esta faltando"
+  exit 1
 else
   LABELI=${3}
 fi
@@ -98,14 +106,20 @@ fi
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 
+#
 # Variáveis utilizadas no script de submissão
+#
+
 HSTMAQ=$(hostname)
 RUNTM=$(date +'%y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
 mkdir -p ${DK_suite}/recfct/output
 
+#
 # Opções específicas para o conjunto de membros ou apenas o controle
+#
+
 if [ ${PREFIC} == NMC -o ${PREFIC} == CTR ]
 then
   export MODELDATAOUT="cd ${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${PREFIC}/"
@@ -119,7 +133,10 @@ fi
 
 RUNTM=$(date +"%s")
 
+#
 # Script de submissão
+#
+
 SCRIPTSFILE=setrecfct${TYPES}.${TRCLV}.${LABELI}${LABELF}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -149,10 +166,10 @@ for LABELF in \$(ls G\${TYPES}${LABELI}* | cut -c 18-27)
 do 
 
   #
-  #  Set date (year,month,day) and hour (hour:minute) 
+  # Set date (year,month,day) and hour (hour:minute) 
   #
-  #  DATE=yyyymmdd
-  #  HOUR=hh:mn
+  # DATE=yyyymmdd
+  # HOUR=hh:mn
   #
   
   export DATE=\$(date +'%Y')\$(date +'%m')\$(date +'%d')
@@ -161,24 +178,24 @@ do
   echo "Hour: "\$HOUR
   
   #
-  #  LABELI = yyyymmddhh
-  #  LABELI = input file start label
+  # LABELI = yyyymmddhh
+  # LABELI = input file start label
   #
   
   export LABELI=${LABELI}
   
   #
-  #  Prefix names for the FORTRAN files
+  # Prefix names for the FORTRAN files
   #
-  #  NAMEL - List file name prefix
-  #  NAMES - Input spectral file name prefix
-  #  NAMER - Output gridded file name prefix
+  # NAMEL - List file name prefix
+  # NAMES - Input spectral file name prefix
+  # NAMER - Output gridded file name prefix
   #
-  #  Suffix names for the FORTRAN files
+  # Suffix names for the FORTRAN files
   #
-  #  EXTL - List file name suffix
-  #  ERSi - Input spectral file name suffix
-  #  ERRi - Output gridded file name suffix
+  # EXTL - List file name suffix
+  # ERSi - Input spectral file name suffix
+  # ERRi - Output gridded file name suffix
   #
   
   export NAMEL=G\${TYPES}
@@ -197,7 +214,7 @@ do
   fi
   
   #
-  #  Now, build the necessary NAMELIST input:
+  # Now, build the necessary NAMELIST input:
   #
   
   GNAMEL=\${NAMEL}\${LABELI}\${LABELF}\${EXTL}.\${TRCLV}
@@ -222,7 +239,7 @@ EOT3
   mkdir -p \${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/
 
   #
-  #  Run Decomposition
+  # Run Decomposition
   #
   
   cd ${HOME_suite}/recfct/bin/\${TRCLV}
@@ -232,9 +249,12 @@ EOT3
 done
 EOT0
 
+#
+# Submete o script e aguarda o fim da execução
+#
+
 export PBS_SERVER=${pbs_server2}
 
-# Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}

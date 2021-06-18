@@ -1,6 +1,6 @@
 ##! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -34,9 +34,10 @@
 #
 # !REVISION HISTORY:
 #
-# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# XX Julho de 2017  - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
-# 17 Junho de 2021 - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 17 Junho de 2021  - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -49,14 +50,16 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -71,61 +74,74 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${2}" ]
 then
-  echo "PERT: NMC, AVN CTR 01N"
-  exit
+  echo "PREFIC esta faltando"
+  exit 1
 else
   PREFIC=${2}
 fi
 
 if [ -z "${3}" ]
 then
-  echo "Third argument is not set (H)"
-  exit
+  echo "HUMID esta faltando"
+  exit 1
 else
   HUMID=${3}
 fi
 
 if [ -z "${4}" ]
 then
-  echo "Fourth argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "LABELI esta faltando"
+  exit 1
 else
   LABELI=${4}
 fi
 
 if [ -z "${5}" ]
 then
-  echo "Fifth argument is not set (NPERT)"
-  exit
+  echo "NPERT esta faltando"
+  exit 1
 else
   NPERT=${5}
 fi
 
 if [ -z "${6}" ]
 then
-  echo "Fifth argument is not set (NPERT)"
-  exit
+  echo "PREF esta faltando"
+  exit 1
 else
   PREF=${6}
 fi
 
+#
+# Número de perturbações 
+#
+
 export NUMPERT=${NPERT}
 
+#
 # As variáveis a seguir são utilizadas na composição dos nomes dos arquivos com as perturbações por EOF
+#
+
 MPHN=1; MPTR=1; MPHS=1; MPNAS=1; MPSAS=1
 MTHN=1; MTTR=1; MTHS=1; MTNAS=1; MTSAS=1
 MQHN=1; MQTR=1; MQHS=1; MQNAS=1; MQSAS=1
 MUHN=1; MUTR=1; MUHS=1; MUNAS=1; MUSAS=1
 MVHN=1; MVTR=1; MVHS=1; MVNAS=1; MVSAS=1
 
+#
+# Script de submissão
+#
+
 cd ${HOME_suite}/run
 
 RUNTM=$(date +"%s")
 
-# Script de submissão
 SCRIPTSFILES=setdec${2}.${RESOL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
@@ -147,10 +163,10 @@ export NUM=\$(printf %02g \${PBS_ARRAY_INDEX})
 export PREFXI=\${NUM}
 
 #
-#  Set date (year,month,day) and hour (hour:minute) 
+# Set date (year,month,day) and hour (hour:minute) 
 #
-#  DATE=yymmdd
-#  HOUR=hh:mn
+# DATE=yymmdd
+# HOUR=hh:mn
 #
 
 DATE=\$(date +'%Y')\$(date +'%m')\$(date +'%d')
@@ -161,21 +177,21 @@ echo "Hour: "\${HOUR}
 export DATE HOUR
 
 #
-#  Set labels (date, UTC hour, ...)
+# Set labels (date, UTC hour, ...)
 #
-#  LABELI = yyyymmddhh
-#  LABELI = input file label
+# LABELI = yyyymmddhh
+# LABELI = input file label
 #
 
 export LABELI=${LABELI}
 
 #
-#  Prefix names for the FORTRAN files
+# Prefix names for the FORTRAN files
 #
-#  NAMEL - List file name prefix
-#  GNAME - Initial condition file name prefix
-#  NAMER - Input gridded file name prefix
-#  NAMES - Output spectral file name prefix
+# NAMEL - List file name prefix
+# GNAME - Initial condition file name prefix
+# NAMER - Input gridded file name prefix
+# NAMES - Output spectral file name prefix
 #
 
 export NAMEL=GEOFPE\${NUM}
@@ -185,12 +201,12 @@ export NAMES1=GANL\${NUM}P
 export NAMES3=GANL\${NUM}N
 
 #
-#  Suffix names for the FORTRAN files
+# Suffix names for the FORTRAN files
 #
-#  EXTL - List file name suffix
-#  EXTG - Initial condition file name suffix
-#  ERRi - Input gridded file name suffix
-#  ERSi - Output spectral file name suffix
+# EXTL - List file name suffix
+# EXTG - Initial condition file name suffix
+# ERRi - Input gridded file name suffix
+# ERSi - Output spectral file name suffix
 #
 
 export EXTL=P.rpt
@@ -203,7 +219,7 @@ export ERS2=S.rp2
 export ERS3=S.rp3
 
 #
-#  Set directories
+# Set directories
 #
 
 echo \${HOME_suite}
@@ -211,20 +227,20 @@ echo \${DK_suite}
 echo \${DK_suite}/model/datain
 
 #
-#  Set Horizontal Truncation and Vertical Layers
+# Set Horizontal Truncation and Vertical Layers
 #
 
 export TRUNC=$(echo ${TRC} |awk '{ printf("TQ%4.4d\n",$1)  }' )
 export LEV=$(echo ${LV} |awk '{ printf("L%3.3d\n",$1)  }' )
 
 #
-#  Set machine
+# Set machine
 #
 
 export MACH=${MAQUI}
 
 #
-#  Now, build the necessary NAMELIST input:
+# Now, build the necessary NAMELIST input:
 #
 
 mkdir -p \${DK_suite}/deceof/datain/
@@ -337,7 +353,7 @@ cat <<EOT2 > \${DK_suite}/deceof/datain/\${GNAMEL}
 EOT2
 
 #
-#  Run Decomposition
+# Run Decomposition
 #
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
@@ -437,7 +453,7 @@ cat <<EOT4 > \${DK_suite}/deceof/datain/\${GNAMEL}
 EOT4
 
 #
-#  Run Decomposition
+# Run Decomposition
 #
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
@@ -445,9 +461,12 @@ cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 EOT0
 
+#
+# Submete o script e aguarda o fim da execução
+#
+
 export PBS_SERVER=${pbs_server2}
 
-# Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILES}

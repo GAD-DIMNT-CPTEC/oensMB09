@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -31,7 +31,8 @@
 #
 # !REVISION HISTORY:
 #
-# 17 Maio de 2020 - C. F. Bastarz - Versão inicial.  
+# 17 Maio de 2020  - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -52,7 +53,7 @@ fi
 
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -60,7 +61,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -68,7 +69,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -76,7 +77,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -84,7 +85,7 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NPERT is not set"
+  echo "NPERT esta faltando"
   exit 1
 else
   export NPERT=${5}
@@ -127,10 +128,18 @@ case ${TRC} in
   *) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
 esac
 
-export RUNTM=`date +'%Y%m%d%T'`
+export RUNTM=$(date +'%Y%m%d%T')
+
+#
+# Diretórios
+#
 
 export OPERM=${DK_suite}
 export ROPERM=${DK_suite}/produtos
+
+#
+# Script de submissão
+#
 
 cd ${OPERM}/run
 
@@ -207,6 +216,10 @@ aprun -n 1 -N 1 -d 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI}
 echo "" > \${ROPERMOD}/spread/bin/spread-${LABELI}.ok
 EOT0
 
+#
+# Submissão
+#
+
 export PBS_SERVER=${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
@@ -214,6 +227,10 @@ chmod +x ${SCRIPTFILEPATH}
 qsub -W block=true ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/spread/bin/spread-${LABELI}.ok" ]; do sleep 1s; done
+
+#
+# Verificação e organização dos arquivos para a confecção das figuras
+#
 
 cd ${ROPERM}/spread/scripts
 
@@ -246,7 +263,7 @@ ${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TR
 EOT1
 
   else
-    echo "${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl does not exist"
+    echo "${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl nao existe"
     exit 1
   fi
 
@@ -258,7 +275,7 @@ ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}${LABELF}.${TRCLV}.ct
 EOT2
 
   else
-    echo "${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}${LABELF}.${TRACLV}.ctl does not exist"
+    echo "${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}${LABELF}.${TRACLV}.ctl nao existe"
     exit 1
   fi
 
@@ -269,7 +286,7 @@ done
 echo "NCTLS=${NCTLS}"
 
 #
-# Plot figures
+# Figuras
 #
 
 mkdir -p ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/

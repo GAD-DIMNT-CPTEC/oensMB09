@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -33,6 +33,7 @@
 # !REVISION HISTORY:
 #
 # 03 Julho de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2020 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -47,7 +48,7 @@
 
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -55,7 +56,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -63,7 +64,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -71,7 +72,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -79,11 +80,15 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NRNDP is not set"
+  echo "NRNDP esta faltando"
   exit 1
 else
   export NRNDP=${5}
 fi
+
+#
+# Parâmetros do produto (não alterar)
+#
 
 export ndacc=5    # número de dias em que a precipitação deverá ser acumulada (maior ou igual a 1)
 export noutpday=3 # número de semanas a serem consideradas (múltiplo de 3)
@@ -127,8 +132,16 @@ esac
 
 export RUNTM=$(date +'%Y%m%d%T')
 
+#
+# Diretórios
+#
+
 export OPERM=${DK_suite}
 export ROPERM=${DK_suite}/produtos
+
+#
+# Script de submissão
+#
 
 cd ${OPERM}/run
 
@@ -199,6 +212,10 @@ aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI}
 echo "" > \${ROPERMOD}/probagr/bin/probagr-${LABELI}.ok
 EOT0
 
+#
+# Submissão
+#
+
 export PBS_SERVER==${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
@@ -208,7 +225,7 @@ qsub -W block=true ${SCRIPTFILEPATH}
 until [ -e "${ROPERM}/probagr/bin/probagr-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
 #
-#  Set directories
+# Figuras
 #
 
 yy=$(echo ${LABELI} | cut -c 1-4)
@@ -224,11 +241,11 @@ if [ ! -d ${dirgif} ]
 then
   mkdir -p ${dirgif}
 else
-  echo "${dirgif} has already been created"
+  echo "${dirgif} ja existe"
 fi
 
 #
-# Create the list of probagr ctls  
+# Lista de arquivos descritores (ctl)
 #
 
 labelf=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
@@ -241,16 +258,8 @@ do
   echo ${arq} >> ${dirbct}/filefct${LABELI}.${RES}
 done
 
-#
-# Number of ctl files on the list 
-#
-
 nblst=$(cat ${dirbct}/filefct${LABELI}.${RES} | wc -l)
 echo "nblst="${nblst}
-
-#
-# Generate the figures
-#
 
 cd ${ROPERM}/probagr/scripts
 

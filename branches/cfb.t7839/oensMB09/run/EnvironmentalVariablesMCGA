@@ -2,7 +2,7 @@
 
 #help#
 #-------------------------------------------------------------------------------------------------#
-#                         Brazilian global Atmospheric Model - BAM_V1.3.0                         #
+#                               Brazilian global Atmospheric Model                                #
 #-------------------------------------------------------------------------------------------------#
 # Descrição:                                                                                      #
 #     Script para ajustar as variáveis de ambiente do BAM                                         #
@@ -21,13 +21,14 @@
 # Notas:                                                                                          #
 #     Este script auxiliar é chamado pelos scripts principais do modelo                           #
 #                                                                                                 #
-# DMD/CPTEC/INPE, 2019                                                                            #
+# DMD/CPTEC/INPE, 2021                                                                            #
 #-------------------------------------------------------------------------------------------------#
 #help#
 
 #
 # Função para imprimir o cabeçalho do script
 #
+
 function usageprincipal()
 {
   cat < ${0} | sed '1,/^#help#/d;/^#help#/,$d'
@@ -69,6 +70,7 @@ export tmstp=$(date +'%s')
 #
 # Variáveis do PBS
 #
+
 export HSTMAQ=$(uname -n)
 export MAQUI=$(uname -s)
 export QUOTA=CPTEC
@@ -97,6 +99,7 @@ export PREFXO="${PREFIX}"     # preffix for name of output files
 # --> DataGDAS="Grid"
 # --> AnlPref="gdas"
 #
+
 export DataGDAS="Grid"         # Spec == Anl. Spec. NCEP; Grid == Anl. Grid NCEP 
 export AnlPref="gblav"         # gdas1/gblav == Anl. Spec. NCEP; gdas/gblav == Anl. Grid. NCEP 
 
@@ -105,5 +108,6 @@ export GSSTEP=1
 #
 # Utilitários
 #
+
 export DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents
 export inctime=/cray_home/carlos_bastarz/bin/inctime

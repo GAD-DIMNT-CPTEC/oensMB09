@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -53,11 +53,12 @@
 #
 # !REVISION HISTORY:
 #
-# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
-# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
-# 18 Agosto de 2017 - C. F. Bastarz - Modificação na ordem dos argumentos.
+# XX Julho de 2017   - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017  - C. F. Bastarz - Inclusão comentários.
+# 18 Agosto de 2017  - C. F. Bastarz - Modificação na ordem dos argumentos.
 # 26 Outubro de 2017 - C. F. Bastarz - Inclusão dos prefixos das análises do ECMWF (EIT/EIH).
 # 25 Janeiro de 2018 - C. F. Bastarz - Ajustes nos prefixos NMC (controle 48h) e CTR (controle 120h)
+# 18 Junho de 2021   - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -70,12 +71,19 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
+
+#
+# Função para criar o namelist
+#
 
 cria_namelist() {
 
@@ -97,10 +105,13 @@ echo "Namelist criado em: ${14}/POSTIN-GRIB"
 
 }
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${1}" ]
 then
-  echo "MPPWIDTH is not set" 
+  echo "MPPWIDTH esta faltando" 
   exit 3
 else
   export MPPWIDTH=${1}  
@@ -108,7 +119,7 @@ fi
 
 if [ -z "${2}" ]
 then
-  echo "MPPNPPN is not set" 
+  echo "MPPNPPN esta faltando" 
   exit 3
 else
   export MPPNPPN=${2}  
@@ -116,7 +127,7 @@ fi
 
 if [ -z "${3}" ]
 then
-  echo "MPPDEPTH is not set" 
+  echo "MPPDEPTH esta faltando" 
   exit 3
 else
   export MPPDEPTH=${3}  
@@ -124,7 +135,7 @@ fi
 
 if [ -z "${4}" ]
 then
-  echo "RESOL is not set" 
+  echo "RESOL esta faltando" 
   exit 3
 else
   export RES=${4}  
@@ -132,7 +143,7 @@ fi
 
 if [ -z "${5}" ]
 then
-  echo "LABELI is not set" 
+  echo "LABELI esta faltando" 
   exit 3
 else
   export LABELI=${5} 
@@ -140,7 +151,7 @@ fi
 
 if [ -z "${6}" ]
 then
-  echo "LABELF is not set" 
+  echo "LABELF esta faltando" 
   exit 3
 else
   export LABELF=${6}  
@@ -148,7 +159,7 @@ fi
 
 if [ -z "${7}" ]
 then
-  echo "ANLTYPE is not set"
+  echo "ANLTYPE esta faltando"
   exit 4 
 else
   if [ "${7}" == "CTR" -o "${7}" == "NMC" -o "${7}" == "EIT" -o "${7}" == "EIH" ] # pode ser RDP, NPT ou PPT
@@ -157,7 +168,7 @@ else
   else
     if [ -z "${8}" ]
     then
-      echo "ANLPERT is not set" 
+      echo "ANLPERT esta faltando" 
       exit 5
     else
       export ANLTYPE=${7}  
@@ -166,12 +177,15 @@ else
   fi
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${RES} ${ANLTYPE}
+
+#
+# Variáveis utilizadas no script de submissão
+#
 
 cd ${HOME_suite}/run
 
@@ -192,7 +206,10 @@ export REQTB="p"
 export REGINT=".FALSE."
 export RESPOS="-0.50000"
 
-# Variáveis utilizadas no script de submissão
+#
+# Cria o namelist para os casos determinístico e conjunto e linca o executável
+#
+
 if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
 
@@ -257,7 +274,10 @@ else
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}"
 fi
 
+#
 # Script de submissão
+#
+
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
 #PBS -j oe
@@ -292,7 +312,10 @@ aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGr
 date
 EOF0
 
-# Submete o script e aguarda o fim da execução
+#
+# Submissão (gribmap é executado em outro script)
+#
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}

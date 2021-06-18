@@ -1,12 +1,74 @@
 #! /bin/bash
+#--------------------------------------------------------------------#
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
+#--------------------------------------------------------------------#
+#BOP
+#
+# !DESCRIPTION:
+# Script para submeter os processos do método de perturbações MB09 do 
+# Sistema de Previsão por Conjunto Global (SPCON) do CPTEC, para uma
+# data ou um período.
+#
+# !INTERFACE:
+#      ./run_pert-cycle.sh
+#
+# !INPUT PARAMETERS:
+#            
+# !REVISION HISTORY:
+#
+# 10 Setembro de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+#
+# !REMARKS:
+# Antes de utilizar este script, revise as variáveis a seguir:
+# - anltype: prefixo da análise (PPP)
+# - datai: data inicial (YYYYMMDDHH)
+# - dataf: data final (YYYYMMDDHH)
+# - Procs: nomes os produtos a serem gerados
+#
+# Se as variáveis datai e dataf forem iguais, o script será executado
+# apenas para a data escolhida.
+#
+# !BUGS:
+#
+#EOP  
+#--------------------------------------------------------------------#
+#BOC
 
 export inctime=${HOME}/bin/inctime
 
 export bpath=/cray_home/carlos_bastarz/oensMB09.svn/run
 
+#
+# Prefixo da análise
+#
+# SMT: análise com suavização da topografia (padrão, depende de como o Chopping_parallel doi executado)
+# NMC: análise sem suavização da topografia
+#
+
 export anltype=SMT
 
+#
+# Nomes dos processos
+#
+# recanl..: recomposição da análise espectral para ponto de grade
+# rdpert..: gera perturbações randômicas
+# decanl..: decomposição das análises em ponto de grade para o espaço espectral
+# model2d.: executa o modelo BAM para previsões de 48 horas, com saídas a cada 3 horas
+# recfct..: recomposição das previsões espcetrais para ponto de grade
+# eof.....: cálculo das EOFs sobre as séries de diferenças entre as análises e previsõe controle e perturbadas randomicamente
+# deceof..: decomposição das análise de prefixo N e P em ponto de grade para o espaço espectral 
+# model15d: executa o modelo BAM para as previsões de 360 horas, com saídas a cada 6 horas
+# pos15d..: executa o pós-processamento das previsões do modelo BAM
+# gribamp.: executa o gribmap das previsões pós-processadas do modelo BAM
+#
+
+# Acrescentar ou remover os processos conforme a necessidade
 Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
+
+#
+# Datas de início e fim
+#
 
 export datai=2020062300
 export dataf=2020062300

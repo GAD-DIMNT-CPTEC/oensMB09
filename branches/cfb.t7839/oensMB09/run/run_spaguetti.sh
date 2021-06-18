@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -33,6 +33,7 @@
 # !REVISION HISTORY:
 #
 # 28 Agosto de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -53,7 +54,7 @@ fi
 
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -61,7 +62,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -69,7 +70,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -77,7 +78,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -85,7 +86,7 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NRNDP is not set"
+  echo "NRNDP esta faltando"
   exit 1
 else
   export NRNDP=${5}
@@ -116,10 +117,6 @@ OUT=out
 NPROC=1
 RESOL=${TRCLV}
 
-#
-# Set directories
-#
-
 YY=$(echo ${LABELI} | cut -c 1-4)
 MM=$(echo ${LABELI} | cut -c 5-6)
 DD=$(echo ${LABELI} | cut -c 7-8)
@@ -127,6 +124,10 @@ HH=$(echo ${LABELI} | cut -c 9-10)
 
 echo 'LABELI='${LABELI}
                                                                                                  
+#
+# Diretórios
+#
+
 DIRSCR=${ROPERM}/spaguetti/scripts
 DIRGIF=${ROPERM}/spaguetti/gif
 DIRCTL=${OPERM}/pos/dataout/${TRCLV}/${LABELI}
@@ -140,7 +141,7 @@ else
 fi
 
 #
-# Evaluate the number of random perturbations
+# Número de perturbações randômicas
 #
 
 let AUX=NMEMBR-1
@@ -149,7 +150,7 @@ let NRNDP=AUX/2
 echo 'NRNDP='${NRNDP}
 
 #
-# Create files which contains the ctl's and the cluster list
+# Lista com os nomes dos arquivos descritores (ctl) 
 #
 
 cd ${DIRSCR}
@@ -204,8 +205,8 @@ EOT
  
     else
 
-      echo "${DIRCTL}/GPOS${NPERT}P${LABELI}${LABEL}${TYPE}.${RESOL}.ctl does not exist"
-      exit
+      echo "${DIRCTL}/GPOS${NPERT}P${LABELI}${LABEL}${TYPE}.${RESOL}.ctl nao existe"
+      exit 1
 
     fi
   
@@ -220,8 +221,8 @@ EOT
  
     else
 
-      echo "${DIRCTL}/GPOS${NPERT}N${LABELI}${LABEL}${TYPE}.${RESOL}.ctl does not exist"
-      exit
+      echo "${DIRCTL}/GPOS${NPERT}N${LABELI}${LABEL}${TYPE}.${RESOL}.ctl nao existe"
+      exit 1
 
     fi
   
@@ -240,8 +241,8 @@ EOT
  
   else
 
-    echo "${DIRCTL}/GPOS${PREFX}${LABELI}${LABEL}${TYPE}.${RESOL}.ctl does not exist"
-    exit
+    echo "${DIRCTL}/GPOS${PREFX}${LABELI}${LABEL}${TYPE}.${RESOL}.ctl nao existe"
+    exit 1
 
   fi
   
@@ -256,8 +257,8 @@ EOT
  
   else
 
-    echo "${DIRENM}/GPOSENM${LABELI}${LABEL}${TYPE}.${RESOL}.ctl does not exist"
-    exit
+    echo "${DIRENM}/GPOSENM${LABELI}${LABEL}${TYPE}.${RESOL}.ctl nao existe"
+    exit 1
 
   fi
   
@@ -268,10 +269,10 @@ EOT
 done
 
 #
-# Plot the figures
+# Figuras
 #
   
-# South America
+# América do Sul
   
 ${DIRGRADS}/grads -pb << EOT
 run sptas.gs

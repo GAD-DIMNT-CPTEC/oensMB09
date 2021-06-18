@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -33,6 +33,7 @@
 # !REVISION HISTORY:
 #
 # 26 Agosto de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -45,15 +46,23 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
+# Menu de ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
+#
+# Argumentos da linha de comando
+#
+
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -61,7 +70,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -69,7 +78,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -77,7 +86,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -85,7 +94,7 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NRNDP is not set"
+  echo "NRNDP esta faltando"
   exit 1
 else
   export NRNDP=${5}
@@ -116,16 +125,16 @@ OUT=out
 NPROC=1
 RESOL=${TRCLV}
 
-#
-# Set directories
-#
-
 YY=$(echo ${LABELI} | cut -c 1-4)
 MM=$(echo ${LABELI} | cut -c 5-6)
 DD=$(echo ${LABELI} | cut -c 7-8)
 HH=$(echo ${LABELI} | cut -c 9-10)
 
 echo 'LABELI='${LABELI}
+
+#
+# Diretórios
+#
                                                                                                  
 DIRSCR=${ROPERM}/perturbations/scripts
 DIRGIF=${ROPERM}/perturbations/gif
@@ -136,11 +145,11 @@ if [ ! -d ${DIRGIF} ]
 then
   mkdir -p ${DIRGIF}
 else
-  echo "${DIRGIF} has already been created"
+  echo "${DIRGIF} ja existe"
 fi
 
 #
-# Evaluate the number of random perturbations
+# Calcula o número de perturbações randômicas
 #
 
 let AUX=NMEMBR-1
@@ -149,7 +158,7 @@ let NRNDP=AUX/2
 echo 'NRNDP='${NRNDP}
 
 #
-# Create files which contains the ctl's and the cluster list
+# Cria a lista de arquivos descritores (ctls)
 #
 
 cd ${DIRSCR}
@@ -193,8 +202,8 @@ ${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RESOL}.ctl
 EOT
 
   else
-    echo "${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RESOL}.ctl does not exist"
-    exit
+    echo "${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RESOL}.ctl nao existe"
+    exit 1
   fi
 
   if [ -s ${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RESOL}.ctl ]
@@ -204,8 +213,8 @@ cat << EOT >> filefct${NPERT}N${LABELI}.${TRC}
 ${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RESOL}.ctl
 EOT
   else
-    echo "${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RESOL}.ctl does not exist"
-    exit
+    echo "${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RESOL}.ctl nao existe"
+    exit 1
   fi
 
   let NPERT=NPERT+1
@@ -219,8 +228,8 @@ ${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RESOL}.ctl
 EOT
 
   else
-    echo "${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RESOL}.ctl does not exist"
-    exit
+    echo "${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RESOL}.ctl nao existe"
+    exit 1
   fi
 
    if [ -s ${DIRENM}/GPOSENM${LABELI}${LABELF}${TYPE}.${RESOL}.ctl ]
@@ -231,14 +240,14 @@ ${DIRENM}/GPOSENM${LABELI}${LABELF}${TYPE}.${RESOL}.ctl
 EOT
 
   else
-    echo "${DIRENM}/GPOSENM${LABELI}${LABELF}${TYPE}.${RESOL}.ctl does not exist"
-    exit
+    echo "${DIRENM}/GPOSENM${LABELI}${LABELF}${TYPE}.${RESOL}.ctl nao existe"
+    exit 1
   fi
 
 echo "NCTLS="${NCTLS}
 
 #
-# Plot the figures
+# Figuras
 #
 
 ${DIRGRADS}/grads -lb << EOT

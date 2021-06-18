@@ -1,6 +1,6 @@
 # !/bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -29,11 +29,12 @@
 # 
 # !REVISION HISTORY:
 #
-# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
-# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
-# XX Outubro de 2017 - C. F. Bastarz - Inclusão limites região TQ0213L042.
-# 03 Novembro de 2017 - C. F. Bastarz - Inclusão limites região TQ0299L064.
+# XX Julho de 2017     - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017    - C. F. Bastarz - Inclusão comentários.
+# XX Outubro de 2017   - C. F. Bastarz - Inclusão limites região TQ0213L042.
+# 03 Novembro de 2017  - C. F. Bastarz - Inclusão limites região TQ0299L064.
 # 09 Fevereiro de 2018 - C. F. Bastarz - Ajuste dos prefixos NMC (controle 48h) e CTR (controle 120h).
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -46,55 +47,60 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${1}" ]
 then
-  echo "TRCLV is not set"
-  exit
+  echo "TRCLV esta faltando"
+  exit 1
 else
   TRCLV=${1}
 fi
 
 if [ -z "${2}" ]
 then
-  echo "PERT: NMC, AVN CTR 01N"
-  exit
+  echo "NMEM esta faltando"
+  exit 1
 else
   NMEM=${2}
 fi
 
 if [ -z "${3}" ]
 then
-  echo "Argument is not set (H)"
-  exit
+  echo "HUMID esta faltando"
+  exit 1
 else
   HUMID=${3}
 fi
 
 if [ -z "${4}" ]
 then
-  echo "Fifth argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "LABELI esta faltando"
+  exit 1
 else
   LABELI=${4}
 fi
 
 if [ -z "${5}" ]
 then
-  echo "Fifth argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "PREF esta faltando"
+  exit 1
 else
   PREF=${5}
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -112,6 +118,7 @@ export NIVEL=${TRCLV:6:4}
 LABELF=$(date -d "${LABELI:0:8} ${LABELI:8:2}:00 ${NFDAYS} days" +"%Y%m%d%H")
 export LABELI LABELF NFDAYS
 
+#
 # A seção abaixo foi modificada para refletir as alterações no script de forma que, dada a resolução do modelo,
 # sejam exportadas as variáveis com os limites de cada região a ser perturbada (HS, TR, HN, NAS e SAS).
 # Descrição das variáveis:
@@ -130,6 +137,7 @@ export LABELI LABELF NFDAYS
 # ISPS: ?
 # JIPS: ?
 # JSPS: ?
+#
 
 case ${TRC} in
 
@@ -211,12 +219,18 @@ esac
 
 cd ${HOME_suite}/run
 
+#
 # Variáveis utilizadas no script de submissão
+#
+
 mkdir -p ${DK_suite}/model/exec/setout
 
 export MAQUI=$(hostname -s)
 
+#
 # Script de submissão
+#
+
 SCRIPTSFILE=set${NMEM}perpntg.${TRCLV}.${LABELI}.${MAQUI}
 
 RUNTM=$(date +"%s")
@@ -716,9 +730,12 @@ EOT1
 done
 EOT0
 
+#
+# Submete o script e aguarda o fim da execução
+#
+
 export PBS_SERVER=${pbs_server2}
 
-# Submete o script e aguarda o fim da execução
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}

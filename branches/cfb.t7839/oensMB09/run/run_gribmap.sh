@@ -1,6 +1,6 @@
 #! /bin/bash -x
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -40,6 +40,7 @@
 # !REVISION HISTORY:
 #
 # 02 Setembro de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -52,14 +53,16 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -76,26 +79,30 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+#
+# Argumentos da linha de comando
+#
+
 if [ -z "${2}" ]
 then
-  echo "Second argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "LABELI esta faltando"
+  exit 1
 else
   LABELI=${2}
 fi
 
 if [ -z "${3}" ]
 then
-  echo "Third argument is not set (ANLPERT)"
-  exit
+  echo "ANLPERT esta faltando"
+  exit 1
 else
   ANLPERT=${3}
 fi
 
 if [ -z "${4}" ]
 then
-  echo "Fourth argument is not set (ANLTYPE)"
-  exit
+  echo "ANLTYPE esta faltando"
+  exit 1
 else
   ANLTYPE=${4}
 fi
@@ -117,7 +124,10 @@ else
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/${MEM}${ANLTYPE}"
 fi
 
+#
 # Script de submissão
+#
+
 SCRIPTSFILES=setgribmap${ANLTYPE}.${RES}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTSFILES}
@@ -159,7 +169,10 @@ done
 echo "" > \${EXECFILEPATH}/monitor.t
 EOT0
 
+#
 # Submete o script e aguarda o fim da execução
+#
+
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 export PBS_SERVER=${pbs_server2}

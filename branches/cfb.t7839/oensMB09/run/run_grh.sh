@@ -1,6 +1,6 @@
 #! /bin/bash -x
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -33,6 +33,7 @@
 # !REVISION HISTORY:
 #
 # 09 Julho de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -45,7 +46,10 @@
 # Descomentar para debugar
 set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
@@ -70,10 +74,13 @@ echo "Namelist criado em: ${12}/PostGridHistory.nml"
 
 }
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${1}" ]
 then
-  echo "MPPWIDTH is not set" 
+  echo "MPPWIDTH esta faltando" 
   exit 3
 else
   export MPPWIDTH=${1}  
@@ -81,7 +88,7 @@ fi
 
 if [ -z "${2}" ]
 then
-  echo "RESOL is not set" 
+  echo "RESOL esta faltando" 
   exit 3
 else
   export RES=${2}  
@@ -89,7 +96,7 @@ fi
 
 if [ -z "${3}" ]
 then
-  echo "LABELI is not set" 
+  echo "LABELI esta faltando" 
   exit 3
 else
   export LABELI=${3} 
@@ -97,7 +104,7 @@ fi
 
 if [ -z "${4}" ]
 then
-  echo "LABELF is not set" 
+  echo "LABELF esta faltando" 
   exit 3
 else
   export LABELF=${4} 
@@ -105,7 +112,7 @@ fi
 
 if [ -z "${5}" ]
 then
-  echo "ANLTYPE is not set" 
+  echo "ANLTYPE esta faltando" 
   exit 3
 else
   export ANLTYPE=${5}  
@@ -113,12 +120,11 @@ fi
 
 if [ -z "${6}" ]
 then
-  echo "ANLPERT is not set" 
+  echo "ANLPERT esta faltando" 
 else
   export ANLPERT=${6}  
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -146,8 +152,11 @@ else
   echo "Erro na resolução ${TRCLV}"
   exit 1
 fi
- 
+
+# 
 # Intervalo de tempo entre as saídas (1 hora)
+#
+
 export TMEAN=3600
 
 DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
@@ -162,7 +171,10 @@ mkdir -p ${EXECFILEPATH}
 
 export PATHMAIN=${DK_suite}
 
+#
 # Variáveis utilizadas no script de submissão
+#
+
 if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
 
@@ -216,9 +228,10 @@ else
 
 fi
 
-export PBS_SERVER=${pbs_server2}
-
+#
 # Script de submissão
+#
+
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #!/bin/bash -x
 #PBS -j oe
@@ -254,8 +267,13 @@ ulimit -s unlimited
 aprun -n 1 -N 1 -d 1 \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log
 EOF0
 
+#
 # Submete o script e aguarda o fim da execução
+#
+
 chmod +x ${SCRIPTFILEPATH}
+
+export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
@@ -292,7 +310,7 @@ fi
 rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
 
 #
-# Figuras
+# Scripts e Figuras
 #
 
 export GRHDATAOUT=${DK_suite}/grh/dataout/${RES}/${LABELI}
@@ -326,6 +344,7 @@ rm -f ${GRHDATAOUT}/umrs_min??????????.txt
 # Christopher - 24/01/2005
 # OBS: O GrADS script abaixo e quem inicializa/cria o arquivo deltag.${LABELI}.out
 #
+
 export name=GFGNNMC
 export ext=$(echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }')
 export ps=psuperf #reduzida
