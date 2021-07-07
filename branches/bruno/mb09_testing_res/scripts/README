@@ -1,0 +1,20 @@
+Conjunto de scripts para calcular o desvio-padrão da diferença das previsões de 48 e 24 horas do modelo BAM e formatar os arquivos de configurações do método de perturbação MB09 do ensemble global do CPTEC.
+
+Para realizar esta tarefa, é necessário executar o modelo BAM e obter os pares de previsões para o período desejado. Neste exemplo, foram gerados 53 pares de previsões distribuídos ao longo do ano de 2020.
+
+- Scripts:
+
+1) cria_links.sh: script BASH para organizar os pares de previsões para as datas de verificação. Por exemplo, para a data 2020010100, um par de previsões válido é:
+* GFCTCTR20191231002020010100R.fct.TQ0126L028 (prev 24h)
+* GFCTCTR20191230002020010100R.fct.TQ0126L028 (prev 48h)
+
+2) stdev_fct48_24hrs.gs: script GrADS para calcular o desvio-padrão da diferença entre os arquivos de previsões de 48 e 24 horas. Os resultados são escritos em arquivos .txt (eg., stdev_umes.txt) com a média global, para cada nível.
+
+3) cria_namelist.sh: script BASH para ler os arquivos .txt com os perfis de desvios-padrão das variáveis e escrever os arquivos de namelist do método de perturbação MB09 do ensemble global.
+
+- Outros arquivos:
+
+* template_24hr.ctl: arquivo template utilizado pelo script stdev_fct48_24hrs.gs para abrir as previsões de 24 horas;
+* template_48hr.ctl: arquivo template utilizado pelo script stdev_fct48_24hrs.gs para abrir as previsões de 48 horas.
+
+carlos.bastarz@inpe.br (07/07/2021)
