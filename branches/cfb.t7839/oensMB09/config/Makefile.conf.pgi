@@ -24,7 +24,7 @@ GZIP    = gzip
 INSTALL = install
 
 # dirs
-HOME=/cray_home/carlos_bastarz/oensMB09.svn
+HOME=$(PWD)
 WORKDIR=$(HOME)
 
 CPTECDIR=$(WORKDIR)
