@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2020  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -70,14 +70,11 @@
 #                                       e não na XC50. Executáveis compilados com o Cray, útil para
 #                                       testes pré-operacionais). Atualizada a ordem de configuração do sistema.
 # 07 Agosto de 2020   - C. F. Bastarz - Adaptações iniciais para o XC50 e utilização dos executáveis operacionais do BAM.
+# 18 Agosto de 2021   - C. F. Bastarz - Revisão geral, remoção de funções desnecessárias.
 #
 # !REMARKS:
 #
-# - Nas futuras revisões/versões este script deverá seguir o padrão definido para o SMG. 
-#
 # !BUGS:
-#
-# Nenhum ate o momento.
 #
 #EOP  
 #--------------------------------------------------------------------#
@@ -416,7 +413,7 @@ ajuda() {
 
   echo ""
 
-  echo "Sistema de Previsão por Conjunto Global (SPCON) v2.2.0 - Agosto de 2020"
+  echo "Sistema de Previsão por Conjunto Global (SPCON) v2.2.0 - Junho de 2021"
 
   echo ""
 
