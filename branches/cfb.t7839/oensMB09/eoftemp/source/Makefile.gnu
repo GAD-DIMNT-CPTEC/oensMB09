@@ -1,19 +1,14 @@
 include ../../config/Makefile.conf.$(comp)
 
 SOPERMOD = $(WORKDIR)
-INC = $(SOPERMOD)/eoftemp/include
+INC = ../include
 
 EXT = $(TRUNC)$(LEV)
-BIN = $(SOPERMOD)/eof/bin/$(EXT)
+BIN = ../../eof/bin/$(EXT)
 
-#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
-#FTNFLAG = -g -hbyteswapio -Ktrap=fp -s default64 -h display_opt,noomp,page_align_allocate
-#FTNFLAG = -g -hbyteswapio -Ktrap=fp -s default64 -h display_opt,noomp
-#FTNFLAG=-g -hbyteswapio -O nomodinline,cache0,vector0,ipa0,fusion0,unroll0,nopattern -h cache0 -e0 -Ktrap=fp -s default64  -h display_opt
-FTNFLAG = -g -fconvert=big-endian #-fdefault-real-8 
-CHWFLAG = -fconvert=big-endian #-fdefault-real-8
+FTNFLAG = -g -fconvert=big-endian 
+CHWFLAG = -fconvert=big-endian 
 
-#CPP = -I\${INC}
 CPP = -I\$(INC)
 F_UFMTIEEE = 10,11,20,62,64,68,69,72,74
 

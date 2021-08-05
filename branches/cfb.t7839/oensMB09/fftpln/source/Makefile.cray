@@ -1,13 +1,11 @@
 include ../../config/Makefile.conf.$(comp)
 
 SOPERMOD = $(WORKDIR)
-INC = $(SOPERMOD)/fftpln/include
+INC = ../include
 
 EXT = $(TRUNC)$(LEV)
-DIR = $(SOPERMOD)/fftpln/lib/$(EXT)
+DIR = ../lib/$(EXT)
 
-#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
-#FTNFLAG = -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp -O0 -Ounroll0 
 FTNFLAG = -g -hbyteswapio -hpic -Ktrap=fp,inv,ovf,unf -s default64 -h display_opt,noomp -O0 -Ounroll0 
 CPP = -I\$(INC)
 
@@ -32,7 +30,7 @@ $(LIB): $(OBJ)
 clean:
 	-rm $(LIB)
 	-rm *.$(EXT) i.*.f
-
+#
 epslon.$(EXT): $(INC)/fftpln.h
 fftpln.$(EXT): $(INC)/fftpln.h
 glats.$(EXT):  $(INC)/fftpln.h
