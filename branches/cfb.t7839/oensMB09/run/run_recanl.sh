@@ -162,7 +162,7 @@ export NAMEL=G${PERR}
 export NAMES=G${PERR}
 export NAMER=G${PERR}
 
-if [ ${PERR} == ANLAVN -o ${PERR} == ANLNMC -o ${PERR} == ANLSMT ]
+if [ ${PERR} == ANLAVN -o ${PERR} == ANLNMC -o ${PERR} == ANLSMT -o ${PERR} == ANLEIT -o ${PERR} == ANLEIH ]
 then
   export EXTL=S.unf
   export ERS1=S.unf

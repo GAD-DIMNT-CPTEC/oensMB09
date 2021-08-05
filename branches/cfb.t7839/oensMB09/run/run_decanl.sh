@@ -180,6 +180,14 @@ elif [ ${PREFIC} == SMT ]
 then
   export NAMEL=GANLSMT 
   export GNAME=GANLSMT
+elif [ ${PREFIC} == EIT ]
+then
+  export NAMEL=GANLEIT 
+  export GNAME=GANLEIT
+elif [ ${PREFIC} == EIH ]
+then
+  export NAMEL=GANLEIH 
+  export GNAME=GANLEIH
 else 
   export NAMEL=GANLNMC
   export GNAME=GANLNMC

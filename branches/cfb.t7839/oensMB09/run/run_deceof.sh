@@ -353,7 +353,7 @@ cat <<EOT2 > \${DK_suite}/deceof/datain/\${GNAMEL}
 EOT2
 
 #
-# Run Decomposition
+# Run Decomposition for P perturbations
 #
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
@@ -453,7 +453,7 @@ cat <<EOT4 > \${DK_suite}/deceof/datain/\${GNAMEL}
 EOT4
 
 #
-# Run Decomposition
+# Run Decomposition N perturbations
 #
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
