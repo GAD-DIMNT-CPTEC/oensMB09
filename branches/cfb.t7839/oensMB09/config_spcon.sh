@@ -32,7 +32,8 @@
 #                ./config_spcon.sh configure TQ0213L042 gnu
 #                ./config_spcon.sh configure TQ0213L042 cray
 #                ou
-#                ./config_spcon.sh cleanall
+#                ./config_spcon.sh cleanall TQ0126L028 gnu
+#                etc
 # 
 # !REVISION HISTORY:
 #
@@ -59,15 +60,15 @@
 # Menu de opções/ajuda
 #
 
-if [ "${1}" = "help" -o -z "${1}" ]
+if [ "${1}" = "help" -o -z "${1}" -o ${#} != 3 ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
+else
+  action=${1}
+  res=${2}
+  comp=${3}
 fi
-
-action=${1}
-res=${2}
-comp=${3}
 
 home_spcon=${PWD}
 spcon_include=${home_spcon}/include
@@ -80,6 +81,10 @@ then
 
   sed -i "s,^TRUNC=.*,TRUNC=${TRUNC},g" ./config/Makefile.conf.${comp}
   sed -i "s,^LEV=.*,LEV=${LEV},g" ./config/Makefile.conf.${comp}
+elif [ ${action} == "cleanall" ]
+then
+  cd ${home_spcon}
+  make comp=${comp} clean
 fi
 
 # Processos do método de perturbação MB09
@@ -159,6 +164,8 @@ then
   ln -sfn ${spcon_produtos}/libs/w3lib-1.4/Makefile.${comp}* ${spcon_produtos}/libs/w3lib-1.4/Makefile
 elif [ ${action} == "cleanall" ] 
 then
+  cd ${spcon_produtos}
+  make clean
   unlink ${spcon_produtos}/libs/w3lib-1.4/Makefile
 fi
 
