@@ -35,7 +35,7 @@
 
 export inctime=${HOME}/bin/inctime
 
-export bpath=/lustre_xc50/carlos_bastarz/oensMB09.t7839
+export bpath=/lustre_xc50/carlos_bastarz/oensMB09.t7839/run
 
 # 
 # Nomes dos produtos
@@ -58,8 +58,8 @@ Procs=(grh ensmed spread cluster probability probagr plumes chievol perturbation
 # Datas de início e fim
 #
 
-export datai=2020070100
-export dataf=2020083100
+export datai=2020051500
+export dataf=2020051500
 
 export data=${datai}
 

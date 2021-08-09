@@ -143,7 +143,7 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setspread${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setspread.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x

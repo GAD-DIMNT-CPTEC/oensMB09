@@ -180,7 +180,7 @@ do
     if [ ${prod} == "cluster" -o ${prod} == "spread" -o ${prod} == "probagr" -o ${prod} == "probability" -o ${prod} == "plumes" ]
     then
       mkdir -p ${dir_prod}/bin
-      mkdir -p ${dir_prod}/gif
+      if [ ${prod} != "spread" -o ${prod} != "plumes" ]; then mkdir -p ${dir_prod}/gif; fi
       mkdir -p ${dir_prod}/output
       mkdir -p ${dir_prod}/dataout
   

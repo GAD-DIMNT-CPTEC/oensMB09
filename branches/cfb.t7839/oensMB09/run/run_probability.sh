@@ -144,7 +144,7 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setprobability${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setprobability.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x

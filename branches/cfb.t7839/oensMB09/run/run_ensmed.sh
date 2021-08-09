@@ -149,7 +149,7 @@ cd ${OPERM}/run
 
 export PBS_SERVER=${pbs_server1}
 
-export SCRIPTFILEPATH=${DK_suite}/run/setensmed${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setensmed.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 # Número de cores utilizados
 export MPPWIDTH=20

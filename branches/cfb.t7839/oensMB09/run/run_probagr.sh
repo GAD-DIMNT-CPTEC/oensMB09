@@ -44,7 +44,7 @@
 #BOC
 
 # Descomentar para debugar
-set -o xtrace
+#set -o xtrace
 
 if [ -z ${1} ]
 then
@@ -145,7 +145,7 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setprobagr${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setprobagr.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
