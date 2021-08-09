@@ -35,7 +35,7 @@
 
 export inctime=${HOME}/bin/inctime
 
-export bpath=/cray_home/carlos_bastarz/oensMB09.svn/run
+export bpath=/lustre_xc50/carlos_bastarz/oensMB09.t7839
 
 # 
 # Nomes dos produtos

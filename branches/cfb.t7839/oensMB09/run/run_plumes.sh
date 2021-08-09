@@ -162,15 +162,14 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setplumes${RESOL}${NIVEL}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setplumes${PREFX}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${ROPERM}/plumes/output/plumes.${RUNTM}.out
 #PBS -e ${ROPERM}/plumes/output/plumes.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
-#PBS -W umask=026
 #PBS -A CPTEC
 #PBS -V
 #PBS -S /bin/bash
@@ -206,7 +205,7 @@ export EXTS=S.unf
 
 mkdir -p \${ROPERMOD}/plumes/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 
-cat <<EOT > \${OPERMOD}/plumes/bin/plmsetup.${LABELI}.nml
+cat <<EOT > \${ROPERMOD}/plumes/bin/plmsetup.${LABELI}.nml
 UNDEF     :   -2.56E33
 IMAX      :   ${IR}
 JMAX      :   ${JR}
@@ -214,7 +213,7 @@ NMEMBERS  :   ${NMEMBR}
 NFCTDY    :   ${NFCTDY}
 NFCTHOURS :   360
 FREQCALC  :   6
-DIRINP    :   \${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
+DIRINP    :   \${OPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 DIROUT    :   \${ROPERMOD}/plumes/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 RESOL     :   \${TRUNC}\${LEV}
 PREFX     :   ${PREFX}

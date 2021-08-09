@@ -148,7 +148,7 @@ PROGRAM PostGridHistory
    DO
 
       READ (UNIT=60, IOSTAT=ios) LabTim
-!      print*, ' pkubota ', MOD(mt,MedTim),mt,MedTim,LabTim,ios
+      print*, ' pkubota ', MOD(mt,MedTim),mt,MedTim,LabTim,ios
 
       IF (ios /= 0_i4) EXIT
       READ (UNIT=60) GrdHis
@@ -328,6 +328,6 @@ PROGRAM PostGridHistory
    WRITE (UNIT=80, FMT='(A)') 'endvars'
    CLOSE (UNIT=80)
 
-   STOP' End of Grid History Post-Processing'
+   STOP ' End of Grid History Post-Processing'
 
 END PROGRAM PostGridHistory

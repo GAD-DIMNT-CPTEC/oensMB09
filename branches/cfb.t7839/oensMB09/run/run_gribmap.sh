@@ -1,4 +1,4 @@
-#! /bin/bash -x
+#! /bin/bash 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -131,7 +131,7 @@ fi
 SCRIPTSFILES=setgribmap${ANLTYPE}.${RES}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTSFILES}
-#! /bin/bash 
+#! /bin/bash -x 
 #PBS -o ${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.out
 #PBS -e ${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.err
 #PBS -l walltime=0:15:00
@@ -149,8 +149,10 @@ ${PBSMEM}
 
 ${PBSEXECFILEPATH}
 
+cd \${EXECFILEPATH}
+
 # Procura todos os arquivos *.grb
-for arq in \$(find \${EXECFILEPATH} -name *.grb)
+for arq in \$(find \${EXECFILEPATH} -name "*.grb")
 do
 
   arqidx=\$(echo \${arq} | sed "s,.grb,.idx,g")
@@ -160,6 +162,7 @@ do
   then
 
     echo "\${arqidx} não existe ou está vazio!"
+    #aprun -n 1 -N 1 -d 1 \${gribmap} -i \${arqctl}
     \${gribmap} -i \${arqctl}
 
   fi

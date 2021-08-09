@@ -130,7 +130,20 @@ $ ./run_pos.sh 192 4 6 TQ0213L042 2020062000 2020070500 PPT 7
 ou
 $ ./run_pos.sh 192 4 6 TQ0299L064 2020062000 2020070500 PPT 7
 
-17) GridHistory (necessário para o cálculo das plumas), executar para NMC, NPT e PPT (pode-se plotar os meteogramas nesta etapa, mas apenas para o membro controle):
+17) Execução do programa gribmap a partir dos arquivos pós-processados do BAM para os prefixos NMC, NPT e PPT:
+$ ./run_gribmap.sh TQ0126L028 2020062000 1 NMC
+$ ./run_gribmap.sh TQ0126L028 2020062000 7 NPT
+$ ./run_gribmap.sh TQ0126L028 2020062000 7 PPT
+ou
+$ ./run_gribmap.sh TQ0213L042 2020062000 1 NMC
+$ ./run_gribmap.sh TQ0213L042 2020062000 7 NPT
+$ ./run_gribmap.sh TQ0213L042 2020062000 7 PPT
+ou
+$ ./run_gribmap.sh TQ0299L064 2020062000 1 NMC
+$ ./run_gribmap.sh TQ0299L064 2020062000 7 NPT
+$ ./run_gribmap.sh TQ0299L064 2020062000 7 PPT
+
+18) GridHistory (necessário para o cálculo das plumas), executar para NMC, NPT e PPT (pode-se plotar os meteogramas nesta etapa, mas apenas para o membro controle):
 $ ./run_grh.sh 4 TQ0126L028 2020060100 2020061600 NMC 1
 $ ./run_grh.sh 4 TQ0126L028 2020060100 2020061600 NPT 7
 $ ./run_grh.sh 4 TQ0126L028 2020060100 2020061600 PPT 7
@@ -143,14 +156,18 @@ $ ./run_grh.sh 4 TQ0299L064 2020060100 2020061600 NMC 1
 $ ./run_grh.sh 4 TQ0299L064 2020060100 2020061600 NPT 7
 $ ./run_grh.sh 4 TQ0299L064 2020060100 2020061600 PPT 7
 
-18) Cálculo da média do conjunto (é necessário lincar todos os arquivos dos membros (ctl,grb) para fora dos diretórios dos membros):
+19) Cálculo da média do conjunto (é necessário lincar** todos os arquivos dos membros (ctl,grb) para fora dos diretórios dos membros):
 $ ./run_ensmed.sh TQ0126L028 2020062000 15 NMC 7
 ou
 $ ./run_ensmed.sh TQ0213L042 2020062000 15 NMC 7
 ou
 $ ./run_ensmed.sh TQ0299L064 2020062000 15 NMC 7
 
-19) Cálculo do espalhamento do conjunto e plotagem das figuras com a média e o espalhamento do conjunto:
+** Para lincar os referidos arquivos, utilizar os scripts (revisar os scripts e copiá-los para o diretório oensMB09/pos/dataout/TQ0126L028):
+- oensMB09/run/utils_pos/cria_link.sh: faz os links simbólicos dos arquivos de análise como nomes dos arquivos de previsão de cada membro para uma data específica;
+- oensMB09/run/utils_pos/exp_links.sh: faz os links simbólicos de todos os arquivos (ctl, grb e idx) para fora dos diretórios dos membros.
+
+20) Cálculo do espalhamento do conjunto e plotagem das figuras com a média e o espalhamento do conjunto:
 $ ./run_spread.sh TQ0126L028 2020062000 15 NMC 7
 ou
 $ ./run_spread.sh TQ0213L042 2020062000 15 NMC 7
@@ -168,7 +185,7 @@ $ ./run_probability.sh TQ0126L028 2020062000 15 NMC 7
 3) Probabilidades de acumulo precipitação acima de 10mm:
 $ ./run_probagr.sh TQ0126L028 2020062000 15 NMC 7
 
-4) Plumas de probabilidade (GridHistory do conjunto de previsões):
+4) Plumas de probabilidade (GridHistory do conjunto de previsões - É NECESSÁRIO executar o run_grh.sh antes para os prefixos NMC, NPT e PPT):
 $ ./run_plumes.sh TQ0126L028 2020062000 15 NMC 7
 
 5) Potencial de velocidade em 200hPa:
@@ -180,4 +197,4 @@ $ ./run_perturbations.sh TQ0126L028 2020062000 15 NMC 7
 7) Espaguetes da temperatura absoluta em 1000 e 850hPa e da altura geopotencial em 500hPa, para a América do Sul e hemisférios norte e sul:
 $ ./run_spaguetti.sh TQ0126L028 2020062000 15 NMC 7
 
-carlos.bastarz@inpe.br (09/09/2020)
+carlos.bastarz@inpe.br (06/08/2021)

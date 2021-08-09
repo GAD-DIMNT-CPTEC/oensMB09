@@ -146,12 +146,11 @@ cd ${OPERM}/run
 export SCRIPTFILEPATH=${DK_suite}/run/setspread${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${ROPERM}/spread/output/spread.${RUNTM}.out
 #PBS -e ${ROPERM}/spread/output/spread.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
-#PBS -W umask=026
 #PBS -A CPTEC
 #PBS -V
 #PBS -S /bin/bash

@@ -1,4 +1,4 @@
-# !/bin/bash 
+#! /bin/bash 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -140,7 +140,7 @@ RUNTM=$(date +"%s")
 SCRIPTSFILE=setrecfct${TYPES}.${TRCLV}.${LABELI}${LABELF}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=01:00:00

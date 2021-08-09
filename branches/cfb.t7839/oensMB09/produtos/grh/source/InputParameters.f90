@@ -101,7 +101,10 @@ MODULE InputParameters
 
    CHARACTER (LEN=40_i4) :: Exper
 
-   CHARACTER (LEN=255_i4) :: GrHDirIn
+!CFB
+!   CHARACTER (LEN=255_i4) :: GrHDirIn
+   CHARACTER (LEN=300_i4) :: GrHDirIn
+!CFB
 
 
 CONTAINS
@@ -128,11 +131,11 @@ SUBROUTINE InitParameters ()
    READ  (UNIT=*, NML=InputDim)
 
    WRITE (UNIT=*, FMT='(/,A)') ' &InputDim'
-   WRITE (UNIT=*, FMT='(A,I)') '     Mend = ', Mend
-   WRITE (UNIT=*, FMT='(A,I)') '     Kmax = ', Kmax
-   WRITE (UNIT=*, FMT='(A,I)') '     mUTC = ', mUTC
-   WRITE (UNIT=*, FMT='(A,F)') '     DelT = ', DelT
-   WRITE (UNIT=*, FMT='(A,F)') '    TMean = ', TMean
+   WRITE (UNIT=*, FMT='(A,I4)') '     Mend = ', Mend
+   WRITE (UNIT=*, FMT='(A,I4)') '     Kmax = ', Kmax
+   WRITE (UNIT=*, FMT='(A,I4)') '     mUTC = ', mUTC
+   WRITE (UNIT=*, FMT='(A,F4.2)') '     DelT = ', DelT
+   WRITE (UNIT=*, FMT='(A,F4.2)') '    TMean = ', TMean
    WRITE (UNIT=*, FMT='(A)')   '   LabelI = '//LabelI
    WRITE (UNIT=*, FMT='(A)')   '   LabelF = '//LabelF
    WRITE (UNIT=*, FMT='(A)')   '  Preffix = '//Preffix
@@ -175,8 +178,6 @@ SUBROUTINE InitParameters ()
    GrHPrfOut='Preffix'//Preffix//DateFct//'.'//TRIM(Resol)
    GrHLocOut='Localiz'//Preffix//DateFct//'.'//TRIM(Resol)
    GrHIdfOut='Identif'//Preffix//DateFct//'.'//TRIM(Resol)
-
-   write (*,*)GrHPrfOut,GrHLocOut,GrHIdfOut,DirOut
 
    OPEN (UNIT=10, STATUS='UNKNOWN',FORM='FORMATTED', &
          FILE=TRIM(DirModel)//TRIM(GrhDirIn))

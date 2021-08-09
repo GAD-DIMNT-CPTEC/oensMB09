@@ -105,10 +105,10 @@ cd ${HOME_suite}/run
 
 mkdir -p ${DK_suite}/recanl/output
 
-SCRIPTSFILE=setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+SCRIPTSFILE=setrecanl${PERR}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=0:10:00

@@ -130,7 +130,7 @@ mkdir -p ${DK_suite}/rdpert/output
 SCRIPTSFILE=setrdpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -S /bin/bash

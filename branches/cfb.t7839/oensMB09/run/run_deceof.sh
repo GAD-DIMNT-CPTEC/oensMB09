@@ -1,4 +1,4 @@
-##! /bin/bash 
+#! /bin/bash 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -26,7 +26,7 @@
 #
 #            <opcao5> membro    -> tamanho do conjunto
 #
-#  Uso/Exemplos: ./run_deceof.bash TQ0126L028 EOF YES 2012123118 7
+#  Uso/Exemplos: ./run_deceof.sh TQ0126L028 EOF YES 2012123118 7
 #                (decompõe o conjunto de 7+7 análises perturbadas por EOF
 #                válidas para 2012123118 na resolução TQ0126L028; serão
 #                criadas 7 análises com o sufixo N e 7 análises com o
@@ -142,7 +142,7 @@ cd ${HOME_suite}/run
 
 RUNTM=$(date +"%s")
 
-SCRIPTSFILES=setdec${2}.${RESOL}.${LABELI}.${MAQUI}
+SCRIPTSFILES=setdec${2}.${TRCLV}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
 #! /bin/bash -x

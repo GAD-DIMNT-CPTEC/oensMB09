@@ -1,4 +1,4 @@
-#! /bin/bash -x
+#! /bin/bash 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -14,11 +14,11 @@
 # !INPUT PARAMETERS:
 #  Opcoes..: <opcao1> num_proc  -> número de processadores
 #            
-#            <opcao2> resolucao -> resolução espectral do grho
+#            <opcao2> resolucao -> resolução espectral do grh
 #                                
 #            <opcao3> datai     -> data da análise corrente 
 #
-#            <opcao4> dataf     -> data da prefisao final 
+#            <opcao4> dataf     -> data da previsao final 
 #
 #            <opcao5> prefixo   -> prefixo que identifica o tipo de análise 
 #            
@@ -27,13 +27,14 @@
 #  Uso/Exemplos: 
 # 
 #  Submete o Grid History dos membros NPT e PPT, respectivamente::
-# ./run_grh.sh 4 TQ0126L028 2013010100 2020061600 NPT 7
-# ./run_grh.sh 4 TQ0126L028 2013010100 2020061600 PPT 7
+# ./run_grh.sh 4 TQ0126L028 2013010100 2020061600 NMC 1
 #
 # !REVISION HISTORY:
 #
-# 09 Julho de 2020 - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
+# 09 Julho de 2020  - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
+# 06 Agosto de 2021 - C. F. Bastarz - Atualização e simplicação para o
+#                                     membro controle.
 #
 # !REMARKS:
 #
@@ -44,7 +45,7 @@
 #BOC
 
 # Descomentar para debugar
-set -o xtrace
+#set -o xtrace
 
 #
 # Menu de opções/ajuda
@@ -129,7 +130,7 @@ export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
-. ${FILEENV} ${RES} ${PREFIC}
+. ${FILEENV} ${RES} ${ANLTYPE}
 
 cd ${HOME_suite}/run
 
@@ -162,10 +163,10 @@ export TMEAN=3600
 DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 MAQUI=$(hostname -s)
 
-export SCRIPTFILEPATH=${HOME_suite}/run/setgrh.${ANLTYPE}.${DIRRESOL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH=${HOME_suite}/run/setgrh${ANLTYPE}.${DIRRESOL}.${LABELI}.${MAQUI}
 export NAMELISTFILEPATH=${HOME_suite}/run
 
-export EXECFILEPATH=${DK_suite}/grh/exec
+export EXECFILEPATH=${DK_suite}/produtos/grh/exec
 
 mkdir -p ${EXECFILEPATH}
 
@@ -181,11 +182,11 @@ then
   PATHIN=${DK_suite}/model/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/
   PATHOUT=${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/
 
-  EXECFILEPATH=${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}
+  EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}
 
   mkdir -p ${EXECFILEPATH}/setout 
    
-  ln -sf ${DK_suite}/grh/exec/PostGridHistory ${EXECFILEPATH}
+  ln -sf ${DK_suite}/produtos/grh/exec/PostGridHistory ${EXECFILEPATH}
   
   cria_namelist ${TRC} ${LV} ${TIMESTEP} ${TMEAN} ${LABELI} ${LABELF} ${ANLTYPE} ${PATHIN} ${PATHOUT} ${PATHMAIN} ${NAMELISTFILEPATH} ${EXECFILEPATH}
 
@@ -193,9 +194,9 @@ then
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
 
-  export PBSOUTFILE="#PBS -o ${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}/"
+  export PBSOUTFILE="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/"
 
 else
 
@@ -207,12 +208,12 @@ else
     PATHIN=${DK_suite}/model/dataout/${DIRRESOL}/${LABELI}/${NMEM}/
     PATHOUT=${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${NMEM}/
 
-    EXECFILEPATH=${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}
-    EXECFILEPATHMEM=${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}
+    EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}
+    EXECFILEPATHMEM=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}
 
     mkdir -p ${EXECFILEPATHMEM}
    
-    ln -sf ${DK_suite}/grh/exec/PostGridHistory ${EXECFILEPATHMEM}
+    ln -sf ${DK_suite}/produtos/grh/exec/PostGridHistory ${EXECFILEPATHMEM}
   
     cria_namelist ${TRC} ${LV} ${TIMESTEP} ${TMEAN} ${LABELI} ${LABELF} ${NMEM} ${PATHIN} ${PATHOUT} ${PATHMAIN} ${NAMELISTFILEPATH} ${EXECFILEPATHMEM}
 
@@ -220,9 +221,9 @@ else
     export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
     export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   
-    export PBSOUTFILE="#PBS -o ${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-    export PBSERRFILE="#PBS -e ${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
-    export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/grh/exec_${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
+    export PBSOUTFILE="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+    export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
 
   done
 
@@ -233,7 +234,7 @@ fi
 #
 
 cat <<EOF0 > ${SCRIPTFILEPATH}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -j oe
 #PBS -l walltime=4:00:00
 #PBS -l mppnppn=${MPPWIDTH}
@@ -310,56 +311,88 @@ fi
 rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
 
 #
-# Scripts e Figuras
+# Cria os links simbólicos dos arquivos GFGNMEMYYYYMMDDHHYYYYMMDDHHM.grh.TQ0126L028.* para fora do diretório dos membros
 #
 
-export GRHDATAOUT=${DK_suite}/grh/dataout/${RES}/${LABELI}
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
+then
 
-mkdir -p ${GRHDATAOUT}/AC/; mkdir -p ${GRHDATAOUT}/AL/; mkdir -p ${GRHDATAOUT}/AM/;
-mkdir -p ${GRHDATAOUT}/AP/; mkdir -p ${GRHDATAOUT}/BA/; mkdir -p ${GRHDATAOUT}/CE/;
-mkdir -p ${GRHDATAOUT}/DF/; mkdir -p ${GRHDATAOUT}/ES/; mkdir -p ${GRHDATAOUT}/GO/;
-mkdir -p ${GRHDATAOUT}/MA/; mkdir -p ${GRHDATAOUT}/MG/; mkdir -p ${GRHDATAOUT}/MS/;
-mkdir -p ${GRHDATAOUT}/MT/; mkdir -p ${GRHDATAOUT}/PA/; mkdir -p ${GRHDATAOUT}/PB/;
-mkdir -p ${GRHDATAOUT}/PE/; mkdir -p ${GRHDATAOUT}/PI/; mkdir -p ${GRHDATAOUT}/PR/;
-mkdir -p ${GRHDATAOUT}/RJ/; mkdir -p ${GRHDATAOUT}/RN/; mkdir -p ${GRHDATAOUT}/RO/;
-mkdir -p ${GRHDATAOUT}/RR/; mkdir -p ${GRHDATAOUT}/RS/; mkdir -p ${GRHDATAOUT}/SC/;
-mkdir -p ${GRHDATAOUT}/SE/; mkdir -p ${GRHDATAOUT}/SP/; mkdir -p ${GRHDATAOUT}/TO/;
-mkdir -p ${GRHDATAOUT}/WW/; mkdir -p ${GRHDATAOUT}/ZZ/;
+  ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/GFGN${ANLTYPE}${LABELI}${LABELF}M.grh.TQ0126L028.ctl ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/GFGN${ANLTYPE}${LABELI}${LABELF}M.grh.TQ0126L028.ctl
+  ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/GFGN${ANLTYPE}${LABELI}${LABELF}M.grh.TQ0126L028 ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/GFGN${ANLTYPE}${LABELI}${LABELF}M.grh.TQ0126L028
 
-DATE=$(echo ${LABELI} | cut -c 1-8)
-HH=$(echo ${LABELI} | cut -c 9-10)
-DATEF=$(echo ${LABELF} | cut -c 1-8)
-HHF=$(echo ${LABELF} | cut -c 9-10)
+  ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/Preffix${LABELI}${LABELF}.${DIRRESOL} ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Preffix${ANLTYPE}${LABELI}${LABELF}.${DIRRESOL}
+  ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/Localiz${LABELI}${LABELF}.${DIRRESOL} ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Localiz${ANLTYPE}${LABELI}${LABELF}.${DIRRESOL}
+  ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/Identif${LABELI}${LABELF}.${DIRRESOL} ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Identif${ANLTYPE}${LABELI}${LABELF}.${DIRRESOL}
+else
 
-time1=$(date -d "${DATE} ${HH}:00" +"%HZ%d%b%Y")
-time2=$(date -d "${DATEF} ${HHF}:00" +"%HZ%d%b%Y")
+  for MEM in $(seq -f %02g 1 ${ANLPERT})
+  do
 
-echo "LABELI = ${LABELI}   LABELF = ${LABELF}   LABELR = ${labelr}"
-echo "PARAMETROS GRADS ==> ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}"
+    export NMEM=${MEM}${ANLTYPE:0:1}
+    ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${NMEM}/GFGN${NMEM}${LABELI}${LABELF}M.grh.${DIRRESOL}.ctl ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/GFGN${NMEM}${LABELI}${LABELF}M.grh.${DIRRESOL}.ctl
+    ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${NMEM}/GFGN${NMEM}${LABELI}${LABELF}M.grh.${DIRRESOL} ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/GFGN${NMEM}${LABELI}${LABELF}M.grh.${DIRRESOL}
 
-cd  ${GRHDATAOUT}
-rm -f ${GRHDATAOUT}/umrs_min??????????.txt
+    ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${NMEM}/Preffix${LABELI}${LABELF}.${DIRRESOL} ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Preffix${NMEM}${LABELI}${LABELF}.${DIRRESOL}
+    ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${NMEM}/Localiz${LABELI}${LABELF}.${DIRRESOL} ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Localiz${NMEM}${LABELI}${LABELF}.${DIRRESOL}
+    ln -sf ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${NMEM}/Identif${LABELI}${LABELF}.${DIRRESOL} ${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Identif${NMEM}${LABELI}${LABELF}.${DIRRESOL}
+  done
+
+fi
 
 #
-# Christopher - 24/01/2005
-# OBS: O GrADS script abaixo e quem inicializa/cria o arquivo deltag.${LABELI}.out
+# Scripts e Figuras (apenas para o membro controle)
 #
 
-export name=GFGNNMC
-export ext=$(echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }')
-export ps=psuperf #reduzida
-export DATE=$(echo $LABELI | cut -c1-8)
-export HH=$(echo $LABELI | cut -c9-10)
-export DATEF=$(echo $LABELF | cut -c1-8)
-export HHF=$(echo $LABELF | cut -c9-10)
-export labelr=$(date -d "${DATE} ${HH}:00 12 hour ago" +"%Y%m%d%H")
-export julday1=$(date -d "${DATE} ${HH}:00" +"%j")
-export julday2=$(date -d "${DATEF} ${HHF}:00" +"%j")
-export ndays=$(echo ${julday2} ${julday1} |awk '{{nday=$1-$2}if(nday < 0){nday = $1 + (365-$2)} if(nday >7){nday=7} {print nday}}')
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
+then
 
-echo "${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}"
+  export GRHDATAOUT=${DK_suite}/produtos/grh/dataout/${RES}/${LABELI}
+  
+  mkdir -p ${GRHDATAOUT}/AC/; mkdir -p ${GRHDATAOUT}/AL/; mkdir -p ${GRHDATAOUT}/AM/;
+  mkdir -p ${GRHDATAOUT}/AP/; mkdir -p ${GRHDATAOUT}/BA/; mkdir -p ${GRHDATAOUT}/CE/;
+  mkdir -p ${GRHDATAOUT}/DF/; mkdir -p ${GRHDATAOUT}/ES/; mkdir -p ${GRHDATAOUT}/GO/;
+  mkdir -p ${GRHDATAOUT}/MA/; mkdir -p ${GRHDATAOUT}/MG/; mkdir -p ${GRHDATAOUT}/MS/;
+  mkdir -p ${GRHDATAOUT}/MT/; mkdir -p ${GRHDATAOUT}/PA/; mkdir -p ${GRHDATAOUT}/PB/;
+  mkdir -p ${GRHDATAOUT}/PE/; mkdir -p ${GRHDATAOUT}/PI/; mkdir -p ${GRHDATAOUT}/PR/;
+  mkdir -p ${GRHDATAOUT}/RJ/; mkdir -p ${GRHDATAOUT}/RN/; mkdir -p ${GRHDATAOUT}/RO/;
+  mkdir -p ${GRHDATAOUT}/RR/; mkdir -p ${GRHDATAOUT}/RS/; mkdir -p ${GRHDATAOUT}/SC/;
+  mkdir -p ${GRHDATAOUT}/SE/; mkdir -p ${GRHDATAOUT}/SP/; mkdir -p ${GRHDATAOUT}/TO/;
+  mkdir -p ${GRHDATAOUT}/WW/; mkdir -p ${GRHDATAOUT}/ZZ/;
+  
+  DATE=$(echo ${LABELI} | cut -c 1-8)
+  HH=$(echo ${LABELI} | cut -c 9-10)
+  DATEF=$(echo ${LABELF} | cut -c 1-8)
+  HHF=$(echo ${LABELF} | cut -c 9-10)
+  
+  time1=$(date -d "${DATE} ${HH}:00" +"%HZ%d%b%Y")
+  time2=$(date -d "${DATEF} ${HHF}:00" +"%HZ%d%b%Y")
+  
+  echo "LABELI = ${LABELI}   LABELF = ${LABELF}   LABELR = ${labelr}"
+  echo "PARAMETROS GRADS ==> ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}"
+  
+  cd ${GRHDATAOUT}
+  rm -f ${GRHDATAOUT}/umrs_min??????????.txt
+  
+  #
+  # Christopher - 24/01/2005
+  # OBS: O GrADS script abaixo e quem inicializa/cria o arquivo deltag.${LABELI}.out
+  #
+  
+  export name=GFGNNMC
+  export ext=$(echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }')
+  export ps=psuperf #reduzida
+  export DATE=$(echo $LABELI | cut -c1-8)
+  export HH=$(echo $LABELI | cut -c9-10)
+  export DATEF=$(echo $LABELF | cut -c1-8)
+  export HHF=$(echo $LABELF | cut -c9-10)
+  export labelr=$(date -d "${DATE} ${HH}:00 12 hour ago" +"%Y%m%d%H")
+  export julday1=$(date -d "${DATE} ${HH}:00" +"%j")
+  export julday2=$(date -d "${DATEF} ${HHF}:00" +"%j")
+  export ndays=$(echo ${julday2} ${julday1} |awk '{{nday=$1-$2}if(nday < 0){nday = $1 + (365-$2)} if(nday >7){nday=7} {print nday}}')
+  
+  echo "${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}"
 
-cat << EOF1 > ${HOME_suite}/grh/scripts/meteogr.gs
+cat << EOF1 > ${HOME_suite}/produtos/grh/scripts/meteogr.gs
 'reinit'
 
 pull argumentos
@@ -374,13 +407,13 @@ _time1=subwrd(argumentos,7)
 _time2=subwrd(argumentos,8)
 
 * nome do arquivo com prefixos dos pontos
-_nomeb='${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Preffix'%_LABELI%_LABELF%'.'%_trlv
+_nomeb='${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/Preffix'%_LABELI%_LABELF%'.'%_trlv
 
 * nomes dos arquivos com identificacao e local dos pontos
-_nomec='${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Identif'%_LABELI%_LABELF%'.'%_trlv
-_nomed='${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/Localiz'%_LABELI%_LABELF%'.'%_trlv
+_nomec='${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/Identif'%_LABELI%_LABELF%'.'%_trlv
+_nomed='${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/Localiz'%_LABELI%_LABELF%'.'%_trlv
 
-nomectl ='${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/'%_nomea%_LABELI%_LABELF%'M.grh.'%_trlv%'.ctl'
+nomectl ='${DK_suite}/pos/dataout/${DIRRESOL}/${LABELI}/${ANLTYPE}/'%_nomea%_LABELI%_LABELF%'M.grh.'%_trlv%'.ctl'
 
 say nomectl
 
@@ -920,24 +953,27 @@ return state
 ***********************************************
 EOF1
 
-DATE=$(echo ${LABELI} | cut -c 1-8)
-HH=$(echo ${LABELI} | cut -c 9-10)
-DATEF=$(echo ${LABELF} | cut -c 1-8)
-HHF=$(echo ${LABELF} | cut -c 9-10)
-
-time1=$(date -d "$DATE $HH:00" +"%HZ%d%b%Y")
-time2=$(date -d "$DATEF $HHF:00" +"%HZ%d%b%Y")
-
-echo ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}
-echo ${time1} ${time2}
-
-if [ $GSSTEP = 1 ]
-then
-
+  DATE=$(echo ${LABELI} | cut -c 1-8)
+  HH=$(echo ${LABELI} | cut -c 9-10)
+  DATEF=$(echo ${LABELF} | cut -c 1-8)
+  HHF=$(echo ${LABELF} | cut -c 9-10)
+  
+  time1=$(date -d "$DATE $HH:00" +"%HZ%d%b%Y")
+  time2=$(date -d "$DATEF $HHF:00" +"%HZ%d%b%Y")
+  
+  echo ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}
+  echo ${time1} ${time2}
+  
+  if [ $GSSTEP = 1 ]
+  then
+  
+echo "meteogr.gs ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr} ${time1} ${time2}"
 ${DIRGRADS}/grads -bp  << EOT
-run ${HOME_suite}/grh/scripts/meteogr.gs
+run ${HOME_suite}/produtos/grh/scripts/meteogr.gs
 ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr} ${time1} ${time2}
 EOT
+  
+  fi
 
 fi
 

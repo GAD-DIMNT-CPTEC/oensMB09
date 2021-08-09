@@ -158,13 +158,12 @@ export MPPNPPN=1
 mkdir -p ${DK_suite}/ensmed/output/
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${ROPERM}/ensmed/output/ensmed.${RUNTM}.out
 #PBS -e ${ROPERM}/ensmed/output/ensmed.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l mppwidth=${MPPWIDTH}
 #PBS -l mppnppn=${MPPNPPN}
-#PBS -W umask=026
 #PBS -A CPTEC
 #PBS -V
 #PBS -S /bin/bash

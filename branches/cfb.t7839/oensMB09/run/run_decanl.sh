@@ -125,7 +125,7 @@ cd ${HOME_suite}/run
 SCRIPTSFILE=setdrpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -S /bin/bash
