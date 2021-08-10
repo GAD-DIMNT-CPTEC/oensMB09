@@ -3,7 +3,7 @@ Método de Perturbação baseado em EOFs para o Brazilian global Atmospheric Mod
 
 * Versão: V2.2.0 
 * Wiki desta versão: https://projetos.cptec.inpe.br/projects/spconcptec/wiki
-* Registro do ocorrências: https://projetos.cptec.inpe.br/projects/spconcptec/issues
+* Registro de ocorrências: https://projetos.cptec.inpe.br/projects/spconcptec/issues
 
 Notas da Versão:
 ================
@@ -12,9 +12,9 @@ Notas da Versão:
 * Níveis de pressão pós-processados (hPa): 1000, 925, 850, 700, 500, 300, 250, 200, 50
 * Condição inicial atmosférica: NCEP (TQ0154L064), suavização de topografia (SmoothTopo=T, SmthPerCut=0.18, Iter=100)
 * 15 membros TQ0126L028 (7 perturbações EOF somadas + 7 perturbações EOF subtraídas + 1 controle)
-* Migração para o XC50 e atualização para a versão operacional do modelo BAM (V1.2.2), inclusive com o modelo de superfície IBIS
+* Transição para o XC50 e atualização para a versão operacional do modelo BAM (V1.2.2), inclusive com o modelo de superfície IBIS
 
-Nesta versão (V2.2.0), a componente do modelo (pre/model/pos) foi atualizada para a versão do modelo BAM operacional determinístico em uso no XC50. Na etapa de previsão (model), os arquivos de ozônio e traçadores para cada membro, devem ser lincados para o arquivo do membro controle. Por exemplo:
+Nesta versão (V2.2.0), a componente do modelo (pre/model/pos) foi atualizada para a versão do modelo BAM operacional determinístico em coordenada sigma, em uso no XC50. Na etapa de previsão (model), os arquivos de ozônio e traçadores para cada membro, devem ser lincados para o arquivo do membro controle. Por exemplo:
 
 model/datain:
 TRAC[0..7,R,P,N]YYYYMMDDHHS.grd.G00192L028 -> TRACSMTYYYYMMDDHHS.grd.G00192L028
@@ -23,7 +23,7 @@ OZON[0..7,R,P,N]YYYYMMDDHHS.grd.G00192L028 -> OZONSMTYYYYMMDDHHS.grd.G00192L028
 Ambiente de compilação de referência no XC50:
 =============================================
 
-- Apenas para os módulos do método de perturbação:
+- Apenas para os módulos do método de perturbação e produtos:
 
 * Compilador GNU (gcc/7.2.0)
 
@@ -65,7 +65,7 @@ Uso:
 
 Vide o arquivo oensMB09/run/README.
 
-Observação: esta distribuição não inclui o modelo BAM, sendo este necessário para a completa utilização da suíte.
+Observação: esta distribuição não inclui o modelo BAM (pre/model/pos/grh), sendo este necessário para a completa utilização da suíte.
 
 Contato:
 ========

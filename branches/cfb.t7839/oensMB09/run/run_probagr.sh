@@ -46,6 +46,12 @@
 # Descomentar para debugar
 #set -o xtrace
 
+if [ "${1}" = "help" -o -z "${1}" ]
+then
+  cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
+  exit 0
+fi
+
 if [ -z ${1} ]
 then
   echo "RES esta faltando"
