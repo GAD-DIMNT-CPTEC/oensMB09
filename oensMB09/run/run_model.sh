@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -56,15 +56,16 @@
 # ./run_model.sh 48 24 1 TQ0126L028 SMT 2013010100 2013010300 PPT 2 7
 #
 # !REVISION HISTORY:
-#
-# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
-# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
-# 17 Agosto de 2017 - C. F. Bastarz - Inclusão da opção <dataf>
-# 18 Agosto de 2017 - C. F. Bastarz - Modificação nos argumentos de entrada.
-# 22 Agosto de 2017 - C. F. Bastarz - Inclusão do sleep 10s no final do script
+# 
+# XX Julho de 2017   - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017  - C. F. Bastarz - Inclusão comentários.
+# 17 Agosto de 2017  - C. F. Bastarz - Inclusão da opção <dataf>
+# 18 Agosto de 2017  - C. F. Bastarz - Modificação nos argumentos de entrada.
+# 22 Agosto de 2017  - C. F. Bastarz - Inclusão do sleep 10s no final do script
 #                                     de submissão para aguardar o I/O do BAM
 # 26 Outubro de 2017 - C. F. Bastarz - Inclusão dos prefixos das análises do ECMWF (EIT/EIH)
 # 25 Janeiro de 2018 - C. F. Bastarz - Ajuste dos prefixos NMC (controle 48h) e CTR (controle 120h)
+# 18 Junho de 2021   - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -77,7 +78,10 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
@@ -114,78 +118,89 @@ echo "Namelist criado em: ${24}/MODELIN"
 
 }
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${1}" ]
 then
-  echo "MPPWIDTH is not set" 
+  echo "MPPWIDTH esta faltando" 
   exit 3
 else
   export MPPWIDTH=${1}  
 fi
+
 if [ -z "${2}" ]
 then
-  echo "MPPNPPN is not set" 
+  echo "MPPNPPN esta faltando" 
   exit 3
 else
   export MPPNPPN=${2}  
 fi
+
 if [ -z "${3}" ]
 then
-  echo "MPPDEPTH is not set" 
+  echo "MPPDEPTH esta faltando" 
   exit 3
 else
   export MPPDEPTH=${3}  
 fi
+
 if [ -z "${4}" ]
 then
-  echo "RESOL is not set" 
+  echo "RESOL esta faltando" 
   exit 3
 else
   export RES=${4}  
 fi
+
 if [ -z "${5}" ]
 then
-  echo "PREFIC is not set" 
+  echo "PREFIC esta faltando" 
   exit 3
 else
   export PREFIC=${5}  
 fi
+
 if [ -z "${6}" ]
 then
-  echo "LABELI is not set" 
+  echo "LABELI esta faltando" 
   exit 3
 else
   export LABELI=${6} 
 fi
+
 if [ -z "${7}" ]
 then
-  echo "LABELF is not set" 
+  echo "LABELF esta faltando" 
   exit 3
 else
   export LABELF=${7} 
 fi
+
 if [ -z "${8}" ]
 then
-  echo "ANLTYPE is not set" 
+  echo "ANLTYPE esta faltando" 
   exit 3
 else
   export ANLTYPE=${8}  
 fi
+
 if [ -z "${9}" ]
 then
-  echo "INITLZ is not set" 
+  echo "INITLZ esta faltando" 
   exit 3
 else
   export INITLZ=${9}  
 fi
+
 if [ -z "${10}" ]
 then
-  echo "ANLPERT is not set" 
+  echo "ANLPERT esta faltando" 
 else
   export ANLPERT=${10}  
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -200,9 +215,12 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+#
 # Se a previsão for a controle para a perturbação, integra o modelo por apenas 48 horas;
 # Se a previsão for a controle final, integra o modelo por 360 horas (15 dias);
 # Se a previsão for a partir do conjunto de perturbações por EOF, integra o modelo por 360 horas (15 dias).
+#
+
 export LABELW=${LABELF}
 
 if [ ${TRCLV} == "TQ0126L028" ]
@@ -225,11 +243,14 @@ MAQUI=$(hostname -s)
 SCRIPTFILEPATH=${HOME_suite}/run/set$(echo "${ANLTYPE}" | awk '{print tolower($0)}')${ANLPERT}modg.${DIRRESOL}.${LABELI}.${MAQUI}
 NAMELISTFILEPATH=${HOME_suite}/run
 
+#
 # As opções abaixo fazem referência à frequência de saída das previsões (DHFCT) e dos arquivos de restart (DHRES)
 # Se ANLTYPE for igual a NMC ou RDP, então as previsões serão referentes à análise controle, com previsões para
 # 2 dias e com saídas a cada 3 horas;
 # Se ANLTYPE for igual a CTR, NPT ou PPT, então as previsões serão referentes às análises controle e perturbadas
 # por EOF (respectivamente), e serão feitas para 15 dias e com saída a cada 3 horas.
+#
+
 if [ ${ANLTYPE} == RDP -o ${ANLTYPE} == CTR ]
 then
   export DHFCT=3
@@ -258,7 +279,10 @@ export GAUSSGIVEN=".TRUE."
 
 export PATHIN=${DK_suite}/model/datain
 
+#
 # Variáveis utilizadas no script de submissão
+#
+
 if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
 
@@ -344,7 +368,10 @@ else
   export walltime="02:00:00"
 fi
 
+#
 # Script de submissão
+#
+
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
 #PBS -j oe
@@ -388,7 +415,10 @@ date
 sleep 10s # espera para terminar todos os processos de I/O
 EOF0
 
+#
 # Submete o script e aguarda o fim da execução
+#
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}

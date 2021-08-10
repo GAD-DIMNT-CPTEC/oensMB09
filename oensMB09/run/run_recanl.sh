@@ -1,6 +1,6 @@
 #! /bin/bash
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -28,8 +28,10 @@
 #
 # !REVISION HISTORY:
 #
-# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# XX Julho de 2017  - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 17 Junho de 2021  - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -42,14 +44,16 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -64,42 +68,47 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${3}" ]
 then
-  echo "Fourth argument is not set: TYPES"
-  exit
+  echo "PERR esta faltando"
+  exit 1
 else
   PERR=${3}
 fi
 if [ -z "${4}" ]; then
-  echo "Fifth argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "LABELI esta faltando"
+  exit 1
 else
   LABELI=${4}
 fi
 
 bin=${DK_suite}/recanl/bin/${RESOL}${NIVEL}; mkdir -p ${bin}
 
+#
 # Variáveis utilizadas no script de submissão
+#
+
 HSTMAQ=$(hostname)
 
 RUNTM=$(date +'%y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
-#echo ${MAQUI}
-#echo ${AUX_QUEUE}
-#echo ${RUNTM}
-#echo ${EXT}
+#
+# Script de submissão
+#
 
 cd ${HOME_suite}/run
 
 mkdir -p ${DK_suite}/recanl/output
 
-SCRIPTSFILE=setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+SCRIPTSFILE=setrecanl${PERR}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTSFILE}
-#!/bin/bash -x
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+#! /bin/bash -x
 #PBS -o ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=0:10:00
@@ -116,10 +125,10 @@ cd ${HOME_suite}/run
 . ${FILEENV} ${1} ${2}
 
 #
-#  Set date (year,month,day) and hour (hour:minute) 
+# Set date (year,month,day) and hour (hour:minute) 
 #
-#  DATE=yyyymmdd
-#  HOUR=hh:mn
+# DATE=yyyymmdd
+# HOUR=hh:mn
 #
 
 export DATE=\$(date +'%Y')\$(date +'%m')\$(date +'%d')
@@ -129,31 +138,31 @@ echo "Date: "\${DATE}
 echo "Hour: "\${HOUR}
 
 #
-#  LABELI = yyyymmddhh
-#  LABELI = input file start label
+# LABELI = yyyymmddhh
+# LABELI = input file start label
 #
 
 export LABELI=${LABELI}
 
 #
-#  Prefix names for the FORTRAN files
+# Prefix names for the FORTRAN files
 #
-#  NAMEL - List file name prefix
-#  NAMES - Input spectral file name prefix
-#  NAMER - Output gridded file name prefix
+# NAMEL - List file name prefix
+# NAMES - Input spectral file name prefix
+# NAMER - Output gridded file name prefix
 #
-#  Suffix names for the FORTRAN files
+# Suffix names for the FORTRAN files
 #
-#  EXTL - List file name suffix
-#  ERSi - Input spectral file name suffix
-#  ERRi - Output gridded file name suffix
+# EXTL - List file name suffix
+# ERSi - Input spectral file name suffix
+# ERRi - Output gridded file name suffix
 #
 
 export NAMEL=G${PERR}
 export NAMES=G${PERR}
 export NAMER=G${PERR}
 
-if [ ${PERR} == ANLAVN -o ${PERR} == ANLNMC -o ${PERR} == ANLSMT ]
+if [ ${PERR} == ANLAVN -o ${PERR} == ANLNMC -o ${PERR} == ANLSMT -o ${PERR} == ANLEIT -o ${PERR} == ANLEIH ]
 then
   export EXTL=S.unf
   export ERS1=S.unf
@@ -165,20 +174,20 @@ else
 fi
 
 #
-#  Set directories
+# Set directories
 #
-#  OPERMOD  is the directory for sources, scripts and
-#           printouts files.
-#  DK_suite is the directory for input and output data
-#           and bin files.
-#  ROPERMOD is the directory for big selected output files.
-#  IOPERMOD is the directory for input file.
+# OPERMOD  is the directory for sources, scripts and
+#          printouts files.
+# DK_suite is the directory for input and output data
+#          and bin files.
+# ROPERMOD is the directory for big selected output files.
+# IOPERMOD is the directory for input file.
 #
 
 cd ${HOME_suite}/run
 
 #
-#  Now, build the necessary NAMELIST input:
+# Now, build the necessary NAMELIST input:
 #
 
 export GNAMEL=\${NAMEL}${LABELI}\${EXTL}.${RESOL}${NIVEL}
@@ -205,13 +214,13 @@ mkdir -p ${DK_suite}/recanl/dataout/${RESOL}${NIVEL}/
 cd ${HOME_suite}/run
 
 #
-#  Run Decomposition
+# Run recomposition
 #
 
 echo 'Running recomposition...'
 
 #
-#  Set directories
+# Set directories
 #
 
 export recanl_dir=${HOME_suite}/recanl
@@ -223,15 +232,17 @@ export out=\${recanl_dir}/output; mkdir -p \${out}
 
 cd \${bin}
 
-echo "aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
 aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
 EOT0
 
+#
 # Submete o script e aguarda o fim da execução
-chmod +x setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+#
 
 export PBS_SERVER=${pbs_server2}
 
-qsub -W block=true setrecanl.${PERR}${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
+
+qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

@@ -1,15 +1,12 @@
 include ../../config/Makefile.conf.$(comp)
 
 SOPERMOD = $(WORKDIR)
-INC = $(SOPERMOD)/rdpert/include
+INC = ../include
 
 EXT = $(TRUNC)$(LEV)
-DIR = $(SOPERMOD)/rdpert/bin/$(EXT)
+DIR = ../bin/$(EXT)
 
-#FTNFLAG = -g -hbyteswapio -hpic -hdynamic -Ktrap=fp -s default64 -h display_opt,noomp 
-#FTNFLAG = -g -hbyteswapio -hpic -Ktrap=fp -s default64 -h display_opt,noomp 
 FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
-#CPP = -I\${INC}
 CPP = -I\$(INC)
 F_UFMTIEEE = 10,20
 
