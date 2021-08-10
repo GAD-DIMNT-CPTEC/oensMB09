@@ -2,7 +2,7 @@
 
 #help#
 #-------------------------------------------------------------------------------------------------#
-#                         Brazilian global Atmospheric Model - BAM_V1.3.0                         #
+#                               Brazilian global Atmospheric Model                                #
 #-------------------------------------------------------------------------------------------------#
 # Descrição:                                                                                      #
 #     Script para ajustar as variáveis de ambiente do BAM                                         #
@@ -21,13 +21,14 @@
 # Notas:                                                                                          #
 #     Este script auxiliar é chamado pelos scripts principais do modelo                           #
 #                                                                                                 #
-# DMD/CPTEC/INPE, 2019                                                                            #
+# DMD/CPTEC/INPE, 2021                                                                            #
 #-------------------------------------------------------------------------------------------------#
 #help#
 
 #
 # Função para imprimir o cabeçalho do script
 #
+
 function usageprincipal()
 {
   cat < ${0} | sed '1,/^#help#/d;/^#help#/,$d'
@@ -52,30 +53,24 @@ fi
 #
 
 # Caminho do BAM no HOME
-export PATHBASE=/cray_home/carlos_bastarz/oensMB09.svn
+export PATHBASE=/lustre_xc50/carlos_bastarz/oensMB09.t7839
 
 # Caminho do BAM no scratchin (SUBMIT_HOME)
-export DK=/cray_home/carlos_bastarz/oensMB09.svn
+export DK=/lustre_xc50/carlos_bastarz/oensMB09.t7839
 
 # Caminho do BAM no scratchout (SUBMIT_WORK)
-export DK2=/cray_home/carlos_bastarz/oensMB09.svn
+export DK2=/lustre_xc50/carlos_bastarz/oensMB09.t7839
 
 export HOME_suite=${PATHBASE} ; mkdir -p ${HOME_suite}
 export DK_suite=${DK}         ; mkdir -p ${DK_suite}
 export DK_suite2=${DK2}       ; mkdir -p ${DK_suite2}
-
-#export GRHDATAOUT=${DK_suite}/grh/dataout; if [ ! -e ${GRHDATAOUT} ]; then mkdir -p ${GRHDATAOUT}; fi
-
-#export NDFCT0012=180h # Tempo de integracao para as rodadas das 00 e 12 (usa o script caldate)
-#export NDFCT0618=12h  # Tempo de integracao para as rodadas das 06 e 18 (usa o script caldate)
 
 export tmstp=$(date +'%s')
 
 #
 # Variáveis do PBS
 #
-#export PBS_TUPA=eslogin13
-#export PBS_AUX=aux20-eth4
+
 export HSTMAQ=$(uname -n)
 export MAQUI=$(uname -s)
 export QUOTA=CPTEC
@@ -104,18 +99,15 @@ export PREFXO="${PREFIX}"     # preffix for name of output files
 # --> DataGDAS="Grid"
 # --> AnlPref="gdas"
 #
+
 export DataGDAS="Grid"         # Spec == Anl. Spec. NCEP; Grid == Anl. Grid NCEP 
 export AnlPref="gblav"         # gdas1/gblav == Anl. Spec. NCEP; gdas/gblav == Anl. Grid. NCEP 
-
-#export tmstp=`date +'%s'`
 
 export GSSTEP=1
 
 #
 # Utilitários
 #
-#export DIRGRADS=/cray_home/carlos_bastarz/bin
+
 export DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents
-#export caldate=${HOME_suite}/utils/bin/caldate.3.0.1
-#export caldate=${HOME_suite}/produtos/utils/bin/caldate.3.0.2
 export inctime=/cray_home/carlos_bastarz/bin/inctime

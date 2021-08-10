@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -31,7 +31,8 @@
 #
 # !REVISION HISTORY:
 #
-# 17 Maio de 2020 - C. F. Bastarz - Versão inicial.  
+# 17 Maio de 2020  - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -50,9 +51,13 @@ then
   exit 0
 fi
 
+#
+# Argumentos da linha de comando
+#
+
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -60,7 +65,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -68,7 +73,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -76,7 +81,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -84,7 +89,7 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NPERT is not set"
+  echo "NPERT esta faltando"
   exit 1
 else
   export NPERT=${5}
@@ -103,6 +108,10 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
+
+#
+# Cálculo do tamanho total do conjunto
+#
 
 export NMEMBR=$((2*${NPERT}+1))
 
@@ -132,25 +141,29 @@ export RUNTM=$(date +'%Y%m%d%T')
 export OPERM=${DK_suite}
 export ROPERM=${DK_suite}
 
+#
+# Script de submissão
+#
+
 cd ${OPERM}/run
 
 export PBS_SERVER=${pbs_server1}
 
-export SCRIPTFILEPATH=${DK_suite}/run/setensmed${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setensmed.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
+# Número de cores utilizados
 export MPPWIDTH=20
 export MPPNPPN=1
 
 mkdir -p ${DK_suite}/ensmed/output/
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${ROPERM}/ensmed/output/ensmed.${RUNTM}.out
 #PBS -e ${ROPERM}/ensmed/output/ensmed.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l mppwidth=${MPPWIDTH}
 #PBS -l mppnppn=${MPPNPPN}
-#PBS -W umask=026
 #PBS -A CPTEC
 #PBS -V
 #PBS -S /bin/bash
@@ -198,14 +211,16 @@ mkdir -p \${SOPERMOD}/ensmed/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 
 cd \${SOPERMOD}/ensmed/bin
 
-#export PBS_SERVER=${pbs_server1}
-
 time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log
 
 rm \${SOPERMOD}/ensmed/bin/ensmed-${LABELI}.ok
 
 echo "" > \${SOPERMOD}/ensmed/bin/ensmed-${LABELI}.ok
 EOT0
+
+#
+# Submissão
+#
 
 chmod +x ${SCRIPTFILEPATH}
 

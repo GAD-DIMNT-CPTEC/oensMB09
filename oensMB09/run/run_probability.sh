@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -33,6 +33,7 @@
 # !REVISION HISTORY:
 #
 # 03 Julho de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -53,7 +54,7 @@ fi
 
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -61,7 +62,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -69,7 +70,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -77,7 +78,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -85,7 +86,7 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NRNDP is not set"
+  echo "NRNDP esta faltando"
   exit 1
 else
   export NRNDP=${5}
@@ -130,22 +131,27 @@ esac
 
 export RUNTM=$(date +'%Y%m%d%T')
 
+#
+# Diretórios
+#
+
 export OPERM=${DK_suite}
 export ROPERM=${DK_suite}/produtos
 
+#
+# Script de submissão
+#
+
 cd ${OPERM}/run
 
-#export PBS_SERVER=aux20-eth4
-
-export SCRIPTFILEPATH=${DK_suite}/run/setprobability${RESOL}${NIVEL}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setprobability.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${ROPERM}/probability/output/probability.${RUNTM}.out
 #PBS -e ${ROPERM}/probability/output/probability.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
-#PBS -W umask=026
 #PBS -A CPTEC
 #PBS -V
 #PBS -S /bin/bash
@@ -201,6 +207,12 @@ aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probability/bin/probability.x ${LABELI}
 echo "" > \${ROPERMOD}/probability/bin/probability-${LABELI}.ok
 EOT0
 
+#
+# Submissão
+#
+
+export PBS_SERVER=${pbs_server2}
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
@@ -208,7 +220,7 @@ qsub -W block=true ${SCRIPTFILEPATH}
 until [ -e "${ROPERM}/probability/bin/probability-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
 #
-#  Set directories
+# Figuras
 #
 
 yy=$(echo ${LABELI} | cut -c 1-4)
@@ -224,14 +236,13 @@ if [ ! -d ${dirgif} ]
 then
   mkdir -p ${dirgif}
 else
-  echo "${dirgif} has already been created"
+  echo "${dirgif} ja existe"
 fi
 
 #
-# Create the list of probability ctls  
+# Lista dos arquivos descritores (ctl)
 #
 
-#labelf=$(${caldate} ${LABELI} + ${NFCTDY}d 'yyyymmddhh')
 labelf=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
 
 arqlist=prob${LABELI}${labelf}.${RES}.lst
@@ -243,20 +254,11 @@ do
   echo ${arq} >> ${dirscr}/filefct${LABELI}.${TRC}
 done
 
-#
-# Number of ctl files on the list 
-#
-
 nblst=$(cat ${dirscr}/filefct${LABELI}.${TRC} | wc -l)
 echo "nblst="${nblst}
 
-#
-# Generate the figures
-#
-
 cd ${ROPERM}/probability/scripts
 
-echo "${DIRGRADS}/grads -lb run plot_precprob.gs ${RES} ${TRC} ${LABELI} ${nblst} ${dirscr} ${dirgif}"
 ${DIRGRADS}/grads -lb << EOT
 run plot_precprob.gs
 ${RES} ${TRC} ${LABELI} ${nblst} ${dirscr} ${dirgif}

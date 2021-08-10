@@ -1,6 +1,6 @@
-#! /bin/bash -x 
+#! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -32,7 +32,8 @@
 #
 # !REVISION HISTORY:
 #
-# 25 Maio de 2020 - C. F. Bastarz - Versão inicial.  
+# 25 Maio de 2020  - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -45,15 +46,23 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
+# Menu de ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
+#
+# Argumentos da linha de comando
+#
+
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -61,7 +70,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -69,7 +78,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -77,7 +86,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -85,7 +94,7 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NRNDP is not set"
+  echo "NRNDP esta faltando"
   exit 1
 else
   export NRNDP=${5}
@@ -104,6 +113,10 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
+
+#
+# Cálculo do tamanho total do conjunto
+#
 
 export NMEMBR=$((2*${NRNDP}+1))
 
@@ -128,24 +141,25 @@ case ${TRC} in
   *) echo "Wrong request for horizontal resolution: ${TRC}" ; exit 1;
 esac
 
-export RUNTM=`date +'%Y%m%d%T'`
+export RUNTM=$(date +'%Y%m%d%T')
 
 export OPERM=${DK_suite}
 export ROPERM=${DK_suite}/produtos
 
+# 
+# Script de submissão
+#
+
 cd ${OPERM}/run
 
-#export PBS_SERVER=${pbs_server_2}
-
-export SCRIPTFILEPATH=${DK_suite}/run/setcluster${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setcluster.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${ROPERM}/cluster/output/cluster.${RUNTM}.out
 #PBS -e ${ROPERM}/cluster/output/cluster.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
-#PBS -W umask=026
 #PBS -A CPTEC
 #PBS -V
 #PBS -S /bin/bash
@@ -215,12 +229,22 @@ EOT0
 
 mkdir -p ${ROPERM}/cluster/output
 
+#
+# Submissão
+# 
+
+export PBS_SERVER=${pbs_server2}
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/cluster/bin/cluster-${LABELI}.ok" ]; do sleep 1s; done
-                                                                                                 
+
+#
+# Figuras
+#
+                                                                                      
 DIRSCR=${ROPERM}/cluster/scripts
 DIRGIF=${ROPERM}/cluster/gif
 DIRCTL=${OPERM}/pos/dataout/${RES}/${LABELI}
@@ -230,7 +254,7 @@ if [ ! -d ${DIRGIF} ]; then mkdir -p ${DIRGIF}; fi
 if [ ! -d ${DIRCTL} ]; then mkdir -p ${DIRCTL}; fi
 
 #
-# Create files which contains the ctl's and the cluster list
+# Lista de arquivos descritores (ctl) a serem abertos
 #
 
 cd ${DIRSCR}
@@ -274,7 +298,7 @@ ${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RES}.ctl
 EOT
 
     else
-       echo "${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RES}.ctl does not exist"
+       echo "${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RES}.ctl nao existe"
        exit 2
     fi
 
@@ -286,7 +310,7 @@ ${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RES}.ctl
 EOT
 
     else
-      echo "${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RES}.ctl does not exist"
+      echo "${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RES}.ctl nao existe"
       exit 2
     fi
 
@@ -301,7 +325,7 @@ ${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RES}.ctl
 EOT
 
   else
-    echo "${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RES}.ctl does not exist"
+    echo "${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RES}.ctl nao existe"
     exit 2
   fi
 
@@ -313,7 +337,7 @@ ${DIRCLT}/clusters${LABELI}${LABELF}.${RES}
 EOT
 
   else
-    echo "${DIRCLT}/clusters${LABELI}${LABELF}.${RES} does not exist"
+    echo "${DIRCLT}/clusters${LABELI}${LABELF}.${RES} nao existe"
     exit 2
   fi
 
@@ -323,30 +347,23 @@ done
 
 echo "NCTLS="${NCTLS}
 
-#
-# Plot the figures
-#
-
-echo "${DIRGRADS}/grads -bp run plot_temp_zgeo.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX}"
 ${DIRGRADS}/grads -bp << EOT
 run plot_temp_zgeo.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}
 EOT
 
-echo "${DIRGRADS}/grads -bp run plot_prec_psnm_wind.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX}"
 ${DIRGRADS}/grads -bp << EOT
 run plot_prec_psnm_wind.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}
 EOT
 
-echo "${DIRGRADS}/grads -bp run plot_tems.gs ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX}"
 ${DIRGRADS}/grads -bp << EOT
 run plot_tems.gs
 ${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}
 EOT
 
 #
-# Remove temporary files
+# Remove os arquivos temporários
 #
 
 NPERT=1

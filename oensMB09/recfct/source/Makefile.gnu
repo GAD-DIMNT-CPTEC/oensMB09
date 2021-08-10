@@ -1,16 +1,13 @@
 include ../../config/Makefile.conf.$(comp)
 
 SOPERMOD = $(WORKDIR)
-INC = $(SOPERMOD)/recfct/include
+INC = ../include
 
 EXT = $(TRUNC)$(LEV)
-DIR = $(SOPERMOD)/recfct/bin/$(EXT)
-LIB = $(SOPERMOD)/fftpln/lib/$(EXT)
+DIR = ../bin/$(EXT)
+LIB = ../../fftpln/lib/$(EXT)
 
-#FTNFLAG = -g -fconvert=big-endian -fdefault-real-8
-#FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 -fpic -ffpe-trap=invalid,zero,overflow,underflow,precision,denormal -O -Wall -fcheck=all -fbacktrace
 FTNFLAG = -fconvert=big-endian -fdefault-real-8 
-#FTNFLAG = -g -fconvert=big-endian -fdefault-real-8 -fpic -Wall -Wextra -fcheck=all -fbacktrace -O0
 CPP = -I\$(INC)
 F_UFMTIEEE = 10,20
 F_UFMTADJUST10 = TYPE2
@@ -38,7 +35,7 @@ clean:
 	-rm $(DIR)/recfct.a
 	-rm $(DIR)/*.o *.$(EXT) i.*.f
 	-rm $(PROG)
-
+#
 recanl.$(EXT): $(INC)/recfct.h
 dztouv.$(EXT): $(INC)/recfct.h
 fwrite.$(EXT): $(INC)/recfct.h

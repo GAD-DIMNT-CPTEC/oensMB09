@@ -1,2 +1,0 @@
-      INTEGER LMAX
-      PARAMETER (LMAX=11)

@@ -1,6 +1,6 @@
 #! /bin/bash
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -33,8 +33,10 @@
 #
 # !REVISION HISTORY:
 #
-# XX Julho de 2017 - C. F. Bastarz - Versão inicial.  
+# XX Julho de 2017  - C. F. Bastarz - Versão inicial.  
 # 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
+# 17 Junho de 2021  - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -47,14 +49,16 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd  ;pwd)
@@ -69,50 +73,59 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+#
 # Verificação dos argumentos de entrada
+#
+
 if [ -z "${2}" ]
 then
-  echo "PERT: NMC, AVN CTR 01N"
-  exit
+  echo "PREFIC esta faltando"
+  exit 1
 else
   PREFIC=${2}
 fi
 
 if [ -z "${3}" ]
 then
-  echo "Sixth argument is not set (HUMID)"
-  exit
+  echo "HUMID esta faltando"
+  exit 1
 else
   HUMID=${3}
 fi
 
 if [ -z "${4}" ]
 then
-  echo "Fifth argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "LABELI esta faltando"
+  exit 1
 else
   LABELI=${4}
 fi
 if [ -z "${5}" ]
 then
-  echo "Fifth argument is not set (NPERT)"
-  exit
+  echo "NPERT esta faltando"
+  exit 1
 else
   NPERT=${5}
 fi
 
+#
 # Variáveis utilizadas no script de submissão
+#
+
 HSTMAQ=$(hostname)
 RUNTM=$(date +'%Y')$(date +'%m')$(date +'%d')$(date +'%H:%M')
 EXT=out
 
+#
+# Script de submissão
+#
+
 cd ${HOME_suite}/run
 
-# Script de submissão
 SCRIPTSFILE=setdrpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTSFILE}
-#!/bin/bash -x
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+#! /bin/bash -x
 #PBS -o ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -S /bin/bash
@@ -130,10 +143,10 @@ cd ${HOME_suite}/run
 . ${FILEENV} ${1} ${2}
 
 #
-#  Set date (year,month,day) and hour (hour:minute) 
+# Set date (year,month,day) and hour (hour:minute) 
 #
-#  DATE=yyyymmdd
-#  HOUR=hh:mn
+# DATE=yyyymmdd
+# HOUR=hh:mn
 #
 
 DATE=\$(date +'%Y')\$(date +'%m')\$(date +'%d')
@@ -144,22 +157,21 @@ echo "Hour: "\${HOUR}
 export DATE HOUR
 
 #
-#  LABELI = yyyymmddhh
-#  LABELI = input file label
+# LABELI = yyyymmddhh
+# LABELI = input file label
 #
 
 export LABELI=${LABELI}
 
 #
-#  Prefix names for the FORTRAN files
+# Prefix names for the FORTRAN files
 #
-#  NAMEL - List file name prefix
-#  GNAME - Initial condition file name prefix
-#  NAMER - Input gridded file name prefix
-#  NAMES - Output spectral file name prefix
+# NAMEL - List file name prefix
+# GNAME - Initial condition file name prefix
+# NAMER - Input gridded file name prefix
+# NAMES - Output spectral file name prefix
 #
 
-#if [ "${PERT}" = "AVN" ]
 if [ ${PREFIC} == AVN ]
 then
   export NAMEL=GANLAVN
@@ -168,18 +180,26 @@ elif [ ${PREFIC} == SMT ]
 then
   export NAMEL=GANLSMT 
   export GNAME=GANLSMT
+elif [ ${PREFIC} == EIT ]
+then
+  export NAMEL=GANLEIT 
+  export GNAME=GANLEIT
+elif [ ${PREFIC} == EIH ]
+then
+  export NAMEL=GANLEIH 
+  export GNAME=GANLEIH
 else 
   export NAMEL=GANLNMC
   export GNAME=GANLNMC
 fi
 
 #
-#  Suffix names for the FORTRAN files
+# Suffix names for the FORTRAN files
 #
-#  EXTL - List file name suffix
-#  EXTG - Initial condition file name suffix
-#  ERRi - Input gridded file name suffix
-#  ERSi - Output spectral file name suffix
+# EXTL - List file name suffix
+# EXTG - Initial condition file name suffix
+# ERRi - Input gridded file name suffix
+# ERSi - Output spectral file name suffix
 #
 
 export EXTL=P.rpt
@@ -188,14 +208,14 @@ export EXTR=R.unf
 export PT=R
 
 #
-#  Set directories
+# Set directories
 #
-#  OPERMOD  is the directory for sources, scripts and
-#           printouts files.
-#  DK_suite is the directory for input and output data
-#           and bin files.
-#  DK_suite is the directory for big selected output files.
-#  IOPERMOD is the directory for input file.
+# OPERMOD  is the directory for sources, scripts and
+#          printouts files.
+# DK_suite is the directory for input and output data
+#          and bin files.
+# DK_suite is the directory for big selected output files.
+# IOPERMOD is the directory for input file.
 #
 
 echo \${HOME_suite}
@@ -206,14 +226,14 @@ echo \${DK_suite}/model/datain
 cd ${HOME_suite}/run
 
 #
-#  Set Horizontal Truncation and Vertical Layers
+# Set Horizontal Truncation and Vertical Layers
 #
 
 export LEV=${NIVEL}
 export TRUNC=${RESOL}
 
 #
-#  Now, build the necessary NAMELIST input:
+# Now, build the necessary NAMELIST input:
 #
 
 GNAMEL=\${NAMEL}\${LABELI}\${EXTL}.\${TRUNC}\${LEV}
@@ -259,7 +279,7 @@ EOT3
   fi
 
 #
-#   Run Decomposition
+# Run Decomposition
 #
 
   cd ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}
@@ -272,11 +292,14 @@ EOT3
 done
 EOT0
 
+#
 # Submete o script e aguarda o fim da execução
-chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
+#
 
 export PBS_SERVER=${pbs_server2}
 
-qsub -W block=true ${SCRIPTSFILE}
+chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
+
+qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0
