@@ -1,0 +1,113 @@
+#! /bin/bash
+
+#help#
+#-------------------------------------------------------------------------------------------------#
+#                               Brazilian global Atmospheric Model                                #
+#-------------------------------------------------------------------------------------------------#
+# Descrição:                                                                                      #
+#     Script para ajustar as variáveis de ambiente do BAM                                         #
+#                                                                                                 #
+# Uso:                                                                                            #
+#     ./EnvironmentalVariablesMCGA RESOL PREFIX                                                   #
+#                                                                                                 #
+# Exemplo:                                                                                        #
+#     ./EnvironmentalVariablesMCGA TQ00126L028 NMC                                                #
+#                                                                                                 #
+# Opções:                                                                                         #
+#     * RESOL.: resolução completa do modelo no formato TQXXXXLXXX                                #  
+#               (eg., TQ0062L028, TQ00126L028, TQ00213L042, etc)                                  #
+#     * PREFIX: prefixo da análise (eg., NMC, CPT, AVN)                                           #
+#                                                                                                 #
+# Notas:                                                                                          #
+#     Este script auxiliar é chamado pelos scripts principais do modelo                           #
+#                                                                                                 #
+# DMD/CPTEC/INPE, 2021                                                                            #
+#-------------------------------------------------------------------------------------------------#
+#help#
+
+#
+# Função para imprimir o cabeçalho do script
+#
+
+function usageprincipal()
+{
+  cat < ${0} | sed '1,/^#help#/d;/^#help#/,$d'
+}
+
+if [ -z "${1}" ]
+then
+  echo "TRCLV is not set"  
+else
+  export TRCLV=${1}
+fi
+
+if [ -z "${2}" ]
+then
+  echo "PREFIX is not set"  
+else
+  export PREFIX=${2}
+fi
+
+#
+# Caminhos
+#
+
+# Caminho do BAM no HOME
+export PATHBASE=/lustre_xc50/carlos_bastarz/oensMB09.t7839
+
+# Caminho do BAM no scratchin (SUBMIT_HOME)
+export DK=/lustre_xc50/carlos_bastarz/oensMB09.t7839
+
+# Caminho do BAM no scratchout (SUBMIT_WORK)
+export DK2=/lustre_xc50/carlos_bastarz/oensMB09.t7839
+
+export HOME_suite=${PATHBASE} ; mkdir -p ${HOME_suite}
+export DK_suite=${DK}         ; mkdir -p ${DK_suite}
+export DK_suite2=${DK2}       ; mkdir -p ${DK_suite2}
+
+export tmstp=$(date +'%s')
+
+#
+# Variáveis do PBS
+#
+
+export HSTMAQ=$(uname -n)
+export MAQUI=$(uname -s)
+export QUOTA=CPTEC
+export pbs_server2=sdb
+export pbs_server1=sdb
+export QSUB=/opt/pbs/default/bin/qsub
+export QUEUE=pesq
+export QUEUEM=pesq
+export QUEUEP=pesq
+export AUX_QUEUE=pesq
+export WALLTIME="00:30:00"
+export WALLTIME6="00:30:00"
+export AUX_WALLTIME="00:30:00"
+
+export PREFXI="${PREFIX}"     # preffix for name of input files
+export PREFXO="${PREFIX}"     # preffix for name of output files
+
+#
+# Escolha do tipo de análise
+#
+# Se a análise for espectral (eg., gdas1.THHZ.SAnl.YYYYMMDDHH; gblav.THHZ.SAnl.YYYYMMDDHH), até 2017071912:
+# --> DataGDAS="Spec"
+# --> AnlPref="gdas1" ou AnlPref="gblav"
+#
+# Se a análise for em ponto de grade (eg., gdas.THHZ.atmanl.nemsio.YYYYMMDDHH), a partir de 2017071912:
+# --> DataGDAS="Grid"
+# --> AnlPref="gdas"
+#
+
+export DataGDAS="Grid"         # Spec == Anl. Spec. NCEP; Grid == Anl. Grid NCEP 
+export AnlPref="gblav"         # gdas1/gblav == Anl. Spec. NCEP; gdas/gblav == Anl. Grid. NCEP 
+
+export GSSTEP=1
+
+#
+# Utilitários
+#
+
+export DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents
+export inctime=/cray_home/carlos_bastarz/bin/inctime
