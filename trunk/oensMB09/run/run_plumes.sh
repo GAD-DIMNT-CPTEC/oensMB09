@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -33,6 +33,7 @@
 # !REVISION HISTORY:
 #
 # 09 Julho de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -48,15 +49,23 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
+# Menu de ajuda
+#
+ 
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
+#
+# Argumentos da linha de comando
+#
+
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -64,7 +73,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -72,7 +81,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -80,7 +89,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -88,11 +97,15 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NRNDP is not set"
+  echo "NRNDP esta faltando"
   exit 1
 else
   export NRNDP=${5}
 fi
+
+#
+# Parâmetros do produto (não alterar)
+#
 
 export ndacc=5    # número de dias em que a precipitação deverá ser acumulada (maior ou igual a 1)
 export noutpday=3 # número de semanas a serem consideradas (múltiplo de 3)
@@ -136,22 +149,27 @@ esac
 
 export RUNTM=$(date +'%Y%m%d%T')
 
+#
+# Diretórios
+#
+
 export OPERM=${DK_suite}
 export ROPERM=${DK_suite}/produtos
 
+#
+# Script de submissão
+#
+
 cd ${OPERM}/run
 
-#export PBS_SERVER=aux20-eth4
-
-export SCRIPTFILEPATH=${DK_suite}/run/setplumes${RESOL}${NIVEL}.${MAQUI}
+export SCRIPTFILEPATH=${DK_suite}/run/setplumes${PREFX}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
-#!/bin/bash -x
+#! /bin/bash -x
 #PBS -o ${ROPERM}/plumes/output/plumes.${RUNTM}.out
 #PBS -e ${ROPERM}/plumes/output/plumes.${RUNTM}.err
 #PBS -l walltime=00:10:00
 #PBS -l select=1:ncpus=1
-#PBS -W umask=026
 #PBS -A CPTEC
 #PBS -V
 #PBS -S /bin/bash
@@ -187,7 +205,7 @@ export EXTS=S.unf
 
 mkdir -p \${ROPERMOD}/plumes/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 
-cat <<EOT > \${OPERMOD}/plumes/bin/plmsetup.${LABELI}.nml
+cat <<EOT > \${ROPERMOD}/plumes/bin/plmsetup.${LABELI}.nml
 UNDEF     :   -2.56E33
 IMAX      :   ${IR}
 JMAX      :   ${JR}
@@ -195,7 +213,7 @@ NMEMBERS  :   ${NMEMBR}
 NFCTDY    :   ${NFCTDY}
 NFCTHOURS :   360
 FREQCALC  :   6
-DIRINP    :   \${ROPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
+DIRINP    :   \${OPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 DIROUT    :   \${ROPERMOD}/plumes/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 RESOL     :   \${TRUNC}\${LEV}
 PREFX     :   ${PREFX}
@@ -208,6 +226,12 @@ aprun -n 1 -N 1 -d 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI}
 echo "" > \${ROPERMOD}/plumes/bin/plumes-${LABELI}.ok
 EOT0
 
+#
+# Submissão
+#
+
+export PBS_SERVER=${pbs_server2}
+
 chmod +x ${SCRIPTFILEPATH}
 
 qsub -W block=true ${SCRIPTFILEPATH}
@@ -215,7 +239,7 @@ qsub -W block=true ${SCRIPTFILEPATH}
 until [ -e "${ROPERM}/plumes/bin/plumes-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
 #
-# Set directories
+# Figuras
 #
 
 gname=GFGN
@@ -236,9 +260,6 @@ hh=$(echo ${LABELI} | cut -c 9-10)
 
 dirbct=${ROPERM}/plumes/dataout/${RES}
 
-#
-# Generate the figures of plumes
-#
 cd ${ROPERM}/plumes/scripts/
 
 mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AC/
@@ -270,8 +291,6 @@ mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PR/
 mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RO/
 mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SC/
 mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/TO/
-
-echo "${LABELI} ${LABELF} ${gname} ${CASE} ${ps} ${NMEMBR} ${fileloc} ${ROPERM}/plumes/dataout/${CASE}/${LABELI} ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif 1 360"
 
 ${DIRGRADS}/grads -bp << EOT
 run plumes.gs

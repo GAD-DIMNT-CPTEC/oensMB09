@@ -1,6 +1,6 @@
 #! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -32,6 +32,7 @@
 # !REVISION HISTORY:
 #
 # 10 Julho de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -44,15 +45,23 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
+# Menu de ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
+#
+# Argumentos da linha de comando
+#
+
 if [ -z ${1} ]
 then
-  echo "RES if not set"
+  echo "RES esta faltando"
   exit 1
 else
   export RES=${1}
@@ -60,7 +69,7 @@ fi
 
 if [ -z ${2} ]
 then
-  echo "LABELI is not set"
+  echo "LABELI esta faltando"
   exit 1
 else
   export LABELI=${2}
@@ -68,7 +77,7 @@ fi
 
 if [ -z ${3} ]
 then
-  echo "NFCTDY is not set"
+  echo "NFCTDY esta faltando"
   exit 1
 else
   export NFCTDY=${3}
@@ -76,7 +85,7 @@ fi
 
 if [ -z ${4} ]
 then
-  echo "PREFX is not set"
+  echo "PREFX esta faltando"
   exit 1
 else
   export PREFX=${4}
@@ -84,13 +93,12 @@ fi
 
 if [ -z ${5} ]
 then
-  echo "NPERT is not set"
+  echo "NPERT esta faltando"
   exit 1
 else
   export NPERT=${5}
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -102,29 +110,24 @@ export OUT=out
 export NPROC=1
 
 #
-#   Set LABELF
+# Cálculo de LABELF
 #
 
-#LABELF=$(${caldate} ${LABELI} + ${NFCTDY}d yyyymmddhh)
 LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
 
-#
-#   Set Horizontal Truncation (TRUNC) and Vertical Layers (LEV)
-#
 export TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 export LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=T${TRC}
 export NIVEL=L${LV}
 export CASE=${TRCLV}
 
-#
-# Set directories
-#
-#   DIRSCR: is the directory of the scripts which grib model data
-#
 export yydir=$(awk 'BEGIN {print substr("'${LABELI}'",1,4)}')
 export mmdir=$(awk 'BEGIN {print substr("'${LABELI}'",5,2)}')
 export dddir=$(awk 'BEGIN {print substr("'${LABELI}'",7,2)}')
+
+#
+# Diretórios
+#
 
 export OPERM=${DK_suite}
 export ROPERM=${DK_suite}/produtos
@@ -134,13 +137,14 @@ export DIRGIF=${ROPERM}/chievol/gif
 export DIRINP=${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}
 
 #
-#   Set prefix of files
+# Prefixo dos arquivos
 #
+
 export GPOS=GPOSENM
 
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Generate the list of ctl's to be opened
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+# Lista dos arquivos descritore (ctl) a serem abertos
+#
 
 cd ${DIRSCR}
 
@@ -155,18 +159,14 @@ do
   echo "${DIRINP}/${GPOS}${LABELI}${LABELPF}P.fct.${CASE}.ctl" >> filefct${LABELI}.${RESOL}
 done
 
-# End of generation the list of ctl's to be opened ++++++
+#
+# Figuras
+#
 
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Produce the graphics
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-# number of files to be opened
+# Número de arquivos a serem abertos
 NWK=4 
 
 mkdir -p ${ROPERM}/chievol/gif
-
-echo "${LABELI} ${LABELF} ${NWK} ${CASE} ${RESOL} ${DIRGIF}"
 
 ${DIRGRADS}/grads -bpc << EOT
 run plot_chi_evol.gs

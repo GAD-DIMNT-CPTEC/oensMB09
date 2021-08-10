@@ -1,11 +1,11 @@
 include ../../config/Makefile.conf.$(comp)
 
 SOPERMOD = $(WORKDIR)
-INC = $(SOPERMOD)/recanl/include
+INC = ../include
 
 EXT = $(TRUNC)$(LEV)
-DIR = $(SOPERMOD)/recanl/bin/$(EXT)
-LIB = $(SOPERMOD)/fftpln/lib/$(EXT)
+DIR = ../bin/$(EXT)
+LIB = ../../fftpln/lib/$(EXT)
 
 FTNFLAG = -byteswapio -i8 -r8 -mcmodel=medium 
 CPP = -I\${INC} 
