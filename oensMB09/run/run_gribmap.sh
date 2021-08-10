@@ -1,6 +1,6 @@
-#! /bin/bash -x
+#! /bin/bash 
 #--------------------------------------------------------------------#
-#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2017  #
+#  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
 #BOP
 #
@@ -40,6 +40,7 @@
 # !REVISION HISTORY:
 #
 # 02 Setembro de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #
@@ -52,14 +53,16 @@
 # Descomentar para debugar
 #set -o xtrace
 
+#
 # Menu de opções/ajuda
+#
+
 if [ "${1}" = "help" -o -z "${1}" ]
 then
   cat < ${0} | sed -n '/^#BOP/,/^#EOP/p'
   exit 0
 fi
 
-# Diretórios principais
 export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
 export PATHENV=$(dirname ${FILEENV})
 export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
@@ -76,26 +79,30 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+#
+# Argumentos da linha de comando
+#
+
 if [ -z "${2}" ]
 then
-  echo "Second argument is not set (LABELI: yyyymmddhh)"
-  exit
+  echo "LABELI esta faltando"
+  exit 1
 else
   LABELI=${2}
 fi
 
 if [ -z "${3}" ]
 then
-  echo "Third argument is not set (ANLPERT)"
-  exit
+  echo "ANLPERT esta faltando"
+  exit 1
 else
   ANLPERT=${3}
 fi
 
 if [ -z "${4}" ]
 then
-  echo "Fourth argument is not set (ANLTYPE)"
-  exit
+  echo "ANLTYPE esta faltando"
+  exit 1
 else
   ANLTYPE=${4}
 fi
@@ -106,26 +113,25 @@ RUNTM=$(date +"%s")
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
-#  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-#  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
   export PBSDIRECTIVENAME="#PBS -N GMAPENS${ANLTYPE}"
   export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
   export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/\${MEM}${ANLTYPE:0:1}"
 else
-#  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-#  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
   export PBSDIRECTIVENAME="#PBS -N GMAP${ANLTYPE}"
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/${MEM}${ANLTYPE}"
 fi
 
+#
 # Script de submissão
+#
+
 SCRIPTSFILES=setgribmap${ANLTYPE}.${RES}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${SCRIPTSFILES}
-#! /bin/bash 
+#! /bin/bash -x 
 #PBS -o ${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.out
 #PBS -e ${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.err
 #PBS -l walltime=0:15:00
@@ -143,8 +149,10 @@ ${PBSMEM}
 
 ${PBSEXECFILEPATH}
 
+cd \${EXECFILEPATH}
+
 # Procura todos os arquivos *.grb
-for arq in \$(find \${EXECFILEPATH} -name *.grb)
+for arq in \$(find \${EXECFILEPATH} -name "*.grb")
 do
 
   arqidx=\$(echo \${arq} | sed "s,.grb,.idx,g")
@@ -154,6 +162,7 @@ do
   then
 
     echo "\${arqidx} não existe ou está vazio!"
+    #aprun -n 1 -N 1 -d 1 \${gribmap} -i \${arqctl}
     \${gribmap} -i \${arqctl}
 
   fi
@@ -163,14 +172,15 @@ done
 echo "" > \${EXECFILEPATH}/monitor.t
 EOT0
 
+#
 # Submete o script e aguarda o fim da execução
+#
+
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 export PBS_SERVER=${pbs_server2}
 
 qsub -W block=true ${SCRIPTSFILES}
-
-echo "SUBMIT: ${HOME_suite}/run/${SCRIPTSFILES}"
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
