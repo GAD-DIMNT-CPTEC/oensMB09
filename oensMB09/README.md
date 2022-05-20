@@ -1,8 +1,6 @@
 # Método de Perturbação baseado em EOFs para o Brazilian global Atmospheric Model - BAM
 
 * Versão: V2.2.0 
-* Wiki desta versão: https://projetos.cptec.inpe.br/projects/spconcptec/wiki
-* Registro de ocorrências: https://projetos.cptec.inpe.br/projects/spconcptec/issues
 
 ## Notas da Versão:
 
@@ -14,9 +12,11 @@
 
 Nesta versão (V2.2.0), a componente do modelo (pre/model/pos) foi atualizada para a versão do modelo BAM operacional determinístico em coordenada sigma, em uso no XC50. Na etapa de previsão (model), os arquivos de ozônio e traçadores para cada membro, devem ser lincados para o arquivo do membro controle. Por exemplo:
 
+```
 model/datain:
 TRAC[0..7,R,P,N]YYYYMMDDHHS.grd.G00192L028 -> TRACSMTYYYYMMDDHHS.grd.G00192L028
 OZON[0..7,R,P,N]YYYYMMDDHHS.grd.G00192L028 -> OZONSMTYYYYMMDDHHS.grd.G00192L028
+```
 
 ## Ambiente de compilação de referência no XC50
 
@@ -66,7 +66,7 @@ make
 
 ## Uso
 
-Vide o arquivo oensMB09/run/README.
+Vide o arquivo `oensMB09/run/README`.
 
 **Observação:** esta distribuição não inclui o modelo BAM (pre/model/pos/grh), sendo este necessário para a completa utilização da suíte.
 
