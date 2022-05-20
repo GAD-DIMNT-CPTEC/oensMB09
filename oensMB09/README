@@ -1,12 +1,10 @@
-Método de Perturbação baseado em EOFs para o Brazilian global Atmospheric Model - BAM
-=====================================================================================
+# Método de Perturbação baseado em EOFs para o Brazilian global Atmospheric Model - BAM
 
 * Versão: V2.2.0 
 * Wiki desta versão: https://projetos.cptec.inpe.br/projects/spconcptec/wiki
 * Registro de ocorrências: https://projetos.cptec.inpe.br/projects/spconcptec/issues
 
-Notas da Versão:
-================
+## Notas da Versão:
 
 * Resolução: TQ0126L028 (~ 100Km de resolução espacial horizontal, com 28 níveis sigma)
 * Níveis de pressão pós-processados (hPa): 1000, 925, 850, 700, 500, 300, 250, 200, 50
@@ -20,16 +18,18 @@ model/datain:
 TRAC[0..7,R,P,N]YYYYMMDDHHS.grd.G00192L028 -> TRACSMTYYYYMMDDHHS.grd.G00192L028
 OZON[0..7,R,P,N]YYYYMMDDHHS.grd.G00192L028 -> OZONSMTYYYYMMDDHHS.grd.G00192L028
 
-Ambiente de compilação de referência no XC50:
-=============================================
+## Ambiente de compilação de referência no XC50
 
-- Apenas para os módulos do método de perturbação e produtos:
+**Apenas para os módulos do método de perturbação e produtos:**
 
 * Compilador GNU (gcc/7.2.0)
 
+```
 $ module swap PrgEnv-cray/6.0.4 PrgEnv-gnu
 $ module unload craype-x86-skylake
+```
 
+```
 $ module list
 Currently Loaded Modulefiles:
   1) modules/3.2.10.6                                  14) Base-opts/2.4.123-6.0.5.0_11.2__g6460790.ari
@@ -45,29 +45,31 @@ Currently Loaded Modulefiles:
  11) nodehealth/5.5.7-6.0.5.0_9.8__g7732908.ari        24) rca/2.2.16-6.0.5.0_15.34__g5e09e6d.ari
  12) system-config/3.5.2545-6.0.5.0_5.1__g8a8b20f.ari  25) perftools-base/7.0.0
  13) sysadm/2.4.125-6.0.5.0_16.13__g98e00a9.ari        26) PrgEnv-gnu/6.0.4
+```
 
-Compilação:
-===========
+## Compilação
 
-- Módulos do método de perturbação (considerando o ambiente de compilação configurado)
+Módulos do método de perturbação (considerando o ambiente de compilação configurado):
 
+```
 cd oensMB09
 ./config_spcon.sh configure TQ0126L028 gnu
 make comp=gnu
+```
 
-- Produtos
+## Produtos
 
+```
 cd oensMB09/produtos
 make
+```
 
-Uso:
-===
+## Uso
 
 Vide o arquivo oensMB09/run/README.
 
-Observação: esta distribuição não inclui o modelo BAM (pre/model/pos/grh), sendo este necessário para a completa utilização da suíte.
+**Observação:** esta distribuição não inclui o modelo BAM (pre/model/pos/grh), sendo este necessário para a completa utilização da suíte.
 
-Contato:
-========
+## Contato
 
 Solicitações sobre alterações e correções no método de perturbação, devem ser feitas por meio do Redmine no projeto https://projetos.cptec.inpe.br/projects/spconcptec/issues marcando a versão atual V2.2.0. Outras dúvidas e informações podem ser solicitadas através do email carlos.bastarz@inpe.br.
