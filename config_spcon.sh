@@ -27,12 +27,15 @@
 #
 #  Uso/Exemplos: ./config_spcon.sh configure TQ0126L028 pgi
 #                ./config_spcon.sh configure TQ0126L028 gnu
+#                ./config_spcon.sh configure TQ0126L028 gnu_egeon
 #                ./config_spcon.sh configure TQ0126L028 cray
 #                ./config_spcon.sh configure TQ0213L042 pgi
 #                ./config_spcon.sh configure TQ0213L042 gnu
+#                ./config_spcon.sh configure TQ0213L042 gnu_egeon
 #                ./config_spcon.sh configure TQ0213L042 cray
 #                ou
 #                ./config_spcon.sh cleanall TQ0126L028 gnu
+#                ./config_spcon.sh cleanall TQ0126L028 gnu_egeon
 #                etc
 # 
 # !REVISION HISTORY:
@@ -42,6 +45,7 @@
 # 21 Julho de 2021    - C. F. Bastarz - Alterada declaração do vetor Procs;
 #                                       Incluída alterações nos config/Makefile.conf.*
 # 05 Agosto de 2021   - C. F. Bastarz - Simplificação do script para a versão 2.2.0.
+# 31 Maio de 2022     - C. F. Bastarz - Adaptações para a máquina EGEON.
 #
 # !REMARKS:
 #
@@ -161,7 +165,8 @@ done
 if [ ${action} == "configure" ]
 then
   cd ${spcon_produtos}/libs/w3lib-1.4
-  ln -sfn ${spcon_produtos}/libs/w3lib-1.4/Makefile.${comp}* ${spcon_produtos}/libs/w3lib-1.4/Makefile
+  #ln -sfn ${spcon_produtos}/libs/w3lib-1.4/Makefile.${comp}* ${spcon_produtos}/libs/w3lib-1.4/Makefile
+  ln -sfn ${spcon_produtos}/libs/w3lib-1.4/Makefile.${comp} ${spcon_produtos}/libs/w3lib-1.4/Makefile
 elif [ ${action} == "cleanall" ] 
 then
   cd ${spcon_produtos}
