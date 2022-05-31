@@ -1,6 +1,7 @@
 #
 # This makefile creates executables for the ensemble plumes
 #
+include ../../../config/Makefile.conf.$(comp)
 
 #
 # Set object files
@@ -11,7 +12,7 @@ OBJS = plumes.o
 #
 #   Set compiler options.
 #
-F90 =	ftn
+#F90 =	ftn
 AR = ar
 LDFLAGS = -fconvert=big-endian
 F90_32FLAGS = -fconvert=big-endian

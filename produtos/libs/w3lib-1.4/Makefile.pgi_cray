@@ -5,6 +5,7 @@
 #
 # $Id: Makefile.linux,v 1.1 2007/10/10 20:24:23 pkubota Exp $
 #
+include ../../../config/Makefile.conf.$(comp)
 
 #
 # INTEL COMPILER - WORKING
@@ -16,12 +17,12 @@
 # 
 AR=ar
 ARFLAGS = 
-F90=ftn  -Mbyteswapio  -O2
+#F90=ftn  -Mbyteswapio  -O2
 #F90=ftn -Mbyteswapio -O0 -g -Mbounds -Mchkstk -Mchkptr -Mchkfpstk  -Minform=inform -C  -traceback
 F90_32FLAGS = 
-F90_32BITS = 
-F77=ftn  -Mbyteswapio  -O2
-FFLAGS = 
+F90_32BITS = -Mbyteswapio  -O2
+#F77=ftn  -Mbyteswapio  -O2
+FFLAGS = -Mbyteswapio  -O2
 CC =cc  -O2
 # If there is a version difference between your gcc and the gcc
 # used to compile the ifort binary, you may have to add a flag

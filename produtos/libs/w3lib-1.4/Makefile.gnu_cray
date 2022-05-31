@@ -5,6 +5,7 @@
 #
 # $Id: Makefile.linux,v 1.1 2007/10/10 20:24:23 pkubota Exp $
 #
+include ../../../config/Makefile.conf.$(comp)
 
 #
 # INTEL COMPILER - WORKING
@@ -16,11 +17,11 @@
 # 
 AR=ar
 ARFLAGS = 
-F90=ftn  -fconvert=big-endian
+#F90=ftn  -fconvert=big-endian
 F90_32FLAGS = 
-F90_32BITS = 
-F77 =ftn  -fconvert=big-endian
-FFLAGS = 
+F90_32BITS = -fconvert=big-endian
+#F77 =ftn  -fconvert=big-endian
+FFLAGS = -fconvert=big-endian
 CC =cc 
 # If there is a version difference between your gcc and the gcc
 # used to compile the ifort binary, you may have to add a flag

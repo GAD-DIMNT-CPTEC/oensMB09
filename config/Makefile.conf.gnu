@@ -42,9 +42,10 @@ RECFCT=$(CPTECDIR)/recfct/source
 EOFPRES=$(CPTECDIR)/eofpres/source
 
 # preprocessor, compilers, linker & archiver
-FC  = ftn 
-F77 = ftn 
-LD  = ftn 
+F90 = mpif90
+FC  = mpif90
+F77 = mpif90
+LD  = mpif90
 AR  = ar
 
 # default flags

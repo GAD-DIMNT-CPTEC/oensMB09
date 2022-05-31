@@ -48,6 +48,19 @@ Currently Loaded Modulefiles:
  13) sysadm/2.4.125-6.0.5.0_16.13__g98e00a9.ari        26) PrgEnv-gnu/6.0.4
 ```
 
+## Ambiente de compilação de referência na EGEON
+
+**Apenas para os módulos do método de perturbação e produtos:**
+
+* Compilador GNU (gcc/9.4.0)
+
+```
+$ module list
+Currently Loaded Modules:
+  1) gnu9/9.4.0   3) openmpi4/4.1.1   5) netcdf-fortran/4.5.3   7) hwloc/2.5.0
+  2) ucx/1.11.2   4) netcdf/4.7.4     6) phdf5/1.10.8           8) libfabric/1.13.0
+```
+
 ## Compilação
 
 Módulos do método de perturbação (considerando o ambiente de compilação configurado):
@@ -62,7 +75,7 @@ make comp=gnu
 
 ```
 cd oensMB09/produtos
-make
+make comp=gnu
 ```
 
 ## Uso

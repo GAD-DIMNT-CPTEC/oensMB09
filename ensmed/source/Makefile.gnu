@@ -1,6 +1,7 @@
 #
 # This makefile creates optimized executables of the ensemble mean
 #
+include ../../config/Makefile.conf.$(comp)
 
 #
 # Set object files
@@ -11,7 +12,7 @@ OBJS = ensmed.o
 #
 # Set compiler options
 #
-F90 = ftn
+#F90 = ftn
 LDFLAGS = -fconvert=big-endian -O0    
 LOADFLAG =     
 LIBS = ../../produtos/libs/w3lib-1.4/libw3.a

@@ -1,6 +1,7 @@
 #
 # This makefile creates executables for the ensemble probability
 #
+include ../../../config/Makefile.conf.$(comp)
 
 #
 # Set object files
@@ -11,7 +12,7 @@ OBJS = GaussRep.o ReadFields.o cluster.o
 #
 #  Set compiler options
 #
-F90 = ftn
+#F90 = ftn
 AR = ar
 LDFLAGS = -fconvert=big-endian -O0
 F90_32FLAGS = -fconvert=big-endian -O0

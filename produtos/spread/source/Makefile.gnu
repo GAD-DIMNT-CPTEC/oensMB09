@@ -1,6 +1,7 @@
 #
 # This makefile creates executables for the ensemble spread
 #
+include ../../../config/Makefile.conf.$(comp)
 
 #
 # Set object files
@@ -11,7 +12,7 @@ OBJS = GaussRep.o  spread.o
 #
 #  Set compiler options
 #
-F90 = ftn
+#F90 = ftn
 AR = ar
 F90_32FLAGS = -fconvert=big-endian -O0
 LOADFLAG = -O0 -fconvert=big-endian 

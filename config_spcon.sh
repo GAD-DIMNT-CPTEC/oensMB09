@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/bash -e 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -27,15 +27,12 @@
 #
 #  Uso/Exemplos: ./config_spcon.sh configure TQ0126L028 pgi
 #                ./config_spcon.sh configure TQ0126L028 gnu
-#                ./config_spcon.sh configure TQ0126L028 gnu_egeon
 #                ./config_spcon.sh configure TQ0126L028 cray
 #                ./config_spcon.sh configure TQ0213L042 pgi
 #                ./config_spcon.sh configure TQ0213L042 gnu
-#                ./config_spcon.sh configure TQ0213L042 gnu_egeon
 #                ./config_spcon.sh configure TQ0213L042 cray
 #                ou
 #                ./config_spcon.sh cleanall TQ0126L028 gnu
-#                ./config_spcon.sh cleanall TQ0126L028 gnu_egeon
 #                etc
 # 
 # !REVISION HISTORY:
@@ -78,6 +75,8 @@ home_spcon=${PWD}
 spcon_include=${home_spcon}/include
 spcon_produtos=${home_spcon}/produtos
 
+host=$(hostname)
+
 if [ ${action} == "configure" ]
 then
   TRUNC=$(echo ${res} | awk -F "L" '{print $1}')
@@ -85,6 +84,18 @@ then
 
   sed -i "s,^TRUNC=.*,TRUNC=${TRUNC},g" ./config/Makefile.conf.${comp}
   sed -i "s,^LEV=.*,LEV=${LEV},g" ./config/Makefile.conf.${comp}
+  if [ $(echo ${host} | cut -c 1-3) == "hea" ] # EGEON
+  then
+    sed -i "s,^F90 =.*,F90 = mpif90,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^FC  =.*,FC  = mpif90,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^F77 =.*,F77 = mpif90,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^LD  =.*,LD  = mpif90,g" ./config/Makefile.conf.${comp}
+  else # Cray XE6/XC50
+    sed -i "s,^F90 =.*,F90 = ftn,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^FC  =.*,FC  = ftn,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^F77 =.*,F77 = ftn,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^LD  =.*,LD  = ftn,g" ./config/Makefile.conf.${comp}
+  fi
 elif [ ${action} == "cleanall" ]
 then
   cd ${home_spcon}
@@ -165,8 +176,8 @@ done
 if [ ${action} == "configure" ]
 then
   cd ${spcon_produtos}/libs/w3lib-1.4
-  #ln -sfn ${spcon_produtos}/libs/w3lib-1.4/Makefile.${comp}* ${spcon_produtos}/libs/w3lib-1.4/Makefile
-  ln -sfn ${spcon_produtos}/libs/w3lib-1.4/Makefile.${comp} ${spcon_produtos}/libs/w3lib-1.4/Makefile
+  ln -sfn ${spcon_produtos}/libs/w3lib-1.4/Makefile.${comp}* ${spcon_produtos}/libs/w3lib-1.4/Makefile
+  #ln -sfn ${spcon_produtos}/libs/w3lib-1.4/Makefile.${comp} ${spcon_produtos}/libs/w3lib-1.4/Makefile
 elif [ ${action} == "cleanall" ] 
 then
   cd ${spcon_produtos}
