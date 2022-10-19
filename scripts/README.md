@@ -62,7 +62,7 @@ Os dados do modelo BAM, utilizados para testar os scripts deste repositótio, re
 
 ### Uso
 
-Antes de utilizar os scripts, baixe o pacote com os dados de teste no endereço ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/EPS/verification_s2s_bam12.tar.gz e, em seguida, descompacte. 
+Antes de utilizar os scripts, baixe o pacote com os dados de teste no endereço `ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/EPS/verification_s2s_bam12.tar.gz` e, em seguida, descompacte. 
 
 Para a utilização dos scripts deste repositório, os dados e os scripts deverão estar organizados da seguinte forma:
 
