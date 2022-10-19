@@ -1,6 +1,6 @@
 # Métricas de Verificação da Previsão Sub-sazonal
 
-Este conjunto de scripts calculam as métricas de verificação para as previsões sub-sazonais do CPTEC/INPE geradas com o modelo BAM V1.2.0. Os scripts são de autoria dos pesquisadores Caio Coelho e Bruno Guimarães dos Santos e estão aqui organizados para uso e referência. 
+Este conjunto de scripts calculam as métricas de verificação para as previsões sub-sazonais do CPTEC/INPE geradas com o modelo BAM V1.2.0. 
 
 ## Verificação das Previsões Determinísticas de Precipitação
 
@@ -31,12 +31,12 @@ Neste repositório, estão disponíveis dois scripts principais:
 
 ### Requisitos
 
-1. Instalação do GrADS;
+1. Instalação do GrADS:
   - No Ubuntu e derivados, instale o pacote `grads`:
     ```
     $ sudo apt install grads
     ```
-  - Em seguida, instale baixe os scrits adicionais do Grads, e adicione a variável `GASCRP` ao seu `~/.bashrc` ou `~/.profile`:
+  - Em seguida, instale baixe os scripts adicionais do Grads, e adicione a variável `GASCRP` ao seu `~/.bashrc` ou `~/.profile`:
     ```
     $ cd ~/Downloads
     $ mkdir grads_scripts
@@ -45,7 +45,7 @@ Neste repositório, estão disponíveis dois scripts principais:
     $ ncftp /grads> get *
     $ ncftp /grads> quit
     $ echo "export GASCRP=$HOME/Downloads/grads_scripts" >> ~/.bashrc
-2. Instalação do R.
+2. Instalação do R:
   - No Ubuntu e derivados, instale o pacote `r-base`:
     ```
     $ sudo apt install r-base
