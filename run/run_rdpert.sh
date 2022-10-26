@@ -131,15 +131,23 @@ SCRIPTSFILE=setrdpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #! /bin/bash -x
-#PBS -o ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
-#PBS -S /bin/bash
-#PBS -l walltime=0:10:00
-#PBS -l select=1:ncpus=1
-#PBS -A CPTEC
-#PBS -V
-#PBS -N RDPT${PREFIC}
-#PBS -q ${AUX_QUEUE}
+###PBS -o ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
+###PBS -e ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
+###PBS -S /bin/bash
+###PBS -l walltime=0:10:00
+###PBS -l select=1:ncpus=1
+###PBS -A CPTEC
+###PBS -V
+###PBS -N RDPT${PREFIC}
+###PBS -q ${AUX_QUEUE}
+
+#SBATCH --output=${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
+#SBATCH --error=${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=RDPT${PREFIC}
+#SBATCH --partition=${AUX_QUEUE}
 
 export PBS_SERVER=${pbs_server2}
 
@@ -281,7 +289,11 @@ cd ${HOME_suite}/run
 
 cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 
-aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+#aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+
+module load singularity 
+
+singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
 EOT0
 
 #
@@ -292,6 +304,7 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE} 
 
-qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+#qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+sbatch ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

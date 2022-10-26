@@ -125,8 +125,10 @@ then
   export MODELDATAOUT="cd ${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${PREFIC}/"
   export ENSTYPE="export TYPES=${TYPES}"
 else  
-  export PBSDIRECTIVE="#PBS -J 1-${NMEM}"
-  export DEFINEMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  #export PBSDIRECTIVE="#PBS -J 1-${NMEM}"
+  export PBSDIRECTIVE="#SBATCH --array=1-${NMEM}"
+  #export DEFINEMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  export DEFINEMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
   export MODELDATAOUT="cd ${DK_suite}/model/dataout/${TRCLV}/${LABELI}/\${MEM}${PREFIC}/"
   export ENSTYPE="export TYPES=FCT\${MEM}${PREFIC}"
 fi
@@ -141,15 +143,24 @@ SCRIPTSFILE=setrecfct${TYPES}.${TRCLV}.${LABELI}${LABELF}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #! /bin/bash -x
-#PBS -o ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.err
-#PBS -l walltime=01:00:00
-#PBS -l select=1:ncpus=1
-#PBS -A CPTEC
-#PBS -V
-#PBS -S /bin/bash
-#PBS -N RECFCT
-#PBS -q ${AUX_QUEUE}
+###PBS -o ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.out
+###PBS -e ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.err
+###PBS -l walltime=01:00:00
+###PBS -l select=1:ncpus=1
+###PBS -A CPTEC
+###PBS -V
+###PBS -S /bin/bash
+###PBS -N RECFCT
+###PBS -q ${AUX_QUEUE}
+##${PBSDIRECTIVE}
+
+#SBATCH --output=${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.out
+#SBATCH --error=${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=RECFCT
+#SBATCH --partition=${AUX_QUEUE}
 ${PBSDIRECTIVE}
 
 export PBS_SERVER=${pbs_server2}
@@ -161,6 +172,8 @@ ${MODELDATAOUT}
 ${ENSTYPE}
 
 mkdir -p ${DK_suite}/recfct/datain/
+
+module load singularity
 
 for LABELF in \$(ls G\${TYPES}${LABELI}* | cut -c 18-27)
 do 
@@ -244,7 +257,9 @@ EOT3
   
   cd ${HOME_suite}/recfct/bin/\${TRCLV}
   
-  aprun -n 1 -N 1 -d 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
+  #aprun -n 1 -N 1 -d 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
+
+  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
   
 done
 EOT0
@@ -257,6 +272,7 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+#qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+sbatch ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

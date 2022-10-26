@@ -237,20 +237,30 @@ RUNTM=$(date +"%s")
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #! /bin/bash -x
-#PBS -o ${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.out
-#PBS -e ${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.err
-#PBS -l walltime=01:00:00
-#PBS -l select=1:ncpus=1
-#PBS -A CPTEC
-#PBS -V
-#PBS -S /bin/bash
-#PBS -N EOFPERT
-#PBS -q ${AUX_QUEUE}
-#PBS -J 1-${NMEM}
+###PBS -o ${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.out
+###PBS -e ${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.err
+###PBS -l walltime=01:00:00
+###PBS -l select=1:ncpus=1
+###PBS -A CPTEC
+###PBS -V
+###PBS -S /bin/bash
+###PBS -N EOFPERT
+###PBS -q ${AUX_QUEUE}
+###PBS -J 1-${NMEM}
+
+#SBATCH --output=${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.out
+#SBATCH --error=${DK_suite}/eof/output/${SCRIPTSFILE}.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=EOFPERT
+#SBATCH --partition=${AUX_QUEUE}
+#SBATCH --array=1-${NMEM}
 
 export PBS_SERVER=${pbs_server2}
 
-export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
+#export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
+export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})
 
 #
 # Create input and output directory
@@ -258,6 +268,8 @@ export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})
 
 mkdir -p \${DK_suite}/eof/datain/
 mkdir -p \${DK_suite}/eof/dataout/${RESOL}${NIVEL}/
+
+module load singularity
 
 #
 # Change directory to run
@@ -478,7 +490,10 @@ EOT1
 
   cd \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  #aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+
+
+  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   cd \${DK_suite}/eof/datain
   
@@ -530,7 +545,9 @@ EOT1
 
   cd \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  #aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+
+  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   if [ ${HUMID} = YES ] 
   then
@@ -589,7 +606,9 @@ EOT1
 
     cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-    aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+    #aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+
+    singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   fi
   
@@ -725,7 +744,9 @@ EOT1
   
   cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  #aprun -n 1 -N 1 -d 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+
+  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
 done
 EOT0
@@ -738,6 +759,7 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+#qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+sbatch ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

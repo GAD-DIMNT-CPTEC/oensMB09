@@ -146,20 +146,30 @@ SCRIPTSFILES=setdec${2}.${TRCLV}.${LABELI}.${MAQUI}
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
 #! /bin/bash -x
-#PBS -o ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
-#PBS -e ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
-#PBS -l walltime=0:15:00
-#PBS -l mppnppn=1
-#PBS -A CPTEC
-#PBS -V
-#PBS -S /bin/bash
-#PBS -J 1-${NUMPERT}
-#PBS -N  DECEOF
-#PBS -q ${AUX_QUEUE}
+###PBS -o ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
+###PBS -e ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
+###PBS -l walltime=0:15:00
+###PBS -l mppnppn=1
+###PBS -A CPTEC
+###PBS -V
+###PBS -S /bin/bash
+###PBS -J 1-${NUMPERT}
+###PBS -N  DECEOF
+###PBS -q ${AUX_QUEUE}
+
+#SBATCH --output=${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
+#SBATCH --error=${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=DECEOF
+#SBATCH --partition=${AUX_QUEUE}
+#SBATCH --array=1-${NUMPERT}
 
 export PBS_SERVER=${pbs_server2}
 
-export NUM=\$(printf %02g \${PBS_ARRAY_INDEX})
+#export NUM=\$(printf %02g \${PBS_ARRAY_INDEX})
+export NUM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})
 export PREFXI=\${NUM}
 
 #
@@ -352,13 +362,17 @@ cat <<EOT2 > \${DK_suite}/deceof/datain/\${GNAMEL}
 \${NAMES1}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 EOT2
 
+module load singularity
+
 #
 # Run Decomposition for P perturbations
 #
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+#aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+
+singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
 filephn=prssnhn\${NUM}${MPHN}\${LABELI}
 fileptr=prssntr\${NUM}${MPTR}\${LABELI}
@@ -458,7 +472,9 @@ EOT4
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+#aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+
+singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 EOT0
 
 #
@@ -469,6 +485,7 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
-qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILES}
+#qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILES}
+sbatch ${HOME_suite}/run/${SCRIPTSFILES}
 
 exit 0

@@ -259,16 +259,24 @@ fi
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
-  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#PBS -N POSENS${ANLTYPE}"
-  export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
-  export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  #export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+  #export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+  #export PBSDIRECTIVENAME="#PBS -N POSENS${ANLTYPE}"
+  #export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
+  #export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  export PBSOUTFILE="#SBATCH --output=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#SBATCH --error=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+  export PBSDIRECTIVENAME="#SBATCH --job-name=POSENS${ANLTYPE}"
+  export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
+  export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
 else
-  export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#PBS -N POS${ANLTYPE}"
+  #export PBSOUTFILE="#PBS -o ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+  #export PBSERRFILE="#PBS -e ${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+  #export PBSDIRECTIVENAME="#PBS -N POS${ANLTYPE}"
+  export PBSOUTFILE="#SBATCH --output=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+  export PBSERRFILE="#SBATCH --error=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+  export PBSDIRECTIVENAME="#SBATCH --job-name=POS${ANLTYPE}"
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}"
@@ -280,20 +288,43 @@ fi
 
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
-#PBS -j oe
-#PBS -l walltime=01:00:00
-#PBS -l mppwidth=${MPPWIDTH}
-#PBS -l mppnppn=${MPPNPPN}
-#PBS -l mppdepth=${MPPDEPTH}
-#PBS -A CPTEC
-#PBS -V
-#PBS -S /bin/bash
+###PBS -j oe
+###PBS -l walltime=01:00:00
+###PBS -l mppwidth=${MPPWIDTH}
+###PBS -l mppnppn=${MPPNPPN}
+###PBS -l mppdepth=${MPPDEPTH}
+###PBS -A CPTEC
+###PBS -V
+###PBS -S /bin/bash
+##${PBSDIRECTIVENAME}
+##${PBSDIRECTIVEARRAY}
+###PBS -q ${QUEUE}
+
+###SBATCH --output=${BAMRUN}/setout/Out.model.${PREFIX}.${LABELI}.${tmstp}.MPI${MPPWIDTH}.out
+###SBATCH --error=${BAMRUN}/setout/Out.model.${PREFIX}.${LABELI}.${tmstp}.MPI${MPPWIDTH}.err
+${PBSOUTFILE}
+${PBSERRFILE}
+#SBATCH --time=${WALLTIME}
+#SBATCH --tasks-per-node=${MPPWIDTH}
+#SBATCH --nodes=${MPPDEPTH}
 ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
-#PBS -q ${QUEUE}
+#SBATCH --partition=${QUEUE}
 
 ulimit -s unlimited
 ulimit -c unlimited
+
+# EGEON GNU
+module purge
+module load gnu9/9.4.0
+module load ucx/1.11.2
+module load openmpi4/4.1.1
+module load netcdf/4.7.4
+module load netcdf-fortran/4.5.3
+module load phdf5/1.10.8
+module load hwloc
+module load libfabric/1.13.0
+module load singularity
 
 export PBS_SERVER=${pbs_server1}
 export KMP_STACKSIZE=128m
@@ -303,11 +334,13 @@ ${PBSEXECFILEPATH}
 
 cd \${EXECFILEPATH}
 
-echo \${PBS_JOBID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
+#echo \${PBS_JOBID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
 
 date
 
-aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
+#aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
+
+singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
 
 date
 EOF0
@@ -318,36 +351,37 @@ EOF0
 
 chmod +x ${SCRIPTFILEPATH}
 
-qsub -W block=true ${SCRIPTFILEPATH}
+#qsub -W block=true ${SCRIPTFILEPATH}
+sbatch ${SCRIPTFILEPATH}
 
-if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
-then
-
-  JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
-
-  for mem in $(seq 1 ${ANLPERT})
-  do
-
-    jobidname="POSENS${ANLTYPE}.o${JOBID}.${mem}"
-    posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
-
-    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
-    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
-
-  done
-
-else
-
-  JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
-
-  jobidname="POS${ANLTYPE}.o${JOBID}"
-  posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-
-  until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
-  mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
-
-fi
-
-rm ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
+#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+#then
+#
+#  JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+#
+#  for mem in $(seq 1 ${ANLPERT})
+#  do
+#
+#    jobidname="POSENS${ANLTYPE}.o${JOBID}.${mem}"
+#    posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
+#
+#    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
+#    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
+#
+#  done
+#
+#else
+#
+#  JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
+#
+#  jobidname="POS${ANLTYPE}.o${JOBID}"
+#  posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+#
+#  until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
+#  mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
+#
+#fi
+#
+#rm ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
 
 exit 0
