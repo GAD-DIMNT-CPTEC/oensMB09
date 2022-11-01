@@ -143,7 +143,7 @@ then
 #PBS -N RDPT${PREFIC}
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -155,7 +155,7 @@ else
 #SBATCH --job-name=RDPT${PREFIC}
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
   if [ ! -z ${job_recanl_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_recanl_id}"
@@ -308,7 +308,7 @@ cd ${HOME_suite}/run
 
 cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 
-${SCRIPTRUNCMD}
+${SCRIPTRUNCMD} ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
 EOT0
 
 #

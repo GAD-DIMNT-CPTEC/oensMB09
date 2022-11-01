@@ -66,7 +66,7 @@ export anltype=SMT
 # Acrescentar ou remover os processos conforme a necessidade
 #Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
 #Procs=(recanl rdpert decanl model2d recfct)
-Procs=(eof deceof model15d pos15d gribmap)
+Procs=(eof deceof model15d)
 
 #
 # Datas de início e fim

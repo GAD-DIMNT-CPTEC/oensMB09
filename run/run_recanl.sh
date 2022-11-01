@@ -121,7 +121,7 @@ then
 #PBS -N RECANL
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -133,8 +133,13 @@ else
 #SBATCH --job-name=RECANL
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
-  SCRIPTRUNJOB="sbatch "
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
+  #if [ ! -z ${job_pre_id} ]
+  #then
+  #  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_pre_id}"
+  #else
+    SCRIPTRUNJOB="sbatch "
+  #fi
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -254,7 +259,7 @@ export out=\${recanl_dir}/output; mkdir -p \${out}
 
 cd \${bin}
 
-${SCRIPTRUNCMD}
+${SCRIPTRUNCMD} ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
 EOT0
 
 #
