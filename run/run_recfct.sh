@@ -160,7 +160,7 @@ then
 #PBS -q ${AUX_QUEUE}
 ${PBSDIRECTIVE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -173,8 +173,13 @@ else
 #SBATCH --partition=${AUX_QUEUE}
 ${PBSDIRECTIVE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
-  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_model_id}"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
+  if [ ! -z ${job_model_id} ]
+  then
+    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_model_id}"
+  else
+    SCRIPTRUNJOB="sbatch "
+  fi
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -273,7 +278,7 @@ EOT3
   
   cd ${HOME_suite}/recfct/bin/\${TRCLV}
   
-  ${SCRIPTRUNCMD}
+  ${SCRIPTRUNCMD} ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
 done
 EOT0
 

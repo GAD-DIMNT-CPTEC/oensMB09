@@ -171,7 +171,12 @@ ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${AUX_QUEUE}
 "
   SCRIPTRUNCMD=""
-  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_pos_id}"
+  if [ ! -z ${job_pos_id} ]
+  then
+    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_pos_id}"
+  else
+    SCRIPTRUNJOB="sbatch "
+  fi
 fi
 
 cat <<EOT0 > ${SCRIPTSFILES}

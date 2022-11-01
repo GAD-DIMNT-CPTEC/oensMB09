@@ -419,7 +419,12 @@ ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} "
-  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_decanl_id}"
+  if [ ! -z ${job_decanl_id} -o ! -z ${job_deceof_id} ]
+  then
+    SCRIPTRUNJOB="sbatch --dependency=afterany:${job_decanl_id}:${job_deceof_id}"
+  else
+    SCRIPTRUNJOB="sbatch "
+  fi
 fi
 
 cat <<EOF0 > ${SCRIPTFILEPATH}

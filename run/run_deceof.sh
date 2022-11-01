@@ -175,7 +175,12 @@ else
 "
   SCRIPTNUM="\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
-  SCRIPTRUNJOB="sbatch "
+  if [ ! -z ${job_eof_id} ]
+  then
+    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_eof_id}"
+  else
+    SCRIPTRUNJOB="sbatch "
+  fi
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
