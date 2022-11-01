@@ -161,7 +161,7 @@ then
 "
   SCRIPTNUM="\$(printf %02g \${PBS_ARRAY_INDEX})"
   SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
-  SCRIPTRUNJOB="qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILES}"
+  SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
 #SBATCH --output=${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
@@ -175,7 +175,7 @@ else
 "
   SCRIPTNUM="\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
-  SCRIPTRUNJOB="sbatch ${HOME_suite}/run/${SCRIPTSFILES}"
+  SCRIPTRUNJOB="sbatch "
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
@@ -494,6 +494,6 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
-${SCRIPTRUNJOB}
+${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILES}
 
 exit 0

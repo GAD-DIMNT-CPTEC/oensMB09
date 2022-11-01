@@ -311,7 +311,7 @@ ${PBSDIRECTIVEARRAY}
 #PBS -q ${QUEUE}
 "
   SCRIPTRUNCMD="aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} "
-  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+  SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
 ${PBSOUTFILE}
@@ -324,7 +324,7 @@ ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif "
-  SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
+  SCRIPTRUNJOB="sbatch "
 fi
 
 cat <<EOF0 > ${SCRIPTFILEPATH}
@@ -367,7 +367,7 @@ EOF0
 
 chmod +x ${SCRIPTFILEPATH}
 
-${SCRIPTRUNJOB}
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 
 #if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 #then

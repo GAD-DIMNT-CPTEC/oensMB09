@@ -160,7 +160,7 @@ then
 ${PBSDIRECTIVE}
 "
   SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
-  SCRIPTRUNJOB="qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}"
+  SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
 #SBATCH --output=${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.out
@@ -173,7 +173,7 @@ else
 ${PBSDIRECTIVE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
-  SCRIPTRUNJOB="sbatch ${HOME_suite}/run/${SCRIPTSFILE}"
+  SCRIPTRUNJOB="sbatch "
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -284,6 +284,6 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-${SCRIPTRUNJOB}
+${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

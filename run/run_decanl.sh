@@ -140,7 +140,7 @@ then
 #PBS -q ${AUX_QUEUE}
 "
   SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
-  SCRIPTRUNJOB="qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}"
+  SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
 #SBATCH --output=${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.out
@@ -152,7 +152,7 @@ else
 #SBATCH --partition=${AUX_QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
-  SCRIPTRUNJOB="sbatch ${HOME_suite}/run/${SCRIPTSFILE}"
+  SCRIPTRUNJOB="sbatch "
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -322,6 +322,6 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-${SCRIPTRUNJOB}
+${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE}
 
 exit 0

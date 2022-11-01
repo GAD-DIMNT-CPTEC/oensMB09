@@ -161,7 +161,7 @@ then
 #PBS -q ${AUX_QUEUE}
 "
   SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
-  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+  SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
 #SBATCH --output=${ROPERM}/probability/output/probability.${RUNTM}.out
@@ -173,7 +173,7 @@ else
 #SBATCH --partition=${AUX_QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 "
-  SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
+  SCRIPTRUNJOB="sbatch "
 fi
 
 
@@ -238,7 +238,7 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
 
-${SCRIPTRUNJOB}
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/probability/bin/probability-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  

@@ -173,7 +173,7 @@ then
 #PBS -q ${QUEUE}
 "
   SCRIPTRUNCMD="time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss " 
-  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+  SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
 #SBATCH --output=${ROPERM}/ensmed/output/ensmed.${RUNTM}.out
@@ -185,7 +185,7 @@ else
 #SBATCH --partition=${QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH}" 
-  SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
+  SCRIPTRUNJOB="sbatch "
 fi
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
@@ -247,7 +247,7 @@ EOT0
 
 chmod +x ${SCRIPTFILEPATH}
 
-${SCRIPTRUNJOB}
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/ensmed/bin/ensmed-${LABELI}.ok" ]; do sleep 1s; done
 

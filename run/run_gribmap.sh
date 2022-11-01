@@ -158,7 +158,7 @@ ${PBSDIRECTIVEARRAY}
 #PBS -q ${AUX_QUEUE}
 "
   SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
-  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTSFILES}"
+  SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
 #SBATCH --output=${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.out
@@ -171,7 +171,7 @@ ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${AUX_QUEUE}
 "
   SCRIPTRUNCMD=""
-  SCRIPTRUNJOB="sbatch ${SCRIPTSFILES}"
+  SCRIPTRUNJOB="sbatch "
 fi
 
 cat <<EOT0 > ${SCRIPTSFILES}
@@ -214,7 +214,7 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 export PBS_SERVER=${pbs_server2}
 
-${SCRIPTRUNJOB}
+${SCRIPTRUNJOB} ${SCRIPTSFILES}
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
