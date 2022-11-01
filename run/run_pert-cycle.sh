@@ -35,6 +35,9 @@
 #--------------------------------------------------------------------#
 #BOC
 
+# Descomentar para debugar
+#set -o xtrace
+
 export inctime=${HOME}/bin/inctime
 
 export bpath=/mnt/beegfs/carlos.bastarz/oensMB09/run
@@ -66,7 +69,7 @@ export anltype=SMT
 # Acrescentar ou remover os processos conforme a necessidade
 #Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
 #Procs=(recanl rdpert decanl model2d recfct)
-Procs=(eof deceof model15d)
+Procs=(deceof model15d)
 
 #
 # Datas de início e fim

@@ -419,9 +419,13 @@ ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} "
-  if [ ! -z ${job_decanl_id} -o ! -z ${job_deceof_id} ]
+  #if [[ ! -z ${job_decanl_id} || ! -z ${job_deceof_id} ]]
+  if [[ ${ANLTYPE} == "CTR" || ${ANLTYPE} == "RDP" ]]
   then
-    SCRIPTRUNJOB="sbatch --dependency=afterany:${job_decanl_id}:${job_deceof_id}"
+    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_decanl_id}"
+  elif [[ ${ANLTYPE} == "NMC" || ${ANLTYPE} == "NPT" || ${ANLTYPE} == "PPT" ]]
+  then
+    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_deceof_id}"
   else
     SCRIPTRUNJOB="sbatch "
   fi
