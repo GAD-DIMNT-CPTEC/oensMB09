@@ -37,6 +37,7 @@
 # 31 Janeiro de 2018 - C. F. Bastarz - Ajustados os prefixos NMC e CTR
 # 17 Junho de 2021   - C. F. Bastarz - Ajustes no nome do script de submissão.
 # 18 Junho de 2021   - C. F. Bastarz - Revisão geral.
+# 26 Outubro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #

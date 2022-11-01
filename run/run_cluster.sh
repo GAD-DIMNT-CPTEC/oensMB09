@@ -32,8 +32,9 @@
 #
 # !REVISION HISTORY:
 #
-# 25 Maio de 2020  - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
+# 25 Maio de 2020     - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -156,15 +157,23 @@ export SCRIPTFILEPATH=${DK_suite}/run/setcluster.${RESOL}${NIVEL}.${LABELI}.${MA
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
-#PBS -o ${ROPERM}/cluster/output/cluster.${RUNTM}.out
-#PBS -e ${ROPERM}/cluster/output/cluster.${RUNTM}.err
-#PBS -l walltime=00:10:00
-#PBS -l select=1:ncpus=1
-#PBS -A CPTEC
-#PBS -V
-#PBS -S /bin/bash
-#PBS -N CLUSTER
-#PBS -q ${AUX_QUEUE}
+###PBS -o ${ROPERM}/cluster/output/cluster.${RUNTM}.out
+###PBS -e ${ROPERM}/cluster/output/cluster.${RUNTM}.err
+###PBS -l walltime=00:10:00
+###PBS -l select=1:ncpus=1
+###PBS -A CPTEC
+###PBS -V
+###PBS -S /bin/bash
+###PBS -N CLUSTER
+###PBS -q ${AUX_QUEUE}
+
+#SBATCH --output=${ROPERM}/cluster/output/cluster.${RUNTM}.out
+#SBATCH --error=${ROPERM}/cluster/output/cluster.${RUNTM}.err
+#SBATCH --time=00:10:00
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=CLUSTER
+#SBATCH --partition=${AUX_QUEUE}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -222,7 +231,10 @@ EOT
 
 cd \${ROPERMOD}/cluster/bin
 
-aprun -n 1 -N 1 -d 1 \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF}
+module load singularity
+
+#aprun -n 1 -N 1 -d 1 \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF}
+singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF}
 
 echo "" > \${ROPERMOD}/cluster/bin/cluster-${LABELI}.ok
 EOT0
@@ -237,7 +249,8 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
 
-qsub -W block=true ${SCRIPTFILEPATH}
+#qsub -W block=true ${SCRIPTFILEPATH}
+sbatch ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/cluster/bin/cluster-${LABELI}.ok" ]; do sleep 1s; done
 

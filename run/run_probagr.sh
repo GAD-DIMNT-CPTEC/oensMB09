@@ -32,8 +32,9 @@
 #
 # !REVISION HISTORY:
 #
-# 03 Julho de 2020 - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2020 - C. F. Bastarz - Revisão geral.
+# 03 Julho de 2020    - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2020    - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -155,15 +156,23 @@ export SCRIPTFILEPATH=${DK_suite}/run/setprobagr.${RESOL}${NIVEL}.${LABELI}.${MA
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
-#PBS -o ${ROPERM}/probagr/output/probagr.${RUNTM}.out
-#PBS -e ${ROPERM}/probagr/output/probagr.${RUNTM}.err
-#PBS -l walltime=00:10:00
-#PBS -l select=1:ncpus=1
-#PBS -A CPTEC
-#PBS -V
-#PBS -S /bin/bash
-#PBS -N PROBAGR
-#PBS -q ${AUX_QUEUE}
+###PBS -o ${ROPERM}/probagr/output/probagr.${RUNTM}.out
+###PBS -e ${ROPERM}/probagr/output/probagr.${RUNTM}.err
+###PBS -l walltime=00:10:00
+###PBS -l select=1:ncpus=1
+###PBS -A CPTEC
+###PBS -V
+###PBS -S /bin/bash
+###PBS -N PROBAGR
+###PBS -q ${AUX_QUEUE}
+
+#SBATCH --output=${ROPERM}/probagr/output/probagr.${RUNTM}.out
+#SBATCH --error=${ROPERM}/probagr/output/probagr.${RUNTM}.err
+#SBATCH --time=00:10:00
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=PROBAGR
+#SBATCH --partition=${AUX_QUEUE}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -212,7 +221,10 @@ EOT
 
 cd \${ROPERMOD}/probagr/bin
 
-aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} 
+module load singularity
+
+#aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} 
+singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} 
 
 echo "" > \${ROPERMOD}/probagr/bin/probagr-${LABELI}.ok
 EOT0
@@ -225,7 +237,8 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
 
-qsub -W block=true ${SCRIPTFILEPATH}
+#qsub -W block=true ${SCRIPTFILEPATH}
+sbatch ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/probagr/bin/probagr-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  

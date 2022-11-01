@@ -41,6 +41,7 @@
 #
 # 02 Setembro de 2020 - C. F. Bastarz - Versão inicial.  
 # 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+# 26 Outubro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #

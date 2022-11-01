@@ -35,6 +35,7 @@
 # 03 Novembro de 2017  - C. F. Bastarz - Inclusão limites região TQ0299L064.
 # 09 Fevereiro de 2018 - C. F. Bastarz - Ajuste dos prefixos NMC (controle 48h) e CTR (controle 120h).
 # 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 26 Outubro de 2022   - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #

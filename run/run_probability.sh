@@ -32,8 +32,9 @@
 #
 # !REVISION HISTORY:
 #
-# 03 Julho de 2020 - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
+# 03 Julho de 2020    - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -148,15 +149,23 @@ export SCRIPTFILEPATH=${DK_suite}/run/setprobability.${RESOL}${NIVEL}.${LABELI}.
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
-#PBS -o ${ROPERM}/probability/output/probability.${RUNTM}.out
-#PBS -e ${ROPERM}/probability/output/probability.${RUNTM}.err
-#PBS -l walltime=00:10:00
-#PBS -l select=1:ncpus=1
-#PBS -A CPTEC
-#PBS -V
-#PBS -S /bin/bash
-#PBS -N PROBS
-#PBS -q ${AUX_QUEUE}
+###PBS -o ${ROPERM}/probability/output/probability.${RUNTM}.out
+###PBS -e ${ROPERM}/probability/output/probability.${RUNTM}.err
+###PBS -l walltime=00:10:00
+###PBS -l select=1:ncpus=1
+###PBS -A CPTEC
+###PBS -V
+###PBS -S /bin/bash
+###PBS -N PROBS
+###PBS -q ${AUX_QUEUE}
+
+#SBATCH --output=${ROPERM}/probability/output/probability.${RUNTM}.out
+#SBATCH --error=${ROPERM}/probability/output/probability.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=PROBS
+#SBATCH --partition=${AUX_QUEUE}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -202,7 +211,10 @@ EOT
 
 cd \${ROPERMOD}/probability/bin
 
-aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probability/bin/probability.x ${LABELI} 
+module load singularity
+
+#aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probability/bin/probability.x ${LABELI} 
+singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${ROPERMOD}/probability/bin/probability.x ${LABELI} 
 
 echo "" > \${ROPERMOD}/probability/bin/probability-${LABELI}.ok
 EOT0
@@ -215,7 +227,8 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
 
-qsub -W block=true ${SCRIPTFILEPATH}
+#qsub -W block=true ${SCRIPTFILEPATH}
+sbatch ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/probability/bin/probability-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
