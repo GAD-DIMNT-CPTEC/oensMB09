@@ -191,15 +191,18 @@ then
   
   cria_namelist ${TRC} ${LV} ${TIMESTEP} ${TMEAN} ${LABELI} ${LABELF} ${ANLTYPE} ${PATHIN} ${PATHOUT} ${PATHMAIN} ${NAMELISTFILEPATH} ${EXECFILEPATH}
 
-  #export PBSDIRECTIVENAME="#PBS -N GRH${ANLTYPE}"
-  export PBSDIRECTIVENAME="#SBATCH --job-name=GRH${ANLTYPE}"
+  if [ $(echo "$QSUB" | grep qsub) ]
+  then
+    export PBSDIRECTIVENAME="#PBS -N GRH${ANLTYPE}"
+    export PBSOUTFILE="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+  else
+    export PBSDIRECTIVENAME="#SBATCH --job-name=GRH${ANLTYPE}"
+    export PBSOUTFILE="#SBATCH --output=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#SBATCH --error=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+  fi
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
-
-  #export PBSOUTFILE="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-  #export PBSERRFILE="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
-  export PBSOUTFILE="#SBATCH --output=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#SBATCH --error=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/"
 
 else
@@ -221,20 +224,22 @@ else
   
     cria_namelist ${TRC} ${LV} ${TIMESTEP} ${TMEAN} ${LABELI} ${LABELF} ${NMEM} ${PATHIN} ${PATHOUT} ${PATHMAIN} ${NAMELISTFILEPATH} ${EXECFILEPATHMEM}
 
-#    export PBSDIRECTIVENAME="#PBS -N GRHENS${ANLTYPE}"
-#    export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
-#    export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
-#  
-#    export PBSOUTFILE="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-#    export PBSERRFILE="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
-#    export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
-
-    export PBSDIRECTIVENAME="#SBATCH --job-name=GRHENS${ANLTYPE}"
-    export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
-    export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+    if [ $(echo "$QSUB" | grep qsub) ]
+    then
+      export PBSDIRECTIVENAME="#PBS -N GRHENS${ANLTYPE}"
+      export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
+      export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   
-    export PBSOUTFILE="#SBATCH --ouput=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-    export PBSERRFILE="#SBATCH --error=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+      export PBSOUTFILE="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+      export PBSERRFILE="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+    else
+      export PBSDIRECTIVENAME="#SBATCH --job-name=GRHENS${ANLTYPE}"
+      export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
+      export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+  
+      export PBSOUTFILE="#SBATCH --ouput=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+      export PBSERRFILE="#SBATCH --error=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+    fi
     export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
 
   done
@@ -245,26 +250,37 @@ fi
 # Script de submissão
 #
 
-cat <<EOF0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
-###PBS -j oe
-###PBS -l walltime=4:00:00
-###PBS -l mppnppn=${MPPWIDTH}
-###PBS -A CPTEC
-###PBS -V
-###PBS -S /bin/bash
-##${PBSDIRECTIVENAME}
-##${PBSDIRECTIVEARRAY}
-###PBS -q ${AUX_QUEUE}
-
-###SBATCH --output=${BAMRUN}/setout/Out.model.${PREFIX}.${LABELI}.${tmstp}.MPI${MPPWIDTH}.out
-###SBATCH --error=${BAMRUN}/setout/Out.model.${PREFIX}.${LABELI}.${tmstp}.MPI${MPPWIDTH}.err
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppnppn=${MPPWIDTH}
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+${PBSDIRECTIVENAME}
+${PBSDIRECTIVEARRAY}
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
+  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+else
+  SCRIPTHEADER="
 #SBATCH --time=4:00:00
 #SBATCH --tasks-per-node=${MPPWIDTH}
 #SBATCH --nodes=${MPPDEPTH}
 ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} "
+  SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
+fi
+
+cat <<EOF0 > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 #echo \${PBS_JOBID} > ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
 
@@ -278,7 +294,6 @@ module load netcdf-fortran/4.5.3
 module load phdf5/1.10.8
 module load hwloc
 module load libfabric/1.13.0
-module load singularity
 
 export PBS_SERVER=${pbs_server2}
 
@@ -298,8 +313,7 @@ fi
 export KMP_STACKSIZE=128m
 ulimit -s unlimited
 
-#aprun -n 1 -N 1 -d 1 \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log
-singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log
+${SCRIPTRUNCMD} \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log
 EOF0
 
 #
@@ -310,8 +324,7 @@ chmod +x ${SCRIPTFILEPATH}
 
 export PBS_SERVER=${pbs_server2}
 
-#qsub -W block=true ${SCRIPTFILEPATH}
-sbatch ${SCRIPTFILEPATH}
+${SCRIPTRUNJOB}
 
 #if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 #then

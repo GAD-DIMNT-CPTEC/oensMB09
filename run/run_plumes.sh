@@ -165,18 +165,23 @@ cd ${OPERM}/run
 
 export SCRIPTFILEPATH=${DK_suite}/run/setplumes${PREFX}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
-###PBS -o ${ROPERM}/plumes/output/plumes.${RUNTM}.out
-###PBS -e ${ROPERM}/plumes/output/plumes.${RUNTM}.err
-###PBS -l walltime=00:10:00
-###PBS -l select=1:ncpus=1
-###PBS -A CPTEC
-###PBS -V
-###PBS -S /bin/bash
-###PBS -N PLUMES
-###PBS -q ${AUX_QUEUE}
-
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
+#PBS -o ${ROPERM}/plumes/output/plumes.${RUNTM}.out
+#PBS -e ${ROPERM}/plumes/output/plumes.${RUNTM}.err
+#PBS -l walltime=00:10:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N PLUMES
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
+  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+else
+  SCRIPTHEADER="
 #SBATCH --output=${ROPERM}/plumes/output/plumes.${RUNTM}.out
 #SBATCH --error=${ROPERM}/plumes/output/plumes.${RUNTM}.err
 #SBATCH --time=00:10:00
@@ -184,6 +189,14 @@ cat <<EOT0 > ${SCRIPTFILEPATH}
 #SBATCH --nodes=1
 #SBATCH --job-name=PLUMES
 #SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 "
+  SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
+fi
+
+cat <<EOT0 > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -230,10 +243,7 @@ EOT
 
 cd \${ROPERMOD}/plumes/bin
 
-module load singularity
-
-#aprun -n 1 -N 1 -d 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI} 
-singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI} 
+${SCRIPTRUNCMD} \${ROPERMOD}/plumes/bin/plumes.x ${LABELI}
 
 echo "" > \${ROPERMOD}/plumes/bin/plumes-${LABELI}.ok
 EOT0
@@ -246,8 +256,7 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
 
-#qsub -W block=true ${SCRIPTFILEPATH}
-sbatch ${SCRIPTFILEPATH}
+${SCRIPTRUNJOB}
 
 until [ -e "${ROPERM}/plumes/bin/plumes-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  

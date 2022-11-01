@@ -31,8 +31,8 @@
 #
 # !REVISION HISTORY:
 #
-# 10 Julho de 2020    - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+# 10 Julho de 2020 - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
 #
 # !REMARKS:
 #

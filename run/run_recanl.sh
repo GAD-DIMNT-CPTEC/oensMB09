@@ -108,18 +108,23 @@ mkdir -p ${DK_suite}/recanl/output
 
 SCRIPTSFILE=setrecanl${PERR}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#! /bin/bash -x
-###PBS -o ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
-###PBS -e ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
-###PBS -l walltime=0:10:00
-###PBS -l select=1:ncpus=1
-###PBS -A CPTEC
-###PBS -V
-###PBS -S /bin/bash
-###PBS -N RECANL
-###PBS -q ${AUX_QUEUE}
-
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
+#PBS -o ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
+#PBS -e ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
+#PBS -l walltime=0:10:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N RECANL
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
+  SCRIPTRUNJOB="qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}"
+else
+  SCRIPTHEADER="
 #SBATCH --output=${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #SBATCH --error=${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #SBATCH --time=${AUX_WALLTIME}
@@ -127,6 +132,14 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #SBATCH --nodes=1
 #SBATCH --job-name=RECANL
 #SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
+  SCRIPTRUNJOB="sbatch ${HOME_suite}/run/${SCRIPTSFILE}"
+fi
+
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export PBS_SERVER=${pbs_server2}
 
@@ -241,11 +254,7 @@ export out=\${recanl_dir}/output; mkdir -p \${out}
 
 cd \${bin}
 
-#aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
-
-module load singularity
-
-singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
+${SCRIPTRUNCMD}
 EOT0
 
 #
@@ -256,7 +265,6 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-#qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
-sbatch ${HOME_suite}/run/${SCRIPTSFILE}
+${SCRIPTRUNJOB}
 
 exit 0

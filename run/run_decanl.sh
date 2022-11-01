@@ -123,21 +123,26 @@ EXT=out
 
 cd ${HOME_suite}/run
 
-SCRIPTSFILE=setdrpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+SCRIPTSFILE=setdecanl.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#! /bin/bash -x
-###PBS -o ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.out
-###PBS -e ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.err
-###PBS -S /bin/bash
-###PBS -l walltime=0:10:00
-###PBS -l select=1:ncpus=1
-###PBS -A CPTEC
-###PBS -V
-###PBS -S /bin/bash
-###PBS -N DECANLRDP
-###PBS -q ${AUX_QUEUE}
-
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
+#PBS -o ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.out
+#PBS -e ${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.err
+#PBS -S /bin/bash
+#PBS -l walltime=0:10:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N DECANLRDP
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
+  SCRIPTRUNJOB="qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}"
+else
+  SCRIPTHEADER="
 #SBATCH --output=${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #SBATCH --error=${DK_suite}/decanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #SBATCH --time=${AUX_WALLTIME}
@@ -145,6 +150,14 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #SBATCH --nodes=1
 #SBATCH --job-name=DECANLRDP
 #SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
+  SCRIPTRUNJOB="sbatch ${HOME_suite}/run/${SCRIPTSFILE}"
+fi
+
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export PBS_SERVER=${pbs_server2}
 
@@ -263,8 +276,6 @@ cat <<EOT2 > \${DK_suite}/decanl/datain/decanl.nml
  &END
 EOT2
 
-module load singularity
-
 i=1
 
 while [ \${i} -le ${NPERT} ]
@@ -295,10 +306,7 @@ EOT3
 
   cd ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}
 
-  #aprun -n 1 -N 1 -d 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
-
-
-  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
+  ${SCRIPTRUNCMD}
 
   echo \${i}
   i=\$((\${i}+1))
@@ -314,7 +322,6 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-#qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
-sbatch ${HOME_suite}/run/${SCRIPTSFILE}
+${SCRIPTRUNJOB}
 
 exit 0

@@ -114,16 +114,24 @@ RUNTM=$(date +"%s")
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
-  #export PBSDIRECTIVENAME="#PBS -N GMAPENS${ANLTYPE}"
-  #export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
-  #export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
-  export PBSDIRECTIVENAME="#SBATCH --job-name=GMAPENS${ANLTYPE}"
-  export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
-  export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+  if [ $(echo "$QSUB" | grep qsub) ]
+  then
+    export PBSDIRECTIVENAME="#PBS -N GMAPENS${ANLTYPE}"
+    export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
+    export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  else
+    export PBSDIRECTIVENAME="#SBATCH --job-name=GMAPENS${ANLTYPE}"
+    export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
+    export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+  fi
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/\${MEM}${ANLTYPE:0:1}"
 else
-  #export PBSDIRECTIVENAME="#PBS -N GMAP${ANLTYPE}"
-  export PBSDIRECTIVENAME="#SBATCH --job-name=GMAP${ANLTYPE}"
+  if [ $(echo "$QSUB" | grep qsub) ]
+  then
+    export PBSDIRECTIVENAME="#PBS -N GMAP${ANLTYPE}"
+  else
+    export PBSDIRECTIVENAME="#SBATCH --job-name=GMAP${ANLTYPE}"
+  fi
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/${MEM}${ANLTYPE}"
@@ -135,19 +143,24 @@ fi
 
 SCRIPTSFILES=setgribmap${ANLTYPE}.${RES}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTSFILES}
-#! /bin/bash -x 
-###PBS -o ${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.out
-###PBS -e ${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.err
-###PBS -l walltime=0:15:00
-###PBS -l mppnppn=1
-###PBS -A CPTEC
-###PBS -V
-###PBS -S /bin/bash
-##${PBSDIRECTIVENAME}
-##${PBSDIRECTIVEARRAY}
-###PBS -q ${AUX_QUEUE}
-
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
+#PBS -o ${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.out
+#PBS -e ${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.err
+#PBS -l walltime=0:15:00
+#PBS -l mppnppn=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+${PBSDIRECTIVENAME}
+${PBSDIRECTIVEARRAY}
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
+  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTSFILES}"
+else
+  SCRIPTHEADER="
 #SBATCH --output=${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.out
 #SBATCH --error=${DK_suite}/run/setgribmap${ANLTYPE}${RES}${LABELI}.${MAQUI}.${RUNTM}.err
 #SBATCH --time=${AUX_WALLTIME}
@@ -156,6 +169,14 @@ cat <<EOT0 > ${SCRIPTSFILES}
 ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTRUNCMD=""
+  SCRIPTRUNJOB="sbatch ${SCRIPTSFILES}"
+fi
+
+cat <<EOT0 > ${SCRIPTSFILES}
+#! /bin/bash -x 
+${SCRIPTHEADER}
 
 export gribmap=${DIRGRADS}/gribmap
 
@@ -176,8 +197,7 @@ do
   then
 
     echo "\${arqidx} não existe ou está vazio!"
-    #aprun -n 1 -N 1 -d 1 \${gribmap} -i \${arqctl}
-    \${gribmap} -i \${arqctl}
+    ${SCRIPTRUNCMD} \${gribmap} -i \${arqctl}
 
   fi
 
@@ -194,8 +214,7 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 export PBS_SERVER=${pbs_server2}
 
-#qsub -W block=true ${SCRIPTSFILES}
-sbatch ${SCRIPTSFILES}
+${SCRIPTRUNJOB}
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then

@@ -158,19 +158,24 @@ export MPPNPPN=1
 
 mkdir -p ${DK_suite}/ensmed/output/
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
-###PBS -o ${ROPERM}/ensmed/output/ensmed.${RUNTM}.out
-###PBS -e ${ROPERM}/ensmed/output/ensmed.${RUNTM}.err
-###PBS -l walltime=00:10:00
-###PBS -l mppwidth=${MPPWIDTH}
-###PBS -l mppnppn=${MPPNPPN}
-###PBS -A CPTEC
-###PBS -V
-###PBS -S /bin/bash
-###PBS -N ENSMED
-###PBS -q ${QUEUE}
-
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
+#PBS -o ${ROPERM}/ensmed/output/ensmed.${RUNTM}.out
+#PBS -e ${ROPERM}/ensmed/output/ensmed.${RUNTM}.err
+#PBS -l walltime=00:10:00
+#PBS -l mppwidth=${MPPWIDTH}
+#PBS -l mppnppn=${MPPNPPN}
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N ENSMED
+#PBS -q ${QUEUE}
+"
+  SCRIPTRUNCMD="time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss " 
+  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+else
+  SCRIPTHEADER="
 #SBATCH --output=${ROPERM}/ensmed/output/ensmed.${RUNTM}.out
 #SBATCH --error=${ROPERM}/ensmed/output/ensmed.${RUNTM}.err
 #SBATCH --time=00:10:00
@@ -178,6 +183,14 @@ cat <<EOT0 > ${SCRIPTFILEPATH}
 #SBATCH --nodes=${MPPDEPTH}
 #SBATCH --job-name=ENSMED
 #SBATCH --partition=${QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH}" 
+  SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
+fi
+
+cat <<EOT0 > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -220,10 +233,8 @@ mkdir -p \${SOPERMOD}/ensmed/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 
 cd \${SOPERMOD}/ensmed/bin
 
-module load singularity
+${SCRIPTRUNCMD} \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log
 
-#time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log
-singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log
 
 rm \${SOPERMOD}/ensmed/bin/ensmed-${LABELI}.ok
 
@@ -236,8 +247,7 @@ EOT0
 
 chmod +x ${SCRIPTFILEPATH}
 
-#qsub -W block=true ${SCRIPTFILEPATH}
-sbatch ${SCRIPTFILEPATH}
+${SCRIPTRUNJOB}
 
 until [ -e "${ROPERM}/ensmed/bin/ensmed-${LABELI}.ok" ]; do sleep 1s; done
 

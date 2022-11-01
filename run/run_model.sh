@@ -347,24 +347,32 @@ fi
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
-  #export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  #export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
-  #export PBSDIRECTIVENAME="#PBS -N BAMENS${ANLTYPE}"
-  #export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
-  #export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
-  export PBSOUTFILE="#SBATCH --output=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#SBATCH --error=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#SBATCH --job-name=BAMENS${ANLTYPE}"
-  export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
-  export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+  if [ $(echo "$QSUB" | grep qsub) ]
+  then
+    export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME="#PBS -N BAMENS${ANLTYPE}"
+    export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
+    export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  else
+    export PBSOUTFILE="#SBATCH --output=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#SBATCH --error=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME="#SBATCH --job-name=BAMENS${ANLTYPE}"
+    export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
+    export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+  fi
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
 else
-  #export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  #export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
-  #export PBSDIRECTIVENAME="#PBS -N BAM${ANLTYPE}"
-  export PBSOUTFILE="#SBATCH --output=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#SBATCH --error=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#SBATCH --job-name=BAM${ANLTYPE}"
+  if [ $(echo "$QSUB" | grep qsub) ]
+  then
+    export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME="#PBS -N BAM${ANLTYPE}"
+  else
+    export PBSOUTFILE="#SBATCH --output=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#SBATCH --error=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME="#SBATCH --job-name=BAM${ANLTYPE}"
+  fi
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}"
@@ -381,22 +389,26 @@ fi
 # Script de submissão
 #
 
-cat <<EOF0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
-###PBS -j oe
-###PBS -l walltime=${walltime}
-###PBS -l mppwidth=${MPPWIDTH}
-###PBS -l mppnppn=${MPPNPPN}
-###PBS -l mppdepth=${MPPDEPTH}
-###PBS -A CPTEC
-###PBS -V
-###PBS -S /bin/bash
-##${PBSDIRECTIVENAME}
-##${PBSDIRECTIVEARRAY}
-###PBS -q ${QUEUE}
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
+#PBS -j oe
+#PBS -l walltime=${walltime}
+#PBS -l mppwidth=${MPPWIDTH}
+#PBS -l mppnppn=${MPPNPPN}
+#PBS -l mppdepth=${MPPDEPTH}
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+${PBSDIRECTIVENAME}
+${PBSDIRECTIVEARRAY}
+#PBS -q ${QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss "
 
-###SBATCH --output=${BAMRUN}/setout/Out.model.${PREFIX}.${LABELI}.${tmstp}.MPI${MPPWIDTH}.out
-###SBATCH --error=${BAMRUN}/setout/Out.model.${PREFIX}.${LABELI}.${tmstp}.MPI${MPPWIDTH}.err
+  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+else
+  SCRIPTHEADER="
 ${PBSOUTFILE}
 ${PBSERRFILE}
 #SBATCH --time=${walltime}
@@ -405,6 +417,14 @@ ${PBSERRFILE}
 ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} "
+  SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
+fi
+
+cat <<EOF0 > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 #export PBS_SERVER=${pbs_server1}
 #export HUGETLB_MORECORE=yes
@@ -426,7 +446,6 @@ module load netcdf-fortran/4.5.3
 module load phdf5/1.10.8
 module load hwloc
 module load libfabric/1.13.0
-module load singularity
 
 ${PBSMEM}
 ${PBSEXECFILEPATH}
@@ -443,9 +462,7 @@ date
 
 mkdir -p \${EXECFILEPATH}/setout
 
-#aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log
-
-singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log
+${SCRIPTRUNCMD} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log
 
 date
 
@@ -458,8 +475,7 @@ EOF0
 
 chmod +x ${SCRIPTFILEPATH}
 
-#qsub -W block=true ${SCRIPTFILEPATH}
-sbatch ${SCRIPTFILEPATH}
+${SCRIPTRUNJOB}
 
 #if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 #then
