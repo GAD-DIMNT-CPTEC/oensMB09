@@ -171,7 +171,7 @@ ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${AUX_QUEUE}
 "
   SCRIPTRUNCMD=""
-  SCRIPTRUNJOB="sbatch "
+  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_pos_id}"
 fi
 
 cat <<EOT0 > ${SCRIPTSFILES}
@@ -214,7 +214,9 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 export PBS_SERVER=${pbs_server2}
 
-${SCRIPTRUNJOB} ${SCRIPTSFILES}
+job_gribmap=$(${SCRIPTRUNJOB} ${SCRIPTSFILES})
+export job_gribmap_id=$(echo ${job_gribmap} | awk -F " " '{print $4}')
+echo ${job_gribmap_id}
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 then
@@ -232,4 +234,4 @@ else
 
 fi
 
-exit 0
+#exit 0

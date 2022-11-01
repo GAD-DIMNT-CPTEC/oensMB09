@@ -419,7 +419,7 @@ ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} "
-  SCRIPTRUNJOB="sbatch "
+  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_decanl_id}"
 fi
 
 cat <<EOF0 > ${SCRIPTFILEPATH}
@@ -475,7 +475,9 @@ EOF0
 
 chmod +x ${SCRIPTFILEPATH}
 
-${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
+job_model=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH})
+export job_model_id=$(echo ${job_model} | awk -F " " '{print $4}')
+echo ${job_model_id}
 
 #if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 #then
@@ -507,4 +509,4 @@ ${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 #
 #rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
 
-exit 0
+#exit 0

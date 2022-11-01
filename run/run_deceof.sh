@@ -494,6 +494,8 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
-${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILES}
+job_deceof=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILES})
+export job_deceof_id=$(echo ${job_deceof} | awk -F " " '{print $4}')
+echo ${job_deceof_id}
 
-exit 0
+#exit 0

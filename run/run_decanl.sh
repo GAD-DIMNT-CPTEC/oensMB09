@@ -152,7 +152,7 @@ else
 #SBATCH --partition=${AUX_QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
-  SCRIPTRUNJOB="sbatch "
+  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_rdpert_id}"
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -322,6 +322,8 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE}
+job_decanl=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
+export job_decanl_id=$(echo ${job_decanl} | awk -F " " '{print $4}')
+echo ${job_decanl_id}
 
-exit 0
+#exit 0

@@ -156,7 +156,7 @@ else
 #SBATCH --partition=${AUX_QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
-  SCRIPTRUNJOB="sbatch "
+  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_recanl_id}"
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -314,6 +314,8 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE} 
 
-${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE}
+job_rdpert=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
+export job_rdpert_id=$(echo ${job_rdpert} | awk -F " " '{print $4}')
+echo ${job_rdpert_id}
 
-exit 0
+#exit 0

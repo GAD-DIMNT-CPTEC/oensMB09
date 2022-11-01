@@ -127,6 +127,7 @@ then
   export ENSTYPE="export TYPES=${TYPES}"
 else  
   if [ $(echo "$QSUB" | grep qsub) ]
+  then
     export PBSDIRECTIVE="#PBS -J 1-${NMEM}"
     export DEFINEMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   else
@@ -173,7 +174,7 @@ else
 ${PBSDIRECTIVE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
-  SCRIPTRUNJOB="sbatch "
+  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_model_id}"
 fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -284,6 +285,8 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE}
+job_recfct=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
+export job_recfct_id=$(echo ${job_recfct} | awk -F " " '{print $4}')
+echo ${job_recfct_id}
 
-exit 0
+#exit 0

@@ -265,6 +265,8 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE}
+job_recanl=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
+export job_recanl_id=$(echo ${job_recanl} | awk -F " " '{print $4}')
+echo ${job_recanl_id}
 
-exit 0
+#exit 0
