@@ -18,6 +18,7 @@
 #
 # 10 Setembro de 2020 - C. F. Bastarz - Versão inicial.  
 # 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022 - C. F. Bastarz - Atualizado para uso no Egeon.
 #
 # !REMARKS:
 # Antes de utilizar este script, revise as variáveis a seguir:
@@ -67,9 +68,9 @@ export anltype=SMT
 #
 
 # Acrescentar ou remover os processos conforme a necessidade
-#Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
+Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
 #Procs=(recanl rdpert decanl model2d recfct)
-Procs=(deceof model15d)
+#Procs=(deceof model15d)
 
 #
 # Datas de início e fim

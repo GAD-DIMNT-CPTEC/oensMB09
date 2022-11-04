@@ -173,7 +173,7 @@ else
 #SBATCH --partition=${AUX_QUEUE}
 ${PBSDIRECTIVE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
   if [ ! -z ${job_model_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_model_id}"

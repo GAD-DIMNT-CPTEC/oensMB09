@@ -155,7 +155,7 @@ else
 #SBATCH --job-name=RDPT${PREFIC}
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
   if [ ! -z ${job_recanl_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_recanl_id}"
