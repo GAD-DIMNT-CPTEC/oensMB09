@@ -431,6 +431,9 @@ ${PBSDIRECTIVEARRAY}
   fi
 fi
 
+monitor=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
 ${SCRIPTHEADER}
@@ -476,6 +479,8 @@ ${SCRIPTRUNCMD} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EX
 date
 
 #sleep 10s # espera para terminar todos os processos de I/O
+
+touch ${monitor}
 EOF0
 
 #
@@ -486,7 +491,9 @@ chmod +x ${SCRIPTFILEPATH}
 
 job_model=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH})
 export job_model_id=$(echo ${job_model} | awk -F " " '{print $4}')
-echo ${job_model_id}
+echo "model ${job_model_id}"
+
+until [ -e ${monitor} ]; do sleep 1s; done
 
 #if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 #then

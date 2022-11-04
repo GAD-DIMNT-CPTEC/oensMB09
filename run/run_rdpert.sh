@@ -164,6 +164,9 @@ else
   fi
 fi
 
+monitor=${DK_suite}/rdpert/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #! /bin/bash -x
 ${SCRIPTHEADER}
@@ -308,7 +311,9 @@ cd ${HOME_suite}/run
 
 cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 
-${SCRIPTRUNCMD} ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
+${SCRIPTRUNCMD} ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+
+touch ${monitor}
 EOT0
 
 #
@@ -321,6 +326,8 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 job_rdpert=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
 export job_rdpert_id=$(echo ${job_rdpert} | awk -F " " '{print $4}')
-echo ${job_rdpert_id}
+echo "rdpert ${job_rdpert_id}"
+
+until [ -e ${monitor} ]; do sleep 1s; done
 
 #exit 0

@@ -274,6 +274,9 @@ else
   fi
 fi
 
+monitor=${DK_suite}/eof/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #! /bin/bash -x
 ${SCRIPTHEADER}
@@ -758,6 +761,8 @@ EOT1
   ${SCRIPTRUNCMD} \${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > \${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
 done
+
+touch ${monitor}
 EOT0
 
 #
@@ -770,6 +775,8 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 job_eof=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
 export job_eof_id=$(echo ${job_eof} | awk -F " " '{print $4}')
-echo ${job_eof_id}
+echo "eof ${job_eof_id}"
+
+until [ -e ${monitor} ]; do sleep 1s; done
 
 #exit 0

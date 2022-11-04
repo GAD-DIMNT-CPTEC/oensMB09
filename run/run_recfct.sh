@@ -182,6 +182,9 @@ ${PBSDIRECTIVE}
   fi
 fi
 
+monitor=${DK_suite}/recfct/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #! /bin/bash -x
 ${SCRIPTHEADER}
@@ -278,8 +281,10 @@ EOT3
   
   cd ${HOME_suite}/recfct/bin/\${TRCLV}
   
-  ${SCRIPTRUNCMD} ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
+  ${SCRIPTRUNCMD} ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
 done
+
+touch ${monitor}
 EOT0
 
 #
@@ -292,6 +297,8 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 job_recfct=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
 export job_recfct_id=$(echo ${job_recfct} | awk -F " " '{print $4}')
-echo ${job_recfct_id}
+echo "recfct ${job_recfct_id}"
+
+until [ -e ${monitor} ]; do sleep 1s; done
 
 #exit 0

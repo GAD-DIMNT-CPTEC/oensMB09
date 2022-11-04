@@ -332,6 +332,9 @@ ${PBSDIRECTIVEARRAY}
   fi
 fi
 
+monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
 ${SCRIPTHEADER}
@@ -364,6 +367,8 @@ date
 
 ${SCRIPTRUNCMD} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
 date
+
+touch ${monitor}
 EOF0
 
 #
@@ -374,7 +379,9 @@ chmod +x ${SCRIPTFILEPATH}
 
 job_pos=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH})
 export job_pos_id=$(echo ${job_pos} | awk -F " " '{print $4}')
-echo ${job_pos_id}
+echo "pos ${job_pos_id}"
+
+until [ -e ${monitor} ]; do sleep 1s; done
 
 #if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
 #then

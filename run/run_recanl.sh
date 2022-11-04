@@ -142,6 +142,9 @@ else
   #fi
 fi
 
+monitor=${DK_suite}/recanl/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #! /bin/bash -x
 ${SCRIPTHEADER}
@@ -260,6 +263,8 @@ export out=\${recanl_dir}/output; mkdir -p \${out}
 cd \${bin}
 
 ${SCRIPTRUNCMD} ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
+
+touch ${monitor}
 EOT0
 
 #
@@ -272,6 +277,8 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 job_recanl=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
 export job_recanl_id=$(echo ${job_recanl} | awk -F " " '{print $4}')
-echo ${job_recanl_id}
+echo "recanl ${job_recanl_id}"
+
+until [ -e ${monitor} ]; do sleep 1s; done
 
 #exit 0

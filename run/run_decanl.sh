@@ -160,6 +160,9 @@ else
   fi
 fi
 
+monitor=${DK_suite}/decanl/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #! /bin/bash -x
 ${SCRIPTHEADER}
@@ -311,12 +314,14 @@ EOT3
 
   cd ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}
 
-  ${SCRIPTRUNCMD} ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
+  ${SCRIPTRUNCMD} ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
 
   echo \${i}
   i=\$((\${i}+1))
 
 done
+
+touch ${monitor}
 EOT0
 
 #
@@ -329,6 +334,8 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
 job_decanl=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
 export job_decanl_id=$(echo ${job_decanl} | awk -F " " '{print $4}')
-echo ${job_decanl_id}
+echo "decanl ${job_decanl_id}"
+
+until [ -e ${monitor} ]; do sleep 1s; done
 
 #exit 0

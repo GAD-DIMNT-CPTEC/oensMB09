@@ -183,6 +183,9 @@ else
   fi
 fi
 
+monitor=${DK_suite}/deceof/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
 #! /bin/bash -x
 ${SCRIPTHEADER}
@@ -489,6 +492,8 @@ EOT4
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
 ${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+
+touch ${monitor}
 EOT0
 
 #
@@ -501,6 +506,8 @@ chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
 job_deceof=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILES})
 export job_deceof_id=$(echo ${job_deceof} | awk -F " " '{print $4}')
-echo ${job_deceof_id}
+echo "deceof ${job_deceof_id}"
+
+until [ -e ${monitor} ]; do sleep 1s; done
 
 #exit 0
