@@ -407,6 +407,17 @@ ${PBSDIRECTIVEARRAY}
   SCRIPTRUNCMD="aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss "
 
   SCRIPTRUNJOB="qsub -W block=true "
+  SCRIPTMODULE="
+export PBS_SERVER=${pbs_server1}
+export HUGETLB_MORECORE=yes
+export HUGETLB_ELFMAP=W
+export HUGETLB_FORCE_ELFMAP=yes+
+export MPICH_ENV_DISPLAY=1
+export HUGETLB_DEFAULT_PAGE_SIZE=2m
+export OMP_NUM_THREADS=6
+"
+  SCRIPTEXTRAS1="echo \${PBS_JOBID} > ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}"
+  SCRIPTEXTRAS2="sleep 10s # espera para terminar todos os processos de I/O"
 else
   SCRIPTHEADER="
 ${PBSOUTFILE}
@@ -419,36 +430,21 @@ ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
   SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
-  #if [[ ! -z ${job_decanl_id} || ! -z ${job_deceof_id} ]]
-  if [[ ${ANLTYPE} == "CTR" || ${ANLTYPE} == "RDP" ]]
-  then
-    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_decanl_id}"
-  elif [[ ${ANLTYPE} == "NMC" || ${ANLTYPE} == "NPT" || ${ANLTYPE} == "PPT" ]]
-  then
-    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_deceof_id}"
-  else
+  if [[ ! -z ${job_decanl_id} || ! -z ${job_deceof_id} ]]
+  then        
+    if [[ ${ANLTYPE} == "CTR" || ${ANLTYPE} == "RDP" ]]
+    then
+      SCRIPTRUNJOB="sbatch --dependency=afterok:${job_decanl_id}"
+    elif [[ ${ANLTYPE} == "NMC" || ${ANLTYPE} == "NPT" || ${ANLTYPE} == "PPT" ]]
+    then
+      SCRIPTRUNJOB="sbatch --dependency=afterok:${job_deceof_id}"
+    else
+      SCRIPTRUNJOB="sbatch "
+    fi
+  else  
     SCRIPTRUNJOB="sbatch "
-  fi
-fi
-
-monitor=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/monitor.t
-if [ -e ${monitor} ]; then rm ${monitor}; fi
-
-cat <<EOF0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
-${SCRIPTHEADER}
-
-#export PBS_SERVER=${pbs_server1}
-#export HUGETLB_MORECORE=yes
-#export HUGETLB_ELFMAP=W
-#export HUGETLB_FORCE_ELFMAP=yes+
-#export MPICH_ENV_DISPLAY=1
-#export HUGETLB_DEFAULT_PAGE_SIZE=2m
-
-ulimit -s unlimited
-ulimit -c unlimited
-
-# EGEON GNU
+  fi        
+  SCRIPTMODULE="
 module purge
 module load gnu9/9.4.0
 module load ucx/1.11.2
@@ -458,17 +454,29 @@ module load netcdf-fortran/4.5.3
 module load phdf5/1.10.8
 module load hwloc
 module load libfabric/1.13.0
+"
+  SCRIPTEXTRAS1=""
+  SCRIPTEXTRAS2=""
+fi
+
+monitor=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
+cat <<EOF0 > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
+
+${SCRIPTMODULE}
+
+ulimit -s unlimited
+ulimit -c unlimited
 
 ${PBSMEM}
 ${PBSEXECFILEPATH}
 
 cd \${EXECFILEPATH}
 
-#export OMP_NUM_THREADS=6
-
-#ulimit -s unlimited
-
-#echo \${PBS_JOBID} > ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
+${SCRIPTEXTRAS1}
 
 date
 
@@ -478,7 +486,7 @@ ${SCRIPTRUNCMD} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EX
 
 date
 
-#sleep 10s # espera para terminar todos os processos de I/O
+${SCRIPTEXTRAS2}
 
 touch ${monitor}
 EOF0
@@ -495,34 +503,39 @@ echo "model ${job_model_id}"
 
 until [ -e ${monitor} ]; do sleep 1s; done
 
-#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
-#then
-#
-#  JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
-#
-#  for mem in $(seq 1 ${ANLPERT})
-#  do
-#
-#    jobidname="BAMENS${ANLTYPE}.o${JOBID}.${mem}"
-#    bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
-#
-#    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
-#    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
-#  
-#  done
-#
-#else
-#
-#  JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
-#
-#  jobidname="BAM${ANLTYPE}.o${JOBID}"
-#  bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-#
-#  until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
-#  mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
-#
-#fi
-#
-#rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+  then
+  
+    JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+  
+    for mem in $(seq 1 ${ANLPERT})
+    do
+  
+      jobidname="BAMENS${ANLTYPE}.o${JOBID}.${mem}"
+      bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
+  
+      until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
+      mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
+    
+    done
+  
+  else
+  
+    JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
+  
+    jobidname="BAM${ANLTYPE}.o${JOBID}"
+    bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+  
+    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
+    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
+  
+  fi
+  
+  rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
+
+fi
 
 #exit 0
