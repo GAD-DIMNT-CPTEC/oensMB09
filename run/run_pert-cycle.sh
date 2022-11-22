@@ -68,9 +68,7 @@ export anltype=SMT
 #
 
 # Acrescentar ou remover os processos conforme a necessidade
-#Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
-#Procs=(recanl rdpert)
-Procs=(model2d)
+Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
 
 #
 # Número de perturbações

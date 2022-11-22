@@ -268,8 +268,8 @@ then
     export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
     export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   else
-    export PBSOUTFILE="#SBATCH --output=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-    export PBSERRFILE="#SBATCH --error=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSOUTFILE="#SBATCH --output=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/\${MEM}${ANLTYPE:0:1}/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#SBATCH --error=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/\${MEM}${ANLTYPE:0:1}/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
     export PBSDIRECTIVENAME="#SBATCH --job-name=POSENS${ANLTYPE}"
     export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
     export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
@@ -284,6 +284,8 @@ else
   else
     export PBSOUTFILE="#SBATCH --output=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
     export PBSERRFILE="#SBATCH --error=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.err"
+#    export PBSOUTFILE="#SBATCH --output=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.\%A_\%a.out"
+#    export PBSERRFILE="#SBATCH --error=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.\%A_\%a.err"
     export PBSDIRECTIVENAME="#SBATCH --job-name=POS${ANLTYPE}"
   fi
   export PBSDIRECTIVEARRAY=""
@@ -312,11 +314,22 @@ ${PBSDIRECTIVEARRAY}
 "
   SCRIPTRUNCMD="aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} "
   SCRIPTRUNJOB="qsub -W block=true "
-  SCRIPTEXTRA1="echo \${PBS_JOBID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}"
+  SCRIPTMODULE="
+export PBS_SERVER=${pbs_server1}
+export KMP_STACKSIZE=128m
+"
+  SCRIPTEXTRAS1="echo \${PBS_JOBID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}"
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
+  then
+    monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}/setout/monitor.t
+  else  
+    monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/monitor.t
+  fi          
+  SCRIPTEXTRAS2="touch ${monitor}"
 else
   SCRIPTHEADER="
-${PBSOUTFILE}
-${PBSERRFILE}
+#${PBSOUTFILE}
+#${PBSERRFILE}
 #SBATCH --time=${WALLTIME}
 #SBATCH --tasks-per-node=${MPPWIDTH}
 #SBATCH --nodes=${MPPDEPTH}
@@ -342,23 +355,35 @@ module load phdf5/1.10.8
 module load hwloc
 module load libfabric/1.13.0
 "
-  SCRIPTEXTRA1=""
+  #SCRIPTEXTRAS1="echo \${SLURM_JOB_ID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} "
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
+  then
+  #  SCRIPTEXTRAS2="mv ${HOME_suite}/run/slurm-\${SLURM_JOB_ID}_\${SLURM_ARRAY_TASK_COUNT}.out \${EXECFILEPATH}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.\${MEM}${ANLTYPE:0:1}.out"
+    SCRIPTEXTRAS1="echo \${SLURM_ARRAY_JOB_ID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} "
+  else        
+  #  SCRIPTEXTRAS2="mv ${HOME_suite}/run/slurm-\${SLURM_JOB_ID}.out \${EXECFILEPATH}/setout/Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+    SCRIPTEXTRAS1="echo \${SLURM_JOB_ID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} "
+  fi
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
+  then
+    monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}/setout/monitor.t
+  else  
+    monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/monitor.t
+  fi          
+  SCRIPTEXTRAS2="touch ${monitor}"
 fi
 
-monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/monitor.t
+#monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/monitor.t
 if [ -e ${monitor} ]; then rm ${monitor}; fi
 
 cat <<EOF0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
 ${SCRIPTHEADER}
 
-ulimit -s unlimited
-ulimit -c unlimited
-
 ${SCRIPTMODULE}
 
-export PBS_SERVER=${pbs_server1}
-export KMP_STACKSIZE=128m
+ulimit -s unlimited
+ulimit -c unlimited
 
 ${PBSMEM}
 ${PBSEXECFILEPATH}
@@ -367,14 +392,15 @@ cd \${EXECFILEPATH}
 
 ${SCRIPTEXTRAS1}
 
+date
+
 mkdir -p \${EXECFILEPATH}/setout
 
-date
-
 ${SCRIPTRUNCMD} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
+
 date
 
-touch ${monitor}
+${SCRIPTEXTRAS2}
 EOF0
 
 #
@@ -383,45 +409,154 @@ EOF0
 
 chmod +x ${SCRIPTFILEPATH}
 
-job_pos=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH})
-export job_pos_id=$(echo ${job_pos} | awk -F " " '{print $4}')
+#job_pos=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH})
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
+#export job_pos_id=$(echo ${job_pos} | awk -F " " '{print $4}')
+#export job_pos_id=$(cat $(cat ${SCRIPTFILEPATH} | grep this.pos.job | awk -F " " '{print $4}'))
+
+sleep 3s
+
+export job_pos_id=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE})
+
 echo "pos ${job_pos_id}"
 
-until [ -e ${monitor} ]; do sleep 1s; done
+#
+# Função para aguardar a mudança de status dos jobs
+#
 
+job_control() {
+
+  job_state=$(echo $(squeue -h -u ${USER} -j ${1}) | awk -F" " '{print $5}')  
+
+  until [ -z ${job_state} ]
+  do
+
+    echo "${1} ${job_state}"
+    sleep 2s
+
+    job_state=$(echo $(squeue -h -u ${USER} -j ${1}) | awk -F" " '{print $5}')  
+
+  done
+
+}  
+
+sleep 5s
+
+job_control ${job_pos_id}
+
+#. job_control.sh ${job_pos_id}
+#wait
+
+sleep 5s
+
+#
+# Com a finalização dos jobs, organizam-se os logs
+#
+
+EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}
+
+# Se o scheduler da máquina for o PBS
 if [ $(echo "$QSUB" | grep qsub) ]
 then
 
-  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+  # Pós-processamento do conjunto      
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
   then
-  
-    JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
   
     for mem in $(seq 1 ${ANLPERT})
     do
   
+      monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}/setout/monitor.t
+      until [ -e ${monitor} ]; do sleep 5s; done
+
+      JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+
       jobidname="POSENS${ANLTYPE}.o${JOBID}.${mem}"
       posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
   
       until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
-      mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
+
+      fmem=0${mem}${ANLTYPE:0:1}
+
+      mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/${fmem}/setout/${posoutname}
   
     done
+
+    rm -v ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
   
+  # Pós-processamento do membro controle      
   else
   
+    monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/monitor.t
+    until [ -e ${monitor} ]; do sleep 1s; done
+
     JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
-  
+
     jobidname="POS${ANLTYPE}.o${JOBID}"
     posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
-  
-    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
+
+    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 5s; done 
+
     mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
-  
+
+    rm -v ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
+
   fi
   
-  rm ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
+# Se o scheduler da máquina for o SLURM
+else
 
+  # Pós-processamento do conjunto      
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
+  then
+  
+    for mem in $(seq 1 ${ANLPERT})
+    do
+             
+      monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}/setout/monitor.t
+      until [ -e ${monitor} ]; do sleep 5s; done
+
+      #JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+      JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE})
+
+      jobidname="slurm-${JOBID}_${mem}.out"
+
+      while [ ${HOME_suite}/run/${jobidname} -nt ${HOME_suite}/run/${jobidname} ]; do sleep 1s; done
+
+      posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
+  
+      until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 5s; done
+
+      fmem=0${mem}${ANLTYPE:0:1}
+
+      mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/${fmem}/setout/${posoutname}
+  
+    done
+
+    rm -v ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
+  
+  # Pós-processamento do membro controle  
+  else
+  
+    monitor=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/setout/monitor.t
+    until [ -e ${monitor} ]; do sleep 1s; done
+
+    JOBID=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE})
+
+    jobidname="slurm-${JOBID}.out"
+
+    while [ ${HOME_suite}/run/${jobidname} -nt ${HOME_suite}/run/${jobidname} ]; do sleep 1s; done
+
+    posoutname="Out.pos.${LABELI}.MPI${MPPWIDTH}.out"
+
+    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
+
+    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${posoutname}
+
+    rm -v ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE}
+
+  fi
+  
 fi
 
 #exit 0

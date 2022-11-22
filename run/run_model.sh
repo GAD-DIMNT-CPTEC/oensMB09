@@ -405,7 +405,6 @@ ${PBSDIRECTIVEARRAY}
 #PBS -q ${QUEUE}
 "
   SCRIPTRUNCMD="aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss "
-
   SCRIPTRUNJOB="qsub -W block=true "
   SCRIPTMODULE="
 export PBS_SERVER=${pbs_server1}
@@ -422,7 +421,7 @@ else
   SCRIPTHEADER="
 ${PBSOUTFILE}
 ${PBSERRFILE}
-#SBATCH --time=${walltime}
+#SBATCH --time=${WALLTIME}
 #SBATCH --tasks-per-node=${MPPWIDTH}
 #SBATCH --nodes=${MPPDEPTH}
 ${PBSDIRECTIVENAME}
