@@ -414,7 +414,11 @@ ${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 #export job_pos_id=$(echo ${job_pos} | awk -F " " '{print $4}')
 #export job_pos_id=$(cat $(cat ${SCRIPTFILEPATH} | grep this.pos.job | awk -F " " '{print $4}'))
 
-sleep 3s
+#sleep 3s
+#
+#export job_pos_id=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE})
+
+until [ -e ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} ]; do sleep 1s; done
 
 export job_pos_id=$(cat ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE})
 
