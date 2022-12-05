@@ -68,7 +68,7 @@ export anltype=SMT
 #
 
 # Acrescentar ou remover os processos conforme a necessidade
-Procs=(recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
+Procs=(pre recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
 
 #
 # Número de perturbações
@@ -80,8 +80,8 @@ export npert=7
 # Datas de início e fim
 #
 
-export datai=2020021700
-export dataf=2020021700
+export datai=2020120100
+export dataf=2020120200
 
 export data=${datai}
 
@@ -96,6 +96,8 @@ do
   do
 
     echo ${data} ${datafct48h} ${datafct15d} ${proc}
+
+    if [ ${proc} == "pre" ]; then . runPre 126 28 ${data} ${anltype} 1 T F 574 64; wait; fi 
 
     if [ ${proc} == "recanl" ]; then . ${bpath}/run_recanl.sh TQ0126L028 ${anltype} ANL${anltype} ${data}; wait; fi
     if [ ${proc} == "rdpert" ]; then . ${bpath}/run_rdpert.sh TQ0126L028 ${anltype} YES ${data} ${npert}; wait; fi
