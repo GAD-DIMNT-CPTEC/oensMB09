@@ -124,7 +124,7 @@ then
     export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
     export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
   fi
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/\${MEM}${ANLTYPE:0:1}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/\${MEM}/${ANLTYPE:0:1}"
 else
   if [ $(echo "$QSUB" | grep qsub) ]
   then
@@ -134,7 +134,7 @@ else
   fi
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/${MEM}${ANLTYPE}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/${MEM}/${ANLTYPE}"
 fi
 
 #
