@@ -69,6 +69,8 @@ export anltype=SMT
 
 # Acrescentar ou remover os processos conforme a necessidade
 Procs=(pre recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
+#Procs=(pre recanl rdpert decanl model2d recfct eof deceof model15d pos15d)
+#Procs=(gribmap)
 
 #
 # Número de perturbações
@@ -80,8 +82,10 @@ export npert=7
 # Datas de início e fim
 #
 
-export datai=2020120100
-export dataf=2020120200
+#export datai=2020120500
+#export dataf=2020121500
+export datai=2020120700
+export dataf=2020121500
 
 export data=${datai}
 

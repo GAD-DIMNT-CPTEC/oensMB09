@@ -102,9 +102,10 @@ else
   PREF=${5}
 fi
 
-export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
-export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
+#export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
+export FILEENV=$(find ${PWD} -name EnvironmentalVariablesMCGA -print)
+#export PATHENV=$(dirname ${FILEENV})
+#export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${TRCLV} ${NMEM}
 

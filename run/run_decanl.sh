@@ -60,9 +60,10 @@ then
   exit 0
 fi
 
-export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
-export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd  ;pwd)
+#export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
+export FILEENV=$(find ${PWD} -name EnvironmentalVariablesMCGA -print)
+#export PATHENV=$(dirname ${FILEENV})
+#export PATHBASE=$(cd ${PATHENV}; cd  ;pwd)
 
 . ${FILEENV} ${1} ${2}
 
