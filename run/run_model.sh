@@ -66,6 +66,7 @@
 # 26 Outubro de 2017 - C. F. Bastarz - Inclusão dos prefixos das análises do ECMWF (EIT/EIH)
 # 25 Janeiro de 2018 - C. F. Bastarz - Ajuste dos prefixos NMC (controle 48h) e CTR (controle 120h)
 # 18 Junho de 2021   - C. F. Bastarz - Revisão geral.
+# 26 Outubro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -201,9 +202,10 @@ else
   export ANLPERT=${10}  
 fi
 
-export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
-export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
+#export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
+export FILEENV=$(find ${PWD} -name EnvironmentalVariablesMCGA -print)
+#export PATHENV=$(dirname ${FILEENV})
+#export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${RES} ${PREFIC}
 
@@ -346,16 +348,32 @@ fi
 
 if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
-  export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#PBS -N BAMENS${ANLTYPE}"
-  export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
-  export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  if [ $(echo "$QSUB" | grep qsub) ]
+  then
+    export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME="#PBS -N BAMENS${ANLTYPE}"
+    export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
+    export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  else
+    export PBSOUTFILE="#SBATCH --output=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#SBATCH --error=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME="#SBATCH --job-name=BAMENS${ANLTYPE}"
+    export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
+    export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+  fi
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
 else
-  export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-  export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
-  export PBSDIRECTIVENAME="#PBS -N BAM${ANLTYPE}"
+  if [ $(echo "$QSUB" | grep qsub) ]
+  then
+    export PBSOUTFILE="#PBS -o ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#PBS -e ${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME="#PBS -N BAM${ANLTYPE}"
+  else
+    export PBSOUTFILE="#SBATCH --output=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE="#SBATCH --error=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/Out.model.${LABELI}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME="#SBATCH --job-name=BAM${ANLTYPE}"
+  fi
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}"
@@ -372,8 +390,9 @@ fi
 # Script de submissão
 #
 
-cat <<EOF0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
 #PBS -j oe
 #PBS -l walltime=${walltime}
 #PBS -l mppwidth=${MPPWIDTH}
@@ -385,34 +404,91 @@ cat <<EOF0 > ${SCRIPTFILEPATH}
 ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #PBS -q ${QUEUE}
-
+"
+  SCRIPTRUNCMD="aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss "
+  SCRIPTRUNJOB="qsub -W block=true "
+  SCRIPTMODULE="
 export PBS_SERVER=${pbs_server1}
 export HUGETLB_MORECORE=yes
 export HUGETLB_ELFMAP=W
 export HUGETLB_FORCE_ELFMAP=yes+
 export MPICH_ENV_DISPLAY=1
 export HUGETLB_DEFAULT_PAGE_SIZE=2m
+export OMP_NUM_THREADS=6
+"
+  SCRIPTEXTRAS1="echo \${PBS_JOBID} > ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}"
+  SCRIPTEXTRAS2="sleep 10s # espera para terminar todos os processos de I/O"
+else
+  SCRIPTHEADER="
+${PBSOUTFILE}
+${PBSERRFILE}
+#SBATCH --time=${WALLTIME}
+#SBATCH --tasks-per-node=${MPPWIDTH}
+#SBATCH --nodes=${MPPDEPTH}
+${PBSDIRECTIVENAME}
+${PBSDIRECTIVEARRAY}
+#SBATCH --partition=${QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
+  if [[ ! -z ${job_decanl_id} || ! -z ${job_deceof_id} ]]
+  then        
+    if [[ ${ANLTYPE} == "CTR" || ${ANLTYPE} == "RDP" ]]
+    then
+      SCRIPTRUNJOB="sbatch --dependency=afterok:${job_decanl_id}"
+    elif [[ ${ANLTYPE} == "NMC" || ${ANLTYPE} == "NPT" || ${ANLTYPE} == "PPT" ]]
+    then
+      SCRIPTRUNJOB="sbatch --dependency=afterok:${job_deceof_id}"
+    else
+      SCRIPTRUNJOB="sbatch "
+    fi
+  else  
+    SCRIPTRUNJOB="sbatch "
+  fi        
+  SCRIPTMODULE="
+module purge
+module load gnu9/9.4.0
+module load ucx/1.11.2
+module load openmpi4/4.1.1
+module load netcdf/4.7.4
+module load netcdf-fortran/4.5.3
+module load phdf5/1.10.8
+module load hwloc
+module load libfabric/1.13.0
+"
+  SCRIPTEXTRAS1=""
+  SCRIPTEXTRAS2=""
+fi
+
+monitor=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
+cat <<EOF0 > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
+
+${SCRIPTMODULE}
+
+ulimit -s unlimited
+ulimit -c unlimited
 
 ${PBSMEM}
 ${PBSEXECFILEPATH}
 
 cd \${EXECFILEPATH}
 
-export OMP_NUM_THREADS=6
-
-ulimit -s unlimited
-
-echo \${PBS_JOBID} > ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
+${SCRIPTEXTRAS1}
 
 date
 
 mkdir -p \${EXECFILEPATH}/setout
 
-aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log
+${SCRIPTRUNCMD} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log
 
 date
 
-sleep 10s # espera para terminar todos os processos de I/O
+${SCRIPTEXTRAS2}
+
+touch ${monitor}
 EOF0
 
 #
@@ -421,36 +497,45 @@ EOF0
 
 chmod +x ${SCRIPTFILEPATH}
 
-qsub -W block=true ${SCRIPTFILEPATH}
+job_model=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH})
+export job_model_id=$(echo ${job_model} | awk -F " " '{print $4}')
+echo "model ${job_model_id}"
 
-if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+until [ -e ${monitor} ]; do sleep 1s; done
+
+if [ $(echo "$QSUB" | grep qsub) ]
 then
 
-  JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
-
-  for mem in $(seq 1 ${ANLPERT})
-  do
-
-    jobidname="BAMENS${ANLTYPE}.o${JOBID}.${mem}"
-    bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
-
-    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+  then
+  
+    JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+  
+    for mem in $(seq 1 ${ANLPERT})
+    do
+  
+      jobidname="BAMENS${ANLTYPE}.o${JOBID}.${mem}"
+      bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
+  
+      until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
+      mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
+    
+    done
+  
+  else
+  
+    JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
+  
+    jobidname="BAM${ANLTYPE}.o${JOBID}"
+    bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.out"
+  
+    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
     mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
   
-  done
-
-else
-
-  JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
-
-  jobidname="BAM${ANLTYPE}.o${JOBID}"
-  bamoutname="Out.model.${LABELI}.MPI${MPPWIDTH}.out"
-
-  until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
-  mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
+  fi
+  
+  rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
 
 fi
 
-rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
-
-exit 0
+#exit 0

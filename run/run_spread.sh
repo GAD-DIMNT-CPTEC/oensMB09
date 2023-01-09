@@ -31,8 +31,9 @@
 #
 # !REVISION HISTORY:
 #
-# 17 Maio de 2020  - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
+# 17 Maio de 2020     - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -145,8 +146,9 @@ cd ${OPERM}/run
 
 export SCRIPTFILEPATH=${DK_suite}/run/setspread.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
 #PBS -o ${ROPERM}/spread/output/spread.${RUNTM}.out
 #PBS -e ${ROPERM}/spread/output/spread.${RUNTM}.err
 #PBS -l walltime=00:10:00
@@ -156,6 +158,27 @@ cat <<EOT0 > ${SCRIPTFILEPATH}
 #PBS -S /bin/bash
 #PBS -N SPREAD
 #PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNJOB="qsub -W block=true "
+
+else
+  SCRIPTHEADER="
+#SBATCH --output=${ROPERM}/spread/output/spread.${RUNTM}.out
+#SBATCH --error=${ROPERM}/spread/output/spread.${RUNTM}.err
+#SBATCH --time=00:10:00
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=SPREAD
+#SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
+  SCRIPTRUNJOB="sbatch "
+fi
+
+cat <<EOT0 > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -210,7 +233,7 @@ EOT
 
 cd \${ROPERMOD}/spread/bin
 
-aprun -n 1 -N 1 -d 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI}
+${SCRIPTRUNCMD} \${ROPERMOD}/spread/bin/spread.x ${LABELI}
 
 echo "" > \${ROPERMOD}/spread/bin/spread-${LABELI}.ok
 EOT0
@@ -223,7 +246,7 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${SCRIPTFILEPATH}
 
-qsub -W block=true ${SCRIPTFILEPATH}
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/spread/bin/spread-${LABELI}.ok" ]; do sleep 1s; done
 

@@ -34,10 +34,11 @@
 #
 # !REVISION HISTORY:
 #
-# XX Julho de 2017  - C. F. Bastarz - Versão inicial.  
-# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
-# 17 Junho de 2021  - C. F. Bastarz - Ajustes no nome do script de submissão.
-# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
+# XX Julho de 2017   - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017  - C. F. Bastarz - Inclusão comentários.
+# 17 Junho de 2021   - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 18 Junho de 2021   - C. F. Bastarz - Revisão geral.
+# 26 Outubro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -60,9 +61,10 @@ then
   exit 0
 fi
 
-export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
-export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
+#export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
+export FILEENV=$(find ${PWD} -name EnvironmentalVariablesMCGA -print)
+#export PATHENV=$(dirname ${FILEENV})
+#export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${1} ${2}
 
@@ -144,8 +146,9 @@ RUNTM=$(date +"%s")
 
 SCRIPTSFILES=setdec${2}.${TRCLV}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
-#! /bin/bash -x
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
 #PBS -o ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
 #PBS -e ${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
 #PBS -l walltime=0:15:00
@@ -156,10 +159,41 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
 #PBS -J 1-${NUMPERT}
 #PBS -N  DECEOF
 #PBS -q ${AUX_QUEUE}
+"
+  SCRIPTNUM="\$(printf %02g \${PBS_ARRAY_INDEX})"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNJOB="qsub -W block=true "
+else
+  SCRIPTHEADER="
+#SBATCH --output=${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.out
+#SBATCH --error=${DK_suite}/deceof/output/setdeceof${2}${RESOL}${LABELI}.${MAQUI}.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=DECEOF
+#SBATCH --partition=${AUX_QUEUE}
+#SBATCH --array=1-${NUMPERT}
+"
+  SCRIPTNUM="\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  if [ ! -z ${job_eof_id} ]
+  then
+    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_eof_id}"
+  else
+    SCRIPTRUNJOB="sbatch "
+  fi
+fi
+
+monitor=${DK_suite}/deceof/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILES}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export PBS_SERVER=${pbs_server2}
 
-export NUM=\$(printf %02g \${PBS_ARRAY_INDEX})
+export NUM=${SCRIPTNUM}
 export PREFXI=\${NUM}
 
 #
@@ -358,7 +392,7 @@ EOT2
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
 filephn=prssnhn\${NUM}${MPHN}\${LABELI}
 fileptr=prssntr\${NUM}${MPTR}\${LABELI}
@@ -458,7 +492,9 @@ EOT4
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-aprun -n 1 -N 1 -d 1 \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+
+touch ${monitor}
 EOT0
 
 #
@@ -469,6 +505,10 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILES}
 
-qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILES}
+job_deceof=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILES})
+export job_deceof_id=$(echo ${job_deceof} | awk -F " " '{print $4}')
+echo "deceof ${job_deceof_id}"
 
-exit 0
+until [ -e ${monitor} ]; do sleep 1s; done
+
+#exit 0

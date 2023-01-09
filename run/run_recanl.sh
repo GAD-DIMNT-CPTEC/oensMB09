@@ -28,10 +28,11 @@
 #
 # !REVISION HISTORY:
 #
-# XX Julho de 2017  - C. F. Bastarz - Versão inicial.  
-# 16 Agosto de 2017 - C. F. Bastarz - Inclusão comentários.
-# 17 Junho de 2021  - C. F. Bastarz - Ajustes no nome do script de submissão.
-# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
+# XX Julho de 2017   - C. F. Bastarz - Versão inicial.  
+# 16 Agosto de 2017  - C. F. Bastarz - Inclusão comentários.
+# 17 Junho de 2021   - C. F. Bastarz - Ajustes no nome do script de submissão.
+# 18 Junho de 2021   - C. F. Bastarz - Revisão geral.
+# 26 Outubro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -54,9 +55,10 @@ then
   exit 0
 fi
 
-export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
-export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
+#export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
+export FILEENV=$(find ${PWD} -name EnvironmentalVariablesMCGA -print)
+#export PATHENV=$(dirname ${FILEENV})
+#export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${1} ${2}
 
@@ -107,8 +109,9 @@ mkdir -p ${DK_suite}/recanl/output
 
 SCRIPTSFILE=setrecanl${PERR}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#! /bin/bash -x
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
 #PBS -o ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=0:10:00
@@ -118,6 +121,34 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #PBS -S /bin/bash
 #PBS -N RECANL
 #PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNJOB="qsub -W block=true "
+else
+  SCRIPTHEADER="
+#SBATCH --output=${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.out
+#SBATCH --error=${DK_suite}/recanl/output/${SCRIPTSFILE}.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=RECANL
+#SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+  #if [ ! -z ${job_pre_id} ]
+  #then
+  #  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_pre_id}"
+  #else
+    SCRIPTRUNJOB="sbatch "
+  #fi
+fi
+
+monitor=${DK_suite}/recanl/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export PBS_SERVER=${pbs_server2}
 
@@ -232,7 +263,9 @@ export out=\${recanl_dir}/output; mkdir -p \${out}
 
 cd \${bin}
 
-aprun -n 1 -N 1 -d 1 ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
+${SCRIPTRUNCMD} ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
+
+touch ${monitor}
 EOT0
 
 #
@@ -243,6 +276,10 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+job_recanl=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
+export job_recanl_id=$(echo ${job_recanl} | awk -F " " '{print $4}')
+echo "recanl ${job_recanl_id}"
 
-exit 0
+until [ -e ${monitor} ]; do sleep 1s; done
+
+#exit 0

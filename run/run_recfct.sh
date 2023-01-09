@@ -37,6 +37,7 @@
 # 31 Janeiro de 2018 - C. F. Bastarz - Ajustados os prefixos NMC e CTR
 # 17 Junho de 2021   - C. F. Bastarz - Ajustes no nome do script de submissão.
 # 18 Junho de 2021   - C. F. Bastarz - Revisão geral.
+# 26 Outubro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -59,9 +60,10 @@ then
   exit 0
 fi
 
-export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
-export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
+#export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
+export FILEENV=$(find ${PWD} -name EnvironmentalVariablesMCGA -print)
+#export PATHENV=$(dirname ${FILEENV})
+#export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${1} ${2}
 
@@ -125,8 +127,14 @@ then
   export MODELDATAOUT="cd ${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${PREFIC}/"
   export ENSTYPE="export TYPES=${TYPES}"
 else  
-  export PBSDIRECTIVE="#PBS -J 1-${NMEM}"
-  export DEFINEMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  if [ $(echo "$QSUB" | grep qsub) ]
+  then
+    export PBSDIRECTIVE="#PBS -J 1-${NMEM}"
+    export DEFINEMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
+  else
+    export PBSDIRECTIVE="#SBATCH --array=1-${NMEM}"
+    export DEFINEMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
+  fi
   export MODELDATAOUT="cd ${DK_suite}/model/dataout/${TRCLV}/${LABELI}/\${MEM}${PREFIC}/"
   export ENSTYPE="export TYPES=FCT\${MEM}${PREFIC}"
 fi
@@ -139,8 +147,9 @@ RUNTM=$(date +"%s")
 
 SCRIPTSFILE=setrecfct${TYPES}.${TRCLV}.${LABELI}${LABELF}.${MAQUI}
 
-cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#! /bin/bash -x
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
 #PBS -o ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -l walltime=01:00:00
@@ -151,6 +160,35 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #PBS -N RECFCT
 #PBS -q ${AUX_QUEUE}
 ${PBSDIRECTIVE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNJOB="qsub -W block=true "
+else
+  SCRIPTHEADER="
+#SBATCH --output=${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.out
+#SBATCH --error=${DK_suite}/recfct/output/${SCRIPTSFILE}.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=RECFCT
+#SBATCH --partition=${AUX_QUEUE}
+${PBSDIRECTIVE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+  if [ ! -z ${job_model_id} ]
+  then
+    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_model_id}"
+  else
+    SCRIPTRUNJOB="sbatch "
+  fi
+fi
+
+monitor=${DK_suite}/recfct/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export PBS_SERVER=${pbs_server2}
 
@@ -244,9 +282,10 @@ EOT3
   
   cd ${HOME_suite}/recfct/bin/\${TRCLV}
   
-  aprun -n 1 -N 1 -d 1 ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
-  
+  ${SCRIPTRUNCMD} ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
 done
+
+touch ${monitor}
 EOT0
 
 #
@@ -257,6 +296,10 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE}
 
-qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+job_recfct=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
+export job_recfct_id=$(echo ${job_recfct} | awk -F " " '{print $4}')
+echo "recfct ${job_recfct_id}"
 
-exit 0
+until [ -e ${monitor} ]; do sleep 1s; done
+
+#exit 0

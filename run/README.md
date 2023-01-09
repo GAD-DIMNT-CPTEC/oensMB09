@@ -1,6 +1,6 @@
 # Realização da suíte SPCON
 
-## Cray XE6 e XC50
+## Cray XE6, XC50 e Egeon
 
 1. Realização do pré-processamento da primeira análise controle:
 ```

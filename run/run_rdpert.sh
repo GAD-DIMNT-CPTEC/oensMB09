@@ -41,6 +41,7 @@
 #                                       28 valores originais)
 # 17 Junho de 2021    - C. F. Bastarz - Ajustes no nome do script de submissão.
 # 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+# 26 Outubro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -63,9 +64,10 @@ then
   exit 0
 fi
 
-export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
-export PATHENV=$(dirname ${FILEENV})
-export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
+#export FILEENV=$(find ./ -name EnvironmentalVariablesMCGA -print)
+export FILEENV=$(find ${PWD} -name EnvironmentalVariablesMCGA -print)
+#export PATHENV=$(dirname ${FILEENV})
+#export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${1} ${2}
 
@@ -129,8 +131,9 @@ mkdir -p ${DK_suite}/rdpert/output
 
 SCRIPTSFILE=setrdpt.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
-#! /bin/bash -x
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
 #PBS -o ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
 #PBS -e ${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
 #PBS -S /bin/bash
@@ -140,6 +143,34 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 #PBS -V
 #PBS -N RDPT${PREFIC}
 #PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNJOB="qsub -W block=true "
+else
+  SCRIPTHEADER="
+#SBATCH --output=${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.out
+#SBATCH --error=${DK_suite}/rdpert/output/${SCRIPTSFILE}.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=RDPT${PREFIC}
+#SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  if [ ! -z ${job_recanl_id} ]
+  then
+    SCRIPTRUNJOB="sbatch --dependency=afterok:${job_recanl_id}"
+  else
+    SCRIPTRUNJOB="sbatch "
+  fi
+fi
+
+monitor=${DK_suite}/rdpert/output/monitor.t
+if [ -e ${monitor} ]; then rm ${monitor}; fi
+
+cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export PBS_SERVER=${pbs_server2}
 
@@ -281,7 +312,9 @@ cd ${HOME_suite}/run
 
 cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 
-aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+${SCRIPTRUNCMD} ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+
+touch ${monitor}
 EOT0
 
 #
@@ -292,6 +325,10 @@ export PBS_SERVER=${pbs_server2}
 
 chmod +x ${HOME_suite}/run/${SCRIPTSFILE} 
 
-qsub -W block=true ${HOME_suite}/run/${SCRIPTSFILE}
+job_rdpert=$(${SCRIPTRUNJOB} ${HOME_suite}/run/${SCRIPTSFILE})
+export job_rdpert_id=$(echo ${job_rdpert} | awk -F " " '{print $4}')
+echo "rdpert ${job_rdpert_id}"
 
-exit 0
+until [ -e ${monitor} ]; do sleep 1s; done
+
+#exit 0

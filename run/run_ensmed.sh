@@ -31,8 +31,9 @@
 #
 # !REVISION HISTORY:
 #
-# 17 Maio de 2020  - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021 - C. F. Bastarz - Revisão geral.
+# 17 Maio de 2020     - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
 #
 # !REMARKS:
 #
@@ -157,8 +158,9 @@ export MPPNPPN=1
 
 mkdir -p ${DK_suite}/ensmed/output/
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
 #PBS -o ${ROPERM}/ensmed/output/ensmed.${RUNTM}.out
 #PBS -e ${ROPERM}/ensmed/output/ensmed.${RUNTM}.err
 #PBS -l walltime=00:10:00
@@ -169,6 +171,26 @@ cat <<EOT0 > ${SCRIPTFILEPATH}
 #PBS -S /bin/bash
 #PBS -N ENSMED
 #PBS -q ${QUEUE}
+"
+  SCRIPTRUNCMD="time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss " 
+  SCRIPTRUNJOB="qsub -W block=true "
+else
+  SCRIPTHEADER="
+#SBATCH --output=${ROPERM}/ensmed/output/ensmed.${RUNTM}.out
+#SBATCH --error=${ROPERM}/ensmed/output/ensmed.${RUNTM}.err
+#SBATCH --time=00:10:00
+#SBATCH --tasks-per-node=${MPPWIDTH}
+#SBATCH --nodes=${MPPDEPTH}
+#SBATCH --job-name=ENSMED
+#SBATCH --partition=${QUEUE}
+"
+  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH}" 
+  SCRIPTRUNJOB="sbatch "
+fi
+
+cat <<EOT0 > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -211,7 +233,8 @@ mkdir -p \${SOPERMOD}/ensmed/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 
 cd \${SOPERMOD}/ensmed/bin
 
-time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log
+${SCRIPTRUNCMD} \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log
+
 
 rm \${SOPERMOD}/ensmed/bin/ensmed-${LABELI}.ok
 
@@ -224,7 +247,7 @@ EOT0
 
 chmod +x ${SCRIPTFILEPATH}
 
-qsub -W block=true ${SCRIPTFILEPATH}
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/ensmed/bin/ensmed-${LABELI}.ok" ]; do sleep 1s; done
 

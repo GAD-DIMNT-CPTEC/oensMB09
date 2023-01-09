@@ -53,13 +53,13 @@ fi
 #
 
 # Caminho do BAM no HOME
-export PATHBASE=/lustre_xc50/carlos_bastarz/oensMB09.t7839
+export PATHBASE=/mnt/beegfs/carlos.bastarz/oensMB09
 
 # Caminho do BAM no scratchin (SUBMIT_HOME)
-export DK=/lustre_xc50/carlos_bastarz/oensMB09.t7839
+export DK=/mnt/beegfs/carlos.bastarz/oensMB09
 
 # Caminho do BAM no scratchout (SUBMIT_WORK)
-export DK2=/lustre_xc50/carlos_bastarz/oensMB09.t7839
+export DK2=/mnt/beegfs/carlos.bastarz/oensMB09
 
 export HOME_suite=${PATHBASE} ; mkdir -p ${HOME_suite}
 export DK_suite=${DK}         ; mkdir -p ${DK_suite}
@@ -74,14 +74,14 @@ export tmstp=$(date +'%s')
 export HSTMAQ=$(uname -n)
 export MAQUI=$(uname -s)
 export QUOTA=CPTEC
-export pbs_server2=sdb
-export pbs_server1=sdb
-export QSUB=/opt/pbs/default/bin/qsub
-export QUEUE=pesq
-export QUEUEM=pesq
-export QUEUEP=pesq
-export AUX_QUEUE=pesq
-export WALLTIME="00:30:00"
+export pbs_server2=headnode
+export pbs_server1=headnode
+export QSUB=/usr/bin/sbatch
+export QUEUE=batch
+export QUEUEM=batch
+export QUEUEP=batch
+export AUX_QUEUE=batch
+export WALLTIME="02:00:00"
 export WALLTIME6="00:30:00"
 export AUX_WALLTIME="00:30:00"
 
@@ -109,5 +109,16 @@ export GSSTEP=1
 # Utilitários
 #
 
-export DIRGRADS=/cray_home/carlos_bastarz/bin/tools/opengrads-2.2.1.oga.1/Contents
-export inctime=/cray_home/carlos_bastarz/bin/inctime
+#export DIRGRADS=/mnt/beegfs/carlos.bastarz/opengrads-2.2.1.oga.1/Contents
+export DIRGRADS=/home/carlos.bastarz/bin
+export caldate=/mnt/beegfs/carlos.bastarz/BAM_V1.2.1/utils/bin/caldate.3.0.1
+export inctime=/home/carlos.bastarz/bin/inctime
+
+#
+# Singularity
+#
+
+export HOMEBIND=/home/carlos.bastarz
+export WORKBIND=/mnt/beegfs/carlos.bastarz
+#export SIFIMAGE=/mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif
+export SIFIMAGE=/mnt/beegfs/carlos.bastarz/containers/xc50_dev.sif
