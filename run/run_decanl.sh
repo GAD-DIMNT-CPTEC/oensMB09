@@ -26,7 +26,7 @@
 #
 #            <opcao5> membro    -> tamanho do conjunto
 #            
-#  Uso/Exemplos: ./run_decanl.sh TQ0126L028 NMC YES 2012111200 7
+#  Uso/Exemplos: ./run_decanl.sh TQ0126L028 SMT YES 2012111200 7
 #                (decompõe em coeficientes espectrais as análises
 #                das 2012111200 do conjunto de 7 membros na resolução
 #                TQ0126L028) 
@@ -152,7 +152,8 @@ else
 #SBATCH --job-name=DECANLRDP
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  SCRIPTRUNCMD="mpirun -np 1 "
   if [ ! -z ${job_rdpert_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_rdpert_id}"

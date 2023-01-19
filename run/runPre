@@ -983,16 +983,29 @@ echo \${PBS_JOBID} > ${HOME_suite}/pre/exec/this.pre.job.${varname}
 
 auxvarname=$(printf "$varname")
 
-# EGEON GNU
+## EGEON GNU
+#module purge
+#module load gnu9/9.4.0
+#module load ucx/1.11.2
+#module load openmpi4/4.1.1
+#module load netcdf/4.7.4
+#module load netcdf-fortran/4.5.3
+#module load phdf5/1.10.8
+#module load hwloc
+#module load libfabric/1.13.0
+
+# EGEON INTEL
 module purge
-module load gnu9/9.4.0
-module load ucx/1.11.2
-module load openmpi4/4.1.1
-module load netcdf/4.7.4
-module load netcdf-fortran/4.5.3
-module load phdf5/1.10.8
+module load ohpc
+module swap gnu9 intel
+module swap openmpi4 impi
 module load hwloc
-module load libfabric/1.13.0
+module load phdf5
+module load netcdf
+module load netcdf-fortran
+module swap intel intel/2022.1.0
+
+module list
 
 if [[ (\${auxvarname} = "Chopping_parallel") ]]
 then
@@ -1032,10 +1045,11 @@ else
 
 #OK EGEON
 #  time mpirun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+mpirun -np ${cpu_mpi} ${direxe}/${varname} -i ${direxe}/${varname}.nml
 
 #EGEON SINGULARITY
-  module load singularity 
-  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/BAM_V1.2.1.sif mpirun -np ${cpu_mpi} /usr/local/bin/${varname} -i ${direxe}/${varname}.nml
+#  module load singularity 
+#  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/BAM_V1.2.1.sif mpirun -np ${cpu_mpi} /usr/local/bin/${varname} -i ${direxe}/${varname}.nml
 fi
 
 date
@@ -1231,9 +1245,9 @@ do
   then
     echo ""
     #echo -e "     \033[33;1mCria .bash e submete o processo: criabash 240 24 $jobname ${linha}\033[m"
-    echo -e "     \033[33;1mCria .bash e submete o processo: criabash 120 12 $jobname ${linha}\033[m"
+    echo -e "     \033[33;1mCria .bash e submete o processo: criabash 20 1 $jobname ${linha}\033[m"
     #criabash 240 24 $jobname ${linha}
-    criabash 120 12 $jobname ${linha}
+    criabash 20 1 $jobname ${linha}
   else
     if [ $linha = Chopping_serial ]
     then
@@ -1265,8 +1279,8 @@ do
   then
     #rm -f ${direxe}/Out.MPI240_${varname} > /dev/null 2>&1
     #WaitUntil ${direxe}/Out.MPI240_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
-    rm -f ${direxe}/Out.MPI120_${varname} > /dev/null 2>&1
-    WaitUntil ${direxe}/Out.MPI120_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
+    rm -f ${direxe}/Out.MPI20_${varname} > /dev/null 2>&1
+    WaitUntil ${direxe}/Out.MPI20_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
     sleep 15 # verificar se a pausa é suficiente para a cópia de arquivos grandes
   else
     if [ $linha = Chopping_serial ]

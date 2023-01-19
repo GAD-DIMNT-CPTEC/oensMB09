@@ -174,7 +174,8 @@ else
 #SBATCH --partition=${AUX_QUEUE}
 ${PBSDIRECTIVE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+  SCRIPTRUNCMD="mpirun -np 1 " 
   if [ ! -z ${job_model_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_model_id}"
@@ -257,24 +258,24 @@ do
   
   GNAMEL=\${NAMEL}\${LABELI}\${LABELF}\${EXTL}.\${TRCLV}
   echo \${GNAMEL}
-  echo \${DK_suite}/recfct/datain/\${GNAMEL}
+  echo ${DK_suite}/recfct/datain/\${GNAMEL}
   
-cat <<EOT2 > \${DK_suite}/recfct/datain/\${GNAMEL}
+cat <<EOT2 > ${DK_suite}/recfct/datain/\${GNAMEL}
 \${NAMES}\${LABELI}\${LABELF}\${ERS1}.\${TRCLV}
 \${NAMER}\${LABELI}\${LABELF}\${ERR1}.\${TRCLV}
 EOT2
 
-cat <<EOT3 > \${DK_suite}/recfct/datain/recfct\${TYPES}.nml
+cat <<EOT3 > ${DK_suite}/recfct/datain/recfct\${TYPES}.nml
  &DATAIN
   LDIM=1
-  DIRL='\${DK_suite}/recfct/datain/ '
-  DIRS='\${DK_suite}/model/dataout/\${TRCLV}/\${LABELI}/\${MEM}${PREFIC}/  '
-  DIRR='\${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/ '
+  DIRL='${DK_suite}/recfct/datain/ '
+  DIRS='${DK_suite}/model/dataout/\${TRCLV}/\${LABELI}/\${MEM}${PREFIC}/  '
+  DIRR='${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/ '
   GNAMEL='\${GNAMEL} '
  &END
 EOT3
 
-  mkdir -p \${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/
+  mkdir -p ${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/
 
   #
   # Run Decomposition

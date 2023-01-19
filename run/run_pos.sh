@@ -338,7 +338,8 @@ ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
+  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
+  SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} "
   if [ ! -z ${job_model_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_model_id}"
@@ -397,7 +398,8 @@ date
 
 mkdir -p \${EXECFILEPATH}/setout
 
-${SCRIPTRUNCMD} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
+#${SCRIPTRUNCMD} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
+mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
 
 date
 

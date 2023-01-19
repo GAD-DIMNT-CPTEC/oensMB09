@@ -25,7 +25,7 @@
 #
 #            <opcao5> membro    -> tamanho do conjunto 
 #            
-#  Uso/Exemplos: ./run_rdpert.sh TQ0126L028 NMC YES 2012111200 7
+#  Uso/Exemplos: ./run_rdpert.sh TQ0126L028 SMT YES 2012111200 7
 #                (perturba randomicamente um conjunto inicial de 7
 #                membros a partir de uma análise controle na resolução
 #                TQ0126L028; inclui a perturbação da umidade)
@@ -156,7 +156,8 @@ else
 #SBATCH --job-name=RDPT${PREFIC}
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  SCRIPTRUNCMD="mpirun -np 1 "
   if [ ! -z ${job_recanl_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_recanl_id}"

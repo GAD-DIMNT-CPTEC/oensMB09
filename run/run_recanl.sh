@@ -134,7 +134,8 @@ else
 #SBATCH --job-name=RECANL
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+  SCRIPTRUNCMD="mpirun -np 1 " 
   #if [ ! -z ${job_pre_id} ]
   #then
   #  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_pre_id}"

@@ -28,9 +28,11 @@
 #  Uso/Exemplos: ./config_spcon.sh configure TQ0126L028 pgi
 #                ./config_spcon.sh configure TQ0126L028 gnu
 #                ./config_spcon.sh configure TQ0126L028 cray
+#                ./config_spcon.sh configure TQ0126L028 intel
 #                ./config_spcon.sh configure TQ0213L042 pgi
 #                ./config_spcon.sh configure TQ0213L042 gnu
 #                ./config_spcon.sh configure TQ0213L042 cray
+#                ./config_spcon.sh configure TQ0213L042 intel
 #                ou
 #                ./config_spcon.sh cleanall TQ0126L028 gnu
 #                etc
@@ -43,6 +45,7 @@
 #                                       Incluída alterações nos config/Makefile.conf.*
 # 05 Agosto de 2021   - C. F. Bastarz - Simplificação do script para a versão 2.2.0.
 # 31 Maio de 2022     - C. F. Bastarz - Adaptações para a máquina EGEON.
+# 10 Janeiro de 2023  - C. F. Bastarz - Adaptações para o compilador Intel.
 #
 # !REMARKS:
 #
@@ -84,12 +87,18 @@ then
 
   sed -i "s,^TRUNC=.*,TRUNC=${TRUNC},g" ./config/Makefile.conf.${comp}
   sed -i "s,^LEV=.*,LEV=${LEV},g" ./config/Makefile.conf.${comp}
-  if [ $(echo ${host} | cut -c 1-3) == "hea" ] # EGEON
+  if [ $(echo ${host} | cut -c 1-3) == "hea" -a ${comp} == "gnu" ] # EGEON e GNU
   then
     sed -i "s,^F90 =.*,F90 = mpif90,g" ./config/Makefile.conf.${comp}
     sed -i "s,^FC  =.*,FC  = mpif90,g" ./config/Makefile.conf.${comp}
     sed -i "s,^F77 =.*,F77 = mpif90,g" ./config/Makefile.conf.${comp}
     sed -i "s,^LD  =.*,LD  = mpif90,g" ./config/Makefile.conf.${comp}
+  elif [ $(echo ${host} | cut -c 1-3) == "hea" -a ${comp} == "intel" ] # EGEON e Intel  
+  then        
+    sed -i "s,^F90 =.*,F90 = mpiifort,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^FC  =.*,FC  = mpiifort,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^F77 =.*,F77 = mpiifort,g" ./config/Makefile.conf.${comp}
+    sed -i "s,^LD  =.*,LD  = mpiifort,g" ./config/Makefile.conf.${comp}
   else # Cray XE6/XC50
     sed -i "s,^F90 =.*,F90 = ftn,g" ./config/Makefile.conf.${comp}
     sed -i "s,^FC  =.*,FC  = ftn,g" ./config/Makefile.conf.${comp}

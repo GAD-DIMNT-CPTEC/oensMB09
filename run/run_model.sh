@@ -429,7 +429,8 @@ ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
+  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
+  SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} "
   if [[ ! -z ${job_decanl_id} || ! -z ${job_deceof_id} ]]
   then        
     if [[ ${ANLTYPE} == "CTR" || ${ANLTYPE} == "RDP" ]]
@@ -445,15 +446,29 @@ ${PBSDIRECTIVEARRAY}
     SCRIPTRUNJOB="sbatch "
   fi        
   SCRIPTMODULE="
+# EGEON GNU  
+#module purge
+#module load gnu9/9.4.0
+#module load ucx/1.11.2
+#module load openmpi4/4.1.1
+#module load netcdf/4.7.4
+#module load netcdf-fortran/4.5.3
+#module load phdf5/1.10.8
+#module load hwloc
+#module load libfabric/1.13.0
+
+# EGEON INTEL
 module purge
-module load gnu9/9.4.0
-module load ucx/1.11.2
-module load openmpi4/4.1.1
-module load netcdf/4.7.4
-module load netcdf-fortran/4.5.3
-module load phdf5/1.10.8
+module load ohpc
+module swap gnu9 intel
+module swap openmpi4 impi
 module load hwloc
-module load libfabric/1.13.0
+module load phdf5
+module load netcdf
+module load netcdf-fortran
+module swap intel intel/2022.1.0
+
+module list
 "
   SCRIPTEXTRAS1=""
   SCRIPTEXTRAS2=""

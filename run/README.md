@@ -4,15 +4,15 @@
 
 1. Realização do pré-processamento da primeira análise controle:
 ```
-$ ./runPre 126 28 2020062000 NMC 1 T F 574 64
+$ ./runPre 126 28 2020062000 SMT 1 T F 574 64
 ```
 ou
 ```
-$ ./runPre 213 42 2020062000 NMC 1 T F 574 64
+$ ./runPre 213 42 2020062000 SMT 1 T F 574 64
 ```
 ou
 ```
-$ ./runPre 299 64 2020062000 NMC 1 T F 574 64
+$ ./runPre 299 64 2020062000 SMT 1 T F 574 64
 ```
 
 2. Realização do membro controle a partir da primeira análise (nesta primeira integração, são apenas 48 horas 3/3h - deverão haver também previsões para até 15 dias a partir do membro controle):
