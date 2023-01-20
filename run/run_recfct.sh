@@ -184,7 +184,7 @@ ${PBSDIRECTIVE}
   fi
 fi
 
-monitor=${DK_suite}/recfct/output/monitor.t
+monitor=${DK_suite}/recfct/output/monitor_${PREFIC}.t
 if [ -e ${monitor} ]; then rm ${monitor}; fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -269,7 +269,7 @@ cat <<EOT3 > ${DK_suite}/recfct/datain/recfct\${TYPES}.nml
  &DATAIN
   LDIM=1
   DIRL='${DK_suite}/recfct/datain/ '
-  DIRS='${DK_suite}/model/dataout/\${TRCLV}/\${LABELI}/\${MEM}${PREFIC}/  '
+  DIRS='${DK_suite}/model/dataout/\${TRCLV}/\${LABELI}/\${TYPES:3}/  '
   DIRR='${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/ '
   GNAMEL='\${GNAMEL} '
  &END
