@@ -1035,21 +1035,27 @@ cd ${direxe}
 
 date
 
+USE_SINGULARITY=${USE_SINGULARITY}
+
 optserver=$(printf "$PBS_SERVER \n" | cut -c1-3)
 
 if [[ (\${optserver} = "aux") ]]
 then
   ${direxe}/${varname} -i ${direxe}/${varname}.nml
 else
-#  time aprun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+  #  time aprun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
 
-#OK EGEON
-#  time mpirun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
-mpirun -np ${cpu_mpi} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+  #OK EGEON
+  #  time mpirun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+  #mpirun -np ${cpu_mpi} ${direxe}/${varname} -i ${direxe}/${varname}.nml
 
-#EGEON SINGULARITY
-#  module load singularity 
-#  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/BAM_V1.2.1.sif mpirun -np ${cpu_mpi} /usr/local/bin/${varname} -i ${direxe}/${varname}.nml
+  #EGEON SINGULARITY
+  if [ \$USE_SINFULARITY == true ]
+  then
+    module load singularity; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/BAM_V1.2.1.sif mpirun -np ${cpu_mpi} /usr/local/bin/${varname} -i ${direxe}/${varname}.nml
+  else
+    mpirun -np ${cpu_mpi} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+  fi
 fi
 
 date

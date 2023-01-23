@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -134,13 +134,17 @@ else
 #SBATCH --job-name=RECANL
 #SBATCH --partition=${AUX_QUEUE}
 "
-  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
-  SCRIPTRUNCMD="mpirun -np 1 " 
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+  else
+    SCRIPTRUNCMD="mpirun -np 1 " 
+  fi  
   #if [ ! -z ${job_pre_id} ]
   #then
   #  SCRIPTRUNJOB="sbatch --dependency=afterok:${job_pre_id}"
   #else
-    SCRIPTRUNJOB="sbatch "
+  SCRIPTRUNJOB="sbatch "
   #fi
 fi
 

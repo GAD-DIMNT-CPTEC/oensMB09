@@ -152,8 +152,12 @@ else
 #SBATCH --job-name=DECANLRDP
 #SBATCH --partition=${AUX_QUEUE}
 "
-  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
-  SCRIPTRUNCMD="mpirun -np 1 "
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  else
+    SCRIPTRUNCMD="mpirun -np 1 "
+  fi
   if [ ! -z ${job_rdpert_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_rdpert_id}"

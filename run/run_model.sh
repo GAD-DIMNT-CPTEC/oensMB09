@@ -429,8 +429,12 @@ ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
-  #SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
-  SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} "
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
+  else  
+    SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} "
+  fi  
   if [[ ! -z ${job_decanl_id} || ! -z ${job_deceof_id} ]]
   then        
     if [[ ${ANLTYPE} == "CTR" || ${ANLTYPE} == "RDP" ]]
