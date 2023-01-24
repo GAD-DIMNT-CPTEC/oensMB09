@@ -219,7 +219,10 @@ then
 
   mkdir -p ${EXECFILEPATH}/setout
    
-  ln -sf ${DK_suite}/pos/exec/PostGrib ${EXECFILEPATH}
+  if [ $USE_SINGULARITY != true ]
+  then
+    ln -sf ${DK_suite}/pos/exec/PostGrib ${EXECFILEPATH}
+  fi
 
   export DATALIB=${DK_suite}/pos/datain/
 
@@ -237,12 +240,16 @@ else
   for MEM in $(seq -f %02g 1 ${ANLPERT})
   do
 
-    EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+    #EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+    EXECFILEPATH=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}
     EXECFILEPATHMEM=${DK_suite}/pos/exec_${ANLTYPE}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
 
     mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}
-   
-    ln -sf ${DK_suite}/pos/exec/PostGrib ${EXECFILEPATHMEM}
+  
+    if [ $USE_SINGULARITY != true ]
+    then
+      ln -sf ${DK_suite}/pos/exec/PostGrib ${EXECFILEPATHMEM}
+    fi
 
     export DATALIB=${DK_suite}/pos/datain/
 
@@ -253,7 +260,7 @@ else
 
     export PREFIX=${MEM}${ANLTYPE:0:1}
 
-    cria_namelist ${RESOL} ${NIVEL} ${LABELI} ${LABELF} ${PREFIX} ${DATAIN} ${DATAOUT} ${DATALIB} ${BINARY} ${REQTB} ${REGINT} ${RESPOS} ${NAMELISTFILEPATH} ${EXECFILEPATH} 
+    cria_namelist ${RESOL} ${NIVEL} ${LABELI} ${LABELF} ${PREFIX} ${DATAIN} ${DATAOUT} ${DATALIB} ${BINARY} ${REQTB} ${REGINT} ${RESPOS} ${NAMELISTFILEPATH} ${EXECFILEPATHMEM} 
 
   done
 
@@ -313,7 +320,7 @@ ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #PBS -q ${QUEUE}
 "
-  SCRIPTRUNCMD="aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} "
+  SCRIPTRUNCMD="aprun -m500h -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} ${EXECFILEPATH}/PostGrib < ${EXECFILEPATH}/POSTIN-GRIB > ${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log"
   SCRIPTRUNJOB="qsub -W block=true "
   SCRIPTMODULE="
 export PBS_SERVER=${pbs_server1}
@@ -340,9 +347,14 @@ ${PBSDIRECTIVEARRAY}
 "
   if [ $USE_SINGULARITY == true ]
   then
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
+    if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
+    then
+      SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/PostGrib < ${EXECFILEPATH}/\${MEM}${ANLTYPE:0:1}/POSTIN-GRIB > ${EXECFILEPATH}/\${MEM}${ANLTYPE:0:1}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log"
+    else
+      SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/PostGrib < ${EXECFILEPATH}/POSTIN-GRIB > ${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log"
+    fi
   else  
-    SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} "
+    SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} ${EXECFILEPATH}/PostGrib < ${EXECFILEPATH}/POSTIN-GRIB > ${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log"
   fi  
   if [ ! -z ${job_model_id} ]
   then
@@ -350,7 +362,10 @@ ${PBSDIRECTIVEARRAY}
   else
     SCRIPTRUNJOB="sbatch "
   fi
-  SCRIPTMODULE="
+  if [ $USE_INTEL == false -a $USE_SINGULARITY == false ] 
+  then
+    SCRIPTMODULE="
+# EGEON GNU
 module purge
 module load gnu9/9.4.0
 module load ucx/1.11.2
@@ -360,7 +375,10 @@ module load netcdf-fortran/4.5.3
 module load phdf5/1.10.8
 module load hwloc
 module load libfabric/1.13.0
+
+module list
 "
+  fi
   #SCRIPTEXTRAS1="echo \${SLURM_JOB_ID} > ${HOME_suite}/run/this.pos.job.${LABELI}.${ANLTYPE} "
   if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
   then
@@ -402,8 +420,7 @@ date
 
 mkdir -p \${EXECFILEPATH}/setout
 
-#${SCRIPTRUNCMD} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
-mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log 
+${SCRIPTRUNCMD}
 
 date
 

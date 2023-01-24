@@ -308,6 +308,15 @@ cd ${HOME_suite}/run
 # Run scripts of recomposition         
 #
 
+export USE_SINGULARITY=${USE_SINGULARITY}
+
+if [ \$USE_SINGULARITY == true ] 
+then
+  export DK_suite_exe=${SIFOENSMB09BIN}
+else
+  export DK_suite_exe=${DK_suite}
+fi
+
 # O SPCON global está prepadado para calcular perturbações sobre as seguintes regiões:
 # HS, TR, HN, NAS e SAS
 # Opcionalmente, pode-se desejar que estas perturbações sejam feitas apenas sobre um
@@ -517,7 +526,7 @@ EOT1
 
   cd ${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ${SCRIPTRUNCMD} ${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  ${SCRIPTRUNCMD} \${DK_suite_exe}/eof/bin/\${TRUNC}\${LEV}/eofpres.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofpres\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofpres-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   cd ${DK_suite}/eof/datain
   
@@ -569,7 +578,7 @@ EOT1
 
   cd ${DK_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ${SCRIPTRUNCMD} ${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  ${SCRIPTRUNCMD} \${DK_suite_exe}/eof/bin/\${TRUNC}\${LEV}/eoftem.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eoftem\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eoftem-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
   if [ ${HUMID} = YES ] 
   then
@@ -628,7 +637,7 @@ EOT1
 
     cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-    ${SCRIPTRUNCMD} ${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+    ${SCRIPTRUNCMD} \${DK_suite_exe}/eof/bin/\${TRUNC}\${LEV}/eofhum.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofhum\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofhum-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
 
   fi
   
@@ -764,7 +773,7 @@ EOT1
   
   cd \${HOME_suite}/eof/bin/\${TRUNC}\${LEV}/
   
-  ${SCRIPTRUNCMD} ${DK_suite}/eof/bin/\${TRUNC}\${LEV}/eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+  ${SCRIPTRUNCMD} \${DK_suite_exe}/eof/bin/\${TRUNC}\${LEV}/eofwin.\${TRUNC}\${LEV} < ${DK_suite}/eof/datain/eofwin\${REG}\${MEM}.nml > ${DK_suite}/eof/dataout/eofwin-\${MEM}.\${REG}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
   
 done
 

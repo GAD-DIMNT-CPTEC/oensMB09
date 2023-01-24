@@ -140,7 +140,7 @@ then
 #PBS -N DECANLRDP
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}" 
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -154,9 +154,9 @@ else
 "
   if [ $USE_SINGULARITY == true ]
   then          
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
   else
-    SCRIPTRUNCMD="mpirun -np 1 "
+    SCRIPTRUNCMD="mpirun -np 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
   fi
   if [ ! -z ${job_rdpert_id} ]
   then
@@ -320,7 +320,7 @@ EOT3
 
   cd ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}
 
-  ${SCRIPTRUNCMD} ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
+  ${SCRIPTRUNCMD}
 
   echo \${i}
   i=\$((\${i}+1))

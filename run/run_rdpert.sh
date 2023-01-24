@@ -144,7 +144,7 @@ then
 #PBS -N RDPT${PREFIC}
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -158,9 +158,9 @@ else
 "
   if [ $USE_SINGULARITY == true ]
   then
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
   else    
-    SCRIPTRUNCMD="mpirun -np 1 "
+    SCRIPTRUNCMD="mpirun -np 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
   fi  
   if [ ! -z ${job_recanl_id} ]
   then
@@ -317,7 +317,7 @@ cd ${HOME_suite}/run
 
 cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 
-${SCRIPTRUNCMD} ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+${SCRIPTRUNCMD}
 
 touch ${monitor}
 EOT0

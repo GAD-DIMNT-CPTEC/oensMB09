@@ -161,7 +161,7 @@ then
 #PBS -q ${AUX_QUEUE}
 ${PBSDIRECTIVE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${DK_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -176,9 +176,9 @@ ${PBSDIRECTIVE}
 "
   if [ $USE_SINGULARITY == true ]
   then          
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
   else  
-    SCRIPTRUNCMD="mpirun -np 1 " 
+    SCRIPTRUNCMD="mpirun -np 1 ${DK_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
   fi  
   if [ ! -z ${job_model_id} ]
   then
@@ -196,6 +196,8 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 ${SCRIPTHEADER}
 
 export PBS_SERVER=${pbs_server2}
+
+export TRCLV=${TRCLV}
 
 ${DEFINEMEM}
 
@@ -287,7 +289,7 @@ EOT3
   
   cd ${HOME_suite}/recfct/bin/\${TRCLV}
   
-  ${SCRIPTRUNCMD} ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
+  ${SCRIPTRUNCMD} 
 done
 
 touch ${monitor}

@@ -122,7 +122,7 @@ then
 #PBS -N RECANL
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${DK_suite}/recanl/bin/${RESOL}${NIVEL}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -136,9 +136,9 @@ else
 "
   if [ $USE_SINGULARITY == true ]
   then          
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/recanl/bin/${RESOL}${NIVEL}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
   else
-    SCRIPTRUNCMD="mpirun -np 1 " 
+    SCRIPTRUNCMD="mpirun -np 1 ${DK_suite}/recanl/bin/${RESOL}${NIVEL}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}"
   fi  
   #if [ ! -z ${job_pre_id} ]
   #then
@@ -268,7 +268,7 @@ export out=\${recanl_dir}/output; mkdir -p \${out}
 
 cd \${bin}
 
-${SCRIPTRUNCMD} ${bin}/recanl.${RESOL}${NIVEL} < \${input}/recanl${PERR}.nml > \${out}/recanl.out.${LABELI}.\${HOUR}.${RESOL}${NIVEL}
+${SCRIPTRUNCMD} 
 
 touch ${monitor}
 EOT0

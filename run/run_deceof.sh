@@ -161,7 +161,7 @@ then
 #PBS -q ${AUX_QUEUE}
 "
   SCRIPTNUM="\$(printf %02g \${PBS_ARRAY_INDEX})"
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${DK_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -177,9 +177,9 @@ else
   SCRIPTNUM="\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
   if [ $USE_SINGULARITY == true ]
   then          
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}"
   else  
-    SCRIPTRUNCMD="mpirun -np 1 "
+    SCRIPTRUNCMD="mpirun -np 1 ${DK_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}"
   fi
   if [ ! -z ${job_eof_id} ]
   then
@@ -397,7 +397,8 @@ EOT2
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+#${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+${SCRIPTRUNCMD}
 
 filephn=prssnhn\${NUM}${MPHN}\${LABELI}
 fileptr=prssntr\${NUM}${MPTR}\${LABELI}
@@ -497,7 +498,8 @@ EOT4
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+#${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+${SCRIPTRUNCMD}
 
 touch ${monitor}
 EOT0
