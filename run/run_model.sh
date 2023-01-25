@@ -445,7 +445,7 @@ ${PBSDIRECTIVEARRAY}
       SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/ParModel_MPI < ${EXECFILEPATH}/MODELIN > ${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log"
     fi        
   else  
-    SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} ${EXECFILEPATH}/ParModel_MPI < ${EXECFILEPATH}/MODELIN > ${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log"
+    SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log"
   fi  
   if [[ ! -z ${job_decanl_id} || ! -z ${job_deceof_id} ]]
   then        
@@ -502,7 +502,8 @@ module list
   SCRIPTEXTRAS2=""
 fi
 
-monitor=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/monitor.t
+#monitor=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/monitor.t
+monitor=${EXECFILEPATH}/monitor.t
 if [ -e ${monitor} ]; then rm ${monitor}; fi
 
 cat <<EOF0 > ${SCRIPTFILEPATH}
@@ -529,7 +530,8 @@ date
 
 ${SCRIPTEXTRAS2}
 
-touch ${monitor}
+#touch ${monitor}
+touch \${EXECFILEPATH}/monitor.t
 EOF0
 
 #
@@ -542,12 +544,22 @@ job_model=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH})
 export job_model_id=$(echo ${job_model} | awk -F " " '{print $4}')
 echo "model ${job_model_id}"
 
-until [ -e ${monitor} ]; do sleep 1s; done
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
+then
+  EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}
+  until [ -e ${EXECFILEPATH}/monitor.t ]; do sleep 1s; done
+else
+  for MEM in $(seq -f %02g 1 ${ANLPERT})
+  do
+    EXECFILEPATHMEM=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+    until [ -e ${EXECFILEPATHMEM}/monitor.t ]; do sleep 1s; done
+  done
+fi
 
 if [ $(echo "$QSUB" | grep qsub) ]
 then
 
-  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
   then
   
     JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
