@@ -68,9 +68,8 @@ export anltype=SMT
 #
 
 # Acrescentar ou remover os processos conforme a necessidade
-Procs=(pre recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
-#Procs=(pre recanl rdpert decanl model2d recfct eof deceof model15d pos15d)
-#Procs=(gribmap)
+Procs=(pre recanl rdpert decanl model2d recfct eof deceof model15d pos15d)
+#Procs=(pos15d gribmap)
 
 #
 # Número de perturbações
@@ -82,9 +81,7 @@ export npert=7
 # Datas de início e fim
 #
 
-#export datai=2020120500
-#export dataf=2020121500
-export datai=2020120700
+export datai=2020120100
 export dataf=2020121500
 
 export data=${datai}
@@ -111,8 +108,10 @@ do
     then 
 #      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
 #      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
-      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
-      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
+#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
+#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
+      . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
+      . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
 #      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
 #      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
     fi
@@ -133,9 +132,12 @@ do
 #      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
 #      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
 #      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
-      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
-      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
-      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
+#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
+#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
+#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
+      . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
+      . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
+      . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
 #      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
 #      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
 #      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
@@ -147,9 +149,12 @@ do
 #      . ${bpath}/run_pos.sh 48 4 6 TQ0126L028 ${data} ${datafct15d} NMC &
 #      . ${bpath}/run_pos.sh 48 4 6 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
 #      . ${bpath}/run_pos.sh 48 4 6 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 
-      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} NMC &
-      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
-      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 
+#      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} NMC &
+#      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
+#      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 
+      . ${bpath}/run_pos.sh 128 4 1 TQ0126L028 ${data} ${datafct15d} NMC &
+      . ${bpath}/run_pos.sh 128 4 1 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
+      . ${bpath}/run_pos.sh 128 4 1 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 
 #      . ${bpath}/run_pos.sh 40 4 10 TQ0126L028 ${data} ${datafct15d} NMC &
 #      . ${bpath}/run_pos.sh 40 4 10 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
 #      . ${bpath}/run_pos.sh 40 4 10 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 

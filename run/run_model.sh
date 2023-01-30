@@ -386,12 +386,13 @@ else
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}"
 fi
 
-if [ ${ANLTYPE} != NMC -a ${ANLTYPE} != RDP ]
-then
+##if [ ${ANLTYPE} != NMC -a ${ANLTYPE} != RDP ]
+#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != RDP ]
+#then
   export walltime="04:00:00"
-else
-  export walltime="02:00:00"
-fi
+#else
+#  export walltime="02:00:00"
+#fi
 
 #
 # Script de submissão

@@ -135,13 +135,6 @@ function WaitUntil()
   echo ""
   echo -en "     Aguardando arquivo ${file}   "
 
-#  if [ ${varname} == "Chopping_parallel" ]
-#  then
-#    sleep 30
-#  else
-#    sleep 5 # aparentemente, o disco /mnt/beegfs da Egeon é mais lento do que o disco /lustre do XC50 e esse sleep tenta controlar o tempo de verificação da escrita dos arquivos em disco
-#  fi
-
   job_state=$(echo $(squeue -h -u ${USER} -j ${3}) | awk -F" " '{print $5}')
 
   until [ -z ${job_state} ]
@@ -1263,9 +1256,11 @@ do
   then
     echo ""
     #echo -e "     \033[33;1mCria .bash e submete o processo: criabash 240 24 $jobname ${linha}\033[m"
-    echo -e "     \033[33;1mCria .bash e submete o processo: criabash 20 1 $jobname ${linha}\033[m"
+    #echo -e "     \033[33;1mCria .bash e submete o processo: criabash 20 1 $jobname ${linha}\033[m"
+    echo -e "     \033[33;1mCria .bash e submete o processo: criabash 128 1 $jobname ${linha}\033[m"
     #criabash 240 24 $jobname ${linha}
-    criabash 20 1 $jobname ${linha}
+    #criabash 20 1 $jobname ${linha}
+    criabash 128 1 $jobname ${linha}
   else
     if [ $linha = Chopping_serial ]
     then
@@ -1297,8 +1292,10 @@ do
   then
     #rm -f ${direxe}/Out.MPI240_${varname} > /dev/null 2>&1
     #WaitUntil ${direxe}/Out.MPI240_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
-    rm -f ${direxe}/Out.MPI20_${varname} > /dev/null 2>&1
-    WaitUntil ${direxe}/Out.MPI20_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
+    #rm -f ${direxe}/Out.MPI20_${varname} > /dev/null 2>&1
+    rm -f ${direxe}/Out.MPI128_${varname} > /dev/null 2>&1
+    #WaitUntil ${direxe}/Out.MPI20_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
+    WaitUntil ${direxe}/Out.MPI128_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
     sleep 15 # verificar se a pausa é suficiente para a cópia de arquivos grandes
   else
     if [ $linha = Chopping_serial ]
