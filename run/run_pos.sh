@@ -349,7 +349,7 @@ ${PBSDIRECTIVEARRAY}
   then
     if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
     then
-      SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/PostGrib < \${EXECFILEPATH}/\${MEM}${ANLTYPE:0:1}/POSTIN-GRIB > \${EXECFILEPATH}/\${MEM}${ANLTYPE:0:1}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log"
+      SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/PostGrib < ${EXECFILEPATH}/\${MEM}${ANLTYPE:0:1}/POSTIN-GRIB > ${EXECFILEPATH}/\${MEM}${ANLTYPE:0:1}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log"
     else
       SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/PostGrib < \${EXECFILEPATH}/POSTIN-GRIB > \${EXECFILEPATH}/setout/Print.pos.${LABELI}.MPI${MPPWIDTH}.log"
     fi
