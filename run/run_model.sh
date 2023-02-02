@@ -291,8 +291,11 @@ then
   EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}
 
   mkdir -p ${EXECFILEPATH}/setout
-   
-  ln -sf ${DK_suite}/model/exec/ParModel_MPI ${EXECFILEPATH}
+  
+  if [ ${USE_SINGULARITY} != true ]
+  then 
+    ln -sf ${DK_suite}/model/exec/ParModel_MPI ${EXECFILEPATH}
+  fi
 
   export RSTIN=${DK_suite}/model/dataout/${TRCLV}/${LABELI}/${ANLTYPE}/RST
   export RSTOU=${DK_suite}/model/dataout/${TRCLV}/${LABELW}/${ANLTYPE}/RST
@@ -324,9 +327,13 @@ else
     EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}
     EXECFILEPATHMEM=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
 
-    mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}
+    #mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}
+    mkdir -p ${EXECFILEPATH}/setout ${EXECFILEPATHMEM}/setout
    
-    ln -sf ${DK_suite}/model/exec/ParModel_MPI ${EXECFILEPATHMEM}
+    if [ ${USE_SINGULARITY} != true ]
+    then 
+      ln -sf ${DK_suite}/model/exec/ParModel_MPI ${EXECFILEPATHMEM}
+    fi  
 
     ln -sf ${DK_suite}/model/datain/OZON${PREFIC}${LABELI}S.grd.G00192L028 ${DK_suite}/model/datain/OZON${MEM}${ANLTYPE:0:1}${LABELI}S.grd.G00192L028
     ln -sf ${DK_suite}/model/datain/TRAC${PREFIC}${LABELI}S.grd.G00192L028 ${DK_suite}/model/datain/TRAC${MEM}${ANLTYPE:0:1}${LABELI}S.grd.G00192L028
@@ -379,12 +386,13 @@ else
   export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}"
 fi
 
-if [ ${ANLTYPE} != NMC -a ${ANLTYPE} != RDP ]
-then
+##if [ ${ANLTYPE} != NMC -a ${ANLTYPE} != RDP ]
+#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != RDP ]
+#then
   export walltime="04:00:00"
-else
-  export walltime="02:00:00"
-fi
+#else
+#  export walltime="02:00:00"
+#fi
 
 #
 # Script de submissão
@@ -405,7 +413,7 @@ ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #PBS -q ${QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss "
+  SCRIPTRUNCMD="aprun -n ${MPPWIDTH} -N ${MPPNPPN} -d ${MPPDEPTH} -ss ${EXECFILEPATH}/ParModel_MPI < ${EXECFILEPATH}/MODELIN > ${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log"
   SCRIPTRUNJOB="qsub -W block=true "
   SCRIPTMODULE="
 export PBS_SERVER=${pbs_server1}
@@ -429,7 +437,17 @@ ${PBSDIRECTIVENAME}
 ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} "
+  if [ $USE_SINGULARITY == true ]
+  then          
+    if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
+    then
+      SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/ParModel_MPI < ${EXECFILEPATH}/\${MEM}${ANLTYPE:0:1}/MODELIN > ${EXECFILEPATH}/\${MEM}${ANLTYPE:0:1}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log"
+    else
+      SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/ParModel_MPI < ${EXECFILEPATH}/MODELIN > ${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log"
+    fi        
+  else  
+    SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log"
+  fi  
   if [[ ! -z ${job_decanl_id} || ! -z ${job_deceof_id} ]]
   then        
     if [[ ${ANLTYPE} == "CTR" || ${ANLTYPE} == "RDP" ]]
@@ -444,7 +462,29 @@ ${PBSDIRECTIVEARRAY}
   else  
     SCRIPTRUNJOB="sbatch "
   fi        
-  SCRIPTMODULE="
+  if [ $USE_INTEL == true ]
+  then         
+    SCRIPTMODULE="
+# EGEON INTEL
+module purge
+module load ohpc
+module swap gnu9 intel
+module swap openmpi4 impi
+module load hwloc
+module load phdf5
+module load netcdf
+module load netcdf-fortran
+module swap intel intel/2022.1.0
+
+module list
+"
+  else
+    if [ $USE_SINGULARITY == true ]
+    then
+      SCRIPTMODULE=""
+    else      
+      SCRIPTMODULE="
+# EGEON GNU  
 module purge
 module load gnu9/9.4.0
 module load ucx/1.11.2
@@ -454,12 +494,17 @@ module load netcdf-fortran/4.5.3
 module load phdf5/1.10.8
 module load hwloc
 module load libfabric/1.13.0
+
+module list
 "
+    fi
+  fi
   SCRIPTEXTRAS1=""
   SCRIPTEXTRAS2=""
 fi
 
-monitor=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/monitor.t
+#monitor=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/setout/monitor.t
+monitor=${EXECFILEPATH}/monitor.t
 if [ -e ${monitor} ]; then rm ${monitor}; fi
 
 cat <<EOF0 > ${SCRIPTFILEPATH}
@@ -480,15 +525,14 @@ ${SCRIPTEXTRAS1}
 
 date
 
-mkdir -p \${EXECFILEPATH}/setout
-
-${SCRIPTRUNCMD} \${EXECFILEPATH}/ParModel_MPI < \${EXECFILEPATH}/MODELIN > \${EXECFILEPATH}/setout/Print.model.${LABELI}.MPI${MPPWIDTH}.log
+${SCRIPTRUNCMD}
 
 date
 
 ${SCRIPTEXTRAS2}
 
-touch ${monitor}
+#touch ${monitor}
+touch \${EXECFILEPATH}/monitor.t
 EOF0
 
 #
@@ -501,12 +545,22 @@ job_model=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH})
 export job_model_id=$(echo ${job_model} | awk -F " " '{print $4}')
 echo "model ${job_model_id}"
 
-until [ -e ${monitor} ]; do sleep 1s; done
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
+then
+  EXECFILEPATH=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}
+  until [ -e ${EXECFILEPATH}/monitor.t ]; do sleep 1s; done
+else
+  for MEM in $(seq -f %02g 1 ${ANLPERT})
+  do
+    EXECFILEPATHMEM=${DK_suite}/model/exec_${PREFIC}${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+    until [ -e ${EXECFILEPATHMEM}/monitor.t ]; do sleep 1s; done
+  done
+fi
 
 if [ $(echo "$QSUB" | grep qsub) ]
 then
 
-  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
   then
   
     JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')

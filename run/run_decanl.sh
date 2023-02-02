@@ -26,7 +26,7 @@
 #
 #            <opcao5> membro    -> tamanho do conjunto
 #            
-#  Uso/Exemplos: ./run_decanl.sh TQ0126L028 NMC YES 2012111200 7
+#  Uso/Exemplos: ./run_decanl.sh TQ0126L028 SMT YES 2012111200 7
 #                (decompõe em coeficientes espectrais as análises
 #                das 2012111200 do conjunto de 7 membros na resolução
 #                TQ0126L028) 
@@ -140,7 +140,7 @@ then
 #PBS -N DECANLRDP
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}" 
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -152,7 +152,12 @@ else
 #SBATCH --job-name=DECANLRDP
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
+  else
+    SCRIPTRUNCMD="mpirun -np 1 ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}"
+  fi
   if [ ! -z ${job_rdpert_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_rdpert_id}"
@@ -315,7 +320,7 @@ EOT3
 
   cd ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}
 
-  ${SCRIPTRUNCMD} ${HOME_suite}/decanl/bin/\${TRUNC}\${LEV}/decanl.\${TRUNC}\${LEV} < ${DK_suite}/decanl/datain/decanl.nml > ${DK_suite}/decanl/output/decanl.out.\${LABELI}.${PREFIC}.\${HOUR}.\${RESOL}\${NIVEL}
+  ${SCRIPTRUNCMD}
 
   echo \${i}
   i=\$((\${i}+1))

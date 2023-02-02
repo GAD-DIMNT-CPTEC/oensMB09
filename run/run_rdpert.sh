@@ -25,7 +25,7 @@
 #
 #            <opcao5> membro    -> tamanho do conjunto 
 #            
-#  Uso/Exemplos: ./run_rdpert.sh TQ0126L028 NMC YES 2012111200 7
+#  Uso/Exemplos: ./run_rdpert.sh TQ0126L028 SMT YES 2012111200 7
 #                (perturba randomicamente um conjunto inicial de 7
 #                membros a partir de uma análise controle na resolução
 #                TQ0126L028; inclui a perturbação da umidade)
@@ -144,7 +144,7 @@ then
 #PBS -N RDPT${PREFIC}
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -156,7 +156,12 @@ else
 #SBATCH --job-name=RDPT${PREFIC}
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  if [ $USE_SINGULARITY == true ]
+  then
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
+  else    
+    SCRIPTRUNCMD="mpirun -np 1 ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}"
+  fi  
   if [ ! -z ${job_recanl_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_recanl_id}"
@@ -312,7 +317,7 @@ cd ${HOME_suite}/run
 
 cd ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}
 
-${SCRIPTRUNCMD} ${DK_suite}/rdpert/bin/\${TRUNC}\${LEV}/rdpert.\${TRUNC}\${LEV} < ${DK_suite}/rdpert/datain/rdpert.nml > ${DK_suite}/rdpert/output/rdpert.out.\${LABELI}.\${HOUR}.\${RESOL}\${NIVEL}
+${SCRIPTRUNCMD}
 
 touch ${monitor}
 EOT0

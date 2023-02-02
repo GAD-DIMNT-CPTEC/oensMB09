@@ -161,7 +161,7 @@ then
 #PBS -q ${AUX_QUEUE}
 ${PBSDIRECTIVE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${DK_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -174,7 +174,12 @@ else
 #SBATCH --partition=${AUX_QUEUE}
 ${PBSDIRECTIVE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 " 
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
+  else  
+    SCRIPTRUNCMD="mpirun -np 1 ${DK_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}"
+  fi  
   if [ ! -z ${job_model_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_model_id}"
@@ -183,7 +188,7 @@ ${PBSDIRECTIVE}
   fi
 fi
 
-monitor=${DK_suite}/recfct/output/monitor.t
+monitor=${DK_suite}/recfct/output/monitor_${PREFIC}.t
 if [ -e ${monitor} ]; then rm ${monitor}; fi
 
 cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
@@ -191,6 +196,8 @@ cat <<EOT0 > ${HOME_suite}/run/${SCRIPTSFILE}
 ${SCRIPTHEADER}
 
 export PBS_SERVER=${pbs_server2}
+
+export TRCLV=${TRCLV}
 
 ${DEFINEMEM}
 
@@ -257,24 +264,24 @@ do
   
   GNAMEL=\${NAMEL}\${LABELI}\${LABELF}\${EXTL}.\${TRCLV}
   echo \${GNAMEL}
-  echo \${DK_suite}/recfct/datain/\${GNAMEL}
+  echo ${DK_suite}/recfct/datain/\${GNAMEL}
   
-cat <<EOT2 > \${DK_suite}/recfct/datain/\${GNAMEL}
+cat <<EOT2 > ${DK_suite}/recfct/datain/\${GNAMEL}
 \${NAMES}\${LABELI}\${LABELF}\${ERS1}.\${TRCLV}
 \${NAMER}\${LABELI}\${LABELF}\${ERR1}.\${TRCLV}
 EOT2
 
-cat <<EOT3 > \${DK_suite}/recfct/datain/recfct\${TYPES}.nml
+cat <<EOT3 > ${DK_suite}/recfct/datain/recfct\${TYPES}.nml
  &DATAIN
   LDIM=1
-  DIRL='\${DK_suite}/recfct/datain/ '
-  DIRS='\${DK_suite}/model/dataout/\${TRCLV}/\${LABELI}/\${MEM}${PREFIC}/  '
-  DIRR='\${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/ '
+  DIRL='${DK_suite}/recfct/datain/ '
+  DIRS='${DK_suite}/model/dataout/\${TRCLV}/\${LABELI}/\${TYPES:3}/  '
+  DIRR='${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/ '
   GNAMEL='\${GNAMEL} '
  &END
 EOT3
 
-  mkdir -p \${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/
+  mkdir -p ${DK_suite}/recfct/dataout/\${TRCLV}/\${LABELI}/
 
   #
   # Run Decomposition
@@ -282,7 +289,7 @@ EOT3
   
   cd ${HOME_suite}/recfct/bin/\${TRCLV}
   
-  ${SCRIPTRUNCMD} ${HOME_suite}/recfct/bin/\${TRCLV}/recfct.\${TRCLV} < ${DK_suite}/recfct/datain/recfct\${TYPES}.nml > ${DK_suite}/recfct/output/recfct\${TYPES}.out.\${LABELI}\${LABELF}.\${HOUR}.\${TRCLV}
+  ${SCRIPTRUNCMD} 
 done
 
 touch ${monitor}

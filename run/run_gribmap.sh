@@ -1,4 +1,4 @@
-#! /bin/bash 
+#! /bin/bash -x 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -134,7 +134,8 @@ else
   fi
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
-  export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/${MEM}${ANLTYPE}"
+  #export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/${MEM}${ANLTYPE}"
+  export PBSEXECFILEPATH="export EXECFILEPATH=${DK2}/pos/dataout/${RES}/${LABELI}/${ANLTYPE}"
 fi
 
 #
@@ -223,7 +224,8 @@ job_gribmap=$(${SCRIPTRUNJOB} ${SCRIPTSFILES})
 export job_gribmap_id=$(echo ${job_gribmap} | awk -F " " '{print $4}')
 echo ${job_gribmap_id}
 
-if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
+if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
 then
 
   for mem in $(seq -f %02g 1 ${ANLPERT})

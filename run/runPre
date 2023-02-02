@@ -135,13 +135,6 @@ function WaitUntil()
   echo ""
   echo -en "     Aguardando arquivo ${file}   "
 
-#  if [ ${varname} == "Chopping_parallel" ]
-#  then
-#    sleep 30
-#  else
-#    sleep 5 # aparentemente, o disco /mnt/beegfs da Egeon é mais lento do que o disco /lustre do XC50 e esse sleep tenta controlar o tempo de verificação da escrita dos arquivos em disco
-#  fi
-
   job_state=$(echo $(squeue -h -u ${USER} -j ${3}) | awk -F" " '{print $5}')
 
   until [ -z ${job_state} ]
@@ -308,29 +301,32 @@ function lenamelist
   fi
 
   # Verifica se os executaveis se encontram no pre/exec
-  for execfile in $(cat $auxdir/.listapre)
-  do
-    if [ ${execfile} = ClmtClima ]
-    then
-      if [ ! -e ${DK_suite}/pre/exec/TemperatureClima ]
+  if [ $USE_SINGULARITY != true ] 
+  then
+    for execfile in $(cat $auxdir/.listapre)
+    do
+      if [ ${execfile} = ClmtClima ]
       then
-        cp -vf ${dirhome}/sources/TemperatureClima/TemperatureClima ${DK_suite}/pre/exec/ 
-      fi
-    else
-      if [ ${execfile} = Clmt ]
-      then
-        if [ ! -e ${DK_suite}/pre/exec/Temperature ]
+        if [ ! -e ${DK_suite}/pre/exec/TemperatureClima ]
         then
-          cp -vf ${dirhome}/sources/Temperature/Temperature ${DK_suite}/pre/exec/
-        fi 
+          cp -vf ${dirhome}/sources/TemperatureClima/TemperatureClima ${DK_suite}/pre/exec/ 
+        fi
       else
-        if [ ! -e ${DK_suite}/pre/exec/${execfile} ]
+        if [ ${execfile} = Clmt ]
         then
-          cp -vf ${dirhome}/sources/${execfile}/${execfile} ${DK_suite}/pre/exec/ 
+          if [ ! -e ${DK_suite}/pre/exec/Temperature ]
+          then
+            cp -vf ${dirhome}/sources/Temperature/Temperature ${DK_suite}/pre/exec/
+          fi 
+        else
+          if [ ! -e ${DK_suite}/pre/exec/${execfile} ]
+          then
+            cp -vf ${dirhome}/sources/${execfile}/${execfile} ${DK_suite}/pre/exec/ 
+          fi
         fi
       fi
-    fi
-  done
+    done
+  fi
 
   echo ""
   echo -e "\033[35;1m     ----- Fim da Leitura da Relação de Processos-----\033[m"
@@ -938,7 +934,7 @@ function criabash()
     export FILAPBS="#SBATCH --partition=${QUEUEP}"
   else 
     export PBS_SERVER=${pbs_server2}
-    export HEADBASH="#!/bin/bash"
+    export HEADBASH="#!/bin/bash -x"
     #export FILAPBS="#PBS -q ${AUX_QUEUE}"
     export FILAPBS="#SBATCH --partition=${AUX_QUEUE}"
   fi
@@ -983,6 +979,25 @@ echo \${PBS_JOBID} > ${HOME_suite}/pre/exec/this.pre.job.${varname}
 
 auxvarname=$(printf "$varname")
 
+if [ $USE_INTEL == true ]
+then
+# EGEON INTEL
+module purge
+module load ohpc
+module swap gnu9 intel
+module swap openmpi4 impi
+module load hwloc
+module load phdf5
+module load netcdf
+module load netcdf-fortran
+module swap intel intel/2022.1.0
+
+module list
+else
+  if [ $USE_SINGULARITY == true ]
+  then
+module list
+  else
 # EGEON GNU
 module purge
 module load gnu9/9.4.0
@@ -993,6 +1008,10 @@ module load netcdf-fortran/4.5.3
 module load phdf5/1.10.8
 module load hwloc
 module load libfabric/1.13.0
+
+module list
+  fi
+fi
 
 if [[ (\${auxvarname} = "Chopping_parallel") ]]
 then
@@ -1028,14 +1047,20 @@ if [[ (\${optserver} = "aux") ]]
 then
   ${direxe}/${varname} -i ${direxe}/${varname}.nml
 else
-#  time aprun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+  #  time aprun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
 
-#OK EGEON
-#  time mpirun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+  #OK EGEON
+  #  time mpirun -n ${cpu_mpi} -N ${cpu_node} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+  #mpirun -np ${cpu_mpi} ${direxe}/${varname} -i ${direxe}/${varname}.nml
 
-#EGEON SINGULARITY
-  module load singularity 
-  singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/BAM_V1.2.1.sif mpirun -np ${cpu_mpi} /usr/local/bin/${varname} -i ${direxe}/${varname}.nml
+  #EGEON SINGULARITY
+  if [ \$USE_SINGULARITY == true ]
+  then
+    #module load singularity; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/BAM_V1.2.1.sif mpirun -np ${cpu_mpi} /usr/local/bin/${varname} -i ${direxe}/${varname}.nml
+    module load singularity; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${cpu_mpi} /usr/local/bin/${varname} -i ${direxe}/${varname}.nml
+  else
+    mpirun -np ${cpu_mpi} ${direxe}/${varname} -i ${direxe}/${varname}.nml
+  fi
 fi
 
 date
@@ -1231,9 +1256,11 @@ do
   then
     echo ""
     #echo -e "     \033[33;1mCria .bash e submete o processo: criabash 240 24 $jobname ${linha}\033[m"
-    echo -e "     \033[33;1mCria .bash e submete o processo: criabash 120 12 $jobname ${linha}\033[m"
+    #echo -e "     \033[33;1mCria .bash e submete o processo: criabash 20 1 $jobname ${linha}\033[m"
+    echo -e "     \033[33;1mCria .bash e submete o processo: criabash 128 1 $jobname ${linha}\033[m"
     #criabash 240 24 $jobname ${linha}
-    criabash 120 12 $jobname ${linha}
+    #criabash 20 1 $jobname ${linha}
+    criabash 128 1 $jobname ${linha}
   else
     if [ $linha = Chopping_serial ]
     then
@@ -1265,8 +1292,10 @@ do
   then
     #rm -f ${direxe}/Out.MPI240_${varname} > /dev/null 2>&1
     #WaitUntil ${direxe}/Out.MPI240_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
-    rm -f ${direxe}/Out.MPI120_${varname} > /dev/null 2>&1
-    WaitUntil ${direxe}/Out.MPI120_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
+    #rm -f ${direxe}/Out.MPI20_${varname} > /dev/null 2>&1
+    rm -f ${direxe}/Out.MPI128_${varname} > /dev/null 2>&1
+    #WaitUntil ${direxe}/Out.MPI20_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
+    WaitUntil ${direxe}/Out.MPI128_${varname} ${direxe}/.${linha}.ok ${QPIDpre} ${file_out} ${linha}
     sleep 15 # verificar se a pausa é suficiente para a cópia de arquivos grandes
   else
     if [ $linha = Chopping_serial ]

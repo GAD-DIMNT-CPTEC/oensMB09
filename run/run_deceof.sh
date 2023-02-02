@@ -26,7 +26,7 @@
 #
 #            <opcao5> membro    -> tamanho do conjunto
 #
-#  Uso/Exemplos: ./run_deceof.sh TQ0126L028 EOF YES 2012123118 7
+#  Uso/Exemplos: ./run_deceof.sh TQ0126L028 EOF YES 2012123118 7 SMT
 #                (decompõe o conjunto de 7+7 análises perturbadas por EOF
 #                válidas para 2012123118 na resolução TQ0126L028; serão
 #                criadas 7 análises com o sufixo N e 7 análises com o
@@ -161,7 +161,7 @@ then
 #PBS -q ${AUX_QUEUE}
 "
   SCRIPTNUM="\$(printf %02g \${PBS_ARRAY_INDEX})"
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 ${DK_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -175,7 +175,12 @@ else
 #SBATCH --array=1-${NUMPERT}
 "
   SCRIPTNUM="\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 "
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}"
+  else  
+    SCRIPTRUNCMD="mpirun -np 1 ${DK_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}"
+  fi
   if [ ! -z ${job_eof_id} ]
   then
     SCRIPTRUNJOB="sbatch --dependency=afterok:${job_eof_id}"
@@ -257,8 +262,8 @@ export ERS3=S.rp3
 #
 
 echo \${HOME_suite}
-echo \${DK_suite}
-echo \${DK_suite}/model/datain
+echo ${DK_suite}
+echo ${DK_suite}/model/datain
 
 #
 # Set Horizontal Truncation and Vertical Layers
@@ -277,17 +282,17 @@ export MACH=${MAQUI}
 # Now, build the necessary NAMELIST input:
 #
 
-mkdir -p \${DK_suite}/deceof/datain/
+mkdir -p ${DK_suite}/deceof/datain/
 
 GNAMEL=\${NAMEL}\${LABELI}\${EXTL}.\${TRUNC}\${LEV}
 
-cat <<EOT3 > \${DK_suite}/deceof/datain/deceof\${NUM}.nml
+cat <<EOT3 > ${DK_suite}/deceof/datain/deceof\${NUM}.nml
  &DATAIN
   GNAMEL='\${GNAMEL} '
-  DIRL='\${DK_suite}/deceof/datain/ '
-  DIRI='\${DK_suite}/model/datain/ '
-  DIRG='\${DK_suite}/eof/dataout/\${TRUNC}\${LEV}/ '
-  DIRS='\${DK_suite}/model/datain/ '
+  DIRL='${DK_suite}/deceof/datain/ '
+  DIRI='${DK_suite}/model/datain/ '
+  DIRG='${DK_suite}/eof/dataout/\${TRUNC}\${LEV}/ '
+  DIRS='${DK_suite}/model/datain/ '
  &END
  &HUMIDI
   HUM='${HUMID}'
@@ -354,9 +359,9 @@ echo "filevhs= "\${filevhs}
 echo "filevnas="\${filevnas} 
 echo "filevsas="\${filevsas} 
 
-rm -f \${DK_suite}/deceof/datain/\${GNAMEL}
+rm -f ${DK_suite}/deceof/datain/\${GNAMEL}
 
-cat <<EOT2 > \${DK_suite}/deceof/datain/\${GNAMEL}
+cat <<EOT2 > ${DK_suite}/deceof/datain/\${GNAMEL}
 \${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 \${filephn}
 \${fileptr}
@@ -392,7 +397,8 @@ EOT2
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+#${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+${SCRIPTRUNCMD}
 
 filephn=prssnhn\${NUM}${MPHN}\${LABELI}
 fileptr=prssntr\${NUM}${MPTR}\${LABELI}
@@ -454,9 +460,9 @@ echo "filevhs= "\${filevhs}
 echo "filevnas="\${filevnas} 
 echo "filevsas="\${filevsas} 
 
-rm -f \${DK_suite}/deceof/datain/\${GNAMEL}
+rm -f ${DK_suite}/deceof/datain/\${GNAMEL}
 
-cat <<EOT4 > \${DK_suite}/deceof/datain/\${GNAMEL}
+cat <<EOT4 > ${DK_suite}/deceof/datain/\${GNAMEL}
 \${GNAME}\${LABELI}\${EXTG}.\${TRUNC}\${LEV}
 \${filephn}
 \${fileptr}
@@ -492,7 +498,8 @@ EOT4
 
 cd \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}
 
-${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+#${SCRIPTRUNCMD} \${HOME_suite}/deceof/bin/\${TRUNC}\${LEV}/deceof.\${TRUNC}\${LEV} < \${HOME_suite}/deceof/datain/deceof\${NUM}.nml > \${HOME_suite}/deceof/output/deceof.\${NUM}.${LABELI}.\${HOUR}.\${TRUNC}\${LEV}
+${SCRIPTRUNCMD}
 
 touch ${monitor}
 EOT0
