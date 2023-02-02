@@ -187,7 +187,11 @@ PROGRAM ensmed
         DO nmb=1,nmembers
            CALL skgb(20+nmb,iseek,msk1,lskip,lgrib)
            IF (lgrib == 0) EXIT                ! end loop at EOF or problem
-           CALL GETGB1R(20+nmb,lskip,lgrib,nxny,kpds,kgds,kens,bitmap,tmp,ierr)
+!CFB - modificação referente à atualização da w3lib
+!    - vide comentário de modificação da rotina getgb1r.f da w3emc
+!           CALL GETGB1R(20+nmb,lskip,lgrib,nxny,kpds,kgds,kens,bitmap,tmp,ierr)
+           CALL GETGB1R(20+nmb,lskip,lgrib,nxny,kpds,kgds,kens,bitmap,tmp,kptr,ierr)
+!CFB           
            IF (ierr .NE. 0) THEN
               EXIT
            END IF

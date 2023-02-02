@@ -35,7 +35,7 @@
 
 export inctime=${HOME}/bin/inctime
 
-export bpath=/lustre_xc50/carlos_bastarz/oensMB09.t7839/run
+export bpath=/mnt/beegfs/carlos.bastarz/oensMB09/run
 
 # 
 # Nomes dos produtos
@@ -52,14 +52,15 @@ export bpath=/lustre_xc50/carlos_bastarz/oensMB09.t7839/run
 #
 
 # Acrescentar ou remover os produtos conforme a necessidade
-Procs=(grh ensmed spread cluster probability probagr plumes chievol perturbations spaguetti)
+#Procs=(grh ensmed spread cluster probability probagr plumes chievol perturbations spaguetti)
+Procs=(ensmed spread)
 
 #
 # Datas de início e fim
 #
 
-export datai=2020051500
-export dataf=2020051500
+export datai=2020120100
+export dataf=2020120100
 
 export data=${datai}
 
@@ -70,8 +71,8 @@ export data=${datai}
 while [ ${data} -le ${dataf} ]
 do
   
-  datafct48h=$(${inctime} ${data} +48hr %y4%m2%d2%h2)
-  datafct15d=$(${inctime} ${data} +15dy %y4%m2%d2%h2)
+  datafct48h=$(${inctime} ${data} +48h %y4%m2%d2%h2)
+  datafct15d=$(${inctime} ${data} +15d %y4%m2%d2%h2)
 
   for proc in ${Procs[@]}
   do
@@ -99,7 +100,7 @@ do
 
   done
 
-  data=$(${inctime} ${data} +1dy %y4%m2%d2%h2)
+  data=$(${inctime} ${data} +1d %y4%m2%d2%h2)
 
 done
 

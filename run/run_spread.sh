@@ -31,9 +31,10 @@
 #
 # !REVISION HISTORY:
 #
-# 17 Maio de 2020     - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
-# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 17 Maio de 2020      - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 02 Fevereiro de 2023 - C. F. Bastarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -108,7 +109,7 @@ export NIVEL=${TRCLV:6:4}
 
 export NMEMBR=$((2*${NPERT}+1))
 
-export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+export LABELF=$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 case ${TRC} in
   021) MR=22  ; IR=64  ; JR=32  ; NPGH=93   ; DT=1800 ;;
@@ -172,9 +173,16 @@ else
 #SBATCH --job-name=SPREAD
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
+  if [ $USE_SINGULARITY == true ] 
+  then
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI} > \${ROPERMOD}/spread/output/spread.${RUNTM}.log"
+  else
+    SCRIPTRUNCMD="mpirun -np 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI} > \${ROPERMOD}/spread/output/spread.${RUNTM}.log"
+  fi
   SCRIPTRUNJOB="sbatch "
 fi
+
+if [ -e ${ROPERM}/spread/bin/spread-${LABELI}.ok ]; then rm ${ROPERM}/spread/bin/spread-${LABELI}.ok; fi
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
@@ -233,7 +241,7 @@ EOT
 
 cd \${ROPERMOD}/spread/bin
 
-${SCRIPTRUNCMD} \${ROPERMOD}/spread/bin/spread.x ${LABELI}
+${SCRIPTRUNCMD} 
 
 echo "" > \${ROPERMOD}/spread/bin/spread-${LABELI}.ok
 EOT0
@@ -318,4 +326,4 @@ run gposens.gs
 ${TRC} ${LABELI} ${NCTLS} ${TRCLV} ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/
 EOT
 
-exit 0
+#exit 0
