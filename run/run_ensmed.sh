@@ -175,7 +175,7 @@ then
 #PBS -N ENSMED
 #PBS -q ${QUEUE}
 "
-  SCRIPTRUNCMD="time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss " 
+  SCRIPTRUNCMD="time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="

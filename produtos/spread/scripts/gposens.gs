@@ -264,17 +264,20 @@ while (NCT <= NCTLS)
       if (VAR = 'psnm')
 #        'printim '_DIRGIF'/'VAR''DATEI''DATEF'.png png x773 y602'
         'printim '_DIRGIF'/'VAR''DATEI''DATEF'.png png x1024 y768'
-        '!/usr/bin/convert -trim '_DIRGIF'/'VAR''DATEI''DATEF'.png ' _DIRGIF'/'VAR''DATEI''DATEF'.png '
+#        '!/usr/bin/convert -trim '_DIRGIF'/'VAR''DATEI''DATEF'.png ' _DIRGIF'/'VAR''DATEI''DATEF'.png '
+        '!/home/carlos.bastarz/bin/convert -trim '_DIRGIF'/'VAR''DATEI''DATEF'.png ' _DIRGIF'/'VAR''DATEI''DATEF'.png '
       endif
       if (VAR = 'temp')
 #        'printim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png png x773 y602'
         'printim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png png x1024 y768'
-        '!/usr/bin/convert -trim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png ' _DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png '
+#        '!/usr/bin/convert -trim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png ' _DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png '
+        '!/home/carlos.bastarz/bin/convert -trim '_DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png ' _DIRGIF'/'VAR''PLEV''DATEI''DATEF'.png '
       endif
      if (VAR = 'zgeo')
 #        'printim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png png x773 y602'
         'printim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png png x1024 y768'
-        '!/usr/bin/convert -trim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png ' _DIRGIF'/geop'PLEV''DATEI''DATEF'.png '
+#        '!/usr/bin/convert -trim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png ' _DIRGIF'/geop'PLEV''DATEI''DATEF'.png '
+        '!/home/carlos.bastarz/bin/convert -trim '_DIRGIF'/geop'PLEV''DATEI''DATEF'.png ' _DIRGIF'/geop'PLEV''DATEI''DATEF'.png '
       endif
    
 *

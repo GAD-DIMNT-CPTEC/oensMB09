@@ -394,7 +394,8 @@ while (NCT <= NCTLS)
    
 *     'printim '_DIRGIF'/cluster'VAR''VAR2''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x800 y1000'
      'printim '_DIRGIF'/cluster'VAR''VAR2''PLEV''_DATEI.NCT''_DATEF.NCT'.png png x1000 y1200'
-     '!/usr/bin/convert -trim '_DIRGIF'/cluster'VAR''VAR2''PLEV''_DATEI.NCT''_DATEF.NCT'.png ' _DIRGIF'/cluster'VAR''VAR2''PLEV''_DATEI.NCT''_DATEF.NCT'.png'
+*     '!/usr/bin/convert -trim '_DIRGIF'/cluster'VAR''VAR2''PLEV''_DATEI.NCT''_DATEF.NCT'.png ' _DIRGIF'/cluster'VAR''VAR2''PLEV''_DATEI.NCT''_DATEF.NCT'.png'
+     '!/home/carlos.bastarz/bin/convert -trim '_DIRGIF'/cluster'VAR''VAR2''PLEV''_DATEI.NCT''_DATEF.NCT'.png ' _DIRGIF'/cluster'VAR''VAR2''PLEV''_DATEI.NCT''_DATEF.NCT'.png'
 
 *
 * Close ctl's and reset and undefine Variables

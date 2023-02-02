@@ -1,4 +1,4 @@
-#! /bin/bash 
+#! /bin/bash -x 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -121,7 +121,7 @@ export NIVEL=${TRCLV:6:4}
 
 export NMEMBR=$((2*${NRNDP}+1))
 
-export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+export LABELF=$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 case ${TRC} in
   021) MR=22  ; IR=64  ; JR=32  ; NPGH=93   ; DT=1800 ;;
@@ -168,7 +168,7 @@ then
 #PBS -N CLUSTER
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF} > \${ROPERMOD}/cluster/output/cluster.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -180,9 +180,16 @@ else
 #SBATCH --job-name=CLUSTER
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 "
+  if [ $USE_SINGULARITY == true ]
+  then
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF} > \${ROPERMOD}/cluster/output/cluster.${RUNTM}.log"
+  else
+    SCRIPTRUNCMD="mpirun -np 1 \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF} /ensmed/output/ensmed.${RUNTM}.log"
+  fi
   SCRIPTRUNJOB="sbatch "
 fi
+
+if [ -e ${ROPERM}/cluster/bin/cluster-${LABELI}.ok ]; then rm ${ROPERM}/cluster/bin/cluster-${LABELI}.ok; fi
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
@@ -244,7 +251,7 @@ EOT
 
 cd \${ROPERMOD}/cluster/bin
 
-${SCRIPTRUNCMD} \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF}
+${SCRIPTRUNCMD}
 
 echo "" > \${ROPERMOD}/cluster/bin/cluster-${LABELI}.ok
 EOT0
@@ -302,7 +309,7 @@ TIM=0
 
 while [ ${TIM} -le ${NHOURS} ]
 do
-  LABELF=$(${inctime} ${LABELI} +${TIM}hr %y4%m2%d2%h2)
+  LABELF=$(${inctime} ${LABELI} +${TIM}h %y4%m2%d2%h2)
   echo 'LABELF='${LABELF}
 
   if [ ${TIM} -eq 0 ]; then TYPE='P.icn'; else TYPE='P.fct'; fi

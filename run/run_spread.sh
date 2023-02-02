@@ -160,7 +160,7 @@ then
 #PBS -N SPREAD
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI} > \${ROPERMOD}/spread/output/spread.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 
 else
@@ -319,11 +319,11 @@ echo "NCTLS=${NCTLS}"
 # Figuras
 #
 
-mkdir -p ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/
+mkdir -p ${ROPERM}/spread/gif/
 
 ${DIRGRADS}/grads -lb << EOT
 run gposens.gs 
-${TRC} ${LABELI} ${NCTLS} ${TRCLV} ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/
+${TRC} ${LABELI} ${NCTLS} ${TRCLV} ${ROPERM}/spread/gif/
 EOT
 
 #exit 0

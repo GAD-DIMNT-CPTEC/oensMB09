@@ -81,8 +81,7 @@ export npert=7
 # Datas de início e fim
 #
 
-#export datai=2020120100
-export datai=2020121100
+export datai=2020120100
 export dataf=2020121500
 
 export data=${datai}
