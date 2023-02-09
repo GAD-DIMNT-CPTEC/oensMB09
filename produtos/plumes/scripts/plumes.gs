@@ -155,8 +155,10 @@ lab=lonlat
 
 say 'printim 'dirfig''state'/'lab'.png png x620 y760'
     'printim 'dirfig''state'/'lab'.png png x620 y760'
-say '!/usr/bin/convert -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
-    '!/usr/bin/convert -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
+*say '!/usr/bin/convert -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
+say '!/home/carlos.bastarz/bin/convert -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
+*    '!/usr/bin/convert -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
+    '!/home/carlos.bastarz/bin/convert -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
 
 return
 

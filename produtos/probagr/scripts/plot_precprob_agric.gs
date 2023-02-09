@@ -141,7 +141,8 @@ while (nf <= nblst)
 *     '!/usr/bin/convert -trim 'dirfig'prec_agric_large'ld'.png 'dirfig'prec_agric_large'ld'.png'
 
      'printim 'dirfig'prec_agric_large'ld'.png png x1200 y1000'
-     '!/usr/bin/convert -trim 'dirfig'prec_agric_large'ld'.png 'dirfig'prec_agric_large'ld'.png'
+*     '!/usr/bin/convert -trim 'dirfig'prec_agric_large'ld'.png 'dirfig'prec_agric_large'ld'.png'
+     '!/home/carlos.bastarz/bin/convert -trim 'dirfig'prec_agric_large'ld'.png 'dirfig'prec_agric_large'ld'.png'
 
      'c'
      'set grads off'
@@ -156,7 +157,8 @@ while (nf <= nblst)
 *     '!/usr/bin/convert -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.png 'dirfig'prec_agric_small'ld'.png'
 
      'printim 'dirfig'prec_agric_small'ld'.png png x1200 y1000'
-     '!/usr/bin/convert -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.png 'dirfig'prec_agric_small'ld'.png'
+*     '!/usr/bin/convert -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.png 'dirfig'prec_agric_small'ld'.png'
+     '!/home/carlos.bastarz/bin/convert -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.png 'dirfig'prec_agric_small'ld'.png'
       nld=nld+1
    
    nf=nf+1

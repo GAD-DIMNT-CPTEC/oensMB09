@@ -128,7 +128,8 @@ endwhile
 *'printim 'dirfig'chi_evol'datei''datef'.png png x600 y950'
 *'!/usr/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png  'dirfig'chi_evol'datei''datef'.png'
 'printim 'dirfig'chi_evol'datei''datef'.png png x768 y1024'
-'!/usr/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png 'dirfig'chi_evol'datei''datef'.png'
+*'!/usr/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png 'dirfig'chi_evol'datei''datef'.png'
+'!/home/carlos.bastarz/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png 'dirfig'chi_evol'datei''datef'.png'
 
 *'q pos'
 'quit'

@@ -32,9 +32,10 @@
 #
 # !REVISION HISTORY:
 #
-# 03 Julho de 2020    - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2020    - C. F. Bastarz - Revisão geral.
-# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 03 Julho de 2020     - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2020     - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 06 Fevereiro de 2023 - C. F. Bastarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -116,7 +117,7 @@ export NIVEL=${TRCLV:6:4}
 
 export NMEMBR=$((2*${NRNDP}+1))
 
-export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+export LABELF=$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 case ${TRC} in
   021) MR=22  ; IR=64  ; JR=32  ; NPGH=93   ; DT=1800 ;;
@@ -152,11 +153,12 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setprobagr.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH1=${DK_suite}/run/setprobagr.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH2=${DK_suite}/run/setprobagr_figs.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 if [ $(echo "$QSUB" | grep qsub) ]
 then
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #PBS -o ${ROPERM}/probagr/output/probagr.${RUNTM}.out
 #PBS -e ${ROPERM}/probagr/output/probagr.${RUNTM}.err
 #PBS -l walltime=00:10:00
@@ -167,10 +169,21 @@ then
 #PBS -N PROBAGR
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
+  SCRIPTHEADER2="
+#PBS -o ${ROPERM}/probagr/output/probagr_figs.${RUNTM}.out
+#PBS -e ${ROPERM}/probagr/output/probagr_figs.${RUNTM}.err
+#PBS -l walltime=00:10:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N PROBAGRFIGS
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} > \${ROPERMOD}/probagr/output/probagr.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 else
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #SBATCH --output=${ROPERM}/probagr/output/probagr.${RUNTM}.out
 #SBATCH --error=${ROPERM}/probagr/output/probagr.${RUNTM}.err
 #SBATCH --time=00:10:00
@@ -179,13 +192,31 @@ else
 #SBATCH --job-name=PROBAGR
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 "
+  SCRIPTHEADER2="
+#SBATCH --output=${ROPERM}/probagr/output/probagr_figs.${RUNTM}.out
+#SBATCH --error=${ROPERM}/probagr/output/probagr_figs.${RUNTM}.err
+#SBATCH --time=00:10:00
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=PROBAGRFIGS
+#SBATCH --partition=${AUX_QUEUE}
+"
+  if [ $USE_SINGULARITY == true ]
+  then
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} > \${ROPERMOD}/probagr/output/probagr.${RUNTM}.log"
+  else
+    SCRIPTRUNCMD="mpirun -np 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} > \${ROPERMOD}/probagr/output/probagr.${RUNTM}.log"
+  fi
   SCRIPTRUNJOB="sbatch "
 fi
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
+if [ -e ${ROPERM}/probagr/bin/probagr-${LABELI}.ok ]; then rm ${ROPERM}/probagr/bin/probagr-${LABELI}.ok; fi
+
+if [ -e ${ROPERM}/probagr/bin/probagr_figs-${LABELI}.ok ]; then rm ${ROPERM}/probagr/bin/probagr_figs-${LABELI}.ok; fi
+
+cat <<EOT0 > ${SCRIPTFILEPATH1}
 #! /bin/bash -x
-${SCRIPTHEADER}
+${SCRIPTHEADER1}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -234,27 +265,32 @@ EOT
 
 cd \${ROPERMOD}/probagr/bin
 
-
-${SCRIPTRUNCMD} \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} 
+${SCRIPTRUNCMD}
 
 echo "" > \${ROPERMOD}/probagr/bin/probagr-${LABELI}.ok
 EOT0
 
 #
-# Submissão
-#
-
-export PBS_SERVER=${pbs_server2}
-
-chmod +x ${SCRIPTFILEPATH}
-
-${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
-
-until [ -e "${ROPERM}/probagr/bin/probagr-${LABELI}.ok" ]; do sleep 1s; done
-                                                                                                 
-#
 # Figuras
 #
+
+cat <<EOT1 > ${SCRIPTFILEPATH2}
+#! /bin/bash -x
+${SCRIPTHEADER2}
+
+export DATE=$(date +'%Y%m%d')
+export HOUR=$(date +'%T')
+
+# OPERMOD is the directory for sources, scripts and printouts files.
+# SOPERMOD is the directory for input and output data and bin files.
+# ROPERMOD is the directory for big selected output files.
+
+export OPERMOD=${OPERM}
+export ROPERMOD=${ROPERM}
+export LEV=${NIVEL}
+export TRUNC=${RESOL}
+export MACH=${MAQUI}
+export EXTS=S.unf
 
 yy=$(echo ${LABELI} | cut -c 1-4)
 mm=$(echo ${LABELI} | cut -c 5-6)
@@ -265,38 +301,61 @@ dirscr=${ROPERM}/probagr/scripts
 dirgif=${ROPERM}/probagr/gif
 
 dirbct=${ROPERM}/probagr/dataout/${RES}/${LABELI}
-if [ ! -d ${dirgif} ]
+
+if [ ! -d \${dirgif} ]
 then
-  mkdir -p ${dirgif}
+  mkdir -p \${dirgif}
 else
-  echo "${dirgif} ja existe"
+  echo "\${dirgif} ja existe"
 fi
 
 #
 # Lista de arquivos descritores (ctl)
 #
 
-labelf=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+labelf=\$(${inctime} ${LABELI} +\${NFCTDY}d %y4%m2%d2%h2)
 
-arqlist=wmaprecprob${LABELI}${labelf}.${RES}.lst
+arqlist=wmaprecprob${LABELI}\${labelf}.${RES}.lst
 
-rm -f ${dirbct}/filefct${LABELI}.${resol}
-for arq in $(cat ${dirbct}/${arqlist} | grep ctl)
+rm -f \${dirbct}/filefct${LABELI}.${resol}
+
+for arq in \$(cat \${dirbct}/\${arqlist} | grep ctl)
 do
-  echo ${arq} >> ${dirbct}/filefct${LABELI}.${RES}
+  echo \${arq} >> \${dirbct}/filefct${LABELI}.${RES}
 done
 
-nblst=$(cat ${dirbct}/filefct${LABELI}.${RES} | wc -l)
-echo "nblst="${nblst}
+nblst=\$(cat \${dirbct}/filefct${LABELI}.${RES} | wc -l)
+echo "nblst="\${nblst}
 
 cd ${ROPERM}/probagr/scripts
 
 ${DIRGRADS}/grads -lb << EOT
 run plot_precprob_agric.gs
-${RES} ${TRC} ${LABELI} ${nblst} ${ndacc} ${noutpday} ${dirbct} ${dirgif}
+${RES} ${TRC} ${LABELI} \${nblst} \${ndacc} \${noutpday} \${dirbct} \${dirgif}
 EOT
 
-mkdir -p ${dirgif}/${LABELI}
-mv ${dirgif}/*png ${dirgif}/${LABELI}/
+mkdir -p \${dirgif}/${LABELI}
+mv \${dirgif}/*png \${dirgif}/${LABELI}/
 
-exit 0
+echo "" > \${ROPERMOD}/probagr/bin/probagr_figs-${LABELI}.ok
+EOT1
+
+#
+# Submissão
+#
+
+export PBS_SERVER=${pbs_server2}
+
+chmod +x ${SCRIPTFILEPATH1}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH1}
+
+until [ -e "${ROPERM}/probagr/bin/probagr-${LABELI}.ok" ]; do sleep 1s; done
+                                                                                                 
+chmod +x ${SCRIPTFILEPATH2}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
+
+until [ -e "${ROPERM}/probagr/bin/probagr_figs-${LABELI}.ok" ]; do sleep 1s; done
+                                                                                                 
+#exit 0

@@ -32,9 +32,10 @@
 #
 # !REVISION HISTORY:
 #
-# 09 Julho de 2020    - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
-# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 09 Julho de 2020     - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 06 Fevereiro de 2023 - C. F. Bastarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -127,7 +128,7 @@ export NIVEL=${TRCLV:6:4}
 
 export NMEMBR=$((2*${NRNDP}+1))
 
-export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+export LABELF=$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 case ${TRC} in
   021) MR=22  ; IR=64  ; JR=32  ; NPGH=93   ; DT=1800 ;;
@@ -163,11 +164,12 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setplumes${PREFX}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH1=${DK_suite}/run/setplumes${PREFX}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH2=${DK_suite}/run/setplumes_figs${PREFX}.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 if [ $(echo "$QSUB" | grep qsub) ]
 then
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #PBS -o ${ROPERM}/plumes/output/plumes.${RUNTM}.out
 #PBS -e ${ROPERM}/plumes/output/plumes.${RUNTM}.err
 #PBS -l walltime=00:10:00
@@ -178,10 +180,21 @@ then
 #PBS -N PLUMES
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
+  SCRIPTHEADER2="
+#PBS -o ${ROPERM}/plumes/output/plumes_figs.${RUNTM}.out
+#PBS -e ${ROPERM}/plumes/output/plumes_figs.${RUNTM}.err
+#PBS -l walltime=00:10:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N PLUMESFIGS
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI} > \${ROPERMOD}/plumes/output/plumes.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 else
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #SBATCH --output=${ROPERM}/plumes/output/plumes.${RUNTM}.out
 #SBATCH --error=${ROPERM}/plumes/output/plumes.${RUNTM}.err
 #SBATCH --time=00:10:00
@@ -190,13 +203,30 @@ else
 #SBATCH --job-name=PLUMES
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 "
+  SCRIPTHEADER2="
+#SBATCH --output=${ROPERM}/plumes/output/plumes_figs.${RUNTM}.out
+#SBATCH --error=${ROPERM}/plumes/output/plumes_figs.${RUNTM}.err
+#SBATCH --time=01:00:00
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=PLUMES
+#SBATCH --partition=${AUX_QUEUE}
+"
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI} > \${ROPERMOD}/plumes/output/plumes.${RUNTM}.log"
+  else
+    SCRIPTRUNCMD="mpirun -np 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI} > \${ROPERMOD}/plumes/output/plumes.${RUNTM}.log"
+  fi          
   SCRIPTRUNJOB="sbatch "
 fi
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
+if [ -e ${ROPERM}/plumes/bin/plumes-${LABELI}.ok ]; then rm ${ROPERM}/plumes/bin/plumes-${LABELI}.ok; fi
+if [ -e ${ROPERM}/plumes/bin/plumes_figs-${LABELI}.ok ]; then rm ${ROPERM}/plumes/bin/plumes_figs-${LABELI}.ok; fi
+
+cat <<EOT0 > ${SCRIPTFILEPATH1}
 #! /bin/bash -x
-${SCRIPTHEADER}
+${SCRIPTHEADER1}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -243,32 +273,38 @@ EOT
 
 cd \${ROPERMOD}/plumes/bin
 
-${SCRIPTRUNCMD} \${ROPERMOD}/plumes/bin/plumes.x ${LABELI}
+${SCRIPTRUNCMD}
 
 echo "" > \${ROPERMOD}/plumes/bin/plumes-${LABELI}.ok
 EOT0
 
 #
-# Submissão
-#
-
-export PBS_SERVER=${pbs_server2}
-
-chmod +x ${SCRIPTFILEPATH}
-
-${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
-
-until [ -e "${ROPERM}/plumes/bin/plumes-${LABELI}.ok" ]; do sleep 1s; done
-                                                                                                 
-#
 # Figuras
 #
 
+cat <<EOT1 > ${SCRIPTFILEPATH2}
+#! /bin/bash -x
+${SCRIPTHEADER2}
+
+export DATE=$(date +'%Y%m%d')
+export HOUR=$(date +'%T')
+
+# OPERMOD is the directory for sources, scripts and printouts files.
+# SOPERMOD is the directory for input and output data and bin files.
+# ROPERMOD is the directory for big selected output files.
+
+export OPERMOD=${OPERM}
+export ROPERMOD=${ROPERM}
+export LEV=${NIVEL}
+export TRUNC=${RESOL}
+export MACH=${MAQUI}
+export EXTS=S.unf
+                                                                                                 
 gname=GFGN
 CASE=${RES}
-fileloc=LOCMM${LABELI}${LABELF}.${CASE}
+fileloc=LOCMM${LABELI}${LABELF}.\${CASE}
 
-if [ -z "${ps}" ]
+if [ -z "\${ps}" ]
 then
   ps=psuperf
 else
@@ -284,40 +320,61 @@ dirbct=${ROPERM}/plumes/dataout/${RES}
 
 cd ${ROPERM}/plumes/scripts/
 
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AC/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AP/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/DF/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MA/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MT/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PE/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RJ/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RR/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SE/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/WW/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AL/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/BA/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/ES/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MG/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PA/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PI/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RN/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RS/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SP/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/ZZ/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/AM/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/CE/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/GO/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/MS/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PB/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/PR/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/RO/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/SC/
-mkdir -p ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif/TO/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/AC/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/AP/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/DF/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/MA/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/MT/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PE/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RJ/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RR/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/SE/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/WW/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/AL/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/BA/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/ES/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/MG/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PA/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PI/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RN/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RS/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/SP/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/ZZ/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/AM/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/CE/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/GO/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/MS/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PB/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PR/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RO/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/SC/
+mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/TO/
 
-${DIRGRADS}/grads -bp << EOT
+${DIRGRADS}/grads -bp << EOF0
 run plumes.gs
-${LABELI} ${LABELF} ${gname} ${CASE} ${ps} ${NMEMBR} ${fileloc} ${ROPERM}/plumes/dataout/${CASE}/${LABELI} ${ROPERM}/plumes/dataout/${CASE}/${LABELI}/gif 1 360
+${LABELI} ${LABELF} \${gname} \${CASE} \${ps} \${NMEMBR} \${fileloc} ${ROPERM}/plumes/dataout/\${CASE}/${LABELI} ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif 1 360
 quit
-EOT
+EOF0
 
-exit 0
+echo "" > \${ROPERMOD}/plumes/bin/plumes_figs-${LABELI}.ok
+EOT1
+
+#
+# Submissão
+#
+
+export PBS_SERVER=${pbs_server2}
+
+chmod +x ${SCRIPTFILEPATH1}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH1}
+
+until [ -e "${ROPERM}/plumes/bin/plumes-${LABELI}.ok" ]; do sleep 1s; done
+
+chmod +x ${SCRIPTFILEPATH2}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
+
+until [ -e "${ROPERM}/plumes/bin/plumes_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+#exit 0

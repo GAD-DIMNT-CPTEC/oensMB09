@@ -258,7 +258,8 @@ while (NCT <= NCTLS)
      
 *     'printim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png png x720 y560'
      'printim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png png x1024 y768'
-     '!/usr/bin/convert -trim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png'
+*     '!/usr/bin/convert -trim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png'
+     '!/home/carlos.bastarz/bin/convert -trim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png'
 
    NCT=NCT+1
 endwhile

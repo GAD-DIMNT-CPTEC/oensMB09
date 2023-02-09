@@ -1,4 +1,4 @@
-#! /bin/bash -x 
+#! /bin/bash 
 #--------------------------------------------------------------------#
 #  Sistema de Previsão por Conjunto Global - GDAD/CPTEC/INPE - 2021  #
 #--------------------------------------------------------------------#
@@ -32,9 +32,10 @@
 #
 # !REVISION HISTORY:
 #
-# 25 Maio de 2020     - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
-# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 25 Maio de 2020      - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 06 Fevereiro de 2023 - C. F. Bastarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -153,11 +154,12 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setcluster.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH1=${DK_suite}/run/setcluster.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH2=${DK_suite}/run/setcluster_figs.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 if [ $(echo "$QSUB" | grep qsub) ]
 then
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #PBS -o ${ROPERM}/cluster/output/cluster.${RUNTM}.out
 #PBS -e ${ROPERM}/cluster/output/cluster.${RUNTM}.err
 #PBS -l walltime=00:10:00
@@ -168,16 +170,36 @@ then
 #PBS -N CLUSTER
 #PBS -q ${AUX_QUEUE}
 "
+  SCRIPTHEADER2="
+#PBS -o ${ROPERM}/cluster/output/cluster_figs.${RUNTM}.out
+#PBS -e ${ROPERM}/cluster/output/cluster_figs.${RUNTM}.err
+#PBS -l walltime=00:20:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N CLUSTERFIGS
+#PBS -q ${AUX_QUEUE}
+"
   SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 \${ROPERMOD}/cluster/bin/cluster.x ${LABELI} ${LABELF} > \${ROPERMOD}/cluster/output/cluster.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 else
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #SBATCH --output=${ROPERM}/cluster/output/cluster.${RUNTM}.out
 #SBATCH --error=${ROPERM}/cluster/output/cluster.${RUNTM}.err
 #SBATCH --time=00:10:00
 #SBATCH --tasks-per-node=1
 #SBATCH --nodes=1
 #SBATCH --job-name=CLUSTER
+#SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTHEADER2="
+#SBATCH --output=${ROPERM}/cluster/output/cluster_figs.${RUNTM}.out
+#SBATCH --error=${ROPERM}/cluster/output/cluster_figs.${RUNTM}.err
+#SBATCH --time=00:30:00
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=CLUSTERFIGS
 #SBATCH --partition=${AUX_QUEUE}
 "
   if [ $USE_SINGULARITY == true ]
@@ -191,9 +213,11 @@ fi
 
 if [ -e ${ROPERM}/cluster/bin/cluster-${LABELI}.ok ]; then rm ${ROPERM}/cluster/bin/cluster-${LABELI}.ok; fi
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
+if [ -e ${ROPERM}/cluster/bin/cluster_figs-${LABELI}.ok ]; then rm ${ROPERM}/cluster/bin/cluster_figs-${LABELI}.ok; fi
+
+cat <<EOT0 > ${SCRIPTFILEPATH1}
 #! /bin/bash -x
-${SCRIPTHEADER}
+${SCRIPTHEADER1}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -230,7 +254,7 @@ export EXTS=S.unf
 mkdir -p \${ROPERMOD}/cluster/dataout/\${TRUNC}\${LEV}/\${LABELI}/clusters/
 mkdir -p \${ROPERMOD}/cluster/rmsclim
 
-cat <<EOT > \${ROPERMOD}/cluster/bin/clustersetup.${LABELI}.nml
+cat <<EOF0 > \${ROPERMOD}/cluster/bin/clustersetup.${LABELI}.nml
 IMAX      :   ${IR}
 JMAX      :   ${JR}
 NMEMBERS  :   ${NMEMBR}
@@ -247,7 +271,7 @@ DATAOUTDIR:   \${ROPERMOD}/cluster/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 DATACLTDIR:   \${ROPERMOD}/cluster/dataout/\${TRUNC}\${LEV}/\${LABELI}/clusters/
 RESOL     :   \${TRUNC}\${LEV}
 PREFX     :   ${PREFX}
-EOT
+EOF0
 
 cd \${ROPERMOD}/cluster/bin
 
@@ -256,45 +280,49 @@ ${SCRIPTRUNCMD}
 echo "" > \${ROPERMOD}/cluster/bin/cluster-${LABELI}.ok
 EOT0
 
-mkdir -p ${ROPERM}/cluster/output
-
-#
-# Submissão
-# 
-
-export PBS_SERVER=${pbs_server2}
-
-chmod +x ${SCRIPTFILEPATH}
-
-${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
-
-until [ -e "${ROPERM}/cluster/bin/cluster-${LABELI}.ok" ]; do sleep 1s; done
-
 #
 # Figuras
 #
+
+cat <<EOT1 > ${SCRIPTFILEPATH2}
+#! /bin/bash -x
+${SCRIPTHEADER2}
+
+export DATE=$(date +'%Y%m%d')
+export HOUR=$(date +'%T')
+
+# OPERMOD is the directory for sources, scripts and printouts files.
+# SOPERMOD is the directory for input and output data and bin files.
+# ROPERMOD is the directory for big selected output files.
+
+export OPERMOD=${OPERM}
+export ROPERMOD=${ROPERM}
+export LEV=${NIVEL}
+export TRUNC=${RESOL}
+export MACH=${MAQUI}
+export EXTS=S.unf
                                                                                       
 DIRSCR=${ROPERM}/cluster/scripts
 DIRGIF=${ROPERM}/cluster/gif
 DIRCTL=${OPERM}/pos/dataout/${RES}/${LABELI}
 DIRCLT=${ROPERM}/cluster/dataout/${RES}/${LABELI}/clusters
 
-if [ ! -d ${DIRGIF} ]; then mkdir -p ${DIRGIF}; fi
-if [ ! -d ${DIRCTL} ]; then mkdir -p ${DIRCTL}; fi
+if [ ! -d \${DIRGIF} ]; then mkdir -p \${DIRGIF}; fi
+if [ ! -d \${DIRCTL} ]; then mkdir -p \${DIRCTL}; fi
 
 #
 # Lista de arquivos descritores (ctl) a serem abertos
 #
 
-cd ${DIRSCR}
+cd \${DIRSCR}
 
 NPERT=1
-while [ ${NPERT} -le ${NRNDP} ]
+while [ \${NPERT} -le ${NRNDP} ]
 do
-  if [ ${NPERT} -lt 10 ]; then NPERT='0'${NPERT}; fi
+  if [ \${NPERT} -lt 10 ]; then NPERT='0'\${NPERT}; fi
 
-  rm -f filefct${NPERT}P${LABELI}.${TRC}
-  rm -f filefct${NPERT}N${LABELI}.${TRC}
+  rm -f filefct\${NPERT}P${LABELI}.${TRC}
+  rm -f filefct\${NPERT}N${LABELI}.${TRC}
 
   let NPERT=NPERT+1
 done
@@ -307,66 +335,66 @@ let NHOURS=24*NFCTDY
 NCTLS=0
 TIM=0
 
-while [ ${TIM} -le ${NHOURS} ]
+while [ \${TIM} -le \${NHOURS} ]
 do
-  LABELF=$(${inctime} ${LABELI} +${TIM}h %y4%m2%d2%h2)
+  LABELF=\$(${inctime} ${LABELI} +\${TIM}hr %y4%m2%d2%h2)
   echo 'LABELF='${LABELF}
 
-  if [ ${TIM} -eq 0 ]; then TYPE='P.icn'; else TYPE='P.fct'; fi
+  if [ \${TIM} -eq 0 ]; then TYPE='P.icn'; else TYPE='P.fct'; fi
 
   NPERT=1
-  while [ ${NPERT} -le ${NRNDP} ]
+  while [ \${NPERT} -le ${NRNDP} ]
   do
-    if [ ${NPERT} -lt 10 ]; then  NPERT='0'${NPERT}; fi
+    if [ \${NPERT} -lt 10 ]; then  NPERT='0'\${NPERT}; fi
 
-    if [ -s ${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RES}.ctl ]
+    if [ -s \${DIRCTL}/GPOS\${NPERT}P${LABELI}\${LABELF}\${TYPE}.${RES}.ctl ]
     then
 
-cat <<EOT >> filefct${NPERT}P${LABELI}.${TRC}
-${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RES}.ctl
-EOT
+cat <<EOF0 >> filefct\${NPERT}P${LABELI}.${TRC}
+\${DIRCTL}/GPOS\${NPERT}P${LABELI}\${LABELF}\${TYPE}.${RES}.ctl
+EOF0
 
     else
-       echo "${DIRCTL}/GPOS${NPERT}P${LABELI}${LABELF}${TYPE}.${RES}.ctl nao existe"
+       echo "\${DIRCTL}/GPOS\${NPERT}P${LABELI}\${LABELF}\${TYPE}.${RES}.ctl nao existe"
        exit 2
     fi
 
-    if [ -s ${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RES}.ctl ]
+    if [ -s \${DIRCTL}/GPOS\${NPERT}N${LABELI}\${LABELF}\${TYPE}.${RES}.ctl ]
     then
 
-cat <<EOT >> filefct${NPERT}N${LABELI}.${TRC}
-${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RES}.ctl
-EOT
+cat <<EOF1 >> filefct\${NPERT}N${LABELI}.${TRC}
+\${DIRCTL}/GPOS\${NPERT}N${LABELI}\${LABELF}\${TYPE}.${RES}.ctl
+EOF1
 
     else
-      echo "${DIRCTL}/GPOS${NPERT}N${LABELI}${LABELF}${TYPE}.${RES}.ctl nao existe"
+      echo "\${DIRCTL}/GPOS\${NPERT}N${LABELI}\${LABELF}\${TYPE}.${RES}.ctl nao existe"
       exit 2
     fi
 
     let NPERT=NPERT+1
   done
 
-  if [ -s ${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RES}.ctl ]
+  if [ -s \${DIRCTL}/GPOS\${PREFX}${LABELI}\${LABELF}\${TYPE}.${RES}.ctl ]
   then
 
-cat <<EOT >> filefct${PREFX}${LABELI}.${TRC}
-${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RES}.ctl
-EOT
+cat <<EOF2 >> filefct\${PREFX}${LABELI}.${TRC}
+\${DIRCTL}/GPOS\${PREFX}${LABELI}\${LABELF}\${TYPE}.${RES}.ctl
+EOF2
 
   else
-    echo "${DIRCTL}/GPOS${PREFX}${LABELI}${LABELF}${TYPE}.${RES}.ctl nao existe"
+    echo "\${DIRCTL}/GPOS\${PREFX}${LABELI}\${LABELF}\${TYPE}.${RES}.ctl nao existe"
     exit 2
   fi
 
-  if [ -s ${DIRCLT}/clusters${LABELI}${LABELF}.${RES} ]
+  if [ -s \${DIRCLT}/clusters${LABELI}\${LABELF}.${RES} ]
   then
 
-cat <<EOT >> fileclt${LABELI}.${TRC}
-${DIRCLT}/clusters${LABELI}${LABELF}.${RES}
-EOT
+cat <<EOF3 >> fileclt${LABELI}.${TRC}
+\${DIRCLT}/clusters${LABELI}\${LABELF}.${RES}
+EOF3
 
   else
-    echo "${DIRCLT}/clusters${LABELI}${LABELF}.${RES} nao existe"
+    echo "\${DIRCLT}/clusters${LABELI}\${LABELF}.${RES} nao existe"
     exit 2
   fi
 
@@ -374,38 +402,59 @@ EOT
   let TIM=TIM+6
 done
 
-echo "NCTLS="${NCTLS}
+echo "NCTLS="\${NCTLS}
 
-${DIRGRADS}/grads -bp << EOT
+${DIRGRADS}/grads -bp << EOF4
 run plot_temp_zgeo.gs
-${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}
-EOT
+${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+EOF4
 
-${DIRGRADS}/grads -bp << EOT
+${DIRGRADS}/grads -bp << EOF5
 run plot_prec_psnm_wind.gs
-${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}
-EOT
+${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+EOF5
 
-${DIRGRADS}/grads -bp << EOT
+${DIRGRADS}/grads -bp << EOF6
 run plot_tems.gs
-${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RES} ${PREFX} ${DIRGIF}
-EOT
+${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+EOF6
 
 #
 # Remove os arquivos temporários
 #
 
 NPERT=1
-while [ ${NPERT} -le ${NRNDP} ]
+while [ \${NPERT} -le ${NRNDP} ]
 do
-  if [ ${NPERT} -lt 10 ]; then NPERT='0'${NPERT}; fi
+  if [ \${NPERT} -lt 10 ]; then NPERT='0'\${NPERT}; fi
 
-  rm -f filefct${NPERT}P${LABELI}.${TRC}
-  rm -f filefct${NPERT}N${LABELI}.${TRC}
+  rm -f filefct\${NPERT}P${LABELI}.${TRC}
+  rm -f filefct\${NPERT}N${LABELI}.${TRC}
   let NPERT=NPERT+1
 done
 
 rm -f filefct${PREFX}${LABELI}.${TRC}
 rm -f fileclt${LABELI}.${TRC}
 
-exit 0
+echo "" > \${ROPERMOD}/cluster/bin/cluster_figs-${LABELI}.ok
+EOT1
+
+#
+# Submissão
+# 
+
+export PBS_SERVER=${pbs_server2}
+
+chmod +x ${SCRIPTFILEPATH1}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH1}
+
+until [ -e "${ROPERM}/cluster/bin/cluster-${LABELI}.ok" ]; do sleep 1s; done
+
+chmod +x ${SCRIPTFILEPATH2}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
+
+until [ -e "${ROPERM}/cluster/bin/cluster_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+#exit 0

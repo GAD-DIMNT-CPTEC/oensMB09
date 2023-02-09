@@ -52,8 +52,7 @@ export bpath=/mnt/beegfs/carlos.bastarz/oensMB09/run
 #
 
 # Acrescentar ou remover os produtos conforme a necessidade
-#Procs=(grh ensmed spread cluster probability probagr plumes chievol perturbations spaguetti)
-Procs=(ensmed spread)
+Procs=(grh ensmed spread cluster probability probagr plumes chievol perturbations spaguetti)
 
 #
 # Datas de início e fim
@@ -84,9 +83,12 @@ do
     
     if [ ${proc} == "grh" ]
     then
-      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} NMC &
-      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} NPT 7 &
-      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} PPT 7 
+#      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} NMC &
+#      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} NPT 7 &
+#      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} PPT 7 
+      ${bpath}/run_grh.sh 1 TQ0126L028 ${data} ${datafct15d} NMC &
+      ${bpath}/run_grh.sh 1 TQ0126L028 ${data} ${datafct15d} NPT 7 &
+      ${bpath}/run_grh.sh 1 TQ0126L028 ${data} ${datafct15d} PPT 7 
     fi
     wait
 

@@ -31,11 +31,12 @@
 #
 # !REVISION HISTORY:
 #
-# 09 Julho de 2020    - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
-# 06 Agosto de 2021   - C. F. Bastarz - Atualização e simplicação para o
-#                                       membro controle.
-# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 09 Julho de 2020     - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 06 Agosto de 2021    - C. F. Bastarz - Atualização e simplicação para o
+#                                        membro controle.
+# 01 Novembro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 06 Fevereiro de 2023 - C. F. Baatarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -164,7 +165,9 @@ export TMEAN=3600
 DIRRESOL=$(echo ${TRC} ${LV} | awk '{printf("TQ%4.4dL%3.3d\n",$1,$2)}')
 MAQUI=$(hostname -s)
 
-export SCRIPTFILEPATH=${HOME_suite}/run/setgrh${ANLTYPE}.${DIRRESOL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH1=${HOME_suite}/run/setgrh${ANLTYPE}.${DIRRESOL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH2=${HOME_suite}/run/setgrh_figs${ANLTYPE}.${DIRRESOL}.${LABELI}.${MAQUI}
+
 export NAMELISTFILEPATH=${HOME_suite}/run
 
 export EXECFILEPATH=${DK_suite}/produtos/grh/exec
@@ -193,13 +196,19 @@ then
 
   if [ $(echo "$QSUB" | grep qsub) ]
   then
-    export PBSDIRECTIVENAME="#PBS -N GRH${ANLTYPE}"
-    export PBSOUTFILE="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-    export PBSERRFILE="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME1="#PBS -N GRH${ANLTYPE}"
+    export PBSDIRECTIVENAME2="#PBS -N GRH${ANLTYPE}FIGS"
+    export PBSOUTFILE1="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE1="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+    export PBSOUTFILE2="#PBS -o ${DK_suite}/produtos/grh/scripts/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE2="#PBS -e ${DK_suite}/produtos/grh/scripts/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
   else
-    export PBSDIRECTIVENAME="#SBATCH --job-name=GRH${ANLTYPE}"
-    export PBSOUTFILE="#SBATCH --output=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-    export PBSERRFILE="#SBATCH --error=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+    export PBSDIRECTIVENAME1="#SBATCH --job-name=GRH${ANLTYPE}"
+    export PBSDIRECTIVENAME2="#SBATCH --job-name=GRH${ANLTYPE}FIGS"
+    export PBSOUTFILE1="#SBATCH --output=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE1="#SBATCH --error=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+    export PBSOUTFILE2="#SBATCH --output=${DK_suite}/produtos/grh/scripts/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+    export PBSERRFILE2="#SBATCH --error=${DK_suite}/produtos/grh/scripts/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
   fi
   export PBSDIRECTIVEARRAY=""
   export PBSMEM=""
@@ -218,7 +227,7 @@ else
     EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}
     EXECFILEPATHMEM=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}
 
-    mkdir -p ${EXECFILEPATHMEM}
+    mkdir -p ${EXECFILEPATHMEM}/setout
    
     ln -sf ${DK_suite}/produtos/grh/exec/PostGridHistory ${EXECFILEPATHMEM}
   
@@ -226,19 +235,25 @@ else
 
     if [ $(echo "$QSUB" | grep qsub) ]
     then
-      export PBSDIRECTIVENAME="#PBS -N GRHENS${ANLTYPE}"
+      export PBSDIRECTIVENAME1="#PBS -N GRHENS${ANLTYPE}"
+      export PBSDIRECTIVENAME2="#PBS -N GRHENS${ANLTYPE}FIGS"
       export PBSDIRECTIVEARRAY="#PBS -J 1-${ANLPERT}"
       export PBSMEM="export MEM=\$(printf %02g \${PBS_ARRAY_INDEX})"
   
-      export PBSOUTFILE="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-      export PBSERRFILE="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+      export PBSOUTFILE1="#PBS -o ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+      export PBSERRFILE1="#PBS -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+      export PBSOUTFILE2="#PBS -o ${DK_suite}/produtos/grh/scripts/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}_${NMEM}.out"
+      export PBSERRFILE2="#PBS -e ${DK_suite}/produtos/grh/scripts/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}_${NMEM}.err"
     else
-      export PBSDIRECTIVENAME="#SBATCH --job-name=GRHENS${ANLTYPE}"
+      export PBSDIRECTIVENAME1="#SBATCH --job-name=GRHENS${ANLTYPE}"
+      export PBSDIRECTIVENAME2="#SBATCH --job-name=GRHENS${ANLTYPE}FIGS"
       export PBSDIRECTIVEARRAY="#SBATCH --array=1-${ANLPERT}"
       export PBSMEM="export MEM=\$(printf %02g \${SLURM_ARRAY_TASK_ID})"
   
-      export PBSOUTFILE="#SBATCH --ouput=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
-      export PBSERRFILE="#SBATCH --error=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+      export PBSOUTFILE1="#SBATCH --output=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.out"
+      export PBSERRFILE1="#SBATCH --error=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${NMEM}/setout/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}.err"
+      export PBSOUTFILE2="#SBATCH --output=${DK_suite}/produtos/grh/scripts/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}_${NMEM}.out"
+      export PBSERRFILE2="#SBATCH --error=${DK_suite}/produtos/grh/scripts/Out.grh.${LABELI}.${ANLTYPE}.MPI${MPPWIDTH}_${NMEM}.err"
     fi
     export PBSEXECFILEPATH="export EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/\${MEM}${ANLTYPE:0:1}"
 
@@ -252,38 +267,82 @@ fi
 
 if [ $(echo "$QSUB" | grep qsub) ]
 then
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #PBS -j oe
 #PBS -l walltime=4:00:00
 #PBS -l mppnppn=${MPPWIDTH}
 #PBS -A CPTEC
 #PBS -V
 #PBS -S /bin/bash
-${PBSDIRECTIVENAME}
+${PBSDIRECTIVENAME1}
 ${PBSDIRECTIVEARRAY}
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
-  SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+  SCRIPTHEADER2="
+#PBS -j oe
+#PBS -l walltime=4:00:00
+#PBS -l mppnppn=${MPPWIDTH}
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+${PBSDIRECTIVENAME2}
+${PBSDIRECTIVEARRAY}
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log"
+  #SCRIPTRUNJOB="qsub -W block=true ${SCRIPTFILEPATH}"
+  SCRIPTRUNJOB="qsub -W block=true "
 else
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
+${PBSOUTFILE1}
+${PBSERRFILE1}
 #SBATCH --time=4:00:00
 #SBATCH --tasks-per-node=${MPPWIDTH}
-#SBATCH --nodes=${MPPDEPTH}
-${PBSDIRECTIVENAME}
+#SBATCH --nodes=1
+${PBSDIRECTIVENAME1}
 ${PBSDIRECTIVEARRAY}
 #SBATCH --partition=${QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH} "
-  SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
-fi
+  SCRIPTHEADER2="
+${PBSOUTFILE2}
+${PBSERRFILE2}
+#SBATCH --time=4:00:00
+#SBATCH --tasks-per-node=${MPPWIDTH}
+#SBATCH --nodes=1
+${PBSDIRECTIVENAME2}
+${PBSDIRECTIVEARRAY}
+#SBATCH --partition=${QUEUE}
+"
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log"
+  else
+    SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log"
+  fi        
+  #SCRIPTRUNJOB="sbatch ${SCRIPTFILEPATH}"
+  SCRIPTRUNJOB="sbatch "
+  if [ $USE_INTEL == true ]
+  then         
+    SCRIPTMODULE="
+# EGEON INTEL
+module purge
+module load ohpc
+module swap gnu9 intel
+module swap openmpi4 impi
+module load hwloc
+module load phdf5
+module load netcdf
+module load netcdf-fortran
+module swap intel intel/2022.1.0
 
-cat <<EOF0 > ${SCRIPTFILEPATH}
-#! /bin/bash -x
-${SCRIPTHEADER}
-
-#echo \${PBS_JOBID} > ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
-
+module list
+"
+  else
+    if [ $USE_SINGULARITY == true ]
+    then
+      SCRIPTMODULE=""
+    else      
+      SCRIPTMODULE="
 # EGEON GNU
 module purge
 module load gnu9/9.4.0
@@ -294,6 +353,38 @@ module load netcdf-fortran/4.5.3
 module load phdf5/1.10.8
 module load hwloc
 module load libfabric/1.13.0
+
+module list
+"
+  fi
+fi
+fi
+
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
+then
+  if [ -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/monitor.t ]
+  then 
+    rm ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/monitor.t
+  fi
+else
+  for mem in $(seq 1 ${ANLPERT})
+  do
+    if [ -e ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/0${mem}${ANLTYPE:0:1}/monitor.t ]
+    then 
+      rm ${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/0${mem}${ANLTYPE:0:1}/monitor.t
+    fi
+  done        
+fi        
+
+if [ -e ${EXECFILEPATH}/monitor.t ]; then rm ${EXECFILEPATH}/monitor.t; fi
+
+cat <<EOF0 > ${SCRIPTFILEPATH1}
+#! /bin/bash -x
+${SCRIPTHEADER1}
+
+#echo \${PBS_JOBID} > ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
+
+${SCRIPTMODULE}
 
 export PBS_SERVER=${pbs_server2}
 
@@ -313,50 +404,71 @@ fi
 export KMP_STACKSIZE=128m
 ulimit -s unlimited
 
-${SCRIPTRUNCMD} \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log
+${SCRIPTRUNCMD}
+
+touch \${EXECFILEPATH}/monitor.t
 EOF0
 
 #
 # Submete o script e aguarda o fim da execução
 #
 
-chmod +x ${SCRIPTFILEPATH}
+chmod +x ${SCRIPTFILEPATH1}
 
-export PBS_SERVER=${pbs_server2}
+#export PBS_SERVER=${pbs_server2}
+#
+#${SCRIPTRUNJOB}
 
-${SCRIPTRUNJOB}
+job_model=$(${SCRIPTRUNJOB} ${SCRIPTFILEPATH1})
+export job_model_id=$(echo ${job_model} | awk -F " " '{print $4}')
+echo "grh ${job_model_id}"
 
-#if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC ]
-#then
-#
-#  JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
-#
-#  for mem in $(seq 1 ${ANLPERT})
-#  do
-#
-#    nmem=$(printf %02g ${mem})${ANLTYPE:0:1} 
-#
-#    jobidname="GRHENS${ANLTYPE}.o${JOBID}.${mem}"
-#    grhoutname="Out.grh.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
-#
-#    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
-#    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/${nmem}/setout/${grhoutname}
-#  
-#  done
-#
-#else
-#
-#  JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
-#
-#  jobidname="GRH${ANLTYPE}.o${JOBID}"
-#  grhoutname="Out.grh.${LABELI}.MPI${MPPWIDTH}.out"
-#
-#  until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
-#  mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${grhoutname}
-#
-#fi
-#
-#rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
+if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
+then
+  EXECFILEPATH=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}
+  until [ -e ${EXECFILEPATH}/monitor.t ]; do sleep 1s; done
+else
+  for MEM in $(seq -f %02g 1 ${ANLPERT})
+  do
+    EXECFILEPATHMEM=${DK_suite}/produtos/grh/exec_${LABELI}.${ANLTYPE}/${MEM}${ANLTYPE:0:1}
+    until [ -e ${EXECFILEPATHMEM}/monitor.t ]; do sleep 1s; done
+  done
+fi
+
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+
+  if [ ${ANLTYPE} != CTR -a ${ANLTYPE} != NMC -a ${ANLTYPE} != EIT -a ${ANLTYPE} != EIH ]
+  then
+  
+    JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "[" '{print $1}')
+  
+    for mem in $(seq 1 ${ANLPERT})
+    do
+  
+      jobidname="BAMENS${ANLTYPE}.o${JOBID}.${mem}"
+      bamoutname="Out.grh.${LABELI}.MPI${MPPWIDTH}.${mem}.out"
+  
+      until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done
+      mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
+    
+    done
+  
+  else
+  
+    JOBID=$(cat ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE} | awk -F "." '{print $1}')
+  
+    jobidname="BAM${ANLTYPE}.o${JOBID}"
+    bamoutname="Out.grh.${LABELI}.MPI${MPPWIDTH}.out"
+  
+    until [ -e "${HOME_suite}/run/${jobidname}" ]; do sleep 1s; done 
+    mv -v ${HOME_suite}/run/${jobidname} ${EXECFILEPATH}/setout/${bamoutname}
+  
+  fi
+  
+  rm ${HOME_suite}/run/this.job.${LABELI}.${ANLTYPE}
+
+fi
 
 #
 # Cria os links simbólicos dos arquivos GFGNMEMYYYYMMDDHHYYYYMMDDHHM.grh.TQ0126L028.* para fora do diretório dos membros
@@ -394,53 +506,61 @@ fi
 if [ ${ANLTYPE} == CTR -o ${ANLTYPE} == NMC -o ${ANLTYPE} == EIT -o ${ANLTYPE} == EIH ]
 then
 
-  export GRHDATAOUT=${DK_suite}/produtos/grh/dataout/${RES}/${LABELI}
-  
-  mkdir -p ${GRHDATAOUT}/AC/; mkdir -p ${GRHDATAOUT}/AL/; mkdir -p ${GRHDATAOUT}/AM/;
-  mkdir -p ${GRHDATAOUT}/AP/; mkdir -p ${GRHDATAOUT}/BA/; mkdir -p ${GRHDATAOUT}/CE/;
-  mkdir -p ${GRHDATAOUT}/DF/; mkdir -p ${GRHDATAOUT}/ES/; mkdir -p ${GRHDATAOUT}/GO/;
-  mkdir -p ${GRHDATAOUT}/MA/; mkdir -p ${GRHDATAOUT}/MG/; mkdir -p ${GRHDATAOUT}/MS/;
-  mkdir -p ${GRHDATAOUT}/MT/; mkdir -p ${GRHDATAOUT}/PA/; mkdir -p ${GRHDATAOUT}/PB/;
-  mkdir -p ${GRHDATAOUT}/PE/; mkdir -p ${GRHDATAOUT}/PI/; mkdir -p ${GRHDATAOUT}/PR/;
-  mkdir -p ${GRHDATAOUT}/RJ/; mkdir -p ${GRHDATAOUT}/RN/; mkdir -p ${GRHDATAOUT}/RO/;
-  mkdir -p ${GRHDATAOUT}/RR/; mkdir -p ${GRHDATAOUT}/RS/; mkdir -p ${GRHDATAOUT}/SC/;
-  mkdir -p ${GRHDATAOUT}/SE/; mkdir -p ${GRHDATAOUT}/SP/; mkdir -p ${GRHDATAOUT}/TO/;
-  mkdir -p ${GRHDATAOUT}/WW/; mkdir -p ${GRHDATAOUT}/ZZ/;
-  
-  DATE=$(echo ${LABELI} | cut -c 1-8)
-  HH=$(echo ${LABELI} | cut -c 9-10)
-  DATEF=$(echo ${LABELF} | cut -c 1-8)
-  HHF=$(echo ${LABELF} | cut -c 9-10)
-  
-  time1=$(date -d "${DATE} ${HH}:00" +"%HZ%d%b%Y")
-  time2=$(date -d "${DATEF} ${HHF}:00" +"%HZ%d%b%Y")
-  
-  echo "LABELI = ${LABELI}   LABELF = ${LABELF}   LABELR = ${labelr}"
-  echo "PARAMETROS GRADS ==> ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}"
-  
-  cd ${GRHDATAOUT}
-  rm -f ${GRHDATAOUT}/umrs_min??????????.txt
-  
-  #
-  # Christopher - 24/01/2005
-  # OBS: O GrADS script abaixo e quem inicializa/cria o arquivo deltag.${LABELI}.out
-  #
-  
-  export name=GFGNNMC
-  export ext=$(echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }')
-  export ps=psuperf #reduzida
-  export DATE=$(echo $LABELI | cut -c1-8)
-  export HH=$(echo $LABELI | cut -c9-10)
-  export DATEF=$(echo $LABELF | cut -c1-8)
-  export HHF=$(echo $LABELF | cut -c9-10)
-  export labelr=$(date -d "${DATE} ${HH}:00 12 hour ago" +"%Y%m%d%H")
-  export julday1=$(date -d "${DATE} ${HH}:00" +"%j")
-  export julday2=$(date -d "${DATEF} ${HHF}:00" +"%j")
-  export ndays=$(echo ${julday2} ${julday1} |awk '{{nday=$1-$2}if(nday < 0){nday = $1 + (365-$2)} if(nday >7){nday=7} {print nday}}')
-  
-  echo "${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}"
+  if [ -e ${DK_suite}/produtos/grh/dataout/TQ0126L028/${LABELI}/monitor.t ]; then rm ${DK_suite}/produtos/grh/dataout/TQ0126L028/${LABELI}/monitor.t; fi
 
-cat << EOF1 > ${HOME_suite}/produtos/grh/scripts/meteogr.gs
+cat <<EOF1 > ${SCRIPTFILEPATH2}
+#! /bin/bash -x
+${SCRIPTHEADER2}
+
+export GRHDATAOUT=${DK_suite}/produtos/grh/dataout/${RES}/${LABELI}
+
+mkdir -p \${GRHDATAOUT}/AC/; mkdir -p \${GRHDATAOUT}/AL/; mkdir -p \${GRHDATAOUT}/AM/;
+mkdir -p \${GRHDATAOUT}/AP/; mkdir -p \${GRHDATAOUT}/BA/; mkdir -p \${GRHDATAOUT}/CE/;
+mkdir -p \${GRHDATAOUT}/DF/; mkdir -p \${GRHDATAOUT}/ES/; mkdir -p \${GRHDATAOUT}/GO/;
+mkdir -p \${GRHDATAOUT}/MA/; mkdir -p \${GRHDATAOUT}/MG/; mkdir -p \${GRHDATAOUT}/MS/;
+mkdir -p \${GRHDATAOUT}/MT/; mkdir -p \${GRHDATAOUT}/PA/; mkdir -p \${GRHDATAOUT}/PB/;
+mkdir -p \${GRHDATAOUT}/PE/; mkdir -p \${GRHDATAOUT}/PI/; mkdir -p \${GRHDATAOUT}/PR/;
+mkdir -p \${GRHDATAOUT}/RJ/; mkdir -p \${GRHDATAOUT}/RN/; mkdir -p \${GRHDATAOUT}/RO/;
+mkdir -p \${GRHDATAOUT}/RR/; mkdir -p \${GRHDATAOUT}/RS/; mkdir -p \${GRHDATAOUT}/SC/;
+mkdir -p \${GRHDATAOUT}/SE/; mkdir -p \${GRHDATAOUT}/SP/; mkdir -p \${GRHDATAOUT}/TO/;
+mkdir -p \${GRHDATAOUT}/WW/; mkdir -p \${GRHDATAOUT}/ZZ/;
+
+DATE=$(echo ${LABELI} | cut -c 1-8)
+HH=$(echo ${LABELI} | cut -c 9-10)
+DATEF=$(echo ${LABELF} | cut -c 1-8)
+HHF=$(echo ${LABELF} | cut -c 9-10)
+
+time1=\$(date -d "\${DATE} \${HH}:00" +"%HZ%d%b%Y")
+time2=\$(date -d "\${DATEF} \${HHF}:00" +"%HZ%d%b%Y")
+
+echo "LABELI = ${LABELI}   LABELF = ${LABELF}   LABELR = \${labelr}"
+echo "PARAMETROS GRADS ==> ${LABELI} ${LABELF} \${name} \${ext} \${ps} \${labelr}"
+
+cd \${GRHDATAOUT}
+rm -f \${GRHDATAOUT}/umrs_min??????????.txt
+
+#
+# Christopher - 24/01/2005
+# OBS: O GrADS script abaixo e quem inicializa/cria o arquivo deltag.\${LABELI}.out
+#
+
+export name=GFGNNMC
+export ext=$(echo ${TRC} ${LV} |awk '{ printf("TQ%4.4dL%3.3d\n",$1,$2)  }')
+export ps=psuperf #reduzida
+export DATE=$(echo $LABELI | cut -c1-8)
+export HH=$(echo $LABELI | cut -c9-10)
+export DATEF=$(echo $LABELF | cut -c1-8)
+export HHF=$(echo $LABELF | cut -c9-10)
+export labelr=\$(date -d "\${DATE} \${HH}:00 12 hour ago" +"%Y%m%d%H")
+export julday1=\$(date -d "\${DATE} \${HH}:00" +"%j")
+export julday2=\$(date -d "\${DATEF} \${HHF}:00" +"%j")
+export ndays=\$(echo \${julday2} \${julday1} |awk '{{nday=\$1-\$2}if(nday < 0){nday = \$1 + (365-\$2)} if(nday >7){nday=7} {print nday}}')
+
+echo "${LABELI} ${LABELF} \${name} \${ext} \${ps} \${labelr}"
+
+mkdir -p ${HOME_suite}/produtos/grh/scripts
+
+cat << EOT0 > ${HOME_suite}/produtos/grh/scripts/meteogr.gs
 'reinit'
 
 pull argumentos
@@ -468,7 +588,7 @@ say nomectl
 _lonlat2ur="05038W2104S 04823W2137S 04823W2030S 04856W2211S 04715W2245S 04715W2030S 05004W2211S 04749W2245S 05111W2211S 04749W2104S 04930W2104S 04715W2318S"
 _nlonlat2ur=12
 
-_ndias=${ndays}
+_ndias=\${ndays}
 _ntimes=_ndias*24
 
 say "abrindo o arquivo "nomectl
@@ -573,9 +693,9 @@ taga=png
 tagb=png
 tagc=png
 
-say 'printim ${GRHDATAOUT}/'lab'.png'
+say 'printim \${GRHDATAOUT}/'lab'.png'
 
-'printim ${GRHDATAOUT}/'lab'.png' 
+'printim \${GRHDATAOUT}/'lab'.png' 
 
 '!rm -f meteogram'
 
@@ -999,30 +1119,43 @@ endif
 return state
 
 ***********************************************
+EOT0
+
+DATE=$(echo ${LABELI} | cut -c 1-8)
+HH=$(echo ${LABELI} | cut -c 9-10)
+DATEF=$(echo ${LABELF} | cut -c 1-8)
+HHF=$(echo ${LABELF} | cut -c 9-10)
+
+time1=\$(date -d "\$DATE \$HH:00" +"%HZ%d%b%Y")
+time2=\$(date -d "\$DATEF \$HHF:00" +"%HZ%d%b%Y")
+
+echo ${LABELI} ${LABELF} \${name} \${ext} \${ps} \${labelr}
+echo \${time1} \${time2}
+
+if [ $GSSTEP = 1 ]
+then
+ 
+echo "meteogr.gs ${LABELI} ${LABELF} \${name} \${ext} \${ps} \${labelr} \${time1} \${time2}"
+${DIRGRADS}/grads -bp  << EOT1
+run ${HOME_suite}/produtos/grh/scripts/meteogr.gs
+${LABELI} ${LABELF} \${name} \${ext} \${ps} \${labelr} \${time1} \${time2}
+EOT1
+  
+fi
+
+touch \${GRHDATAOUT}/monitor.t
 EOF1
 
-  DATE=$(echo ${LABELI} | cut -c 1-8)
-  HH=$(echo ${LABELI} | cut -c 9-10)
-  DATEF=$(echo ${LABELF} | cut -c 1-8)
-  HHF=$(echo ${LABELF} | cut -c 9-10)
-  
-  time1=$(date -d "$DATE $HH:00" +"%HZ%d%b%Y")
-  time2=$(date -d "$DATEF $HHF:00" +"%HZ%d%b%Y")
-  
-  echo ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr}
-  echo ${time1} ${time2}
-  
-  if [ $GSSTEP = 1 ]
-  then
-  
-echo "meteogr.gs ${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr} ${time1} ${time2}"
-${DIRGRADS}/grads -bp  << EOT
-run ${HOME_suite}/produtos/grh/scripts/meteogr.gs
-${LABELI} ${LABELF} ${name} ${ext} ${ps} ${labelr} ${time1} ${time2}
-EOT
-  
-  fi
+#
+# Submete o script para plotar as figuras
+#
+
+chmod +x ${SCRIPTFILEPATH2}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
+
+while [ ! -e ${DK_suite}/produtos/grh/dataout/TQ0126L028/${LABELI}/monitor.t ]; do sleep 1s; done
 
 fi
 
-exit 0
+#exit 0
