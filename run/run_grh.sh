@@ -1158,4 +1158,11 @@ while [ ! -e ${DK_suite}/produtos/grh/dataout/TQ0126L028/${LABELI}/monitor.t ]; 
 
 fi
 
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/grh/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/grh/${LABELI}/
+fi
+
 #exit 0
