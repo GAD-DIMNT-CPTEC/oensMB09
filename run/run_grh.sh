@@ -512,7 +512,7 @@ cat <<EOF1 > ${SCRIPTFILEPATH2}
 #! /bin/bash -x
 ${SCRIPTHEADER2}
 
-export GRHDATAOUT=${DK_suite}/produtos/grh/dataout/${RES}/${LABELI}
+export GRHDATAOUT=${DK_suite}/produtos/grh/gif/${LABELI}
 
 mkdir -p \${GRHDATAOUT}/AC/; mkdir -p \${GRHDATAOUT}/AL/; mkdir -p \${GRHDATAOUT}/AM/;
 mkdir -p \${GRHDATAOUT}/AP/; mkdir -p \${GRHDATAOUT}/BA/; mkdir -p \${GRHDATAOUT}/CE/;
@@ -693,9 +693,9 @@ taga=png
 tagb=png
 tagc=png
 
-say 'printim \${GRHDATAOUT}/'lab'.png'
+say 'printim \${GRHDATAOUT}/'_state'/'lab'.png'
 
-'printim \${GRHDATAOUT}/'lab'.png' 
+'printim \${GRHDATAOUT}/'_state'/'lab'.png' 
 
 '!rm -f meteogram'
 

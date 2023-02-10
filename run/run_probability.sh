@@ -289,7 +289,7 @@ dd=$(echo ${LABELI} | cut -c 7-8)
 hh=$(echo ${LABELI} | cut -c 9-10)
 
 dirscr=${ROPERM}/probability/scripts
-dirgif=${ROPERM}/probability/gif
+dirgif=${ROPERM}/probability/gif/${LABELI}
 
 dirbct=${ROPERM}/probability/dataout/${RES}/${LABELI}
 
@@ -322,7 +322,7 @@ cd ${ROPERM}/probability/scripts
 
 ${DIRGRADS}/grads -lb << EOT
 run plot_precprob.gs
-${RES} ${TRC} ${LABELI} \${nblst} \${dirscr} \${dirgif}
+${RES} ${TRC} ${LABELI} \${nblst} \${dirscr} \${dirgif} ${convert}
 EOT
 
 echo "" > \${ROPERMOD}/probability/bin/probability_figs-${LABELI}.ok
@@ -346,4 +346,11 @@ ${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
 
 until [ -e "${ROPERM}/probability/bin/probability_figs-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/probability/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/probability/${LABELI}/
+fi
+
 #exit 0

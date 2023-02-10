@@ -303,7 +303,7 @@ export MACH=${MAQUI}
 export EXTS=S.unf
                                                                                       
 DIRSCR=${ROPERM}/cluster/scripts
-DIRGIF=${ROPERM}/cluster/gif
+DIRGIF=${ROPERM}/cluster/gif/${LABELI}
 DIRCTL=${OPERM}/pos/dataout/${RES}/${LABELI}
 DIRCLT=${ROPERM}/cluster/dataout/${RES}/${LABELI}/clusters
 
@@ -406,17 +406,17 @@ echo "NCTLS="\${NCTLS}
 
 ${DIRGRADS}/grads -bp << EOF4
 run plot_temp_zgeo.gs
-${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF} ${convert}
 EOF4
 
 ${DIRGRADS}/grads -bp << EOF5
 run plot_prec_psnm_wind.gs
-${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF} ${convert}
 EOF5
 
 ${DIRGRADS}/grads -bp << EOF6
 run plot_tems.gs
-${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+${TRC} ${LABELI} ${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF} ${convert}
 EOF6
 
 #
@@ -456,5 +456,12 @@ chmod +x ${SCRIPTFILEPATH2}
 ${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
 
 until [ -e "${ROPERM}/cluster/bin/cluster_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/cluster/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/cluster/${LABELI}/
+fi
 
 #exit 0

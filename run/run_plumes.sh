@@ -320,39 +320,39 @@ dirbct=${ROPERM}/plumes/dataout/${RES}
 
 cd ${ROPERM}/plumes/scripts/
 
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/AC/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/AP/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/DF/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/MA/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/MT/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PE/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RJ/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RR/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/SE/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/WW/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/AL/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/BA/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/ES/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/MG/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PA/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PI/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RN/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RS/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/SP/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/ZZ/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/AM/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/CE/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/GO/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/MS/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PB/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/PR/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/RO/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/SC/
-mkdir -p ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif/TO/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/AC/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/AP/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/DF/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/MA/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/MT/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/PE/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/RJ/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/RR/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/SE/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/WW/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/AL/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/BA/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/ES/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/MG/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/PA/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/PI/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/RN/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/RS/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/SP/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/ZZ/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/AM/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/CE/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/GO/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/MS/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/PB/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/PR/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/RO/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/SC/
+mkdir -p ${ROPERM}/plumes/gif/${LABELI}/TO/
 
 ${DIRGRADS}/grads -bp << EOF0
 run plumes.gs
-${LABELI} ${LABELF} \${gname} \${CASE} \${ps} \${NMEMBR} \${fileloc} ${ROPERM}/plumes/dataout/\${CASE}/${LABELI} ${ROPERM}/plumes/dataout/\${CASE}/${LABELI}/gif 1 360
+${LABELI} ${LABELF} \${gname} \${CASE} \${ps} \${NMEMBR} \${fileloc} ${ROPERM}/plumes/dataout/\${CASE}/${LABELI} ${ROPERM}/plumes/gif/${LABELI} 1 360 ${convert}
 quit
 EOF0
 
@@ -376,5 +376,12 @@ chmod +x ${SCRIPTFILEPATH2}
 ${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
 
 until [ -e "${ROPERM}/plumes/bin/plumes_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/plumes/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/plumes/${LABELI}/
+fi
 
 #exit 0

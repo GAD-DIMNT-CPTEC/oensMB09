@@ -113,6 +113,29 @@ export DIRGRADS=/home/carlos.bastarz/bin
 export caldate=/mnt/beegfs/carlos.bastarz/BAM_V1.2.1/utils/bin/caldate.3.0.1
 export inctime=/home/carlos.bastarz/bin/inctime
 
+# Indica se as figuras dos produtos devem ser enviadas para um host remoto
+# Nota: considera-se que os produtos serão organizados da seguinte forma:
+# host
+#    |--prod
+#          |--spread
+#                  |--YYYYMMDDHH
+#                              |--fig.png
+#                              |--...
+#                              |--list.txt
+# O arquivo list.txt deve conter todos os nomes dos arquivos contidos no diretório
+# Caso um host remoto seja utilizado, deverá ser passada a senha por linha de comando ou
+# configurar o ssh para funcionar sem senha
+
+export SEND_TO_FTP=false
+
+if [ $SEND_TO_FTP == true ]
+then
+  export FTP_ADDRESS=carlos.bastarz@egeon.cptec.inpe.br:/pesq/share/das/dist/carlos.bastarz/oensMB09/prod
+fi        
+
+# Indica qual executável do convert deve ser utilizado
+export convert=/opt/spack/opt/spack/linux-rhel8-zen2/gcc-11.2.0/imagemagick-7.0.8-7-46pk2gowitva2xtvogtfg2ubug2d6v2w/bin/convert
+
 # Indica se o código do modelo e do método de perturbação a ser utilizado foi compilado com o Intel (true) ou GNU (false)
 export USE_INTEL=false
 

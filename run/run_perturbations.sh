@@ -181,7 +181,7 @@ echo 'LABELI='${LABELI}
 #
                                                                                                  
 DIRSCR=${ROPERM}/perturbations/scripts
-DIRGIF=${ROPERM}/perturbations/gif
+DIRGIF=${ROPERM}/perturbations/gif/${LABELI}
 DIRCTL=${OPERM}/pos/dataout/${TRCLV}/${LABELI}
 DIRENM=${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}
 
@@ -296,7 +296,7 @@ echo "NCTLS="\${NCTLS}
 
 ${DIRGRADS}/grads -lb << EOT5
 run initpert.gs
-${TRC} ${LABELI} \${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+${TRC} ${LABELI} \${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF} ${convert}
 EOT5
 
 echo "" > \${ROPERM}/perturbations/output/perturbations_figs-${LABELI}.ok
@@ -313,5 +313,12 @@ chmod +x ${SCRIPTFILEPATH}
 ${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/perturbations/output/perturbations_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/perturbations/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/perturbations/${LABELI}/
+fi
 
 #exit 0

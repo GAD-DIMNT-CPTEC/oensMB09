@@ -9,6 +9,7 @@ NCTLS =subwrd(CTIME,4)
 RESOL =subwrd(CTIME,5)
 PREFX =subwrd(CTIME,6)
 EXP   =subwrd(CTIME,7)
+convert =subwrd(CTIME,8)
 
 say 'TRC   = 'TRC
 say 'LABELI= 'LABELI
@@ -253,13 +254,10 @@ while (NCT <= NCTLS)
      'draw string 5.5  8.0 Valido para: 'DATEI'Z'
 
 
-*     'printim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png png x900 y700'
      say '==========================> printim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png'
      
-*     'printim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png png x720 y560'
      'printim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png png x1024 y768'
-*     '!/usr/bin/convert -trim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png'
-     '!/home/carlos.bastarz/bin/convert -trim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png'
+     '!'convert' -trim 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png 'EXP'/perturbations'VAR''PLEV'_'DATEI''DATEI'.png'
 
    NCT=NCT+1
 endwhile

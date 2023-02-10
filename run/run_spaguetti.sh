@@ -173,7 +173,7 @@ echo 'LABELI='${LABELI}
 #
 
 DIRSCR=${ROPERM}/spaguetti/scripts
-DIRGIF=${ROPERM}/spaguetti/gif
+DIRGIF=${ROPERM}/spaguetti/gif/${LABELI}
 DIRCTL=${OPERM}/pos/dataout/${TRCLV}/${LABELI}
 DIRENM=${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}
 
@@ -320,14 +320,14 @@ done
   
 ${DIRGRADS}/grads -pb << EOT5
 run sptas.gs
-${TRC} ${LABELI} \${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+${TRC} ${LABELI} \${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF} ${convert}
 EOT5
 
 # Global
   
 ${DIRGRADS}/grads -pb << EOT6
 run sptgl.gs
-${TRC} ${LABELI} \${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF}
+${TRC} ${LABELI} \${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF} ${convert}
 EOT6
 
 echo "" > \${ROPERM}/spaguetti/output/spaguetti_figs-${LABELI}.ok
@@ -344,5 +344,12 @@ chmod +x ${SCRIPTFILEPATH}
 ${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/spaguetti/output/spaguetti_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/spaguetti/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/spaguetti/${LABELI}/
+fi
 
 #exit 0

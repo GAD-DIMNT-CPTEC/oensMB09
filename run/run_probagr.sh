@@ -298,7 +298,7 @@ dd=$(echo ${LABELI} | cut -c 7-8)
 hh=$(echo ${LABELI} | cut -c 9-10)
 
 dirscr=${ROPERM}/probagr/scripts
-dirgif=${ROPERM}/probagr/gif
+dirgif=${ROPERM}/probagr/gif/${LABELI}
 
 dirbct=${ROPERM}/probagr/dataout/${RES}/${LABELI}
 
@@ -331,11 +331,8 @@ cd ${ROPERM}/probagr/scripts
 
 ${DIRGRADS}/grads -lb << EOT
 run plot_precprob_agric.gs
-${RES} ${TRC} ${LABELI} \${nblst} \${ndacc} \${noutpday} \${dirbct} \${dirgif}
+${RES} ${TRC} ${LABELI} \${nblst} \${ndacc} \${noutpday} \${dirbct} \${dirgif} ${convert}
 EOT
-
-mkdir -p \${dirgif}/${LABELI}
-mv \${dirgif}/*png \${dirgif}/${LABELI}/
 
 echo "" > \${ROPERMOD}/probagr/bin/probagr_figs-${LABELI}.ok
 EOT1
@@ -358,4 +355,11 @@ ${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
 
 until [ -e "${ROPERM}/probagr/bin/probagr_figs-${LABELI}.ok" ]; do sleep 1s; done
                                                                                                  
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/probagr/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/probagr/${LABELI}/
+fi
+
 #exit 0

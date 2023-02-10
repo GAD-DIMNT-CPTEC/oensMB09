@@ -10,6 +10,8 @@ noutpday=subwrd(ctime,6); say 'noutpday: 'noutpday;
 dirbct  =subwrd(ctime,7); say 'dirbct  : 'dirbct  ;
 dirfig  =subwrd(ctime,8); say 'dirfig  : 'dirfig  ;
 
+convert  =subwrd(ctime,9)
+
 dirbct=dirbct%'/'
 dirfig=dirfig%'/'
 
@@ -135,14 +137,8 @@ while (nf <= nblst)
      'draw string 5.5 8.1 Probabilidade de Acumulo de Precipitacao acima de 10 mm em 5 dias' 
      'draw string 5.5 7.9 Acumalado entre: 'labeli'Z  e  'labelf'Z'
 
-*     'printim 'dirfig'prec_agric_large'ld'.gif gif x900 y700'
-*     '!/usr/bin/convert -trim 'dirfig'prec_agric_large'ld'.gif 'dirfig'prec_agric_large'ld'.gif'
-*     'printim 'dirfig'prec_agric_large'ld'.png png x900 y700'
-*     '!/usr/bin/convert -trim 'dirfig'prec_agric_large'ld'.png 'dirfig'prec_agric_large'ld'.png'
-
      'printim 'dirfig'prec_agric_large'ld'.png png x1200 y1000'
-*     '!/usr/bin/convert -trim 'dirfig'prec_agric_large'ld'.png 'dirfig'prec_agric_large'ld'.png'
-     '!/home/carlos.bastarz/bin/convert -trim 'dirfig'prec_agric_large'ld'.png 'dirfig'prec_agric_large'ld'.png'
+     '!'convert' -trim 'dirfig'prec_agric_large'ld'.png 'dirfig'prec_agric_large'ld'.png'
 
      'c'
      'set grads off'
@@ -151,14 +147,8 @@ while (nf <= nblst)
      'd smth9(prob10*100)'
      'run cbarn.gs 2.0 1 9.50 4.25'
 
-*     'printim 'dirfig'prec_agric_small'ld'.gif gif x900 y700'
-*     '!/usr/bin/convert -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.gif 'dirfig'prec_agric_small'ld'.gif'
-*     'printim 'dirfig'prec_agric_small'ld'.png png x900 y700'
-*     '!/usr/bin/convert -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.png 'dirfig'prec_agric_small'ld'.png'
-
      'printim 'dirfig'prec_agric_small'ld'.png png x1200 y1000'
-*     '!/usr/bin/convert -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.png 'dirfig'prec_agric_small'ld'.png'
-     '!/home/carlos.bastarz/bin/convert -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.png 'dirfig'prec_agric_small'ld'.png'
+     '!'convert' -trim -geometry 240x210 'dirfig'prec_agric_small'ld'.png 'dirfig'prec_agric_small'ld'.png'
       nld=nld+1
    
    nf=nf+1

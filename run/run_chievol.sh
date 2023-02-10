@@ -182,7 +182,7 @@ export OPERM=${DK_suite}
 export ROPERM=${DK_suite}/produtos
 
 export DIRSCR=${ROPERM}/chievol/scripts
-export DIRGIF=${ROPERM}/chievol/gif
+export DIRGIF=${ROPERM}/chievol/gif/${LABELI}
 export DIRINP=${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}
 
 #
@@ -214,11 +214,11 @@ done
 # Número de arquivos a serem abertos
 NWK=4 
 
-mkdir -p \${ROPERM}/chievol/gif
+mkdir -p \${ROPERM}/chievol/gif/${LABELI}
 
 ${DIRGRADS}/grads -bpc << EOF
 run plot_chi_evol.gs
-${LABELI} \${LABELF} \${NWK} ${CASE} ${RESOL} \${DIRGIF}
+${LABELI} \${LABELF} \${NWK} ${CASE} ${RESOL} \${DIRGIF} ${convert}
 EOF
 
 rm -f filefct${LABELI}.${RESOL}
@@ -237,5 +237,12 @@ chmod +x ${SCRIPTFILEPATH}
 ${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
 
 until [ -e "${ROPERM}/chievol/output/chievol_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/chievol/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/chievol/${LABELI}/
+fi
 
 #exit 0

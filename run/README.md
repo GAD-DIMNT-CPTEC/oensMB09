@@ -2,6 +2,8 @@
 
 ## Cray XE6, XC50 e Egeon
 
+**Nota:** carregar o ambiente de execução (GNU, Intel, PGI, Cray) antes de executar os processos.
+
 1. Realização do pré-processamento da primeira análise controle:
 ```
 $ ./runPre 126 28 2020062000 SMT 1 T F 574 64

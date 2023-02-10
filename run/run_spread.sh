@@ -350,11 +350,11 @@ echo "NCTLS=\${NCTLS}"
 # Figuras
 #
 
-mkdir -p ${ROPERM}/spread/gif/
+mkdir -p ${ROPERM}/spread/gif/${LABELI}
 
 ${DIRGRADS}/grads -lb << EOF2
 run gposens.gs 
-${TRC} ${LABELI} \${NCTLS} ${TRCLV} ${ROPERM}/spread/gif/
+${TRC} ${LABELI} \${NCTLS} ${TRCLV} ${ROPERM}/spread/gif/${LABELI} ${convert}
 EOF2
 
 echo "" > \${ROPERMOD}/spread/bin/spread_figs-${LABELI}.ok
@@ -377,5 +377,12 @@ chmod +x ${SCRIPTFILEPATH2}
 ${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
 
 until [ -e "${ROPERM}/spread/bin/spread_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/spread/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/spread/${LABELI}/
+fi
 
 #exit 0
