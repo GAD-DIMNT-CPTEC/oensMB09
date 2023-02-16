@@ -380,7 +380,7 @@ until [ -e "${ROPERM}/plumes/bin/plumes_figs-${LABELI}.ok" ]; do sleep 1s; done
 if [ ${SEND_TO_FTP} == true ]
 then
   cd ${ROPERM}/plumes/gif/${LABELI}/
-  ls *.png >  list.txt
+  find . -name "*.png" > list.txt
   rsync -arv * ${FTP_ADDRESS}/plumes/${LABELI}/
 fi
 
