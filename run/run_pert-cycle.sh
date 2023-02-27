@@ -68,8 +68,7 @@ export anltype=SMT
 #
 
 # Acrescentar ou remover os processos conforme a necessidade
-#Procs=(pre recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
-Procs=(pos15d gribmap)
+Procs=(pre recanl rdpert decanl model2d recfct eof deceof model15d pos15d gribmap)
 
 #
 # Número de perturbações
@@ -81,8 +80,8 @@ export npert=7
 # Datas de início e fim
 #
 
-export datai=2020120200
-export dataf=2020120200
+export datai=2020120100
+export dataf=2020121500
 
 export data=${datai}
 
@@ -90,7 +89,6 @@ while [ ${data} -le ${dataf} ]
 do
   
   datafct48h=$(${inctime} ${data} +48hr %y4%m2%d2%h2)
-  #datafct15d=$(${inctime} ${data} +15dy %y4%m2%d2%h2)
   datafct15d=$(${inctime} ${data} +15d %y4%m2%d2%h2)
 
   for proc in ${Procs[@]}
@@ -106,14 +104,8 @@ do
 
     if [ ${proc} == "model2d" ]
     then 
-#      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
-#      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
-#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
-#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
       . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
       . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
-#      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct48h} CTR 2 1 &
-#      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct48h} RDP 2 ${npert}
     fi
     wait
 
@@ -129,18 +121,9 @@ do
 
     if [ ${proc} == "model15d" ]
     then
-#      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
-#      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
-#      . ${bpath}/run_model.sh 48 4 6 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
-#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
-#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
-#      . ${bpath}/run_model.sh 16 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
       . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
       . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
       . ${bpath}/run_model.sh 128 4 1 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
-#      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct15d} NMC 2 1 &
-#      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct15d} NPT 2 ${npert} &
-#      . ${bpath}/run_model.sh 40 4 10 TQ0126L028 ${anltype} ${data} ${datafct15d} PPT 2 ${npert} 
     fi
     wait
 
@@ -148,18 +131,9 @@ do
     then
     # Para o pós-processamento na Egeon, 64 cores estão sendo utilizados porque
     # com 128, ocorre um erro relacionado com FFTs
-#      . ${bpath}/run_pos.sh 48 4 6 TQ0126L028 ${data} ${datafct15d} NMC &
-#      . ${bpath}/run_pos.sh 48 4 6 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
-#      . ${bpath}/run_pos.sh 48 4 6 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 
-#      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} NMC &
-#      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
-#      . ${bpath}/run_pos.sh 16 4 1 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 
       . ${bpath}/run_pos.sh 64 4 1 TQ0126L028 ${data} ${datafct15d} NMC &
       . ${bpath}/run_pos.sh 64 4 1 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
       . ${bpath}/run_pos.sh 64 4 1 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 
-#      . ${bpath}/run_pos.sh 40 4 10 TQ0126L028 ${data} ${datafct15d} NMC &
-#      . ${bpath}/run_pos.sh 40 4 10 TQ0126L028 ${data} ${datafct15d} NPT ${npert} &
-#      . ${bpath}/run_pos.sh 40 4 10 TQ0126L028 ${data} ${datafct15d} PPT ${npert} 
     fi
     wait
 
@@ -173,7 +147,6 @@ do
 
   done
 
-  #data=$(${inctime} ${data} +1dy %y4%m2%d2%h2)
   data=$(${inctime} ${data} +1d %y4%m2%d2%h2)
 
 done

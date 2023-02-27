@@ -58,7 +58,7 @@ Procs=(ensmed spread cluster probability probagr grh plumes chievol perturbation
 # Datas de início e fim
 #
 
-export datai=2020120200
+export datai=2020120100
 export dataf=2020121500
 
 export data=${datai}
@@ -83,9 +83,6 @@ do
     
     if [ ${proc} == "grh" ]
     then
-#      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} NMC &
-#      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} NPT 7 &
-#      ${bpath}/run_grh.sh 4 TQ0126L028 ${data} ${datafct15d} PPT 7 
       ${bpath}/run_grh.sh 1 TQ0126L028 ${data} ${datafct15d} NMC &
       ${bpath}/run_grh.sh 1 TQ0126L028 ${data} ${datafct15d} NPT 7 &
       ${bpath}/run_grh.sh 1 TQ0126L028 ${data} ${datafct15d} PPT 7 
