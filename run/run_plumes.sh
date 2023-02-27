@@ -214,7 +214,7 @@ else
 "
   if [ $USE_SINGULARITY == true ]
   then          
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI} > \${ROPERMOD}/plumes/output/plumes.${RUNTM}.log"
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/produtos/plumes/bin/plumes.x ${LABELI} > \${ROPERMOD}/plumes/output/plumes.${RUNTM}.log"
   else
     SCRIPTRUNCMD="mpirun -np 1 \${ROPERMOD}/plumes/bin/plumes.x ${LABELI} > \${ROPERMOD}/plumes/output/plumes.${RUNTM}.log"
   fi          

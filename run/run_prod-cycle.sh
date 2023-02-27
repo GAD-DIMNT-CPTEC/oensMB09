@@ -52,14 +52,14 @@ export bpath=/mnt/beegfs/carlos.bastarz/oensMB09/run
 #
 
 # Acrescentar ou remover os produtos conforme a necessidade
-Procs=(grh ensmed spread cluster probability probagr plumes chievol perturbations spaguetti)
+Procs=(ensmed spread cluster probability probagr grh plumes chievol perturbations spaguetti)
 
 #
 # Datas de início e fim
 #
 
-export datai=2020120100
-export dataf=2020120100
+export datai=2020120200
+export dataf=2020121500
 
 export data=${datai}
 

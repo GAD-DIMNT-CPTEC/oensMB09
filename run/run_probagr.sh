@@ -203,7 +203,7 @@ else
 "
   if [ $USE_SINGULARITY == true ]
   then
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} > \${ROPERMOD}/probagr/output/probagr.${RUNTM}.log"
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/produtos/probagr/bin/probagr.x ${LABELI} > \${ROPERMOD}/probagr/output/probagr.${RUNTM}.log"
   else
     SCRIPTRUNCMD="mpirun -np 1 \${ROPERMOD}/probagr/bin/probagr.x ${LABELI} > \${ROPERMOD}/probagr/output/probagr.${RUNTM}.log"
   fi

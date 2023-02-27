@@ -317,7 +317,7 @@ ${PBSDIRECTIVEARRAY}
 "
   if [ $USE_SINGULARITY == true ]
   then          
-    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log"
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} /usr/local/bin/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log"
   else
     SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} \${EXECFILEPATH}/PostGridHistory < \${EXECFILEPATH}/PostGridHistory.nml > \${EXECFILEPATH}/setout/Print.grh.${LABELI}.MPI${MPPWIDTH}.log"
   fi        
@@ -586,7 +586,12 @@ EOT1
   
 fi
 
-touch ${ROPERM}/grh/dataout/${RES}/${LABELI}/monitor.t
+if [ ${ANLTYPE} == NMC ]
+then
+  touch ${ROPERM}/grh/dataout/${RES}/${LABELI}/monitor_nmc.t
+else
+  touch ${ROPERM}/grh/dataout/${RES}/${LABELI}/monitor.t
+fi
 EOF1
 
 #
@@ -597,14 +602,14 @@ chmod +x ${SCRIPTFILEPATH2}
 
 ${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
 
-while [ ! -e ${ROPERM}/grh/dataout/${RES}/${LABELI}/monitor.t ]; do sleep 1s; done
+while [ ! -e ${ROPERM}/grh/dataout/${RES}/${LABELI}/monitor_nmc.t ]; do sleep 1s; done
 
 fi
 
 if [ ${SEND_TO_FTP} == true ]
 then
-  #cd ${ROPERM}/grh/gif/${LABELI}/
-  cd ${DK_suite}/produtos/grh/gif/${LABELI}/
+  cd ${ROPERM}/grh/gif/${LABELI}/
+  #cd ${DK_suite}/produtos/grh/gif/${LABELI}/
   find . -name "*.png" > list.txt
   rsync -arv * ${FTP_ADDRESS}/grh/${LABELI}/
 fi
