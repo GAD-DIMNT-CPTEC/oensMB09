@@ -2,6 +2,7 @@
 
 Este site não se destina à disseminação de produtos operacionais ou que possam ser utilizados para tomada de decisão. As informações aqui apresentadas, na forma de texto ou imagem, possuem caráter científico com a finalidade de testes ou validação. Os autores desta página não se responsabilizam pelo uso não autorizado deste material.
 
+<iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
 
 <iframe width="950" height="600" src="https://docs.google.com/document/d/17lsheX-C8enWWtryEzz9S1YubGqR0tsVwVLMz9Y58J8/edit?usp=sharing"></iframe>
 
