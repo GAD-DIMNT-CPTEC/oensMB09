@@ -11,16 +11,20 @@ PRJDIRS = ensmed spread probability probagr cluster plumes
 
 # targets
 all:
-	@$(CD) libs/w3lib-1.4 && \
-	$(MAKE)  
+	@$(CD) libs/bacio && \
+	./makebacio_cptec.sh $@
+	@$(CD) libs/w3emc && \
+	./makew3emc_cptec.sh $@
 	@for dir in $(PRJDIRS); do \
 		($(CD) $$dir/source && $(MAKE) $@); \
 	done
 
 # cleanup
 clean:
-	@$(CD) libs/w3lib-1.4 && \
-	$(MAKE) $@ 
+	$(CD) libs/bacio/NCEPLIBS-bacio-2.5.0/ && \
+  rm -rf build rls
+	$(CD) libs/w3emc/NCEPLIBS-w3emc-2.9.3/ && \
+  rm -rf build rls
 	@for dir in $(PRJDIRS); do \
 		($(CD) $$dir/source && $(RM) *.o *.mod); \
 		($(CD) $$dir/bin && $(RM) *.x); \

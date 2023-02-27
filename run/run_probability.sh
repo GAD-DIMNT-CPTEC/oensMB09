@@ -32,9 +32,10 @@
 #
 # !REVISION HISTORY:
 #
-# 03 Julho de 2020    - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
-# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 03 Julho de 2020     - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 06 Fevereiro de 2023 - C. F. Bastarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -109,7 +110,7 @@ export NIVEL=${TRCLV:6:4}
 
 export NMEMBR=$((2*${NRNDP}+1))
 
-export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+export LABELF=$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 case ${TRC} in
   021) MR=22  ; IR=64  ; JR=32  ; NPGH=93   ; DT=1800 ;;
@@ -145,11 +146,12 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setprobability.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH1=${DK_suite}/run/setprobability.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH2=${DK_suite}/run/setprobability_figs.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 if [ $(echo "$QSUB" | grep qsub) ]
 then
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #PBS -o ${ROPERM}/probability/output/probability.${RUNTM}.out
 #PBS -e ${ROPERM}/probability/output/probability.${RUNTM}.err
 #PBS -l walltime=00:10:00
@@ -160,10 +162,21 @@ then
 #PBS -N PROBS
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 "
+  SCRIPTHEADER2="
+#PBS -o ${ROPERM}/probability/output/probability_figs.${RUNTM}.out
+#PBS -e ${ROPERM}/probability/output/probability_figs.${RUNTM}.err
+#PBS -l walltime=00:10:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N PROBSFIGS
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 \${ROPERMOD}/probability/bin/probability.x ${LABELI} > \${ROPERMOD}/probability/output/probability.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 else
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #SBATCH --output=${ROPERM}/probability/output/probability.${RUNTM}.out
 #SBATCH --error=${ROPERM}/probability/output/probability.${RUNTM}.err
 #SBATCH --time=${AUX_WALLTIME}
@@ -172,14 +185,30 @@ else
 #SBATCH --job-name=PROBS
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 "
+  SCRIPTHEADER2="
+#SBATCH --output=${ROPERM}/probability/output/probability_figs.${RUNTM}.out
+#SBATCH --error=${ROPERM}/probability/output/probability_figs.${RUNTM}.err
+#SBATCH --time=${AUX_WALLTIME}
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=PROBSFIGS
+#SBATCH --partition=${AUX_QUEUE}
+"
+  if [ $USE_SINGULARITY == true ]
+  then          
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/produtos/probability/bin/probability.x ${LABELI} > \${ROPERMOD}/probability/output/probability.${RUNTM}.log"
+  else
+    SCRIPTRUNCMD="mpirun -np 1 \${ROPERMOD}/probability/bin/probability.x ${LABELI} > \${ROPERMOD}/probability/output/probability.${RUNTM}.log"
+
+  fi          
   SCRIPTRUNJOB="sbatch "
 fi
 
+if [ -e ${ROPERM}/probability/bin/probability-${LABELI}.ok ]; then rm ${ROPERM}/probability/bin/probability-${LABELI}.ok; fi
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
+cat <<EOT0 > ${SCRIPTFILEPATH1}
 #! /bin/bash -x
-${SCRIPTHEADER}
+${SCRIPTHEADER1}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -225,26 +254,34 @@ EOT
 
 cd \${ROPERMOD}/probability/bin
 
-${SCRIPTRUNCMD} \${ROPERMOD}/probability/bin/probability.x ${LABELI} 
+${SCRIPTRUNCMD}
 
 echo "" > \${ROPERMOD}/probability/bin/probability-${LABELI}.ok
 EOT0
 
 #
-# Submissão
-#
-
-export PBS_SERVER=${pbs_server2}
-
-chmod +x ${SCRIPTFILEPATH}
-
-${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
-
-until [ -e "${ROPERM}/probability/bin/probability-${LABELI}.ok" ]; do sleep 1s; done
-                                                                                                 
-#
 # Figuras
 #
+
+if [ -e ${ROPERM}/probability/bin/probability_figs-${LABELI}.ok ]; then rm ${ROPERM}/probability/bin/probability_figs-${LABELI}.ok; fi
+
+cat <<EOT1 > ${SCRIPTFILEPATH2}
+#! /bin/bash -x
+${SCRIPTHEADER2}
+
+export DATE=$(date +'%Y%m%d')
+export HOUR=$(date +'%T')
+
+# OPERMOD is the directory for sources, scripts and printouts files.
+# SOPERMOD is the directory for input and output data and bin files.
+# ROPERMOD is the directory for big selected output files.
+
+export OPERMOD=${OPERM}
+export ROPERMOD=${ROPERM}
+export LEV=${NIVEL}
+export TRUNC=${RESOL}
+export MACH=${MAQUI}
+export EXTS=S.unf
 
 yy=$(echo ${LABELI} | cut -c 1-4)
 mm=$(echo ${LABELI} | cut -c 5-6)
@@ -252,39 +289,68 @@ dd=$(echo ${LABELI} | cut -c 7-8)
 hh=$(echo ${LABELI} | cut -c 9-10)
 
 dirscr=${ROPERM}/probability/scripts
-dirgif=${ROPERM}/probability/gif
+dirgif=${ROPERM}/probability/gif/${LABELI}
 
 dirbct=${ROPERM}/probability/dataout/${RES}/${LABELI}
-if [ ! -d ${dirgif} ]
+
+if [ ! -d \${dirgif} ]
 then
-  mkdir -p ${dirgif}
+  mkdir -p \${dirgif}
 else
-  echo "${dirgif} ja existe"
+  echo "\${dirgif} ja existe"
 fi
 
 #
 # Lista dos arquivos descritores (ctl)
 #
 
-labelf=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+labelf=$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 arqlist=prob${LABELI}${labelf}.${RES}.lst
-ls -l ${ROPERM}/probability/dataout/${RES}/${LABELI}/prob${LABELI}* | awk '{print $9}' > ${ROPERM}/probability/dataout/${RES}/${LABELI}/prob${LABELI}${labelf}.${RES}.lst
+ls -l ${ROPERM}/probability/dataout/${RES}/${LABELI}/prob${LABELI}* | awk '{print \$9}' > ${ROPERM}/probability/dataout/${RES}/${LABELI}/prob${LABELI}${labelf}.${RES}.lst
 
-rm -f ${dirscr}/filefct${LABELI}.${TRC}
-for arq in $(cat ${dirbct}/${arqlist} | grep ctl)
+rm -f \${dirscr}/filefct${LABELI}.${TRC}
+for arq in \$(cat \${dirbct}/\${arqlist} | grep ctl)
 do
-  echo ${arq} >> ${dirscr}/filefct${LABELI}.${TRC}
+  echo \${arq} >> \${dirscr}/filefct${LABELI}.${TRC}
 done
 
-nblst=$(cat ${dirscr}/filefct${LABELI}.${TRC} | wc -l)
-echo "nblst="${nblst}
+nblst=\$(cat \${dirscr}/filefct${LABELI}.${TRC} | wc -l)
+echo "nblst="\${nblst}
 
 cd ${ROPERM}/probability/scripts
 
 ${DIRGRADS}/grads -lb << EOT
 run plot_precprob.gs
-${RES} ${TRC} ${LABELI} ${nblst} ${dirscr} ${dirgif}
+${RES} ${TRC} ${LABELI} \${nblst} \${dirscr} \${dirgif} ${convert}
 EOT
 
-exit 0
+echo "" > \${ROPERMOD}/probability/bin/probability_figs-${LABELI}.ok
+EOT1
+
+#
+# Submissão
+#
+
+export PBS_SERVER=${pbs_server2}
+
+chmod +x ${SCRIPTFILEPATH1}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH1}
+
+until [ -e "${ROPERM}/probability/bin/probability-${LABELI}.ok" ]; do sleep 1s; done
+                                                                                                 
+chmod +x ${SCRIPTFILEPATH2}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
+
+until [ -e "${ROPERM}/probability/bin/probability_figs-${LABELI}.ok" ]; do sleep 1s; done
+                                                                                                 
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/probability/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/probability/${LABELI}/
+fi
+
+#exit 0

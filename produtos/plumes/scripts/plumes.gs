@@ -12,6 +12,7 @@ dirbct  =subwrd(ctime,8)
 dirfig  =subwrd(ctime,9)
 tmin    =subwrd(ctime,10)
 tmax    =subwrd(ctime,11)
+convert =subwrd(ctime,12)
 
 dirbct=dirbct%'/'
 dirfig=dirfig%'/'
@@ -155,8 +156,8 @@ lab=lonlat
 
 say 'printim 'dirfig''state'/'lab'.png png x620 y760'
     'printim 'dirfig''state'/'lab'.png png x620 y760'
-say '!/usr/bin/convert -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
-    '!/usr/bin/convert -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
+say '!'convert' -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
+    '!'convert' -trim 'dirfig''state'/'lab'.png 'dirfig''state'/'lab'.png'
 
 return
 

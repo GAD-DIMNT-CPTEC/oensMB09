@@ -10,6 +10,7 @@ case =subwrd(ctime,4)
 trc  =subwrd(ctime,5)
 dirfig=subwrd(ctime,6)
 dirfig=dirfig%'/'
+convert=subwrd(ctime,7)
 
 yyi=substr(datei,1,4)
 mmi=substr(datei,5,2)
@@ -125,10 +126,8 @@ endwhile
 'draw line 0.5 7.5 8.4 7.5' 
 'draw line 0.5 8.5 8.4 8.5' 
 
-*'printim 'dirfig'chi_evol'datei''datef'.png png x600 y950'
-*'!/usr/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png  'dirfig'chi_evol'datei''datef'.png'
 'printim 'dirfig'chi_evol'datei''datef'.png png x768 y1024'
-'!/usr/bin/convert -trim 'dirfig'chi_evol'datei''datef'.png 'dirfig'chi_evol'datei''datef'.png'
+'!'convert' -trim 'dirfig'chi_evol'datei''datef'.png 'dirfig'chi_evol'datei''datef'.png'
 
 *'q pos'
 'quit'

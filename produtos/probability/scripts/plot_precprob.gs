@@ -7,6 +7,7 @@ labeli=subwrd(ctime,3)
 nblst =subwrd(ctime,4)
 dirbct=subwrd(ctime,5)
 dirfig=subwrd(ctime,6)
+convert=subwrd(ctime,7)
 
 dirbct=dirbct%'/'
 dirfig=dirfig%'/'
@@ -125,9 +126,8 @@ while (nf <= nblst)
   'set strsiz 0.11 0.12'
   'draw string 5.5 8.3 CPTEC/INPE/MCT - PREVISAO DE TEMPO GLOBAL POR ENSEMBLE - 'resol''
   'draw string 5.5 8.1 Previsao de Probabilidades (%) -  A partir de: 'labeli'Z  Valido para: 'labelf'Z' 
-*  'printim 'dirfig'prec'labeli''labelf'.png png x900 y700'
   'printim 'dirfig'prec'labeli''labelf'.png png x1200 y1000'
-  '!/usr/bin/convert -trim 'dirfig'prec'labeli''labelf'.png 'dirfig'prec'labeli''labelf'.png'
+  '!'convert' -trim 'dirfig'prec'labeli''labelf'.png 'dirfig'prec'labeli''labelf'.png'
 
    nf=nf+1
 endwhile

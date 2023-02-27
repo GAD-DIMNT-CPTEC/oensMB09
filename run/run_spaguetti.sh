@@ -32,8 +32,9 @@
 #
 # !REVISION HISTORY:
 #
-# 28 Agosto de 2020 - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021  - C. F. Bastarz - Revisão geral.
+# 28 Agosto de 2020    - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 06 Fevereiro de 2023 - C. F. Bastarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -98,10 +99,14 @@ export PATHBASE=$(cd ${PATHENV}; cd ; pwd)
 
 . ${FILEENV} ${RES} ${PREFX}
 
+#
+# Script de submissão
+#
+
 export OPERM=${DK_suite}
 export ROPERM=${DK_suite}/produtos
 
-cd ${HOME_suite}/run
+export RUNTM=$(date +'%Y%m%d%T')
 
 TRC=$(echo ${TRCLV} | cut -c 1-6 | tr -d "TQ0")
 LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
@@ -109,9 +114,48 @@ LV=$(echo ${TRCLV} | cut -c 7-11 | tr -d "L0")
 export RESOL=${TRCLV:0:6}
 export NIVEL=${TRCLV:6:4}
 
+mkdir -p ${ROPERM}/spaguetti/output
+
+cd ${HOME_suite}/run
+
+export SCRIPTFILEPATH=${DK_suite}/run/setspaguetti.${RES}.${LABELI}.${MAQUI}
+
+if [ $(echo "$QSUB" | grep qsub) ]
+then
+  SCRIPTHEADER="
+#PBS -o ${ROPERM}/spaguetti/output/spaguetti.${RUNTM}.out
+#PBS -e ${ROPERM}/spaguetti/output/spaguetti.${RUNTM}.err
+#PBS -l walltime=00:10:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N SPAGUETTI
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNJOB="qsub -W block=true "
+else
+  SCRIPTHEADER="
+#SBATCH --output=${ROPERM}/spaguetti/output/spaguetti.${RUNTM}.out
+#SBATCH --error=${ROPERM}/spaguetti/output/spaguetti.${RUNTM}.err
+#SBATCH --time=00:10:00
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=SPAGUETTI
+#SBATCH --partition=${AUX_QUEUE}
+"
+  SCRIPTRUNJOB="sbatch "
+fi
+
+if [ -e ${ROPERM}/spaguetti/output/spaguetti_figs-${LABELI}.ok ]; then rm ${ROPERM}/spaguetti/output/spaguetti_figs-${LABELI}.ok; fi
+
+cat <<EOT > ${SCRIPTFILEPATH}
+#! /bin/bash -x
+${SCRIPTHEADER}
+
 export NMEMBR=$((2*${NRNDP}+1))
 
-export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+export LABELF=\$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 OUT=out
 NPROC=1
@@ -129,15 +173,15 @@ echo 'LABELI='${LABELI}
 #
 
 DIRSCR=${ROPERM}/spaguetti/scripts
-DIRGIF=${ROPERM}/spaguetti/gif
+DIRGIF=${ROPERM}/spaguetti/gif/${LABELI}
 DIRCTL=${OPERM}/pos/dataout/${TRCLV}/${LABELI}
 DIRENM=${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}
 
-if [ ! -d ${DIRGIF} ]
+if [ ! -d \${DIRGIF} ]
 then
-  mkdir -p ${DIRGIF}
+  mkdir -p \${DIRGIF}
 else
-  echo "${DIRGIF} has already been created"
+  echo "\${DIRGIF} has already been created"
 fi
 
 #
@@ -147,13 +191,13 @@ fi
 let AUX=NMEMBR-1
 let NRNDP=AUX/2
 
-echo 'NRNDP='${NRNDP}
+echo 'NRNDP='\${NRNDP}
 
 #
 # Lista com os nomes dos arquivos descritores (ctl) 
 #
 
-cd ${DIRSCR}
+cd \${DIRSCR}
 
 rm filefct*
 
@@ -161,16 +205,16 @@ TIM=0
 
 LABEL=${LABELI}
 
-while [ ${LABEL} -le ${LABELF} ]
+while [ \${LABEL} -le \${LABELF} ]
 do
 
   NPERT=1
   
-  while [ ${NPERT} -le ${NRNDP} ]
+  while [ \${NPERT} -le \${NRNDP} ]
   do
-    if [ ${NPERT} -lt 10 ]
+    if [ \${NPERT} -lt 10 ]
     then
-      NPERT='0'${NPERT}
+      NPERT='0'\${NPERT}
     fi
   
     let NPERT=NPERT+1
@@ -179,49 +223,49 @@ do
   NCTLS=1
   NPERT=1
 
-  if [ ${LABEL} == ${LABELI} ]
+  if [ \${LABEL} == \${LABELI} ]
   then
     TYPE='P.icn'
   else
     TYPE='P.fct'
   fi
   
-  while [ ${NPERT} -le ${NRNDP} ]
+  while [ \${NPERT} -le \${NRNDP} ]
   do
 
-    if [ ${NPERT} -lt 10 ]
+    if [ \${NPERT} -lt 10 ]
     then
-      NPERT='0'${NPERT}
+      NPERT='0'\${NPERT}
     fi
   
-    if [ -s ${DIRCTL}/GPOS${NPERT}P${LABELI}${LABEL}${TYPE}.${RESOL}.ctl ]
+    if [ -s \${DIRCTL}/GPOS\${NPERT}P${LABELI}\${LABEL}\${TYPE}.${RES}.ctl ]
     then
   
-cat << EOT >> filefct${NPERT}P${LABELI}.${TRC}
-${DIRCTL}/GPOS${NPERT}P${LABELI}${LABEL}${TYPE}.${RESOL}.ctl
-EOT
+cat << EOT1 >> filefct\${NPERT}P${LABELI}.${TRC}
+\${DIRCTL}/GPOS\${NPERT}P${LABELI}\${LABEL}\${TYPE}.${RES}.ctl
+EOT1
   
-      NCTLS=$((${NCTLS}+1))
+      NCTLS=\$((\${NCTLS}+1))
  
     else
 
-      echo "${DIRCTL}/GPOS${NPERT}P${LABELI}${LABEL}${TYPE}.${RESOL}.ctl nao existe"
+      echo "\${DIRCTL}/GPOS\${NPERT}P${LABELI}\${LABEL}\${TYPE}.${RES}.ctl nao existe"
       exit 1
 
     fi
   
-    if [ -s ${DIRCTL}/GPOS${NPERT}N${LABELI}${LABEL}${TYPE}.${RESOL}.ctl ]
+    if [ -s \${DIRCTL}/GPOS\${NPERT}N${LABELI}\${LABEL}\${TYPE}.${RES}.ctl ]
     then
   
-cat << EOT >> filefct${NPERT}N${LABELI}.${TRC}
-${DIRCTL}/GPOS${NPERT}N${LABELI}${LABEL}${TYPE}.${RESOL}.ctl
-EOT
+cat << EOT2 >> filefct\${NPERT}N${LABELI}.${TRC}
+\${DIRCTL}/GPOS\${NPERT}N${LABELI}\${LABEL}\${TYPE}.\${RES}.ctl
+EOT2
 
-      NCTLS=$((${NCTLS}+1))
+      NCTLS=\$((\${NCTLS}+1))
  
     else
 
-      echo "${DIRCTL}/GPOS${NPERT}N${LABELI}${LABEL}${TYPE}.${RESOL}.ctl nao existe"
+      echo "\${DIRCTL}/GPOS\${NPERT}N${LABELI}\${LABEL}\${TYPE}.${RES}.ctl nao existe"
       exit 1
 
     fi
@@ -230,41 +274,41 @@ EOT
 
   done
   
-  if [ -s ${DIRCTL}/GPOS${PREFX}${LABELI}${LABEL}${TYPE}.${RESOL}.ctl ]
+  if [ -s \${DIRCTL}/GPOS${PREFX}${LABELI}\${LABEL}\${TYPE}.${RES}.ctl ]
   then
   
-cat << EOT >> filefct${PREFX}${LABELI}.${TRC}
-${DIRCTL}/GPOS${PREFX}${LABELI}${LABEL}${TYPE}.${RESOL}.ctl
-EOT
+cat << EOT3 >> filefct${PREFX}${LABELI}.${TRC}
+\${DIRCTL}/GPOS${PREFX}${LABELI}\${LABEL}\${TYPE}.${RES}.ctl
+EOT3
   
-    NCTLS=$((${NCTLS}+1))
+    NCTLS=\$((\${NCTLS}+1))
  
   else
 
-    echo "${DIRCTL}/GPOS${PREFX}${LABELI}${LABEL}${TYPE}.${RESOL}.ctl nao existe"
+    echo "\${DIRCTL}/GPOS${PREFX}${LABELI}\${LABEL}\${TYPE}.${RES}.ctl nao existe"
     exit 1
 
   fi
   
-  if [ -s ${DIRENM}/GPOSENM${LABELI}${LABEL}${TYPE}.${RESOL}.ctl ]
+  if [ -s \${DIRENM}/GPOSENM${LABELI}\${LABEL}\${TYPE}.${RES}.ctl ]
   then
   
-cat << EOT >> filefctENM${LABELI}.${TRC}
-${DIRENM}/GPOSENM${LABELI}${LABEL}${TYPE}.${RESOL}.ctl
-EOT
+cat << EOT4 >> filefctENM${LABELI}.${TRC}
+\${DIRENM}/GPOSENM${LABELI}\${LABEL}\${TYPE}.${RES}.ctl
+EOT4
  
-    NCTLS=$((${NCTLS}+1))
+    NCTLS=\$((\${NCTLS}+1))
  
   else
 
-    echo "${DIRENM}/GPOSENM${LABELI}${LABEL}${TYPE}.${RESOL}.ctl nao existe"
+    echo "\${DIRENM}/GPOSENM${LABELI}\${LABEL}\${TYPE}.${RES}.ctl nao existe"
     exit 1
 
   fi
   
-  echo "NCTLS="${NCTLS}
+  echo "NCTLS="\${NCTLS}
   
-  LABEL=$(${inctime} ${LABEL} +1dy %y4%m2%d2%h2)
+  LABEL=\$(${inctime} \${LABEL} +1d %y4%m2%d2%h2)
 
 done
 
@@ -274,16 +318,38 @@ done
   
 # América do Sul
   
-${DIRGRADS}/grads -pb << EOT
+${DIRGRADS}/grads -pb << EOT5
 run sptas.gs
-${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}
-EOT
+${TRC} ${LABELI} \${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF} ${convert}
+EOT5
 
 # Global
   
-${DIRGRADS}/grads -pb << EOT
+${DIRGRADS}/grads -pb << EOT6
 run sptgl.gs
-${TRC} ${LABELI} ${NMEMBR} ${NCTLS} ${RESOL} ${PREFX} ${DIRGIF}
+${TRC} ${LABELI} \${NMEMBR} \${NCTLS} ${RES} ${PREFX} \${DIRGIF} ${convert}
+EOT6
+
+echo "" > \${ROPERM}/spaguetti/output/spaguetti_figs-${LABELI}.ok
 EOT
-  
-exit 0
+
+#
+# Submissão
+#
+
+export PBS_SERVER=${pbs_server2}
+
+chmod +x ${SCRIPTFILEPATH}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
+
+until [ -e "${ROPERM}/spaguetti/output/spaguetti_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/spaguetti/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/spaguetti/${LABELI}/
+fi
+
+#exit 0

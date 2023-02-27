@@ -31,9 +31,10 @@
 #
 # !REVISION HISTORY:
 #
-# 17 Maio de 2020     - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
-# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 17 Maio de 2020      - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 02 Fevereiro de 2023 - C. F. Bastarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -108,7 +109,7 @@ export NIVEL=${TRCLV:6:4}
 
 export NMEMBR=$((2*${NPERT}+1))
 
-export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+export LABELF=$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 case ${TRC} in
   021) MR=22  ; IR=64  ; JR=32  ; NPGH=93   ; DT=1800 ;;
@@ -144,11 +145,12 @@ export ROPERM=${DK_suite}/produtos
 
 cd ${OPERM}/run
 
-export SCRIPTFILEPATH=${DK_suite}/run/setspread.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH1=${DK_suite}/run/setspread.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
+export SCRIPTFILEPATH2=${DK_suite}/run/setspread_figs.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
 if [ $(echo "$QSUB" | grep qsub) ]
 then
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #PBS -o ${ROPERM}/spread/output/spread.${RUNTM}.out
 #PBS -e ${ROPERM}/spread/output/spread.${RUNTM}.err
 #PBS -l walltime=00:10:00
@@ -159,11 +161,22 @@ then
 #PBS -N SPREAD
 #PBS -q ${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 " 
+  SCRIPTHEADER2="
+#PBS -o ${ROPERM}/spread/output/spread_figs.${RUNTM}.out
+#PBS -e ${ROPERM}/spread/output/spread_figs.${RUNTM}.err
+#PBS -l walltime=00:10:00
+#PBS -l select=1:ncpus=1
+#PBS -A CPTEC
+#PBS -V
+#PBS -S /bin/bash
+#PBS -N SPREADFIGS
+#PBS -q ${AUX_QUEUE}
+"
+  SCRIPTRUNCMD="aprun -n 1 -N 1 -d 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI} > \${ROPERMOD}/spread/output/spread.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 
 else
-  SCRIPTHEADER="
+  SCRIPTHEADER1="
 #SBATCH --output=${ROPERM}/spread/output/spread.${RUNTM}.out
 #SBATCH --error=${ROPERM}/spread/output/spread.${RUNTM}.err
 #SBATCH --time=00:10:00
@@ -172,13 +185,31 @@ else
 #SBATCH --job-name=SPREAD
 #SBATCH --partition=${AUX_QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np 1 " 
+  SCRIPTHEADER2="
+#SBATCH --output=${ROPERM}/spread/output/spread_figs.${RUNTM}.out
+#SBATCH --error=${ROPERM}/spread/output/spread_figs.${RUNTM}.err
+#SBATCH --time=00:10:00
+#SBATCH --tasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --job-name=SPREADFIGS
+#SBATCH --partition=${AUX_QUEUE}
+"
+  if [ $USE_SINGULARITY == true ] 
+  then
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np 1 ${SIFOENSMB09BIN}/produtos/spread/bin/spread.x ${LABELI} > \${ROPERMOD}/spread/output/spread.${RUNTM}.log"
+  else
+    SCRIPTRUNCMD="mpirun -np 1 \${ROPERMOD}/spread/bin/spread.x ${LABELI} > \${ROPERMOD}/spread/output/spread.${RUNTM}.log"
+  fi
   SCRIPTRUNJOB="sbatch "
 fi
 
-cat <<EOT0 > ${SCRIPTFILEPATH}
+if [ -e ${ROPERM}/spread/bin/spread-${LABELI}.ok ]; then rm ${ROPERM}/spread/bin/spread-${LABELI}.ok; fi
+
+if [ -e ${ROPERM}/spread/bin/spread_figs-${LABELI}.ok ]; then rm ${ROPERM}/spread/bin/spread_figs-${LABELI}.ok; fi
+
+cat <<EOT0 > ${SCRIPTFILEPATH1}
 #! /bin/bash -x
-${SCRIPTHEADER}
+${SCRIPTHEADER1}
 
 export DATE=$(date +'%Y%m%d')
 export HOUR=$(date +'%T')
@@ -214,7 +245,7 @@ export EXTS=S.unf
 
 mkdir -p \${ROPERMOD}/spread/dataout/\${TRUNC}\${LEV}/\${LABELI}
 
-cat <<EOT > \${ROPERMOD}/spread/bin/spreadsetup.${LABELI}.nml
+cat <<EOF0 > \${ROPERMOD}/spread/bin/spreadsetup.${LABELI}.nml
 UNDEF     :   9.999E+20
 IMAX      :   ${IR}
 JMAX      :   ${JR}
@@ -229,30 +260,38 @@ DATALSTDIR:   \${OPERMOD}/pos/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 DATAOUTDIR:   \${ROPERMOD}/spread/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 RESOL     :   \${TRUNC}\${LEV}
 PREFX     :   ${PREFX}
-EOT
+EOF0
 
 cd \${ROPERMOD}/spread/bin
 
-${SCRIPTRUNCMD} \${ROPERMOD}/spread/bin/spread.x ${LABELI}
+${SCRIPTRUNCMD} 
 
 echo "" > \${ROPERMOD}/spread/bin/spread-${LABELI}.ok
 EOT0
 
 #
-# Submissão
-#
-
-export PBS_SERVER=${pbs_server2}
-
-chmod +x ${SCRIPTFILEPATH}
-
-${SCRIPTRUNJOB} ${SCRIPTFILEPATH}
-
-until [ -e "${ROPERM}/spread/bin/spread-${LABELI}.ok" ]; do sleep 1s; done
-
-#
 # Verificação e organização dos arquivos para a confecção das figuras
 #
+
+cat <<EOT1 > ${SCRIPTFILEPATH2}
+#! /bin/bash -x
+${SCRIPTHEADER2}
+
+export DATE=$(date +'%Y%m%d')
+export HOUR=$(date +'%T')
+
+# OPERMOD is the directory for sources, scripts and printouts files.
+# SOPERMOD is the directory for input and output data and bin files.
+# ROPERMOD is the directory for big selected output files.
+
+export OPERMOD=${OPERM}
+export ROPERMOD=${ROPERM}
+
+export LEV=${NIVEL}
+export TRUNC=${RESOL}
+
+export MACH=${MAQUI}
+export EXTS=S.unf
 
 cd ${ROPERM}/spread/scripts
 
@@ -265,57 +304,85 @@ TIM=0
 
 set -x
 
-while [ ${TIM} -le ${NHOURS} ]
+while [ \${TIM} -le \${NHOURS} ]
 do
-  LABELF=$(date -d "${LABELI:0:8} 00:00 ${TIM} hours" +"%Y%m%d%H")
-  echo "LABELF="${LABELF}
+  LABELF=\$(date -d "${LABELI:0:8} 00:00 \${TIM} hours" +"%Y%m%d%H")
+  echo "LABELF="\${LABELF}
 
-  if [ ${TIM} -eq 0 ]
+  if [ \${TIM} -eq 0 ]
   then
     TYPE='P.icn'
   else
     TYPE='P.fct'
   fi
 
-  if [ -s ${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl ]
+  if [ -s ${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}\${LABELF}\${TYPE}.${TRCLV}.ctl ]
   then
 
-cat <<EOT1 >> filefctENM${LABELI}.${TRC}
-${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl
-EOT1
+cat <<EOF0 >> filefctENM${LABELI}.${TRC}
+${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}\${LABELF}\${TYPE}.${TRCLV}.ctl
+EOF0
 
   else
-    echo "${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}${LABELF}${TYPE}.${TRCLV}.ctl nao existe"
+    echo "${OPERM}/ensmed/dataout/${TRCLV}/${LABELI}/GPOSENM${LABELI}\${LABELF}\${TYPE}.${TRCLV}.ctl nao existe"
     exit 1
   fi
 
-  if [ -s ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}${LABELF}.${TRCLV}.ctl ]
+  if [ -s ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}\${LABELF}.${TRCLV}.ctl ]
   then  
 
-cat <<EOT2 >> filespr${LABELI}.${TRC}
-${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}${LABELF}.${TRCLV}.ctl
-EOT2
+cat <<EOF1 >> filespr${LABELI}.${TRC}
+${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}\${LABELF}.${TRCLV}.ctl
+EOF1
 
   else
-    echo "${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}${LABELF}.${TRACLV}.ctl nao existe"
+    echo "${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/spread${LABELI}\${LABELF}.${TRCLV}.ctl nao existe"
     exit 1
   fi
 
-  let NCTLS=${NCTLS}+1
-  let TIM=${TIM}+6
+  let NCTLS=\${NCTLS}+1
+  let TIM=\${TIM}+6
 done
 
-echo "NCTLS=${NCTLS}"
+echo "NCTLS=\${NCTLS}"
 
 #
 # Figuras
 #
 
-mkdir -p ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/
+mkdir -p ${ROPERM}/spread/gif/${LABELI}
 
-${DIRGRADS}/grads -lb << EOT
+${DIRGRADS}/grads -lb << EOF2
 run gposens.gs 
-${TRC} ${LABELI} ${NCTLS} ${TRCLV} ${ROPERM}/spread/dataout/${TRCLV}/${LABELI}/gif/
-EOT
+${TRC} ${LABELI} \${NCTLS} ${TRCLV} ${ROPERM}/spread/gif/${LABELI} ${convert}
+EOF2
 
-exit 0
+echo "" > \${ROPERMOD}/spread/bin/spread_figs-${LABELI}.ok
+EOT1
+
+#
+# Submissão
+#
+
+export PBS_SERVER=${pbs_server2}
+
+chmod +x ${SCRIPTFILEPATH1}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH1}
+
+until [ -e "${ROPERM}/spread/bin/spread-${LABELI}.ok" ]; do sleep 1s; done
+
+chmod +x ${SCRIPTFILEPATH2}
+
+${SCRIPTRUNJOB} ${SCRIPTFILEPATH2}
+
+until [ -e "${ROPERM}/spread/bin/spread_figs-${LABELI}.ok" ]; do sleep 1s; done
+
+if [ ${SEND_TO_FTP} == true ]
+then
+  cd ${ROPERM}/spread/gif/${LABELI}/
+  ls *.png >  list.txt
+  rsync -arv * ${FTP_ADDRESS}/spread/${LABELI}/
+fi
+
+#exit 0

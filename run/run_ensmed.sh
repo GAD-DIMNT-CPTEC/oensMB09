@@ -31,9 +31,10 @@
 #
 # !REVISION HISTORY:
 #
-# 17 Maio de 2020     - C. F. Bastarz - Versão inicial.  
-# 18 Junho de 2021    - C. F. Bastarz - Revisão geral.
-# 01 Novembro de 2022 - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 17 Maio de 2020      - C. F. Bastarz - Versão inicial.  
+# 18 Junho de 2021     - C. F. Bastarz - Revisão geral.
+# 01 Novembro de 2022  - C. F. Bastarz - Inclusão de diretivas do SLURM.
+# 01 Fevereiro de 2023 - C. F. Bastarz - Adaptações para a Egeon.
 #
 # !REMARKS:
 #
@@ -116,7 +117,8 @@ export NIVEL=${TRCLV:6:4}
 
 export NMEMBR=$((2*${NPERT}+1))
 
-export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+#export LABELF=$(${inctime} ${LABELI} +${NFCTDY}dy %y4%m2%d2%h2)
+export LABELF=$(${inctime} ${LABELI} +${NFCTDY}d %y4%m2%d2%h2)
 
 case ${TRC} in
   021) MR=22  ; IR=64  ; JR=32  ; NPGH=93   ; DT=1800 ;;
@@ -152,8 +154,9 @@ export PBS_SERVER=${pbs_server1}
 
 export SCRIPTFILEPATH=${DK_suite}/run/setensmed.${RESOL}${NIVEL}.${LABELI}.${MAQUI}
 
-# Número de cores utilizados
-export MPPWIDTH=20
+# Número de cores utilizados (não deve ser maior do que o número de arquivos a serem abertos)
+#export MPPWIDTH=20
+export MPPWIDTH=62
 export MPPNPPN=1
 
 mkdir -p ${DK_suite}/ensmed/output/
@@ -172,7 +175,7 @@ then
 #PBS -N ENSMED
 #PBS -q ${QUEUE}
 "
-  SCRIPTRUNCMD="time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss " 
+  SCRIPTRUNCMD="time aprun -n ${MPPWIDTH} -N ${MPPNPPN} -ss \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log"
   SCRIPTRUNJOB="qsub -W block=true "
 else
   SCRIPTHEADER="
@@ -180,13 +183,21 @@ else
 #SBATCH --error=${ROPERM}/ensmed/output/ensmed.${RUNTM}.err
 #SBATCH --time=00:10:00
 #SBATCH --tasks-per-node=${MPPWIDTH}
-#SBATCH --nodes=${MPPDEPTH}
+##SBATCH --nodes=${MPPDEPTH}
+#SBATCH --nodes=${MPPNPPN}
 #SBATCH --job-name=ENSMED
 #SBATCH --partition=${QUEUE}
 "
-  SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind /mnt/beegfs/carlos.bastarz:/mnt/beegfs/carlos.bastarz /mnt/beegfs/carlos.bastarz/containers/egeon_dev.sif mpirun -np ${MPPWIDTH}" 
+  if [ $USE_SINGULARITY == true ]
+  then
+    SCRIPTRUNCMD="module load singularity ; singularity exec -e --bind ${WORKBIND}:${WORKBIND} ${SIFIMAGE} mpirun -np ${MPPWIDTH} ${SIFOENSMB09BIN}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log"
+  else  
+    SCRIPTRUNCMD="mpirun -np ${MPPWIDTH} \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log"
+  fi  
   SCRIPTRUNJOB="sbatch "
 fi
+
+if [ -e ${ROPERM}/ensmed/bin/ensmed-${LABELI}.ok ]; then rm ${ROPERM}/ensmed/bin/ensmed-${LABELI}.ok; fi
 
 cat <<EOT0 > ${SCRIPTFILEPATH}
 #! /bin/bash -x
@@ -233,10 +244,7 @@ mkdir -p \${SOPERMOD}/ensmed/dataout/\${TRUNC}\${LEV}/\${LABELI}/
 
 cd \${SOPERMOD}/ensmed/bin
 
-${SCRIPTRUNCMD} \${SOPERMOD}/ensmed/bin/ensmed.x ${LABELI} > \${SOPERMOD}/ensmed/output/ensmed.${RUNTM}.log
-
-
-rm \${SOPERMOD}/ensmed/bin/ensmed-${LABELI}.ok
+${SCRIPTRUNCMD}
 
 echo "" > \${SOPERMOD}/ensmed/bin/ensmed-${LABELI}.ok
 EOT0
@@ -256,4 +264,4 @@ do
   ${DIRGRADS}/gribmap -i ${arqctl}
 done
 
-exit 0
+#exit 0
