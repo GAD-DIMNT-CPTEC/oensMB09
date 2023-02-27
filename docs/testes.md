@@ -11,7 +11,7 @@ style="border:0px;" allowfullscreen>
 
 <iframe src="https://tour.mapsalive.com/83670?mobile-mode=always" width="100%" height="400px" frameBorder="0" scrolling="no"></iframe>
 
-<iframe src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="200" height="200"></iframe>
+<iframe src="https://www.google.com/search?q=%http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png&btnI=Im+Feeling+Lucky" width="200" height="200"></iframe>
 
 <iframe src="https://drive.google.com/file/d/1ZWO0ImIaCCPYDSI5qS50pMeT1Qao7k3N/view?usp=share_link" width="200" height="200"></iframe>
 
