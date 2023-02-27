@@ -1,3 +1,6 @@
+# Testes
+
+Este site não se destina à disseminação de produtos operacionais ou que possam ser utilizados para tomada de decisão. As informações aqui apresentadas, na forma de texto ou imagem, possuem caráter científico com a finalidade de testes ou validação. Os autores desta página não se responsabilizam pelo uso não autorizado deste material.
 
 
 === "geop"
@@ -6,7 +9,7 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/geop25020201202002020120200.png">spread - geop @ 250, fct 0 h (2020120200-2020120200)</option>
+    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/geop25020201202002020120200.png">spread - geop @ 250, fct 0 h (2020120200-2020120200)</option>
     <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/geop25020201202002020120206.png">spread - geop @ 250, fct 6 h (2020120200-2020120206)</option>
     </SELECT>
 
@@ -22,7 +25,7 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe2').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/psnm20201202002020120200.png">spread - psnm @ 1000, fct 0 h (2020120200-2020120200)</option>
+    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/psnm20201202002020120200.png">spread - psnm @ 1000, fct 0 h (2020120200-2020120200)</option>
     <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/psnm20201202002020120206.png">spread - psnm @ 1000, fct 6 h (2020120200-2020120206)</option>
     </SELECT>
 
@@ -38,7 +41,7 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe3').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/temp85020201202002020120200.png">spread - temp @ 850, fct 0 h (2020120200-2020120200)</option>
+    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/temp85020201202002020120200.png">spread - temp @ 850, fct 0 h (2020120200-2020120200)</option>
     <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/temp85020201202002020120206.png">spread - temp @ 850, fct 6 h (2020120200-2020120206)</option>
     </SELECT>
     
