@@ -4,6 +4,8 @@ Este site não se destina à disseminação de produtos operacionais ou que poss
 
 <iframe src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="200" height="200"></iframe>
 
+<iframe src="https://drive.google.com/file/d/1ZWO0ImIaCCPYDSI5qS50pMeT1Qao7k3N/view?usp=share_link" width="200" height="200"></iframe>
+
 <iframe width="950" height="600" src="https://docs.google.com/document/d/17lsheX-C8enWWtryEzz9S1YubGqR0tsVwVLMz9Y58J8/edit?usp=sharing"></iframe>
 
 <iframe width="950" height="600" src="https://docs.google.com/spreadsheets/d/1hbOfAhDy3LLJO1voVEY2s84tOo_dNF80GgVL89VHUzI/edit?usp=sharing"></iframe>
