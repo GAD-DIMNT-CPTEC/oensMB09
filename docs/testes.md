@@ -6,13 +6,13 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-    <option value="https://images.weserv.nl/?url=ssl:ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/geop25020201202002020120200.png">spread - geop @ 250, fct 0 h (2020120200-2020120200)</option>
+    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/geop25020201202002020120200.png">spread - geop @ 250, fct 0 h (2020120200-2020120200)</option>
     <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/spread/2020120200/geop25020201202002020120206.png">spread - geop @ 250, fct 6 h (2020120200-2020120206)</option>
     </SELECT>
 
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe1" src="https://images.weserv.nl/?url=ssl:ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe1" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
