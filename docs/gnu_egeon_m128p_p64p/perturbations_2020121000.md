@@ -6,9 +6,7 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationstemp250_20201210002020121000.png">perturbations - temp @ 250, fct 0 h (2020121000-2020121000)</option>
-    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationstemp500_20201210002020121000.png">perturbations - temp @ 500, fct 0 h (2020121000-2020121000)</option>
-    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationstemp850_20201210002020121000.png">perturbations - temp @ 850, fct 0 h (2020121000-2020121000)</option>
+    
     </SELECT>
     
     <div class="wrapper">
@@ -23,9 +21,7 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe2').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationsuvel250_20201210002020121000.png">perturbations - uvel @ 250, fct 0 h (2020121000-2020121000)</option>
-    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationsuvel500_20201210002020121000.png">perturbations - uvel @ 500, fct 0 h (2020121000-2020121000)</option>
-    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationsuvel850_20201210002020121000.png">perturbations - uvel @ 850, fct 0 h (2020121000-2020121000)</option>
+    
     </SELECT>
     
     <div class="wrapper">
@@ -40,9 +36,7 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe3').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationsvvel250_20201210002020121000.png">perturbations - vvel @ 250, fct 0 h (2020121000-2020121000)</option>
-    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationsvvel500_20201210002020121000.png">perturbations - vvel @ 500, fct 0 h (2020121000-2020121000)</option>
-    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_egeon_m128p_p64p/prod/perturbations/2020121000/perturbationsvvel850_20201210002020121000.png">perturbations - vvel @ 850, fct 0 h (2020121000-2020121000)</option>
+    
     </SELECT>
     
     <div class="wrapper">
