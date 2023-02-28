@@ -6,14 +6,14 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationstemp250_20201205002020120500.png">perturbations - temp @ 250, fct 0 h (2020120500-2020120500)</option>
-    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationstemp500_20201205002020120500.png">perturbations - temp @ 500, fct 0 h (2020120500-2020120500)</option>
-    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationstemp850_20201205002020120500.png">perturbations - temp @ 850, fct 0 h (2020120500-2020120500)</option>
+        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationstemp250_20201205002020120500.png">perturbations - temp @ 250, fct 0 h (2020120500-2020120500)</option>
+    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationstemp500_20201205002020120500.png">perturbations - temp @ 500, fct 0 h (2020120500-2020120500)</option>
+    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationstemp850_20201205002020120500.png">perturbations - temp @ 850, fct 0 h (2020120500-2020120500)</option>
     </SELECT>
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe1" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -23,14 +23,14 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe2').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsuvel250_20201205002020120500.png">perturbations - uvel @ 250, fct 0 h (2020120500-2020120500)</option>
-    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsuvel500_20201205002020120500.png">perturbations - uvel @ 500, fct 0 h (2020120500-2020120500)</option>
-    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsuvel850_20201205002020120500.png">perturbations - uvel @ 850, fct 0 h (2020120500-2020120500)</option>
+        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsuvel250_20201205002020120500.png">perturbations - uvel @ 250, fct 0 h (2020120500-2020120500)</option>
+    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsuvel500_20201205002020120500.png">perturbations - uvel @ 500, fct 0 h (2020120500-2020120500)</option>
+    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsuvel850_20201205002020120500.png">perturbations - uvel @ 850, fct 0 h (2020120500-2020120500)</option>
     </SELECT>
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe2" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -40,14 +40,14 @@
     
     <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe3').src = this.options[this.selectedIndex].value">
     <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsvvel250_20201205002020120500.png">perturbations - vvel @ 250, fct 0 h (2020120500-2020120500)</option>
-    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsvvel500_20201205002020120500.png">perturbations - vvel @ 500, fct 0 h (2020120500-2020120500)</option>
-    <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsvvel850_20201205002020120500.png">perturbations - vvel @ 850, fct 0 h (2020120500-2020120500)</option>
+        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsvvel250_20201205002020120500.png">perturbations - vvel @ 250, fct 0 h (2020120500-2020120500)</option>
+    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsvvel500_20201205002020120500.png">perturbations - vvel @ 500, fct 0 h (2020120500-2020120500)</option>
+    <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120500/perturbationsvvel850_20201205002020120500.png">perturbations - vvel @ 850, fct 0 h (2020120500-2020120500)</option>
     </SELECT>
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe3" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe3" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 

@@ -22,6 +22,9 @@ mkdir ${3}
 rm /tmp/list_*.txt
 rm /tmp/options_*.txt
 
+# Servidor proxy para mostrar as imagens via HTTPS
+proxy=https://images.weserv.nl/?url=
+
 # Se hide_sections=true, esconde o toc, navigation e path das páginas
 hide_sections=false
 if [ ${hide_sections} == true ]
@@ -98,7 +101,7 @@ ${header}
 
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe1" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -113,7 +116,7 @@ ${header}
 
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe2" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -128,7 +131,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe3" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe3" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -159,7 +162,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe2" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -174,7 +177,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe2" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -191,7 +194,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe3" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe3" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -206,7 +209,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe4" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe4" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -235,7 +238,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe1" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -250,7 +253,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe2" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -265,7 +268,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe3" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe3" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -280,7 +283,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe4" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe4" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -295,7 +298,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe5" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe5" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -324,7 +327,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -354,7 +357,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -385,7 +388,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -400,7 +403,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe3" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe3" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -415,7 +418,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe4" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe4" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -430,7 +433,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe21" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe21" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -445,7 +448,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe22" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe22" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -460,7 +463,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe14" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe14" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -477,7 +480,7 @@ ${header}
     
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe2" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -493,7 +496,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe5" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe5" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -508,7 +511,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe6" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe6" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -523,7 +526,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe10" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe10" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -538,7 +541,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe27" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe27" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -553,7 +556,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe15" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe15" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -568,7 +571,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe16" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe16" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -583,7 +586,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe17" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe17" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -598,7 +601,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe20" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe20" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -613,7 +616,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe25" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe25" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -630,7 +633,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe7" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe7" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -645,7 +648,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe9" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe9" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -660,7 +663,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe12" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe12" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -675,7 +678,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe13" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe13" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -692,7 +695,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe8" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe8" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -707,7 +710,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe11" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe11" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -722,7 +725,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe19" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe19" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -737,7 +740,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe26" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe26" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -754,7 +757,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe18" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe18" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -769,7 +772,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe23" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe23" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -784,7 +787,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe24" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe24" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -799,7 +802,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe28" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe28" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -828,7 +831,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe1" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -843,7 +846,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe2" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
     
@@ -858,7 +861,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe3" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe3" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -887,7 +890,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -918,7 +921,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -933,7 +936,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe3" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe3" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -948,7 +951,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe4" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe4" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -963,7 +966,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe21" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe21" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -978,7 +981,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe22" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe22" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -993,7 +996,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe14" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe14" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -1010,7 +1013,7 @@ ${header}
     
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe2" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1026,7 +1029,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe5" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe5" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1041,7 +1044,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe6" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe6" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1056,7 +1059,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe10" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe10" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1071,7 +1074,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe27" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe27" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1086,7 +1089,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe15" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe15" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -1101,7 +1104,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe16" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe16" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1116,7 +1119,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe17" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe17" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1131,7 +1134,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe20" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe20" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1146,7 +1149,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe25" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe25" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1163,7 +1166,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe7" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe7" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1178,7 +1181,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe9" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe9" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1193,7 +1196,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe12" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe12" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -1208,7 +1211,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe13" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe13" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1225,7 +1228,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe8" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe8" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1240,7 +1243,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe11" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe11" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1255,7 +1258,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe19" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe19" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1270,7 +1273,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe26" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe26" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1287,7 +1290,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe18" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe18" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1302,7 +1305,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe23" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe23" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -1317,7 +1320,7 @@ ${header}
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe24" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe24" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -1332,7 +1335,7 @@ ${header}
     
     <div class="wrapper">
       <div class="h_iframe">
-        <iframe name="iframe" id="youriframe28" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+        <iframe name="iframe" id="youriframe28" src="${proxy}http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -1383,7 +1386,7 @@ do
         date_diff ${datai} ${dataf}
         prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF1 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF1
       elif [ ${vname} == geop ]
       then
@@ -1393,7 +1396,7 @@ EOF1
         date_diff ${datai} ${dataf}
         prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF2 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF2
       elif [ ${vname} == temp ]
       then
@@ -1403,7 +1406,7 @@ EOF2
         date_diff ${datai} ${dataf}
         prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF3 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF3
       fi
     fi
@@ -1423,7 +1426,7 @@ EOF3
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${tipo} ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF4 >> /tmp/options_${prod}_${tipo}_${vname}.txt
-        <option value="${fig_url}">${prod_name}</option>
+        <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF4
         elif [ ${vname} == temp ] && [ ${level_tmp} != 100 ]
         then        
@@ -1433,7 +1436,7 @@ EOF4
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${tipo} ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF5 >> /tmp/options_${prod}_${tipo}_${vname}.txt
-        <option value="${fig_url}">${prod_name}</option>
+        <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF5
         elif [ ${vname} == geop ]
         then        
@@ -1443,7 +1446,7 @@ EOF5
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${tipo} ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF6 >> /tmp/options_${prod}_${tipo}_${vname}.txt
-        <option value="${fig_url}">${prod_name}</option>
+        <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF6
         fi  
       elif [ ${tipo} == sptas ]
@@ -1458,7 +1461,7 @@ EOF6
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${tipo} ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF7 >> /tmp/options_${prod}_${tipo}_${vname}.txt
-        <option value="${fig_url}">${prod_name}</option>
+        <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF7
         elif [ ${vname} == temp ] && [ ${level_tmp} != 100 ]
         then        
@@ -1468,7 +1471,7 @@ EOF7
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${tipo} ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF8 >> /tmp/options_${prod}_${tipo}_${vname}.txt
-        <option value="${fig_url}">${prod_name}</option>
+        <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF8
         elif [ ${vname} == geop ]
         then        
@@ -1478,7 +1481,7 @@ EOF8
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${tipo} ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF9 >> /tmp/options_${prod}_${tipo}_${vname}.txt
-        <option value="${fig_url}">${prod_name}</option>
+        <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF9
         fi  
       fi  
@@ -1499,7 +1502,7 @@ EOF9
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF10 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF10
         elif [ ${vname} == precvent ]
         then       
@@ -1508,7 +1511,7 @@ EOF10
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF11 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF11
         fi  
       elif [ ${vname} == temp ]
@@ -1522,7 +1525,7 @@ EOF11
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF12 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF12
         else        
           datai=$(echo $i | cut -c 15-24)
@@ -1530,7 +1533,7 @@ EOF12
           date_diff ${datai} ${dataf}
           prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF13 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF13
         fi
       elif [ ${vname} == zgeo ]
@@ -1541,7 +1544,7 @@ EOF13
         date_diff ${datai} ${dataf}
         prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF14 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF14
       elif [ ${vname} == tems ] 
       then
@@ -1551,7 +1554,7 @@ EOF14
         date_diff ${datai} ${dataf}
         prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF15 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF15
       fi              
     fi
@@ -1564,7 +1567,7 @@ EOF15
       date_diff ${datai} ${dataf}
       prod_name="${prod} - ${vname}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF16 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF16
     fi  
 
@@ -1577,7 +1580,7 @@ EOF16
         wname="semana 1"
         prod_name="${prod} - ${vname} (${wname})"
 cat << EOF17 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF17
       elif [[ ${week} == large1 ]]
       then
@@ -1587,14 +1590,14 @@ EOF17
           wname="semana 2"
           prod_name="${prod} - ${vname} (${wname})"
 cat << EOF18 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF18
         elif [ ${week} == large15 ]
         then         
           wname="semana 3"
           prod_name="${prod} - ${vname} (${wname})"
 cat << EOF19 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF19
         else
           continue
@@ -1612,7 +1615,7 @@ EOF19
       local_name=$(sed -n ${lc_line_number}p plumes_local_name.txt)
       prod_name="${prod} - ${estado}: ${local_name} - ${local_coords} (${datai} - ${dataf})"
 cat << EOF20 >> /tmp/options_${prod}_${estado,,}.txt
-        <option value="${fig_url}">${prod_name}</option>
+        <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF20
     fi
 
@@ -1624,7 +1627,7 @@ EOF20
       local_name=$(sed -n ${lc_line_number}p grh_local_name.txt)
       prod_name="${prod} - ${estado}: ${local_name} - ${local_coords} (${datai} - ${dataf})"
 cat << EOF20 >> /tmp/options_${prod}_${estado,,}.txt
-        <option value="${fig_url}">${prod_name}</option>
+        <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF20
     fi
 
@@ -1637,7 +1640,7 @@ EOF20
       date_diff ${datai} ${dataf}
       prod_name="${prod} - ${vname} @ ${level}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF21 >> /tmp/options_${prod}_${vname}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF21
     fi
 
@@ -1648,7 +1651,7 @@ EOF21
       date_diff ${datai} ${dataf}
       prod_name="${prod}, fct ${hh_tot} h (${datai}-${dataf})"
 cat << EOF22 >> /tmp/options_${prod}.txt
-    <option value="${fig_url}">${prod_name}</option>
+    <option value="${proxy}${fig_url}">${prod_name}</option>
 EOF22
     fi
 
