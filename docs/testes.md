@@ -1,27 +1,3 @@
-# Testes
-
-Este site não se destina à disseminação de produtos operacionais ou que possam ser utilizados para tomada de decisão. As informações aqui apresentadas, na forma de texto ou imagem, possuem caráter científico com a finalidade de testes ou validação. Os autores desta página não se responsabilizam pelo uso não autorizado deste material.
-
-<iframe scrolling="no"
-src="https://www.geogebra.org/material/iframe/id/23587/width/1600/height/715/border/888888/rc/false/ai/false/sdz/false/smb/false/stb/false/stbh/true/ld/false/sri/false"
-width="1600px"
-height="715px"
-style="border:0px;" allowfullscreen>
-</iframe>
-
-<iframe src="https://tour.mapsalive.com/83670?mobile-mode=always" width="100%" height="400px" frameBorder="0" scrolling="no"></iframe>
-
-<iframe src="https://www.google.com/search?q=%http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg.png&btnI=Im+Feeling+Lucky" width="200" height="200"></iframe>
-
-<iframe src="https://drive.google.com/file/d/1ZWO0ImIaCCPYDSI5qS50pMeT1Qao7k3N/view?usp=share_link" width="200" height="200"></iframe>
-
-<iframe width="950" height="600" src="https://docs.google.com/document/d/17lsheX-C8enWWtryEzz9S1YubGqR0tsVwVLMz9Y58J8/edit?usp=sharing"></iframe>
-
-<iframe width="950" height="600" src="https://docs.google.com/spreadsheets/d/1hbOfAhDy3LLJO1voVEY2s84tOo_dNF80GgVL89VHUzI/edit?usp=sharing"></iframe>
-
-<iframe width="950" height="600" src="https://docs.google.com/presentation/d/1XhxN6qjvcRHNt0nk5MFEDYp8gmD4WSdLwPTzXL0E1YA/edit?usp=sharing"></iframe>
-
-<iframe width="950" height="600" src="https://drive.google.com/drive/folders/1ukq_kQD_M9Yj2P6y0TyigqsWBU1c3xs8?usp=sharing"></iframe>
 
 
 === "geop"
