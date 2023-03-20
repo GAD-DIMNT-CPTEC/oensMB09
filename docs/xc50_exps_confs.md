@@ -1,14 +1,10 @@
-# Configurações
-
 Experimentos realizados para os testes iniciais do oensMB09 na máquina Egeon:
 
-1. `gnu_egeon_m16p_p16p`: Compilação com o ambiente GNU, execução do pré-processamento (Chopping), modelo e pós-processamento com 16 núcleos em 1 nó;
-2. `gnu_egeon_m128p_p64p`: Compilação com o ambiente GNU, execução do pré-processamento (Chopping) e modelo com 128 núcleos, pós-processamento com 64 núcleos em 1 nó;
-3. `gnu_singularity_m128p_p64p`: Compilação com o ambiente GNU por meio de container singularity, execução do pré-processamento (Chopping) modelo com 128 núcleos, pós-processamento com 64 núcleos em 1 nó;
-4. `intel_egeon_m16p_p16p`: Compilação com o ambiente Intel, execução do pré-processamento (Chopping),modelo e pós-processamento com 16 núcleos em 1 nó;
-5. `intel_egeon_m128p_p64p`: Compilação com o ambiente GNU, execução do pré-processamento (Chopping) e modelo com 128 núcleos, pós-processamento com 64 núcleos em 1 nó;
-
-Para a avaliação preliminar dos resultados, foram considerados efetivamente apenas os experimentos 2, 3 e 5.
+* `gnu_egeon_m16p_p16p`: Compilação com o ambiente GNU, execução do pré-processamento (Chopping), modelo e pós-processamento com 16 núcleos em 1 nó;
+* `gnu_egeon_m128p_p64p`: Compilação com o ambiente GNU, execução do pré-processamento (Chopping) e modelo com 128 núcleos, pós-processamento com 64 núcleos em 1 nó;
+* `gnu_singularity_m128p_p64p`: Compilação com o ambiente GNU por meio de container singularity, execução do pré-processamento (Chopping) modelo com 128 núcleos, pós-processamento com 64 núcleos em 1 nó;
+* `intel_egeon_m16p_p16p`: Compilação com o ambiente Intel, execução do pré-processamento (Chopping),modelo e pós-processamento com 16 núcleos em 1 nó;
+* `intel_egeon_m128p_p64p`: Compilação com o ambiente GNU, execução do pré-processamento (Chopping) e modelo com 128 núcleos, pós-processamento com 64 núcleos em 1 nó;
 
 ## Ambiente de compilação GNU
 
@@ -60,18 +56,6 @@ Módulos carregados para a compilação dos códigos do modelo, método de pertu
 2. MPICH 3.3
 3. CMAKE 3.25.2
 ```
-
-## Tempos de processamento
-
-Tempos de processamento dos experimentos 2, 3 e 5
-
-**Nota:** todos os códigos utilizados nos experimentos foram compilados sem otimizações (tudo compilado com `-O0`).
-
-### Tempo total
-
-* `gnu_egeon_m128p_p64p`: 1 hora
-* `gnu_singularity_m128p_p64p`: 1 hora e 45 minutos
-* `intel_egeon_m128p_p64p`: 1 hora e 20 minutos
 
 !!! warning "Aviso"
 
