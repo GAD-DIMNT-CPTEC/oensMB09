@@ -1,3 +1,5 @@
+# Experimentos (XC50)
+
 Experimentos realizados para os testes iniciais do oensMB09 na máquina Egeon:
 
 * `gnu_egeon_m16p_p16p`: Compilação com o ambiente GNU, execução do pré-processamento (Chopping), modelo e pós-processamento com 16 núcleos em 1 nó;

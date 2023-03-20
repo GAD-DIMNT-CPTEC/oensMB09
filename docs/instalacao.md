@@ -1,4 +1,4 @@
-# Compilação
+# Instalação
 
 As instruções apresentadas a seguir referem-se apenas para os módulos do método de perturbação e produtos do oensMB09.
 

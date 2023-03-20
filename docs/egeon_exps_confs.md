@@ -1,4 +1,4 @@
-# Configurações
+# Experimentos (Egeon)
 
 Experimentos realizados para os testes iniciais do oensMB09 na máquina Egeon:
 
