@@ -121,6 +121,26 @@ Nomenclatura dos experimentos:
 * `EI126`: modelo BAM TQ0126L028, membro controle compilado com Intel (coordenada sigma);
 * `EIENM`: modelo BAM TQ0126L028, membro médio, compilado com Intel (coordenada sigma);
 
+O "GANHO" (Ganho Percentual) é definido por:
+
+$$\text{GP}_{\text{STAT}} = \frac{\text{EXP2}_{\text{STAT}} - \text{EXP1}_{\text{STAT}}}{\text{EXP}_{\text{perfeito}} - \text{EXP1}_{\text{STAT}}} \times 100$$
+
+onde,
+
+* $\text{EXP1}$: tabelas do experimento 1;
+* $\text{EXP2}$: tabelas do experimento 2;
+* $\text{STAT}$: pode ser o VIES, RMSE ou ACOR;
+* $\text{EXP}_{\text{perfeito}}$: valor considerado quando o experimento é perfeito, ie., 0 quando VIES ou RMSE e 1 quando ACOR.
+
+A "FC" (Mudança Fracional) é definida por:
+
+$$\text{MF}_{\text{STAT}} = 1 - \frac{\text{EXP2}_{\text{STAT}}}{\text{EXP1}_{\text{STAT}}}$$
+
+onde,
+
+* $\text{EXP1}$: tabelas do experimento 1;
+* $\text{EXP2}$: tabelas do experimento 2;
+* $\text{STAT}$: pode ser o VIES, RMSE ou ACOR;
 
 !!! note "Sobre esta verificação"
 
