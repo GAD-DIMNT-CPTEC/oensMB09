@@ -1,13 +1,5 @@
 # Scorecard
 
-Nomenclatura dos experimentos:
-
-* `BAM666`: modelo BAM operacional TQ0666L064 operacional XC50 (coordenada sigma);
-* `EG126`: modelo BAM TQ0126L028, membro controle compilado com GNU (coordenada sigma);
-* `EGENM`: modelo BAM TQ0126L028, membro médio compilado com GNU (coordenada sigma);
-* `EI126`: modelo BAM TQ0126L028, membro controle compilado com Intel (coordenada sigma);
-* `EIENM`: modelo BAM TQ0126L028, membro médio, compilado com Intel (coordenada sigma);
-
 === "fc"
 
     === "acor"
@@ -119,6 +111,16 @@ Nomenclatura dos experimentos:
             <iframe name="iframe" id="youriframe6" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
+
+
+Nomenclatura dos experimentos:
+
+* `BAM666`: modelo BAM operacional TQ0666L064 operacional XC50 (coordenada sigma);
+* `EG126`: modelo BAM TQ0126L028, membro controle compilado com GNU (coordenada sigma);
+* `EGENM`: modelo BAM TQ0126L028, membro médio compilado com GNU (coordenada sigma);
+* `EI126`: modelo BAM TQ0126L028, membro controle compilado com Intel (coordenada sigma);
+* `EIENM`: modelo BAM TQ0126L028, membro médio, compilado com Intel (coordenada sigma);
+
 
 !!! note "Sobre esta verificação"
 
