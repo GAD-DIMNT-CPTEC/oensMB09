@@ -2,7 +2,7 @@
 
 !!! note "Nota"
 
-    Todos os códigos utilizados nos experimentos na máquina Egeon foram compilados sem otimizações (tudo compilado com `-O0`). Nesta seção, porém, são considerados apenas os tempos de processamento com o compilador Intel a partir de uma única execução do código. Todos os códigos compilados na máquina XC50 (i.e., método de perturbação e produtos), foram compilados sem indicação explícita da nível de otimização.
+    Todos os códigos utilizados nos experimentos na máquina Egeon foram compilados sem otimizações (tudo compilado com `-O0`). Nesta seção, porém, são considerados apenas os tempos de processamento com o compilador Intel a partir de uma única execução do código. Todos os códigos compilados na máquina XC50 (i.e., método de perturbação e produtos), foram compilados sem indicação explícita da nível de otimização. Todos os valores referem-se às simulações do oensMB09 na resolução TQ0126L028 (~200 km sobre a linha do Equador e 28 níveis verticais em coordenada sigma).
 
 | Componente                                               | XC50 (GNU)                               | Egeon (GNU)                             | Egeon (Intel)                           | XC50/Egeon                                                  |
 |----------------------------------------------------------|------------------------------------------|-----------------------------------------|-----------------------------------------|-------------------------------------------------------------|
