@@ -59,7 +59,7 @@ Procs=(ensmed spread cluster probability probagr grh plumes chievol perturbation
 #
 
 export datai=2020120100
-export dataf=2020121500
+export dataf=2020123100
 
 export data=${datai}
 
