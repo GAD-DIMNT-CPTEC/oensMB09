@@ -65,6 +65,10 @@ Módulos carregados para a compilação dos códigos do modelo, método de pertu
 3. CMAKE 3.25.2
 ```
 
+## Dashboard
+
+Um "dashboard" para a visualização dos produtos pode ser encontrado em [produtos oensMB09](https://gad-dimnt-cptec.github.io/oensMB09/produtos_oensMB09.html).
+
 !!! warning "Aviso"
 
     Este site não se destina à disseminação de produtos operacionais ou que possam ser utilizados para tomada de decisão. As informações aqui apresentadas, na forma de texto ou imagem, possuem caráter científico com a finalidade de testes ou validação. Os autores desta página não se responsabilizam pelo uso não autorizado deste material.
