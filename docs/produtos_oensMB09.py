@@ -30,13 +30,13 @@ var_perturbations = pn.widgets.Select(name='Variável', options=list(vars_pertur
 
 reg_spaguetti = pn.widgets.Select(name='Região', options=list(regs_spaguetti))
 
-url_fmt_spread = ('https://s0.cptec.inpe.br/pesquisa/das/dist/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{var}{datei}{datef}.png')
-url_fmt_spaguetti = ('https://s0.cptec.inpe.br/pesquisa/das/dist/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/spt{reg}{var}{datei}{datef}.png')
-url_fmt_cluster = ('https://s0.cptec.inpe.br/pesquisa/das/dist/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{prod}{var}{datei}{datef}.png')
-url_fmt_probability = ('https://s0.cptec.inpe.br/pesquisa/das/dist/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec{datei}{datef}.png')
-url_fmt_probagr = ('https://s0.cptec.inpe.br/pesquisa/das/dist/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec_agric_large{num}.png')
-url_fmt_perturbations = ('https://s0.cptec.inpe.br/pesquisa/das/dist/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/perturbations{var}_{datei}{datei}.png')
-url_fmt_chievol = ('https://s0.cptec.inpe.br/pesquisa/das/dist/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/chi_evol{datei}{datef}.png')
+url_fmt_spread = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{var}{datei}{datef}.png')
+url_fmt_spaguetti = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/spt{reg}{var}{datei}{datef}.png')
+url_fmt_cluster = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{prod}{var}{datei}{datef}.png')
+url_fmt_probability = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec{datei}{datef}.png')
+url_fmt_probagr = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec_agric_large{num}.png')
+url_fmt_perturbations = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/perturbations{var}_{datei}{datei}.png')
+url_fmt_chievol = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/chi_evol{datei}{datef}.png')
 
 @pn.depends(date, exp, var_spread)
 def fig_spread(date, exp, var_spread):
