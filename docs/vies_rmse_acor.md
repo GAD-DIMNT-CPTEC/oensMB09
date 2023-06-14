@@ -1,4 +1,4 @@
-# Vies, RMSE e ACOR
+# VIES, RMSE e ACOR
 
 === "vies"
 
