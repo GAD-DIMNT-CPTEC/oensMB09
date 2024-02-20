@@ -8,12 +8,12 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500agpl925-combined.png">VIES - agpl @ 925 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500agpl925-combined.png">VIES - agpl @ 925 hPa (2020120100-2020121500)</option>    
         </SELECT>
     
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -23,12 +23,12 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe2').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500psnm000-combined.png">VIES - psnm @ 1000 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500psnm000-combined.png">VIES - psnm @ 1000 hPa (2020120100-2020121500)</option>    
         </SELECT>
     
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe2" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe2" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
         
@@ -38,14 +38,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe3').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500temp250-combined.png">VIES - temp @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500temp500-combined.png">VIES - temp @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500temp850-combined.png">VIES - temp @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500temp250-combined.png">VIES - temp @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500temp500-combined.png">VIES - temp @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500temp850-combined.png">VIES - temp @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe3" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe3" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -55,14 +55,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe4').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500umes500-combined.png">VIES - umes @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500umes850-combined.png">VIES - umes @ 850 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500umes925-combined.png">VIES - umes @ 925 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500umes500-combined.png">VIES - umes @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500umes850-combined.png">VIES - umes @ 850 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500umes925-combined.png">VIES - umes @ 925 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe4" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe4" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -72,14 +72,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe5').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500uvel250-combined.png">VIES - uvel @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500uvel500-combined.png">VIES - uvel @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500uvel850-combined.png">VIES - uvel @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500uvel250-combined.png">VIES - uvel @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500uvel500-combined.png">VIES - uvel @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500uvel850-combined.png">VIES - uvel @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe5" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe5" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -89,14 +89,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe6').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500vvel250-combined.png">VIES - vvel @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500vvel500-combined.png">VIES - vvel @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500vvel850-combined.png">VIES - vvel @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500vvel250-combined.png">VIES - vvel @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500vvel500-combined.png">VIES - vvel @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500vvel850-combined.png">VIES - vvel @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe6" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe6" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -106,14 +106,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe7').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500zgeo250-combined.png">VIES - zgeo @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500zgeo500-combined.png">VIES - zgeo @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500zgeo850-combined.png">VIES - zgeo @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500zgeo250-combined.png">VIES - zgeo @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500zgeo500-combined.png">VIES - zgeo @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/VIESEXPS_20201201002020121500zgeo850-combined.png">VIES - zgeo @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe7" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe7" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -125,12 +125,12 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe8').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500agpl925-combined.png">RMSE - agpl @ 925 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500agpl925-combined.png">RMSE - agpl @ 925 hPa (2020120100-2020121500)</option>    
         </SELECT>
     
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe8" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe8" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -140,12 +140,12 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe9').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500psnm000-combined.png">RMSE - psnm @ 1000 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500psnm000-combined.png">RMSE - psnm @ 1000 hPa (2020120100-2020121500)</option>    
         </SELECT>
     
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe9" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe9" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
         
@@ -155,14 +155,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe10').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500temp250-combined.png">RMSE - temp @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500temp500-combined.png">RMSE - temp @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500temp850-combined.png">RMSE - temp @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500temp250-combined.png">RMSE - temp @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500temp500-combined.png">RMSE - temp @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500temp850-combined.png">RMSE - temp @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe10" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe10" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -172,14 +172,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe11').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500umes500-combined.png">RMSE - umes @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500umes850-combined.png">RMSE - umes @ 850 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500umes925-combined.png">RMSE - umes @ 925 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500umes500-combined.png">RMSE - umes @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500umes850-combined.png">RMSE - umes @ 850 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500umes925-combined.png">RMSE - umes @ 925 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe11" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe11" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -189,14 +189,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe12').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500uvel250-combined.png">RMSE - uvel @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500uvel500-combined.png">RMSE - uvel @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500uvel850-combined.png">RMSE - uvel @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500uvel250-combined.png">RMSE - uvel @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500uvel500-combined.png">RMSE - uvel @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500uvel850-combined.png">RMSE - uvel @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe12" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe12" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -206,14 +206,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe13').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500vvel250-combined.png">RMSE - vvel @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500vvel500-combined.png">RMSE - vvel @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500vvel850-combined.png">RMSE - vvel @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500vvel250-combined.png">RMSE - vvel @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500vvel500-combined.png">RMSE - vvel @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500vvel850-combined.png">RMSE - vvel @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe13" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe13" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -223,14 +223,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe14').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500zgeo250-combined.png">RMSE - zgeo @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500zgeo500-combined.png">RMSE - zgeo @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500zgeo850-combined.png">RMSE - zgeo @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500zgeo250-combined.png">RMSE - zgeo @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500zgeo500-combined.png">RMSE - zgeo @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/RMSEEXPS_20201201002020121500zgeo850-combined.png">RMSE - zgeo @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe14" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe14" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -242,12 +242,12 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe15').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500agpl925-combined.png">ACOR - agpl @ 925 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500agpl925-combined.png">ACOR - agpl @ 925 hPa (2020120100-2020121500)</option>    
         </SELECT>
     
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe15" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe15" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -257,12 +257,12 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe16').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500psnm000-combined.png">ACOR - psnm @ 1000 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500psnm000-combined.png">ACOR - psnm @ 1000 hPa (2020120100-2020121500)</option>    
         </SELECT>
     
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe16" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe16" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
         
@@ -272,14 +272,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe17').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500temp250-combined.png">ACOR - temp @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500temp500-combined.png">ACOR - temp @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500temp850-combined.png">ACOR - temp @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500temp250-combined.png">ACOR - temp @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500temp500-combined.png">ACOR - temp @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500temp850-combined.png">ACOR - temp @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe17" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe17" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -289,14 +289,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe18').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500umes500-combined.png">ACOR - umes @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500umes850-combined.png">ACOR - umes @ 850 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500umes925-combined.png">ACOR - umes @ 925 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500umes500-combined.png">ACOR - umes @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500umes850-combined.png">ACOR - umes @ 850 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500umes925-combined.png">ACOR - umes @ 925 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe18" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe18" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -306,14 +306,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe19').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500uvel250-combined.png">ACOR - uvel @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500uvel500-combined.png">ACOR - uvel @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500uvel850-combined.png">ACOR - uvel @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500uvel250-combined.png">ACOR - uvel @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500uvel500-combined.png">ACOR - uvel @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500uvel850-combined.png">ACOR - uvel @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe19" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe19" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -323,14 +323,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe20').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500vvel250-combined.png">ACOR - vvel @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500vvel500-combined.png">ACOR - vvel @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500vvel850-combined.png">ACOR - vvel @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500vvel250-combined.png">ACOR - vvel @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500vvel500-combined.png">ACOR - vvel @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500vvel850-combined.png">ACOR - vvel @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe20" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe20" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -340,14 +340,14 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe21').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500zgeo250-combined.png">ACOR - zgeo @ 250 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500zgeo500-combined.png">ACOR - zgeo @ 500 hPa (2020120100-2020121500)</option>
-        <option value="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500zgeo850-combined.png">ACOR - zgeo @ 850 hPa (2020120100-2020121500)</option>    
+                <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500zgeo250-combined.png">ACOR - zgeo @ 250 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500zgeo500-combined.png">ACOR - zgeo @ 500 hPa (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/ACOREXPS_20201201002020121500zgeo850-combined.png">ACOR - zgeo @ 850 hPa (2020120100-2020121500)</option>    
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe21" src="https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe21" src="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
