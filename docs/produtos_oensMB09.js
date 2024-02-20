@@ -1,4 +1,4 @@
-importScripts("https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js");
+importScripts("https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js");
 
 function sendPatch(patch, buffers, msg_id) {
   self.postMessage({
@@ -15,7 +15,7 @@ async function startApplication() {
   self.pyodide.globals.set("sendPatch", sendPatch);
   console.log("Loaded!");
   await self.pyodide.loadPackage("micropip");
-  const env_spec = ['https://cdn.holoviz.org/panel/0.14.3/dist/wheels/bokeh-2.4.3-py3-none-any.whl', 'https://cdn.holoviz.org/panel/0.14.3/dist/wheels/panel-0.14.3-py3-none-any.whl', 'pyodide-http==0.1.0', 'numpy', 'pandas']
+  const env_spec = ['https://cdn.holoviz.org/panel/wheels/bokeh-3.3.4-py3-none-any.whl', 'https://cdn.holoviz.org/panel/1.3.8/dist/wheels/panel-1.3.8-py3-none-any.whl', 'pyodide-http==0.2.1', 'numpy', 'pandas']
   for (const pkg of env_spec) {
     let pkg_name;
     if (pkg.endsWith('.whl')) {
@@ -50,12 +50,19 @@ init_doc()
 #!/usr/bin/env python
 # coding: utf-8
 
+# In[1]:
+
+
 import panel as pn
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
 pn.extension(sizing_mode='stretch_width')
+
+
+# In[2]:
+
 
 exps = ['gnu_singularity_m128p_p64p', 'gnu_egeon_m128p_p64p', 'intel_egeon_m128p_p64p'] 
 prods = ['spread', 'cluster']
@@ -81,13 +88,16 @@ var_perturbations = pn.widgets.Select(name='Variável', options=list(vars_pertur
 
 reg_spaguetti = pn.widgets.Select(name='Região', options=list(regs_spaguetti))
 
-url_fmt_spread = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{var}{datei}{datef}-fs8.png')
-url_fmt_spaguetti = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/spt{reg}{var}{datei}{datef}-fs8.png')
-url_fmt_cluster = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{prod}{var}{datei}{datef}-fs8.png')
-url_fmt_probability = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec{datei}{datef}-fs8.png')
-url_fmt_probagr = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec_agric_large{num}-fs8.png')
-url_fmt_perturbations = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/perturbations{var}_{datei}{datei}-fs8.png')
-url_fmt_chievol = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/chi_evol{datei}{datef}-fs8.png')
+proxy = 'https://corsproxy.io/?'
+#proxy = 'https://images.weserv.nl/?url='
+
+url_fmt_spread = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{var}{datei}{datef}-fs8.png')
+url_fmt_spaguetti = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/spt{reg}{var}{datei}{datef}-fs8.png')
+url_fmt_cluster = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{prod}{var}{datei}{datef}-fs8.png')
+url_fmt_probability = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec{datei}{datef}-fs8.png')
+url_fmt_probagr = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec_agric_large{num}-fs8.png')
+url_fmt_perturbations = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/perturbations{var}_{datei}{datei}-fs8.png')
+url_fmt_chievol = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/chi_evol{datei}{datef}-fs8.png')
 
 @pn.depends(date, var_spread)
 def fig_spread(date, var_spread):
@@ -257,7 +267,15 @@ pn.template.FastListTemplate(
     site="oensMB09", title="Produtos",
     main=[pn.Row(date, prod), get_prod], 
     theme_toggle=False,
+#).show();    
 ).servable();
+
+
+# In[ ]:
+
+
+
+
 
 
 await write_doc()
@@ -292,19 +310,19 @@ self.onmessage = async (event) => {
     _link_docs_worker(state.curdoc, sendPatch, setter='js')
     `)
   } else if (msg.type === 'patch') {
+    self.pyodide.globals.set('patch', msg.patch)
     self.pyodide.runPythonAsync(`
-    import json
-
-    state.curdoc.apply_json_patch(json.loads('${msg.patch}'), setter='js')
+    state.curdoc.apply_json_patch(patch.to_py(), setter='js')
     `)
     self.postMessage({type: 'idle'})
   } else if (msg.type === 'location') {
+    self.pyodide.globals.set('location', msg.location)
     self.pyodide.runPythonAsync(`
     import json
     from panel.io.state import state
     from panel.util import edit_readonly
     if state.location:
-        loc_data = json.loads("""${msg.location}""")
+        loc_data = json.loads(location)
         with edit_readonly(state.location):
             state.location.param.update({
                 k: v for k, v in loc_data.items() if k in state.location.param

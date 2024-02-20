@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# In[1]:
+
+
 import panel as pn
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
 pn.extension(sizing_mode='stretch_width')
+
+
+# In[2]:
+
 
 exps = ['gnu_singularity_m128p_p64p', 'gnu_egeon_m128p_p64p', 'intel_egeon_m128p_p64p'] 
 prods = ['spread', 'cluster']
@@ -32,13 +39,16 @@ var_perturbations = pn.widgets.Select(name='Variável', options=list(vars_pertur
 
 reg_spaguetti = pn.widgets.Select(name='Região', options=list(regs_spaguetti))
 
-url_fmt_spread = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{var}{datei}{datef}-fs8.png')
-url_fmt_spaguetti = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/spt{reg}{var}{datei}{datef}-fs8.png')
-url_fmt_cluster = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{prod}{var}{datei}{datef}-fs8.png')
-url_fmt_probability = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec{datei}{datef}-fs8.png')
-url_fmt_probagr = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec_agric_large{num}-fs8.png')
-url_fmt_perturbations = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/perturbations{var}_{datei}{datei}-fs8.png')
-url_fmt_chievol = ('https://images.weserv.nl/?url=http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/chi_evol{datei}{datef}-fs8.png')
+proxy = 'https://corsproxy.io/?'
+#proxy = 'https://images.weserv.nl/?url='
+
+url_fmt_spread = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{var}{datei}{datef}-fs8.png')
+url_fmt_spaguetti = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/spt{reg}{var}{datei}{datef}-fs8.png')
+url_fmt_cluster = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/{prod}{var}{datei}{datef}-fs8.png')
+url_fmt_probability = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec{datei}{datef}-fs8.png')
+url_fmt_probagr = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/prec_agric_large{num}-fs8.png')
+url_fmt_perturbations = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/perturbations{var}_{datei}{datei}-fs8.png')
+url_fmt_chievol = (proxy + 'http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/{exp}/prod/{prod}/{datei}/chi_evol{datei}{datef}-fs8.png')
 
 @pn.depends(date, var_spread)
 def fig_spread(date, var_spread):
@@ -208,4 +218,12 @@ pn.template.FastListTemplate(
     site="oensMB09", title="Produtos",
     main=[pn.Row(date, prod), get_prod], 
     theme_toggle=False,
+#).show();    
 ).servable();
+
+
+# In[ ]:
+
+
+
+
