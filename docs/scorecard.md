@@ -103,7 +103,7 @@
                 <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGL126_EGLENM_6_202012010020201215.png">SCORECARD - GANHO, VIES: EGL126 X EGLENM (2020120100-2020121500)</option>
         <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGL126_EIL126_6_202012010020201215.png">SCORECARD - GANHO, VIES: EGL126 X EIL126 (2020120100-2020121500)</option>
         <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGLENM_EILENM_6_202012010020201215.png">SCORECARD - GANHO, VIES: EGLENM X EILENM (2020120100-2020121500)</option>
-        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EIL126_EILENM_6_202012010020201215.png&w=800&h=800">SCORECARD - GANHO, VIES: EIL126 X EILENM (2020120100-2020121500)</option>
+        <option value="https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EIL126_EILENM_6_202012010020201215.png">SCORECARD - GANHO, VIES: EIL126 X EILENM (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
