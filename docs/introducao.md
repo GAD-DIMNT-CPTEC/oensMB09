@@ -32,7 +32,7 @@ O algorítmo empregado para a perturbação, consiste em:
 6. As perturbações reescaladas são então somadas (prefixo P) e subtraídas (prefixo N) da análise controle e então obtém-se um conjunto de $2n$ condições iniciais perturbadas.
 
 <figure markdown>
-![Esquema do Método de Perturbações MB09](https://images.weserv.nl/?url=https://gad-dimnt-cptec.github.io/oensMB09/figs/mpert.png&=450&h=450)
+![Esquema do Método de Perturbações MB09](https://corsproxy.io/?https://gad-dimnt-cptec.github.io/oensMB09/figs/mpert.png&=450&h=450)
 
 Figura - Esquema de perturbação da condição inicial do SPCON global do CPTEC, baseado em EOFs.
 </figure>
@@ -51,7 +51,7 @@ O SPCON global do CPTEC é composto de um conjunto de rotinas independentes do m
 Em detalhes, as rotinas responsáveis por estas tarefas são as seguintes:
 
 <figure markdown>
-![Diretórios do oensMB09](https://images.weserv.nl/?url=https://gad-dimnt-cptec.github.io/oensMB09/figs/dirs.png&=500&h=500)
+![Diretórios do oensMB09](https://corsproxy.io/?https://gad-dimnt-cptec.github.io/oensMB09/figs/dirs.png&=500&h=500)
 
 Figura - Organização dos diretórios componentes do oensMB09.
 </figure>

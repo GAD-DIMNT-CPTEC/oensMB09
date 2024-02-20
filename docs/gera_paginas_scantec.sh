@@ -11,7 +11,8 @@ mkdir ${1}
 rm /tmp/options_*.txt
 
 # Servidor proxy para mostrar as imagens via HTTPS
-proxy=https://images.weserv.nl/?url=
+#proxy=https://images.weserv.nl/?url=
+proxy=https://corsproxy.io/?
 
 # Se hide_sections=true, esconde o toc, navigation e path das páginas
 hide_sections=false
