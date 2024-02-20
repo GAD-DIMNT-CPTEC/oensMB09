@@ -198,7 +198,7 @@ Espalhamento é desvio-padrão dos membros do conjunto em relação à média.
 Ao final do processo, deverão ser obtidas 244 figuras do tipo:
 
 <figure markdown>
-![Exemplo figura com a média e o espalhamento](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/spread/2020120100/temp85020201201002020120118.png&=350&h=350)
+![Exemplo figura com a média e o espalhamento](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/spread/2020120100/temp85020201201002020120118.png)
 Figura - Exemplo de figura com a média e o espalhamento do oensMB09.
 </figure>
 
@@ -213,7 +213,7 @@ Diagrama de espaguete é uma representação gráfica dos membros do conjunto. O
 Ao final do processo, deverão ser obtidas 112 figuras do tipo:
 
 <figure markdown>
-![Exemplo figura com o diagrama de espaguete](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/spaguetti/2020120100/sptastemp100020201201002020120100.png&=450&h=450)
+![Exemplo figura com o diagrama de espaguete](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/spaguetti/2020120100/sptastemp100020201201002020120100.png)
 Figura - Exemplo de figura com o diagrama de espaguete.
 </figure>
 
@@ -228,7 +228,7 @@ Clusters ou agrupamentos são representações gráficas de um conjunto de previ
 Ao final do processo deverão ser obtidas 610 figuras do tipo:
 
 <figure markdown>
-![Exemplo figura com a análise de agrupamento](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/cluster/2020120100/clustertemp100020201201002020120106.png&=650&h=650)
+![Exemplo figura com a análise de agrupamento](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/cluster/2020120100/clustertemp100020201201002020120106.png)
 Figura - Exemplo de figura com a análise de agrupamento.
 </figure>
 
@@ -243,7 +243,7 @@ A previsão de probabilidade é obtida com base nos membros de previsão de uma 
 Ao final do processo deverão ser obtidas 57 figuras do tipo:
 
 <figure markdown>
-![Exemplo figura com a previsão de probabilidade de precipitação](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/probability/2020120100/prec20201201002020120200.png&=450&h=450)
+![Exemplo figura com a previsão de probabilidade de precipitação](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/probability/2020120100/prec20201201002020120200.png)
 Figura - Exemplo de figura com a previsão de probabilidade de precipitação.
 </figure>
 
@@ -258,7 +258,7 @@ As previsões de probabilidade podem ser apresentadas de diferentes formas. Nest
 Ao final do processo deverão ser obtidas 3 figuras do tipo:
 
 <figure markdown>
-![Exemplo figura com a probabilidade de precipitação acumulada](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/probagr/2020120100/prec_agric_large10.png&=450&h=450)
+![Exemplo figura com a probabilidade de precipitação acumulada](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/probagr/2020120100/prec_agric_large10.png)
 Figura - Exemplo de figura com a probabilidade de precipitação acumulada.
 </figure>
 
@@ -285,7 +285,7 @@ Os grid history são meteogramas que apresentam informações sobre as previsõe
 Ao final do processo deverão ser obtidas 971 figuras do tipo:
 
 <figure markdown>
-![Exemplo figura com o grid history](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/grh/2020120100/./SP/04845W2351S.png&=450&h=450)
+![Exemplo figura com o grid history](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/grh/2020120100/./SP/04845W2351S.png)
 Figura - Exemplo de figura com o grid history.
 </figure>
 
@@ -300,7 +300,7 @@ As plumas de probabilidade são meteogramas que apresentam informações sobre a
 Ao final do processo deverão ser obtidas 971 figuras do tipo:
 
 <figure markdown>
-![Exemplo figura com as plumas de probabilidade](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/plumes/2020120100/./SP/04845W2351S.png&=450&h=450)
+![Exemplo figura com as plumas de probabilidade](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/plumes/2020120100/./SP/04845W2351S.png)
 Figura - Exemplo de figura com as plumas de probabilidade.
 </figure>
 
@@ -314,7 +314,7 @@ As perturbações iniciais são representações gráficas espaciais dos valores
 Ao final do processo deverão ser obtidas 9 figuras do tipo:
 
 <figure markdown>
-![Exemplo figura com as perturbações iniciais](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120100/perturbationstemp250_20201201002020120100.png&=450&h=450)
+![Exemplo figura com as perturbações iniciais](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/perturbations/2020120100/perturbationstemp250_20201201002020120100.png)
 Figura - Exemplo de figura com as perturbações iniciais.
 </figure>
 
@@ -329,7 +329,7 @@ O potencial de velocidade apresentado nesta página apresenta a evolução tempo
 Ao final do processo deverá ser obtida 1 figura do tipo:
 
 <figure markdown>
-![Exemplo figura com o potencial de velocidade em altos níveis](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/chievol/2020120100/chi_evol20201201002020121600.png&=350&h=350)
+![Exemplo figura com o potencial de velocidade em altos níveis](https://corsproxy.io/?http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/exps/gnu_singularity_m128p_p64p/prod/chievol/2020120100/chi_evol20201201002020121600.png)
 Figura - Exemplo de figura com o potencial de velocidade em altos níveis.
 </figure>
 
