@@ -67,7 +67,7 @@ Módulos carregados para a compilação dos códigos do modelo, método de pertu
 
 ## Dashboard
 
-Um "dashboard" para a visualização dos produtos pode ser encontrado em [produtos oensMB09](https://gad-dimnt-cptec.github.io/oensMB09/produtos_oensMB09.html).
+Um "dashboard" para a visualização comparação dos produtos dos experimentos realizados pode ser encontrado em [produtos oensMB09](https://gad-dimnt-cptec.github.io/oensMB09/produtos_oensMB09.html).
 
 !!! warning "Aviso"
 
