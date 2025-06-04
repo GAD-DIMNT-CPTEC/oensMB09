@@ -8,15 +8,15 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_ACOR_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - FC, ACOR: EGL126 X EGLENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_ACOR_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - FC, ACOR: EGL126 X EIL126 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_ACOR_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, ACOR: EGLENM X EILENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_ACOR_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, ACOR: EIL126 X EILENM (2020120100-2020121500)</option>
+                <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_ACOR_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - FC, ACOR: EGL126 X EGLENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_ACOR_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - FC, ACOR: EGL126 X EIL126 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_ACOR_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, ACOR: EGLENM X EILENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_ACOR_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, ACOR: EIL126 X EILENM (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -26,15 +26,15 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe2').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_RMSE_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - FC, RMSE: EGL126 X EGLENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_RMSE_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - FC, RMSE: EGL126 X EIL126 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_RMSE_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, RMSE: EGLENM X EILENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_RMSE_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, RMSE: EIL126 X EILENM (2020120100-2020121500)</option>
+                <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_RMSE_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - FC, RMSE: EGL126 X EGLENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_RMSE_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - FC, RMSE: EGL126 X EIL126 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_RMSE_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, RMSE: EGLENM X EILENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_RMSE_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, RMSE: EIL126 X EILENM (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe2" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe2" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -44,15 +44,15 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe3').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_VIES_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - FC, VIES: EGL126 X EGLENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_VIES_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - FC, VIES: EGL126 X EIL126 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_VIES_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, VIES: EGLENM X EILENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_VIES_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, VIES: EIL126 X EILENM (2020120100-2020121500)</option>
+                <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_VIES_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - FC, VIES: EGL126 X EGLENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_VIES_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - FC, VIES: EGL126 X EIL126 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_VIES_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, VIES: EGLENM X EILENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_FC_VIES_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - FC, VIES: EIL126 X EILENM (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe3" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe3" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -64,15 +64,15 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe4').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_ACOR_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, ACOR: EGL126 X EGLENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_ACOR_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - GANHO, ACOR: EGL126 X EIL126 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_ACOR_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, ACOR: EGLENM X EILENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_ACOR_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, ACOR: EIL126 X EILENM (2020120100-2020121500)</option>
+                <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_ACOR_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, ACOR: EGL126 X EGLENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_ACOR_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - GANHO, ACOR: EGL126 X EIL126 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_ACOR_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, ACOR: EGLENM X EILENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_ACOR_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, ACOR: EIL126 X EILENM (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe4" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe4" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -82,15 +82,15 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe5').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_RMSE_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, RMSE: EGL126 X EGLENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_RMSE_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - GANHO, RMSE: EGL126 X EIL126 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_RMSE_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, RMSE: EGLENM X EILENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_RMSE_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, RMSE: EIL126 X EILENM (2020120100-2020121500)</option>
+                <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_RMSE_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, RMSE: EGL126 X EGLENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_RMSE_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - GANHO, RMSE: EGL126 X EIL126 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_RMSE_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, RMSE: EGLENM X EILENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_RMSE_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, RMSE: EIL126 X EILENM (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe5" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe5" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -100,15 +100,15 @@
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe6').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-                <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, VIES: EGL126 X EGLENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - GANHO, VIES: EGL126 X EIL126 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, VIES: EGLENM X EILENM (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, VIES: EIL126 X EILENM (2020120100-2020121500)</option>
+                <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGL126_EGLENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, VIES: EGL126 X EGLENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGL126_EIL126_6_202012010020201215_800x800.png">SCORECARD - GANHO, VIES: EGL126 X EIL126 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EGLENM_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, VIES: EGLENM X EILENM (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/as/SCORECARD_GANHO_VIES_EIL126_EILENM_6_202012010020201215_800x800.png">SCORECARD - GANHO, VIES: EIL126 X EILENM (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe6" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe6" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
 

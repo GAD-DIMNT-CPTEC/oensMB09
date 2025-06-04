@@ -73,8 +73,8 @@ O método de perturbação do SPCON CPTEC também está sendo aplicado para a ge
 * Machado et al., 2010: [Impacto da utilização de previsões "defasadas" no sistema de previsão de tempo por conjunto do CPTEC/INPE](https://www.scielo.br/j/rbmet/a/NDk6RMhMQHvcCDfZTFfdRwH/abstract/?lang=pt);
 * Mendonça e Bonatti, 2009: [Experiments with EOF-Based Perturbation Methods and Their Impact on the CPTEC/INPE Ensemble Prediction System](https://journals.ametsoc.org/view/journals/mwre/137/4/2008mwr2581.1.xml);
 * Zhang e Krishnamurti, 1999: [A Perturbation Method for Hurricane Ensemble Predictions](https://journals.ametsoc.org/view/journals/mwre/127/4/1520-0493_1999_127_0447_apmfhe_2.0.co_2.xml)
-* Lima, 2011: [Avaliação do Sistema de Previsão de Tempo Global por Conjunto do CPTEC na previsão de ciclones na sul da América do Sul](http://mtc-m16d.sid.inpe.br/col/sid.inpe.br/mtc-m19/2011/05.11.18.46/doc/publicacao.pdf);
-* Coutinho e Bonatti, 1998: [Implementação da técnica de 'ensemble prediction' no CPTEC - Resultados Preliminares](http://mtc-m16b.sid.inpe.br/col/cptec.inpe.br/walmeida/2004/07.05.15.14/doc/Coutinho_Implementacao%20da%20tecnica%20de%20.pdf);
+* Lima, 2011: [Avaliação do Sistema de Previsão de Tempo Global por Conjunto do CPTEC na previsão de ciclones na sul da América do Sul](https://mtc-m16d.sid.inpe.br/col/sid.inpe.br/mtc-m19/2011/05.11.18.46/doc/publicacao.pdf);
+* Coutinho e Bonatti, 1998: [Implementação da técnica de 'ensemble prediction' no CPTEC - Resultados Preliminares](https://mtc-m16b.sid.inpe.br/col/cptec.inpe.br/walmeida/2004/07.05.15.14/doc/Coutinho_Implementacao%20da%20tecnica%20de%20.pdf);
 
 !!! warning "Aviso"
 

@@ -16,12 +16,12 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500agpl925-combined.png">vies - agpl:925 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500agpl925-combined.png">vies - agpl:925 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -31,12 +31,12 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500psnm000-combined.png">vies - psnm:000 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500psnm000-combined.png">vies - psnm:000 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -46,13 +46,13 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp500-combined.png">vies - temp:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp850-combined.png">vies - temp:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp500-combined.png">vies - temp:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp850-combined.png">vies - temp:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -62,14 +62,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes500-combined.png">vies - umes:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes850-combined.png">vies - umes:850 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes925-combined.png">vies - umes:925 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes500-combined.png">vies - umes:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes850-combined.png">vies - umes:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes925-combined.png">vies - umes:925 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -79,14 +79,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel250-combined.png">vies - uvel:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel500-combined.png">vies - uvel:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel850-combined.png">vies - uvel:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel250-combined.png">vies - uvel:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel500-combined.png">vies - uvel:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel850-combined.png">vies - uvel:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -96,14 +96,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel250-combined.png">vies - vvel:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel500-combined.png">vies - vvel:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel850-combined.png">vies - vvel:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel250-combined.png">vies - vvel:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel500-combined.png">vies - vvel:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel850-combined.png">vies - vvel:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -113,14 +113,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo250-combined.png">vies - zgeo:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo500-combined.png">vies - zgeo:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo850-combined.png">vies - zgeo:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo250-combined.png">vies - zgeo:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo500-combined.png">vies - zgeo:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo850-combined.png">vies - zgeo:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -133,12 +133,12 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500agpl925-combined.png">vies - agpl:925 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500agpl925-combined.png">vies - agpl:925 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -148,12 +148,12 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500psnm000-combined.png">vies - psnm:000 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500psnm000-combined.png">vies - psnm:000 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -163,13 +163,13 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp500-combined.png">vies - temp:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp850-combined.png">vies - temp:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp500-combined.png">vies - temp:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp850-combined.png">vies - temp:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -179,14 +179,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes500-combined.png">vies - umes:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes850-combined.png">vies - umes:850 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes925-combined.png">vies - umes:925 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes500-combined.png">vies - umes:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes850-combined.png">vies - umes:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes925-combined.png">vies - umes:925 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -196,14 +196,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel250-combined.png">vies - uvel:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel500-combined.png">vies - uvel:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel850-combined.png">vies - uvel:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel250-combined.png">vies - uvel:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel500-combined.png">vies - uvel:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel850-combined.png">vies - uvel:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -213,14 +213,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel250-combined.png">vies - vvel:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel500-combined.png">vies - vvel:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel850-combined.png">vies - vvel:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel250-combined.png">vies - vvel:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel500-combined.png">vies - vvel:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel850-combined.png">vies - vvel:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -230,14 +230,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo250-combined.png">vies - zgeo:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo500-combined.png">vies - zgeo:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo850-combined.png">vies - zgeo:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo250-combined.png">vies - zgeo:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo500-combined.png">vies - zgeo:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo850-combined.png">vies - zgeo:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -250,12 +250,12 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500agpl925-combined.png">vies - agpl:925 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500agpl925-combined.png">vies - agpl:925 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -265,12 +265,12 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500psnm000-combined.png">vies - psnm:000 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500psnm000-combined.png">vies - psnm:000 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -280,13 +280,13 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp500-combined.png">vies - temp:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp850-combined.png">vies - temp:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp500-combined.png">vies - temp:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500temp850-combined.png">vies - temp:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -296,14 +296,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes500-combined.png">vies - umes:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes850-combined.png">vies - umes:850 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes925-combined.png">vies - umes:925 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes500-combined.png">vies - umes:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes850-combined.png">vies - umes:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500umes925-combined.png">vies - umes:925 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -313,14 +313,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel250-combined.png">vies - uvel:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel500-combined.png">vies - uvel:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel850-combined.png">vies - uvel:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel250-combined.png">vies - uvel:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel500-combined.png">vies - uvel:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500uvel850-combined.png">vies - uvel:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -330,14 +330,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel250-combined.png">vies - vvel:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel500-combined.png">vies - vvel:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel850-combined.png">vies - vvel:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel250-combined.png">vies - vvel:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel500-combined.png">vies - vvel:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500vvel850-combined.png">vies - vvel:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
@@ -347,14 +347,14 @@ Nomenclatura dos experimentos:
         
         <SELECT NAME="options" ONCHANGE="document.getElementById('youriframe1').src = this.options[this.selectedIndex].value">
         <option>Selecionar imagem...</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo250-combined.png">vies - zgeo:250 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo500-combined.png">vies - zgeo:500 (2020120100-2020121500)</option>
-        <option value="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo850-combined.png">vies - zgeo:850 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo250-combined.png">vies - zgeo:250 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo500-combined.png">vies - zgeo:500 (2020120100-2020121500)</option>
+        <option value="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/aval/scantec/gl/VIESEXPS_20201201002020121500zgeo850-combined.png">vies - zgeo:850 (2020120100-2020121500)</option>
         </SELECT>
         
         <div class="wrapper">
           <div class="h_iframe">
-            <iframe name="iframe" id="youriframe1" src="http://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
+            <iframe name="iframe" id="youriframe1" src="https://ftp1.cptec.inpe.br/pesquisa/das/carlos.bastarz/oensMB09/assets/white_bkg_big.png" width="2" height="2" frameborder="0" allowfullscreen></iframe>
           </div>
         </div>
     
